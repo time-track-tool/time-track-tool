@@ -6699,3 +6699,6 @@ msgstr "SAP Cost center Desc"
 
 msgid "issue_ids"
 msgstr "PES Issue-Numbers"
+
+msgid "infosec_req"
+msgstr "InfoSec Requirements"

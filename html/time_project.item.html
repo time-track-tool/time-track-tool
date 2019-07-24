@@ -121,6 +121,11 @@
      </tal:block>
     </tr>
     <tr>
+     <th tal:content="structure python:utils.fieldname
+         (classname, 'infosec_req')"/>
+     <td tal:content="structure python:context.infosec_req.field ()"/>
+    </tr>
+    <tr>
      <tal:block tal:condition="python: 'op_project' in bclass.properties">
       <th tal:content="structure python:utils.fieldname
        (classname, 'op_project')"/>

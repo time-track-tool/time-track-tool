@@ -953,6 +953,11 @@ _helptext          = \
             index numbers will be automatically set when saving the PR.
          '''
       ]
+    , ""'infosec_req'                 :
+      [""'''Set this flag if the %(Classname)s has special information
+            security requirements (TISAX).
+         '''
+      ]
     , ""'inherit_ext'                 :
       [""'''If this flag is set, and an issue is a container, it inerits
             external user permissions from the next higher-level
