@@ -202,7 +202,11 @@ def compute_approvals (db, pr, do_create) :
                 and pr.organisation not in prc.organisations
                 ) :
                 continue
-            if s > prc.amount :
+            if  (      prc.amount         is not None and s > prc.amount
+                or (   prc.infosec_amount is not None and s > prc.infosec_amount
+                   and (pr.infosec_project or pr.infosec_pt)
+                   )
+                ) :
                 apr_by_role [prc.role] = add_approval_with_role \
                     (db, do_create, pr.id, prc.role)
                 r = db.pr_approval_order.getnode (prc.role)

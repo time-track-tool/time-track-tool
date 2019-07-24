@@ -1155,7 +1155,7 @@ msgid "Alternate email addresses for this user, one per line"
 msgstr ""
 
 msgid "amount"
-msgstr ""
+msgstr "Amount"
 
 msgid "Amount payed"
 msgstr ""
@@ -6708,3 +6708,6 @@ msgstr "InfoSec Project"
 
 msgid "infosec_pt"
 msgstr "InfoSec Purchase Type"
+
+msgid "infosec_amount"
+msgstr "Amount for InfoSec approval"

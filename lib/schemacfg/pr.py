@@ -105,6 +105,7 @@ def init \
         , organisations         = Multilink ("organisation")
         , pr_ext_resource       = Link      ("pr_ext_resource")
         , purchase_type         = Multilink ("purchase_type")
+        , infosec_amount        = Number    ()
         )
 
     pr_approval_order = Class \
