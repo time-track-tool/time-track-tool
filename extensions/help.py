@@ -953,6 +953,23 @@ _helptext          = \
             index numbers will be automatically set when saving the PR.
          '''
       ]
+    , ""'infosec_req'                 :
+      [""'''Set this flag if the %(Classname)s has special information
+            security requirements (TISAX).
+         '''
+      ]
+    , ""'infosec_project'             :
+      [""'''Automatically set if one of the Time Categories has special
+            information security requirements (TISAX).
+         '''
+      ]
+    , ""'infosec_pt'                  :
+      [""'''Set this flag if the %(Classname)s has special information
+            security requirements (TISAX). This flag is automatically
+            set if any of the selected Purchase Types has special
+            information security requirements.
+         '''
+      ]
     , ""'inherit_ext'                 :
       [""'''If this flag is set, and an issue is a container, it inerits
             external user permissions from the next higher-level

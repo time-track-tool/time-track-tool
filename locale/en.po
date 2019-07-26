@@ -1155,7 +1155,7 @@ msgid "Alternate email addresses for this user, one per line"
 msgstr ""
 
 msgid "amount"
-msgstr ""
+msgstr "Amount"
 
 msgid "Amount payed"
 msgstr ""
@@ -6699,3 +6699,15 @@ msgstr "SAP Cost center Desc"
 
 msgid "issue_ids"
 msgstr "PES Issue-Numbers"
+
+msgid "infosec_req"
+msgstr "InfoSec Requirements"
+
+msgid "infosec_project"
+msgstr "InfoSec Project"
+
+msgid "infosec_pt"
+msgstr "InfoSec Purchase Type"
+
+msgid "infosec_amount"
+msgstr "Amount for InfoSec approval"

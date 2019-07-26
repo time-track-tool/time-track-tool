@@ -899,6 +899,60 @@ def check_issue_nums (db, cl, nodeid, new_values) :
             raise Reject (_ ("Invalid Issue-Number: %s") % id)
 # end def check_issue_nums
 
+def fix_infosec (db, cl, nodeid, new_values) :
+    """ Check infosec_project and infosec_pt parameters, set if
+        necessary. The infosec_pt parameter can be set by the user but
+        if one purchase_type is found to have infosec_req set the value
+        is set to True. Same for infosec_project except that the user
+        cannot edit it.
+    """
+    infosec_pt = None
+    if 'infosec_pt' in new_values :
+        infosec_pt = new_values ['infosec_pt']
+    elif nodeid :
+        infosec_pt = cl.get (nodeid, 'infosec_pt')
+    if infosec_pt is None :
+        new_values ['infosec_pt'] = False
+    new_values ['infosec_project'] = False
+
+    tp = pt = None
+    ois = []
+    if 'time_project' in new_values :
+        tp = new_values ['time_project']
+    elif nodeid :
+        tp = cl.get (nodeid, 'time_project')
+    if 'purchase_type' in new_values :
+        pt = new_values ['purchase_type']
+    elif nodeid :
+        pt = cl.get (nodeid, 'purchase_type')
+    if 'offer_items' in new_values :
+        ois = new_values ['offer_items']
+    elif nodeid :
+        ois = cl.get (nodeid, 'offer_items')
+    tps = []
+    pts = []
+    if tp :
+        tps.append (tp)
+    if pt :
+        pts.append (pt)
+    for oid in ois :
+        oi = db.pr_offer_item.getnode (oid)
+        if oi.time_project :
+            tps.append (oi.time_project)
+        if oi.purchase_type :
+            pts.append (oi.purchase_type)
+    for tpid in tps :
+        tp = db.time_project.getnode (tpid)
+        if tp.infosec_req :
+            print tp.name
+            new_values ['infosec_project'] = True
+    for ptid in pts :
+        pt = db.purchase_type.getnode (ptid)
+        if pt.infosec_req :
+            print pt.name
+            new_values ['infosec_pt'] = True
+# end def fix_infosec
+
 def init (db) :
     global _
     _   = get_translation \
@@ -913,6 +967,8 @@ def init (db) :
     db.purchase_request.audit   ("set",    check_tp_rq,     priority = 80)
     db.purchase_request.audit   ("set",    requester_chg,   priority = 70)
     db.purchase_request.audit   ("set",    reopen,          priority = 90)
+    db.purchase_request.audit   ("create", fix_infosec,     priority = 95)
+    db.purchase_request.audit   ("set",    fix_infosec,     priority = 95)
     db.purchase_request.audit   ("set",    change_pr)
     db.purchase_request.audit   ("set",    check_late_changes)
     db.purchase_request.audit   ("create", check_dd)

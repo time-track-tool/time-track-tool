@@ -105,6 +105,7 @@ def init \
         , organisations         = Multilink ("organisation")
         , pr_ext_resource       = Link      ("pr_ext_resource")
         , purchase_type         = Multilink ("purchase_type")
+        , infosec_amount        = Number    ()
         )
 
     pr_approval_order = Class \
@@ -187,6 +188,7 @@ def init \
         , pr_view_roles         = Multilink ("pr_approval_order")
         , nosy                  = Multilink ("user")
         , purchasing_agents     = Multilink ("user")
+        , infosec_req           = Boolean   ()
         )
     purchase_type.setkey ('name')
 
@@ -264,6 +266,8 @@ def init \
                 , special_approval      = Multilink ("user", do_journal = 'no')
                 , pr_ext_resource       = Link      ("pr_ext_resource")
                 , issue_ids             = String    ()
+                , infosec_project       = Boolean   ()
+                , infosec_pt            = Boolean   ()
                 )
             self.__super.__init__ (db, classname, ** properties)
         # end def __init__

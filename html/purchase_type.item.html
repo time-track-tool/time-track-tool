@@ -36,6 +36,12 @@
       <td tal:content="structure python:context.confidential.field ()"/>
      </tr>
      <tr>
+     <tr>
+      <th tal:content="structure python:utils.fieldname
+          (classname, 'infosec_req')"/>
+      <td tal:content="structure python:context.infosec_req.field ()"/>
+     </tr>
+     <tr>
       <th tal:content="structure python:utils.fieldname
           (classname, 'order')"/>
       <td tal:content="structure python:context.order.field ()"/>

@@ -63,6 +63,7 @@ def init \
                 , deputy                = Link      ("user")
                 , status                = Link      ("time_project_status")
                 , purchasing_agents     = Multilink ("user")
+                , infosec_req           = Boolean   ()
                 )
             Ext_Class.__init__ (self, db, classname, ** properties)
             self.setkey ("name")

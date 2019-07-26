@@ -668,7 +668,7 @@ def security (db, ** kw) :
         , ( "time_project", "Edit", ["Project"]
           , ( "max_hours", "op_project", "planned_effort"
             , "product_family", "project_type", "reporting_group"
-            , "work_location"
+            , "work_location", "infosec_req"
             )
           )
         , ( "time_project", "Edit", ["HR"]
