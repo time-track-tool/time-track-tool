@@ -216,6 +216,14 @@ def init \
         )
     time_activity.setkey ("name")
 
+    time_report = Class \
+        ( db
+        , ''"time_report"
+        , file                  = Link      ("file")
+        , time_project          = Link      ("time_project")
+        , last_updated          = Date      ()
+        )
+
     class Time_Project_Class (kw ['Time_Project_Class']) :
         """Add attributes to existing Time_Project_Class class."""
 
@@ -523,6 +531,7 @@ def security (db, ** kw) :
         , ("Controlling",       "Controlling")
         , ("Summary_View",      "View full summary report and all WPs")
         , ("Office",            "Office")
+        , ("Time-Report",       "External time reports")
         ]
 
     #     classname
@@ -652,6 +661,10 @@ def security (db, ** kw) :
         , ( "work_location"
           , ["User"]
           , ["Controlling"]
+          )
+        , ( "time_report"
+          , ["Time-Report", "Controlling", "Project", "Project_View"]
+          , ["Time-Report"]
           )
         ]
 
@@ -957,6 +970,21 @@ def security (db, ** kw) :
             (db, userid, df.user, df.date)
     # end def dr_freeze_visible_for_hr_olo
 
+    def time_report_visible (db, userid, itemid) :
+        """ User may see time report if reponsible or deputy of time
+            project or on nosy list of time project.
+        """
+        trep = db.time_report.getnode (itemid)
+        if not trep.time_project :
+            return False
+        tp   = db.time_project.getnode (trep.time_project)
+        if userid == tp.responsible or userid == tp.deputy :
+            return True
+        if userid in tp.nosy :
+            return True
+        return False
+    # end def time_report_visible
+
     p = db.security.addPermission \
         ( name        = 'Edit'
         , klass       = 'time_wp'
@@ -1245,5 +1273,11 @@ def security (db, ** kw) :
         , description = fixdoc (may_see_daily_record.__doc__)
         )
     db.security.addPermissionToRole ('User', p)
+    p = db.security.addPermission \
+        ( name        = 'View'
+        , klass       = 'time_report'
+        , check       = time_report_visible
+        , description = fixdoc (time_report_visible.__doc__)
+        )
+    db.security.addPermissionToRole ('User', p)
 # end def security
-#SHA: 8b9a3aaff292edc4437238e9b4c602bd6b615ebd

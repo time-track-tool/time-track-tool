@@ -11,9 +11,9 @@
   </tal:block>
  </title>
   <tal:block metal:fill-slot="create_or_query">
-    <tal:block 
+    <tal:block
      metal:use-macro="templates/page/macros/create_or_query_new_tracker_item" />
-  </tal:block> 
+  </tal:block>
 
  <tal:block metal:fill-slot="content">
   <tal:block metal:use-macro="templates/page/macros/formatted_class">
@@ -188,6 +188,21 @@
       <td tal:content="structure python:context.only_hours.field ()"/>
      </tal:block>
     </tr>
+    <tal:block tal:condition="context/id"
+     tal:define="trid python:
+         db._db.time_report.filter (None, dict (time_project = context.id));
+                 trep python: trid and db.time_report.getItem (trid [0])">
+     <tr tal:condition="python: trep and trep.is_view_ok ()">
+      <th i18n:translate="">Time Project Report&nbsp;</th>
+      <td>
+       <a tal:content="python: trep.file.name"
+          tal:attributes="href python:
+             'file%s/%s' % (trep.file.id, trep.file.name)"/>
+       Last updated: <span tal:content="python:
+            trep.last_updated.pretty ('%Y-%m-%d')"/>
+      </td>
+     </tr>
+    </tal:block>
    </tal:block>
   </tal:block>
   <tal:block

@@ -6711,3 +6711,9 @@ msgstr "InfoSec Purchase Type"
 
 msgid "infosec_amount"
 msgstr "Amount for InfoSec approval"
+
+msgid "time_report"
+msgstr "Time Category Report"
+
+msgid "last_updated"
+msgstr "Last updated"
