@@ -356,8 +356,6 @@ def security (db, **kw) :
     #
     # See the configuration and customisation document for information
     # about security setup.
-    # Assign the access and edit Permissions for issue, file and message
-    # to regular users now
 
     #     classname        allowed to view   /  edit
     classes = \

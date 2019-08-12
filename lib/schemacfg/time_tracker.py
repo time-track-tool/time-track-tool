@@ -518,8 +518,6 @@ def init \
     #
     # See the configuration and customisation document for information
     # about security setup.
-    # Assign the access and edit Permissions for issue, file and message
-    # to regular users now
 
 def security (db, ** kw) :
     roles = \
@@ -984,6 +982,23 @@ def security (db, ** kw) :
             return True
         return False
     # end def time_report_visible
+
+    def own_file (db, userid, itemid) :
+        """ User may edit own file (file created by user)
+        """
+        f = db.file.getnode (itemid)
+        if userid == f.creator :
+            return True
+        return False
+    # end def own_file
+
+    p = db.security.addPermission \
+        ( name        = 'Edit'
+        , klass       = 'file'
+        , check       = own_file
+        , description = fixdoc (own_file.__doc__)
+        )
+    db.security.addPermissionToRole ('Time-Report', p)
 
     p = db.security.addPermission \
         ( name        = 'Edit'

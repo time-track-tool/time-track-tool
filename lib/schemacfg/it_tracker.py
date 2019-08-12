@@ -146,8 +146,6 @@ def init \
     #
     # See the configuration and customisation document for information
     # about security setup.
-    # Assign the access and edit Permissions for issue, file and message
-    # to regular users now
 
 def security (db, ** kw) :
     roles = \

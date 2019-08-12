@@ -87,8 +87,8 @@ def security (db, ** kw) :
           )
         ]
     linkperms = \
-        [ ("file", ["External"], ['View', 'Edit'], linkclass_iter (db, "file"))
-        , ("msg",  ["External"],         ['View'], linkclass_iter (db, "msg"))
+        [ ("file", ["External"], ['View'], linkclass_iter (db, "file"))
+        , ("msg",  ["External"], ['View'], linkclass_iter (db, "msg"))
         ]
 
     schemadef.register_roles             (db, roles)
