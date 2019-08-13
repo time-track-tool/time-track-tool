@@ -1,5 +1,6 @@
 #!/usr/bin/python3
 import sys
+import os
 import requests
 from datetime import datetime
 
@@ -111,5 +112,8 @@ file = sys.argv [2]
 with open (file, 'r') as f :
     content = f.read ()
 
+# use basename as filename in timetracker
+filename = os.path.basename (file)
+
 ru = Report_Updater ('http://bee:8080/ttt', 'admin', 'xyzzy')
-ru.update_time_project (tpid, file, 'application/octet-stream', content)
+ru.update_time_project (tpid, filename, 'application/octet-stream', content)

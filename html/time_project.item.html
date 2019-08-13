@@ -199,7 +199,7 @@
           tal:attributes="href python:
              'file%s/%s' % (trep.file.id, trep.file.name)"/>
        Last updated: <span tal:content="python:
-            trep.last_updated.pretty ('%Y-%m-%d')"/>
+            trep.last_updated.pretty ('%Y-%m-%d %H:%M:%S')"/>
       </td>
      </tr>
     </tal:block>
