@@ -602,8 +602,10 @@
                 and context.status.plain () == 'open'"
             i18n:attributes="value" value='Sign&Send'
             onClick="javascript:
-             document.forms.itemSynopsis ['@action'].value = 'pr_sign';
-             document.itemSynopsis.submit ();">
+             if (submit_once ()) {
+                 document.forms.itemSynopsis ['@action'].value = 'pr_sign';
+                 document.itemSynopsis.submit ();
+             }">
      <tal:block>
       <tal:block metal:use-macro="templates/page/macros/copy_button"/>
      </tal:block>
