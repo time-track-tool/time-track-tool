@@ -188,20 +188,23 @@
       <td tal:content="structure python:context.only_hours.field ()"/>
      </tal:block>
     </tr>
-    <tal:block tal:condition="context/id"
-     tal:define="trid python:
-         db._db.time_report.filter (None, dict (time_project = context.id));
-                 trep python: trid and db.time_report.getItem (trid [0])">
-     <tr tal:condition="python: trep and trep.is_view_ok ()">
-      <th i18n:translate="">Time Project Report&nbsp;</th>
-      <td>
-       <a tal:content="python: trep.file.name"
-          tal:attributes="href python:
-             'file%s/%s' % (trep.file.id, trep.file.name)"/>
-       Last updated: <span tal:content="python:
-            trep.last_updated.pretty ('%Y-%m-%d %H:%M:%S')"/>
-      </td>
-     </tr>
+    <tal:block tal:condition="python:
+         context.id and 'time_report' in db.classes ()">
+     <tal:block
+      tal:define="trid python:
+          db._db.time_report.filter (None, dict (time_project = context.id));
+                  trep python: trid and db.time_report.getItem (trid [0])">
+      <tr tal:condition="python: trep and trep.is_view_ok ()">
+       <th i18n:translate="">Time Project Report&nbsp;</th>
+       <td>
+        <a tal:content="python: trep.file.name"
+           tal:attributes="href python:
+              'file%s/%s' % (trep.file.id, trep.file.name)"/>
+        Last updated: <span tal:content="python:
+             trep.last_updated.pretty ('%Y-%m-%d %H:%M:%S')"/>
+       </td>
+      </tr>
+     </tal:block>
     </tal:block>
    </tal:block>
   </tal:block>
