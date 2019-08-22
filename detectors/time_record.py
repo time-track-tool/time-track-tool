@@ -109,8 +109,12 @@ def time_records_consistent (db, cl, nodeid) :
           travel flag) are excempt from work-time and lunch break checks
         + no_overtime flag in time_project: check if really no overtime
           booked
+        + Check that all WP are bookable
+          + User is on bookers list
+          + WP is valid
     """
     date     = cl.get (nodeid, 'date')
+    dtp      = date.pretty (common.ymd)
     sdate    = date.pretty (common.ymd)
     uid      = cl.get (nodeid, 'user')
     uname    = db.user.get (uid, 'username')
@@ -148,14 +152,14 @@ def time_records_consistent (db, cl, nodeid) :
                 (  dynamic.durations_allowed
                 or db.time_wp.get (tr.wp, 'durations_allowed')
                 )
-            pr        = db.time_wp.get      (tr.wp, 'project')
-            max_hours = db.time_project.get (pr,    'max_hours')
-            no_over   = db.time_project.get (pr,    'no_overtime')
-            if db.time_project.get (pr, 'no_overtime_day') :
-                no_over_wp = "%s.%s" % \
-                    ( db.time_project.get (pr, 'name')
-                    , db.time_wp.get (wp, 'name')
-                    )
+            wp        = db.time_wp.getnode  (tr.wp)
+            pr        = db.time_project.getnode (wp.project)
+            prname    = pr.name
+            wpname    = wp.name
+            max_hours = pr.max_hours
+            no_over   = pr.no_overtime
+            if pr.no_overtime_day :
+                no_over_wp = "%s.%s" % (pr.name, wp.name)
             if max_hours is not None :
                 if tr.duration > max_hours :
                     msgs.append \
@@ -170,6 +174,24 @@ def time_records_consistent (db, cl, nodeid) :
                         % locals ()
                         )
             noover_sum_day += tr.duration
+            if uid not in wp.bookers :
+                msgs.append \
+                    ( "User %(uname)s may not book on work package "
+                      "%(prname)s.%(wpname)s"
+                    % locals ()
+                    )
+            if date < wp.time_start :
+                msgs.append \
+                    ( "Work package %(prname)s.%(wpname)s not yet valid "
+                      "for date %(dtp)s"
+                    % locals ()
+                    )
+            if wp.has_expiration_date and date > wp.time_end :
+                msgs.append \
+                    ( "Work package %(prname)s.%(wpname)s no longer valid "
+                      "for date %(dtp)s"
+                    % locals ()
+                    )
         if not durations_allowed and not tr.start :
             msgs.append ("%(tr_pr)s: No durations allowed" % locals ())
         if tr.start and not travel :
