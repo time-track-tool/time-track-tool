@@ -706,6 +706,7 @@ properties = \
         , 'department'
         , 'deputy'
         , 'description'
+        , 'infosec_req'
         , 'is_public_holiday'
         , 'is_special_leave'
         , 'is_vacation'
@@ -747,6 +748,12 @@ properties = \
         , 'tr_duration'
         , 'work_location'
         , 'wp'
+        ]
+      )
+    , ( 'time_report'
+      , [ 'file'
+        , 'last_updated'
+        , 'time_project'
         ]
       )
     , ( 'time_wp'

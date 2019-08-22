@@ -307,6 +307,9 @@ properties = \
         , ( 'if_not_in_las'
           , ['admin', 'procurement']
           )
+        , ( 'infosec_amount'
+          , ['admin', 'procurement']
+          )
         , ( 'organisations'
           , ['admin', 'procurement']
           )
@@ -619,6 +622,18 @@ properties = \
             , 'subcontract', 'subcontract-org', 'training-approval', 'user', 'user_view'
             ]
           )
+        , ( 'infosec_project'
+          , [ 'admin', 'board', 'controlling', 'finance', 'hr', 'hr-approval', 'it-approval'
+            , 'measurement-approval', 'pgp', 'pr-view', 'procure-approval', 'procurement', 'procurement-admin', 'project', 'project_view', 'quality'
+            , 'subcontract', 'subcontract-org', 'training-approval', 'user', 'user_view'
+            ]
+          )
+        , ( 'infosec_pt'
+          , [ 'admin', 'board', 'controlling', 'finance', 'hr', 'hr-approval', 'it-approval'
+            , 'measurement-approval', 'pgp', 'pr-view', 'procure-approval', 'procurement', 'procurement-admin', 'project', 'project_view', 'quality'
+            , 'subcontract', 'subcontract-org', 'training-approval', 'user', 'user_view'
+            ]
+          )
         , ( 'intended_duration'
           , [ 'admin', 'board', 'controlling', 'finance', 'hr', 'hr-approval', 'it-approval'
             , 'measurement-approval', 'pgp', 'pr-view', 'procure-approval', 'procurement', 'procurement-admin', 'project', 'project_view', 'quality'
@@ -626,6 +641,12 @@ properties = \
             ]
           )
         , ( 'internal_order'
+          , [ 'admin', 'board', 'controlling', 'finance', 'hr', 'hr-approval', 'it-approval'
+            , 'measurement-approval', 'pgp', 'pr-view', 'procure-approval', 'procurement', 'procurement-admin', 'project', 'project_view', 'quality'
+            , 'subcontract', 'subcontract-org', 'training-approval', 'user', 'user_view'
+            ]
+          )
+        , ( 'issue_ids'
           , [ 'admin', 'board', 'controlling', 'finance', 'hr', 'hr-approval', 'it-approval'
             , 'measurement-approval', 'pgp', 'pr-view', 'procure-approval', 'procurement', 'procurement-admin', 'project', 'project_view', 'quality'
             , 'subcontract', 'subcontract-org', 'training-approval', 'user', 'user_view'
@@ -791,6 +812,12 @@ properties = \
             ]
           )
         , ( 'forced_roles'
+          , [ 'admin', 'board', 'controlling', 'finance', 'hr', 'hr-approval', 'it-approval'
+            , 'measurement-approval', 'pgp', 'pr-view', 'procure-approval', 'procurement', 'procurement-admin', 'project', 'project_view', 'quality'
+            , 'subcontract', 'subcontract-org', 'training-approval', 'user', 'user_view'
+            ]
+          )
+        , ( 'infosec_req'
           , [ 'admin', 'board', 'controlling', 'finance', 'hr', 'hr-approval', 'it-approval'
             , 'measurement-approval', 'pgp', 'pr-view', 'procure-approval', 'procurement', 'procurement-admin', 'project', 'project_view', 'quality'
             , 'subcontract', 'subcontract-org', 'training-approval', 'user', 'user_view'
@@ -971,6 +998,12 @@ properties = \
             ]
           )
         , ( 'description'
+          , [ 'admin', 'board', 'controlling', 'finance', 'hr', 'hr-approval', 'it-approval'
+            , 'measurement-approval', 'pgp', 'pr-view', 'procure-approval', 'procurement', 'procurement-admin', 'project', 'project_view', 'quality'
+            , 'subcontract', 'subcontract-org', 'training-approval', 'user', 'user_view'
+            ]
+          )
+        , ( 'infosec_req'
           , [ 'admin', 'board', 'controlling', 'finance', 'hr', 'hr-approval', 'it-approval'
             , 'measurement-approval', 'pgp', 'pr-view', 'procure-approval', 'procurement', 'procurement-admin', 'project', 'project_view', 'quality'
             , 'subcontract', 'subcontract-org', 'training-approval', 'user', 'user_view'

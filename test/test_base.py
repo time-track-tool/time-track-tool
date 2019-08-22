@@ -35,6 +35,7 @@ from operator     import mul
 from StringIO     import StringIO
 from email.parser import Parser
 from mailbox      import mbox
+from base64       import b64decode
 
 from roundup.exceptions    import Reject
 from roundup.configuration import Option
@@ -166,6 +167,7 @@ class _Test_Case (unittest.TestCase) :
         , 'subcontract-org'
         , 'summary_view'
         , 'supportadmin'
+        , 'time-report'
         , 'training-approval'
         , 'type'
         , 'user'
@@ -767,8 +769,8 @@ class Test_Case_Support_Timetracker (_Test_Case) :
         , 'hr-vacation', 'issue_admin', 'it', 'itview', 'msgedit'
         , 'msgsync', 'nosy', 'office', 'procurement', 'project'
         , 'project_view', 'sec-incident-nosy'
-        , 'sec-incident-responsible'
-        , 'staff-report', 'summary_view', 'supportadmin', 'type', 'user'
+        , 'sec-incident-responsible', 'staff-report', 'summary_view'
+        , 'supportadmin', 'time-report', 'type', 'user'
         ]
     transprop_perms = transprop_sfull
 # end class Test_Case_Support_Timetracker
@@ -780,7 +782,7 @@ class Test_Case_Timetracker (_Test_Case_Summary) :
         [ 'admin', 'anonymous', 'controlling', 'doc_admin', 'facility', 'hr'
         , 'hr-leave-approval', 'hr-org-location', 'hr-vacation', 'it', 'nosy'
         , 'office', 'pgp', 'procurement', 'project', 'project_view'
-        , 'staff-report', 'summary_view', 'user', 'user_view'
+        , 'staff-report', 'summary_view', 'time-report', 'user', 'user_view'
         ]
     transprop_perms = transprop_time
 
@@ -2527,14 +2529,16 @@ class Test_Case_Timetracker (_Test_Case_Summary) :
             , ('from',       'roundup-admin@your.tracker.email.domain.example')
             ) :
             self.assertEqual (header_decode (e [h]), t)
+        # base64-encoded body
         self.assertEqual \
-            ( e.get_payload ().strip ()
-            , 'Test User2 has submitted a leave request\n"Vacation/Vacation".\n'
+            ( b64decode (e.get_payload ()).strip ()
+            , 'Test User2 has submitted a leave request\n'
+              '"Vacation/Vacation".\n'
               'Comment from user: None\n'
               'Please approve or decline at\n'
-              'http://localhost:4711/ttt/leave_submission?@template=3Dapprove'
-              '\nMany thanks!'
-              '\n\nThis is an automatically generated message.\n'
+              'http://localhost:4711/ttt/leave_submission?@template=approve\n'
+              'Many thanks!\n\n'
+              'This is an automatically generated message.\n'
               'Responses to this address are not possible.'
             )
         os.unlink (maildebug)
@@ -2558,13 +2562,14 @@ class Test_Case_Timetracker (_Test_Case_Summary) :
             ) :
             self.assertEqual (header_decode (e [h]), t)
         self.assertEqual \
-            ( e.get_payload ().strip ()
-            , 'Test User2 has submitted a leave request\n"Leave/Unpaid".\n'
+            ( b64decode (e.get_payload ()).strip ()
+            , 'Test User2 has submitted a leave request\n'
+              '"Leave/Unpaid".\n'
               'Comment from user: None\n'
               'Needs approval by HR.\n'
-              'http://localhost:4711/ttt/leave_submission?@template=3Dapprove'
-              '\nMany thanks!'
-              '\n\nThis is an automatically generated message.\n'
+              'http://localhost:4711/ttt/leave_submission?@template=approve\n'
+              'Many thanks!\n\n'
+              'This is an automatically generated message.\n'
               'Responses to this address are not possible.'
             )
         os.unlink (maildebug)
@@ -2579,13 +2584,14 @@ class Test_Case_Timetracker (_Test_Case_Summary) :
             ) :
             self.assertEqual (header_decode (e [h]), t)
         self.assertEqual \
-            ( e.get_payload ().strip ()
-            , 'Test User2 has submitted a leave request\n"Leave/Unpaid".\n'
+            ( b64decode (e.get_payload ()).strip ()
+            , 'Test User2 has submitted a leave request\n'
+              '"Leave/Unpaid".\n'
               'Comment from user: None\n'
               'Needs approval by HR.\n'
-              'http://localhost:4711/ttt/leave_submission?@template=3Dapprove'
-              '\nMany thanks!'
-              '\n\nThis is an automatically generated message.\n'
+              'http://localhost:4711/ttt/leave_submission?@template=approve\n'
+              'Many thanks!\n\n'
+              'This is an automatically generated message.\n'
               'Responses to this address are not possible.'
             )
         os.unlink (maildebug)
@@ -2600,13 +2606,14 @@ class Test_Case_Timetracker (_Test_Case_Summary) :
             ) :
             self.assertEqual (header_decode (e [h]), t)
         self.assertEqual \
-            ( e.get_payload ().strip ()
-            , 'Test User2 has submitted a leave request\n"Flexi/Flexi".\n'
+            ( b64decode (e.get_payload ()).strip ()
+            , 'Test User2 has submitted a leave request\n'
+              '"Flexi/Flexi".\n'
               'Comment from user: None\n'
               'Please approve or decline at\n'
-              'http://localhost:4711/ttt/leave_submission?@template=3Dapprove'
-              '\nMany thanks!'
-              '\n\nThis is an automatically generated message.\n'
+              'http://localhost:4711/ttt/leave_submission?@template=approve\n'
+              'Many thanks!\n\n'
+              'This is an automatically generated message.\n'
               'Responses to this address are not possible.'
             )
         os.unlink (maildebug)
@@ -2651,7 +2658,7 @@ class Test_Case_Timetracker (_Test_Case_Summary) :
         for n, e in enumerate (box) :
             for h, t in headers [n] :
                 self.assertEqual (header_decode (e [h]), t)
-            self.assertEqual (e.get_payload ().strip (), body [n])
+            self.assertEqual (b64decode (e.get_payload ()).strip (), body [n])
         os.unlink (maildebug)
         dt = self.db.leave_submission.get (za, 'first_day')
         dt = common.pretty_range (dt, dt)
@@ -2723,7 +2730,7 @@ class Test_Case_Timetracker (_Test_Case_Summary) :
         for n, e in enumerate (box) :
             for h, t in headers [n] :
                 self.assertEqual (header_decode (e [h]), t)
-            self.assertEqual (e.get_payload ().strip (), body [n])
+            self.assertEqual (b64decode (e.get_payload ()).strip (), body [n])
         os.unlink (maildebug)
         for st in (st_accp, st_decl) :
             self.assertRaises \
@@ -2758,7 +2765,7 @@ class Test_Case_Timetracker (_Test_Case_Summary) :
             ) :
             self.assertEqual (header_decode (e [h]), t)
         self.assertEqual \
-            ( e.get_payload ().strip ()
+            ( b64decode (e.get_payload ()).strip ()
             , 'Your absence request "Leave/Unpaid" has been declined.\n'
               'Please contact your supervisor.'
               '\n\nThis is an automatically generated message.\n'
@@ -2796,7 +2803,7 @@ class Test_Case_Timetracker (_Test_Case_Summary) :
         for n, e in enumerate (box) :
             for h, t in headers [n] :
                 self.assertEqual (header_decode (e [h]), t)
-            self.assertEqual (e.get_payload ().strip (), body [n])
+            self.assertEqual (b64decode (e.get_payload ()).strip (), body [n])
         os.unlink (maildebug)
         for st in (st_open, st_subm, st_decl, st_carq, st_canc) :
             self.assertRaises \
@@ -2838,12 +2845,12 @@ class Test_Case_Timetracker (_Test_Case_Summary) :
             ) :
             self.assertEqual (header_decode (e [h]), t)
         self.assertEqual \
-            ( e.get_payload ().strip ()
+            ( b64decode (e.get_payload ()).strip ()
             , 'Test User2 has submitted a cancel request\n'
               '"Vacation/Vacation" from 2009-12-20 to 2010-01-06.\n'
               'Comment from user: Cancel Comment\n'
               'Please approve or decline at\n'
-              'http://localhost:4711/ttt/leave_submission?@template=3Dapprove'
+              'http://localhost:4711/ttt/leave_submission?@template=approve'
               '\nMany thanks!'
               '\n\nThis is an automatically generated message.\n'
               'Responses to this address are not possible.'
@@ -2877,7 +2884,7 @@ class Test_Case_Timetracker (_Test_Case_Summary) :
             ) :
             self.assertEqual (header_decode (e [h]), t)
         self.assertEqual \
-            ( e.get_payload ().strip ()
+            ( b64decode (e.get_payload ()).strip ()
             , 'Your cancel request "Vacation/Vacation" was not granted.\n'
               'Please contact your supervisor.\n\n'
               'This is an automatically generated message.\n'
@@ -2925,7 +2932,7 @@ class Test_Case_Timetracker (_Test_Case_Summary) :
         for n, e in enumerate (box) :
             for h, t in headers [n] :
                 self.assertEqual (header_decode (e [h]), t)
-            self.assertEqual (e.get_payload ().strip (), body [n])
+            self.assertEqual (b64decode (e.get_payload ()).strip (), body [n])
         os.unlink (maildebug)
         vsn  = self.db.leave_submission.getnode (vs)
         dt   = common.pretty_range (vsn.first_day, vsn.last_day)
@@ -2981,11 +2988,11 @@ class Test_Case_Timetracker (_Test_Case_Summary) :
             ) :
             self.assertEqual (header_decode (e [h]), t)
         self.assertEqual \
-            ( e.get_payload ().strip ()
+            ( b64decode (e.get_payload ()).strip ()
             , 'Test User2 has submitted a leave request\n"Vacation/Vacation".\n'
               'Comment from user: None\n'
               'Please approve or decline at\n'
-              'http://localhost:4711/ttt/leave_submission?@template=3Dapprove'
+              'http://localhost:4711/ttt/leave_submission?@template=approve'
               '\nMany thanks!'
               '\n\nThis is an automatically generated message.\n'
               'Responses to this address are not possible.'
@@ -3052,7 +3059,7 @@ class Test_Case_Timetracker (_Test_Case_Summary) :
               '"Special Leave/Special".\n'
               'Comment from user: Special leave comment\n'
               'Please approve or decline at\n'
-              'http://localhost:4711/ttt/leave_submission?@template=3Dapprove'
+              'http://localhost:4711/ttt/leave_submission?@template=approve'
               '\nMany thanks!'
               '\n\nThis is an automatically generated message.\n'
               'Responses to this address are not possible.'
@@ -3069,7 +3076,7 @@ class Test_Case_Timetracker (_Test_Case_Summary) :
         for n, e in enumerate (box) :
             for h, t in headers [n] :
                 self.assertEqual (header_decode (e [h]), t)
-            self.assertEqual (e.get_payload ().strip (), body [n])
+            self.assertEqual (b64decode (e.get_payload ()).strip (), body [n])
         os.unlink (maildebug)
         self.db.commit ()
         self.db.close ()
@@ -3118,7 +3125,7 @@ class Test_Case_Timetracker (_Test_Case_Summary) :
         for n, e in enumerate (box) :
             for h, t in headers [n] :
                 self.assertEqual (header_decode (e [h]), t)
-            self.assertEqual (e.get_payload ().strip (), body [n])
+            self.assertEqual (b64decode (e.get_payload ()).strip (), body [n])
         os.unlink (maildebug)
         self.db.commit ()
         self.db.close ()
@@ -3329,7 +3336,8 @@ class Test_Case_Fulltracker (_Test_Case_Summary) :
         , 'msgedit', 'msgsync', 'nosy'
         , 'office', 'pgp', 'procurement', 'project', 'project_view'
         , 'sec-incident-nosy', 'sec-incident-responsible'
-        , 'staff-report', 'summary_view', 'supportadmin', 'user', 'user_view'
+        , 'staff-report', 'summary_view', 'supportadmin', 'time-report'
+        , 'user', 'user_view'
         ]
     transprop_perms = transprop_full
 

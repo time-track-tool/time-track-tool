@@ -35,6 +35,7 @@ Role "controlling":
  User is allowed to access query (View for "query" only)
  User is allowed to access time_project (View for "time_project" only)
  User is allowed to access time_record (View for "time_record" only)
+ User is allowed to access time_report (View for "time_report" only)
  User is allowed to access time_wp (View for "time_wp" only)
  User is allowed to access vacation_correction (View for "vacation_correction" only)
  User is allowed to create cost_center (Create for "cost_center" only)
@@ -248,8 +249,9 @@ Role "procurement":
  User is allowed Edit on (Edit for "time_project": ('purchasing_agents',) only)
 Role "project":
  User is allowed Edit on (Edit for "time_project": ('cost_center', 'department', 'deputy', 'description', 'name', 'nosy', 'organisation', 'responsible', 'status') only)
- User is allowed Edit on (Edit for "time_project": ('max_hours', 'op_project', 'planned_effort', 'product_family', 'project_type', 'reporting_group', 'work_location') only)
+ User is allowed Edit on (Edit for "time_project": ('infosec_req', 'max_hours', 'op_project', 'planned_effort', 'product_family', 'project_type', 'reporting_group', 'work_location') only)
  User is allowed to access time_project (View for "time_project" only)
+ User is allowed to access time_report (View for "time_report" only)
  User is allowed to access time_wp (View for "time_wp" only)
  User is allowed to create time_project (Create for "time_project" only)
  User is allowed to create time_project_status (Create for "time_project_status" only)
@@ -260,6 +262,7 @@ Role "project":
  User is allowed to edit time_wp_group (Edit for "time_wp_group" only)
 Role "project_view":
  User is allowed to access time_project (View for "time_project" only)
+ User is allowed to access time_report (View for "time_report" only)
  User is allowed to access time_wp (View for "time_wp" only)
 Role "sec-incident-nosy":
  User is allowed to access it_int_prio (View for "it_int_prio" only)
@@ -302,6 +305,11 @@ Role "supportadmin":
  User is allowed to edit return_type (Edit for "return_type" only)
  User is allowed to edit sup_classification (Edit for "sup_classification" only)
  User is allowed to edit support (Edit for "support" only)
+Role "time-report":
+ User is allowed to access time_report (View for "time_report" only)
+ User is allowed to create time_report (Create for "time_report" only)
+ User is allowed to edit time_report (Edit for "time_report" only)
+ User may edit own file (file created by user) (Edit for "file" only)
 Role "type":
  User is allowed to create adr_type (Create for "adr_type" only)
  User is allowed to create adr_type_cat (Create for "adr_type_cat" only)
@@ -420,7 +428,7 @@ Role "user":
  User is allowed to edit several fields if he is Stakeholder/Responsible for an it_issue (Edit for "it_issue": ('deadline', 'status', 'title') only)
  User is allowed to edit their queries (Edit for "query" only)
  User is allowed to edit time category if the status is "Open" and he is responsible for the time category (Edit for "time_project": ('deputy', 'planned_effort', 'nosy') only)
- User is allowed to edit workpackage if he is time category owner (Edit for "time_wp": ('cost_center', 'is_public', 'name', 'responsible', 'time_wp_summary_no', 'wp_no') only)
+ User is allowed to edit workpackage if he is time category owner or deputy (Edit for "time_wp": ('cost_center', 'is_public', 'name', 'responsible', 'time_wp_summary_no', 'wp_no') only)
  User is allowed to retire their queries (Retire for "query" only)
  User is allowed to search daily_record (Search for "daily_record" only)
  User is allowed to search for their own files (Search for "file" only)
@@ -450,6 +458,7 @@ Role "user":
  User may edit own leave submissions (View for "leave_submission": ('comment', 'comment_cancel', 'first_day', 'last_day', 'status', 'time_wp', 'user') only)
  User may edit own time_records (Edit for "time_record" only)
  User may edit own time_records (View for "time_record" only)
+ User may see time report if reponsible or deputy of time project or on nosy list of time project (View for "time_report" only)
  User may use the email interface (Email Access)
  User may view a daily_record (and time_records that are attached to that daily_record) if the user owns the daily_record or has role 'HR' or 'Controlling', or the user is supervisor or substitute supervisor of the owner of the daily record (the supervisor relationship is transitive) or the user is the department manager of the owner of the daily record. If user has role HR-Org-Location and is in the same Org-Location as the record, it may also be seen (View for "daily_record" only)
  User may view time category if user is owner or deputy of time category or on nosy list of time category or if user is department manager of time category (View for "time_project" only)
