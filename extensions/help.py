@@ -2248,6 +2248,11 @@ _helptext          = \
     , ""'time_wp_summary_no.id'       : [help_id]
     , ""'timeout'                     :
       [""'''Timeout when new email is sent''']
+    , ""'timetracking_by'             :
+      [""'''Allow given user to edit/submit time tracking info for this
+            %(Classname)s
+         '''
+      ]
     , ""'timezone'                    :
       [""'''Time zone of this %(Classname)s -- this is a numeric hour offset''']
     , ""'title'                       :

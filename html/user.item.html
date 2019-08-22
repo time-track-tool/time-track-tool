@@ -247,6 +247,22 @@
              (form = 'user_form')"/>
       </td>
      </tr>
+     <tr tal:condition="python:'timetracking_by' in bclass.properties">
+      <th tal:content="structure python:utils.fieldname
+          ('user', 'timetracking_by')"/>
+      <td tal:condition="context/timetracking_by/is_edit_ok">
+       <tal:block tal:define=
+         "name      string:timetracking_by;
+          form      formname;
+          dont_care string:don't care;
+          selected  python:
+            context.timetracking_by and context.timetracking_by.id or 0">
+        <tal:block metal:use-macro="templates/userlist/macros/user"></tal:block>
+       </tal:block>
+      </td>
+      <td tal:content="context/timetracking_by/plain"
+       tal:condition="not:context/timetracking_by/is_edit_ok"/>
+     </tr>
      <tr tal:condition="python:'clearance_by' in bclass.properties">
       <th tal:content="structure python:utils.fieldname
           ('user', 'clearance_by')"/>
