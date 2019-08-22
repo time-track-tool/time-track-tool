@@ -11,6 +11,17 @@
   </tal:block>
  </title>
   <tal:block metal:fill-slot="create_or_query">
+    <script>
+	signed = false;
+	function sign_once() {
+	    if (signed) {
+		alert("Your signature is being processed.\nPlease be patient.");
+		return false;
+	    }
+	    signed = true;
+	    return true;
+	}
+    </script>
     <tal:block
      metal:use-macro="templates/page/macros/create_or_query_new_tracker_item" />
   </tal:block>
@@ -602,10 +613,11 @@
                 and context.status.plain () == 'open'"
             i18n:attributes="value" value='Sign&Send'
             onClick="javascript:
-             if (submit_once ()) {
-                 document.forms.itemSynopsis ['@action'].value = 'pr_sign';
-                 document.itemSynopsis.submit ();
-             }">
+		if (sign_once ()) {
+                  document.forms.itemSynopsis ['@action'].value = 'pr_sign';
+                  document.itemSynopsis.submit ();
+                }
+             ">
      <tal:block>
       <tal:block metal:use-macro="templates/page/macros/copy_button"/>
      </tal:block>
