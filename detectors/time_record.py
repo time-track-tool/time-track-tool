@@ -312,9 +312,10 @@ def check_daily_record (db, cl, nodeid, new_values) :
 
     old_status, status = \
         [db.daily_record_status.get (i, 'name') for i in [old_status, status]]
+    ttby = db.user.get (user, 'timetracking_by')
     if status != old_status :
         if not (  (   status == 'submitted' and old_status == 'open'
-                  and (is_hr or user == uid)
+                  and (is_hr or user == uid or ttby == uid)
                   and time_records_consistent (db, cl, nodeid)
                   and not vs_has_valid
                   )
@@ -411,11 +412,16 @@ def new_daily_record (db, cl, nodeid, new_values) :
     uid = db.getuid ()
     common.require_attributes (_, cl, nodeid, new_values, 'user', 'date')
     user  = new_values ['user']
+    ttby  = db.user.get (user, 'timetracking_by')
     uname = db.user.get (user, 'username')
     if  (   uid != user
+        and uid != ttby
         and not common.user_has_role (db, uid, 'controlling', 'admin')
         ) :
-        raise Reject, _ ("Only user and Controlling may create daily records")
+        raise Reject, _ \
+            ("Only user, Timetracking by user, "
+             "and Controlling may create daily records"
+            )
     common.reject_attributes (_, new_values, 'time_record')
     # the following is allowed for the admin (import!)
     if uid != '1' :
@@ -591,13 +597,17 @@ def new_time_record (db, cl, nodeid, new_values) :
     end      = new_values.get ('end',      None)
     duration = new_values.get ('duration', None)
     wpid     = new_values.get ('wp')
+    ttby     = db.user.get (dr.user, 'timetracking_by')
     if  (   uid != dr.user
+        and uid != ttby
         and not common.user_has_role (db, uid, 'controlling', 'admin')
         and not leave_wp (db, dr, wpid, start, end, duration)
         and not vacation_wp (db, wpid)
         ) :
         raise Reject, _ \
-            ( ("Only %(uname)s and Controlling may create time records")
+            ( ("Only %(uname)s, Timetracking by, and Controlling "
+               "may create time records"
+              )
             % locals ()
             )
     dynamic  = user_dynamic.get_user_dynamic (db, dr.user, dr.date)

@@ -6777,3 +6777,6 @@ msgstr "Deputy gets mail"
 
 msgid "renew_until"
 msgstr "Renew until"
+
+msgid "timetracking_by"
+msgstr "Timetracking By"

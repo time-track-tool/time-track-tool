@@ -481,6 +481,7 @@ def init \
         def __init__ (self, db, classname, ** properties) :
             self.update_properties \
                 ( timing_info            = Boolean   ()
+                , timetracking_by        = Link      ("user")
                 )
             kw ['User_Class'].__init__ (self, db, classname, ** properties)
         # end def __init__
@@ -694,6 +695,9 @@ def security (db, ** kw) :
         , ( "user_dynamic", "View", ["Controlling"]
           , ( "id", "sap_cc", "user", "valid_from", "valid_to")
           )
+        , ( "user",         "View", ["User"]
+          , ( "timetracking_by",)
+          )
         ]
 
     schemadef.register_roles             (db, roles)
@@ -727,7 +731,7 @@ def security (db, ** kw) :
 
     def ok_daily_record (db, userid, itemid) :
         """User is allowed to access daily record if he is owner or
-           supervisor.
+           supervisor or timetracking-by user.
 
            Determine if the user owns the daily record, a negative itemid
            indicates that the record doesn't exist yet -- we allow creation
@@ -735,6 +739,9 @@ def security (db, ** kw) :
            the person to whom approvals are delegated.
         """
         ownerid   = db.daily_record.get (itemid, 'user')
+        ttby      = db.user.get (ownerid, 'timetracking_by')
+        if userid == ttby :
+            return True
         return userid == ownerid or approver_daily_record (db, userid, itemid)
     # end def ok_daily_record
 
@@ -892,6 +899,11 @@ def security (db, ** kw) :
         wp = db.time_wp.getnode (itemid)
         if wp.is_public or userid in wp.bookers :
             return True
+        # Get all users for which *this* user is in timetracking_by
+        users = db.user.filter (None, dict (timetracking_by = userid))
+        for u in users :
+            if u in wp.bookers :
+                return True
         return False
     # end def wp_admitted
 
@@ -1161,6 +1173,7 @@ def security (db, ** kw) :
         , 'time_start', 'time_end', 'durations_allowed', 'travel'
         , 'cost_center', 'creation', 'creator', 'activity', 'actor', 'id'
         , 'has_expiration_date', 'time_wp_summary_no', 'epic_key'
+        , 'is_public'
         )
     p = db.security.addPermission \
         ( name        = 'View'
@@ -1173,7 +1186,7 @@ def security (db, ** kw) :
     p = db.security.addPermission \
         ( name        = 'Search'
         , klass       = 'time_wp'
-        , properties  = wp_properties
+        , properties  = wp_properties + ('bookers',)
         )
     db.security.addPermissionToRole ('User', p)
     schemadef.add_search_permission (db, 'time_wp', 'User', wp_properties)
