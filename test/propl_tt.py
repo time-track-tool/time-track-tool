@@ -423,6 +423,7 @@ properties = \
         , 'subst_active'
         , 'substitute'
         , 'supervisor'
+        , 'timetracking_by'
         , 'timezone'
         , 'timing_info'
         , 'title'
