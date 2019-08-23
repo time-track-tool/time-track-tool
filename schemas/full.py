@@ -99,7 +99,7 @@ prop_perms = \
         )
       )
     , ( "user", "Edit", ["HR"]
-      , ( "clearance_by", "firstname"
+      , ( "clearance_by", "timetracking_by", "firstname"
         , "job_description", "lastname", "lunch_duration", "lunch_start"
         , "pictures", "position", "realname"
         , "room", "sex", "status", "subst_active", "substitute", "supervisor"

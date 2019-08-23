@@ -811,7 +811,7 @@ properties = \
       )
     , ( 'time_wp'
       , [ ( 'bookers'
-          , ['admin', 'controlling', 'project', 'project_view']
+          , ['admin', 'controlling', 'doc_admin', 'facility', 'hr', 'hr-leave-approval', 'hr-vacation', 'it', 'office', 'pgp', 'procurement', 'project', 'project_view', 'summary_view', 'time-report', 'user', 'user_view']
           )
         , ( 'cost_center'
           , ['admin', 'controlling', 'doc_admin', 'facility', 'hr', 'hr-leave-approval', 'hr-vacation', 'it', 'office', 'pgp', 'procurement', 'project', 'project_view', 'summary_view', 'time-report', 'user', 'user_view']
@@ -829,7 +829,7 @@ properties = \
           , ['admin', 'controlling', 'doc_admin', 'facility', 'hr', 'hr-leave-approval', 'hr-vacation', 'it', 'office', 'pgp', 'procurement', 'project', 'project_view', 'summary_view', 'time-report', 'user', 'user_view']
           )
         , ( 'is_public'
-          , ['admin', 'controlling', 'project', 'project_view']
+          , ['admin', 'controlling', 'doc_admin', 'facility', 'hr', 'hr-leave-approval', 'hr-vacation', 'it', 'office', 'pgp', 'procurement', 'project', 'project_view', 'summary_view', 'time-report', 'user', 'user_view']
           )
         , ( 'name'
           , ['admin', 'controlling', 'doc_admin', 'facility', 'hr', 'hr-leave-approval', 'hr-vacation', 'it', 'office', 'pgp', 'procurement', 'project', 'project_view', 'summary_view', 'time-report', 'user', 'user_view']
@@ -997,6 +997,9 @@ properties = \
           , ['admin', 'controlling', 'doc_admin', 'facility', 'hr', 'hr-leave-approval', 'hr-vacation', 'it', 'office', 'pgp', 'procurement', 'project', 'project_view', 'summary_view', 'time-report', 'user', 'user_view']
           )
         , ( 'supervisor'
+          , ['admin', 'controlling', 'doc_admin', 'facility', 'hr', 'hr-leave-approval', 'hr-vacation', 'it', 'office', 'pgp', 'procurement', 'project', 'project_view', 'summary_view', 'time-report', 'user', 'user_view']
+          )
+        , ( 'timetracking_by'
           , ['admin', 'controlling', 'doc_admin', 'facility', 'hr', 'hr-leave-approval', 'hr-vacation', 'it', 'office', 'pgp', 'procurement', 'project', 'project_view', 'summary_view', 'time-report', 'user', 'user_view']
           )
         , ( 'timezone'

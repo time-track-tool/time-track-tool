@@ -1776,7 +1776,7 @@ properties = \
       )
     , ( 'time_wp'
       , [ ( 'bookers'
-          , ['admin', 'controlling', 'project', 'project_view']
+          , ['admin', 'contact', 'controlling', 'doc_admin', 'facility', 'hr', 'hr-leave-approval', 'hr-vacation', 'issue_admin', 'it', 'itview', 'msgedit', 'msgsync', 'office', 'procurement', 'project', 'project_view', 'sec-incident-nosy', 'sec-incident-responsible', 'summary_view', 'supportadmin', 'time-report', 'type', 'user']
           )
         , ( 'cost_center'
           , ['admin', 'contact', 'controlling', 'doc_admin', 'facility', 'hr', 'hr-leave-approval', 'hr-vacation', 'issue_admin', 'it', 'itview', 'msgedit', 'msgsync', 'office', 'procurement', 'project', 'project_view', 'sec-incident-nosy', 'sec-incident-responsible', 'summary_view', 'supportadmin', 'time-report', 'type', 'user']
@@ -1794,7 +1794,7 @@ properties = \
           , ['admin', 'contact', 'controlling', 'doc_admin', 'facility', 'hr', 'hr-leave-approval', 'hr-vacation', 'issue_admin', 'it', 'itview', 'msgedit', 'msgsync', 'office', 'procurement', 'project', 'project_view', 'sec-incident-nosy', 'sec-incident-responsible', 'summary_view', 'supportadmin', 'time-report', 'type', 'user']
           )
         , ( 'is_public'
-          , ['admin', 'controlling', 'project', 'project_view']
+          , ['admin', 'contact', 'controlling', 'doc_admin', 'facility', 'hr', 'hr-leave-approval', 'hr-vacation', 'issue_admin', 'it', 'itview', 'msgedit', 'msgsync', 'office', 'procurement', 'project', 'project_view', 'sec-incident-nosy', 'sec-incident-responsible', 'summary_view', 'supportadmin', 'time-report', 'type', 'user']
           )
         , ( 'name'
           , ['admin', 'contact', 'controlling', 'doc_admin', 'facility', 'hr', 'hr-leave-approval', 'hr-vacation', 'issue_admin', 'it', 'itview', 'msgedit', 'msgsync', 'office', 'procurement', 'project', 'project_view', 'sec-incident-nosy', 'sec-incident-responsible', 'summary_view', 'supportadmin', 'time-report', 'type', 'user']
@@ -1932,6 +1932,9 @@ properties = \
           , ['admin', 'contact', 'controlling', 'doc_admin', 'facility', 'hr', 'hr-leave-approval', 'hr-vacation', 'issue_admin', 'it', 'itview', 'msgedit', 'msgsync', 'office', 'procurement', 'project', 'project_view', 'sec-incident-nosy', 'sec-incident-responsible', 'summary_view', 'supportadmin', 'time-report', 'type', 'user']
           )
         , ( 'supervisor'
+          , ['admin', 'contact', 'controlling', 'doc_admin', 'facility', 'hr', 'hr-leave-approval', 'hr-vacation', 'issue_admin', 'it', 'itview', 'msgedit', 'msgsync', 'office', 'procurement', 'project', 'project_view', 'sec-incident-nosy', 'sec-incident-responsible', 'summary_view', 'supportadmin', 'time-report', 'type', 'user']
+          )
+        , ( 'timetracking_by'
           , ['admin', 'contact', 'controlling', 'doc_admin', 'facility', 'hr', 'hr-leave-approval', 'hr-vacation', 'issue_admin', 'it', 'itview', 'msgedit', 'msgsync', 'office', 'procurement', 'project', 'project_view', 'sec-incident-nosy', 'sec-incident-responsible', 'summary_view', 'supportadmin', 'time-report', 'type', 'user']
           )
         , ( 'timezone'
