@@ -6491,7 +6491,7 @@ msgid "freq"
 msgstr ""
 
 msgid "qso_start"
-msgstr "QSO status"
+msgstr "QSO start"
 
 msgid "mode"
 msgstr "Mode"
