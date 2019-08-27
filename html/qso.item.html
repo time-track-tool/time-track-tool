@@ -25,10 +25,15 @@
     <tal:block metal:fill-slot="formatted_class_content">
      <tr>
       <th tal:content="structure python:utils.fieldname (classname, 'owner')"/>
-      <td tal:content="structure python:utils.ExtProperty
-       (utils, context.owner.name, item=context.owner).formatlink ()"/>
-      <input type="hidden" name="owner"
-             tal:attributes="value python: context.owner.id or ''"/>
+      <tal:block tal:condition="context/owner">
+       <td tal:content="structure python:utils.ExtProperty
+        (utils, context.owner.name, item=context.owner).formatlink ()"/>
+       <input type="hidden" name="owner"
+              tal:attributes="value python: context.owner.id or ''"/>
+      </tal:block>
+      <tal:block tal:condition="not:context/owner">
+       <td tal:content="structure python:context.owner.menu ()"/>
+      </tal:block>
       <tal:block tal:condition="context/swl">
        <th tal:content="structure python:utils.fieldname (classname, 'swl')"/>
        <td tal:content="structure python:utils.ExtProperty
