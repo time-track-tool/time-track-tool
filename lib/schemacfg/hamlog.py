@@ -39,6 +39,7 @@ def init \
     , Multilink
     , Boolean
     , Number
+    , Integer
     , ** kw
     ) :
 
@@ -126,6 +127,10 @@ def init \
         , qsl_s_status          = Link      ("qsl_status", do_journal = "no")
         , no_qsl_status         = Link      ("qsl_status", do_journal = "no")
         , reject                = Boolean   ()
+        , cq_zone               = Integer   ()
+        , itu_zone              = Integer   ()
+        , iota                  = String    ()
+        , german_dok            = String    ()
         )
     qso.setlabelprop ('call')
 

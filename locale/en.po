@@ -6717,3 +6717,15 @@ msgstr "Time Category Report"
 
 msgid "last_updated"
 msgstr "Last updated"
+
+msgid "iota"
+msgstr "IOTA Number"
+
+msgid "cq_zone"
+msgstr "CQ Zone"
+
+msgid "itu_zone"
+msgstr "ITU Zone"
+
+msgid "german_dok"
+msgstr "DOK"

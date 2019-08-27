@@ -154,6 +154,21 @@
       <td tal:content="structure python:context.tx_pwr.field ()"/>
      </tr>
      <tr>
+      <th tal:content="structure python:utils.fieldname (classname, 'iota')"/>
+      <td tal:content="structure python:context.iota.field ()"/>
+      <th tal:content="structure python:utils.fieldname
+          (classname, 'german_dok')"/>
+      <td tal:content="structure python:context.german_dok.field ()"/>
+     </tr>
+     <tr>
+      <th tal:content="structure python:utils.fieldname
+          (classname, 'cq_zone')"/>
+      <td tal:content="structure python:context.cq_zone.field ()"/>
+      <th tal:content="structure python:utils.fieldname
+          (classname, 'itu_zone')"/>
+      <td tal:content="structure python:context.itu_zone.field ()"/>
+     </tr>
+     <tr>
       <th tal:content="structure python:utils.fieldname
           (classname, 'wont_qsl_via')" rowspan="2"/>
       <td tal:content="structure python:context.wont_qsl_via.menu (height=2)"
