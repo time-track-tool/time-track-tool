@@ -19,6 +19,7 @@ class Hour_Updater (object) :
     def __init__ (self, args) :
         self.args    = args
         self.session = requests.session ()
+        self.session.verify = False
         self.user    = args.username
         self.url     = args.url
         self.baseurl = args.url
@@ -178,7 +179,7 @@ def main () :
     cmd.add_argument \
         ( "-U", "--url"
         , help    = "URL of tracker (without rest path) default: %(default)s"
-        , default = 'https://testing.timetracking.tttech.com/'
+        , default = 'https://timetracking113.ds1.internal/'
         )
     cmd.add_argument \
         ( "-u", "--username"
@@ -207,11 +208,16 @@ def main () :
     date = datetime (2019, 8, 1)
     # This is a wp my test-user may book on in our test tracker.
     wp   = 24429
+
     # For the last parameter (activity) perform a get on 'time_activity'
     # You can use the name or the number
-    hup.book_on_day (args.client_user, date, 6.24, wp, 'Implementation')
+
+    # Commented-out for now
+    # hup.book_on_day (args.client_user, date, 6.24, wp, 'Implementation')
+
     # Daily record must be submitted:
-    hup.submit_day (args.client_user, date)
+    # Commented-out for now
+    # hup.submit_day (args.client_user, date)
 # end def main
 
 if __name__ == '__main__' :
