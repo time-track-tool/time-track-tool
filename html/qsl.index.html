@@ -142,6 +142,36 @@
     , utils.ExtProperty
         ( utils, pdict ['qso']
         , searchable   = True
+        , searchname   = 'qso.dxcc_entity'
+        , multiselect  = True
+        )
+    , utils.ExtProperty
+        ( utils, pdict ['qso']
+        , searchable   = False
+        , sortable     = False
+        , searchname   = 'qso.dxcc_entity.code'
+        )
+    , utils.ExtProperty
+        ( utils, pdict ['qso']
+        , searchable   = False
+        , sortable     = False
+        , searchname   = 'qso.dxcc_entity.continent'
+        )
+    , utils.ExtProperty
+        ( utils, pdict ['qso']
+        , searchable   = False
+        , sortable     = False
+        , searchname   = 'qso.dxcc_entity.cq_zone'
+        )
+    , utils.ExtProperty
+        ( utils, pdict ['qso']
+        , searchable   = False
+        , sortable     = False
+        , searchname   = 'qso.dxcc_entity.itu_zone'
+        )
+    , utils.ExtProperty
+        ( utils, pdict ['qso']
+        , searchable   = True
         , searchname   = 'qso.wont_qsl_via'
         , multiselect  = True
         )
