@@ -1233,3 +1233,11 @@ if 'vac_aliq' in db.classes :
 if 'pr_ext_resource' in db.classes :
     db.pr_ext_resource.create (name  = 'yes')
     db.pr_ext_resource.create (name  = 'no')
+if 'continent' in db.classes :
+    db.continent.create (code = 'AF', name = 'Africa')
+    db.continent.create (code = 'AN', name = 'Antarctica')
+    db.continent.create (code = 'AS', name = 'Asia')
+    db.continent.create (code = 'EU', name = 'Europe')
+    db.continent.create (code = 'NA', name = 'North America')
+    db.continent.create (code = 'OC', name = 'Oceania')
+    db.continent.create (code = 'SA', name = 'South America')

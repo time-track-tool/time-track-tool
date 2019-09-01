@@ -170,6 +170,11 @@
      </tr>
      <tr>
       <th tal:content="structure python:utils.fieldname
+          (classname, 'dxcc_entity')"/>
+      <td tal:content="structure python:context.dxcc_entity.menu ()"/>
+     </tr>
+     <tr>
+      <th tal:content="structure python:utils.fieldname
           (classname, 'wont_qsl_via')" rowspan="2"/>
       <td tal:content="structure python:context.wont_qsl_via.menu (height=2)"
           rowspan="2"/>

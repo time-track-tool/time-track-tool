@@ -488,6 +488,8 @@ _helptext          = \
     , ""'contact_person'              :
       [""'''Personal information about a %(Property)s''']
     , ""'content'                     : [""'''Content of %(Classname)s''']
+    , ""'continent'       :
+      [""'''Continent where this %(Classname)s resides''']
     , ""'continuous_obligation'       :
       [""'''Please state YES in case of recurring purchases, purchases
             based on agreements with unlimited or long-term binding or
@@ -745,6 +747,12 @@ _helptext          = \
              "End" time of 18:30.
           '''
       ]
+    , ""'dxcc_entity.code'            :
+      [""'''ARRL code for this %(Classname)s''']
+    , ""'dxcc_entity.cq_zone'       :
+      [""'''%(Property)s for this %(Classname)s''']
+    , ""'dxcc_entity.itu_zone'       :
+      [""'''%(Property)s for this %(Classname)s''']
     , ""'dyndns_service'              :
       [""'''Configured %(Property)s to use for this %(Classname)s''']
     , ""'earliest_start'              :

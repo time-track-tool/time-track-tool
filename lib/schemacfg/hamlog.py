@@ -52,6 +52,26 @@ def init \
         )
     antenna.setkey (''"name")
 
+    continent = Class \
+        ( db, ''"continent"
+        , code                  = String    ()
+        , name                  = String    ()
+        )
+    continent.setkey (''"code")
+
+    # Entities may have multiple cq and itu zones but we provide them
+    # here only if unique.
+    dxcc_entity = Class \
+        ( db, ''"dxcc_entity"
+        , code                  = String    ()
+        , name                  = String    ()
+        , continent             = Multilink ("continent")
+        , cq_zone               = Integer   ()
+        , itu_zone              = Integer   ()
+        )
+    dxcc_entity.setkey (''"code")
+    dxcc_entity.setlabelprop ('name')
+
     ham_call = Class \
         ( db, ''"ham_call"
         , call                  = String    ()
@@ -131,6 +151,7 @@ def init \
         , itu_zone              = Integer   ()
         , iota                  = String    ()
         , german_dok            = String    ()
+        , dxcc_entity           = Link      ("dxcc_entity")
         )
     qso.setlabelprop ('call')
 
@@ -153,15 +174,17 @@ def init \
 def security (db, ** kw) :
 
     classes = \
-        [ ("ham_call",   ["User"],    ["User"])
-        , ("ham_mode",   ["User"],    ["User"])
-        , ("ham_band",   ["User"],    ["User"])
-        , ("qsl_type",   ["User"],    ["User"])
-        , ("qsl_status", ["User"],    ["User"])
-        , ("antenna",    ["User"],    ["User"])
-        , ("qsl",        ["User"],    ["User"])
-        , ("qso",        ["User"],    ["User"])
-        , ("user",       ["User"],    ["Admin"])
+        [ ("ham_call",    ["User"],    ["User"])
+        , ("ham_mode",    ["User"],    ["User"])
+        , ("ham_band",    ["User"],    ["User"])
+        , ("qsl_type",    ["User"],    ["User"])
+        , ("qsl_status",  ["User"],    ["User"])
+        , ("antenna",     ["User"],    ["User"])
+        , ("continent",   ["User"],    ["User"])
+        , ("dxcc_entity", ["User"],    ["User"])
+        , ("qsl",         ["User"],    ["User"])
+        , ("qso",         ["User"],    ["User"])
+        , ("user",        ["User"],    ["Admin"])
         ]
     prop_perms = \
         [ ( "user", "View", ["User"], ("call",))

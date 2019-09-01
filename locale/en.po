@@ -6729,3 +6729,18 @@ msgstr "ITU Zone"
 
 msgid "german_dok"
 msgstr "DOK"
+
+msgid "continent"
+msgstr "Continent"
+
+msgid "dxcc_entity"
+msgstr "DXCC Entity"
+
+msgid "dxcc_entity.code"
+msgstr "DXCC Code"
+
+msgid "dxcc_entity.cq_zone"
+msgstr "DXCC CQ Zone"
+
+msgid "dxcc_entity.itu_zone"
+msgstr "DXCC ITU Zone"

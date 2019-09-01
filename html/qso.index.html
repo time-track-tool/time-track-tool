@@ -26,8 +26,8 @@
         )
     , utils.ExtProperty (utils, pdict ['freq'])
     , utils.ExtProperty (utils, pdict ['band'],  multiselect = 1)
-    , utils.ExtProperty (utils, pdict ['qso_start'], format='%Y-%m-%d.%H:%M')
-    , utils.ExtProperty (utils, pdict ['qso_end'],   format='%Y-%m-%d.%H:%M')
+    , utils.ExtProperty (utils, pdict ['qso_start'], format='%Y-%m-%d.%H:%M.%S')
+    , utils.ExtProperty (utils, pdict ['qso_end'], format='%Y-%m-%d.%H:%M.%S')
     , utils.ExtProperty (utils, pdict ['rst_rcvd'])
     , utils.ExtProperty (utils, pdict ['rst_sent'])
     , utils.ExtProperty (utils, pdict ['qth'])
@@ -41,6 +41,31 @@
     , utils.ExtProperty (utils, pdict ['cq_zone'])
     , utils.ExtProperty (utils, pdict ['itu_zone'])
     , utils.ExtProperty (utils, pdict ['german_dok'])
+    , utils.ExtProperty (utils, pdict ['dxcc_entity'], multiselect = 1)
+    , utils.ExtProperty
+        ( utils, pdict ['dxcc_entity']
+        , searchname = 'dxcc_entity.code'
+        , searchable = False
+        , sortable   = False
+        )
+    , utils.ExtProperty
+        ( utils, pdict ['dxcc_entity']
+        , searchname = 'dxcc_entity.continent'
+        , searchable = False
+        , sortable   = False
+        )
+    , utils.ExtProperty
+        ( utils, pdict ['dxcc_entity']
+        , searchname = 'dxcc_entity.cq_zone'
+        , searchable = False
+        , sortable   = False
+        )
+    , utils.ExtProperty
+        ( utils, pdict ['dxcc_entity']
+        , searchname = 'dxcc_entity.itu_zone'
+        , searchable = False
+        , sortable   = False
+        )
     , utils.ExtProperty (utils, pdict ['wont_qsl_via'],  multiselect = 1)
     , utils.ExtProperty (utils, pdict ['no_qsl_status'], multiselect = 1)
     , utils.ExtProperty (utils, pdict ['qsl_r_status'],  multiselect = 1)
