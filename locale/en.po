@@ -6744,3 +6744,12 @@ msgstr "DXCC CQ Zone"
 
 msgid "dxcc_entity.itu_zone"
 msgstr "DXCC ITU Zone"
+
+msgid "qso.dxcc_entity.code"
+msgstr "DXCC Code"
+
+msgid "qso.dxcc_entity.cq_zone"
+msgstr "DXCC CQ Zone"
+
+msgid "qso.dxcc_entity.itu_zone"
+msgstr "DXCC ITU Zone"

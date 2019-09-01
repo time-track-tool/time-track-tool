@@ -749,9 +749,9 @@ _helptext          = \
       ]
     , ""'dxcc_entity.code'            :
       [""'''ARRL code for this %(Classname)s''']
-    , ""'dxcc_entity.cq_zone'       :
+    , ""'dxcc_entity.cq_zone'         :
       [""'''%(Property)s for this %(Classname)s''']
-    , ""'dxcc_entity.itu_zone'       :
+    , ""'dxcc_entity.itu_zone'        :
       [""'''%(Property)s for this %(Classname)s''']
     , ""'dyndns_service'              :
       [""'''Configured %(Property)s to use for this %(Classname)s''']
@@ -1734,6 +1734,12 @@ _helptext          = \
       ]
     , ""'qa_representative'           :
       [""'''Representative from the QA department for this %(Classname)s''']
+    , ""'qso.dxcc_entity.code'        :
+      [""'''ARRL code for this %(Classname)s''']
+    , ""'qso.dxcc_entity.cq_zone'     :
+      [""'''%(Property)s for this %(Classname)s''']
+    , ""'qso.dxcc_entity.itu_zone'    :
+      [""'''%(Property)s for this %(Classname)s''']
     , ""'query++tmplate'              :
       [""'''HTML-template that is used for this %(Classname)s''']
     , ""'queries'                     :
