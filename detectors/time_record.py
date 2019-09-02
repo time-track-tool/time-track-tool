@@ -174,7 +174,7 @@ def time_records_consistent (db, cl, nodeid) :
                         % locals ()
                         )
             noover_sum_day += tr.duration
-            if uid not in wp.bookers :
+            if not wp.is_public and uid not in wp.bookers :
                 msgs.append \
                     ( "User %(uname)s may not book on work package "
                       "%(prname)s.%(wpname)s"
