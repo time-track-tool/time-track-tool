@@ -151,9 +151,7 @@ def init \
         , itu_zone              = Integer   ()
         , iota                  = String    ()
         , german_dok            = String    ()
-        , dxcc_entity           = Link      ("dxcc_entity"
-                                            , try_id_parsing = "no"
-                                            )
+        , dxcc_entity           = Link      ("dxcc_entity")
         )
     qso.setlabelprop ('call')
 
