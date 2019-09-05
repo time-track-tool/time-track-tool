@@ -4320,3 +4320,8 @@ msgstr "Room prefix"
 msgid "org_group"
 msgstr "Organisation group"
 
+msgid "auto_wp"
+msgstr "Automatic Workpackage"
+
+msgid "do_auto_wp"
+msgstr "Create automatic workpackage"

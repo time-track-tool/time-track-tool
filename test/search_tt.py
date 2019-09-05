@@ -38,6 +38,27 @@ properties = \
           )
         ]
       )
+    , ( 'auto_wp'
+      , [ ( 'contract_type'
+          , ['admin', 'hr']
+          )
+        , ( 'duration'
+          , ['admin', 'hr']
+          )
+        , ( 'is_valid'
+          , ['admin', 'hr']
+          )
+        , ( 'name'
+          , ['admin', 'hr']
+          )
+        , ( 'org_location'
+          , ['admin', 'hr']
+          )
+        , ( 'time_project'
+          , ['admin', 'hr']
+          )
+        ]
+      )
     , ( 'contract_type'
       , [ ( 'description'
           , ['admin', 'controlling', 'dom-user-edit-gtt', 'dom-user-edit-hr', 'hr', 'hr-leave-approval', 'hr-vacation']
@@ -408,7 +429,10 @@ properties = \
         ]
       )
     , ( 'org_location'
-      , [ ( 'do_leave_process'
+      , [ ( 'do_auto_wp'
+          , ['admin', 'controlling', 'doc_admin', 'dom-user-edit-facility', 'dom-user-edit-gtt', 'dom-user-edit-hr', 'dom-user-edit-office', 'facility', 'hr', 'hr-leave-approval', 'hr-vacation', 'it', 'office', 'pgp', 'procurement', 'project', 'project_view', 'summary_view', 'time-report', 'user', 'user_view']
+          )
+        , ( 'do_leave_process'
           , ['admin', 'controlling', 'doc_admin', 'dom-user-edit-facility', 'dom-user-edit-gtt', 'dom-user-edit-hr', 'dom-user-edit-office', 'facility', 'functional-role', 'hr', 'hr-leave-approval', 'hr-vacation', 'it', 'office', 'organisation', 'pgp', 'procurement', 'project', 'project_view', 'summary_view', 'time-report', 'user', 'user_view']
           )
         , ( 'group_external'
@@ -900,7 +924,10 @@ properties = \
         ]
       )
     , ( 'time_wp'
-      , [ ( 'bookers'
+      , [ ( 'auto_wp'
+          , ['admin', 'hr']
+          )
+        , ( 'bookers'
           , ['admin', 'controlling', 'doc_admin', 'dom-user-edit-facility', 'dom-user-edit-gtt', 'dom-user-edit-hr', 'dom-user-edit-office', 'facility', 'functional-role', 'hr', 'hr-leave-approval', 'hr-vacation', 'it', 'office', 'organisation', 'pgp', 'procurement', 'project', 'project_view', 'summary_view', 'time-report', 'user', 'user_view']
           )
         , ( 'cost_center'
@@ -1166,6 +1193,9 @@ properties = \
           )
         , ( 'department'
           , ['admin', 'controlling', 'doc_admin', 'dom-user-edit-facility', 'dom-user-edit-gtt', 'dom-user-edit-hr', 'dom-user-edit-office', 'facility', 'functional-role', 'hr', 'hr-leave-approval', 'hr-vacation', 'it', 'office', 'organisation', 'pgp', 'procurement', 'project', 'project_view', 'summary_view', 'time-report', 'user', 'user_view']
+          )
+        , ( 'do_auto_wp'
+          , ["admin", "dom-user-edit-gtt", "dom-user-edit-hr", "hr", "hr-org-location"]
           )
         , ( 'durations_allowed'
           , ["admin", "dom-user-edit-gtt", "dom-user-edit-hr", "hr", "hr-org-location"]
