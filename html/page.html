@@ -79,6 +79,10 @@
                           '@startwith=0&typecat=%s' % typecat
    , ('alias', '')      : '@columns=name,alias_to_alias,alias_to_user&'
                           '@pagesize=500&@startwith=0'
+   , ('auto_wp', '')    : '@columns=name,time_project,contract_type,duration&'
+                          '@sort=contract_type&@group=org_location&'
+                          '@filter=is_valid&'
+                          '@pagesize=50&@startwith=0&is_valid=yes'
    , ('cost_center', '')
                         : '@columns=organisation_id,cost_center_group_id'
                           ',id,name,status,organisation&'
@@ -366,6 +370,7 @@
      , ('antenna',             'Edit',   '?@template=item', 1)
      , ('area',                'Edit',   '?@template=item', 1)
      , ('artefact',            'Edit',   '?@template=item', 1)
+     , ('auto_wp',             'Edit',   '?@template=item', 1)
      , ('category',            'Edit',   '?@template=item', 1)
      , ('contact_type',        'Edit',   '?@template=item', 1)
      , ('contract_type',       'Edit',   '?@template=item', 1)
@@ -510,6 +515,7 @@
      , ('adr_type',            'Edit', 1,               ('',''))
      , ('alias',               'View', 1,               ('',''))
      , ('artefact',            'View', 1,               ('',''))
+     , ('auto_wp',             'View', 1,               ('',''))
      , ('category',            'View', 1,               ('',''))
      , ('contact',             'View', 1,               ('',''))
      , ('cost_center',         'View', 1,               ('',''))

@@ -4324,4 +4324,4 @@ msgid "auto_wp"
 msgstr "Automatic Workpackage"
 
 msgid "do_auto_wp"
-msgstr "Create automatic workpackage"
+msgstr "Auto WP"

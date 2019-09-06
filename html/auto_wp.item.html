@@ -1,0 +1,67 @@
+<tal:block metal:use-macro="templates/page/macros/icing">
+ <title metal:fill-slot="head_title">
+  <tal:block tal:condition="context/id" i18n:translate="">
+   <span tal:replace="string:${Classname}: ${context/id}"
+    i18n:name="classname_id"/>
+   created by
+   <span tal:replace="context/creator" i18n:name="creator"/>
+  </tal:block>
+  <tal:block tal:condition="not:context/id" i18n:translate="">New
+   <span tal:replace="Classname" i18n:name="Classname" />
+  </tal:block>
+ </title>
+  <tal:block metal:fill-slot="create_or_query">
+    <tal:block 
+     metal:use-macro="templates/page/macros/create_or_query_new_tracker_item"/>
+  </tal:block> 
+
+ <tal:block metal:fill-slot="content">
+  <tal:block tal:define="use_labelprop python:1;
+                         required_attributes python:
+                            'org_location,name,time_project'">
+   <tal:block metal:use-macro="templates/page/macros/formatted_class">
+    <tal:block metal:fill-slot="formatted_class_content">
+     <tr>
+      <th class="required"
+          tal:content="structure python:utils.fieldname
+              (classname, 'org_location')"/>
+      <td tal:content="structure python:context.org_location.menu ()"/>
+     </tr>
+     <tr>
+      <th tal:content="structure python:utils.fieldname
+              (classname, 'contract_type')"/>
+      <td tal:content="structure python:context.contract_type.menu ()"/>
+     </tr>
+     <tr>
+      <th class="required"
+          tal:content="structure python:utils.fieldname
+              (classname, 'time_project')"/>
+      <td>
+       <span tal:replace="structure context/time_project/field"/>
+       <span tal:condition="context/time_project/is_edit_ok"
+	tal:replace="structure python:db.time_project.classhelp
+	     ( 'name,description'
+	     , property='time_project'
+	     , inputtype='radio'
+	     , width='800'
+	     , pagesize=5000
+             , filter='status.active=True'
+	     )"/>
+      </td>
+     </tr>
+     <tr>
+      <th tal:content="structure python:utils.fieldname
+              (classname, 'duration')"/>
+      <td tal:content="structure python:context.duration.field ()"/>
+     </tr>
+     <tr tal:condition="context/id">
+      <th tal:content="structure python:utils.fieldname
+              (classname, 'is_valid')"/>
+      <td tal:content="structure python:context.is_valid.field ()"/>
+     </tr>
+    </tal:block>
+   </tal:block>
+  </tal:block>
+ </tal:block>
+
+</tal:block>
