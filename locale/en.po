@@ -6756,3 +6756,9 @@ msgstr "DXCC ITU Zone"
 
 msgid "eqsl_nickname"
 msgstr "eQSL Nickname"
+
+msgid "adif_mode"
+msgstr "ADIF Mode"
+
+msgid "adif_submode"
+msgstr "ADIF Submode"

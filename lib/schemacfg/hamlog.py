@@ -87,6 +87,8 @@ def init \
         ( db, ''"ham_mode"
         , name                  = String    ()
         , order                 = Number    ()
+        , adif_mode             = String    ()
+        , adif_submode          = String    ()
         )
     ham_mode.setkey (''"name")
 
