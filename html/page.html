@@ -979,6 +979,7 @@
             queries python:db.query.filter
              (filterspec = dict
               (private_for = None, klass = klass, tmplate = qkey)
+             , sort=('+', 'name')
              )"
           tal:repeat="q queries"
           tal:attributes="
@@ -994,6 +995,7 @@
                , id          = [q.id for q in request.user.queries]
                , tmplate     = qkey
                )
+              , sort=('+', 'name')
               ) if q.klass == klass]"
            tal:repeat="q queries"
            tal:attributes="
