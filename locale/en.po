@@ -6753,3 +6753,6 @@ msgstr "DXCC CQ Zone"
 
 msgid "qso.dxcc_entity.itu_zone"
 msgstr "DXCC ITU Zone"
+
+msgid "eqsl_nickname"
+msgstr "eQSL Nickname"

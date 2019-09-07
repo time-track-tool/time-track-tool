@@ -79,6 +79,7 @@ def init \
         , qth                   = String    ()
         , gridsquare            = String    ()
         , iota                  = String    ()
+        , eqsl_nickname         = String    ()
         )
     ham_call.setkey (''"name")
 
