@@ -797,6 +797,7 @@ properties = \
     , ( 'user'
       , [ 'address'
         , 'alternate_addresses'
+        , 'aux_username'
         , 'clearance_by'
         , 'department'
         , 'firstname'

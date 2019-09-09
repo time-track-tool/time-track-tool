@@ -6774,3 +6774,6 @@ msgstr "Ordered on"
 
 msgid "timetracking_by"
 msgstr "Timetracking By"
+
+msgid "aux_username"
+msgstr "Auxiliary username"

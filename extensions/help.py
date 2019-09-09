@@ -360,6 +360,8 @@ _helptext          = \
       [""'''Author of this %(Classname)s''']
     , ""'authors'                     :
       [""'''Authors of the artefact of this %(Classname)s''']
+    , ""'aux_username'                :
+      [""'''Additional username used in subsidiaries or similar''']
     , ""'balance'                     :
       [ ""'''Overtime balance as in staff report for the date mentioned
              in "valid on".

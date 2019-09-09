@@ -97,7 +97,7 @@ prop_perms = \
         , "job_description", "lastname", "lunch_duration", "lunch_start"
         , "pictures", "position", "realname"
         , "room", "sex", "status", "subst_active", "substitute", "supervisor"
-        , "title", "roles", "tt_lines"
+        , "title", "roles", "tt_lines", "aux_username"
         )
       )
     , ( "user", "Edit", ["Office"]
@@ -112,7 +112,7 @@ prop_perms = \
         , "samba_profile_path", "samba_pwd_can_change", "samba_pwd_last_set"
         , "samba_pwd_must_change", "user_password", "shadow_last_change"
         , "shadow_min", "shadow_max", "shadow_warning", "shadow_inactive"
-        , "shadow_expire", "shadow_used"
+        , "shadow_expire", "shadow_used", "aux_username"
         )
       )
     , ( "user", "View", ["Controlling"], ("roles",))
@@ -125,6 +125,7 @@ prop_perms = \
         , "status", "subst_active", "substitute", "supervisor", "timezone"
         , "title", "username", "home_directory", "login_shell"
         , "samba_home_drive", "samba_home_path", "tt_lines"
+        , "aux_username"
         )
       )
     ]

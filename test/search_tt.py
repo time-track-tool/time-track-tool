@@ -924,6 +924,9 @@ properties = \
         , ( 'alternate_addresses'
           , ['admin', 'controlling', 'doc_admin', 'facility', 'hr', 'hr-leave-approval', 'hr-vacation', 'it', 'office', 'pgp', 'procurement', 'project', 'project_view', 'summary_view', 'time-report', 'user', 'user_view']
           )
+        , ( 'aux_username'
+          , ['admin', 'controlling', 'doc_admin', 'facility', 'hr', 'hr-leave-approval', 'hr-vacation', 'it', 'office', 'pgp', 'procurement', 'project', 'project_view', 'summary_view', 'time-report', 'user', 'user_view']
+          )
         , ( 'clearance_by'
           , ['admin', 'controlling', 'doc_admin', 'facility', 'hr', 'hr-leave-approval', 'hr-vacation', 'it', 'office', 'pgp', 'procurement', 'project', 'project_view', 'summary_view', 'time-report', 'user', 'user_view']
           )

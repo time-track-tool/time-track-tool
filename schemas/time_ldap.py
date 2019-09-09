@@ -93,11 +93,7 @@ prop_perms = \
         , "job_description", "lastname", "lunch_duration", "lunch_start"
         , "pictures", "position", "realname"
         , "room", "sex", "status", "subst_active", "substitute", "supervisor"
-        , "title", "roles", "tt_lines"
-        )
-      )
-    , ( "user", "Edit", ["Office"]
-      , ( "title", "room", "position"
+        , "title", "roles", "tt_lines", "aux_username"
         )
       )
     , ( "user", "Edit", ["Office"]
@@ -105,7 +101,7 @@ prop_perms = \
         )
       )
     , ( "user", "Edit", ["IT"]
-      , ( "roles", "password"
+      , ( "roles", "password", "aux_username"
         )
       )
     , ( "user", "View", ["Controlling"], ("roles",))
@@ -118,6 +114,7 @@ prop_perms = \
         , "status", "subst_active", "substitute", "supervisor", "timezone"
         , "title", "username", "home_directory", "login_shell"
         , "samba_home_drive", "samba_home_path", "tt_lines"
+        , "aux_username"
         )
       )
     ]
