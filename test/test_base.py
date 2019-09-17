@@ -3701,6 +3701,30 @@ class Test_Case_Timetracker (_Test_Case_Summary, unittest.TestCase) :
             actual.append ((wp.auto_wp, wp.time_start, wp.time_end))
         self.assertEqual (expected, actual)
 
+        self.db.user_dynamic.set ('1', do_auto_wp = False)
+        expected = \
+            [ ('1', date.Date ('2013-02-22'), date.Date ('2013-02-27'))
+            , ('2', date.Date ('2013-02-22'), date.Date ('2013-02-27'))
+            , ('3', date.Date ('2013-02-22'), date.Date ('2013-02-27'))
+            ]
+        actual = []
+        wps = self.db.time_wp.filter \
+            (None, dict (bookers = '3'), sort = ('+', 'auto_wp.id'))
+        for w in wps :
+            wp = self.db.time_wp.getnode (w)
+            actual.append ((wp.auto_wp, wp.time_start, wp.time_end))
+        self.assertEqual (expected, actual)
+
+        self.db.user_dynamic.set ('5', do_auto_wp = False)
+        expected = []
+        actual = []
+        wps = self.db.time_wp.filter \
+            (None, dict (bookers = '3'), sort = ('+', 'auto_wp.id'))
+        for w in wps :
+            wp = self.db.time_wp.getnode (w)
+            actual.append ((wp.auto_wp, wp.time_start, wp.time_end))
+        self.assertEqual (expected, actual)
+
         #print ('')
         #for w in wps :
         #    wp = self.db.time_wp.getnode (w)
