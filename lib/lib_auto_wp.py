@@ -118,7 +118,7 @@ def check_auto_wp (db, auto_wp_id, userid) :
         # Check if there are wps that start before the validity of the
         # current dynamic user record
         while wp and wp.time_start < dyn_start :
-            if wp.time_end and wp.time_end <= dyn.valid_from :
+            if wp.time_end and wp.time_end <= dyn_start :
                 # Check that really nothing is booked on this WP
                 d = dict (wp = wp.id)
                 d ['daily_record.user'] = userid
@@ -131,12 +131,13 @@ def check_auto_wp (db, auto_wp_id, userid) :
                     db.time_wp.retire (wp.id)
                 else :
                     db.time_wp.set (wp.id, time_end = wp.time_start)
+                try :
+                    wp = wps.pop (0)
+                except IndexError :
+                    wp = None
             else :
-                db.time_wp.set (wp.id, time_start = dyn.valid_from)
-            try :
-                wp = wps.pop (0)
-            except IndexError :
-                wp = None
+                db.time_wp.set (wp.id, time_start = dyn_start)
+                break
 
         # We now either have a wp with correct start date or none
         if wp :

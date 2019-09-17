@@ -3651,7 +3651,7 @@ class Test_Case_Timetracker (_Test_Case_Summary, unittest.TestCase) :
         self.assertEqual (expected, actual)
 
         tp = self.db.time_project.getnode (self.travel_tp)
-        self.db.auto_wp.create \
+        trvl = self.db.auto_wp.create \
             ( is_valid     = True
             , name         = 'TEST %s' % tp.name
             , org_location = self.olo
@@ -3663,6 +3663,35 @@ class Test_Case_Timetracker (_Test_Case_Summary, unittest.TestCase) :
             , ('2', date.Date ('2013-02-02'), date.Date ('2013-02-27'))
             , ('3', date.Date ('2013-02-02'), date.Date ('2013-02-23'))
             , ('4', date.Date ('2013-02-02'), date.Date ('2013-02-27'))
+            ]
+        actual = []
+        wps = self.db.time_wp.filter \
+            (None, dict (bookers = '3'), sort = ('+', 'auto_wp.id'))
+        for w in wps :
+            wp = self.db.time_wp.getnode (w)
+            actual.append ((wp.auto_wp, wp.time_start, wp.time_end))
+        self.assertEqual (expected, actual)
+
+        self.db.auto_wp.set (trvl, is_valid = False)
+        expected = \
+            [ ('1', date.Date ('2013-02-02'), date.Date ('2013-02-27'))
+            , ('2', date.Date ('2013-02-02'), date.Date ('2013-02-27'))
+            , ('3', date.Date ('2013-02-02'), date.Date ('2013-02-23'))
+            ]
+        actual = []
+        wps = self.db.time_wp.filter \
+            (None, dict (bookers = '3'), sort = ('+', 'auto_wp.id'))
+        for w in wps :
+            wp = self.db.time_wp.getnode (w)
+            actual.append ((wp.auto_wp, wp.time_start, wp.time_end))
+        self.assertEqual (expected, actual)
+
+        self.db.user_dynamic.set ('1', valid_from = date.Date ('2013-02-03'))
+        # Note that the limited record also changes the end date!
+        expected = \
+            [ ('1', date.Date ('2013-02-03'), date.Date ('2013-02-27'))
+            , ('2', date.Date ('2013-02-03'), date.Date ('2013-02-27'))
+            , ('3', date.Date ('2013-02-03'), date.Date ('2013-02-24'))
             ]
         actual = []
         wps = self.db.time_wp.filter \
