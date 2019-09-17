@@ -45,6 +45,9 @@ properties = \
         , ( 'duration'
           , ['admin', 'hr']
           )
+        , ( 'durations_allowed'
+          , ['admin', 'hr']
+          )
         , ( 'is_valid'
           , ['admin', 'hr']
           )
@@ -55,6 +58,12 @@ properties = \
           , ['admin', 'hr']
           )
         , ( 'time_project'
+          , ['admin', 'hr']
+          )
+        , ( 'time_wp_summary_no'
+          , ['admin', 'hr']
+          )
+        , ( 'travel'
           , ['admin', 'hr']
           )
         ]
@@ -430,7 +439,7 @@ properties = \
       )
     , ( 'org_location'
       , [ ( 'do_auto_wp'
-          , ['admin', 'controlling', 'doc_admin', 'dom-user-edit-facility', 'dom-user-edit-gtt', 'dom-user-edit-hr', 'dom-user-edit-office', 'facility', 'hr', 'hr-leave-approval', 'hr-vacation', 'it', 'office', 'pgp', 'procurement', 'project', 'project_view', 'summary_view', 'time-report', 'user', 'user_view']
+          , ['admin', 'controlling', 'doc_admin', 'dom-user-edit-facility', 'dom-user-edit-gtt', 'dom-user-edit-hr', 'dom-user-edit-office', 'facility', 'functional-role', 'hr', 'hr-leave-approval', 'hr-vacation', 'it', 'office', 'organisation', 'pgp', 'procurement', 'project', 'project_view', 'summary_view', 'time-report', 'user', 'user_view']
           )
         , ( 'do_leave_process'
           , ['admin', 'controlling', 'doc_admin', 'dom-user-edit-facility', 'dom-user-edit-gtt', 'dom-user-edit-hr', 'dom-user-edit-office', 'facility', 'functional-role', 'hr', 'hr-leave-approval', 'hr-vacation', 'it', 'office', 'organisation', 'pgp', 'procurement', 'project', 'project_view', 'summary_view', 'time-report', 'user', 'user_view']

@@ -87,6 +87,9 @@ properties = \
         , ( 'duration'
           , ['admin', 'hr']
           )
+        , ( 'durations_allowed'
+          , ['admin', 'hr']
+          )
         , ( 'is_valid'
           , ['admin', 'hr']
           )
@@ -97,6 +100,12 @@ properties = \
           , ['admin', 'hr']
           )
         , ( 'time_project'
+          , ['admin', 'hr']
+          )
+        , ( 'time_wp_summary_no'
+          , ['admin', 'hr']
+          )
+        , ( 'travel'
           , ['admin', 'hr']
           )
         ]
@@ -1046,7 +1055,7 @@ properties = \
       )
     , ( 'org_location'
       , [ ( 'do_auto_wp'
-          , ['admin', 'contact', 'controlling', 'doc_admin', 'facility', 'hr', 'hr-leave-approval', 'hr-vacation', 'issue_admin', 'it', 'itview', 'msgedit', 'msgsync', 'office', 'procurement', 'project', 'project_view', 'sec-incident-nosy', 'sec-incident-responsible', 'summary_view', 'supportadmin', 'time-report', 'type', 'user']
+          , ['admin', 'contact', 'controlling', 'doc_admin', 'facility', 'functional-role', 'hr', 'hr-leave-approval', 'hr-vacation', 'issue_admin', 'it', 'itview', 'msgedit', 'msgsync', 'office', 'organisation', 'procurement', 'project', 'project_view', 'sec-incident-nosy', 'sec-incident-responsible', 'summary_view', 'supportadmin', 'time-report', 'type', 'user']
           )
         , ( 'do_leave_process'
           , ['admin', 'contact', 'controlling', 'doc_admin', 'facility', 'functional-role', 'hr', 'hr-leave-approval', 'hr-vacation', 'issue_admin', 'it', 'itview', 'msgedit', 'msgsync', 'office', 'organisation', 'procurement', 'project', 'project_view', 'sec-incident-nosy', 'sec-incident-responsible', 'summary_view', 'supportadmin', 'time-report', 'type', 'user']
