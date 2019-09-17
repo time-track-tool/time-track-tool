@@ -37,6 +37,7 @@ import common
 import freeze
 import user_dynamic
 import vacation
+import lib_auto_wp
 
 def check_ranges (cl, nodeid, user, valid_from, valid_to, allow_same = False) :
     """ We allow valid_to == valid_from if allow_same is True
@@ -837,6 +838,101 @@ def find_time_records (db, cl, nodeid, new_values) :
                 db.time_record.retire (id)
 # end def find_time_records
 
+def auto_wp_loop (db, dyn) :
+    """ Find auto_wps for this setting and call updater
+    """
+    ct  = dyn.contract_type or '-1'
+    d   = dict \
+        ( contract_type = ct
+        , is_valid      = True
+        , org_location  = dyn.org_location
+        )
+    auto_wp = db.auto_wp.filter (None, d)
+    for aid in auto_wp :
+        lib_auto_wp.check_auto_wp (db, aid, dyn.user)
+# end def auto_wp_loop
+
+def auto_wp_magic (db, cl, nodeid, old_values) :
+    """ Whenever properties relevant for auto workpackage processing are
+        touched, we call the auto_wp routine
+    """
+    props = \
+        ( 'booking_allowed'
+        , 'contract_type'
+        , 'do_auto_wp'
+        , 'org_location'
+        , 'valid_from'
+        , 'valid_to'
+        )
+    dyn = cl.getnode (nodeid)
+    # Only check if do_auto_wp is set and some of the relevant
+    # attributes changed *or* the do_auto_wp attribute changed
+    if old_values :
+        if dyn.do_auto_wp :
+            for p in props :
+                if p in old_values and getattr (dyn, p) != old_values [p] :
+                    auto_wp_loop (db, dyn)
+                    break
+        else :
+            p = 'do_auto_wp'
+            if p in old_values and getattr (dyn, p) != old_values [p] :
+                auto_wp_loop (db, dyn)
+    elif dyn.do_auto_wp :
+        # For new record we only need to call the updater if do_auto_wp
+        auto_wp_loop (db, dyn)
+# end def auto_wp_magic
+
+def auto_wp_check (db, cl, nodeid, new_values) :
+    """ Check auto_wp properties
+    """
+    # These properties must not change:
+    props = \
+        ( 'contract_type'
+        , 'org_location'
+        , 'time_project'
+        , 'durations_allowed'
+        , 'travel'
+        )
+    if nodeid :
+        for p in props :
+            if p in new_values :
+                raise Reject (_ ('Property "%s" must not change') % _ (p))
+    else :
+        common.require_attributes \
+            ( _, cl, nodeid, new_values
+            , 'org_location'
+            , 'time_project'
+            , 'name'
+            )
+        if 'durations_allowed' not in new_values :
+            new_values ['durations_allowed'] = False
+        if 'is_valid' not in new_values :
+            new_values ['is_valid'] = False
+        if 'travel' not in new_values :
+            new_values ['travel'] = False
+# end def auto_wp_check
+
+def auto_wp_modify (db, cl, nodeid, old_values) :
+    """ Generate/Modify WPs for new/changed auto_wp
+    """
+    # Find all dynamic user records that have do_auto_wp enabled and
+    # use a contract type and org_location that matches.
+    auto_wp = cl.getnode (nodeid)
+    ct      = auto_wp.contract_type or '-1'
+    d       = dict \
+        ( contract_type = ct
+        , org_location  = auto_wp.org_location
+        , do_auto_wp    = True
+        )
+    dynids  = db.user_dynamic.filter (None, d)
+    users   = {}
+    for dynid in dynids :
+        dyn = db.user_dynamic.getnode (dynid)
+        users [dyn.user] = True
+    for u in users :
+        lib_auto_wp.check_auto_wp (db, nodeid, u)
+# end def auto_wp_modify
+
 def init (db) :
     if 'user_dynamic' not in db.classes :
         return
@@ -865,6 +961,12 @@ def init (db) :
     db.overtime_period.audit ("set",    overtime_check)
     db.org_location.audit    ("create", olo_check)
     db.org_location.audit    ("set",    olo_check)
+    db.user_dynamic.react    ("create", auto_wp_magic, priority = 200)
+    db.user_dynamic.react    ("set",    auto_wp_magic, priority = 200)
+    db.auto_wp.audit         ("create", auto_wp_check)
+    db.auto_wp.audit         ("set",    auto_wp_check)
+    db.auto_wp.react         ("create", auto_wp_modify)
+    db.auto_wp.react         ("set",    auto_wp_modify)
 # end def init
 
 ### __END__ user_dynamic

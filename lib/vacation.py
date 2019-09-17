@@ -650,6 +650,9 @@ def valid_wps (db, filter = {}, user = None, date = None, srt = None) :
     d ['project.is_extern'] = False
     d.update (filter)
 
+    # FIXME: At some point we may want to remove WPs that are
+    # closed before the last freeze date
+
     wp  = []
     if user :
         d1  = dict (d, is_public = True, has_expiration_date = False)

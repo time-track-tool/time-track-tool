@@ -659,6 +659,7 @@ class _Test_Case_Summary (_Test_Case) :
             , op_project         = True
             , responsible        = self.user1
             , department         = self.dep
+            , status             = stat_open
             , organisation       = self.org
             , cost_center        = self.cc
             , approval_required  = False
@@ -670,6 +671,7 @@ class _Test_Case_Summary (_Test_Case) :
             , op_project         = False
             , responsible        = self.user1
             , department         = self.dep
+            , status             = stat_open
             , organisation       = self.org
             , cost_center        = self.cc
             , no_overtime        = True
@@ -684,6 +686,7 @@ class _Test_Case_Summary (_Test_Case) :
             , op_project         = False
             , responsible        = self.user1
             , department         = self.dep
+            , status             = stat_open
             , organisation       = self.org
             , cost_center        = self.cc
             , max_hours          = 0
@@ -3550,6 +3553,132 @@ class Test_Case_Timetracker (_Test_Case_Summary, unittest.TestCase) :
         self.assertEqual (prev.valid_from, date.Date ('2019-05-01'))
         self.assertEqual (prev.valid_to,   date.Date ('2019-10-01'))
     # end def test_dynuser_create_modify
+
+    def test_auto_wp (self) :
+        self.setup_db ()
+        self.db.commit ()
+        # Now we have 3 users.
+        for id in (self.holiday_tp, self.vacation_tp) :
+            tp = self.db.time_project.getnode (id)
+            self.db.auto_wp.create \
+                ( is_valid     = True
+                , name         = 'TEST %s' % tp.name
+                , org_location = self.olo
+                , time_project = id
+                , travel       = False
+                )
+        # normal_tp with duration
+        tp = self.db.time_project.getnode (self.normal_tp)
+        self.db.auto_wp.create \
+            ( is_valid           = True
+            , duration           = date.Interval ('3w')
+            , name               = 'TEST %s' % tp.name
+            , org_location       = self.olo
+            , time_project       = self.normal_tp
+            , travel             = True
+            , time_wp_summary_no = self.twsn
+            )
+        d = self.db.user_dynamic.filter \
+            (None, {}, sort = [('+', 'user'), ('+', 'valid_from')])
+        # We have 4 dyn user records (without contract_type set)
+        # id  uid from       to
+        # '1' '3' 2013-02-02 None
+        # '2' '4' 2005-09-01 2005-10-01
+        # '4' '4' 2005-10-01 None
+        # '3' '5' 2008-11-03
+        self.db.user_dynamic.set ('1', do_auto_wp = True)
+        count = 0
+        expected = \
+            [ ('1', date.Date ('2013-02-02'), None)
+            , ('2', date.Date ('2013-02-02'), None)
+            , ('3', date.Date ('2013-02-02'), date.Date ('2013-02-23'))
+            ]
+        actual = []
+        # All WPs created so far only have user '4' in bookers.
+        wps = self.db.time_wp.filter \
+            (None, dict (bookers = '3'), sort = ('+', 'auto_wp.id'))
+        for w in wps :
+            wp = self.db.time_wp.getnode (w)
+            actual.append ((wp.auto_wp, wp.time_start, wp.time_end))
+        self.assertEqual (expected, actual)
+
+        self.db.user_dynamic.set ('1', valid_to = date.Date ('2013-02-22'))
+        wps = self.db.time_wp.filter \
+            (None, dict (bookers = '3'), sort = ('+', 'auto_wp.id'))
+        expected = \
+            [ ('1', date.Date ('2013-02-02'), date.Date ('2013-02-22'))
+            , ('2', date.Date ('2013-02-02'), date.Date ('2013-02-22'))
+            , ('3', date.Date ('2013-02-02'), date.Date ('2013-02-22'))
+            ]
+        actual = []
+        wps = self.db.time_wp.filter \
+            (None, dict (bookers = '3'), sort = ('+', 'auto_wp.id'))
+        for w in wps :
+            wp = self.db.time_wp.getnode (w)
+            actual.append ((wp.auto_wp, wp.time_start, wp.time_end))
+        self.assertEqual (expected, actual)
+
+        self.db.user_dynamic.create \
+            ( user              = self.user0
+            , valid_from        = date.Date ('2013-02-22')
+            , valid_to          = date.Date ('2013-02-27')
+            , booking_allowed   = True
+            , vacation_yearly   = 25
+            , all_in            = False
+            , hours_mon         = 7.75
+            , hours_tue         = 7.75
+            , hours_wed         = 7.75
+            , hours_thu         = 7.75
+            , hours_fri         = 7.5
+            , daily_worktime    = 0.0
+            , org_location      = self.olo
+            , department        = self.dep
+            , supp_weekly_hours = 40
+            , overtime_period   = self.db.overtime_period.lookup ('week')
+            , do_auto_wp        = True
+            )
+        wps = self.db.time_wp.filter \
+            (None, dict (bookers = '3'), sort = ('+', 'auto_wp.id'))
+        expected = \
+            [ ('1', date.Date ('2013-02-02'), date.Date ('2013-02-27'))
+            , ('2', date.Date ('2013-02-02'), date.Date ('2013-02-27'))
+            , ('3', date.Date ('2013-02-02'), date.Date ('2013-02-23'))
+            ]
+        actual = []
+        for w in wps :
+            wp = self.db.time_wp.getnode (w)
+            actual.append ((wp.auto_wp, wp.time_start, wp.time_end))
+        self.assertEqual (expected, actual)
+
+        tp = self.db.time_project.getnode (self.travel_tp)
+        self.db.auto_wp.create \
+            ( is_valid     = True
+            , name         = 'TEST %s' % tp.name
+            , org_location = self.olo
+            , time_project = self.travel_tp
+            , travel       = True
+            )
+        expected = \
+            [ ('1', date.Date ('2013-02-02'), date.Date ('2013-02-27'))
+            , ('2', date.Date ('2013-02-02'), date.Date ('2013-02-27'))
+            , ('3', date.Date ('2013-02-02'), date.Date ('2013-02-23'))
+            , ('4', date.Date ('2013-02-02'), date.Date ('2013-02-27'))
+            ]
+        actual = []
+        wps = self.db.time_wp.filter \
+            (None, dict (bookers = '3'), sort = ('+', 'auto_wp.id'))
+        for w in wps :
+            wp = self.db.time_wp.getnode (w)
+            actual.append ((wp.auto_wp, wp.time_start, wp.time_end))
+        self.assertEqual (expected, actual)
+
+        #print ('')
+        #for w in wps :
+        #    wp = self.db.time_wp.getnode (w)
+        #    st = wp.time_start.pretty (common.ymd)
+        #    en = wp.time_end.pretty (common.ymd)
+        #    print (w, wp.auto_wp, wp.bookers, st, en)
+    # end def test_auto_wp
 
 # end class Test_Case_Timetracker
 
