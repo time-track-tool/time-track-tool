@@ -238,7 +238,9 @@
        context.is_view_ok () and 'time_wp' in db._db.classes">
    <tal:block
     tal:define="wps python:db.time_wp.filter
-    (None, {'project' : context.id})">
+    ( None, {'project' : context.id}
+    , sort=[('+', 'time_start'), ('+', 'name')]
+    )">
     <table class="files">
      <tr tal:define=
       "uid  python:db._db.getuid ()
