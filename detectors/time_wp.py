@@ -31,7 +31,7 @@
 from roundup.exceptions             import Reject
 from roundup.date                   import Date
 from roundup.cgi.TranslationService import get_translation
-from freeze                         import find_prev_dr_freeze
+from freeze                         import freeze_date
 
 import re
 import common
@@ -234,11 +234,11 @@ def wp_check_auto_wp (db, cl, nodeid, new_values) :
     assert len (bookers) == 1
     booker = bookers [0]
     olo    = auto_wp.org_location
-    freeze = find_prev_dr_freeze (db, booker, Date ('.'))
+    freeze = freeze_date (db, booker)
     if freeze :
-        if start < freeze.date and 'time_start' in new_values :
+        if start < freeze and 'time_start' in new_values :
             raise Reject (_ ("No change of auto wp before freeze date"))
-        if end and end in new_values and end < freeze.date :
+        if end and end in new_values and end < freeze :
             raise Reject (_ ("No change of auto wp before freeze date"))
     # Get dyn user for start
     dyn = user_dynamic.get_user_dynamic (db, booker, start)
@@ -261,7 +261,7 @@ def wp_check_auto_wp (db, cl, nodeid, new_values) :
                 raise Reject ("Invalid change of start: Invalid dyn. user")
             prev = p
         # We need to find previous wp if we don't start freezedate + day
-        if prev.valid_from < start and start > freeze.date + common.day :
+        if prev.valid_from < start and start > freeze + common.day :
             d = dict \
                 ( auto_wp  = auto_wp.id
                 , time_end = common.pretty_range (None, start)

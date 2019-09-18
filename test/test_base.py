@@ -3586,12 +3586,15 @@ class Test_Case_Timetracker (_Test_Case_Summary, unittest.TestCase) :
         # '2' '4' 2005-09-01 2005-10-01
         # '4' '4' 2005-10-01 None
         # '3' '5' 2008-11-03
+
+        u = self.username0
+        n = '%s -%s' % (u, '2013-02-23')
         self.db.user_dynamic.set ('1', do_auto_wp = True)
         count = 0
         expected = \
-            [ ('1', date.Date ('2013-02-02'), None)
-            , ('2', date.Date ('2013-02-02'), None)
-            , ('3', date.Date ('2013-02-02'), date.Date ('2013-02-23'))
+            [ ('1', u, date.Date ('2013-02-02'), None)
+            , ('2', u, date.Date ('2013-02-02'), None)
+            , ('3', n, date.Date ('2013-02-02'), date.Date ('2013-02-23'))
             ]
         actual = []
         # All WPs created so far only have user '4' in bookers.
@@ -3599,23 +3602,24 @@ class Test_Case_Timetracker (_Test_Case_Summary, unittest.TestCase) :
             (None, dict (bookers = '3'), sort = ('+', 'auto_wp.id'))
         for w in wps :
             wp = self.db.time_wp.getnode (w)
-            actual.append ((wp.auto_wp, wp.time_start, wp.time_end))
+            actual.append ((wp.auto_wp, wp.name, wp.time_start, wp.time_end))
         self.assertEqual (expected, actual)
 
         self.db.user_dynamic.set ('1', valid_to = date.Date ('2013-02-22'))
         wps = self.db.time_wp.filter \
             (None, dict (bookers = '3'), sort = ('+', 'auto_wp.id'))
+        n = '%s -%s' % (u, '2013-02-22')
         expected = \
-            [ ('1', date.Date ('2013-02-02'), date.Date ('2013-02-22'))
-            , ('2', date.Date ('2013-02-02'), date.Date ('2013-02-22'))
-            , ('3', date.Date ('2013-02-02'), date.Date ('2013-02-22'))
+            [ ('1', n, date.Date ('2013-02-02'), date.Date ('2013-02-22'))
+            , ('2', n, date.Date ('2013-02-02'), date.Date ('2013-02-22'))
+            , ('3', n, date.Date ('2013-02-02'), date.Date ('2013-02-22'))
             ]
         actual = []
         wps = self.db.time_wp.filter \
             (None, dict (bookers = '3'), sort = ('+', 'auto_wp.id'))
         for w in wps :
             wp = self.db.time_wp.getnode (w)
-            actual.append ((wp.auto_wp, wp.time_start, wp.time_end))
+            actual.append ((wp.auto_wp, wp.name, wp.time_start, wp.time_end))
         self.assertEqual (expected, actual)
 
         self.db.user_dynamic.create \
@@ -3639,15 +3643,17 @@ class Test_Case_Timetracker (_Test_Case_Summary, unittest.TestCase) :
             )
         wps = self.db.time_wp.filter \
             (None, dict (bookers = '3'), sort = ('+', 'auto_wp.id'))
+        n  = '%s -%s' % (u, '2013-02-27')
+        n2 = '%s -%s' % (u, '2013-02-23')
         expected = \
-            [ ('1', date.Date ('2013-02-02'), date.Date ('2013-02-27'))
-            , ('2', date.Date ('2013-02-02'), date.Date ('2013-02-27'))
-            , ('3', date.Date ('2013-02-02'), date.Date ('2013-02-23'))
+            [ ('1',  n, date.Date ('2013-02-02'), date.Date ('2013-02-27'))
+            , ('2',  n, date.Date ('2013-02-02'), date.Date ('2013-02-27'))
+            , ('3', n2, date.Date ('2013-02-02'), date.Date ('2013-02-23'))
             ]
         actual = []
         for w in wps :
             wp = self.db.time_wp.getnode (w)
-            actual.append ((wp.auto_wp, wp.time_start, wp.time_end))
+            actual.append ((wp.auto_wp, wp.name, wp.time_start, wp.time_end))
         self.assertEqual (expected, actual)
 
         tp = self.db.time_project.getnode (self.travel_tp)
@@ -3659,60 +3665,61 @@ class Test_Case_Timetracker (_Test_Case_Summary, unittest.TestCase) :
             , travel       = True
             )
         expected = \
-            [ ('1', date.Date ('2013-02-02'), date.Date ('2013-02-27'))
-            , ('2', date.Date ('2013-02-02'), date.Date ('2013-02-27'))
-            , ('3', date.Date ('2013-02-02'), date.Date ('2013-02-23'))
-            , ('4', date.Date ('2013-02-02'), date.Date ('2013-02-27'))
+            [ ('1',  n, date.Date ('2013-02-02'), date.Date ('2013-02-27'))
+            , ('2',  n, date.Date ('2013-02-02'), date.Date ('2013-02-27'))
+            , ('3', n2, date.Date ('2013-02-02'), date.Date ('2013-02-23'))
+            , ('4',  n, date.Date ('2013-02-02'), date.Date ('2013-02-27'))
             ]
         actual = []
         wps = self.db.time_wp.filter \
             (None, dict (bookers = '3'), sort = ('+', 'auto_wp.id'))
         for w in wps :
             wp = self.db.time_wp.getnode (w)
-            actual.append ((wp.auto_wp, wp.time_start, wp.time_end))
+            actual.append ((wp.auto_wp, wp.name, wp.time_start, wp.time_end))
         self.assertEqual (expected, actual)
 
         self.db.auto_wp.set (trvl, is_valid = False)
         expected = \
-            [ ('1', date.Date ('2013-02-02'), date.Date ('2013-02-27'))
-            , ('2', date.Date ('2013-02-02'), date.Date ('2013-02-27'))
-            , ('3', date.Date ('2013-02-02'), date.Date ('2013-02-23'))
+            [ ('1',  n, date.Date ('2013-02-02'), date.Date ('2013-02-27'))
+            , ('2',  n, date.Date ('2013-02-02'), date.Date ('2013-02-27'))
+            , ('3', n2, date.Date ('2013-02-02'), date.Date ('2013-02-23'))
             ]
         actual = []
         wps = self.db.time_wp.filter \
             (None, dict (bookers = '3'), sort = ('+', 'auto_wp.id'))
         for w in wps :
             wp = self.db.time_wp.getnode (w)
-            actual.append ((wp.auto_wp, wp.time_start, wp.time_end))
+            actual.append ((wp.auto_wp, wp.name, wp.time_start, wp.time_end))
         self.assertEqual (expected, actual)
 
         self.db.user_dynamic.set ('1', valid_from = date.Date ('2013-02-03'))
         # Note that the limited record also changes the end date!
+        n2 = '%s -%s' % (u, '2013-02-24')
         expected = \
-            [ ('1', date.Date ('2013-02-03'), date.Date ('2013-02-27'))
-            , ('2', date.Date ('2013-02-03'), date.Date ('2013-02-27'))
-            , ('3', date.Date ('2013-02-03'), date.Date ('2013-02-24'))
+            [ ('1',  n, date.Date ('2013-02-03'), date.Date ('2013-02-27'))
+            , ('2',  n, date.Date ('2013-02-03'), date.Date ('2013-02-27'))
+            , ('3', n2, date.Date ('2013-02-03'), date.Date ('2013-02-24'))
             ]
         actual = []
         wps = self.db.time_wp.filter \
             (None, dict (bookers = '3'), sort = ('+', 'auto_wp.id'))
         for w in wps :
             wp = self.db.time_wp.getnode (w)
-            actual.append ((wp.auto_wp, wp.time_start, wp.time_end))
+            actual.append ((wp.auto_wp, wp.name, wp.time_start, wp.time_end))
         self.assertEqual (expected, actual)
 
         self.db.user_dynamic.set ('1', do_auto_wp = False)
         expected = \
-            [ ('1', date.Date ('2013-02-22'), date.Date ('2013-02-27'))
-            , ('2', date.Date ('2013-02-22'), date.Date ('2013-02-27'))
-            , ('3', date.Date ('2013-02-22'), date.Date ('2013-02-27'))
+            [ ('1', n, date.Date ('2013-02-22'), date.Date ('2013-02-27'))
+            , ('2', n, date.Date ('2013-02-22'), date.Date ('2013-02-27'))
+            , ('3', n, date.Date ('2013-02-22'), date.Date ('2013-02-27'))
             ]
         actual = []
         wps = self.db.time_wp.filter \
             (None, dict (bookers = '3'), sort = ('+', 'auto_wp.id'))
         for w in wps :
             wp = self.db.time_wp.getnode (w)
-            actual.append ((wp.auto_wp, wp.time_start, wp.time_end))
+            actual.append ((wp.auto_wp, wp.name, wp.time_start, wp.time_end))
         self.assertEqual (expected, actual)
 
         self.db.user_dynamic.set ('5', do_auto_wp = False)
@@ -3722,7 +3729,7 @@ class Test_Case_Timetracker (_Test_Case_Summary, unittest.TestCase) :
             (None, dict (bookers = '3'), sort = ('+', 'auto_wp.id'))
         for w in wps :
             wp = self.db.time_wp.getnode (w)
-            actual.append ((wp.auto_wp, wp.time_start, wp.time_end))
+            actual.append ((wp.auto_wp, wp.name, wp.time_start, wp.time_end))
         self.assertEqual (expected, actual)
 
         #print ('')

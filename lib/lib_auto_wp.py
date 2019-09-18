@@ -3,8 +3,8 @@
 from user_dynamic import find_user_dynamic, next_user_dynamic
 from user_dynamic import first_user_dynamic
 from roundup.date import Date
-from freeze       import find_prev_dr_freeze
-from common       import pretty_range
+from freeze       import freeze_date
+from common       import pretty_range, ymd
 
 def is_correct_dyn (dyn, org_location) :
     """ Check that the given dynamic user record matches this
@@ -39,10 +39,9 @@ def check_auto_wp (db, auto_wp_id, userid) :
     user   = db.user.getnode (userid)
     # Very early default should we not find any freeze records
     start  = Date ('1970-01-01')
-    now    = Date ('.')
-    freeze = find_prev_dr_freeze (db, userid, now)
+    freeze = freeze_date (db, userid)
     if freeze :
-        start = freeze.date
+        start = freeze
     auto_wp = db.auto_wp.getnode (auto_wp_id)
     duration_end = auto_wp_duration_end (db, auto_wp, userid)
     # Nothing todo if this ended all before freeze
@@ -108,7 +107,8 @@ def check_auto_wp (db, auto_wp_id, userid) :
         # before that.
         while wp and wp.time_start < start and dyn_start > start :
             if wp.time_end > start :
-                db.time_wp.set (wp.id, time_end = start)
+                n = '%s -%s' % (user.username, start.pretty (ymd))
+                db.time_wp.set (wp.id, time_end = start, name = n)
             try :
                 wp = wps.pop (0)
             except IndexError :
@@ -130,7 +130,8 @@ def check_auto_wp (db, auto_wp_id, userid) :
                 if not trs :
                     db.time_wp.retire (wp.id)
                 else :
-                    db.time_wp.set (wp.id, time_end = wp.time_start)
+                    n = '%s -%s' % (user.username, wp.time_start.pretty (ymd))
+                    db.time_wp.set (wp.id, time_end = wp.time_start, name = n)
                 try :
                     wp = wps.pop (0)
                 except IndexError :
@@ -153,14 +154,19 @@ def check_auto_wp (db, auto_wp_id, userid) :
                     break
                 assert not wps [0].time_end or wp.time_end <= wps [0].time_end
                 if wp.time_end != wps [0].time_start :
-                    db.time_wp.set (wp.id, time_end = wps [0].time_start)
+                    n = '%s -%s' % \
+                        (user.username, wps [0].time_start.pretty (ymd))
+                    db.time_wp.set \
+                        (wp.id, time_end = wps [0].time_start, name = n)
                 wp = wps.pop (0)
             if end_time :
                 if wp.time_end != end_time :
-                    db.time_wp.set (wp.id, time_end = end_time)
+                    n = '%s -%s' % (user.username, end_time.pretty (ymd))
+                    db.time_wp.set (wp.id, time_end = end_time, name = n)
             else :
                 if wp.time_end :
-                    db.time_wp.set (wp.id, time_end = None)
+                    db.time_wp.set \
+                        (wp.id, time_end = None, name = user.username)
             try :
                 wp = wps.pop (0)
             except IndexError :
@@ -178,11 +184,13 @@ def check_auto_wp (db, auto_wp_id, userid) :
                 , name              = user.username
                 , time_start        = max (start, dyn_start)
                 , is_public         = False
-                , planned_effort    = 0     # FIXME
+                , planned_effort    = 0
                 , responsible       = tp.responsible
                 )
             if end_time :
                 d ['time_end'] = end_time
+                d ['name']     = \
+                    '%s -%s' % (user.username, end_time.pretty (ymd))
             if auto_wp.time_wp_summary_no :
                 d ['time_wp_summary_no'] = auto_wp.time_wp_summary_no
             wpid = db.time_wp.create (**d)
@@ -205,7 +213,8 @@ def check_auto_wp (db, auto_wp_id, userid) :
             if not trs :
                 db.time_wp.retire (wp.id)
             else :
-                db.time_wp.set (wp.id, time_end = wp.time_start)
+                n = '%s -%s' % (user.username, wp.time_start.pretty (ymd))
+                db.time_wp.set (wp.id, time_end = wp.time_start, name = n)
         wps = []
         wp  = None
 # end def check_auto_wp

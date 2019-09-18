@@ -50,6 +50,13 @@ def frozen (db, user, date, order = '+') :
     return f
 # end def frozen
 
+def freeze_date (db, uid) :
+    now    = Date ('.')
+    freeze = find_prev_dr_freeze (db, uid, now)
+    if freeze :
+        return freeze.date
+# end def freeze_date
+
 def range_frozen (db, user, range) :
     """Check if a given range of dates is completely frozen
     """
