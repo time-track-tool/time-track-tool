@@ -194,7 +194,7 @@
          (classname, 'time_wp')"/>
      <td tal:content="structure python:context.time_wp.menu
         ( additional = ['project']
-        , id = utils.valid_leave_wps (db._db, user = user)
+        , id = utils.valid_leave_wps (db._db, user = user, thawed = True)
         ) "/>
      <th tal:condition="python: context.id"
          tal:content="structure python:utils.fieldname (classname, 'status')"/>
