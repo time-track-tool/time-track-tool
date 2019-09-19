@@ -993,6 +993,7 @@ dynuser_copyfields = \
      , 'vac_aliq'
      , 'max_flexitime'
      , 'valid_to'
+     , 'do_auto_wp'
      ]
 
 def is_tt_user_status (db, status) :
