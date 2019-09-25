@@ -215,7 +215,7 @@ class PR_Sync (autosuper) :
             ( 'time_project'
             , ( 'name', 'deputy', 'description'
               , 'organisation', 'responsible', 'status'
-              , 'purchasing_agents'
+              , 'purchasing_agents', 'infosec_req'
               )
             , ( 'approval_hr', 'approval_required', 'is_public_holiday'
               , 'is_special_leave', 'is_vacation', 'no_overtime'
