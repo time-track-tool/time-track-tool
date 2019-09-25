@@ -279,6 +279,11 @@
       <td tal:content="structure python:context.infosec_pt.field ()"/>
      </tr>
      <tr>
+      <th tal:content="structure python:utils.fieldname
+          (classname, 'infosec_level')"/>
+      <td tal:content="structure python:context.infosec_level.menu ()"/>
+     </tr>
+     <tr>
       <th colspan="4">
        <table class="form">
         <tr>

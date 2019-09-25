@@ -63,6 +63,12 @@ def init \
         )
     p_o_b.setkey ('name')
 
+    infosec_level = Class \
+        ( db, ''"infosec_level"
+        , name                  = String    ()
+        )
+    infosec_level.setkey ('name')
+
     pr_currency = Class \
         ( db, ''"pr_currency"
         , name                  = String    ()
@@ -268,6 +274,9 @@ def init \
                 , issue_ids             = String    ()
                 , infosec_project       = Boolean   ()
                 , infosec_pt            = Boolean   ()
+                , infosec_level         = Link      ( "infosec_level"
+                                                    , do_journal = 'no'
+                                                    )
                 )
             self.__super.__init__ (db, classname, ** properties)
         # end def __init__
@@ -335,6 +344,7 @@ def security (db, ** kw) :
 
     classes = \
         [ ("department",         ["User"],              [])
+        , ("infosec_level",      ["User"],              ["Procurement-Admin"])
         , ("location",           ["User"],              [])
         , ("organisation",       ["User"],              [])
         , ("org_location",       ["User"],              [])

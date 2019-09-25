@@ -6762,3 +6762,6 @@ msgstr "ADIF Mode"
 
 msgid "adif_submode"
 msgstr "ADIF Submode"
+
+msgid "infosec_level"
+msgstr "InfoSec Security Level"

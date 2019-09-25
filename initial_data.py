@@ -1241,3 +1241,7 @@ if 'continent' in db.classes :
     db.continent.create (code = 'NA', name = 'North America')
     db.continent.create (code = 'OC', name = 'Oceania')
     db.continent.create (code = 'SA', name = 'South America')
+if 'infosec_level' in db.classes :
+    db.infosec_level.create (name = 'Default (High)')
+    db.infosec_level.create (name = 'Very High')
+    db.infosec_level.create (name = 'Special')
