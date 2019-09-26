@@ -6765,3 +6765,9 @@ msgstr "ADIF Submode"
 
 msgid "infosec_level"
 msgstr "InfoSec Security Level"
+
+msgid "date_approved"
+msgstr "Approved on"
+
+msgid "date_ordered"
+msgstr "Ordered on"

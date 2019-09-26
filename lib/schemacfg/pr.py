@@ -278,6 +278,8 @@ def init \
                 , infosec_level         = Link      ( "infosec_level"
                                                     , do_journal = 'no'
                                                     )
+                , date_approved         = Date      ()
+                , date_ordered          = Date      ()
                 )
             self.__super.__init__ (db, classname, ** properties)
         # end def __init__
