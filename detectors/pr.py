@@ -116,8 +116,13 @@ def reopen (db, cl, nodeid, new_values) :
     if not (changed - no_reopen) :
         return
     ost = cl.get (nodeid, 'status')
-    if ost == db.pr_status.lookup ('rejected') and 'status' not in new_values :
-        new_values ['status'] = db.pr_status.lookup ('open')
+    rej = db.pr_status.lookup ('rejected')
+    opn = db.pr_status.lookup ('open')
+    if ost == rej and 'status' not in new_values :
+        new_values ['status'] = opn
+    if ost == rej and new_values ['status'] == opn :
+        new_values ['date_ordered']  = None
+        new_values ['date_approved'] = None
 # end def reopen
 
 def check_io (db, cl, nodeid, new_values) :
@@ -212,6 +217,7 @@ def change_pr (db, cl, nodeid, new_values) :
     requester = new_values.get ('requester', cl.get (nodeid, 'requester'))
     creator   = cl.get (nodeid, 'creator')
     ost       = cl.get (nodeid, 'status')
+    now       = Date ('.')
     if 'status' in new_values and new_values ['status'] != ost :
         if new_values ['status'] == db.pr_status.lookup ('approving') :
             # check that pr_justification is given
@@ -325,6 +331,7 @@ def change_pr (db, cl, nodeid, new_values) :
             for ap in approvals :
                 if ap.status != ap_appr :
                     raise Reject (_ ("Not all approvals in status approved"))
+            new_values ['date_approved'] = now
         elif new_values ['status'] == db.pr_status.lookup ('rejected') :
             for ap in approvals :
                 if ap.status == ap_rej :
@@ -333,6 +340,8 @@ def change_pr (db, cl, nodeid, new_values) :
                 uid = db.getuid ()
                 if not common.user_has_role (db, uid, 'Procurement-Admin') :
                     raise Reject (_ ("No rejected approval-record found"))
+            new_values ['date_approved'] = None
+            new_values ['date_ordered']  = None
         elif new_values ['status'] == db.pr_status.lookup ('open') :
             # If setting status to open again we need to retire *all*
             # approvals and re-create the (pending) approval of the
@@ -343,7 +352,14 @@ def change_pr (db, cl, nodeid, new_values) :
                 db.pr_approval.retire (ap.id)
             create_pr_approval (db, cl, nodeid, {})
             # We also need to set the total cost to None
-            new_values ['total_cost'] = None
+            new_values ['total_cost']    = None
+            new_values ['date_approved'] = None
+            new_values ['date_ordered']  = None
+        elif new_values ['status'] == db.pr_status.lookup ('ordered') :
+            new_values ['date_ordered'] = now
+        elif new_values ['status'] == db.pr_status.lookup ('cancelled') :
+            new_values ['date_approved'] = None
+            new_values ['date_ordered']  = None
 # end def change_pr
 
 def agent_in_approval_order_users (db, uid, ptid) :
