@@ -66,6 +66,7 @@ def init \
     infosec_level = Class \
         ( db, ''"infosec_level"
         , name                  = String    ()
+        , order                 = Number    ()
         )
     infosec_level.setkey ('name')
 

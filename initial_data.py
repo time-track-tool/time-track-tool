@@ -1242,7 +1242,7 @@ if 'continent' in db.classes :
     db.continent.create (code = 'OC', name = 'Oceania')
     db.continent.create (code = 'SA', name = 'South America')
 if 'infosec_level' in db.classes :
-    db.infosec_level.create (name = 'Normal')
-    db.infosec_level.create (name = 'High')
-    db.infosec_level.create (name = 'Very High')
-    db.infosec_level.create (name = 'Special')
+    db.infosec_level.create (name = 'Normal',    order = 10)
+    db.infosec_level.create (name = 'High',      order = 20)
+    db.infosec_level.create (name = 'Very High', order = 30)
+    db.infosec_level.create (name = 'Special',   order = 40)
