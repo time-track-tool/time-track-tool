@@ -944,12 +944,12 @@ def fix_infosec (db, cl, nodeid, new_values) :
     for tpid in tps :
         tp = db.time_project.getnode (tpid)
         if tp.infosec_req :
-            print tp.name
+            #print tp.name
             new_values ['infosec_project'] = True
     for ptid in pts :
         pt = db.purchase_type.getnode (ptid)
         if pt.infosec_req :
-            print pt.name
+            #print pt.name
             new_values ['infosec_pt'] = True
 # end def fix_infosec
 
