@@ -6,7 +6,7 @@ dir     = os.getcwd ()
 tracker = instance.open (dir)
 db      = tracker.open ('admin')
 
-infosec = ('Default (High)', 'Very High', 'Special')
+infosec = ('Normal', 'High', 'Very High', 'Special')
 for name in infosec :
     try :
         db.infosec_level.lookup (name)
