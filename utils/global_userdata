@@ -98,64 +98,28 @@ class User_Importer (object) :
 
     def import_userdata (self) :
         count = notfound = 0
-        dw = None
         with open (self.args.filename, 'r') as f :
             dr = DictReader (f, delimiter = self.args.delimiter)
             for rec in dr :
-                if not dw :
-                    fields = dr.fieldnames + ['tt-username']
-                    of = open ('output.csv', 'w')
-                    dw = DictWriter (of, fields, delimiter = ';')
-                    dw.writerow (dict ((x, x) for x in fields))
-                if 'sg.user_name' in rec :
-                    realname = rec ['Surname Name']
-                    realname = ' '.join (reversed (realname.split ()))
-                    # Try finding user via realname
-                    d = dict (realname = realname, status = '1')
-                    d ['@verbose'] = 2
-                    j = self.get ('user?' + urlencode (d))
-                    j = j ['data']['collection']
-                    if len (j) > 1 :
-                        print ("More than one match: %s %s" % (rec, j))
-                    if not len (j) :
-                        print ("Not found by realname: %s" % realname)
-                        d = dict (address = rec ['sg.user_name'], status = '1')
-                        d ['@verbose'] = 2
-                        j = self.get ('user?' + urlencode (d))
-                        j = self.get ('user?' + urlencode (d))
-                        j = j ['data']['collection']
-                        assert len (j) <= 1
-                    if len (j) :
-                        pass
-                        #print (j)
-                    else :
-                        print ("NOT FOUND: %s" % rec)
-                        notfound += 1
+                # FIXME: Use exact string search
+                #d = { 'username:' : rec ['tt-username'] }
+                d = \
+                    { 'username' : rec ['tt-username']
+                    , 'status'   : 1
+                    , '@verbose' : 2
+                    }
+                j = self.get ('user?' + urlencode (d))
+                j = j ['data']['collection']
+                if not len (j) :
+                    print ("Not found: %s" % rec ['tt-username'])
+                if len (j) == 1 :
+                    j = j [0]
                 else :
-                    d = dict \
-                        ( firstname = rec ['First Name']
-                        , lastname  = rec ['Last Name']
-                        )
-                    d ['@verbose'] = 2
-                    j = self.get ('user?' + urlencode (d))
-                    j = j ['data']['collection']
-                    assert len (j) <= 1
-                    n = 'Full Name'
-                    if not len (j) :
-                        d = dict (realname = rec [n])
-                        d ['@verbose'] = 2
-                        j = self.get ('user?' + urlencode (d))
-                        j = j ['data']['collection']
-                        assert len (j) <= 1
-                    if not len (j) :
-                        print ("NOT FOUND: %s" % rec [n])
-                        notfound += 1
-                count += 1
-                if len (j) :
-                    rec ['tt-username'] = j [0]['username']
-                dw.writerow (rec)
-            print ("All: %d not found: %d" % (count, notfound))
-            of.close ()
+                    for item in j :
+                        if item ['username'] == rec ['tt-username'] :
+                            j = item
+                            break
+                #assert len (j) <= 1
     # end def import_userdata
 
 # end class User_Importer
