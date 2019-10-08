@@ -13,6 +13,11 @@ properties = \
         , 'type'
         ]
       )
+    , ( 'infosec_level'
+      , [ 'name'
+        , 'order'
+        ]
+      )
     , ( 'internal_order'
       , [ 'name'
         , 'order_number'
@@ -153,11 +158,14 @@ properties = \
     , ( 'purchase_request'
       , [ 'continuous_obligation'
         , 'contract_term'
+        , 'date_approved'
+        , 'date_ordered'
         , 'delivery_deadline'
         , 'department'
         , 'files'
         , 'frame_purchase'
         , 'frame_purchase_end'
+        , 'infosec_level'
         , 'infosec_project'
         , 'infosec_pt'
         , 'intended_duration'

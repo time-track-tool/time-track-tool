@@ -236,6 +236,14 @@
      </tr>
      <tr>
       <th tal:content="structure python:utils.fieldname
+          (classname, 'date_approved')"/>
+      <td tal:content="structure python:context.date_approved.plain ()"/>
+      <th tal:content="structure python:utils.fieldname
+          (classname, 'date_ordered')"/>
+      <td tal:content="structure python:context.date_ordered.plain ()"/>
+     </tr>
+     <tr>
+      <th tal:content="structure python:utils.fieldname
           (classname, 'pr_justification')"/>
       <td colspan="3" tal:condition="context/pr_justification/is_edit_ok"
           tal:content="structure python:
@@ -277,6 +285,11 @@
       <th tal:content="structure python:utils.fieldname
           (classname, 'infosec_pt')"/>
       <td tal:content="structure python:context.infosec_pt.field ()"/>
+     </tr>
+     <tr>
+      <th tal:content="structure python:utils.fieldname
+          (classname, 'infosec_level')"/>
+      <td tal:content="structure python:context.infosec_level.menu ()"/>
      </tr>
      <tr>
       <th colspan="4">

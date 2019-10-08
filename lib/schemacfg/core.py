@@ -227,5 +227,7 @@ def security (db, ** kw) :
     # and give the regular users access to the web and email interface
     db.security.addPermissionToRole ('User', 'Web Access')
     db.security.addPermissionToRole ('User', 'Email Access')
+    db.security.addPermissionToRole ('User', 'Rest Access')
+    db.security.addPermissionToRole ('User', 'Xmlrpc Access')
 
 # end def security
