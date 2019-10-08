@@ -154,9 +154,16 @@ class Getter () :
                     )
                 print (ind, "    )")
         if self.args.vcorr :
+            d   = dict (absolute = True)
+            d ['@page_size'] = 1
+            vcabs = self.get ('vacation_correction?' + urlencode (d))
+            vcabs = vcabs ['data']['collection']
+            assert len (vcabs) <= 1
+            d   = dict (filter)
+            d ['absolute'] = False
             vcs = self.get ('vacation_correction?' + urlencode (filter))
             vcs = vcs ['data']['collection']
-            for v in vcs :
+            for v in vcabs + vcs :
                 vc = self.get ('vacation_correction/%s' % v ['id'])
                 vc = vc ['data']['attributes']
                 print (ind, "vcorr = db.vacation_correction.create \\")
@@ -235,7 +242,7 @@ class Getter () :
                         ( " %s    , work_location = '%s'"
                         % (ind, tr ['work_location']['id'])
                         )
-                    if tr ['wp']['id'] in wpdict :
+                    if tr ['wp'] and tr ['wp']['id'] in wpdict :
                         new_wpid = wpdict [tr ['wp']['id']]
                     elif tr ['wp'] is None :
                         new_wpid = None
