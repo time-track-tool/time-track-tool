@@ -69,8 +69,14 @@ def check_ranges (cl, nodeid, user, valid_from, valid_to) :
                     % locals ()
                     )
         else :
+            # The third case is the one where an existing record is
+            # split into two records, this is explicitly allowed
             if not (  valid_from >= rvalid_to
                    or (valid_to and valid_to <= rvalid_from)
+                   or (   valid_to and valid_to == rvalid_to
+                      and valid_from > rvalid_from
+                      and valid_from < rvalid_to
+                      )
                    ) :
                 # Don't display 'None':
                 valid_to = valid_to or ''
@@ -561,9 +567,10 @@ def try_fix_vacation (db, cl, nodeid, old_values) :
 # end def try_fix_vacation
 
 def close_existing (db, cl, nodeid, old_values) :
-    """ Check if there is already a user_dynamic record with no valid_to
-        date. If there is one and the current record created also has no
-        valid_to date, we set the valid_to of the found record to the
+    """ Check if there is already a user_dynamic record with the same
+        valid_to date. This can either mean the valid_to is empty for
+        both records or the same date. If there is one that fulfill
+        these conditions, we set the valid_to of the found record to the
         valid_from of the current record.
     """
     current = cl.getnode (nodeid)
@@ -572,7 +579,9 @@ def close_existing (db, cl, nodeid, old_values) :
         if dr == nodeid :
             continue
         r = cl.getnode (dr)
-        if not r.valid_to and current.valid_from >= r.valid_from :
+        if  (   current.valid_to   == r.valid_to
+            and current.valid_from >= r.valid_from
+            ) :
             cl.set (dr, valid_to = current.valid_from)
             break
 # end def close_existing

@@ -30,6 +30,7 @@ import re
 import user1_time, user2_time, user3_time, user4_time, user5_time, user6_time
 import user7_time, user8_time, user10_time, user11_time, user12_time
 import user13_time, user14_time, user15_19_vac, user16_leave
+import user17_time, user18_time
 
 from operator     import mul
 from StringIO     import StringIO
@@ -3165,6 +3166,36 @@ class Test_Case_Timetracker (_Test_Case_Summary) :
         self.db.commit ()
     # end def setup_user16
 
+    def setup_user17 (self) :
+        self.username17 = 'testuser17'
+        self.user17 = self.db.user.create \
+            ( username     = self.username17
+            , firstname    = 'Nummer17'
+            , lastname     = 'User17'
+            , org_location = self.olo
+            , department   = self.dep
+            )
+        ud = self.db.user_dynamic.filter (None, dict (user = self.user17))
+        self.assertEqual (len (ud), 1)
+        self.db.user_dynamic.retire (ud [0])
+        self.db.commit ()
+    # end def setup_user17
+
+    def setup_user18 (self) :
+        self.username18 = 'testuser18'
+        self.user18 = self.db.user.create \
+            ( username     = self.username18
+            , firstname    = 'Nummer18'
+            , lastname     = 'User18'
+            , org_location = self.olo
+            , department   = self.dep
+            )
+        ud = self.db.user_dynamic.filter (None, dict (user = self.user18))
+        self.assertEqual (len (ud), 1)
+        self.db.user_dynamic.retire (ud [0])
+        self.db.commit ()
+    # end def setup_user18
+
     def test_edit_dynuser_leave (self) :
         self.log.debug ('test_edit_dynuser_leave')
         self.setup_db ()
@@ -3312,6 +3343,122 @@ class Test_Case_Timetracker (_Test_Case_Summary) :
             self.db.time_record.retire (tr)
         self.db.user_dynamic.set (id, valid_to = date.Date ('2018-12-13'))
     # end def test_edit_dynuser_leave
+
+    def test_dynuser_create_modify (self) :
+        self.log.debug ('test_dynuser_create_modify')
+        self.setup_db ()
+        otp = self.db.overtime_period.create \
+            ( name              = 'monthly average required'
+            , months            = 1
+            , weekly            = False
+            , required_overtime = True
+            , order             = 3
+            )
+        self.setup_user17 ()
+        self.setup_user18 ()
+        # allow user17 and user18 to book on wp 44
+        self.db.time_wp.set \
+            (self.vacation_wp, bookers = [self.user18, self.user17])
+        # import user 17 and 18
+        user17_time.import_data_17 (self.db, self.user17, self.dep, self.olo)
+        user18_time.import_data_18 (self.db, self.user18, self.dep, self.olo)
+        self.db.commit ()
+        ud = self.db.user_dynamic.create \
+	    ( hours_fri          = 1.0
+	    , hours_sun          = 0.0
+	    , additional_hours   = 5.0
+	    , hours_wed          = 1.0
+	    , vacation_yearly    = 25.0
+	    , all_in             = 0
+	    , valid_from         = date.Date ("2019-10-01.00:00:00")
+	    , durations_allowed  = 0
+	    , hours_tue          = 1.0
+	    , weekend_allowed    = 0
+	    , hours_mon          = 1.0
+	    , hours_thu          = 1.0
+	    , vacation_day       = 1.0
+	    , booking_allowed    = 1
+	    , supp_weekly_hours  = 5.0
+	    , valid_to           = date.Date ("2019-12-17.00:00:00")
+	    , weekly_hours       = 5.0
+	    , travel_full        = 0
+	    , vacation_month     = 1.0
+	    , hours_sat          = 0.0
+	    , department         = self.dep
+	    , org_location       = self.olo
+	    , overtime_period    = '1'
+	    , user               = self.user17
+	    , vac_aliq           = '1'
+	    )
+        dyn = self.db.user_dynamic.getnode (ud)
+        self.assertEqual (dyn.valid_from, date.Date ('2019-10-01'))
+        self.assertEqual (dyn.valid_to,   date.Date ('2019-12-17'))
+        prev = user_dynamic.prev_user_dynamic (self.db, dyn)
+        self.assertEqual (prev.valid_from, date.Date ('2018-12-17'))
+        self.assertEqual (prev.valid_to,   date.Date ('2019-10-01'))
+
+        self.assertRaises (Reject, self.db.user_dynamic.create
+	    , hours_fri          = 7.5
+	    , hours_sun          = 0.0
+	    , additional_hours   = 38.5
+	    , hours_wed          = 7.75
+	    , vacation_yearly    = 25.0
+	    , all_in             = 0
+	    , valid_from         = date.Date ("2019-10-01.00:00:00")
+	    , durations_allowed  = 0
+	    , hours_tue          = 7.75
+	    , weekend_allowed    = 0
+	    , hours_mon          = 7.75
+	    , hours_thu          = 7.75
+	    , vacation_day       = 1.0
+	    , booking_allowed    = 1
+	    , supp_weekly_hours  = 38.5
+	    , valid_to           = date.Date ("2019-12-02.00:00:00")
+	    , weekly_hours       = 38.5
+	    , travel_full        = 0
+	    , vacation_month     = 1.0
+	    , hours_sat          = 0.0
+	    , department         = self.dep
+	    , org_location       = self.olo
+	    , overtime_period    = '1'
+	    , user               = self.user18
+	    , vac_aliq           = '1'
+	    )
+
+        ud = self.db.user_dynamic.create \
+	    ( hours_fri          = 7.5
+	    , hours_sun          = 0.0
+	    , additional_hours   = 38.5
+	    , hours_wed          = 7.75
+	    , vacation_yearly    = 25.0
+	    , all_in             = 0
+	    , valid_from         = date.Date ("2019-10-01.00:00:00")
+	    , durations_allowed  = 0
+	    , hours_tue          = 7.75
+	    , weekend_allowed    = 0
+	    , hours_mon          = 7.75
+	    , hours_thu          = 7.75
+	    , vacation_day       = 1.0
+	    , booking_allowed    = 1
+	    , supp_weekly_hours  = 38.5
+	    , valid_to           = date.Date ("2019-12-01.00:00:00")
+	    , weekly_hours       = 38.5
+	    , travel_full        = 0
+	    , vacation_month     = 1.0
+	    , hours_sat          = 0.0
+	    , department         = self.dep
+	    , org_location       = self.olo
+	    , overtime_period    = '1'
+	    , user               = self.user18
+	    , vac_aliq           = '1'
+	    )
+        dyn = self.db.user_dynamic.getnode (ud)
+        self.assertEqual (dyn.valid_from, date.Date ('2019-10-01'))
+        self.assertEqual (dyn.valid_to,   date.Date ('2019-12-01'))
+        prev = user_dynamic.prev_user_dynamic (self.db, dyn)
+        self.assertEqual (prev.valid_from, date.Date ('2019-05-01'))
+        self.assertEqual (prev.valid_to,   date.Date ('2019-10-01'))
+    # end def test_dynuser_create_modify
 
 # end class Test_Case_Timetracker
 
