@@ -230,7 +230,7 @@ class Getter () :
                             )
                     else :
                         print \
-                            ( " %s    , duration      = '%s'"
+                            ( " %s    , duration      = %s"
                             % (ind, tr ['duration'])
                             )
                     if tr ['time_activity'] :
