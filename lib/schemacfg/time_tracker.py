@@ -747,7 +747,7 @@ def security (db, ** kw) :
     # end def ok_daily_record
 
     def own_time_record (db, userid, itemid) :
-        """User may edit own time_records.
+        """User or Timetracking by user may edit time_records owner by user.
 
            Determine if the user owns the daily record, a negative itemid
            indicates that the record doesn't exist yet -- we allow creation
@@ -757,6 +757,9 @@ def security (db, ** kw) :
             return True
         dr      = db.time_record.get  (itemid, 'daily_record')
         ownerid = db.daily_record.get (dr, 'user')
+        owner   = db.user.getnode (ownerid)
+        if owner.timetracking_by :
+            return owner.timetracking_by == userid
         return userid == ownerid
     # end def own_time_record
 
