@@ -977,6 +977,7 @@ dynuser_copyfields = \
      , 'contract_type'
      , 'vac_aliq'
      , 'max_flexitime'
+     , 'valid_to'
      ]
 
 #END

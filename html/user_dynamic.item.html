@@ -71,7 +71,7 @@
          ).formatlink ()"/>
       <th/>
       <td>
-       <span nowrap tal:condition="python:context.id and not context.valid_to">
+       <span nowrap tal:condition="python:context.id">
         <a i18n:translate="" tal:attributes="href python:
         utils.dynuser_copyurl (context)">
            new user_dynamic record
