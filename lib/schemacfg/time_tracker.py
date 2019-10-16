@@ -532,6 +532,7 @@ def security (db, ** kw) :
         , ("Summary_View",      "View full summary report and all WPs")
         , ("Office",            "Office")
         , ("Time-Report",       "External time reports")
+        , ("Min-User-Edit",     "Allow some user attribute editing")
         ]
 
     #     classname
@@ -698,6 +699,12 @@ def security (db, ** kw) :
           )
         , ( "user",         "View", ["User"]
           , ( "timetracking_by",)
+          )
+        , ( "user",         "View", ["Min-User-Edit"]
+          , ( "aux_username",)
+          )
+        , ( "user",         "Edit", ["Min-User-Edit"]
+          , ( "aux_username",)
           )
         ]
 
