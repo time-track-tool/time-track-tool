@@ -538,22 +538,19 @@ def is_end_of_week (date) :
 # end def is_end_of_week
 
 def dynuser_copyurl (dyn) :
-    try :
-        dyn = dyn._klass.getnode (dyn._nodeid)
-    except AttributeError :
-        pass
-    return 'user_dynamic?:template=item&' + '&'.join \
-        ('%s=%s' % (n, urlquote (str (dyn [n] or '')))
-         for n in user_dynamic.dynuser_copyfields
-        )
+    db  = dyn._db
+    dyn = dyn._klass.getnode (dyn._nodeid)
+    fields = user_dynamic.dynuser_copyfields
+    url = 'user_dynamic?:template=item&' + '&'.join \
+        ('%s=%s' % (n, urlquote (str (dyn [n] or ''))) for n in fields)
+    if _dynuser_half_frozen (db, dyn.user, dyn.valid_from, dyn.valid_to) :
+        fr = freeze.frozen (db, dyn.user, dyn.valid_from) [0]
+        fr = db.daily_record_freeze.get (fr, 'date') + common.day
+        url += '&valid_from=%s' % fr.pretty (common.ymd)
+    return url
 # end def dynuser_copyurl
 
-def dynuser_half_frozen (db, dyn) :
-    userid   = dyn.user.id
-    val_from = Date (str (dyn.valid_from._value))
-    val_to   = dyn.valid_to._value
-    if val_to :
-        val_to = Date (str (val_to))
+def _dynuser_half_frozen (db, userid, val_from, val_to) :
     return \
         (   freeze.frozen (db, userid, val_from)
         and (   val_to
@@ -561,7 +558,27 @@ def dynuser_half_frozen (db, dyn) :
             or  not val_to
             )
         )
+# end def _dynuser_half_frozen
+
+def dynuser_half_frozen (dyn) :
+    db       = dyn._db
+    userid   = dyn.user.id
+    val_from = Date (str (dyn.valid_from._value))
+    val_to   = dyn.valid_to._value
+    if val_to :
+        val_to = Date (str (val_to))
+    return _dynuser_half_frozen (db, userid, val_from, val_to - common.day)
 # end def dynuser_half_frozen
+
+def dynuser_frozen (dyn) :
+    db       = dyn._db
+    userid   = dyn.user.id
+    val_to   = str (dyn.valid_to._value)
+    if not val_to :
+        return False
+    val_to   = Date (val_to)
+    return freeze.frozen (db, userid, val_to)
+# end def dynuser_frozen
 
 class Freeze_Action (Action, autosuper) :
 
@@ -671,6 +688,10 @@ class Split_Dynamic_User_Action (Action) :
         around the freeze date. A precondition is that the dyn user
         record is half-frozen, i.e., the valid_from is frozen and the
         valid_to is not (or valid_to is None).
+        This is no longer in use, since it closes the existing record
+        first before creating a new one. Instead we now display only the
+        'New dynamic user' link with a valid_from = frozen date if the
+        record is half-frozen.
     """
     def handle (self) :
         self.request = templating.HTMLRequest (self.client)
@@ -781,5 +802,6 @@ def init (instance) :
     util ("prev_dr_freeze",           freeze.prev_dr_freeze)
     util ("week_freeze_date",         common.week_freeze_date)
     util ("dynuser_half_frozen",      dynuser_half_frozen)
+    util ("dynuser_frozen",           dynuser_frozen)
     util ("dynuser_copyurl",          dynuser_copyurl)
 # end def init
