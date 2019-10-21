@@ -322,6 +322,9 @@ def approval_for (db, valid_only = False) :
         clearer_for.extend (db.user.find (clearance_by = subst))
     if not db.user.get (uid, 'clearance_by') :
         clearer_for.append (uid)
+    # if clearer_for is empty return empty list
+    if not clearer_for :
+        return []
     d   = dict (supervisor = clearer_for)
     d_a = dict (d)
     if valid_only :
