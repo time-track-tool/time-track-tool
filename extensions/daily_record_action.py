@@ -483,8 +483,6 @@ def approvals_pending (db, request, userlist) :
                     pending [u][k][0] = pending [u][k][1]
         else :
             dyn = user_dynamic.last_user_dynamic (db, u)
-            if not dyn :
-                print u, "no dyn"
             if dyn and (not dyn.valid_to or not fdate or dyn.valid_to > fdate) :
                 date = now
                 if dyn.valid_to and dyn.valid_to < date :
