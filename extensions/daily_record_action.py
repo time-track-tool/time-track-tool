@@ -573,10 +573,10 @@ def dynuser_half_frozen (dyn) :
 def dynuser_frozen (dyn) :
     db       = dyn._db
     userid   = dyn.user.id
-    val_to   = str (dyn.valid_to._value)
+    val_to   = dyn.valid_to._value
     if not val_to :
         return False
-    val_to   = Date (val_to)
+    val_to   = Date (str (val_to))
     return freeze.frozen (db, userid, val_to)
 # end def dynuser_frozen
 
