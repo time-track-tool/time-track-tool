@@ -36,14 +36,16 @@ from   time               import gmtime
 from   roundup.hyperdb    import String, Link, Multilink
 from   common             import next_search_date, day
 
-def frozen (db, user, date) :
+def frozen (db, user, date, order = '+') :
     """ Get frozen freeze-records >= date. If some are found, the date
-        is frozen.
+        is frozen. By default the first record returned is the first
+        after date. But sometimes we want the *last* freeze record. Then
+        we can specify order = '-'.
     """
     f = db.daily_record_freeze.filter \
         ( None
         , dict (user = user, date = date.pretty ('%Y-%m-%d;'), frozen = True)
-        , group = [('+', 'date')]
+        , group = [(order, 'date')]
         )
     return f
 # end def frozen

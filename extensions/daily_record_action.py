@@ -542,7 +542,7 @@ def dynuser_copyurl (dyn) :
     url = 'user_dynamic?:template=item&' + '&'.join \
         ('%s=%s' % (n, urlquote (str (dyn [n] or ''))) for n in fields)
     if _dynuser_half_frozen (db, dyn.user, dyn.valid_from, dyn.valid_to) :
-        fr = freeze.frozen (db, dyn.user, dyn.valid_from) [0]
+        fr = freeze.frozen (db, dyn.user, dyn.valid_from, order = '-') [0]
         fr = db.daily_record_freeze.get (fr, 'date') + common.day
         url += '&valid_from=%s' % fr.pretty (common.ymd)
     return url
