@@ -306,20 +306,18 @@ def subst_active (db, user) :
         return bool (user.subst_active)
 # end def subst_active
 
-def approval_by (db, userid, add_original = True, only_subs = False) :
+def approval_by (db, userid, only_subs = False) :
     """ We allow the userid, an id to which approvals are delegated or
         active substitutes of the two. If only_subs only substitutes are
-        checked. If add_original is specified, we add the original user
-        before clearance_by replacement.
+        checked. Note that earlier we had add_original that, if
+        specified, added the original user before clearance_by
+        replacement. Now if clearance_by is specified the original user
+        doesn't have any permission.
     """
-    if only_subs :
-        add_original = False
     if not userid :
         return []
     ap = db.user.get (userid, 'clearance_by') or userid
     clearance = [ap]
-    if ap != userid and add_original :
-        clearance.append (userid)
     subst = []
     for cl in clearance :
         user = db.user.getnode (cl)
@@ -333,12 +331,12 @@ def approval_by (db, userid, add_original = True, only_subs = False) :
     return clearance
 # end def approval_by
 
-def tt_clearance_by (db, userid, add_original = True, only_subs = False) :
+def tt_clearance_by (db, userid, only_subs = False) :
     assert (userid)
     sv = db.user.get (userid, 'supervisor')
     if not sv :
         return []
-    return approval_by (db, sv, add_original, only_subs)
+    return approval_by (db, sv, only_subs)
 # end def tt_clearance_by
 
 def week_from_date (date) :

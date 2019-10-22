@@ -768,8 +768,7 @@ def security (db, ** kw) :
         ownerid   = db.leave_submission.get (itemid, 'user')
         clearance = tt_clearance_by (db, ownerid)
         return userid in clearance
-    # end def approval_for_time_record
-
+    # end def approval_for_leave_submission
 
     def may_see_time_record (db, userid, itemid) :
         # docstring is used to create composite doc for given check
