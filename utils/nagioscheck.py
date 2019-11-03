@@ -31,21 +31,27 @@ def sig_alarm (* args) :
 oldsig = signal.signal (signal.SIGALRM, sig_alarm)
 signal.alarm (opt.timeout)
 
+ok_errors = \
+    ( (  1, "<class 'roundup.exceptions.Unauthorised'>")
+    , (403, "Forbidden")
+    )
+
 try :
     r = s.lookup ('user', 'anonymous')
     print "Critical: roundup seems to allow lookup for anonymous"
     exit (2)
 except xmlrpclib.Fault, reason :
-    if  ( reason.faultCode != 1
-        or not reason.faultString.startswith
-           ("<class 'roundup.exceptions.Unauthorised'>")
-        ) :
+    for code, faultstring in ok_errors :
+        if  ( reason.faultCode == code
+            and reason.faultString.startswith (faultstring)
+            ) :
+            break
+    else :
         print "Critical: Unknown permission error: %s/%s" \
             % (reason.faultCode, reason.faultString)
         exit (2)
-    else :
-        print "OK: roundup correctly denies lookup request to anonymous"
-        exit (0)
+    print "OK: roundup correctly denies lookup request to anonymous"
+    exit (0)
 except Exception, reason :
         print "Critical: Error: %s" % reason
         exit (2)
