@@ -1,0 +1,67 @@
+#!/usr/bin/python
+import sys
+import os
+from argparse          import ArgumentParser
+from roundup           import date
+from roundup           import instance
+
+# Script to fix accidentally-deleted (marked as obsolete) roles of
+# users. We search only for changes in the last 2 days and where both,
+# roles *and* status were changed. Only users where the current set of
+# roles is a subset of the earlier setting are changed
+
+cmd = ArgumentParser ()
+cmd.add_argument \
+    ( "-u", "--user"
+    , action  = 'append'
+    , help    = 'Limit action to just these users, option may be repeated'
+    )
+cmd.add_argument \
+    ( "-d", "--directory"
+    , default = '.'
+    , help    = 'Tracker directory, default="%(default)s"'
+    )
+cmd.add_argument \
+    ( "-D", "--date"
+    , default = '.-2d'
+    , help    = 'Cutoff-Date, change no older than this, default="%(default)s"'
+    )
+args = cmd.parse_args ()
+
+tracker = instance.open (args.directory)
+db      = tracker.open ('admin')
+
+# Loop over all users with a status that has an ldap_group
+stati = []
+for sid in db.user_status.getnodeids (retired = False) :
+    st = db.user_status.getnode (sid)
+    if st.ldap_group :
+        stati.append (sid)
+
+if args.user :
+    uids = tuple (db.user.lookup (x) for x in args.user)
+else :
+    uids = db.user.filter (None, dict (status = stati))
+
+for uid in uids :
+    user = db.user.getnode (uid)
+    hist = db.getjournal ('user', uid)
+    role = user.roles
+    dt   = date.Date (args.date)
+    r    = set (x.strip ().lower () for x in role.split (','))
+    for h in sorted (hist, key = lambda x : x [1], reverse = True) :
+	if h [1] < dt :
+	    break
+        if h [3] != 'set' :
+	    continue
+	d = h [4]
+	if 'roles' in d :
+	    role = d ['roles']
+	if 'status' not in d or 'roles' not in d :
+	    continue
+	rold = set (x.strip ().lower () for x in role.split (','))
+	if rold > r :
+	    db.user.set (uid, roles = role)
+	    print "Found:", user.username, role
+	    break
+db.commit ()
