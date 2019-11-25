@@ -61,6 +61,10 @@
       <td tal:content="structure python:context.description.field (size=60)"/>
      </tr>
      <tr>
+      <th tal:content="structure python:utils.fieldname (classname, 'order')"/>
+      <td tal:content="structure python:context.order.field ()"/>
+     </tr>
+     <tr>
       <th tal:content="structure python:utils.fieldname
           (classname, 'contact')"/>
       <td tal:content="structure python:context.contact.field ()"/>
