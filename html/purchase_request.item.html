@@ -244,6 +244,11 @@
      </tr>
      <tr>
       <th tal:content="structure python:utils.fieldname
+          (classname, 'renew_until')"/>
+      <td tal:content="structure python:context.renew_until.field ()"/>
+     </tr>
+     <tr>
+      <th tal:content="structure python:utils.fieldname
           (classname, 'pr_justification')"/>
       <td colspan="3" tal:condition="context/pr_justification/is_edit_ok"
           tal:content="structure python:

@@ -6774,3 +6774,6 @@ msgstr "Ordered on"
 
 msgid "deputy_gets_mail"
 msgstr "Deputy gets mail"
+
+msgid "renew_until"
+msgstr "Renew until"

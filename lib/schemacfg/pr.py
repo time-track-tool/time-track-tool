@@ -279,6 +279,7 @@ def init \
                                                     )
                 , date_approved         = Date      ()
                 , date_ordered          = Date      ()
+                , renew_until           = Date      ()
                 )
             self.__super.__init__ (db, classname, ** properties)
         # end def __init__
@@ -396,6 +397,9 @@ def security (db, ** kw) :
           )
         , ( "user", "Edit", ["Procurement-Admin"]
           , ("want_no_messages",)
+          )
+        , ( "purchase_request", "Edit", ["Procurement-Admin"]
+          , ("renew_until",)
           )
         ]
 
