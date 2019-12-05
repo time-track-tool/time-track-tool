@@ -77,7 +77,7 @@
     , utils.ExtProperty
         ( utils, pdict ['purchasing_agents']
         , help_props  = ['realname']
-        , filter = dict (roles = 'procurement')
+        , filter = dict (id = utils.pr_agents (db))
         )
     , utils.ExtProperty
         ( utils, pdict ['special_approval']
