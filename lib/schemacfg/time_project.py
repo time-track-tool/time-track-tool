@@ -150,12 +150,12 @@ def security (db, ** kw) :
           )
         , ( "time_project", "Edit", ["Procurement"]
           , ( "purchasing_agents"
-            ,
+            , "deputy_gets_mail"
             )
           )
         , ( "sap_cc", "Edit", ["Procurement"]
           , ( "purchasing_agents"
-            ,
+            , "deputy_gets_mail"
             )
           )
         ]

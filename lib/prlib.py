@@ -170,6 +170,7 @@ def compute_approvals (db, pr, do_create) :
             , purchase_request = pr.id
             , user             = pcc.responsible
             , deputy           = pcc.deputy
+            , deputy_gets_mail = pcc.deputy_gets_mail or False
             , description      = d
             )
         apr_by_r_d [(pcc.responsible, pcc.deputy)] = apr

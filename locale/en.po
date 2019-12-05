@@ -6771,3 +6771,6 @@ msgstr "Approved on"
 
 msgid "date_ordered"
 msgstr "Ordered on"
+
+msgid "deputy_gets_mail"
+msgstr "Deputy gets mail"

@@ -49,6 +49,11 @@
      </tr>
      <tr>
       <th tal:content="structure python:utils.fieldname
+          (classname, 'deputy_gets_mail')"/>
+      <td tal:content="structure python:context.deputy_gets_mail.plain ()"/>
+     </tr>
+     <tr>
+      <th tal:content="structure python:utils.fieldname
           (classname, 'date')"/>
       <td tal:content="structure python:context.date.plain ()"/>
      </tr>
@@ -65,7 +70,10 @@
      <tr>
       <th tal:content="structure python:utils.fieldname
           (classname, 'purchase_request')"/>
-      <td tal:content="structure python:context.purchase_request.plain ()"/>
+      <td tal:content="structure python:utils.ExtProperty
+        ( utils, context.purchase_request.title
+        , item = context.purchase_request
+        ).formatlink ()"/>
      </tr>
      <tr>
       <th tal:content="structure python:utils.fieldname

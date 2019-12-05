@@ -41,6 +41,12 @@
         )"/>
      </td>
     </tr>
+    <tr tal:condition="python:'deputy_gets_mail' in bclass.properties">
+     <th tal:content="structure python:utils.fieldname
+         (classname, 'deputy_gets_mail')"/>
+     <td tal:content="structure python:context.deputy_gets_mail.field ()"
+      colspan="3"/>
+    </tr>
     <tr>
      <th tal:content="structure python:utils.fieldname
          (classname, 'description')"/>

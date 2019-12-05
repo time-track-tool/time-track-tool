@@ -49,9 +49,7 @@ def init \
     , Location_Class
     , Organisation_Class
     , Org_Location_Class
-    , Time_Project_Class
     , Time_Project_Status_Class
-    , SAP_CC_Class
     , ** kw
     ) :
     export = {}
@@ -94,6 +92,7 @@ def init \
         , role_id               = Link      ("pr_approval_order")
         , user                  = Link      ("user", do_journal = 'no')
         , deputy                = Link      ("user", do_journal = 'no')
+        , deputy_gets_mail      = Boolean   ()
         , by                    = Link      ("user", do_journal = 'no')
         , status                = Link      ("pr_approval_status")
         , date                  = Date      ()
@@ -286,6 +285,28 @@ def init \
     # end class PR
     pr = PR (db, ''"purchase_request")
 
+    assert 'time_project' not in db.classes
+    class PR_Time_Project_Class (kw ['Time_Project_Class']) :
+        def __init__ (self, db, classname, ** properties) :
+            self.update_properties \
+                ( deputy_gets_mail      = Boolean   ()
+                )
+            self.__super.__init__ (db, classname, ** properties)
+        # end def __init__
+    # end class PR_Time_Project_Class
+    PR_Time_Project_Class (db, ''"time_project")
+
+    assert 'sap_cc' not in db.classes
+    class PR_SAP_CC_Class (kw ['SAP_CC_Class']) :
+        def __init__ (self, db, classname, ** properties) :
+            self.update_properties \
+                ( deputy_gets_mail      = Boolean   ()
+                )
+            self.__super.__init__ (db, classname, ** properties)
+        # end def __init__
+    # end class PR_SAP_CC_Class
+    PR_SAP_CC_Class (db, ''"sap_cc")
+
     # Protect against dupe instantiation during i18n template generation
     if 'organisation' not in db.classes :
         Organisation_Class (db, ''"organisation")
@@ -295,13 +316,8 @@ def init \
         Org_Location_Class (db, ''"org_location")
     if 'department' not in db.classes :
         Department_Class   (db, ''"department")
-    if 'time_project' not in db.classes :
-        Time_Project_Class (db, ''"time_project")
     if 'time_project_status' not in db.classes :
         Time_Project_Status_Class (db, ''"time_project_status")
-    if 'sap_cc' not in db.classes :
-        SAP_CC_Class (db, ''"sap_cc")
-
 
     User_Ancestor = kw.get ('User_Class', Ext_Class)
     class User_Class (User_Ancestor) :

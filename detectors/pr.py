@@ -582,7 +582,10 @@ def nosy_for_approval (db, app, add = False) :
     if app.user :
         for k in common.approval_by (db, app.user) :
             nosy [k] = 1
-    # Don't add deputy to nosy
+    # Don't add deputy to nosy unless deputy_gets_mail is set
+    if app.deputy and app.deputy_gets_mail :
+        for k in common.approval_by (db, app.deputy) :
+            nosy [k] = 1
     nosy_dd = {}
     if app.role_id :
         ao = db.pr_approval_order.getnode (app.role_id)
