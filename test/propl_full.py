@@ -181,6 +181,15 @@ properties = \
         , 'transitions'
         ]
       )
+    , ( 'domain_permission'
+      , [ 'ad_domain'
+        , 'clearance_by'
+        , 'default_roles'
+        , 'status'
+        , 'timetracking_by'
+        , 'users'
+        ]
+      )
     , ( 'ext_msg'
       , [ 'ext_id'
         , 'ext_tracker'
@@ -773,9 +782,9 @@ properties = \
         ]
       )
     , ( 'user'
-      , [ 'address'
+      , [ 'ad_domain'
+        , 'address'
         , 'alternate_addresses'
-        , 'aux_username'
         , 'clearance_by'
         , 'contacts'
         , 'csv_delimiter'

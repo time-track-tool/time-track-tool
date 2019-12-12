@@ -482,7 +482,6 @@ def init \
             self.update_properties \
                 ( timing_info            = Boolean   ()
                 , timetracking_by        = Link      ("user")
-                , aux_username           = String    ()
                 )
             kw ['User_Class'].__init__ (self, db, classname, ** properties)
         # end def __init__
@@ -546,7 +545,6 @@ def security (db, ** kw) :
         , ("Summary_View",      "View full summary report and all WPs")
         , ("Office",            "Office")
         , ("Time-Report",       "External time reports")
-        , ("Min-User-Edit",     "Allow some user attribute editing")
         ]
 
     #     classname
@@ -713,12 +711,6 @@ def security (db, ** kw) :
           )
         , ( "user",         "View", ["User"]
           , ( "timetracking_by",)
-          )
-        , ( "user",         "View", ["Min-User-Edit"]
-          , ( "aux_username",)
-          )
-        , ( "user",         "Edit", ["Min-User-Edit"]
-          , ( "aux_username",)
           )
         ]
 

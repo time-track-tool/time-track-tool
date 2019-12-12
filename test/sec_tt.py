@@ -70,6 +70,11 @@ Role "doc_admin":
  User is allowed to edit doc_status (Edit for "doc_status" only)
  User is allowed to edit product_type (Edit for "product_type" only)
  User is allowed to edit reference (Edit for "reference" only)
+Role "domain-user-edit":
+ User is allowed Edit on (Edit for "user": ['contacts', 'csv_delimiter', 'firstname', 'guid', 'hide_message_files', 'job_description', 'lastname', 'lunch_duration', 'lunch_start', 'nickname', 'pictures', 'position', 'roles', 'room', 'sex', 'status', 'supervisor', 'timezone', 'timing_info', 'title', 'tt_lines', 'username'] only)
+ User is allowed to create user (Create for "user" only)
+ User is allowed to create user_contact (Create for "user_contact" only)
+ User is allowed to edit user_contact (Edit for "user_contact" only)
 Role "facility":
  User is allowed Edit on (Edit for "user": ('room',) only)
  User is allowed to create room (Create for "room" only)
@@ -81,7 +86,7 @@ Role "hr":
  User is allowed Edit on (Edit for "daily_record": ('status', 'time_record') only)
  User is allowed Edit on (Edit for "time_project": ('approval_hr', 'approval_required', 'is_public_holiday', 'is_special_leave', 'is_vacation', 'no_overtime', 'no_overtime_day', 'overtime_reduction') only)
  User is allowed Edit on (Edit for "user": ('address', 'alternate_addresses', 'nickname', 'password', 'timezone', 'username') only)
- User is allowed Edit on (Edit for "user": ('aux_username', 'clearance_by', 'firstname', 'job_description', 'lastname', 'lunch_duration', 'lunch_start', 'pictures', 'position', 'realname', 'room', 'sex', 'status', 'subst_active', 'substitute', 'supervisor', 'timetracking_by', 'title', 'roles', 'tt_lines') only)
+ User is allowed Edit on (Edit for "user": ('clearance_by', 'firstname', 'job_description', 'lastname', 'lunch_duration', 'lunch_start', 'pictures', 'position', 'realname', 'room', 'sex', 'status', 'subst_active', 'substitute', 'supervisor', 'timetracking_by', 'title', 'roles', 'tt_lines') only)
  User is allowed Edit on (Edit for "user": ('contacts',) only)
  User is allowed Edit on (Edit for "user_contact": ('contact', 'contact_type', 'description', 'order', 'user') only)
  User is allowed View on (View for "user": ('contacts',) only)
@@ -152,11 +157,8 @@ Role "hr-vacation":
  User is allowed to edit leave_submission (Edit for "leave_submission" only)
  User is allowed to edit vacation_correction (Edit for "vacation_correction" only)
 Role "it":
- User is allowed Edit on (Edit for "user": ('aux_username', 'password', 'roles') only)
+ User is allowed Edit on (Edit for "user": ('password', 'roles') only)
  User may manipulate user Roles through the web (Web Roles)
-Role "min-user-edit":
- User is allowed Edit on (Edit for "user": ('aux_username',) only)
- User is allowed View on (View for "user": ('aux_username',) only)
 Role "nosy":
  User may get nosy messages for doc (Nosy for "doc" only)
 Role "office":
@@ -209,7 +211,7 @@ Role "user":
   (Search for "time_wp": ('activity', 'actor', 'bookers', 'cost_center', 'creation', 'creator', 'description', 'durations_allowed', 'epic_key', 'has_expiration_date', 'id', 'is_public', 'name', 'project', 'responsible', 'time_end', 'time_start', 'time_wp_summary_no', 'travel', 'wp_no') only)
  Search (Search for "user_contact" only)
  User is allowed Edit on file if file is linked from an item with Edit permission (Edit for "file" only)
- User is allowed View on (View for "user": ('activity', 'actor', 'address', 'alternate_addresses', 'aux_username', 'clearance_by', 'creation', 'creator', 'department', 'firstname', 'job_description', 'lastname', 'id', 'lunch_duration', 'lunch_start', 'nickname', 'pictures', 'position', 'queries', 'realname', 'room', 'sex', 'status', 'subst_active', 'substitute', 'supervisor', 'timezone', 'title', 'username', 'tt_lines') only)
+ User is allowed View on (View for "user": ('activity', 'actor', 'ad_domain', 'address', 'alternate_addresses', 'clearance_by', 'creation', 'creator', 'department', 'firstname', 'job_description', 'lastname', 'id', 'lunch_duration', 'lunch_start', 'nickname', 'pictures', 'position', 'queries', 'realname', 'room', 'sex', 'status', 'subst_active', 'substitute', 'supervisor', 'timezone', 'title', 'username', 'tt_lines') only)
  User is allowed View on (View for "user": ('contacts',) only)
  User is allowed View on (View for "user": ('timetracking_by',) only)
  User is allowed View on file if file is linked from an item with View permission (View for "file" only)

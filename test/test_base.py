@@ -127,6 +127,7 @@ class _Test_Case (unittest.TestCase) :
         , 'controlling'
         , 'discount'
         , 'doc_admin'
+        , 'domain-user-edit'
         , 'external'
         , 'facility'
         , 'finance'
@@ -146,7 +147,6 @@ class _Test_Case (unittest.TestCase) :
         , 'letter'
         , 'logger'
         , 'measurement-approval'
-        , 'min-user-edit'
         , 'msgedit'
         , 'msgsync'
         , 'nosy'
@@ -764,8 +764,9 @@ class Test_Case_Support_Timetracker (_Test_Case) :
     schemaname = 'sfull'
     roles = \
         [ 'admin', 'adr_readonly', 'anonymous', 'contact', 'controlling'
-        , 'doc_admin', 'facility', 'hr', 'hr-leave-approval', 'hr-org-location'
-        , 'hr-vacation', 'issue_admin', 'it', 'itview', 'min-user-edit'
+        , 'doc_admin', 'facility', 'hr'
+        , 'hr-leave-approval', 'hr-org-location'
+        , 'hr-vacation', 'issue_admin', 'it', 'itview'
         , 'msgedit', 'msgsync', 'nosy', 'office', 'procurement', 'project'
         , 'project_view', 'sec-incident-nosy'
         , 'sec-incident-responsible', 'staff-report', 'summary_view'
@@ -778,13 +779,61 @@ class Test_Case_Timetracker (_Test_Case_Summary) :
     schemaname = 'time'
     schemafile = 'time_ldap'
     roles = \
-        [ 'admin', 'anonymous', 'controlling', 'doc_admin', 'facility', 'hr'
-        , 'hr-leave-approval', 'hr-org-location', 'hr-vacation', 'it'
-        , 'min-user-edit', 'nosy'
+        [ 'admin', 'anonymous', 'controlling', 'doc_admin'
+        , 'domain-user-edit', 'facility', 'hr'
+        , 'hr-leave-approval', 'hr-org-location', 'hr-vacation', 'it', 'nosy'
         , 'office', 'pgp', 'procurement', 'project', 'project_view'
         , 'staff-report', 'summary_view', 'time-report', 'user', 'user_view'
         ]
     transprop_perms = transprop_time
+
+    def test_domain_user_edit (self) :
+        self.log.debug ('test_domain_user_edit')
+        self.setup_db ()
+        self.db.user.set (self.user1, roles = 'User,Nosy,Domain-User-Edit')
+        ad_domain = 'some.test.domain'
+        roles     = 'User,Nosy'
+        valid     = self.db.user_status.lookup ('valid')
+        obsolete  = self.db.user_status.lookup ('obsolete')
+        self.db.domain_permission.create \
+            ( ad_domain       = ad_domain
+            , users           = [self.user1]
+            , default_roles   = roles
+            , timetracking_by = self.user2
+            , clearance_by    = '1'
+            , status          = valid
+            )
+        self.db.commit ()
+        self.db.close ()
+        self.db = self.tracker.open (self.username1)
+        # Now create a user
+        u = self.db.user.create \
+            ( username = 'testuser'
+            , firstname    = 'Testuser'
+            , lastname     = 'Usertestuser'
+            )
+        u_domain = 'testuser@' + ad_domain
+        self.assertEqual (self.db.user.get (u, 'username'), u_domain)
+        self.assertEqual (self.db.user.get (u, 'roles'), roles)
+        self.assertEqual (self.db.user.get (u, 'status'), valid)
+        self.assertEqual (self.db.user.get (u, 'ad_domain'), ad_domain)
+        # Modify it
+        self.db.user.set (u, lastname = 'Nocheintest')
+        self.assertEqual (self.db.user.get (u, 'lastname'), 'Nocheintest')
+        # Verify we cannot set ad_domain to wrong value
+        self.assertRaises \
+            (Reject, self.db.user.set, u, ad_domain = 'example.com')
+        self.assertEqual (self.db.user.get (u, 'ad_domain'), ad_domain)
+        # Verify we cannot set status to wrong value
+        self.db.user.set (u, status = self.db.user_status.lookup ('system'))
+        self.assertEqual (self.db.user.get (u, 'status'), valid)
+        # Allow setting to obsolete
+        self.db.user.set (u, status = obsolete)
+        self.assertEqual (self.db.user.get (u, 'status'), obsolete)
+        # Allow setting to valid again
+        self.db.user.set (u, status = valid)
+        self.assertEqual (self.db.user.get (u, 'status'), valid)
+    # end def test_domain_user_edit
 
     def setup_user11 (self) :
         self.username11 = 'testuser11'
@@ -3429,7 +3478,8 @@ class Test_Case_Tracker (_Test_Case) :
     schemaname = 'track'
     schemafile = 'trackers'
     roles = \
-        [ 'admin', 'anonymous', 'external', 'issue_admin', 'it', 'ituser'
+        [ 'admin', 'anonymous', 'domain-user-edit', 'external'
+        , 'issue_admin', 'it', 'ituser'
         , 'itview', 'kpm-admin', 'msgedit', 'msgsync', 'nosy', 'pgp'
         , 'readonly-user', 'sec-incident-nosy'
         , 'sec-incident-responsible', 'supportadmin', 'user', 'user_view'
@@ -3441,8 +3491,9 @@ class Test_Case_Fulltracker (_Test_Case_Summary) :
     schemaname = 'full'
     roles = \
         [ 'admin', 'anonymous', 'contact', 'controlling', 'doc_admin'
+        , 'domain-user-edit'
         , 'external', 'facility', 'hr', 'hr-leave-approval', 'hr-org-location'
-        , 'hr-vacation', 'issue_admin', 'it', 'itview', 'min-user-edit'
+        , 'hr-vacation', 'issue_admin', 'it', 'itview'
         , 'msgedit', 'msgsync', 'nosy'
         , 'office', 'pgp', 'procurement', 'project', 'project_view'
         , 'sec-incident-nosy', 'sec-incident-responsible'
@@ -5096,7 +5147,8 @@ class Test_Case_Lielas (_Test_Case) :
 class Test_Case_PR (_Test_Case) :
     schemaname = 'pr'
     roles = \
-        [ 'admin', 'anonymous', 'board', 'controlling', 'finance', 'hr'
+        [ 'admin', 'anonymous', 'board', 'controlling'
+        , 'domain-user-edit', 'finance', 'hr'
         , 'hr-approval', 'it-approval', 'measurement-approval', 'nosy'
         , 'pgp', 'pr-view', 'procure-approval'
         , 'procurement', 'procurement-admin', 'project'

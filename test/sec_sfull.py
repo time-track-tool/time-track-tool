@@ -90,7 +90,7 @@ Role "hr":
  User is allowed Edit on (Edit for "daily_record": ('status', 'time_record') only)
  User is allowed Edit on (Edit for "time_project": ('approval_hr', 'approval_required', 'is_public_holiday', 'is_special_leave', 'is_vacation', 'no_overtime', 'no_overtime_day', 'overtime_reduction') only)
  User is allowed Edit on (Edit for "user": ('address', 'alternate_addresses', 'nickname', 'password', 'timezone', 'username') only)
- User is allowed Edit on (Edit for "user": ('aux_username', 'clearance_by', 'firstname', 'job_description', 'lastname', 'lunch_duration', 'lunch_start', 'pictures', 'position', 'realname', 'room', 'sex', 'status', 'subst_active', 'substitute', 'supervisor', 'title', 'roles', 'tt_lines') only)
+ User is allowed Edit on (Edit for "user": ('clearance_by', 'firstname', 'job_description', 'lastname', 'lunch_duration', 'lunch_start', 'pictures', 'position', 'realname', 'room', 'sex', 'status', 'subst_active', 'substitute', 'supervisor', 'title', 'roles', 'tt_lines') only)
  User is allowed to access contract_type (View for "contract_type" only)
  User is allowed to access daily_record (View for "daily_record" only)
  User is allowed to access daily_record_freeze (View for "daily_record_freeze" only)
@@ -211,9 +211,6 @@ Role "itview":
  User is allowed to access it_int_prio (View for "it_int_prio" only)
  User is allowed to access it_issue (View for "it_issue" only)
  User is allowed to access it_project (View for "it_project" only)
-Role "min-user-edit":
- User is allowed Edit on (Edit for "user": ('aux_username',) only)
- User is allowed View on (View for "user": ('aux_username',) only)
 Role "msgedit":
   (Search for "msg": ('date', 'id') only)
  User is allowed Edit on (Edit for "msg": ('author', 'date', 'id', 'keywords', 'subject', 'summary') only)
@@ -326,8 +323,8 @@ Role "user":
  User is allowed Edit on it_issue if it_issue is non-confidential or user is on nosy list (Edit for "it_issue": ('messages', 'files', 'nosy') only)
  User is allowed Edit on it_project if it_project is non-confidential or user is on nosy list (Edit for "it_project": ('messages', 'files', 'nosy') only)
  User is allowed Edit on support if support is non-confidential or user is on nosy list (Edit for "support": ('analysis_end', 'analysis_result', 'analysis_start', 'bcc', 'business_unit', 'category', 'cc', 'cc_emails', 'classification', 'closed', 'confidential', 'customer', 'emails', 'execution', 'external_ref', 'files', 'goods_received', 'goods_sent', 'lot', 'messages', 'nosy', 'number_effected', 'numeric_effort', 'prio', 'prodcat', 'product', 'related_issues', 'related_support', 'release', 'responsible', 'return_type', 'sap_ref', 'send_to_customer', 'serial_number', 'set_first_reply', 'status', 'superseder', 'title', 'type', 'warranty') only)
- User is allowed View on (View for "user": ('activity', 'actor', 'address', 'alternate_addresses', 'aux_username', 'clearance_by', 'creation', 'creator', 'department', 'firstname', 'id', 'job_description', 'lastname', 'lunch_duration', 'lunch_start', 'nickname', 'pictures', 'position', 'queries', 'realname', 'room', 'sex', 'status', 'subst_active', 'substitute', 'supervisor', 'timezone', 'title', 'tt_lines', 'username') only)
  User is allowed View on (View for "user": ('activity', 'actor', 'address', 'alternate_addresses', 'clearance_by', 'creation', 'creator', 'department', 'firstname', 'id', 'job_description', 'lastname', 'lunch_duration', 'lunch_start', 'nickname', 'pictures', 'position', 'queries', 'realname', 'room', 'sex', 'status', 'subst_active', 'subst_until', 'substitute', 'supervisor', 'timezone', 'title', 'username') only)
+ User is allowed View on (View for "user": ('activity', 'actor', 'address', 'alternate_addresses', 'clearance_by', 'creation', 'creator', 'department', 'firstname', 'id', 'job_description', 'lastname', 'lunch_duration', 'lunch_start', 'nickname', 'pictures', 'position', 'queries', 'realname', 'room', 'sex', 'status', 'subst_active', 'substitute', 'supervisor', 'timezone', 'title', 'tt_lines', 'username') only)
  User is allowed View on (View for "user": ('timetracking_by',) only)
  User is allowed View on file if file is linked from an item with View permission (View for "file" only)
  User is allowed View on issue if issue is non-confidential or user is on nosy list (View for "issue" only)

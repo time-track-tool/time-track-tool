@@ -103,7 +103,7 @@ prop_perms = \
     , ( "user", "View", ["User"]
       , ( "activity", "actor", "address", "alternate_addresses", "creation"
         , "creator", "firstname", "lastname", "id", "nickname", "realname"
-        , "status", "timezone", "title", "username"
+        , "status", "timezone", "title", "username", "ad_domain"
         )
       )
     ]
