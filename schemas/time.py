@@ -107,9 +107,7 @@ prop_perms = \
         , "id", "lunch_duration", "lunch_start", "nickname"
         , "pictures", "position", "queries", "realname", "room", "sex"
         , "status", "subst_active", "substitute", "supervisor", "timezone"
-        , "title", "username", "home_directory", "login_shell"
-        , "samba_home_drive", "samba_home_path", "tt_lines"
-        , "aux_username"
+        , "title", "username", "tt_lines", "aux_username"
         )
       )
     ]

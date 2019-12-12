@@ -275,16 +275,6 @@ def check_overtime_parameters (db, cl, nodeid, new_values) :
             (_ ("%(ah)s must equal %(wh)s for monthly balance") % locals ())
 # end def check_overtime_parameters
 
-def update_user_olo_dept (db, user, olo, dept) :
-    userupdate = {}
-    if db.user.get (user, 'org_location') != olo :
-        userupdate ['org_location'] = olo
-    if db.user.get (user, 'department') != dept :
-        userupdate ['department'] = dept
-    if userupdate :
-        db.user.set (user, **userupdate)
-# end def update_user_olo_dept
-
 def check_user_dynamic (db, cl, nodeid, new_values) :
     old_ot = cl.get (nodeid, 'overtime_period')
     for i in 'user', :
@@ -332,10 +322,6 @@ def check_user_dynamic (db, cl, nodeid, new_values) :
         ) :
         raise Reject (_ ("Frozen: %(old_from)s") % locals ())
     last = user_dynamic.last_user_dynamic (db, user)
-    if  (   ('org_location' in new_values or 'department' in new_values)
-        and (not val_to or last.id == nodeid or last.valid_from < val_from)
-        ) :
-        update_user_olo_dept (db, user, olo, dept)
     if 'valid_from' in new_values or 'valid_to' in new_values :
         new_values ['valid_from'], new_values ['valid_to'] = \
             check_ranges (cl, nodeid, user, val_from, val_to)
@@ -466,8 +452,6 @@ def new_user_dynamic (db, cl, nodeid, new_values) :
     if freeze.frozen (db, user, valid_from) :
         raise Reject (_ ("Frozen: %(valid_from)s") % locals ())
     last = user_dynamic.last_user_dynamic (db, user)
-    if not valid_to or not last or last.valid_from < valid_from :
-        update_user_olo_dept (db, user, olo, dept)
     if 'durations_allowed' not in new_values :
         new_values ['durations_allowed'] = False
     new_values ['valid_from'], new_values ['valid_to'] = \
@@ -568,9 +552,10 @@ def try_fix_vacation (db, cl, nodeid, old_values) :
 
 def close_existing (db, cl, nodeid, old_values) :
     """ Check if there is already a user_dynamic record with the same
-        valid_to date. This can either mean the valid_to is empty for
-        both records or the same date. If there is one that fulfill
-        these conditions, we set the valid_to of the found record to the
+        valid_to date or empty. This can either mean the valid_to is
+        empty for the existing record or the same date for both records
+        (including both empty). If there is one that fulfill these
+        conditions, we set the valid_to of the found record to the
         valid_from of the current record.
     """
     current = cl.getnode (nodeid)
@@ -579,7 +564,7 @@ def close_existing (db, cl, nodeid, old_values) :
         if dr == nodeid :
             continue
         r = cl.getnode (dr)
-        if  (   (current.valid_to   == r.valid_to or r.valid_to is None)
+        if  (   (current.valid_to  == r.valid_to or r.valid_to is None)
             and current.valid_from >= r.valid_from
             ) :
             cl.set (dr, valid_to = current.valid_from)

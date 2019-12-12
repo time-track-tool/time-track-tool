@@ -35,6 +35,7 @@ from bisect       import bisect_left
 from operator     import add
 
 from roundup.date import Date
+from roundup.cgi.TranslationService import get_translation
 
 import freeze
 import common
@@ -979,5 +980,108 @@ dynuser_copyfields = \
      , 'max_flexitime'
      , 'valid_to'
      ]
+
+def is_tt_user_status (db, status) :
+    """ Get all stati with 'timetracking_allowed' set it property exists
+        Otherwise simply use 'valid' status
+    """
+    s = None
+    assert 'user_status' in db.classes
+    if 'timetracking_allowed' in db.user_status.properties :
+        s = db.user_status.filter (None, dict (timetracking_allowed = True))
+    else :
+        s = [db.user_status.lookup ('valid')]
+    if s is not None :
+        return status in s
+    return True
+# end def is_tt_user_status
+
+def check_email (db, contacts, email, t_email) :
+    for c in contacts :
+        contact = db.user_contact.getnode (c)
+        if (contact.contact == email and contact.contact_type == t_email) :
+            return True
+    return False
+# end def check_email
+
+def user_create_magic (db, uid, olo, dep) :
+    """ Perform magic on new user creation
+        If both, department and org_location are given, we create a
+        dynamic user record. If at least the org_location is given, we
+        look up the mail domain and create email addresses if the user
+        doesn't have any contacts yet.
+        We also set nickname and lunch duration/lunch_start values if
+        those are not yet set for the user.
+        And of course we do all this only for timetracking users.
+    """
+    assert 'user_status' in db.classes
+    cl   = db.user
+    user = cl.getnode (uid)
+    if not is_tt_user_status (db, user.status) :
+        return
+    if olo :
+        org_location = db.org_location.getnode (olo)
+    if uid > 2 and olo and dep :
+        db.user_dynamic.create \
+            ( user            = uid
+            , valid_from      = Date ('.')
+            , org_location    = olo
+            , department      = dep
+            , vacation_yearly = 25
+            )
+
+    _ = get_translation \
+        (db.config.TRACKER_LANGUAGE, db.config.TRACKER_HOME).gettext
+
+    update_dict = {}
+    if not user.nickname and 'firstname' in cl.properties :
+        fn    = user.firstname
+        ln    = user.lastname
+        lfn   = common.tolower_ascii (fn)
+        lln   = common.tolower_ascii (ln)
+        cnick = getattr (db.config.ext, 'MISC_CREATE_NICKNAME', None)
+        if cnick is None :
+            cnick = 'yes'
+        cnick = cnick.lower () in ('yes', 'true')
+        if cnick :
+            nickname = common.new_nickname (_, cl, uid, lfn, lln)
+            if nickname :
+                update_dict ['nickname'] = nickname
+
+    maildomain = None
+    if 'mail_domain' in db.organisation.properties :
+        maildomain = db.organisation.get \
+            (org_location.organisation, 'mail_domain')
+    if maildomain and not user.contacts :
+        assert not user.address and not user.alternate_addresses
+        if 'contacts' in cl.properties :
+            try :
+                email = db.uc_type.lookup ('Email')
+            except KeyError :
+                email = None
+            contacts = []
+            ms = \
+                ( '@'.join (('.'.join ((lfn, lln)), maildomain))
+                , '@'.join ((user.username, maildomain))
+                )
+            for n, m in enumerate (ms) :
+                if not check_email (db, contacts, m, email) :
+                    c = db.user_contact.create \
+                        ( contact      = m
+                        , contact_type = email
+                        , order        = 1 + n
+                        )
+                    contacts.append (c)
+            if contacts :
+                update_dict ['contacts'] = contacts
+    if 'lunch_duration' in cl.properties :
+        if not user.lunch_duration :
+            update_dict ['lunch_duration'] = .5
+        if not user.lunch_start :
+            update_dict ['lunch_start'] = '12:00'
+    if update_dict :
+        db.user.set (uid, **update_dict)
+    db.commit ()
+# end def user_create_magic
 
 #END

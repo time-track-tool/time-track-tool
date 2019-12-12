@@ -181,23 +181,12 @@ def security (db, ** kw) :
         , ( "location", "Edit", ["IT"]
           , ("domain_part",)
           )
-        , ( "org_location", "Edit", ["IT"]
-          , ("smb_domain", "dhcp_server", "domino_dn")
-          )
         , ( "organisation", "Edit", ["IT"]
           , ("domain_part",)
           )
         , ( "user", "Edit", ["IT"]
           , ( "address", "alternate_addresses", "nickname"
             , "password", "timezone", "username"
-            , "is_lotus_user", "sync_with_ldap", "group"
-            , "secondary_groups", "uid", "home_directory", "login_shell"
-            , "samba_home_drive", "samba_home_path", "samba_kickoff_time"
-            , "samba_lm_password", "samba_logon_script", "samba_nt_password"
-            , "samba_profile_path", "samba_pwd_can_change", "samba_pwd_last_set"
-            , "samba_pwd_must_change", "user_password", "shadow_last_change"
-            , "shadow_min", "shadow_max", "shadow_warning", "shadow_inactive"
-            , "shadow_expire", "shadow_used"
             )
           )
         , ( "user", "View", ["User"]
@@ -207,9 +196,7 @@ def security (db, ** kw) :
             , "lunch_duration", "lunch_start", "nickname"
             , "pictures", "position", "queries", "realname", "room", "sex"
             , "status", "subst_active", "subst_until", "substitute"
-            , "supervisor", "timezone"
-            , "title", "username", "home_directory", "login_shell"
-            , "samba_home_drive", "samba_home_path"
+            , "supervisor", "timezone", "title", "username"
             )
           )
         ]

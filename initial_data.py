@@ -265,8 +265,16 @@ if 'severity' in db.classes :
 if 'user_status' in db.classes :
     # user status must come first.
     user_status = db.getclass ('user_status')
-    user_status.create \
-        (name = "valid",    is_nosy = True,  description = "Valid user")
+    if 'timetracking_allowed' in user_status.properties :
+        user_status.create \
+            ( name                 = "valid"
+            , is_nosy              = True
+            , description          = "Valid user"
+            , timetracking_allowed = True
+            )
+    else :
+        user_status.create \
+            (name = "valid", is_nosy = True, description = "Valid user")
     user_status.create \
         (name = "obsolete", is_nosy = False, description = "No longer valid")
     user_status.create \

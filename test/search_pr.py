@@ -1120,16 +1120,10 @@ properties = \
         , ( 'csv_delimiter'
           , ['admin', 'procurement-admin', 'user_view']
           )
-        , ( 'department'
-          , ['admin', 'procurement-admin', 'user_view']
-          )
         , ( 'guid'
           , ['admin', 'procurement-admin', 'user_view']
           )
         , ( 'hide_message_files'
-          , ['admin', 'procurement-admin', 'user_view']
-          )
-        , ( 'org_location'
           , ['admin', 'procurement-admin', 'user_view']
           )
         , ( 'password'

@@ -2,7 +2,9 @@ security = """
 New Web users get the Roles "User,Nosy"
 New Email users get the Role "User"
 Role "admin":
+ User may access the rest interface (Rest Access)
  User may access the web interface (Web Access)
+ User may access the xmlrpc interface (Xmlrpc Access)
  User may create everything (Create)
  User may edit everything (Edit)
  User may manipulate user Roles through the web (Web Roles)
@@ -137,7 +139,9 @@ Role "user":
  User is allowed to view special risks if the PR has appropriate status and the user is creator or owner of the PR or has one of the view roles (View for "purchase_request": ('pr_risks',) only)
  User is allowed to view their own files (View for "file" only)
  User is allowed to view their own messages (View for "msg" only)
+ User may access the rest interface (Rest Access)
  User may access the web interface (Web Access)
+ User may access the xmlrpc interface (Xmlrpc Access)
  User may use the email interface (Email Access)
  User may view time category if user is owner or deputy of time category or on nosy list of time category or if user is department manager of time category (View for "time_project" only)
  User with view role is allowed editing if status is 'approved' or 'ordered' (Edit for "purchase_request": ('files', 'messages', 'nosy', 'status') only)

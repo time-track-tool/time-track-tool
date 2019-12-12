@@ -3,6 +3,10 @@
 
 # tool locations
 XPOT ?= xpot
+# xgettext tells us pygettext is obsolete. Seems neiter xgettext nor
+# pygettext support extraction of ''"fancy" ''"""quoting""" where we
+# mark the text with an additional empty set of quotes.
+XGETTEXT ?= xgettext
 MSGFMT ?= msgfmt
 MSGMERGE ?= msgmerge
 XGETTEXT ?= xgettext
@@ -39,7 +43,7 @@ dist:
 	done
 
 template: attr.py
-	${XPOT} -n -o $(TEMPLATE) $(SOURCES) attr.py
+	${XGETTEXT} -n -o $(TEMPLATE) $(SOURCES) attr.py
 	${TAL_GETTEXT} -u $(TEMPLATE) $(HTML)
 	${XGETTEXT} -j -w 80 -F \
 	  --msgid-bugs-address=rsc@runtux.com \
@@ -55,16 +59,30 @@ template: attr.py
 attr.py: attributes.py ../lib/schemacfg/abo.py \
     ../lib/schemacfg/address.py ../lib/schemacfg/adr_ext.py \
     ../lib/schemacfg/adr_perm.py ../lib/schemacfg/adr_ptr.py \
-    ../lib/schemacfg/company.py ../lib/schemacfg/complex.py \
+    ../lib/schemacfg/callerid.py ../lib/schemacfg/company.py \
     ../lib/schemacfg/contact.py ../lib/schemacfg/core.py \
-    ../lib/schemacfg/doc.py ../lib/schemacfg/dyndns.py \
-    ../lib/schemacfg/erp.py ../lib/schemacfg/ext_issue.py \
-    ../lib/schemacfg/__init__.py ../lib/schemacfg/issue.py \
-    ../lib/schemacfg/it_tracker.py ../lib/schemacfg/legalclient.py \
+    ../lib/schemacfg/docissue.py ../lib/schemacfg/doc.py \
+    ../lib/schemacfg/dyndns.py ../lib/schemacfg/email.py \
+    ../lib/schemacfg/erp.py ../lib/schemacfg/extcompany.py \
+    ../lib/schemacfg/external_users.py ../lib/schemacfg/ext_issue.py \
+    ../lib/schemacfg/ext_tracker.py ../lib/schemacfg/extuser.py \
+    ../lib/schemacfg/hamlog.py ../lib/schemacfg/__init__.py \
+    ../lib/schemacfg/issue.py ../lib/schemacfg/it_part_of.py \
+    ../lib/schemacfg/it_tracker.py ../lib/schemacfg/ituser.py \
+    ../lib/schemacfg/keyword.py ../lib/schemacfg/kpm.py \
+    ../lib/schemacfg/ldap.py ../lib/schemacfg/legalclient.py \
     ../lib/schemacfg/letter.py ../lib/schemacfg/lielas.py \
-    ../lib/schemacfg/nwm.py ../lib/schemacfg/pers_ext.py \
-    ../lib/schemacfg/pers_letter.py ../lib/schemacfg/person_adr.py \
+    ../lib/schemacfg/light.py ../lib/schemacfg/min_adr.py \
+    ../lib/schemacfg/msg_header.py ../lib/schemacfg/nickname.py \
+    ../lib/schemacfg/org_loc.py ../lib/schemacfg/org_min.py \
+    ../lib/schemacfg/pers_ext.py ../lib/schemacfg/pers_letter.py \
+    ../lib/schemacfg/person_adr.py ../lib/schemacfg/person_cust.py \
     ../lib/schemacfg/person.py ../lib/schemacfg/person_sep.py \
-    ../lib/schemacfg/schemadef.py ../lib/schemacfg/sinvoice.py \
-    ../lib/schemacfg/time_tracker.py ../lib/schemacfg/user.py
+    ../lib/schemacfg/pers_prov.py ../lib/schemacfg/pr.py \
+    ../lib/schemacfg/rouser.py ../lib/schemacfg/schemadef.py \
+    ../lib/schemacfg/sinvoice.py ../lib/schemacfg/sip.py \
+    ../lib/schemacfg/support.py ../lib/schemacfg/sync_id.py \
+    ../lib/schemacfg/time_project.py ../lib/schemacfg/time_tracker.py \
+    ../lib/schemacfg/umts.py ../lib/schemacfg/user_contact.py \
+    ../lib/schemacfg/user.py
 	$(RUN_PYTHON) attributes.py > attr.py

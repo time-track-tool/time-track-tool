@@ -489,6 +489,20 @@ def init \
     # end class User_Class
     export.update (dict (User_Class = User_Class))
 
+    User_Status_Ancestor = kw ['User_Status_Class']
+    class User_Status_Class_TT (User_Status_Ancestor) :
+        """ Add attribute(s) to User_Status_Class.
+        """
+        def __init__ (self, db, classname, ** properties) :
+            self.update_properties \
+                ( timetracking_allowed  = Boolean   ()
+                )
+            User_Status_Ancestor.__init__ \
+                (self, db, classname, ** properties)
+        # end def __init___
+    # end class User_Status_Class_TT
+    export.update (dict (User_Status_Class = User_Status_Class_TT))
+
     class Org_Location_Class (kw ['Org_Location_Class']) :
         """ Add some attributes needed for time tracker
         """
@@ -754,7 +768,7 @@ def security (db, ** kw) :
     # end def ok_daily_record
 
     def own_time_record (db, userid, itemid) :
-        """User or Timetracking by user may edit time_records owner by user.
+        """User or Timetracking by user may edit time_records owned by user.
 
            Determine if the user owns the daily record, a negative itemid
            indicates that the record doesn't exist yet -- we allow creation

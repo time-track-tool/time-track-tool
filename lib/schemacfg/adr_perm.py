@@ -56,8 +56,7 @@ def security (db, ** kw) :
             , "pictures", "position", "queries", "realname", "room", "sex"
             , "status", "subst_active", "subst_until", "substitute"
             , "supervisor", "timezone"
-            , "title", "username", "home_directory", "login_shell"
-            , "samba_home_drive", "samba_home_path"
+            , "title", "username"
             )
           )
         , ( "user", "View", ["Adr_Readonly"]
