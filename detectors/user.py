@@ -251,10 +251,77 @@ def deny_system_user (db, cl, nodeid, new_values) :
         return
     system = db.user_status.lookup ('system')
     status = db.user.get (uid, 'status')
-    print "Trying to create user:", new_values
     if status == system :
         raise Reject, _ ("System users may not create users")
 # end def deny_system_user
+
+def domain_user_edit (db, cl, nodeid, new_values) :
+    """ If a user change/create happens and the user doing the
+        modification has the 'Domain-User-Edit' role, we need to perform
+        additional checks.
+    """
+    # Get role of user and check permission
+    uid  = db.getuid ()
+    # Allow admin user
+    if uid == '1' :
+        return
+    role = 'Domain-User-Edit'
+    if not common.user_has_role (db, uid, role) :
+        return
+    # Find entries in domain_permission
+    dpids = db.domain_permission.filter (None, dict (users = uid))
+    if not dpids :
+        raise Reject (_ ("No permission to edit/create users with any domain"))
+    ad_domain = new_values.get ('ad_domain', None)
+    if not ad_domain and nodeid :
+        ad_domain = cl.get (nodeid, 'ad_domain')
+    if ad_domain :
+        for d in dpids :
+            dp = db.domain_permission.getnode (d)
+            if dp.ad_domain == ad_domain :
+                break
+        else :
+            raise Reject (_ ("No permission for AD-Domain: %s" % ad_domain))
+    else :
+        if len (dpids) == 1 :
+            dp = db.domain_permission.getnode (dpids [0])
+            ad_domain = dp.ad_domain
+        else :
+            raise Reject (_ ("AD-Domain must be specified"))
+    # Force this to valid value
+    if not nodeid or ad_domain in new_values :
+        new_values ['ad_domain'] = ad_domain
+    if not nodeid or 'roles' in new_values :
+        new_values ['roles'] = dp.default_roles
+    if not nodeid or 'timetracking_by' in new_values :
+        new_values ['timetracking_by'] = dp.timetracking_by
+    if not nodeid or 'clearance_by' in new_values :
+        new_values ['clearance_by'] = dp.clearance_by
+    obsolete = db.user_status.lookup ('obsolete')
+    if not nodeid or 'status' in new_values :
+        nstatus = new_values.get ('status', None)
+        if (nstatus and nstatus != obsolete) or not nodeid :
+            new_values ['status'] = dp.status
+# end def domain_user_edit
+
+def fix_domain_username (db, cl, nodeid, new_values) :
+    if 'username' not in new_values and 'ad_domain' not in new_values :
+        return
+    ad_domain = new_values.get ('ad_domain', None)
+    username  = new_values.get ('username', None)
+    if not username :
+        username = cl.get (nodeid, 'username')
+    if not ad_domain and nodeid :
+        ad_domain = cl.get (nodeid, 'ad_domain')
+    if not ad_domain :
+        if username and '@' in username :
+            raise Reject (_ ("No domain allowed for username"))
+        return
+    assert username
+    if '@' in username :
+        username = username.split ('@') [0]
+    new_values ['username'] = '@'.join ((username, ad_domain))
+# end def fix_domain_username
 
 def init (db) :
     global _
@@ -279,3 +346,8 @@ def init (db) :
         db.user_status.audit ("create", check_user_status)
         db.user_status.audit ("set",    check_user_status)
         db.user.audit        ("create", deny_system_user)
+    if 'domain_permission' in db.classes :
+        db.user.audit ("create", domain_user_edit)
+        db.user.audit ("set",    domain_user_edit)
+        db.user.audit ("create", fix_domain_username)
+        db.user.audit ("set",    fix_domain_username)

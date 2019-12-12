@@ -103,7 +103,7 @@ prop_perms = \
         , "job_description", "lastname", "lunch_duration", "lunch_start"
         , "pictures", "position", "realname"
         , "room", "sex", "status", "subst_active", "substitute", "supervisor"
-        , "title", "roles", "tt_lines", "aux_username"
+        , "title", "roles", "tt_lines"
         )
       )
     , ( "user", "Edit", ["Office"]
@@ -111,7 +111,8 @@ prop_perms = \
         )
       )
     , ( "user", "Edit", ["IT"]
-      , ( "pictures", "aux_username"
+      , ( "pictures"
+        ,
         )
       )
     , ( "user", "View", ["Controlling"], ("roles",))
@@ -122,7 +123,7 @@ prop_perms = \
         , "id", "lunch_duration", "lunch_start", "nickname"
         , "pictures", "position", "queries", "realname", "room", "sex"
         , "status", "subst_active", "substitute", "supervisor", "timezone"
-        , "title", "username", "tt_lines", "aux_username"
+        , "title", "username", "tt_lines", "ad_domain"
         )
       )
     ]

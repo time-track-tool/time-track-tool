@@ -29,10 +29,15 @@
 #--
 #
 
+from schemacfg import schemadef
+
 def init \
     ( db
     , String
+    , Link
+    , Multilink
     , Ext_Class
+    , Class
     , ** kw
     ) :
     export = {}
@@ -59,12 +64,83 @@ def init \
         def __init__ (self, db, classname, ** properties) :
             self.update_properties \
                 ( guid                   = String    ()
-                #, ad_domain              = String    ()
+                , ad_domain              = String    ()
                 )
             User_Ancestor.__init__ (self, db, classname, ** properties)
         # end def __init__
     # end class User_Class
     export.update (dict (User_Class = User_Class))
 
+    domain_permission = Class \
+        ( db
+        , ''"domain_permission"
+        , ad_domain       = String    ()
+        , users           = Multilink ("user")
+        , default_roles   = String    ()
+        , timetracking_by = Link      ("user")
+        , clearance_by    = Link      ("user")
+        , status          = Link      ("user_status")
+        )
+    domain_permission.setkey ('ad_domain')
+
     return export
 # end def init
+
+def security (db, ** kw) :
+    roles = \
+        [ ("Domain-User-Edit", "Edit/Create users with specific AD domain")
+        ]
+    schemadef.register_roles (db, roles)
+    role = roles [0][0]
+    db.security.addPermissionToRole (role, 'Create', 'user')
+    if 'user_contact' in db.classes :
+        db.security.addPermissionToRole (role, 'Create', 'user_contact')
+    if 'user_dynamic' in db.classes :
+        db.security.addPermissionToRole (role, 'Create', 'user_dynamic')
+    # Editable user fields for the Domain-User-Edit role
+    user_props = \
+        [ 'contacts'
+        , 'csv_delimiter'
+        , 'firstname'
+        , 'guid'
+        , 'hide_message_files'
+        , 'job_description'
+        , 'lastname'
+        , 'lunch_duration'
+        , 'lunch_start'
+        , 'nickname'
+        , 'pictures'
+        , 'position'
+        , 'roles'
+        , 'room'
+        , 'sex'
+        , 'status'
+        , 'supervisor'
+        , 'timezone'
+        , 'timing_info'
+        , 'title'
+        , 'tt_lines'
+        , 'username'
+	]
+    classes = []
+    if 'user_contact' in db.classes :
+        classes.append \
+            ( ( "user_contact"
+              , []
+              , [role]
+              )
+            )
+    if 'user_dynamic' in db.classes :
+        classes.append \
+            ( ( "user_dynamic"
+              , []
+              , [role]
+              )
+            )
+    prop_perms = \
+        [ ( "user", "Edit", [role]
+          , user_props
+          )
+        ]
+    schemadef.register_class_permissions (db, classes, prop_perms)
+# end def security

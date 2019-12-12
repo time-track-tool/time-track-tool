@@ -14,6 +14,9 @@ Role "admin":
  User may view everything (View)
 Role "anonymous":
  User may access the web interface (Web Access)
+Role "domain-user-edit":
+ User is allowed Edit on (Edit for "user": ['contacts', 'csv_delimiter', 'firstname', 'guid', 'hide_message_files', 'job_description', 'lastname', 'lunch_duration', 'lunch_start', 'nickname', 'pictures', 'position', 'roles', 'room', 'sex', 'status', 'supervisor', 'timezone', 'timing_info', 'title', 'tt_lines', 'username'] only)
+ User is allowed to create user (Create for "user" only)
 Role "external":
   (Search for "ext_tracker_state": ('id', 'issue') only)
   (Search for "user": ('id', 'nickname', 'username') only)
@@ -260,8 +263,8 @@ Role "user":
  User is allowed Edit on it_issue if it_issue is non-confidential or user is on nosy list (Edit for "it_issue": ('messages', 'files', 'nosy') only)
  User is allowed Edit on it_project if it_project is non-confidential or user is on nosy list (Edit for "it_project": ('messages', 'files', 'nosy') only)
  User is allowed Edit on support if support is non-confidential or user is on nosy list (Edit for "support": ('analysis_end', 'analysis_result', 'analysis_start', 'bcc', 'business_unit', 'category', 'cc', 'cc_emails', 'classification', 'closed', 'confidential', 'customer', 'emails', 'execution', 'external_ref', 'files', 'goods_received', 'goods_sent', 'lot', 'messages', 'nosy', 'number_effected', 'numeric_effort', 'prio', 'prodcat', 'product', 'related_issues', 'related_support', 'release', 'responsible', 'return_type', 'sap_ref', 'send_to_customer', 'serial_number', 'set_first_reply', 'status', 'superseder', 'title', 'type', 'warranty') only)
+ User is allowed View on (View for "user": ('activity', 'actor', 'ad_domain', 'address', 'alternate_addresses', 'creation', 'creator', 'firstname', 'id', 'lastname', 'nickname', 'realname', 'status', 'timezone', 'title', 'username') only)
  User is allowed View on (View for "user": ('activity', 'actor', 'address', 'alternate_addresses', 'clearance_by', 'creation', 'creator', 'department', 'firstname', 'id', 'job_description', 'lastname', 'lunch_duration', 'lunch_start', 'nickname', 'pictures', 'position', 'queries', 'realname', 'room', 'sex', 'status', 'subst_active', 'subst_until', 'substitute', 'supervisor', 'timezone', 'title', 'username') only)
- User is allowed View on (View for "user": ('activity', 'actor', 'address', 'alternate_addresses', 'creation', 'creator', 'firstname', 'id', 'lastname', 'nickname', 'realname', 'status', 'timezone', 'title', 'username') only)
  User is allowed View on file if file is linked from an item with View permission (View for "file" only)
  User is allowed View on issue if issue is non-confidential or user is on nosy list (View for "issue" only)
  User is allowed View on it_issue if it_issue is non-confidential or user is on nosy list (View for "it_issue" only)
