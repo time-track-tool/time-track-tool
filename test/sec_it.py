@@ -2,7 +2,9 @@ security = """
 New Web users get the Roles "User,Nosy"
 New Email users get the Role "User"
 Role "admin":
+ User may access the rest interface (Rest Access)
  User may access the web interface (Web Access)
+ User may access the xmlrpc interface (Xmlrpc Access)
  User may create everything (Create)
  User may edit everything (Edit)
  User may manipulate user Roles through the web (Web Roles)
@@ -16,9 +18,8 @@ Role "it":
   (Search for "user" only)
  User is allowed Edit on (Edit for "file": ('name', 'type') only)
  User is allowed Edit on (Edit for "location": ('domain_part',) only)
- User is allowed Edit on (Edit for "org_location": ('smb_domain', 'dhcp_server', 'domino_dn') only)
  User is allowed Edit on (Edit for "organisation": ('domain_part',) only)
- User is allowed Edit on (Edit for "user": ('address', 'alternate_addresses', 'nickname', 'password', 'timezone', 'username', 'is_lotus_user', 'sync_with_ldap', 'group', 'secondary_groups', 'uid', 'home_directory', 'login_shell', 'samba_home_drive', 'samba_home_path', 'samba_kickoff_time', 'samba_lm_password', 'samba_logon_script', 'samba_nt_password', 'samba_profile_path', 'samba_pwd_can_change', 'samba_pwd_last_set', 'samba_pwd_must_change', 'user_password', 'shadow_last_change', 'shadow_min', 'shadow_max', 'shadow_warning', 'shadow_inactive', 'shadow_expire', 'shadow_used') only)
+ User is allowed Edit on (Edit for "user": ('address', 'alternate_addresses', 'nickname', 'password', 'timezone', 'username') only)
  User is allowed Edit on (Edit for "user": ('csv_delimiter', 'realname', 'roles') only)
  User is allowed Edit on file if file is linked from an item with Edit permission (Edit for "file" only)
  User is allowed Edit on msg if msg is linked from an item with Edit permission (Edit for "msg" only)
@@ -79,8 +80,8 @@ Role "user":
  User is allowed Edit on file if file is linked from an item with Edit permission (Edit for "file" only)
  User is allowed Edit on it_issue if it_issue is non-confidential or user is on nosy list (Edit for "it_issue": ('messages', 'files', 'nosy') only)
  User is allowed Edit on it_project if it_project is non-confidential or user is on nosy list (Edit for "it_project": ('messages', 'files', 'nosy') only)
- User is allowed View on (View for "user": ('activity', 'actor', 'address', 'alternate_addresses', 'clearance_by', 'creation', 'creator', 'department', 'firstname', 'home_directory', 'id', 'job_description', 'lastname', 'login_shell', 'lunch_duration', 'lunch_start', 'nickname', 'pictures', 'position', 'queries', 'realname', 'room', 'samba_home_drive', 'samba_home_path', 'sex', 'status', 'subst_active', 'subst_until', 'substitute', 'supervisor', 'timezone', 'title', 'username') only)
- User is allowed View on (View for "user": ('activity', 'actor', 'address', 'alternate_addresses', 'clearance_by', 'creation', 'creator', 'department', 'firstname', 'home_directory', 'id', 'job_description', 'lastname', 'login_shell', 'lunch_duration', 'lunch_start', 'nickname', 'pictures', 'position', 'queries', 'realname', 'room', 'samba_home_drive', 'samba_home_path', 'sex', 'status', 'subst_active', 'substitute', 'supervisor', 'timezone', 'title', 'username') only)
+ User is allowed View on (View for "user": ('activity', 'actor', 'address', 'alternate_addresses', 'clearance_by', 'creation', 'creator', 'department', 'firstname', 'id', 'job_description', 'lastname', 'lunch_duration', 'lunch_start', 'nickname', 'pictures', 'position', 'queries', 'realname', 'room', 'sex', 'status', 'subst_active', 'subst_until', 'substitute', 'supervisor', 'timezone', 'title', 'username') only)
+ User is allowed View on (View for "user": ('activity', 'actor', 'address', 'alternate_addresses', 'clearance_by', 'creation', 'creator', 'department', 'firstname', 'id', 'job_description', 'lastname', 'lunch_duration', 'lunch_start', 'nickname', 'pictures', 'position', 'queries', 'realname', 'room', 'sex', 'status', 'subst_active', 'substitute', 'supervisor', 'timezone', 'title', 'username') only)
  User is allowed View on file if file is linked from an item with View permission (View for "file" only)
  User is allowed View on it_issue if it_issue is non-confidential or user is on nosy list (View for "it_issue" only)
  User is allowed View on it_project if it_project is non-confidential or user is on nosy list (View for "it_project" only)
@@ -111,7 +112,9 @@ Role "user":
  User is allowed to search it_project (Search for "it_project" only)
  User is allowed to view their own files (View for "file" only)
  User is allowed to view their own messages (View for "msg" only)
+ User may access the rest interface (Rest Access)
  User may access the web interface (Web Access)
+ User may access the xmlrpc interface (Xmlrpc Access)
  User may use the email interface (Email Access)
  Users are allowed to view their own and public queries for classes where they have search permission (View for "query" only)
 Role "user_view":

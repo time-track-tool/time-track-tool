@@ -553,6 +553,17 @@ def avg_hours (db, user, dy) :
     return "%2.2f" % vacation.avg_hours_per_week_this_year (db, user, dy)
 # end def avg_hours
 
+def current_user_dynamic (db, user = None) :
+    try :
+        db = db._db
+    except AttributeError :
+        pass
+    now = Date ('.')
+    uid = user or db.getuid ()
+    dyn = user_dynamic.get_user_dynamic (db, uid, now)
+    return dyn
+# end def current_user_dynamic
+
 def init (instance) :
     reg = instance.registerUtil
     reg ('valid_wps',                    vacation.valid_wps)
@@ -579,6 +590,7 @@ def init (instance) :
     reg ('flexi_remain',                 vacation.flexi_remain)
     reg ('avg_hours_per_week_this_year', avg_hours)
     reg ('get_current_ctype',            vacation.get_current_ctype)
+    reg ('current_user_dynamic',         current_user_dynamic)
     action = instance.registerAction
     action ('new_leave',                 New_Leave_Action)
 # end def init

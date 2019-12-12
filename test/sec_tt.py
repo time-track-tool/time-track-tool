@@ -2,7 +2,9 @@ security = """
 New Web users get the Roles "User,Nosy"
 New Email users get the Role "User"
 Role "admin":
+ User may access the rest interface (Rest Access)
  User may access the web interface (Web Access)
+ User may access the xmlrpc interface (Xmlrpc Access)
  User may create everything (Create)
  User may edit everything (Edit)
  User may manipulate user Roles through the web (Web Roles)
@@ -152,6 +154,9 @@ Role "hr-vacation":
 Role "it":
  User is allowed Edit on (Edit for "user": ('aux_username', 'password', 'roles') only)
  User may manipulate user Roles through the web (Web Roles)
+Role "min-user-edit":
+ User is allowed Edit on (Edit for "user": ('aux_username',) only)
+ User is allowed View on (View for "user": ('aux_username',) only)
 Role "nosy":
  User may get nosy messages for doc (Nosy for "doc" only)
 Role "office":
@@ -204,7 +209,7 @@ Role "user":
   (Search for "time_wp": ('activity', 'actor', 'bookers', 'cost_center', 'creation', 'creator', 'description', 'durations_allowed', 'epic_key', 'has_expiration_date', 'id', 'is_public', 'name', 'project', 'responsible', 'time_end', 'time_start', 'time_wp_summary_no', 'travel', 'wp_no') only)
  Search (Search for "user_contact" only)
  User is allowed Edit on file if file is linked from an item with Edit permission (Edit for "file" only)
- User is allowed View on (View for "user": ('activity', 'actor', 'address', 'alternate_addresses', 'aux_username', 'clearance_by', 'creation', 'creator', 'department', 'firstname', 'job_description', 'lastname', 'id', 'lunch_duration', 'lunch_start', 'nickname', 'pictures', 'position', 'queries', 'realname', 'room', 'sex', 'status', 'subst_active', 'substitute', 'supervisor', 'timezone', 'title', 'username', 'home_directory', 'login_shell', 'samba_home_drive', 'samba_home_path', 'tt_lines') only)
+ User is allowed View on (View for "user": ('activity', 'actor', 'address', 'alternate_addresses', 'aux_username', 'clearance_by', 'creation', 'creator', 'department', 'firstname', 'job_description', 'lastname', 'id', 'lunch_duration', 'lunch_start', 'nickname', 'pictures', 'position', 'queries', 'realname', 'room', 'sex', 'status', 'subst_active', 'substitute', 'supervisor', 'timezone', 'title', 'username', 'tt_lines') only)
  User is allowed View on (View for "user": ('contacts',) only)
  User is allowed View on (View for "user": ('timetracking_by',) only)
  User is allowed View on file if file is linked from an item with View permission (View for "file" only)
@@ -283,16 +288,18 @@ Role "user":
  User is allowed to view work package and time category names if he/she is department manager or supervisor or has role HR or HR-Org-Location (View for "time_project": ('name', 'project') only)
  User is allowed to view work package and time category names if he/she is department manager or supervisor or has role HR or HR-Org-Location (View for "time_wp": ('name', 'project') only)
  User is allowed to view/edit workpackage if he is owner or project responsible/deputy (Edit for "time_wp": ('bookers', 'description', 'epic_key', 'planned_effort', 'time_end', 'time_start', 'time_wp_summary_no') only)
+ User may access the rest interface (Rest Access)
  User may access the web interface (Web Access)
+ User may access the xmlrpc interface (Xmlrpc Access)
  User may edit own leave submissions (Edit for "leave_submission": ('comment', 'comment_cancel', 'first_day', 'last_day', 'status', 'time_wp', 'user') only)
  User may edit own leave submissions (View for "leave_submission": ('comment', 'comment_cancel', 'first_day', 'last_day', 'status', 'time_wp', 'user') only)
- User may edit own time_records (Edit for "time_record" only)
- User may edit own time_records (View for "time_record" only)
  User may see time report if reponsible or deputy of time project or on nosy list of time project (View for "time_report" only)
  User may use the email interface (Email Access)
  User may view a daily_record (and time_records that are attached to that daily_record) if the user owns the daily_record or has role 'HR' or 'Controlling', or the user is supervisor or substitute supervisor of the owner of the daily record (the supervisor relationship is transitive) or the user is the department manager of the owner of the daily record. If user has role HR-Org-Location and is in the same Org-Location as the record, it may also be seen (View for "daily_record" only)
  User may view time category if user is owner or deputy of time category or on nosy list of time category or if user is department manager of time category (View for "time_project" only)
  User may view work package if responsible for it, if user is owner or deputy of time category or on nosy list of time category or if user is department manager of time category (View for "time_wp" only)
+ User or Timetracking by user may edit time_records owned by user (Edit for "time_record" only)
+ User or Timetracking by user may edit time_records owned by user (View for "time_record" only)
  Users are allowed to view their own and public queries for classes where they have search permission (View for "query" only)
  Users may see daily record if they may see one of the time_records for that day (View for "daily_record" only)
 Role "user_view":

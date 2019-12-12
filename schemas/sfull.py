@@ -104,17 +104,6 @@ prop_perms = \
       , ( "title", "room", "position"
         )
       )
-    , ( "user", "Edit", ["IT"]
-      , ( "is_lotus_user", "sync_with_ldap", "group"
-        , "secondary_groups", "uid", "home_directory", "login_shell"
-        , "samba_home_drive", "samba_home_path", "samba_kickoff_time"
-        , "samba_lm_password", "samba_logon_script", "samba_nt_password"
-        , "samba_profile_path", "samba_pwd_can_change", "samba_pwd_last_set"
-        , "samba_pwd_must_change", "user_password", "shadow_last_change"
-        , "shadow_min", "shadow_max", "shadow_warning", "shadow_inactive"
-        , "shadow_expire", "shadow_used", "aux_username"
-        )
-      )
     , ( "user", "View", ["Controlling"], ("roles",))
     , ( "user", "View", ["User"]
       , ( "activity", "actor", "address", "alternate_addresses"
@@ -123,9 +112,7 @@ prop_perms = \
         , "id", "lunch_duration", "lunch_start", "nickname"
         , "pictures", "position", "queries", "realname", "room", "sex"
         , "status", "subst_active", "substitute", "supervisor", "timezone"
-        , "title", "username", "home_directory", "login_shell"
-        , "samba_home_drive", "samba_home_path", "tt_lines"
-        , "aux_username"
+        , "title", "username", "tt_lines", "aux_username"
         )
       )
     ]

@@ -799,14 +799,12 @@ properties = \
         , 'alternate_addresses'
         , 'aux_username'
         , 'clearance_by'
-        , 'department'
         , 'firstname'
         , 'job_description'
         , 'lastname'
         , 'lunch_duration'
         , 'lunch_start'
         , 'nickname'
-        , 'org_location'
         , 'password'
         , 'pictures'
         , 'position'
@@ -864,6 +862,7 @@ properties = \
       , [ 'description'
         , 'is_nosy'
         , 'name'
+        , 'timetracking_allowed'
         ]
       )
     , ( 'vac_aliq'

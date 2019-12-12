@@ -779,7 +779,6 @@ properties = \
         , 'clearance_by'
         , 'contacts'
         , 'csv_delimiter'
-        , 'department'
         , 'firstname'
         , 'guid'
         , 'hide_message_files'
@@ -788,7 +787,6 @@ properties = \
         , 'lunch_duration'
         , 'lunch_start'
         , 'nickname'
-        , 'org_location'
         , 'password'
         , 'pictures'
         , 'position'
@@ -858,6 +856,7 @@ properties = \
         , 'ldap_group'
         , 'name'
         , 'roles'
+        , 'timetracking_allowed'
         ]
       )
     , ( 'vac_aliq'
