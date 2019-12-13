@@ -174,7 +174,8 @@ def update_userlist_html (db, cl, nodeid, old_values) :
 # end def update_userlist_html
 
 def check_retire (db, cl, nodeid, old_values) :
-    raise Reject, _ ("Not allowed to retire a user")
+    if db.getuid () != '1' :
+        raise Reject, _ ("Not allowed to retire a user")
 # end def check_retire
 
 def obsolete_action (db, cl, nodeid, new_values) :
