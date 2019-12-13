@@ -256,19 +256,26 @@ def deny_system_user (db, cl, nodeid, new_values) :
         raise Reject, _ ("System users may not create users")
 # end def deny_system_user
 
+def _domain_user_role_check (db) :
+    # Get role of user and check permission
+    uid  = db.getuid ()
+    # Allow admin user
+    if uid == '1' :
+        return False
+    role = 'Domain-User-Edit'
+    if not common.user_has_role (db, uid, role) :
+        return False
+    return True
+# end def _domain_user_role_check
+
 def domain_user_edit (db, cl, nodeid, new_values) :
     """ If a user change/create happens and the user doing the
         modification has the 'Domain-User-Edit' role, we need to perform
         additional checks.
     """
-    # Get role of user and check permission
-    uid  = db.getuid ()
-    # Allow admin user
-    if uid == '1' :
+    if not _domain_user_role_check (db) :
         return
-    role = 'Domain-User-Edit'
-    if not common.user_has_role (db, uid, role) :
-        return
+    uid = db.getuid ()
     # Find entries in domain_permission
     dpids = db.domain_permission.filter (None, dict (users = uid))
     if not dpids :
@@ -305,6 +312,34 @@ def domain_user_edit (db, cl, nodeid, new_values) :
         if (nstatus and nstatus != obsolete) or not nodeid :
             new_values ['status'] = dp.status
 # end def domain_user_edit
+
+def domain_user_check (db, cl, nodeid, new_values) :
+    """ This checks for items that are editable if the linked user (in
+        the property 'user') has the correct ad_domain. Currently used
+        for user_dynamic and user_contact classes.
+    """
+    if not _domain_user_role_check (db) :
+        return
+    uid = db.getuid ()
+    # Find entries in domain_permission
+    dpids = db.domain_permission.filter (None, dict (users = uid))
+    if not dpids :
+        raise Reject (_ ("No permission to edit/create users with any domain"))
+    uid = new_values.get ('user', None)
+    if nodeid and not uid :
+        uid = cl.get (nodeid, 'user')
+    if not uid :
+        classname = _ (cl.classname)
+        raise Reject (_ ("No permission to edit/create %(classname)s"))
+    ad_domain =  db.user.get (uid, 'ad_domain')
+    for d in dpids :
+        dp = db.domain_permission.getnode (d)
+        if dp.ad_domain == ad_domain :
+            break
+    else :
+        raise Reject \
+            (_ ('No permission for user with AD-Domain: "%s"' % ad_domain))
+# end def domain_user_check
 
 def fix_domain_username (db, cl, nodeid, new_values) :
     if 'username' not in new_values and 'ad_domain' not in new_values :
@@ -353,3 +388,7 @@ def init (db) :
         db.user.audit ("set",    domain_user_edit)
         db.user.audit ("create", fix_domain_username)
         db.user.audit ("set",    fix_domain_username)
+        db.user_dynamic.audit ("create", domain_user_check)
+        db.user_dynamic.audit ("set",    domain_user_check)
+        db.user_contact.audit ("create", domain_user_check)
+        db.user_contact.audit ("set",    domain_user_check)
