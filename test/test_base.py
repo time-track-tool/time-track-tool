@@ -836,6 +836,18 @@ class Test_Case_Timetracker (_Test_Case_Summary) :
         # Try editing a different user
         self.assertRaises \
             (Reject, self.db.user.set, self.user2, status = obsolete)
+        # Try editing a dynamic user record not belonging to our domain
+        self.assertRaises \
+            (Reject, self.db.user_dynamic.set, '1', vacation_yearly = 27)
+        # Try creating a dynamic user record
+        id = self.db.user_dynamic.create \
+            ( org_location    = self.olo
+            , department      = self.dep
+            , vacation_yearly = 25
+            , user            = u
+            , valid_from      = date.Date ('.')
+            )
+        self.assertEqual (self.db.user_dynamic.get (id, 'vacation_yearly'), 25)
     # end def test_domain_user_edit
 
     def setup_user11 (self) :
