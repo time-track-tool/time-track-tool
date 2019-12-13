@@ -100,26 +100,46 @@ class User_Importer (object) :
         count = notfound = 0
         with open (self.args.filename, 'r') as f :
             dr = DictReader (f, delimiter = self.args.delimiter)
+            domain = 'example.com'
             for rec in dr :
-                # FIXME: Use exact string search
-                #d = { 'username:' : rec ['tt-username'] }
                 d = \
-                    { 'username' : rec ['tt-username']
-                    , 'status'   : 1
-                    , '@verbose' : 2
+                    { 'username:' : rec ['username'] + '@' + domain
+                    , 'status'    : 'valid'
+                    , '@fields'   : 'username,firstname,lastname'
                     }
                 j = self.get ('user?' + urlencode (d))
                 j = j ['data']['collection']
+                assert len (j) <= 1
+                d = dict \
+                    ( username  = rec ['username'] + '@' + domain
+                    , firstname = rec ['firstname']
+                    , lastname  = rec ['lastname']
+                    , ad_domain = domain
+                    )
+                dd = dict \
+                    ( user            = rec ['username'] + '@' + domain
+                    , valid_from      = '.' # "Now"
+                    , org_location    = rec ['org_location']
+                    , department      = rec ['department']
+                    , vacation_yearly = 25
+                    )
                 if not len (j) :
-                    print ("Not found: %s" % rec ['tt-username'])
-                if len (j) == 1 :
-                    j = j [0]
+                    print ("Not found: %s" % rec ['username'])
+                    # Create user
+                    self.post ('user', json = d)
+                    # Create user_dynamic
+                    self.post ('user_dynamic', json = dd)
                 else :
-                    for item in j :
-                        if item ['username'] == rec ['tt-username'] :
-                            j = item
-                            break
-                #assert len (j) <= 1
+                    u = j [0]['id']
+                    print (u)
+                    # Need to get user first and extract etag
+                    j = self.get ('user/%s' % u)
+                    etag = j ['data']['@etag']
+                    del d ['ad_domain'] # no permission to edit this
+                    # TODO: Compare some fields, update if not equal
+                    self.put ('user/%s' % u, json = d, etag = etag)
+                    # TODO: Search user_dynamic recs for this user
+                    #       Update them if different
     # end def import_userdata
 
 # end class User_Importer
