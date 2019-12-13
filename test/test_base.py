@@ -833,6 +833,9 @@ class Test_Case_Timetracker (_Test_Case_Summary) :
         # Allow setting to valid again
         self.db.user.set (u, status = valid)
         self.assertEqual (self.db.user.get (u, 'status'), valid)
+        # Try editing a different user
+        self.assertRaises \
+            (Reject, self.db.user.set, self.user2, status = obsolete)
     # end def test_domain_user_edit
 
     def setup_user11 (self) :

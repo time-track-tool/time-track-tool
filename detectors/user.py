@@ -275,13 +275,14 @@ def domain_user_edit (db, cl, nodeid, new_values) :
     ad_domain = new_values.get ('ad_domain', None)
     if not ad_domain and nodeid :
         ad_domain = cl.get (nodeid, 'ad_domain')
-    if ad_domain :
+    if ad_domain or nodeid :
         for d in dpids :
             dp = db.domain_permission.getnode (d)
             if dp.ad_domain == ad_domain :
                 break
         else :
-            raise Reject (_ ("No permission for AD-Domain: %s" % ad_domain))
+            raise Reject \
+                (_ ('No permission for user with AD-Domain: "%s"' % ad_domain))
     else :
         if len (dpids) == 1 :
             dp = db.domain_permission.getnode (dpids [0])
