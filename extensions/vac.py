@@ -31,6 +31,7 @@ import vacation
 from   roundup.date           import Date, Interval
 from   roundup.cgi.actions    import NewItemAction
 from   roundup.cgi.exceptions import Redirect
+from   roundup.cgi.templating import HTMLItem
 
 
 def user_leave_submissions (db, context) :
@@ -553,14 +554,14 @@ def avg_hours (db, user, dy) :
     return "%2.2f" % vacation.avg_hours_per_week_this_year (db, user, dy)
 # end def avg_hours
 
-def current_user_dynamic (db, user = None) :
-    try :
-        db = db._db
-    except AttributeError :
-        pass
+def current_user_dynamic (context, user = None) :
+    db = context._db
+    client = context._client
     now = Date ('.')
     uid = user or db.getuid ()
     dyn = user_dynamic.get_user_dynamic (db, uid, now)
+    if dyn :
+        dyn = HTMLItem (client, 'user_dynamic', dyn.id)
     return dyn
 # end def current_user_dynamic
 

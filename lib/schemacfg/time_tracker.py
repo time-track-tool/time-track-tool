@@ -712,6 +712,9 @@ def security (db, ** kw) :
         , ( "user",         "View", ["User"]
           , ( "timetracking_by",)
           )
+        , ( "user_dynamic", "View", ["User"]
+          , ( "org_location", "department")
+          )
         ]
 
     schemadef.register_roles             (db, roles)
