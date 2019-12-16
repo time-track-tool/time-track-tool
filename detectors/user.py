@@ -31,7 +31,6 @@ try :
     import ldap_sync
 except ImportError :
     ldap_sync = None
-from user_dynamic                   import get_user_dynamic, last_user_dynamic
 
 maxlen = dict \
     ( firstname = 64
@@ -107,7 +106,7 @@ def is_valid_user_status (db, new_values) :
         Otherwise simply use 'valid' status
         If no user_status class exists, always return True
     """
-    if 'user_status' in db.classes :
+    if 'user_dynamic' in db.classes and 'user_status' in db.classes :
         if 'status' not in new_values :
             return False
         status = new_values ['status']
@@ -262,8 +261,8 @@ def _domain_user_role_check (db) :
     # Allow admin user
     if uid == '1' :
         return False
-    role = 'Domain-User-Edit'
-    if not common.user_has_role (db, uid, role) :
+    roles = ("Dom-User-Edit-GTT", "Dom-User-Edit-HR", "Dom-User-Edit-Office")
+    if not common.user_has_role (db, uid, * roles) :
         return False
     return True
 # end def _domain_user_role_check
@@ -297,14 +296,21 @@ def domain_user_edit (db, cl, nodeid, new_values) :
             ad_domain = dp.ad_domain
         else :
             raise Reject (_ ("AD-Domain must be specified"))
+    perm = db.security.hasPermission
     # Force this to valid value
     if not nodeid or ad_domain in new_values :
         new_values ['ad_domain'] = ad_domain
-    if not nodeid or 'roles' in new_values :
+    if  (   not nodeid or 'roles' in new_values
+        and not perm ('Edit', uid, 'user', 'roles')
+        ) :
         new_values ['roles'] = dp.default_roles
     if not nodeid or 'timetracking_by' in new_values :
         new_values ['timetracking_by'] = dp.timetracking_by
-    if not nodeid or 'clearance_by' in new_values :
+    if not nodeid and 'clearance_by' not in new_values :
+        new_values ['clearance_by'] = dp.clearance_by
+    if  (   'clearance_by' in new_values
+        and not perm ('Edit', uid, 'user', 'clearance_by')
+        ) :
         new_values ['clearance_by'] = dp.clearance_by
     obsolete = db.user_status.lookup ('obsolete')
     if not nodeid or 'status' in new_values :
@@ -388,7 +394,9 @@ def init (db) :
         db.user.audit ("set",    domain_user_edit)
         db.user.audit ("create", fix_domain_username)
         db.user.audit ("set",    fix_domain_username)
+    if 'user_dynamic' in db.classes :
         db.user_dynamic.audit ("create", domain_user_check)
         db.user_dynamic.audit ("set",    domain_user_check)
+    if 'user_contact' in db.classes :
         db.user_contact.audit ("create", domain_user_check)
         db.user_contact.audit ("set",    domain_user_check)

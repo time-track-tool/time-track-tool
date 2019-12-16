@@ -22,12 +22,25 @@ Role "controlling":
  User is allowed to create query (Create for "query" only)
  User is allowed to edit organisation (Edit for "organisation" only)
  User is allowed to edit query (Edit for "query" only)
-Role "domain-user-edit":
- User is allowed Edit on (Edit for "user": ['contacts', 'csv_delimiter', 'firstname', 'guid', 'hide_message_files', 'job_description', 'lastname', 'lunch_duration', 'lunch_start', 'nickname', 'pictures', 'position', 'roles', 'room', 'sex', 'status', 'supervisor', 'timezone', 'timing_info', 'title', 'tt_lines', 'username'] only)
+Role "dom-user-edit-facility":
+ User is allowed Edit on (Edit for "user": ['room'] only)
+Role "dom-user-edit-gtt":
+ User is allowed Edit on (Edit for "user": ['contacts', 'csv_delimiter', 'firstname', 'hide_message_files', 'job_description', 'lastname', 'lunch_duration', 'lunch_start', 'nickname', 'pictures', 'position', 'room', 'sex', 'status', 'subst_active', 'substitute', 'supervisor', 'timezone', 'title', 'tt_lines', 'username'] only)
  User is allowed to create user (Create for "user" only)
+Role "dom-user-edit-hr":
+ User is allowed Edit on (Edit for "user": ['clearance_by', 'contacts', 'csv_delimiter', 'firstname', 'hide_message_files', 'job_description', 'lastname', 'lunch_duration', 'lunch_start', 'nickname', 'pictures', 'position', 'roles', 'room', 'sex', 'status', 'subst_active', 'substitute', 'supervisor', 'timezone', 'title', 'tt_lines'] only)
+Role "dom-user-edit-office":
+ User is allowed Edit on (Edit for "user": ['contacts', 'position', 'room', 'title'] only)
 Role "finance":
 Role "hr":
 Role "hr-approval":
+Role "it":
+ User is allowed Edit on file if file is linked from an item with Edit permission (Edit for "file" only)
+ User is allowed Edit on msg if msg is linked from an item with Edit permission (Edit for "msg" only)
+ User is allowed View on file if file is linked from an item with View permission (View for "file" only)
+ User is allowed to access domain_permission (View for "domain_permission" only)
+ User is allowed to create domain_permission (Create for "domain_permission" only)
+ User is allowed to edit domain_permission (Edit for "domain_permission" only)
 Role "it-approval":
 Role "measurement-approval":
 Role "nosy":

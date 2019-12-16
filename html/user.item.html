@@ -28,6 +28,10 @@
      <th tal:content="structure python:utils.fieldname('user', 'realname')"/>
      <td tal:content="structure context/realname/field"/>
     </tr>
+    <tr tal:condition="python:'ad_domain' in bclass.properties">
+     <th tal:content="structure python:utils.fieldname('user', 'ad_domain')"/>
+     <td tal:content="structure context/ad_domain/field"/>
+    </tr>
     <tr tal:condition="python:'firstname' in bclass.properties">
      <th tal:content="structure python:utils.fieldname('user', 'firstname')"/>
      <td tal:content="structure context/firstname/field"/>

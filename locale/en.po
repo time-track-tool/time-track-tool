@@ -4241,3 +4241,12 @@ msgstr "ADIF Mode"
 
 msgid "adif_submode"
 msgstr "ADIF Submode"
+
+msgid "ad_domain"
+msgstr "AD Domain"
+
+msgid "domain_permission"
+msgstr "Domain Permission"
+
+msgid "metadata"
+msgstr "Metadata"

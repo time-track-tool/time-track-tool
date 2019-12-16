@@ -81,7 +81,6 @@ Role "doc_admin":
  User is allowed to edit product_type (Edit for "product_type" only)
  User is allowed to edit reference (Edit for "reference" only)
 Role "facility":
- User is allowed Edit on (Edit for "user": ('room',) only)
  User is allowed to create room (Create for "room" only)
  User is allowed to edit room (Edit for "room" only)
 Role "hr":
@@ -326,6 +325,7 @@ Role "user":
  User is allowed View on (View for "user": ('activity', 'actor', 'address', 'alternate_addresses', 'clearance_by', 'creation', 'creator', 'department', 'firstname', 'id', 'job_description', 'lastname', 'lunch_duration', 'lunch_start', 'nickname', 'pictures', 'position', 'queries', 'realname', 'room', 'sex', 'status', 'subst_active', 'subst_until', 'substitute', 'supervisor', 'timezone', 'title', 'username') only)
  User is allowed View on (View for "user": ('activity', 'actor', 'address', 'alternate_addresses', 'clearance_by', 'creation', 'creator', 'department', 'firstname', 'id', 'job_description', 'lastname', 'lunch_duration', 'lunch_start', 'nickname', 'pictures', 'position', 'queries', 'realname', 'room', 'sex', 'status', 'subst_active', 'substitute', 'supervisor', 'timezone', 'title', 'tt_lines', 'username') only)
  User is allowed View on (View for "user": ('timetracking_by',) only)
+ User is allowed View on (View for "user_dynamic": ('department', 'org_location') only)
  User is allowed View on file if file is linked from an item with View permission (View for "file" only)
  User is allowed View on issue if issue is non-confidential or user is on nosy list (View for "issue" only)
  User is allowed View on it_issue if it_issue is non-confidential or user is on nosy list (View for "it_issue" only)
