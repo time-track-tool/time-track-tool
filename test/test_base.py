@@ -127,7 +127,10 @@ class _Test_Case (unittest.TestCase) :
         , 'controlling'
         , 'discount'
         , 'doc_admin'
-        , 'domain-user-edit'
+        , 'dom-user-edit-facility'
+        , 'dom-user-edit-gtt'
+        , 'dom-user-edit-hr'
+        , 'dom-user-edit-office'
         , 'external'
         , 'facility'
         , 'finance'
@@ -780,7 +783,8 @@ class Test_Case_Timetracker (_Test_Case_Summary) :
     schemafile = 'time_ldap'
     roles = \
         [ 'admin', 'anonymous', 'controlling', 'doc_admin'
-        , 'domain-user-edit', 'facility', 'hr'
+        , 'dom-user-edit-facility', 'dom-user-edit-gtt', 'dom-user-edit-hr'
+        , 'dom-user-edit-office', 'facility', 'hr'
         , 'hr-leave-approval', 'hr-org-location', 'hr-vacation', 'it', 'nosy'
         , 'office', 'pgp', 'procurement', 'project', 'project_view'
         , 'staff-report', 'summary_view', 'time-report', 'user', 'user_view'
@@ -790,7 +794,7 @@ class Test_Case_Timetracker (_Test_Case_Summary) :
     def test_domain_user_edit (self) :
         self.log.debug ('test_domain_user_edit')
         self.setup_db ()
-        self.db.user.set (self.user1, roles = 'User,Nosy,Domain-User-Edit')
+        self.db.user.set (self.user1, roles = 'User,Nosy,Dom-User-Edit-GTT')
         ad_domain = 'some.test.domain'
         roles     = 'User,Nosy'
         valid     = self.db.user_status.lookup ('valid')
@@ -3493,7 +3497,9 @@ class Test_Case_Tracker (_Test_Case) :
     schemaname = 'track'
     schemafile = 'trackers'
     roles = \
-        [ 'admin', 'anonymous', 'domain-user-edit', 'external'
+        [ 'admin', 'anonymous', 'dom-user-edit-facility'
+        , 'dom-user-edit-gtt', 'dom-user-edit-hr'
+        , 'dom-user-edit-office', 'external'
         , 'issue_admin', 'it', 'ituser'
         , 'itview', 'kpm-admin', 'msgedit', 'msgsync', 'nosy', 'pgp'
         , 'readonly-user', 'sec-incident-nosy'
@@ -3506,7 +3512,8 @@ class Test_Case_Fulltracker (_Test_Case_Summary) :
     schemaname = 'full'
     roles = \
         [ 'admin', 'anonymous', 'contact', 'controlling', 'doc_admin'
-        , 'domain-user-edit'
+        , 'dom-user-edit-facility', 'dom-user-edit-gtt'
+        , 'dom-user-edit-hr', 'dom-user-edit-office'
         , 'external', 'facility', 'hr', 'hr-leave-approval', 'hr-org-location'
         , 'hr-vacation', 'issue_admin', 'it', 'itview'
         , 'msgedit', 'msgsync', 'nosy'
@@ -5163,8 +5170,9 @@ class Test_Case_PR (_Test_Case) :
     schemaname = 'pr'
     roles = \
         [ 'admin', 'anonymous', 'board', 'controlling'
-        , 'domain-user-edit', 'finance', 'hr'
-        , 'hr-approval', 'it-approval', 'measurement-approval', 'nosy'
+        , 'dom-user-edit-facility', 'dom-user-edit-gtt', 'dom-user-edit-hr'
+        , 'dom-user-edit-office', 'finance', 'hr'
+        , 'hr-approval', 'it', 'it-approval', 'measurement-approval', 'nosy'
         , 'pgp', 'pr-view', 'procure-approval'
         , 'procurement', 'procurement-admin', 'project'
         , 'project_view', 'quality', 'subcontract', 'subcontract-org'

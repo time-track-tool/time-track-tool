@@ -95,24 +95,16 @@ def security (db, ** kw) :
         , ("user_contact", ("HR", "Office"), ())
         )
     prop_perms = \
-        [ ( "user_contact", "Edit", user_roles
-          , ("contact", "contact_type", "description", "order", "user")
-          )
-        , ( "user",         "View", ["User", "HR", "Office"]
-          , ("contacts",)
-          )
-        , ( "user",         "Edit", user_roles
+        [ ( "user",         "View", ["User", "HR", "Office"]
           , ("contacts",)
           )
         ]
-    p = db.security.addPermission \
-        ( name        = 'Create'
-        , klass       = 'user_contact'
-        , description = 'Create'
-        )
-    db.security.addPermissionToRole ('HR', p)
-    db.security.addPermissionToRole ('Office', p)
     if 'it' in db.security.role :
+        p = db.security.addPermission \
+            ( name        = 'Create'
+            , klass       = 'user_contact'
+            , description = 'Create'
+            )
         db.security.addPermissionToRole ('IT', p)
     schemadef.register_class_permissions (db, classes, prop_perms)
     p = db.security.addPermission \

@@ -1,6 +1,6 @@
 #! /usr/bin/python
 # -*- coding: iso-8859-1 -*-
-# Copyright (C) 2004-13 Dr. Ralf Schlatterbeck Open Source Consulting.
+# Copyright (C) 2004-19 Dr. Ralf Schlatterbeck Open Source Consulting.
 # Reichergasse 131, A-3411 Weidling.
 # Web: http://www.runtux.com Email: office@runtux.com
 # All rights reserved
@@ -89,30 +89,9 @@ classes = \
     ]
 
 prop_perms = \
-    [ ( "user", "Edit", ["HR", "IT"]
-      , ( "address"
-        , "alternate_addresses"
-        , "nickname"
-        , "password"
-        , "timezone"
-        , "username"
-        )
-      )
-    , ( "user", "Edit", ["HR"]
-      , ( "clearance_by", "timetracking_by", "firstname"
-        , "job_description", "lastname", "lunch_duration", "lunch_start"
-        , "pictures", "position", "realname"
-        , "room", "sex", "status", "subst_active", "substitute", "supervisor"
-        , "title", "roles", "tt_lines"
-        )
-      )
-    , ( "user", "Edit", ["Office"]
-      , ( "title", "room", "position"
-        )
-      )
-    , ( "user", "Edit", ["IT"]
-      , ( "pictures"
-        ,
+    [ ( "user", "Edit", ["IT"]
+      , ( "nickname", "pictures", "password", "roles", "timezone"
+        , "timetracking_by", "username", "ad_domain"
         )
       )
     , ( "user", "View", ["Controlling"], ("roles",))

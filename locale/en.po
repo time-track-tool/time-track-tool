@@ -4262,3 +4262,12 @@ msgstr "Timetracking By"
 
 msgid "aux_username"
 msgstr "Auxiliary username"
+
+msgid "ad_domain"
+msgstr "AD Domain"
+
+msgid "domain_permission"
+msgstr "Domain Permission"
+
+msgid "metadata"
+msgstr "Metadata"

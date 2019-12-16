@@ -71,6 +71,8 @@ def init \
     # end class User_Class
     export.update (dict (User_Class = User_Class))
 
+    # add_properties specifies properties that may be edited although
+    # normally restricted.
     domain_permission = Class \
         ( db
         , ''"domain_permission"
@@ -88,21 +90,19 @@ def init \
 
 def security (db, ** kw) :
     roles = \
-        [ ("Domain-User-Edit", "Edit/Create users with specific AD domain")
+        [ ("Dom-User-Edit-GTT",      "Edit/Create users with specific AD domain")
+        , ("Dom-User-Edit-HR",       "Edit users with specific AD domain")
+        , ("Dom-User-Edit-Office",   "Edit users with specific AD domain")
+        , ("Dom-User-Edit-Facility", "Edit users with specific AD domain")
+        , ("IT",                   "IT-Department")
         ]
     schemadef.register_roles (db, roles)
-    role = roles [0][0]
-    db.security.addPermissionToRole (role, 'Create', 'user')
-    if 'user_contact' in db.classes :
-        db.security.addPermissionToRole (role, 'Create', 'user_contact')
-    if 'user_dynamic' in db.classes :
-        db.security.addPermissionToRole (role, 'Create', 'user_dynamic')
-    # Editable user fields for the Domain-User-Edit role
+    db.security.addPermissionToRole ('Dom-User-Edit-GTT', 'Create', 'user')
+    # Editable user fields for the Domain-User-Edit roles
     user_props = \
         [ 'contacts'
         , 'csv_delimiter'
         , 'firstname'
-        , 'guid'
         , 'hide_message_files'
         , 'job_description'
         , 'lastname'
@@ -111,36 +111,52 @@ def security (db, ** kw) :
         , 'nickname'
         , 'pictures'
         , 'position'
-        , 'roles'
         , 'room'
         , 'sex'
         , 'status'
+        , 'subst_active'
+        , 'substitute'
         , 'supervisor'
         , 'timezone'
-        , 'timing_info'
         , 'title'
         , 'tt_lines'
-        , 'username'
 	]
-    classes = []
-    if 'user_contact' in db.classes :
-        classes.append \
-            ( ( "user_contact"
-              , []
-              , [role]
-              )
-            )
-    if 'user_dynamic' in db.classes :
-        classes.append \
-            ( ( "user_dynamic"
-              , []
-              , [role]
-              )
-            )
-    prop_perms = \
-        [ ( "user", "Edit", [role]
-          , user_props
+    user_props_hr  = user_props + ['clearance_by', 'roles']
+    user_props_gtt = user_props + ['username']
+    user_props_office = ['contacts', 'position', 'room', 'title']
+    user_props_facility = ['room']
+    role_perms = \
+        [ ("Dom-User-Edit-GTT",      user_props_gtt)
+        , ("Dom-User-Edit-HR",       user_props_hr)
+        , ("Dom-User-Edit-Office",   user_props_office)
+        , ("Dom-User-Edit-Facility", user_props_facility)
+        ]
+    classes = \
+        [ ( "domain_permission"
+          , ["IT"]
+          , ["IT"]
           )
         ]
+    if 'user_contact' in db.classes :
+        for role, x in role_perms [:3] :
+            classes.append \
+                ( ( "user_contact"
+                  , []
+                  , [role]
+                  )
+                )
+            db.security.addPermissionToRole (role, 'Create', 'user_contact')
+    if 'user_dynamic' in db.classes :
+        for role in ("Dom-User-Edit-GTT", "Dom-User-Edit-HR") :
+            classes.append \
+                ( ( "user_dynamic"
+                  , []
+                  , [role]
+                  )
+                )
+            db.security.addPermissionToRole (role, 'Create', 'user_dynamic')
+    prop_perms = []
+    for role, props in role_perms :
+        prop_perms.append (("user", "Edit", [role], props))
     schemadef.register_class_permissions (db, classes, prop_perms)
 # end def security

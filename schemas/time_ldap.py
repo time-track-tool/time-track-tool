@@ -79,29 +79,9 @@ classes = \
 
 
 prop_perms = \
-    [ ( "user", "Edit", ["HR"]
-      , ( "address"
-        , "alternate_addresses"
-        , "nickname"
-        , "password"
-        , "timezone"
-        , "username"
-        )
-      )
-    , ( "user", "Edit", ["HR"]
-      , ( "clearance_by", "timetracking_by", "firstname"
-        , "job_description", "lastname", "lunch_duration", "lunch_start"
-        , "pictures", "position", "realname"
-        , "room", "sex", "status", "subst_active", "substitute", "supervisor"
-        , "title", "roles", "tt_lines"
-        )
-      )
-    , ( "user", "Edit", ["Office"]
-      , ( "title", "room", "position"
-        )
-      )
-    , ( "user", "Edit", ["IT"]
-      , ( "roles", "password"
+    [ ( "user", "Edit", ["IT"]
+      , ( "nickname", "pictures", "password", "roles", "timezone"
+        , "timetracking_by", "username", "ad_domain"
         )
       )
     , ( "user", "View", ["Controlling"], ("roles",))

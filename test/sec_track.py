@@ -14,9 +14,15 @@ Role "admin":
  User may view everything (View)
 Role "anonymous":
  User may access the web interface (Web Access)
-Role "domain-user-edit":
- User is allowed Edit on (Edit for "user": ['contacts', 'csv_delimiter', 'firstname', 'guid', 'hide_message_files', 'job_description', 'lastname', 'lunch_duration', 'lunch_start', 'nickname', 'pictures', 'position', 'roles', 'room', 'sex', 'status', 'supervisor', 'timezone', 'timing_info', 'title', 'tt_lines', 'username'] only)
+Role "dom-user-edit-facility":
+ User is allowed Edit on (Edit for "user": ['room'] only)
+Role "dom-user-edit-gtt":
+ User is allowed Edit on (Edit for "user": ['contacts', 'csv_delimiter', 'firstname', 'hide_message_files', 'job_description', 'lastname', 'lunch_duration', 'lunch_start', 'nickname', 'pictures', 'position', 'room', 'sex', 'status', 'subst_active', 'substitute', 'supervisor', 'timezone', 'title', 'tt_lines', 'username'] only)
  User is allowed to create user (Create for "user" only)
+Role "dom-user-edit-hr":
+ User is allowed Edit on (Edit for "user": ['clearance_by', 'contacts', 'csv_delimiter', 'firstname', 'hide_message_files', 'job_description', 'lastname', 'lunch_duration', 'lunch_start', 'nickname', 'pictures', 'position', 'roles', 'room', 'sex', 'status', 'subst_active', 'substitute', 'supervisor', 'timezone', 'title', 'tt_lines'] only)
+Role "dom-user-edit-office":
+ User is allowed Edit on (Edit for "user": ['contacts', 'position', 'room', 'title'] only)
 Role "external":
   (Search for "ext_tracker_state": ('id', 'issue') only)
   (Search for "user": ('id', 'nickname', 'username') only)
@@ -107,15 +113,18 @@ Role "it":
  User is allowed Edit on msg if msg is linked from an item with Edit permission (Edit for "msg" only)
  User is allowed View on (View for "user": ('roles',) only)
  User is allowed View on file if file is linked from an item with View permission (View for "file" only)
+ User is allowed to access domain_permission (View for "domain_permission" only)
  User is allowed to access it_int_prio (View for "it_int_prio" only)
  User is allowed to access it_issue (View for "it_issue" only)
  User is allowed to access it_project (View for "it_project" only)
+ User is allowed to create domain_permission (Create for "domain_permission" only)
  User is allowed to create it_category (Create for "it_category" only)
  User is allowed to create it_int_prio (Create for "it_int_prio" only)
  User is allowed to create it_issue (Create for "it_issue" only)
  User is allowed to create it_project (Create for "it_project" only)
  User is allowed to create it_request_type (Create for "it_request_type" only)
  User is allowed to create mailgroup (Create for "mailgroup" only)
+ User is allowed to edit domain_permission (Edit for "domain_permission" only)
  User is allowed to edit it_category (Edit for "it_category" only)
  User is allowed to edit it_int_prio (Edit for "it_int_prio" only)
  User is allowed to edit it_issue (Edit for "it_issue" only)
