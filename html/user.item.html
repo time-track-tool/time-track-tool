@@ -64,7 +64,7 @@
      <tal:block tal:condition="context/id">
      <tr tal:define="
        ud python:utils.act_or_latest_user_dynamic (db._db, context.id)"
-      tal:condition="python:db.user_dynamic.is_view_ok () and ud">
+      tal:condition="python:db.user_dynamic.user.is_view_ok () and ud">
       <th i18n:translate="">user_dynamic</th>
       <td>
         <a tal:attributes="href python:'user_dynamic%s' % ud.id">
@@ -116,8 +116,10 @@
             and context.substitute.is_view_ok ()
             )
          ">
-     <tal:block tal:condition="python:'user_dynamic' in db._db.classes">
-      <tal:block tal:define="dyn python:utils.current_user_dynamic (db)">
+     <tal:block tal:condition="python:
+          'user_dynamic' in db._db.classes and context.id">
+      <tal:block tal:define="dyn python:
+           utils.current_user_dynamic (context, context.id)">
        <tr tal:condition="python: dyn">
         <th tal:content="structure python:
             utils.fieldname ('user_dynamic', 'org_location')"/>
