@@ -1649,6 +1649,9 @@ properties = \
         , ( 'infosec_req'
           , ['admin', 'controlling', 'procurement', 'project', 'project_view']
           )
+        , ( 'is_extern'
+          , ['admin', 'contact', 'controlling', 'doc_admin', 'facility', 'hr', 'hr-leave-approval', 'hr-vacation', 'issue_admin', 'it', 'itview', 'msgedit', 'msgsync', 'office', 'procurement', 'project', 'project_view', 'sec-incident-nosy', 'sec-incident-responsible', 'summary_view', 'supportadmin', 'time-report', 'type', 'user']
+          )
         , ( 'is_public_holiday'
           , ['admin', 'contact', 'controlling', 'doc_admin', 'facility', 'hr', 'hr-leave-approval', 'hr-vacation', 'issue_admin', 'it', 'itview', 'msgedit', 'msgsync', 'office', 'procurement', 'project', 'project_view', 'sec-incident-nosy', 'sec-incident-responsible', 'summary_view', 'supportadmin', 'time-report', 'type', 'user']
           )
@@ -1674,7 +1677,7 @@ properties = \
           , ['admin', 'controlling', 'procurement', 'project', 'project_view']
           )
         , ( 'only_hours'
-          , ['admin', 'controlling', 'procurement', 'project', 'project_view']
+          , ['admin', 'contact', 'controlling', 'doc_admin', 'facility', 'hr', 'hr-leave-approval', 'hr-vacation', 'issue_admin', 'it', 'itview', 'msgedit', 'msgsync', 'office', 'procurement', 'project', 'project_view', 'sec-incident-nosy', 'sec-incident-responsible', 'summary_view', 'supportadmin', 'time-report', 'type', 'user']
           )
         , ( 'op_project'
           , ['admin', 'contact', 'controlling', 'doc_admin', 'facility', 'hr', 'hr-leave-approval', 'hr-vacation', 'issue_admin', 'it', 'itview', 'msgedit', 'msgsync', 'office', 'procurement', 'project', 'project_view', 'sec-incident-nosy', 'sec-incident-responsible', 'summary_view', 'supportadmin', 'time-report', 'type', 'user']
@@ -1740,6 +1743,9 @@ properties = \
           , ['admin', 'contact', 'controlling', 'doc_admin', 'facility', 'hr', 'hr-leave-approval', 'hr-org-location', 'hr-vacation', 'issue_admin', 'it', 'itview', 'msgedit', 'msgsync', 'office', 'procurement', 'project', 'project_view', 'sec-incident-nosy', 'sec-incident-responsible', 'summary_view', 'supportadmin', 'time-report', 'type', 'user']
           )
         , ( 'end_generated'
+          , ['admin', 'contact', 'controlling', 'doc_admin', 'facility', 'hr', 'hr-leave-approval', 'hr-org-location', 'hr-vacation', 'issue_admin', 'it', 'itview', 'msgedit', 'msgsync', 'office', 'procurement', 'project', 'project_view', 'sec-incident-nosy', 'sec-incident-responsible', 'summary_view', 'supportadmin', 'time-report', 'type', 'user']
+          )
+        , ( 'metadata'
           , ['admin', 'contact', 'controlling', 'doc_admin', 'facility', 'hr', 'hr-leave-approval', 'hr-org-location', 'hr-vacation', 'issue_admin', 'it', 'itview', 'msgedit', 'msgsync', 'office', 'procurement', 'project', 'project_view', 'sec-incident-nosy', 'sec-incident-responsible', 'summary_view', 'supportadmin', 'time-report', 'type', 'user']
           )
         , ( 'start'
