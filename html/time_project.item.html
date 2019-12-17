@@ -187,6 +187,11 @@
        (classname, 'only_hours')"/>
       <td tal:content="structure python:context.only_hours.field ()"/>
      </tal:block>
+     <tal:block tal:condition="python: 'is_extern' in bclass.properties">
+      <th tal:content="structure python:utils.fieldname
+       (classname, 'is_extern')"/>
+      <td tal:content="structure python:context.is_extern.field ()"/>
+     </tal:block>
     </tr>
     <tal:block tal:condition="python:
          context.id and 'time_report' in db._db.classes">

@@ -224,6 +224,9 @@ def init \
         , last_updated          = Date      ()
         )
 
+    # is_extern flag is used when an external system (e.g. Jira) manages
+    # the time records, no WP from this time_project will be visible in
+    # the normal time tracker gui, access only via API.
     class Time_Project_Class (kw ['Time_Project_Class']) :
         """Add attributes to existing Time_Project_Class class."""
 
@@ -247,6 +250,7 @@ def init \
                 , cost_center           = Link      ("cost_center")
                 , only_hours            = Boolean   ()
                 , op_project            = Boolean   ()
+                , is_extern             = Boolean   ()
                 )
             self.__super.__init__ (db, classname, ** properties)
         # end def __init__
@@ -272,6 +276,7 @@ def init \
         , work_location         = Link      ("work_location", do_journal = "no")
         , comment               = String    (indexme = "no")
         , dist                  = Number    ()
+        , metadata              = String    ()
         )
 
     time_wp = Class \
@@ -699,8 +704,9 @@ def security (db, ** kw) :
           )
         , ( "time_project", "Edit", ["HR"]
           , ( "is_public_holiday", "is_vacation", "is_special_leave"
-            , "no_overtime", "no_overtime_day"
+            , "no_overtime", "no_overtime_day", "only_hours"
             , "overtime_reduction", "approval_required", "approval_hr"
+            , "is_extern"
             )
           )
         , ( "time_wp",      "Edit", ["Controlling"]
@@ -1225,6 +1231,7 @@ def security (db, ** kw) :
         , 'creation', 'creator', 'activity', 'actor'
         , 'cost_center', 'overtime_reduction'
         , 'product_family', 'project_type', 'reporting_group'
+        , 'only_hours', 'is_extern'
         )
     p = db.security.addPermission \
         ( name        = 'View'

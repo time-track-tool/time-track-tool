@@ -56,3 +56,14 @@ for u in db.user.filter (None, dict (status = valid)) :
         db.user.set (u, roles = ','.join (sorted (roles)))
         print (user.username)
 db.commit ()
+
+# Loop over all active time_projects and set is_extern to False
+active_stati = db.time_project_status.filter (None, dict (active = True))
+for tpid in db.time_project.filter (None, dict (status = active_stati)) :
+    tp = db.time_project.getnode (tpid)
+    if tp.cost_center is None :
+        print ("No productivity: time_project%s" % tpid)
+        continue
+    if tp.is_extern is None :
+        db.time_project.set (tpid, is_extern = False)
+db.commit ()
