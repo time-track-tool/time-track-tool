@@ -1049,6 +1049,8 @@ _helptext          = \
       ]
     , ""'is_board'                    :
       [""'''If this flag is set, the role is used for board approvals''']
+    , ""'is_extern'                   :
+      [""'''This %(Classname)s is tracked in external software''']
     , ""'is_finance'                  :
       [""'''If this flag is set, the role is used for finance approvals''']
     , ""'is_valid'                    :

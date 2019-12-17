@@ -1,6 +1,6 @@
 #! /usr/bin/python
-# -*- coding: iso-8859-1 -*-
-# Copyright (C) 2006 Dr. Ralf Schlatterbeck Open Source Consulting.
+# -*- coding: utf-8 -*-
+# Copyright (C) 2006-19 Dr. Ralf Schlatterbeck Open Source Consulting.
 # Reichergasse 131, A-3411 Weidling.
 # Web: http://www.runtux.com Email: office@runtux.com
 # All rights reserved
@@ -27,10 +27,6 @@
 #
 # Purpose
 #    Detectors for the 'time_record' and 'daily_record'
-#
-# Revision Dates
-#     8-Jun-2005 (RSC) Creation
-#    ««revision-date»»···
 #--
 #
 
@@ -43,6 +39,7 @@ from time                           import gmtime
 
 from freeze                         import frozen
 
+import json
 import common
 import user_dynamic
 import vacation
@@ -914,6 +911,57 @@ def send_mail_on_deny (db, cl, nodeid, old_values) :
             raise roundupdb.DetectorError, message
 # end def send_mail_on_deny
 
+def check_metadata (db, cl, nodeid, new_values) :
+    """ The metadata field should be in json.
+        This field should have the following format:
+        { 'system_name' : 'jira'
+        , 'levels'      : [ { 'level' : 1
+                            , 'level_name' : 'Project'
+                            , 'name' : 'Project-Name'
+                            , 'id' : '4711'
+                          , ...
+                          ]
+        }
+        Note that both, the top-level system_name and levels are
+        required. In the levels array at least one member is required.
+        The level is an integer value and levels must start with 1 and
+        be tightly numbered (without jumps of the counter). The
+        level_name and name of the respective item on that level depends
+        on the remote system. The id is a string because some systems
+        may use non-numeric ids here. The fields shown are all required,
+        additional fields may be present.
+    """
+    if 'metadata' not in new_values :
+        return
+    metadata = new_values ['metadata']
+    # Allow empty
+    if not metadata :
+        return
+    obj = json.loads (metadata)
+    if not isinstance (obj, type ({})) :
+        raise Reject (_ ("Invalid metadata, object not a dict"))
+    if 'system_name' not in obj or 'levels' not in obj :
+        raise Reject (_ ("Invalid metadata, required fields missing"))
+    if not isinstance (obj ['levels'], type ([])) :
+        raise Reject (_ ("Invalid metadata, levels must be array"))
+    for n, lvl in enumerate (obj ['levels']) :
+        if not isinstance (lvl, type ({})) :
+            raise Reject (_ ("Invalid metadata, level not a dict"))
+        for k in 'level', 'level_name', 'name', 'id' :
+            if k not in lvl :
+                raise Reject \
+                    (_ ('Invalid metadata, required field "%s" '
+                        'in level missing'
+                       )
+                    % k
+                    )
+                if k != 'level' :
+                    if not isinstance (lvl ['k'], type (u'')) :
+                        raise Reject \
+                            (_ ('Invalid metadata: %s: String expected') % k)
+            if int (lvl ['level']) != n + 1 :
+                raise Reject (_ ('Invalid metadata, level: expect: %d' % (n+1)))
+# end def check_metadata
 
 def init (db) :
     if 'time_record' not in db.classes :
@@ -930,6 +978,8 @@ def init (db) :
     db.daily_record.audit ("create", new_daily_record)
     db.daily_record.audit ("set",    check_daily_record)
     db.daily_record.react ("set",    send_mail_on_deny)
+    db.daily_record.audit ("create", check_metadata)
+    db.daily_record.audit ("set",    check_metadata)
 # end def init
 
 ### __END__ time_record

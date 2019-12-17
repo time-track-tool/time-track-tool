@@ -4271,3 +4271,6 @@ msgstr "Domain Permission"
 
 msgid "metadata"
 msgstr "Metadata"
+
+msgid "is_extern"
+msgstr "is extern"

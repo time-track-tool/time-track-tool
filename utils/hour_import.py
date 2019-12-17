@@ -4,6 +4,7 @@ from __future__ import print_function
 
 import sys
 import os
+import json
 import requests
 from datetime import datetime
 from argparse import ArgumentParser
@@ -142,12 +143,43 @@ class Hour_Updater (object) :
             self.post ('daily_record', json = d)
             dr = self.get ('daily_record?user=%s&date=%s' % (username, dt))
         assert len (dr ['data']['collection']) == 1
+        # Fill in the metadata field.
+        # The metadata field should be in json.
+        # This field should have the following format:
+        # { 'system_name' : 'name-of-your-timetracking-system'
+        # , 'levels'      : [ { 'level' : 1
+        #                     , 'level_name' : 'Project'
+        #                     , 'name' : 'Project-Name'
+        #                     , 'id' : '4711'
+        #                   , ...
+        #                   ]
+        # }
+        # Note that both, the top-level system_name and levels are
+        # required. In the levels array at least one member is required.
+        # The level is an integer value and levels must start with 1 and
+        # be tightly numbered (without jumps of the counter). The
+        # level_name and name of the respective item on that level depends
+        # on the remote system. The id is a string because some systems
+        # may use non-numeric ids here. The fields shown are all required,
+        # additional fields may be present.
+
+	js = dict (system_name = 'WTIS', levels = [])
+        lvl1 = dict \
+            ( level = 1
+            , level_name = 'Project or whatever your first level is called'
+            , name = 'Name of this particular project'
+            , id = 'ID-of-this-particular-project'
+            )
+        js ['levels'].append (lvl1)
+        # ... add further levels here
+
         d  = dict \
             ( daily_record  = dr ['data']['collection'][0]['id']
             , wp            = wp
             , duration      = self.round_hours (hours)
             , work_location = 'office'
             , time_activity = activity
+            , metadata      = json.dumps (js)
             )
         tr = self.post ('time_record', json = d)
         print (tr)
@@ -213,7 +245,7 @@ def main () :
     # You can use the name or the number
 
     # Commented-out for now
-    # hup.book_on_day (args.client_user, date, 6.24, wp, 'Implementation')
+    hup.book_on_day (args.client_user, date, 6.24, wp, 'Implementation')
 
     # Daily record must be submitted:
     # Commented-out for now
