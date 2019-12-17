@@ -705,6 +705,9 @@ properties = \
         , ( 'infosec_req'
           , ['admin', 'controlling', 'procurement', 'project', 'project_view']
           )
+        , ( 'is_extern'
+          , ['admin', 'controlling', 'doc_admin', 'dom-user-edit-facility', 'dom-user-edit-gtt', 'dom-user-edit-hr', 'dom-user-edit-office', 'facility', 'hr', 'hr-leave-approval', 'hr-vacation', 'it', 'office', 'pgp', 'procurement', 'project', 'project_view', 'summary_view', 'time-report', 'user', 'user_view']
+          )
         , ( 'is_public_holiday'
           , ['admin', 'controlling', 'doc_admin', 'dom-user-edit-facility', 'dom-user-edit-gtt', 'dom-user-edit-hr', 'dom-user-edit-office', 'facility', 'hr', 'hr-leave-approval', 'hr-vacation', 'it', 'office', 'pgp', 'procurement', 'project', 'project_view', 'summary_view', 'time-report', 'user', 'user_view']
           )
@@ -730,7 +733,7 @@ properties = \
           , ['admin', 'controlling', 'procurement', 'project', 'project_view']
           )
         , ( 'only_hours'
-          , ['admin', 'controlling', 'procurement', 'project', 'project_view']
+          , ['admin', 'controlling', 'doc_admin', 'dom-user-edit-facility', 'dom-user-edit-gtt', 'dom-user-edit-hr', 'dom-user-edit-office', 'facility', 'hr', 'hr-leave-approval', 'hr-vacation', 'it', 'office', 'pgp', 'procurement', 'project', 'project_view', 'summary_view', 'time-report', 'user', 'user_view']
           )
         , ( 'op_project'
           , ['admin', 'controlling', 'doc_admin', 'dom-user-edit-facility', 'dom-user-edit-gtt', 'dom-user-edit-hr', 'dom-user-edit-office', 'facility', 'hr', 'hr-leave-approval', 'hr-vacation', 'it', 'office', 'pgp', 'procurement', 'project', 'project_view', 'summary_view', 'time-report', 'user', 'user_view']
@@ -796,6 +799,9 @@ properties = \
           , ['admin', 'controlling', 'doc_admin', 'dom-user-edit-facility', 'dom-user-edit-gtt', 'dom-user-edit-hr', 'dom-user-edit-office', 'facility', 'hr', 'hr-leave-approval', 'hr-org-location', 'hr-vacation', 'it', 'office', 'pgp', 'procurement', 'project', 'project_view', 'summary_view', 'time-report', 'user', 'user_view']
           )
         , ( 'end_generated'
+          , ['admin', 'controlling', 'doc_admin', 'dom-user-edit-facility', 'dom-user-edit-gtt', 'dom-user-edit-hr', 'dom-user-edit-office', 'facility', 'hr', 'hr-leave-approval', 'hr-org-location', 'hr-vacation', 'it', 'office', 'pgp', 'procurement', 'project', 'project_view', 'summary_view', 'time-report', 'user', 'user_view']
+          )
+        , ( 'metadata'
           , ['admin', 'controlling', 'doc_admin', 'dom-user-edit-facility', 'dom-user-edit-gtt', 'dom-user-edit-hr', 'dom-user-edit-office', 'facility', 'hr', 'hr-leave-approval', 'hr-org-location', 'hr-vacation', 'it', 'office', 'pgp', 'procurement', 'project', 'project_view', 'summary_view', 'time-report', 'user', 'user_view']
           )
         , ( 'start'
