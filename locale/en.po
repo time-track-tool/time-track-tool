@@ -4274,3 +4274,10 @@ msgstr "Metadata"
 
 msgid "is_extern"
 msgstr "is extern"
+
+msgid "scale_role"
+msgstr "Scale Role"
+
+msgid "scale_seniority"
+msgstr "Seniority"
+

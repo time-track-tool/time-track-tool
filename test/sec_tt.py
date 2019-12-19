@@ -73,18 +73,22 @@ Role "doc_admin":
 Role "dom-user-edit-facility":
  User is allowed Edit on (Edit for "user": ['room'] only)
 Role "dom-user-edit-gtt":
- User is allowed Edit on (Edit for "user": ['contacts', 'csv_delimiter', 'firstname', 'hide_message_files', 'job_description', 'lastname', 'lunch_duration', 'lunch_start', 'nickname', 'pictures', 'position', 'room', 'sex', 'status', 'subst_active', 'substitute', 'supervisor', 'timezone', 'title', 'tt_lines', 'username'] only)
+  (Search for "user_dynamic" only)
+ User is allowed Edit on (Edit for "user": ['contacts', 'csv_delimiter', 'firstname', 'hide_message_files', 'job_description', 'lastname', 'lunch_duration', 'lunch_start', 'nickname', 'pictures', 'position', 'room', 'scale_role', 'scale_seniority', 'sex', 'status', 'subst_active', 'substitute', 'supervisor', 'timezone', 'title', 'tt_lines', 'username'] only)
  User is allowed to create user (Create for "user" only)
  User is allowed to create user_contact (Create for "user_contact" only)
  User is allowed to create user_dynamic (Create for "user_dynamic" only)
  User is allowed to edit user_contact (Edit for "user_contact" only)
  User is allowed to edit user_dynamic (Edit for "user_dynamic" only)
+ Users may view user_dynamic records for ad_domain for which they are in the domain_permission for the user (View for "user_dynamic" only)
 Role "dom-user-edit-hr":
- User is allowed Edit on (Edit for "user": ['clearance_by', 'contacts', 'csv_delimiter', 'firstname', 'hide_message_files', 'job_description', 'lastname', 'lunch_duration', 'lunch_start', 'nickname', 'pictures', 'position', 'roles', 'room', 'sex', 'status', 'subst_active', 'substitute', 'supervisor', 'timezone', 'title', 'tt_lines'] only)
+  (Search for "user_dynamic" only)
+ User is allowed Edit on (Edit for "user": ['clearance_by', 'contacts', 'csv_delimiter', 'firstname', 'hide_message_files', 'job_description', 'lastname', 'lunch_duration', 'lunch_start', 'nickname', 'pictures', 'position', 'roles', 'room', 'scale_role', 'scale_seniority', 'sex', 'status', 'subst_active', 'substitute', 'supervisor', 'timezone', 'title', 'tt_lines'] only)
  User is allowed to create user_contact (Create for "user_contact" only)
  User is allowed to create user_dynamic (Create for "user_dynamic" only)
  User is allowed to edit user_contact (Edit for "user_contact" only)
  User is allowed to edit user_dynamic (Edit for "user_dynamic" only)
+ Users may view user_dynamic records for ad_domain for which they are in the domain_permission for the user (View for "user_dynamic" only)
 Role "dom-user-edit-office":
  User is allowed Edit on (Edit for "user": ['contacts', 'position', 'room', 'title'] only)
  User is allowed to create user_contact (Create for "user_contact" only)

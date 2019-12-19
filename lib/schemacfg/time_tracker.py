@@ -487,6 +487,9 @@ def init \
             self.update_properties \
                 ( timing_info            = Boolean   ()
                 , timetracking_by        = Link      ("user")
+                , scale_role             = String    ()
+                , scale_seniority        = String    ()
+                , reduced_activity_list  = Date      ()
                 )
             kw ['User_Class'].__init__ (self, db, classname, ** properties)
         # end def __init__
