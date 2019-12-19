@@ -218,6 +218,19 @@
       <th tal:content="structure python:utils.fieldname('user', 'position')"/>
       <td tal:content="structure context/position/menu"/>
      </tr>
+     <tr tal:condition="python:
+       'scale_role' in bclass.properties and context.scale_role.is_view_ok ()">
+      <th tal:content="structure python:utils.fieldname
+          ('user', 'scale_role')"/>
+      <td tal:content="structure context/position/field"/>
+     </tr>
+     <tr tal:condition="python:
+       'scale_seniority' in bclass.properties
+       and context.scale_seniority.is_view_ok ()">
+      <th tal:content="structure python:utils.fieldname
+          ('user', 'scale_seniority')"/>
+      <td tal:content="structure context/scale_seniority/field"/>
+     </tr>
      <tr tal:condition="python:'supervisor' in bclass.properties">
       <th tal:content="structure python:utils.fieldname('user', 'supervisor')"/>
       <td>

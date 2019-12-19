@@ -1888,11 +1888,20 @@ properties = \
         , ( 'realname'
           , ['admin', 'contact', 'controlling', 'doc_admin', 'dom-user-edit-facility', 'dom-user-edit-gtt', 'dom-user-edit-hr', 'dom-user-edit-office', 'facility', 'hr', 'hr-leave-approval', 'hr-vacation', 'issue_admin', 'it', 'itview', 'msgedit', 'msgsync', 'office', 'pgp', 'procurement', 'project', 'project_view', 'sec-incident-nosy', 'sec-incident-responsible', 'summary_view', 'supportadmin', 'time-report', 'user', 'user_view']
           )
+        , ( 'reduced_activity_list'
+          , ['admin', 'user_view']
+          )
         , ( 'roles'
           , ['admin', 'controlling', 'user_view']
           )
         , ( 'room'
           , ['admin', 'contact', 'controlling', 'doc_admin', 'dom-user-edit-facility', 'dom-user-edit-gtt', 'dom-user-edit-hr', 'dom-user-edit-office', 'facility', 'hr', 'hr-leave-approval', 'hr-vacation', 'issue_admin', 'it', 'itview', 'msgedit', 'msgsync', 'office', 'pgp', 'procurement', 'project', 'project_view', 'sec-incident-nosy', 'sec-incident-responsible', 'summary_view', 'supportadmin', 'time-report', 'user', 'user_view']
+          )
+        , ( 'scale_role'
+          , ['admin', 'user_view']
+          )
+        , ( 'scale_seniority'
+          , ['admin', 'user_view']
           )
         , ( 'sex'
           , ['admin', 'contact', 'controlling', 'doc_admin', 'dom-user-edit-facility', 'dom-user-edit-gtt', 'dom-user-edit-hr', 'dom-user-edit-office', 'facility', 'hr', 'hr-leave-approval', 'hr-vacation', 'issue_admin', 'it', 'itview', 'msgedit', 'msgsync', 'office', 'pgp', 'procurement', 'project', 'project_view', 'sec-incident-nosy', 'sec-incident-responsible', 'summary_view', 'supportadmin', 'time-report', 'user', 'user_view']
@@ -1955,94 +1964,95 @@ properties = \
       )
     , ( 'user_dynamic'
       , [ ( 'additional_hours'
-          , ["admin", "hr", "hr-org-location"]
+          , ["admin", "dom-user-edit-gtt", "dom-user-edit-hr", "hr", "hr-org-location"]
           )
         , ( 'all_in'
-          , ["admin", "hr", "hr-org-location"]
+          , ["admin", "dom-user-edit-gtt", "dom-user-edit-hr", "hr", "hr-org-location"]
           )
         , ( 'booking_allowed'
-          , ["admin", "hr", "hr-org-location"]
+          , ["admin", "dom-user-edit-gtt", "dom-user-edit-hr", "hr", "hr-org-location"]
           )
         , ( 'contract_type'
           , ["admin", "hr"]
           )
         , ( 'daily_worktime'
-          , ["admin", "hr", "hr-org-location"]
+          , ["admin", "dom-user-edit-gtt", "dom-user-edit-hr", "hr", "hr-org-location"]
           )
         , ( 'department'
           , ['admin', 'contact', 'controlling', 'doc_admin', 'dom-user-edit-facility', 'dom-user-edit-gtt', 'dom-user-edit-hr', 'dom-user-edit-office', 'facility', 'hr', 'hr-leave-approval', 'hr-vacation', 'issue_admin', 'it', 'itview', 'msgedit', 'msgsync', 'office', 'pgp', 'procurement', 'project', 'project_view', 'sec-incident-nosy', 'sec-incident-responsible', 'summary_view', 'supportadmin', 'time-report', 'user', 'user_view']
           )
         , ( 'durations_allowed'
-          , ["admin", "hr", "hr-org-location"]
+          , ["admin", "dom-user-edit-gtt", "dom-user-edit-hr", "hr", "hr-org-location"]
           )
         , ( 'hours_fri'
-          , ["admin", "hr", "hr-org-location"]
+          , ["admin", "dom-user-edit-gtt", "dom-user-edit-hr", "hr", "hr-org-location"]
           )
         , ( 'hours_mon'
-          , ["admin", "hr", "hr-org-location"]
+          , ["admin", "dom-user-edit-gtt", "dom-user-edit-hr", "hr", "hr-org-location"]
           )
         , ( 'hours_sat'
-          , ["admin", "hr", "hr-org-location"]
+          , ["admin", "dom-user-edit-gtt", "dom-user-edit-hr", "hr", "hr-org-location"]
           )
         , ( 'hours_sun'
-          , ["admin", "hr", "hr-org-location"]
+          , ["admin", "dom-user-edit-gtt", "dom-user-edit-hr", "hr", "hr-org-location"]
           )
         , ( 'hours_thu'
-          , ["admin", "hr", "hr-org-location"]
+          , ["admin", "dom-user-edit-gtt", "dom-user-edit-hr", "hr", "hr-org-location"]
           )
         , ( 'hours_tue'
-          , ["admin", "hr", "hr-org-location"]
+          , ["admin", "dom-user-edit-gtt", "dom-user-edit-hr", "hr", "hr-org-location"]
           )
         , ( 'hours_wed'
-          , ["admin", "hr", "hr-org-location"]
+          , ["admin", "dom-user-edit-gtt", "dom-user-edit-hr", "hr", "hr-org-location"]
           )
         , ( 'max_flexitime'
-          , ["admin", "hr", "hr-org-location"]
+          , ["admin", "dom-user-edit-gtt", "dom-user-edit-hr", "hr", "hr-org-location"]
           )
         , ( 'org_location'
           , ['admin', 'contact', 'controlling', 'doc_admin', 'dom-user-edit-facility', 'dom-user-edit-gtt', 'dom-user-edit-hr', 'dom-user-edit-office', 'facility', 'hr', 'hr-leave-approval', 'hr-vacation', 'issue_admin', 'it', 'itview', 'msgedit', 'msgsync', 'office', 'pgp', 'procurement', 'project', 'project_view', 'sec-incident-nosy', 'sec-incident-responsible', 'summary_view', 'supportadmin', 'time-report', 'user', 'user_view']
           )
         , ( 'overtime_period'
-          , ["admin", "hr"]
+          , ["admin", "dom-user-edit-gtt", "dom-user-edit-hr", "hr"]
           )
         , ( 'sap_cc'
-          , ["admin", "controlling", "hr"]
+          , ["admin", "controlling", "dom-user-edit-gtt",
+          "dom-user-edit-hr", "hr"]
           )
         , ( 'supp_per_period'
-          , ["admin", "hr", "hr-org-location"]
+          , ["admin", "dom-user-edit-gtt", "dom-user-edit-hr", "hr", "hr-org-location"]
           )
         , ( 'supp_weekly_hours'
-          , ["admin", "hr", "hr-org-location"]
+          , ["admin", "dom-user-edit-gtt", "dom-user-edit-hr", "hr", "hr-org-location"]
           )
         , ( 'travel_full'
-          , ["admin", "hr", "hr-org-location"]
+          , ["admin", "dom-user-edit-gtt", "dom-user-edit-hr", "hr", "hr-org-location"]
           )
         , ( 'user'
-          , ["admin", "controlling", "hr"]
+          , ["admin", "controlling", "dom-user-edit-gtt", "dom-user-edit-hr", "hr"]
           )
         , ( 'vac_aliq'
-          , ["admin", "hr"]
+          , ["admin", "dom-user-edit-gtt", "dom-user-edit-hr", "hr"]
           )
         , ( 'vacation_day'
-          , ["admin", "hr", "hr-org-location"]
+          , ["admin", "dom-user-edit-gtt", "dom-user-edit-hr", "hr", "hr-org-location"]
           )
         , ( 'vacation_month'
-          , ["admin", "hr", "hr-org-location"]
+          , ["admin", "dom-user-edit-gtt", "dom-user-edit-hr", "hr", "hr-org-location"]
           )
         , ( 'vacation_yearly'
-          , ["admin", "hr", "hr-org-location"]
+          , ["admin", "dom-user-edit-gtt", "dom-user-edit-hr", "hr", "hr-org-location"]
           )
         , ( 'valid_from'
-          , ["admin", "controlling", "hr", "hr-org-location"]
+          , ["admin", "controlling", "dom-user-edit-gtt", "dom-user-edit-hr", "hr", "hr-org-location"]
           )
         , ( 'valid_to'
-          , ["admin", "controlling", "hr", "hr-org-location"]
+          , ["admin", "controlling", "dom-user-edit-gtt", "dom-user-edit-hr", "hr", "hr-org-location"]
           )
         , ( 'weekend_allowed'
-          , ["admin", "hr", "hr-org-location"]
+          , ["admin", "dom-user-edit-gtt", "dom-user-edit-hr", "hr", "hr-org-location"]
           )
         , ( 'weekly_hours'
-          , ["admin", "hr", "hr-org-location"]
+          , ["admin", "dom-user-edit-gtt", "dom-user-edit-hr", "hr", "hr-org-location"]
           )
         ]
       )
