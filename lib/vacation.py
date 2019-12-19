@@ -196,6 +196,7 @@ def leave_submission_days (db, user, ctype, start, end, type, * stati) :
         with the given status in the given time range for the given user
         and ctype (contract_type).
     """
+    assert start <= end
     dt   = common.pretty_range (start, end)
     dts  = ';%s' % start.pretty (common.ymd)
     dte  = '%s;' % end.pretty   (common.ymd)
@@ -895,6 +896,10 @@ def flexi_remain (db, user, date_in_year, ctype) :
     if not dyn :
         dyn = user_dynamic.first_user_dynamic (db, user, y)
     while dyn :
+        # Check the case that we found a dyn user record far in the past
+        if dyn.valid_to and dyn.valid_to < y :
+            dyn = user_dynamic.next_user_dynamic (db, dyn)
+            continue
         if dyn.contract_type == ctype :
             b = dyn.valid_from
             if b < y :
