@@ -489,6 +489,20 @@ def pr_agents (db) :
     return ','.join (users)
 # end def pr_agents
 
+def valid_activities (db) :
+    try :
+        db = db._db
+    except AttributeError :
+        pass
+    all_activities = db.time_activity.getnodeids (retired = False)
+    if 'reduced_activity_list' not in db.user.properties :
+        return all_activities
+    ts = db.user.get (db.getuid (), 'reduced_activity_list')
+    if ts and ts < now () :
+        return ['10', '11']
+    return all_activities
+# end def valid_activities
+
 def init (instance) :
     reg = instance.registerUtil
     reg ("correct_midnight_date_string", correct_midnight_date_string)
@@ -526,3 +540,4 @@ def init (instance) :
     reg ("user_props",                   user_props)
     reg ("artefact_link_match",          artefact_link_match)
     reg ("pr_agents",                    pr_agents)
+    reg ("valid_activities",             valid_activities)

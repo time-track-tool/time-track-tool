@@ -67,3 +67,11 @@ for tpid in db.time_project.filter (None, dict (status = active_stati)) :
     if tp.is_extern is None :
         db.time_project.set (tpid, is_extern = False)
 db.commit ()
+
+# Set user.reduced_activity_list for caban to 2019-12-19
+try :
+    caban = db.user.lookup ('caban')
+    db.user.set (caban, reduced_activity_list = data.Date ('2019-12-19'))
+    db.commit ()
+except KeyError : # No user caban
+    pass
