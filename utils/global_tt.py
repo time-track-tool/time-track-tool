@@ -71,7 +71,7 @@ db.commit ()
 # Set user.reduced_activity_list for caban to 2019-12-19
 try :
     caban = db.user.lookup ('caban')
-    db.user.set (caban, reduced_activity_list = data.Date ('2019-12-19'))
+    db.user.set (caban, reduced_activity_list = date.Date ('2019-12-19'))
     db.commit ()
 except KeyError : # No user caban
     pass
