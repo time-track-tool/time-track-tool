@@ -37,7 +37,9 @@ except KeyError :
 # - Add 'Dom-User-Edit-HR' to users with 'HR' role (if not yet added)
 # - Add 'Dom-User-Edit-Office' to users with 'Office' role
 # case-insensitive substring match:
-valid = db.user_status.filter (None, dict (name = 'valid'))
+valid = [db.user_status.lookup (i)
+         for i in ("valid", "valid-ad", "system", "system-ad")
+        ]
 for u in db.user.filter (None, dict (status = valid)) :
     user = db.user.getnode (u)
     roles = set (common.role_list (user.roles))
