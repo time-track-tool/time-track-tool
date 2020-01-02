@@ -222,7 +222,7 @@
        'scale_role' in bclass.properties and context.scale_role.is_view_ok ()">
       <th tal:content="structure python:utils.fieldname
           ('user', 'scale_role')"/>
-      <td tal:content="structure context/position/field"/>
+      <td tal:content="structure context/scale_role/field"/>
      </tr>
      <tr tal:condition="python:
        'scale_seniority' in bclass.properties
