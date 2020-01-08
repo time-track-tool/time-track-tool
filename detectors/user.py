@@ -186,8 +186,11 @@ def obsolete_action (db, cl, nodeid, new_values) :
 
 def sync_to_ldap (db, cl, nodeid, old_values) :
     user = cl.getnode (nodeid)
-    ld   = ldap_sync.LDAP_Roundup_Sync (db)
+    ld   = ldap_sync.LDAP_Roundup_Sync (db, verbose = 0)
     if user.status not in ld.status_sync :
+        return
+    # Don't sync obsolete users back to ldap
+    if user.status == ld.status_obsolete :
         return
     ld.sync_user_to_ldap (user.username)
 # end def sync_to_ldap

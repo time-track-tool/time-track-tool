@@ -7,7 +7,7 @@ from roundup  import instance
 
 def main () :
     # most ldap info is now fetched from extensions/config.ini
-    parser  = ArgumentParser ()
+    parser = ArgumentParser ()
     parser.add_argument \
         ( "users"
         , nargs   = "*"

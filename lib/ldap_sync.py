@@ -112,6 +112,7 @@ class LDAP_Roundup_Sync (object) :
         self.verbose        = verbose
         self.update_ldap    = update_ldap
         self.update_roundup = update_roundup
+        self.ad_domain      = self.cfg.LDAP_AD_DOMAINS.split (',')
         self.objectclass    = getattr (self.cfg, 'LDAP_OBJECTCLASS', 'person')
 
         for k in 'update_ldap', 'update_roundup' :
@@ -751,7 +752,19 @@ class LDAP_Roundup_Sync (object) :
             udict ['contacts'] = new_contacts
     # end def sync_contacts_from_ldap
 
+    def domain_user_check (self, username, allow_empty = False) :
+        if self.ad_domain :
+            if '@' not in username :
+                if allow_empty :
+                    return
+                raise ValueError ("User without domain: %s" % username)
+            dom = username.split ('@', 1) [1]
+            if dom not in self.ad_domain :
+                raise ValueError ("User with invalid domain: %s" % username)
+    # end def domain_user_check
+
     def sync_user_from_ldap (self, username, update = None) :
+        self.domain_user_check (username, allow_empty = True)
         luser = self.get_ldap_user_by_username (username)
         if luser :
             guid = luser.objectGUID [0]
@@ -922,6 +935,7 @@ class LDAP_Roundup_Sync (object) :
     # end def sync_contacts_to_ldap
 
     def sync_user_to_ldap (self, username, update = None) :
+        self.domain_user_check (username)
         if update is not None :
             self.update_ldap = update
         uid  = self.db.user.lookup (username)
@@ -1059,13 +1073,31 @@ class LDAP_Roundup_Sync (object) :
         # roundup that are *not* in ldap.
         usernames = dict.fromkeys (self.get_all_ldap_usernames ())
         for username in usernames :
+            if self.ad_domain :
+                if '@' not in username :
+                    continue
+                dom = username.split ('@', 1) [1]
+                if dom not in self.ad_domain :
+                    continue
             try :
                 self.sync_user_from_ldap (username)
             except Exception :
                 print >> sys.stderr, "Error synchronizing user %s" % username
                 print_exc ()
         u_rup = [usrcls.get (i, 'username') for i in usrcls.getnodeids ()]
-        u_rup = dict ((u, 1) for u in u_rup if u not in usernames)
+        users = []
+        for u in u_rup :
+            if u in usernames :
+                continue
+            if self.ad_domain :
+                # A user without a domain is probably obsolete and
+                # *must* be synced, so don't filter those
+                if '@' in u :
+                    dom = u.split ('@', 1) [1]
+                    if dom not in self.ad_domain :
+                        continue
+            users.append (u)
+        u_rup = users
         for username in u_rup :
             try :
                 self.sync_user_from_ldap (username)
@@ -1083,6 +1115,12 @@ class LDAP_Roundup_Sync (object) :
             , sort = [('+','username')]
             ) :
             username = self.db.user.get (uid, 'username')
+            if self.ad_domain :
+                if '@' not in username :
+                    continue
+                dom = username.split ('@', 1) [1]
+                if dom not in self.ad_domain :
+                    continue
             self.sync_user_to_ldap (username)
     # end def sync_all_users_to_ldap
 # end LDAP_Roundup_Sync
