@@ -492,17 +492,18 @@ def pr_agents (db) :
     return ','.join (users)
 # end def pr_agents
 
-def valid_activities (db) :
+def valid_activities (db, date) :
     try :
         db = db._db
     except AttributeError :
         pass
+    date = date._value
     all_activities = db.time_activity.getnodeids (retired = False)
     if 'reduced_activity_list' not in db.user.properties :
         return all_activities
     ts = db.user.get (db.getuid (), 'reduced_activity_list')
-    if ts and ts < now () :
-        return ['10', '11']
+    if ts and ts < date :
+        return list (set (all_activities).intersection (['10', '11', '24']))
     return all_activities
 # end def valid_activities
 
