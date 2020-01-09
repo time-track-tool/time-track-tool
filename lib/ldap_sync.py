@@ -477,24 +477,50 @@ class LDAP_Roundup_Sync (object) :
             in several groups. This usually means he will get the lower
             credentials as the first group in self.ldap_groups is the
             normal user group.
+            Retrieval uses a range retrieval with 1000 items for each
+            request. Microsoft AD has a limit around 1500-5000 entries
+            in a multivalues attribute (member in this case):
+            https://docs.microsoft.com/en-us/previous-versions/windows/desktop/ldap/searching-using-range-retrieval
         """
         self.members = {}
         for us_id, ustatus in sorted (self.ldap_groups.iteritems ()) :
             gname = ustatus.ldap_group
-            f = '(&(sAMAccountName=%s)(objectclass=group))' % gname
-            l = self.ldcon.search_s \
-                (self.cfg.LDAP_BASE_DN, ldap.SCOPE_SUBTREE, f)
-            results = []
-            for r in l :
-                if not r [0] : continue
-                r = LDAP_Search_Result (r)
-                results.append (r)
-            assert (len (results) == 1)
-            r = results [0]
-            names = {}
-            if getattr (r, 'member', None) :
-                names = dict.fromkeys ((m.lower () for m in r.member), us_id)
-            self.members.update (names)
+            f  = '(&(sAMAccountName=%s)(objectclass=group))' % gname
+            n  = 0
+            sz = 1000
+            r  = 1000
+            while r >= 1000 :
+                a = ['member;range=%s-%s' % (n, n + sz - 1)]
+                l = self.ldcon.search_s \
+                    (self.cfg.LDAP_BASE_DN, ldap.SCOPE_SUBTREE, f, a)
+                results = []
+                for r in l :
+                    if not r [0] : continue
+                    r = LDAP_Search_Result (r)
+                    results.append (r)
+                assert (len (results) == 1)
+                r = results [0]
+                assert len (r) == 1 # only the member range attribute
+                k = r.keys () [0]
+                assert k.startswith ('member')
+                member = r [k]
+                rng    = k.split (';', 1) [1]
+                assert rng.startswith ('range=')
+                rng    = rng [6:].split ('-')
+                assert int (rng [0]) == n
+                # The last range retrieved may contain '*' as right bound
+                if rng [1] == '*' :
+                    r = len (member)
+                else :
+                    r = int (rng [1]) - n + 1
+                assert r > 0
+                assert r <= sz
+                assert r == len (member)
+                n += r
+                names = dict.fromkeys ((m.lower () for m in member), us_id)
+                self.members.update (names)
+                if rng [1] == '*' :
+                    break
     # end def get_roundup_group
 
     def get_username_attribute_dn (self, node, attribute) :
