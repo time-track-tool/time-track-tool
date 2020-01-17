@@ -70,6 +70,16 @@ for tpid in db.time_project.filter (None, dict (status = active_stati)) :
         db.time_project.set (tpid, is_extern = False)
 db.commit ()
 
+# Loop over all wps and set is_extern to False
+for wpid in db.time_wp.getnodeids (retired = False) :
+    wp = db.time_wp.getnode (wpid)
+    # This must be set, should be for all active wps
+    if not wp.time_wp_summary_no :
+        continue
+    if wp.is_extern is None :
+        db.time_wp.set (wpid, is_extern = False)
+db.commit ()
+
 # Set user.reduced_activity_list for caban to 2019-12-19
 try :
     caban = db.user.lookup ('caban')

@@ -109,6 +109,11 @@
     </tr>
     <tr>
      <th tal:content="structure python:utils.fieldname
+         (classname, 'is_extern')"/>
+     <td tal:content="structure python:context.is_extern.field ()"/>
+    </tr>
+    <tr>
+     <th tal:content="structure python:utils.fieldname
          (classname, 'planned_effort')"/>
      <td tal:content="structure python:context.planned_effort.field ()"/>
      <th tal:content="structure python:utils.fieldname

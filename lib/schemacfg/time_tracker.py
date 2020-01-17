@@ -298,6 +298,7 @@ def init \
         , has_expiration_date   = Boolean   ()
         , time_wp_summary_no    = Link      ("time_wp_summary_no")
         , epic_key              = String    ()
+        , is_extern             = Boolean   ()
         )
 
     time_wp_summary_no = Class \
@@ -702,7 +703,7 @@ def security (db, ** kw) :
         , ( "time_project", "Edit", ["Project"]
           , ( "max_hours", "op_project", "planned_effort"
             , "product_family", "project_type", "reporting_group"
-            , "work_location", "infosec_req"
+            , "work_location", "infosec_req", "is_extern"
             )
           )
         , ( "time_project", "Edit", ["HR"]
@@ -1202,7 +1203,7 @@ def security (db, ** kw) :
         , 'time_start', 'time_end', 'durations_allowed', 'travel'
         , 'cost_center', 'creation', 'creator', 'activity', 'actor', 'id'
         , 'has_expiration_date', 'time_wp_summary_no', 'epic_key'
-        , 'is_public'
+        , 'is_public', 'is_extern'
         )
     p = db.security.addPermission \
         ( name        = 'View'

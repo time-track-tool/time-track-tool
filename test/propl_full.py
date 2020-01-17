@@ -744,6 +744,7 @@ properties = \
         , 'durations_allowed'
         , 'epic_key'
         , 'has_expiration_date'
+        , 'is_extern'
         , 'is_public'
         , 'name'
         , 'planned_effort'
