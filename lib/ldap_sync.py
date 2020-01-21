@@ -790,7 +790,6 @@ class LDAP_Roundup_Sync (object) :
     # end def domain_user_check
 
     def sync_user_from_ldap (self, username, update = None) :
-        self.domain_user_check (username, allow_empty = True)
         luser = self.get_ldap_user_by_username (username)
         if luser :
             guid = luser.objectGUID [0]
@@ -821,6 +820,7 @@ class LDAP_Roundup_Sync (object) :
         if not user and (not luser or self.is_obsolete (luser)) :
             # nothing to do
             return
+        self.domain_user_check (username, allow_empty = True)
         changed = False
         if not luser or self.is_obsolete (luser) :
             if user.status != self.status_obsolete :
