@@ -206,8 +206,6 @@ def init (db) :
     db.time_wp.audit  ("set",    check_expiration, priority = 200)
     db.time_wp.audit  ("create", check_name)
     db.time_wp.audit  ("set",    check_name)
-    db.time_wp.audit  ("create", check_summary_no, priority = 250)
-    db.time_wp.audit  ("set",    check_summary_no, priority = 250)
     db.time_wp.audit  ("create", check_epic_key)
     db.time_wp.audit  ("set",    check_epic_key)
     db.time_wp.audit  ("create", check_travel_flag)
