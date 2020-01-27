@@ -178,6 +178,18 @@ def check_epic_key (db, cl, nodeid, new_values) :
             raise Reject (_ ("Not a valid %(epickey)s: %(k)s") % locals ())
 # end def check_epic_key
 
+def check_travel_flag (db, cl, nodeid, new_values) :
+    """ Ensure that the travel flag cannot be set and that WPs with
+        travel flag may not be resurrected (change the closed date)
+    """
+    if new_values.get ('travel', False) :
+        raise Reject ("Travel flag must not be set")
+    if nodeid and 'time_end' in new_values :
+        wp = db.time_wp.getnode (nodeid)
+        if wp.travel and wp.time_end :
+            raise Reject ("Travel WP may not be resurrected")
+# end def check_travel_flag
+
 def init (db) :
     if 'time_wp' not in db.classes :
         return
@@ -194,6 +206,8 @@ def init (db) :
     db.time_wp.audit  ("set",    check_summary_no, priority = 250)
     db.time_wp.audit  ("create", check_epic_key)
     db.time_wp.audit  ("set",    check_epic_key)
+    db.time_wp.audit  ("create", check_travel_flag)
+    db.time_wp.audit  ("set",    check_travel_flag)
     # Name check for time_project too
     db.time_project.audit  ("create", check_name)
     db.time_project.audit  ("set",    check_name)
