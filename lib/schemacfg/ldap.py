@@ -158,9 +158,34 @@ def security (db, ** kw) :
                 )
             db.security.addPermissionToRole (role, 'Create', 'user_dynamic')
     prop_perms = []
-    for role, props in role_perms :
-        prop_perms.append (("user", "Edit", [role], props))
     schemadef.register_class_permissions (db, classes, prop_perms)
+    fixdoc = schemadef.security_doc_from_docstring
+
+    def domain_access_user (db, userid, itemid) :
+        """ Users may view/edit user records for ad_domain for which they
+            are in the domain_permission for the user.
+        """
+        dpids = db.domain_permission.filter (None, dict (users = userid))
+        if not dpids :
+            return False
+        u = db.user.getnode (itemid)
+        for dpid in dpids :
+            dp = db.domain_permission.getnode (dpid)
+            if dp.ad_domain == u.ad_domain :
+                return True
+        return False
+    # end def domain_access_user
+
+    for role, props in role_perms :
+        for perm in 'Edit', 'View' :
+            p = db.security.addPermission \
+                ( name        = perm
+                , klass       = 'user'
+                , check       = domain_access_user
+                , description = fixdoc (domain_access_user.__doc__)
+                , properties  = props
+                )
+            db.security.addPermissionToRole (role, p)
 
     def domain_view_user_dynamic (db, userid, itemid) :
         """ Users may view user_dynamic records for ad_domain for which
@@ -178,7 +203,6 @@ def security (db, ** kw) :
         return False
     # end def domain_view_user_dynamic
 
-    fixdoc = schemadef.security_doc_from_docstring
     p = db.security.addPermission \
         ( name        = 'View'
         , klass       = 'user_dynamic'
