@@ -72,8 +72,7 @@
                           '@sort=lookalike_lastname,lookalike_firstname&'
                           '@columns=salutation,title,id,lastname,firstname,'
                           'country,street,postalcode,city&'
-                          '@filter=valid&valid=1&@search_text=&'
-                          '@queryname=&@terse=1'
+                          '@filter=valid&valid=1&@search_text=&@terse=1'
    , ('adr_type', '')   : '@columns=id,code,description,typecat&'
                           '@sort=code&@filter=typecat&@pagesize=50&'
                           '@startwith=0&typecat=%s' % typecat
@@ -191,7 +190,6 @@
                           '@columns=salutation,title,id,lastname,firstname,'
                           'function,address.postalcode,address.city&'
                           '@filter=valid&valid=1&@search_text=&'
-                          '@queryname='
    , ('prodcat', '')    : '@columns=name,level&'
                           ':filter=status&:pagesize=50&:startwith=0&status=1'
    , ('product', '')    : '@columns=sap_material,name,description,'
