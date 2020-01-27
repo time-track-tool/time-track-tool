@@ -23,29 +23,6 @@
         )
     , utils.ExtProperty
         ( utils, pdict ['daily_record']
-        , searchname  = 'daily_record.user.department'
-        , searchable  = True
-        , multiselect = True
-        , filter      = dict (id = utils.valid_departments (db))
-        )
-    , utils.ExtProperty
-        ( utils, pdict ['daily_record']
-        , searchname  = 'daily_record.user.department.id'
-        , searchable  = False
-        )
-    , utils.ExtProperty
-        ( utils, pdict ['daily_record']
-        , searchname  = 'daily_record.user.org_location'
-        , searchable  = True
-        , multiselect = True
-        )
-    , utils.ExtProperty
-        ( utils, pdict ['daily_record']
-        , searchname  = 'daily_record.user.org_location.id'
-        , searchable  = False
-        )
-    , utils.ExtProperty
-        ( utils, pdict ['daily_record']
         , searchname  = 'daily_record.date'
         , searchable  = True
         )
