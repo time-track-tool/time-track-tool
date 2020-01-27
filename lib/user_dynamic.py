@@ -1019,6 +1019,7 @@ def user_create_magic (db, uid, olo, dep) :
     user = cl.getnode (uid)
     if not is_tt_user_status (db, user.status) :
         return
+    org_location = None
     if olo :
         org_location = db.org_location.getnode (olo)
     if uid > 2 and olo and dep :
@@ -1049,7 +1050,7 @@ def user_create_magic (db, uid, olo, dep) :
                 update_dict ['nickname'] = nickname
 
     maildomain = None
-    if 'mail_domain' in db.organisation.properties :
+    if org_location and 'mail_domain' in db.organisation.properties :
         maildomain = db.organisation.get \
             (org_location.organisation, 'mail_domain')
     if maildomain and not user.contacts :

@@ -790,6 +790,11 @@ class LDAP_Roundup_Sync (object) :
     # end def domain_user_check
 
     def sync_user_from_ldap (self, username, update = None) :
+        # Backslash in username will create all sorts of confusion in
+        # generated LDAP queries, so raise an error here we can't deal
+        # with it anyway:
+        if '\\' in username :
+            raise ValueError ("Invalid username: %s" % username)
         luser = self.get_ldap_user_by_username (username)
         if luser :
             guid = luser.objectGUID [0]
