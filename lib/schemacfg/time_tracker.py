@@ -938,17 +938,6 @@ def security (db, ** kw) :
         return False
     # end def wp_admitted
 
-    def project_admitted (db, userid, itemid) :
-        """User is allowed to view selected fields if booking is allowed
-           for at least one work package for this user
-        """
-        wps = db.time_wp.filter (None, dict (project = itemid))
-        for wp in wps :
-            if wp_admitted (db, userid, wp) :
-                return True
-        return False
-    # end def project_admitted
-
     def project_or_wp_name_visible (db, userid, itemid) :
         """User is allowed to view work package and time category names
            if he/she is department manager or supervisor or has role HR
@@ -1240,8 +1229,6 @@ def security (db, ** kw) :
     p = db.security.addPermission \
         ( name        = 'View'
         , klass       = 'time_project'
-        , check       = project_admitted
-        , description = fixdoc (project_admitted.__doc__)
         , properties  = tp_properties
         )
     db.security.addPermissionToRole ('User', p)

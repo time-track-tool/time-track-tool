@@ -375,6 +375,7 @@ Role "time-report":
 Role "user":
   (Search for "time_project": ('activity', 'actor', 'cost_center', 'creation', 'creator', 'deputy', 'description', 'id', 'is_extern', 'is_public_holiday', 'is_special_leave', 'is_vacation', 'name', 'only_hours', 'op_project', 'organisation', 'overtime_reduction', 'product_family', 'project_type', 'reporting_group', 'responsible', 'status', 'work_location') only)
   (Search for "time_wp": ('activity', 'actor', 'bookers', 'cost_center', 'creation', 'creator', 'description', 'durations_allowed', 'epic_key', 'has_expiration_date', 'id', 'is_extern', 'is_public', 'name', 'project', 'responsible', 'time_end', 'time_start', 'time_wp_summary_no', 'travel', 'wp_no') only)
+  (View for "time_project": ('activity', 'actor', 'cost_center', 'creation', 'creator', 'deputy', 'description', 'id', 'is_extern', 'is_public_holiday', 'is_special_leave', 'is_vacation', 'name', 'only_hours', 'op_project', 'organisation', 'overtime_reduction', 'product_family', 'project_type', 'reporting_group', 'responsible', 'status', 'work_location') only)
  Search (Search for "user_contact" only)
  User is allowed Edit on (Edit for "msg": ('keywords',) only)
  User is allowed Edit on file if file is linked from an item with Edit permission (Edit for "file" only)
@@ -505,7 +506,6 @@ Role "user":
  User is allowed to view contact if he's the owner of the contact or the contact is marked visible (View for "user_contact" only)
  User is allowed to view leave submission if he is the supervisor or the person to whom approvals are delegated (Edit for "leave_submission": ('status',) only)
  User is allowed to view leave submission if he is the supervisor or the person to whom approvals are delegated (View for "leave_submission" only)
- User is allowed to view selected fields if booking is allowed for at least one work package for this user (View for "time_project": ('activity', 'actor', 'cost_center', 'creation', 'creator', 'deputy', 'description', 'id', 'is_extern', 'is_public_holiday', 'is_special_leave', 'is_vacation', 'name', 'only_hours', 'op_project', 'organisation', 'overtime_reduction', 'product_family', 'project_type', 'reporting_group', 'responsible', 'status', 'work_location') only)
  User is allowed to view selected fields in work package if booking is allowed for this user (View for "time_wp": ('activity', 'actor', 'cost_center', 'creation', 'creator', 'description', 'durations_allowed', 'epic_key', 'has_expiration_date', 'id', 'is_extern', 'is_public', 'name', 'project', 'responsible', 'time_end', 'time_start', 'time_wp_summary_no', 'travel', 'wp_no') only)
  User is allowed to view their own files (View for "file" only)
  User is allowed to view their own messages (View for "msg" only)
