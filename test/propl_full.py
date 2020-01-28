@@ -820,6 +820,7 @@ properties = \
         , 'title'
         , 'tt_lines'
         , 'username'
+        , 'vie_user'
         ]
       )
     , ( 'user_contact'

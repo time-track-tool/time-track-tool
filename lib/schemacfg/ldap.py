@@ -122,6 +122,7 @@ def security (db, ** kw) :
         , 'tt_lines'
         , 'scale_role'
         , 'scale_seniority'
+        , 'vie_user'
 	]
     user_props_hr  = user_props + ['clearance_by', 'roles']
     user_props_gtt = user_props + ['username']
