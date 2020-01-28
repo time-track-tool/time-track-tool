@@ -182,6 +182,10 @@ def check_travel_flag (db, cl, nodeid, new_values) :
     """ Ensure that the travel flag cannot be set and that WPs with
         travel flag may not be resurrected (change the closed date)
     """
+    # Allow 'admin' to do this anyway, needed for regression tests that
+    # use a WP with travel set.
+    if db.getuid () == '1' :
+        return
     if new_values.get ('travel', False) :
         raise Reject ("Travel flag must not be set")
     if nodeid and 'time_end' in new_values :
