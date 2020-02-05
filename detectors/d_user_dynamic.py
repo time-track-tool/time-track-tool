@@ -579,7 +579,7 @@ def close_existing (db, cl, nodeid, old_values) :
         if dr == nodeid :
             continue
         r = cl.getnode (dr)
-        if  (   current.valid_to   == r.valid_to
+        if  (   (current.valid_to   == r.valid_to or r.valid_to is None)
             and current.valid_from >= r.valid_from
             ) :
             cl.set (dr, valid_to = current.valid_from)
