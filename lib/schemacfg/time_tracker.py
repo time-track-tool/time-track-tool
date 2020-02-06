@@ -603,7 +603,7 @@ def security (db, ** kw) :
           )
         , ( "project_type"
           , ["User"]
-          , ["HR", "Controlling"]
+          , []
           )
         , ( "reporting_group"
           , ["User"]
