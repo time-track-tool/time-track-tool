@@ -1,27 +1,50 @@
 #!/usr/bin/python
 
-""" Updates for global TT
+"""
+Upgrade and configuration script for:
+ - Change to usernames including domain
+ - Providing roles for subsidiaries to sync users
 """
 
-import sys
+__author__ = "Ralf Schaltterbeck, Robert Klonner"
+
+import logging
 import os
-from roundup           import date
-from roundup           import instance
-from roundup.password  import Password, encodePassword
+import sys
+
+import roundup.instance
+import roundup.date
 dir     = os.getcwd ()
 sys.path.insert (1, os.path.join (dir, 'lib'))
-
 import common
 
-tracker = instance.open (dir)
+
+tracker = roundup.instance.open (dir)
 db      = tracker.open ('admin')
 
+# reset roundup logger
+# otherwise logging to stdout for this script will not work
+root = logging.getLogger()
+map(root.removeHandler, root.handlers[:])
+map(root.removeFilter, root.filters[:])
+# define new logger
+logging.basicConfig(stream=sys.stdout,level=logging.INFO)
+logger = logging.getLogger(__file__)
+
+# add new users status 'valid-ad'
+# this users status will be used for users that are synced from AD
+# currently this status is reflected by 'valid' so replace it
+# 'old' users status 'valid' will be used for users that are synced
+# to Time Tracker from subsidiaries and are not linked to AD
 try :
     v = db.user_status.lookup ('valid-ad')
+    logger.info("Users status 'valid-ad' already created. Skip task.")
 except KeyError :
     # Rename old 'valid' user-status
     v = db.user_status.lookup ('valid')
+    logger.info("Rename user status 'valid' to 'valid-ad'")
     db.user_status.set (v, name = 'valid-ad', timetracking_allowed = True)
+    logger.info("Create new user status 'valid'")
     v = db.user_status.create \
         ( name                 = 'valid'
         , is_nosy              = True
@@ -33,57 +56,66 @@ except KeyError :
 
 # Check if appropriate permission exist
 # Loop over *all* valid* users and check roles:
-# - Move legacy 'Domain-User-Edit' role to 'Dom-User-Edit-GTT'
+# - Add 'Dom-User-Edit-GTT' to gtime-sync-users for currently supported
+#   subsidiaries, gtime-sync-rtrk, gtime-sync-sg
 # - Add 'Dom-User-Edit-HR' to users with 'HR' role (if not yet added)
 # - Add 'Dom-User-Edit-Office' to users with 'Office' role
 # case-insensitive substring match:
 valid = [db.user_status.lookup (i)
          for i in ("valid", "valid-ad", "system", "system-ad")
         ]
-for u in db.user.filter (None, dict (status = valid)) :
+all_users = db.user.filter (None, dict (status = valid))
+logger.info("Check permissions of '%d' users", len(all_users))
+for u in all_users:
     user = db.user.getnode (u)
+    username = user.username
     roles = set (common.role_list (user.roles))
-    if 'domain-user-edit' in roles :
-        roles.discard ('domain-user-edit')
+    logger.debug('Current user: %s', username)
+    logger.debug('Current roles: %s', ','.join([str(r) for r in roles]))
+    if username in ['gtime-sync-rtrk', 'gtime-sync-sg'] and 'dom-user-edit-gtt' not in roles :
+        logger.info("Add role 'dom-user-edit-gtt' to user '%s'", username)
         roles.add ('dom-user-edit-gtt')
     # the dom-user roles restrict what you may edit, don't do this to it
     if 'it' not in roles :
-        if 'hr' in roles :
+        if 'hr' in roles and not 'dom-user-edit-hr' in roles :
+            logger.info("Add role 'dom-user-edit-hr' to user '%s'", username)
             roles.add ('dom-user-edit-hr')
-        if 'office' in roles :
+        if 'office' in roles and not 'dom-user-edit-office' in roles:
+            logger.info("Add role 'dom-user-edit-office' to user '%s'", username)
             roles.add ('dom-user-edit-office')
-        if 'facility' in roles :
-            roles.add ('dom-user-edit-facility')
     if roles != set (common.role_list (user.roles)) :
+        logger.info("Save changed roles '%s' for user '%s'", ','.join (sorted (roles)), username)
         db.user.set (u, roles = ','.join (sorted (roles)))
-        print (user.username)
 db.commit ()
 
-# Loop over all active time_projects and set is_extern to False
+logger.info("Loop over all active time_projects and set is_extern to False")
 active_stati = db.time_project_status.filter (None, dict (active = True))
 for tpid in db.time_project.filter (None, dict (status = active_stati)) :
     tp = db.time_project.getnode (tpid)
     if tp.cost_center is None :
-        print ("No productivity: time_project%s" % tpid)
+        logger.info("'time_project%s': Skip because tp has no productivity (cost center)." % tpid)
         continue
     if tp.is_extern is None :
+        logger.info("'time_project%s': Set is_extern to False" % tpid)
         db.time_project.set (tpid, is_extern = False)
 db.commit ()
 
-# Loop over all wps and set is_extern to False
+logger.info("Loop over all work packages and set is_extern to False")
 for wpid in db.time_wp.getnodeids (retired = False) :
     wp = db.time_wp.getnode (wpid)
     # This must be set, should be for all active wps
     if not wp.time_wp_summary_no :
+        logger.info("'time_wp%s': Skip because wp has no summary work package" % wpid)
         continue
     if wp.is_extern is None :
+        logger.info("'time_wp%s': Set is_extern to False" % wpid)
         db.time_wp.set (wpid, is_extern = False)
 db.commit ()
 
 # Set user.reduced_activity_list for caban to 2019-12-19
 try :
     caban = db.user.lookup ('caban')
-    db.user.set (caban, reduced_activity_list = date.Date ('2019-12-19'))
+    db.user.set (caban, reduced_activity_list = roundup.date.Date ('2019-12-19'))
     db.commit ()
 except KeyError : # No user caban
     pass
