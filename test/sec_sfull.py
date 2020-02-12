@@ -2,7 +2,9 @@ security = """
 New Web users get the Roles "User,Nosy"
 New Email users get the Role "User"
 Role "admin":
+ User may access the rest interface (Rest Access)
  User may access the web interface (Web Access)
+ User may access the xmlrpc interface (Xmlrpc Access)
  User may create everything (Create)
  User may edit everything (Edit)
  User may manipulate user Roles through the web (Web Roles)
@@ -449,7 +451,9 @@ Role "user":
  User is allowed to view work package and time category names if he/she is department manager or supervisor or has role HR or HR-Org-Location (View for "time_project": ('name', 'project') only)
  User is allowed to view work package and time category names if he/she is department manager or supervisor or has role HR or HR-Org-Location (View for "time_wp": ('name', 'project') only)
  User is allowed to view/edit workpackage if he is owner or project responsible/deputy (Edit for "time_wp": ('bookers', 'description', 'epic_key', 'planned_effort', 'time_end', 'time_start', 'time_wp_summary_no') only)
+ User may access the rest interface (Rest Access)
  User may access the web interface (Web Access)
+ User may access the xmlrpc interface (Xmlrpc Access)
  User may edit own leave submissions (Edit for "leave_submission": ('comment', 'comment_cancel', 'first_day', 'last_day', 'status', 'time_wp', 'user') only)
  User may edit own leave submissions (View for "leave_submission": ('comment', 'comment_cancel', 'first_day', 'last_day', 'status', 'time_wp', 'user') only)
  User may edit own time_records (Edit for "time_record" only)
