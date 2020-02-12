@@ -102,6 +102,9 @@ for u in all_users:
         if 'office' in roles and not 'dom-user-edit-office' in roles:
             logger.info("Add role 'dom-user-edit-office' to user '%s'", username)
             roles.add ('dom-user-edit-office')
+        if 'facility' in roles and not 'dom-user-edit-facility' in roles:
+            logger.info("Add role 'dom-user-edit-facility' to user '%s'", username)
+            roles.add ('dom-user-edit-facility')
     if roles != set (common.role_list (user.roles)) :
         logger.info("Save changed roles '%s' for user '%s'", ','.join (sorted (roles)), username)
         db.user.set (u, roles = ','.join (sorted (roles)))
