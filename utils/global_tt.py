@@ -11,6 +11,7 @@ __author__ = "Ralf Schaltterbeck, Robert Klonner"
 import logging
 import os
 import sys
+import argparse
 
 import roundup.instance
 import roundup.date
@@ -18,6 +19,13 @@ dir     = os.getcwd ()
 sys.path.insert (1, os.path.join (dir, 'lib'))
 import common
 
+
+parser = argparse.ArgumentParser(description='Upgrade script for domain user names')
+parser.add_argument('--staging-instance', action='store_true',
+    help='Acticate settings and configs that are for staging instances only')
+parser.add_argument('--debug', action='store_true',
+    help='Set logging level to DEBUG')
+args = parser.parse_args()
 
 tracker = roundup.instance.open (dir)
 db      = tracker.open ('admin')
@@ -30,6 +38,13 @@ map(root.removeFilter, root.filters[:])
 # define new logger
 logging.basicConfig(stream=sys.stdout,level=logging.INFO)
 logger = logging.getLogger(__file__)
+# set log level according to command line args
+logger.setLevel(logging.DEBUG if args.debug else logging.INFO)
+
+if args.staging_instance:
+    logger.info("Script is running in non-prodution mode (staging)")
+else:
+    logger.info("Script is running in production mode")
 
 # add new users status 'valid-ad'
 # this users status will be used for users that are synced from AD
@@ -72,9 +87,13 @@ for u in all_users:
     roles = set (common.role_list (user.roles))
     logger.debug('Current user: %s', username)
     logger.debug('Current roles: %s', ','.join([str(r) for r in roles]))
-    if username in ['gtime-sync-rtrk', 'gtime-sync-sg'] and 'dom-user-edit-gtt' not in roles :
-        logger.info("Add role 'dom-user-edit-gtt' to user '%s'", username)
-        roles.add ('dom-user-edit-gtt')
+    if username in ['gtime-sync-rtrk@ds1.internal', 'gtime-sync-sg@ds1.internal'] and 'dom-user-edit-gtt' not in roles :
+        if args.staging_instance :
+            logger.info("Add role 'dom-user-edit-gtt' to user '%s'", username)
+            roles.add ('dom-user-edit-gtt')
+        else :
+            logger.info("Skip user '%s' due to non-production mode of script", username)
+            continue
     # the dom-user roles restrict what you may edit, don't do this to it
     if 'it' not in roles :
         if 'hr' in roles and not 'dom-user-edit-hr' in roles :
