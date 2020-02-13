@@ -97,6 +97,15 @@ def set_guid (node, attribute) :
     return fromhex (s)
 # end def set_guid
 
+class BackslashInUsername(Exception):
+    def __init__(self, expression, message=None):
+        if message is None:
+            # set default message
+            message = "Backslash in username '%s' not allowed." % expression
+        super(BackslashInUsername, self).__init__(expression, message)
+        self.expression = expression
+        self.message = message
+
 class LDAP_Roundup_Sync (object) :
     """ Sync users from LDAP to Roundup """
 
