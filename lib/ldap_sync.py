@@ -799,116 +799,124 @@ class LDAP_Roundup_Sync (object) :
     # end def domain_user_check
 
     def sync_user_from_ldap (self, username, update = None) :
-        # Backslash in username will create all sorts of confusion in
-        # generated LDAP queries, so raise an error here we can't deal
-        # with it anyway:
-        if '\\' in username :
-            raise ValueError ("Invalid username: %s" % username)
-        luser = self.get_ldap_user_by_username (username)
-        if luser :
-            guid = luser.objectGUID [0]
-        if update is not None :
-            self.update_roundup = update
-        uid = None
-        # First try to find user via guid:
-        uids = None
-        if luser :
-            uids = self.db.user.filter (None, dict (guid = tohex (guid)))
-        if uids :
-            assert len (uids) == 1
-            uid = uids [0]
-        else :
-            try :
-                uid   = self.db.user.lookup  (username)
-            except KeyError :
-                pass
-        user  = uid and self.db.user.getnode (uid)
-        if user and not luser and user.guid :
-            luser = self.get_ldap_user_by_guid (fromhex (user.guid))
-        # don't modify system users:
-        reserved = ('admin', 'anonymous')
-        if  (  username in reserved
-            or user and user.status not in self.status_sync
-            ) :
-            return
-        if not user and (not luser or self.is_obsolete (luser)) :
-            # nothing to do
-            return
-        self.domain_user_check (username, allow_empty = True)
-        changed = False
-        if not luser or self.is_obsolete (luser) :
-            if user.status != self.status_obsolete :
-                if self.verbose :
-                    print >> sys.stderr, "Obsolete: %s" % username
-                if self.update_roundup :
-                    self.db.user.set (uid, status = self.status_obsolete)
-                changed = True
-        else :
-            d = {}
-            for k, (lk, x, method, em) in self.attr_map ['user'].iteritems () :
-                if method :
-                    v = method (luser, lk)
-                    if v or em :
-                        d [k] = v
+        try:
+            # Backslash in username will create all sorts of confusion in
+            # generated LDAP queries, so raise an error here we can't deal
+            # with it anyway:
+            if '\\' in username :
+                raise BackslashInUsername (username)
 
-            if self.contact_types :
-                self.sync_contacts_from_ldap (luser, user, d)
-            new_status_id = self.members [luser.dn.lower ()]
-            assert (new_status_id)
-            new_status = self.db.user_status.getnode (new_status_id)
-            roles = new_status.roles
-            if not roles :
-                roles = self.db.config.NEW_WEB_USER_ROLES
-            if user :
-                assert (user.status in self.status_sync)
-                for k, v in d.items () :
-                    if user [k] == v :
-                        del d [k]
-                if user.status != new_status_id :
-                    # Roles were removed when setting user obsolete
-                    # Also need to adapt roles if user.status changes
-                    # set these to default settings for this status
+            luser = self.get_ldap_user_by_username (username)
+            if luser :
+                guid = luser.objectGUID [0]
+            if update is not None :
+                self.update_roundup = update
+            uid = None
+            # First try to find user via guid:
+            uids = None
+            if luser :
+                uids = self.db.user.filter (None, dict (guid = tohex (guid)))
+            if uids :
+                assert len (uids) == 1
+                uid = uids [0]
+            else :
+                try :
+                    uid   = self.db.user.lookup  (username)
+                except KeyError :
+                    pass
+            user  = uid and self.db.user.getnode (uid)
+            if user and not luser and user.guid :
+                luser = self.get_ldap_user_by_guid (fromhex (user.guid))
+            # don't modify system users:
+            reserved = ('admin', 'anonymous')
+            if  (  username in reserved
+                or user and user.status not in self.status_sync
+                ) :
+                return
+            if not user and (not luser or self.is_obsolete (luser)) :
+                # nothing to do
+                return
+            self.domain_user_check (username, allow_empty = True)
+            changed = False
+            if not luser or self.is_obsolete (luser) :
+                if user.status != self.status_obsolete :
+                    if self.verbose :
+                        print >> sys.stderr, "Obsolete: %s" % username
+                    if self.update_roundup :
+                        self.db.user.set (uid, status = self.status_obsolete)
+                    changed = True
+            else :
+                d = {}
+                for k, (lk, x, method, em) in self.attr_map ['user'].iteritems () :
+                    if method :
+                        v = method (luser, lk)
+                        if v or em :
+                            d [k] = v
+
+                if self.contact_types :
+                    self.sync_contacts_from_ldap (luser, user, d)
+                new_status_id = self.members [luser.dn.lower ()]
+                assert (new_status_id)
+                new_status = self.db.user_status.getnode (new_status_id)
+                roles = new_status.roles
+                if not roles :
+                    roles = self.db.config.NEW_WEB_USER_ROLES
+                if user :
+                    assert (user.status in self.status_sync)
+                    for k, v in d.items () :
+                        if user [k] == v :
+                            del d [k]
+                    if user.status != new_status_id :
+                        # Roles were removed when setting user obsolete
+                        # Also need to adapt roles if user.status changes
+                        # set these to default settings for this status
+                        d ['roles']  = roles
+                        d ['status'] = new_status_id
+                    if d :
+                        if self.verbose :
+                            print "Update roundup: %s" % username, d
+                        if self.update_roundup :
+                            self.db.user.set (uid, ** d)
+                            changed = True
+                else :
+                    assert (d)
                     d ['roles']  = roles
                     d ['status'] = new_status_id
-                if d :
+                    if 'username' not in d :
+                        d ['username'] = username
                     if self.verbose :
-                        print "Update roundup: %s" % username, d
+                        print "Create roundup user: %s" % username, d
                     if self.update_roundup :
-                        self.db.user.set (uid, ** d)
+                        uid = self.db.user.create (** d)
                         changed = True
-            else :
-                assert (d)
-                d ['roles']  = roles
-                d ['status'] = new_status_id
-                if 'username' not in d :
-                    d ['username'] = username
-                if self.verbose :
-                    print "Create roundup: %s" % username, d
-                if self.update_roundup :
-                    uid = self.db.user.create (** d)
-                    changed = True
-                    # Perform user creation magic for new user
-                    olo = dep = None
-                    if 'company' in luser :
-                        olo = luser ['company'][0]
-                        try :
-                            olo = self.db.org_location.lookup (olo)
-                        except KeyError :
-                            olo = None
-                    if 'department' in luser :
-                        dep = luser ['department'][0]
-                        try :
-                            dep = self.db.department.lookup (dep)
-                        except KeyError :
-                            dep = None
-                    if self.verbose :
-                        print \
-                            ( "User magic: %s, olo:%s dep:%s"
-                            % (username, olo, dep)
-                            )
-                    user_dynamic.user_create_magic (self.db, uid, olo, dep)
-        if changed and self.update_roundup :
-            self.db.commit ()
+                        # Perform user creation magic for new user
+                        olo = dep = None
+                        if 'company' in luser :
+                            olo = luser ['company'][0]
+                            try :
+                                olo = self.db.org_location.lookup (olo)
+                            except KeyError :
+                                olo = None
+                        if 'department' in luser :
+                            dep = luser ['department'][0]
+                            try :
+                                dep = self.db.department.lookup (dep)
+                            except KeyError :
+                                dep = None
+                        if self.verbose :
+                            print \
+                                ( "Dynamic user create magic: %s, "
+                                "org_location: %s, department: %s"
+                                % (username, olo, dep)
+                                )
+                        user_dynamic.user_create_magic (self.db, uid, olo, dep)
+            if changed and self.update_roundup :
+                self.db.commit ()
+        except BackslashInUsername as e :
+            print >> sys.stderr, "Skip user. " + e. message
+        except Exception :
+            print >> sys.stderr, "Error synchronizing user %s" % username
+            print_exc ()
     # end def sync_user_from_ldap
 
     def sync_contacts_to_ldap (self, user, luser, modlist) :
@@ -1119,11 +1127,7 @@ class LDAP_Roundup_Sync (object) :
                 dom = username.split ('@', 1) [1]
                 if dom not in self.ad_domain :
                     continue
-            try :
-                self.sync_user_from_ldap (username)
-            except Exception :
-                print >> sys.stderr, "Error synchronizing user %s" % username
-                print_exc ()
+            self.sync_user_from_ldap (username)
         u_rup = [usrcls.get (i, 'username') for i in usrcls.getnodeids ()]
         users = []
         for u in u_rup :
