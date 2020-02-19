@@ -3373,6 +3373,9 @@ msgstr ""
 msgid "timetracking_by"
 msgstr ""
 
+msgid "vie_user"
+msgstr ""
+
 msgid "aux_username"
 msgstr "Benutzername für Nebenstellenanlage"
 

@@ -2284,6 +2284,11 @@ _helptext          = \
             in the same country, the local VAT is applicable.
          '''
       ]
+    , ""'vie_user'                    :
+      [ ""'''Exclusively used for RT-RK to link to the corresponding
+             @ds1.internal user, leave this field empty.
+          '''
+      ]
     , ""'view_roles'                  :
       [ ""'''Roles that may view purchase requests of this %(Classname)s
              enter a comma,separated,list

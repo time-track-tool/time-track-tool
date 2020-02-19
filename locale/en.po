@@ -3369,6 +3369,9 @@ msgstr ""
 msgid "timetracking_by"
 msgstr "Timetracking By"
 
+msgid "vie_user"
+msgstr "TTTech internal user"
+
 msgid "aux_username"
 msgstr "Auxiliary username"
 
