@@ -20,6 +20,15 @@ def main () :
         , default = '.'
         )
     parser.add_argument \
+        ( "-n", "--no-ldap-write"
+        , help    = "Turn of the config-item that tries to write to LDAP: "
+                    "By default a reactor would write local changes back "
+                    "to LDAP. This option turn off this config-item so "
+                    "that the reactor does not write to LDAP."
+        , default = False
+        , action  = 'store_true'
+        )
+    parser.add_argument \
         ( "-u", "--update"
         , help    = "Update roundup with info from LDAP directory"
         , default = False
@@ -37,6 +46,14 @@ def main () :
     from ldap_sync import LDAP_Roundup_Sync
     tracker = instance.open (args.database_directory)
     db      = tracker.open ('admin')
+
+    # This raises InvalidOptionError whenever no ldap sync is
+    # configured at all. But the next InvalidOptionError would be
+    # raised when instantiating LDAP_Roundup_Sync below anyway.
+    # So we do not guard for this case (that LDAP sync is called
+    # without a valid LDAP configuration)
+    if args.no_ldap_write :
+        db.config.ext.LDAP_UPDATE_LDAP = 'no'
 
     lds = LDAP_Roundup_Sync (db, verbose = args.verbose)
     if args.users :
