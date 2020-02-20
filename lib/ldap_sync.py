@@ -1077,7 +1077,8 @@ class LDAP_Roundup_Sync (object) :
         if modlist and self.update_ldap :
             self.ldcon.modify_s (luser.dn, modlist)
         elif modlist :
-            print "No ldap updates performed"
+            print ("No ldap updates performed for user: '%s' for "
+            "attributes: " % user.username, modlist)
     # end def sync_user_to_ldap
 
     def set_user_dynamic_prop (self, user, udprop, linkprop, lk, ldattr) :
