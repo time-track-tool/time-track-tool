@@ -134,13 +134,14 @@ for wpid in db.time_wp.getnodeids (retired = False) :
         db.time_wp.set (wpid, is_extern = False)
 db.commit ()
 
-# Set user.reduced_activity_list for caban to 2019-12-19
-try :
-    username = 'caban@ds1.internal'
-    caban = db.user.lookup (username)
-    logger.info("Set date for reduced_activity_list for user '%s'" % username)
-    db.user.set (caban, reduced_activity_list = roundup.date.Date ('2019-12-19'))
-    db.commit ()
-except KeyError : # No user caban
-    logger.error("No user '%s'" % username)
-    pass
+if args.staging_instance :
+    # Set user.reduced_activity_list for caban to 2019-12-19
+    try :
+        username = 'caban@ds1.internal'
+        caban = db.user.lookup (username)
+        logger.info("Set date for reduced_activity_list for user '%s'" % username)
+        db.user.set (caban, reduced_activity_list = roundup.date.Date ('2019-12-19'))
+        db.commit ()
+    except KeyError : # No user caban
+        logger.error("No user '%s'" % username)
+        pass
