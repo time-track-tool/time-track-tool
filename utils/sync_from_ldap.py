@@ -2,7 +2,9 @@
 # -*- coding: iso-8859-1 -*-
 import sys
 import os
+import datetime
 from argparse import ArgumentParser
+
 from roundup  import instance
 
 def main () :
@@ -20,15 +22,6 @@ def main () :
         , default = '.'
         )
     parser.add_argument \
-        ( "-n", "--no-ldap-write"
-        , help    = "Turn of the config-item that tries to write to LDAP: "
-                    "By default a reactor would write local changes back "
-                    "to LDAP. This option turn off this config-item so "
-                    "that the reactor does not write to LDAP."
-        , default = False
-        , action  = 'store_true'
-        )
-    parser.add_argument \
         ( "-u", "--update"
         , help    = "Update roundup with info from LDAP directory"
         , default = False
@@ -39,6 +32,16 @@ def main () :
         , help    = "Verbosity"
         , default = 0
         , action  = 'count'
+        )
+    parser.add_argument \
+        ( "-w", "--write-to-ldap"
+        , help    = "Turn on the config-item that tries to write to LDAP: "
+                    "By default a reactor would write local changes back "
+                    "to LDAP but this is disabled in this script. "
+                    "This option turns on this config-item so "
+                    "that the reactor does write to LDAP."
+        , default = False
+        , action  = 'store_true'
         )
     args = parser.parse_args ()
 
@@ -52,8 +55,10 @@ def main () :
     # raised when instantiating LDAP_Roundup_Sync below anyway.
     # So we do not guard for this case (that LDAP sync is called
     # without a valid LDAP configuration)
-    if args.no_ldap_write :
-        db.config.ext.LDAP_UPDATE_LDAP = 'no'
+    # Disbale sync to LDAP (disable user reactor) by default
+    db.config.ext.LDAP_UPDATE_LDAP = 'no'
+    if args.write_to_ldap :
+        db.config.ext.LDAP_UPDATE_LDAP = 'yes'
 
     lds = LDAP_Roundup_Sync (db, verbose = args.verbose)
     if args.users :
