@@ -50,6 +50,11 @@ def main () :
     tracker = instance.open (args.database_directory)
     db      = tracker.open ('admin')
 
+    timestamp_start = datetime.datetime.now()
+    users = 'all' if not args.users else ','.join(args.users)
+    print("%s: Start to sync users '%s' from LDAP" % (
+        timestamp_start.strftime("%Y-%m-%d %H:%M:%S"), users))
+
     # This raises InvalidOptionError whenever no ldap sync is
     # configured at all. But the next InvalidOptionError would be
     # raised when instantiating LDAP_Roundup_Sync below anyway.
@@ -66,6 +71,11 @@ def main () :
             lds.sync_user_from_ldap (username, update = args.update)
     else :
         lds.sync_all_users_from_ldap (update = args.update)
+
+    timestamp_end = datetime.datetime.now()
+    duration = (timestamp_end - timestamp_start)
+    print("%s: User sync finished after %s" % (
+        timestamp_end.strftime("%Y-%m-%d %H:%M:%S"), duration))
 # end def main
 
 if __name__ == '__main__' :
