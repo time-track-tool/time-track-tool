@@ -224,6 +224,9 @@ def init \
         , last_updated          = Date      ()
         )
 
+    # is_extern flag is used when an external system (e.g. Jira) manages
+    # the time records, no WP from this time_project will be visible in
+    # the normal time tracker gui, access only via API.
     class Time_Project_Class (kw ['Time_Project_Class']) :
         """Add attributes to existing Time_Project_Class class."""
 
@@ -247,6 +250,7 @@ def init \
                 , cost_center           = Link      ("cost_center")
                 , only_hours            = Boolean   ()
                 , op_project            = Boolean   ()
+                , is_extern             = Boolean   ()
                 )
             self.__super.__init__ (db, classname, ** properties)
         # end def __init__
@@ -272,6 +276,7 @@ def init \
         , work_location         = Link      ("work_location", do_journal = "no")
         , comment               = String    (indexme = "no")
         , dist                  = Number    ()
+        , metadata              = String    ()
         )
 
     time_wp = Class \
@@ -293,6 +298,7 @@ def init \
         , has_expiration_date   = Boolean   ()
         , time_wp_summary_no    = Link      ("time_wp_summary_no")
         , epic_key              = String    ()
+        , is_extern             = Boolean   ()
         )
 
     time_wp_summary_no = Class \
@@ -481,11 +487,30 @@ def init \
         def __init__ (self, db, classname, ** properties) :
             self.update_properties \
                 ( timing_info            = Boolean   ()
+                , timetracking_by        = Link      ("user")
+                , scale_role             = String    ()
+                , scale_seniority        = String    ()
+                , reduced_activity_list  = Date      ()
+                , vie_user               = Link      ("user")
                 )
             kw ['User_Class'].__init__ (self, db, classname, ** properties)
         # end def __init__
     # end class User_Class
     export.update (dict (User_Class = User_Class))
+
+    User_Status_Ancestor = kw ['User_Status_Class']
+    class User_Status_Class_TT (User_Status_Ancestor) :
+        """ Add attribute(s) to User_Status_Class.
+        """
+        def __init__ (self, db, classname, ** properties) :
+            self.update_properties \
+                ( timetracking_allowed  = Boolean   ()
+                )
+            User_Status_Ancestor.__init__ \
+                (self, db, classname, ** properties)
+        # end def __init___
+    # end class User_Status_Class_TT
+    export.update (dict (User_Status_Class = User_Status_Class_TT))
 
     class Org_Location_Class (kw ['Org_Location_Class']) :
         """ Add some attributes needed for time tracker
@@ -679,13 +704,14 @@ def security (db, ** kw) :
         , ( "time_project", "Edit", ["Project"]
           , ( "max_hours", "op_project", "planned_effort"
             , "product_family", "project_type", "reporting_group"
-            , "work_location", "infosec_req"
+            , "work_location", "infosec_req", "is_extern"
             )
           )
         , ( "time_project", "Edit", ["HR"]
           , ( "is_public_holiday", "is_vacation", "is_special_leave"
-            , "no_overtime", "no_overtime_day"
+            , "no_overtime", "no_overtime_day", "only_hours"
             , "overtime_reduction", "approval_required", "approval_hr"
+            , "is_extern"
             )
           )
         , ( "time_wp",      "Edit", ["Controlling"]
@@ -693,6 +719,12 @@ def security (db, ** kw) :
           )
         , ( "user_dynamic", "View", ["Controlling"]
           , ( "id", "sap_cc", "user", "valid_from", "valid_to")
+          )
+        , ( "user",         "View", ["User"]
+          , ( "timetracking_by", "vie_user")
+          )
+        , ( "user_dynamic", "View", ["User"]
+          , ( "org_location", "department")
           )
         ]
 
@@ -727,7 +759,7 @@ def security (db, ** kw) :
 
     def ok_daily_record (db, userid, itemid) :
         """User is allowed to access daily record if he is owner or
-           supervisor.
+           supervisor or timetracking-by user.
 
            Determine if the user owns the daily record, a negative itemid
            indicates that the record doesn't exist yet -- we allow creation
@@ -735,11 +767,14 @@ def security (db, ** kw) :
            the person to whom approvals are delegated.
         """
         ownerid   = db.daily_record.get (itemid, 'user')
+        ttby      = db.user.get (ownerid, 'timetracking_by')
+        if userid == ttby :
+            return True
         return userid == ownerid or approver_daily_record (db, userid, itemid)
     # end def ok_daily_record
 
     def own_time_record (db, userid, itemid) :
-        """User may edit own time_records.
+        """User or Timetracking by user may edit time_records owned by user.
 
            Determine if the user owns the daily record, a negative itemid
            indicates that the record doesn't exist yet -- we allow creation
@@ -749,6 +784,9 @@ def security (db, ** kw) :
             return True
         dr      = db.time_record.get  (itemid, 'daily_record')
         ownerid = db.daily_record.get (dr, 'user')
+        owner   = db.user.getnode (ownerid)
+        if owner.timetracking_by :
+            return owner.timetracking_by == userid
         return userid == ownerid
     # end def own_time_record
 
@@ -892,30 +930,19 @@ def security (db, ** kw) :
         wp = db.time_wp.getnode (itemid)
         if wp.is_public or userid in wp.bookers :
             return True
+        # Get all users for which *this* user is in timetracking_by
+        users = db.user.filter (None, dict (timetracking_by = userid))
+        for u in users :
+            if u in wp.bookers :
+                return True
         return False
     # end def wp_admitted
 
-    def project_admitted (db, userid, itemid) :
-        """User is allowed to view selected fields if booking is allowed
-           for at least one work package for this user
-        """
-        wps = db.time_wp.filter (None, dict (project = itemid))
-        for wp in wps :
-            if wp_admitted (db, userid, wp) :
-                return True
-        return False
-    # end def project_admitted
-
     def project_or_wp_name_visible (db, userid, itemid) :
         """User is allowed to view work package and time category names
-           if he/she is department manager or supervisor or has role HR
-           or HR-Org-Location.
+           if he/she has role HR or HR-Org-Location.
         """
         if common.user_has_role (db, userid, 'HR', 'HR-Org-Location') :
-            return True
-        if db.department.filter (None, dict (manager = userid)) :
-            return True
-        if db.user.filter (None, dict (supervisor = userid)) :
             return True
     # end def project_or_wp_name_visible
 
@@ -1161,6 +1188,7 @@ def security (db, ** kw) :
         , 'time_start', 'time_end', 'durations_allowed', 'travel'
         , 'cost_center', 'creation', 'creator', 'activity', 'actor', 'id'
         , 'has_expiration_date', 'time_wp_summary_no', 'epic_key'
+        , 'is_public', 'is_extern'
         )
     p = db.security.addPermission \
         ( name        = 'View'
@@ -1173,7 +1201,7 @@ def security (db, ** kw) :
     p = db.security.addPermission \
         ( name        = 'Search'
         , klass       = 'time_wp'
-        , properties  = wp_properties
+        , properties  = wp_properties + ('bookers',)
         )
     db.security.addPermissionToRole ('User', p)
     schemadef.add_search_permission (db, 'time_wp', 'User', wp_properties)
@@ -1185,18 +1213,16 @@ def security (db, ** kw) :
         )
     db.security.addPermissionToRole ('User', p)
     tp_properties = \
-        ( 'name', 'description', 'responsible', 'deputy', 'organisation'
+        ( 'name', 'description', 'responsible', 'deputy'
         , 'status', 'work_location', 'op_project', 'id'
         , 'is_public_holiday', 'is_vacation', 'is_special_leave'
         , 'creation', 'creator', 'activity', 'actor'
-        , 'cost_center', 'overtime_reduction'
-        , 'product_family', 'project_type', 'reporting_group'
+        , 'overtime_reduction'
+        , 'only_hours', 'is_extern'
         )
     p = db.security.addPermission \
         ( name        = 'View'
         , klass       = 'time_project'
-        , check       = project_admitted
-        , description = fixdoc (project_admitted.__doc__)
         , properties  = tp_properties
         )
     db.security.addPermissionToRole ('User', p)

@@ -7,57 +7,56 @@ msgid ""
 msgstr ""
 "Project-Id-Version: tttech-roundup\n"
 "Report-Msgid-Bugs-To: rsc@runtux.com\n"
-"POT-Creation-Date: 2015-07-25 12:33+0200\n"
+"POT-Creation-Date: 2019-12-11 19:35+0100\n"
 "PO-Revision-Date: 2007-10-30 17:34+0100\n"
 "Last-Translator: Ralf Schlatterbeck <rsc@runtux.com>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=ISO-8859-1\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-msgid "Restart of subscription only within two months"
+msgid "invoice"
 msgstr ""
 
-msgid "Restart of subscription only within last period"
+msgid "Invoice Address"
+msgstr "Invoice address"
+
+msgid "shipping"
+msgstr "shipping"
+
+msgid "Shipping Address"
+msgstr "Shipping address"
+
+msgid "supply"
+msgstr "supply"
+
+msgid "Address used for fetching supplies from supplier"
 msgstr ""
 
-msgid "Termination with deletion only for unpayed subscriptions"
+msgid "contact"
+msgstr "Contact"
+
+msgid "Address of a personal contact"
 msgstr ""
 
-msgid "Termination: end must be greater or equal to start time"
-msgstr ""
-
-msgid "\"%(attr)s\" may not be filled in"
+msgid "Circular logging"
 msgstr ""
 
 #, python-format
 msgid "\"%(attr)s\" must be filled in"
 msgstr ""
 
-msgid "invoice is marked"
+msgid "period must be an integer"
 msgstr ""
 
-msgid "\"end\" (close subscription) only +/- one month"
+msgid "user"
+msgstr "User"
+
+#, python-format
+msgid "%(user)s may not be changed"
 msgstr ""
 
 #, python-format
-msgid "\"%(attr)s\" may not be changed"
-msgstr ""
-
-msgid "\"%(attr)s\" may not be zero"
-msgstr ""
-
-msgid "Open/change only for valid subscription"
-msgstr ""
-
-msgid ""
-"\"end\" may only be changed for last invoice period: %(period_start)s-"
-"%(period_end)s"
-msgstr ""
-
-msgid "\"%(attr)s\" must be greater or equal to zero"
-msgstr ""
-
-msgid "period must be an integer"
+msgid "Overlap with existing absence: %s-%s"
 msgstr ""
 
 msgid ""
@@ -94,6 +93,10 @@ msgid "The field \"%s\" must remain filled."
 msgstr ""
 
 #, python-format
+msgid "State-change to open only for effort <= %(max_effort)s"
+msgstr ""
+
+#, python-format
 msgid "You may link only to your own %(cls)s"
 msgstr ""
 
@@ -113,7 +116,19 @@ msgid "%(attr)s may not be undefined"
 msgstr ""
 
 #, python-format
+msgid "valid_from (%(valid_from)s) must be > valid_to (%(valid_to)s)"
+msgstr ""
+
+#, python-format
+msgid "%(valid_from)s;%(valid_to)s overlaps with %(rvalid_from)s;"
+msgstr ""
+
+#, python-format
 msgid "%(valid_from)s;%(valid_to)s overlaps with %(rvalid_from)s;%(rvalid_to)s"
+msgstr ""
+
+#, python-format
+msgid "%(attr)s is required"
 msgstr ""
 
 #, python-format
@@ -126,17 +141,67 @@ msgstr "Overtime period"
 msgid "supp_per_period"
 msgstr "Supp. hours / period"
 
+#, python-format
+msgid "%(spp)s must be empty for this %(ov)s"
+msgstr ""
+
 msgid "supp_weekly_hours"
 msgstr "Supplementary hours"
 
+#, python-format
+msgid "%(swh)s must be empty for this %(ov)s"
+msgstr ""
+
 msgid "additional_hours"
 msgstr "Additional hours"
+
+#, python-format
+msgid "%(ah)s must be empty for this %(ov)s"
+msgstr ""
+
+#, python-format
+msgid "%(fld)s must be specified if %(ov)s is set"
+msgstr ""
+
+#, python-format
+msgid "%(sh)s must be specified if %(ov)s is set"
+msgstr ""
 
 msgid "weekly_hours"
 msgstr "Weekly hours"
 
 #, python-format
+msgid "%(wh)s must be in whole quarter hours"
+msgstr ""
+
+#, python-format
+msgid "%(dh)s must be in whole quarter hours"
+msgstr ""
+
+#, python-format
+msgid "%(ah)s must equal %(wh)s for monthly balance"
+msgstr ""
+
+#, python-format
+msgid "%(attr)s may not be changed"
+msgstr ""
+
+#, python-format
 msgid "Frozen: %(old_from)s"
+msgstr ""
+
+msgid "vac_aliq"
+msgstr ""
+
+#, python-format
+msgid "Change of \"%(van)s\" without absolute vacation correction"
+msgstr ""
+
+msgid "vacation_yearly"
+msgstr "Yearly vacation"
+
+#, python-format
+msgid "Change of \"%(vyn)s\" without absolute vacation correction"
 msgstr ""
 
 #, python-format
@@ -180,6 +245,22 @@ msgstr ""
 msgid "Wrong day of month: %(vm)s-%(vd)s"
 msgstr ""
 
+#, python-format
+msgid "There are open leave requests at or after %s"
+msgstr ""
+
+#, python-format
+msgid "There are open leave requests before %s"
+msgstr ""
+
+#, python-format
+msgid "There are (non public holiday) time records at or after %s"
+msgstr ""
+
+#, python-format
+msgid "There are (non public holiday) time records before %s"
+msgstr ""
+
 msgid "First day may not be after last day"
 msgstr ""
 
@@ -211,6 +292,10 @@ msgid "Only special role may create submission for other user"
 msgstr ""
 
 msgid "Vacation request for 0 days"
+msgstr ""
+
+#, python-format
+msgid "No dynamic user data for %s"
 msgstr ""
 
 msgid "No yearly vacation for this user"
@@ -291,9 +376,6 @@ msgstr ""
 msgid "Malformed %(attr)s: Only %(name)s allowed"
 msgstr ""
 
-msgid "Change to \"released\": user must be different from change to \"draft\""
-msgstr ""
-
 msgid "product_group"
 msgstr "Product group"
 
@@ -360,6 +442,9 @@ msgstr ""
 msgid "Containers may not be Obsolete/Mistaken"
 msgstr ""
 
+msgid "Please use new effort_hours field"
+msgstr ""
+
 #, python-format
 msgid "Change of %(doc_issue_status)s requires a message"
 msgstr ""
@@ -384,7 +469,7 @@ msgid "Must change user, \"helpdesk\" is not allowed"
 msgstr ""
 
 #, python-format
-msgid "Must change %s, \"unknown\" is not allowed"
+msgid "Must change %s, \"%s\" is not allowed"
 msgstr ""
 
 msgid "it_prio"
@@ -412,10 +497,8 @@ msgstr ""
 msgid "it_issue"
 msgstr "IT-Issue"
 
-msgid ""
-"Channel %(cname)s addr %(cadr)s of device %(dname)s addr %(dadr)s\n"
-"is %(overunder)s threshold %(threshold)s on %(timestamp)s.\n"
-"Current value is: %(value)s.\n"
+#, python-format
+msgid "\"%(attr)s\" may not be changed"
 msgstr ""
 
 msgid "over"
@@ -428,102 +511,62 @@ msgid "Sensor alert"
 msgstr ""
 
 #, python-format
-msgid "Invalid IP \"%(ip)s\": must contain 4 octets"
+msgid "You must edit %(fn)s"
+msgstr ""
+
+msgid "organisation"
+msgstr "Organisation"
+
+#, python-format
+msgid "%(o)s %(oname)s may not purchase"
 msgstr ""
 
 #, python-format
-msgid "Invalid IP \"%(ip)s\": invalid octet \"%(o)s\""
+msgid "Specify %(cc)s not %(tp)s with %(io)s"
 msgstr ""
 
-msgid "ip_subnet"
-msgstr "IP subnet"
+msgid "time_project"
+msgstr "Time Category"
 
-#, python-format
-msgid "IP %(ip)s does not match any %(ip_sn)s of %(olo_name)s"
+msgid "sap_cc"
+msgstr "SAP Cost center"
+
+msgid "internal_order"
+msgstr "Internal order"
+
+msgid "Supplier too long (max 55)"
 msgstr ""
 
-#, python-format
-msgid "Invalid MAC \"%(mac)s\": must contain 6 octets"
-msgstr ""
-
-#, python-format
-msgid "Invalid MAC \"%(mac)s\": invalid octet \"%(o)s\""
-msgstr ""
-
-msgid "Machine names may not point to other CNAMEs"
-msgstr ""
-
-msgid "org_location"
-msgstr "Organisation/Location"
-
-msgid "daily_record.user.org_location.id"
-msgstr "Organisation/Location Id"
-
-msgid "daily_record.user.department.id"
-msgstr "Department Id"
-
-#, python-format
-msgid "Duplicate %(olon)s %(polo)s in %(ip)s"
-msgstr ""
-
-msgid "network_address"
-msgstr "Network address"
-
-msgid "machine_name"
-msgstr "Machine name"
-
-msgid "dns_record_type"
-msgstr "DNS record type"
-
-#, python-format
-msgid "Only one of %(na)s and %(mnn)s may be given"
+msgid "Supplier name too long (max 55)"
 msgstr ""
 
 #, python-format
-msgid "Duplicate %(olo)s for %(na)s: %(olo_name)s"
+msgid "Non-active %(time_project)s: %(name)s"
 msgstr ""
 
 #, python-format
-msgid "For %(mnn)s, %(drtn)s must be CNAME"
+msgid "Invalid %(sap_cc)s: %(name)s"
+msgstr ""
+
+msgid "Organisation of CC/TC is empty"
 msgstr ""
 
 #, python-format
-msgid "For %(na)s, %(drtn)s must be CNAME"
+msgid "Organisation must be consistent with CC/TC: got %s expect %s"
 msgstr ""
 
 #, python-format
-msgid "Invalid netmask: %(mask)s"
-msgstr ""
-
-msgid "gid"
-msgstr "Group id"
-
-msgid "smb_domain"
-msgstr "Samba domain"
-
-#, python-format
-msgid "Invalid %(gname)s: %(gid)s for %(sdname)s"
+msgid "Need to specify %(tp)s or %(cc)s"
 msgstr ""
 
 #, python-format
-msgid "%(on)s must match for alias: %(name)s->%(a2)s"
+msgid "Either specify %(tp)s or %(cc)s, not both"
 msgstr ""
 
-#, python-format
-msgid "Either %(a_alias)s or %(u_alias)s must be defined"
+msgid "Department no longer valid"
 msgstr ""
 
-msgid "alias_to_alias"
-msgstr "Alias to alias"
-
-msgid "alias_to_user"
-msgstr "Alias to user"
-
-#, python-format
-msgid "May not change %(olon)s if dependencies exist"
-msgstr ""
-
-msgid "May not retire if dependencies exist"
+msgid "SAP Cost-Center no longer valid"
 msgstr ""
 
 msgid "Need at least one offer item"
@@ -538,19 +581,53 @@ msgstr ""
 msgid "No rejected approval-record found"
 msgstr ""
 
-msgid "%(tp)s responsible"
-msgstr "%(tp)s responsible"
+msgid "Approval change only in state open and approving"
+msgstr ""
 
-msgid "time_project"
-msgstr "Time Category"
+msgid "Cannot remove users from approval list"
+msgstr ""
+
+msgid "Special approval"
+msgstr "Special approval"
 
 msgid "user or role required"
+msgstr ""
+
+msgid "No role id"
 msgstr ""
 
 msgid "No change of approvals for this PR"
 msgstr ""
 
 msgid "May not change approval status parameters"
+msgstr ""
+
+msgid "Duplicate key currency"
+msgstr ""
+
+msgid "Requester may not be changed"
+msgstr ""
+
+#, python-format
+msgid "User doesn't have a View-Role: %s"
+msgstr ""
+
+msgid "No commas allowed in role name"
+msgstr ""
+
+#, python-format
+msgid "%(classname)s may not be changed"
+msgstr ""
+
+msgid "delivery_deadline"
+msgstr "Delivery deadline"
+
+#, python-format
+msgid "%(deadline)s may not be in the past"
+msgstr ""
+
+#, python-format
+msgid "Invalid Issue-Number: %s"
 msgstr ""
 
 #, python-format
@@ -626,18 +703,33 @@ msgid "Duration must not exceed %s hours"
 msgstr ""
 
 #, python-format
-msgid "%(attr)s may not be changed"
-msgstr ""
-
-#, python-format
 msgid "Frozen: %(uname)s, %(date)s"
 msgstr ""
 
-#, python-format
-msgid "Denied state change: %(old_status)s->%(status)s"
+msgid "Inkonsistent time records"
 msgstr ""
 
-msgid "Only user and Controlling may create daily records"
+msgid "Leave submission exists"
+msgstr ""
+
+msgid "No accepted leave submission"
+msgstr ""
+
+msgid "Leave submission not cancelled"
+msgstr ""
+
+msgid "Re-open only by HR"
+msgstr ""
+
+msgid "May not self-approve"
+msgstr ""
+
+#, python-format
+msgid "Denied state change: %(old_status)s->%(status)s: %(msg)s"
+msgstr ""
+
+msgid ""
+"Only user, Timetracking by user, and Controlling may create daily records"
 msgstr ""
 
 #, python-format
@@ -697,6 +789,17 @@ msgstr "Timetracking End"
 msgid "time_wp"
 msgstr "Work package"
 
+#, python-format
+msgid "Name contains forbidden character %s"
+msgstr ""
+
+msgid "epic_key"
+msgstr "Epic Key"
+
+#, python-format
+msgid "Not a valid %(epickey)s: %(k)s"
+msgstr ""
+
 msgid "Lunchbreak of more than 8 hours? Sure?"
 msgstr ""
 
@@ -704,18 +807,7 @@ msgid "Lunchbreak must be at least half an hour."
 msgstr ""
 
 #, python-format
-msgid "%(uid)s specified for user without %(org_loc)s"
-msgstr ""
-
-msgid "uid"
-msgstr "User id"
-
-#, python-format
-msgid "Invalid %(uidname)s: %(uid)s"
-msgstr ""
-
-#, python-format
-msgid "%(uidname)s specified but no samba domain configured"
+msgid "%(fn)s too long: > %(l)s"
 msgstr ""
 
 msgid "Not allowed to retire a user"
@@ -739,26 +831,11 @@ msgstr ""
 msgid "Submit to %(nickname)s"
 msgstr ""
 
-msgid "approve"
-msgstr "Approve"
-
-msgid "deny"
-msgstr "Deny"
-
-msgid "edit again"
-msgstr "Edit again"
-
 msgid "supervisor"
 msgstr "Supervisor"
 
 #, python-format
 msgid "No %(f_supervisor)s for %(user)s"
-msgstr ""
-
-msgid "User is required"
-msgstr ""
-
-msgid "Invalid User"
 msgstr ""
 
 msgid "Date is required"
@@ -767,4013 +844,26 @@ msgstr ""
 msgid "Don't specify a user for \"Freeze all\""
 msgstr ""
 
-msgid "Supervisor (in User field) is required"
-msgstr ""
-
-msgid "Invalid Supervisor"
-msgstr ""
-
-msgid "Don't care"
-msgstr ""
-
-msgid "Academic title of %(Classname)s, e.g., Dipl. Ing."
-msgstr ""
-
-msgid "Status of this address"
-msgstr ""
-
-msgid "Address of %(Classname)s"
-msgstr ""
-
-msgid ""
-"The address type category with\n"
-"         code \"ABO\" is special: It is used by the system for marking all\n"
-"         address types that are used for marking subscribers addresses\n"
-"         of running abos. Therefore the address type category with code\n"
-"         \"ABO\" may not be deleted or changed.\n"
-"      "
-msgstr ""
-
-msgid "City where this person lives."
-msgstr ""
-
-msgid "Code of this %(Classname)s."
-msgstr ""
-
-msgid ""
-"Expected daily work-time for %(Classname)s for each day of\n"
-"         the week. If nothing is specified, the average of Weekly\n"
-"         hours is taken. The field is mainly needed for part-time\n"
-"         employees with irregular work time.\n"
-"      "
-msgstr ""
-
-msgid "Planned time by which this %(Classname)s should be done."
-msgstr ""
-
-msgid ""
-"Is hidden by default except for HR and office, except if the\n"
-"         user explicitly allows the number being visible.\n"
-"      "
-msgstr ""
-
-msgid "Flag if booking of durations is allowed for this %(Classname)s."
-msgstr ""
-
-msgid ""
-"Only an explicitly chosen %(Property)s (or several) appear in\n"
-"         the report when you also choose %(Property)s in View.\n"
-"      "
-msgstr ""
-
-msgid ""
-"This is only set if the %(Classname)s is being synchronised\n"
-"         with an external issue tracker.\n"
-"      "
-msgstr ""
-
-msgid "First name for this %(Classname)s, e.g., Ralf."
-msgstr ""
-
-msgid ""
-"Multiline field for this %(Classname)s, will be printed on an\n"
-"         address label\n"
-"      "
-msgstr ""
-
-msgid "%(Property)s for this %(Classname)s"
-msgstr ""
-
-msgid "Type of %(Classname)s"
-msgstr ""
-
-msgid "Green start/end times have been created by the distribute function."
-msgstr ""
-
-msgid ""
-"ID of this record, automatically generated by the system.\n"
-"         Cannot be changed by the user.\n"
-"      "
-msgstr ""
-
-msgid "Amount this subscription costs"
-msgstr ""
-
-msgid "Last name for this %(Classname)s, e.g., Schlatterbeck"
-msgstr ""
-
-msgid "Leave this field empty if unsure."
-msgstr ""
-
-msgid ""
-"Some %(Property)s for tagging -- can be useful for querying.\n"
-"      "
-msgstr ""
-
-msgid ""
-"If you miss an %(Property)s here, feel free to vote for it with\n"
-"         an IT-Issue in category roundup.\n"
-"      "
-msgstr ""
-
-msgid "Multiple %(Classname)s entries are allowed."
-msgstr ""
-
-msgid "Items are ordered by this property in drop-down boxes etc."
-msgstr ""
-
-msgid "Priority for this %(Classname)s."
-msgstr ""
-
-msgid ""
-"as a comma-separated list of ranges (a special case of a range\n"
-"         is just one number), e.g., 1-100,300-500\n"
-"      "
-msgstr ""
-
-msgid ""
-" -- automatically generated\n"
-"         by the system from first and last name. Needed by roundup\n"
-"         internally. (Roundup uses this as the sender name when\n"
-"         sending messages via email)\n"
-"     "
-msgstr ""
-
-msgid "This selects Work packages that belong to a %(Property)s."
-msgstr ""
-
-msgid "This selects Time categories that belong to a %(Property)s."
-msgstr ""
-
-msgid ""
-"Status of this %(Classname)s. Automatically set on a new\n"
-"         %(Classname)s if not set.\n"
-"      "
-msgstr ""
-
-msgid "Street for this %(Classname)s."
-msgstr ""
-
-msgid ""
-"This %(Classname)s has been closed as a duplicate against\n"
-"         another %(Classname)s.\n"
-"      "
-msgstr ""
-
-msgid ""
-"Flag to indicate travel. In the Time mask no lunchbreak will\n"
-"         be computed. Even if enabled, no maximum work hours will be\n"
-"         enforced for this %(Classname)s.\n"
-"      "
-msgstr ""
-
-msgid "User-defined name of this %(Classname)s"
-msgstr ""
-
-msgid "Location where you worked."
-msgstr ""
-
-msgid ""
-"The \"View\" selector is visible in the search form for\n"
-"         %(Classname)s. Select here which columns you want to view in\n"
-"         the results.\n"
-"      "
-msgstr ""
-
-msgid ""
-"Work package number in the project. Number must be unique for\n"
-"         the project and cannot be changed after assignment.\n"
-"      "
-msgstr ""
-
-msgid "VIEW"
-msgstr "View"
-
-msgid "abbreviation"
-msgstr "Abbreviation"
-
-msgid "Abbreviated name"
-msgstr "Abbreviated name"
-
-msgid "abo"
-msgstr ""
-
-msgid "Subscription to which this invoice belongs"
-msgstr ""
-
-msgid "abo++end"
-msgstr ""
-
-msgid "product++name"
-msgstr "Old material number"
-
-msgid "Date when this subscription ends"
-msgstr ""
-
-msgid "aboprice"
-msgstr "Subscription price"
-
-msgid "Price and currency for this subscription"
-msgstr ""
-
-msgid "abos"
-msgstr ""
-
-msgid "Subscriptions for this %(Classname)s"
-msgstr ""
-
-msgid "abotype"
-msgstr "Subscription type"
-
-msgid "Type of this subscription"
-msgstr ""
-
-msgid "abo_type++adr_type"
-msgstr "Address type"
-
-msgid ""
-"-- this field indicates the address type to\n"
-"             be used for marking addresses that should be exported for\n"
-"             sending. When a new subsription is generated this type will\n"
-"             be automatically added to the subscriber. When cancelling a\n"
-"             subscription, this type will be deleted from the subscriber.\n"
-"             Note that only address types can be selected here for which\n"
-"             the address type category is \"ABO\".\n"
-"          "
-msgstr ""
-
-msgid "absolute"
-msgstr ""
-
-msgid ""
-"For normal correction of present remaining vacation put\n"
-"             in Absolute: \"no\". Absolute \"yes\" restarts vacation day\n"
-"             calculation with the specified date. Is automatically set\n"
-"             with 0 if new user is entered into system, is useful if\n"
-"             user restarts with TTTech and rounding difference is still\n"
-"             in the system. Note: Vacation correction is also possible\n"
-"             if no valid dyn. user data for this date.\n"
-"          "
-msgstr ""
-
-msgid "achieved_hours"
-msgstr "Achieved hours"
-
-msgid ""
-"Achieved overtime hours included in monthly/yearly supplementary\n"
-"            hours per overtime period\n"
-"         "
-msgstr ""
-
-msgid "active"
-msgstr "Active"
-
-msgid "Set if this %(Classname)s is active."
-msgstr ""
-
-msgid "activity"
-msgstr "Last Activity"
-
-msgid "Date of last change"
-msgstr ""
-
-msgid "actor"
-msgstr "Actor"
-
-msgid "Person who has done the last change"
-msgstr ""
-
-msgid "add_announcement"
-msgstr "Add Announcement"
-
-msgid "Mail out an announcement for another review step"
-msgstr ""
-
-msgid "add_file"
-msgstr "Add File"
-
-msgid "Add a new file for %(Classname)s"
-msgstr ""
-
-msgid "add_to_las"
-msgstr "Add to LAS?"
-
-msgid ""
-"Request to add this supplier to the list of approved\n"
-"            suppliers (LAS).\n"
-"         "
-msgstr ""
-
-msgid "Austrian-Law: time above 38.5 hours per week"
-msgstr ""
-
-msgid "address"
-msgstr "Address"
-
-msgid "Address for this %(Classname)s"
-msgstr ""
-
-msgid "address.lookalike_city"
-msgstr "City"
-
-msgid "address.lookalike_firstname"
-msgstr "First name"
-
-msgid "address.lookalike_function"
-msgstr "Address details"
-
-msgid "address.lookalike_lastname"
-msgstr "Last name"
-
-msgid "address.lookalike_street"
-msgstr "Street"
-
-msgid "address++valid"
-msgstr "valid"
-
-msgid "address++title"
-msgstr "Title"
-
-msgid "adr"
-msgstr "Address"
-
-msgid "adr_type_cat.code"
-msgstr "Code"
-
-msgid "adr_type_cat++code"
-msgstr "Code"
-
-msgid "adr_type"
-msgstr "Address type"
-
-msgid "affix"
-msgstr "Name affix"
-
-msgid "Name affix like e.g. \"senior\" or \"MBA\""
-msgstr ""
-
-msgid "alias"
-msgstr "Alias"
-
-msgid "Email alias"
-msgstr ""
-
-msgid "Other aliases this %(Classname)s maps to"
-msgstr ""
-
-msgid "List of users this %(Classname)s maps to"
-msgstr ""
-
-msgid "all_in"
-msgstr "All in"
-
-msgid "If selected, the user has an all-inclusive work time contract"
-msgstr ""
-
-msgid "alarm++val"
-msgstr "Threshold"
-
-msgid "Alarm threshold value"
-msgstr ""
-
-msgid "almax"
-msgstr "Alarm max"
-
-msgid "Maximum value, this or larger values trigger an alarm"
-msgstr ""
-
-msgid "almin"
-msgstr "Alarm min"
-
-msgid "Minimum value, this or smaller values trigger an alarm"
-msgstr ""
-
-msgid "alternate_addresses"
-msgstr "Alternate Addresses"
-
-msgid "Alternate email addresses for this user, one per line"
-msgstr ""
-
-msgid "amount"
-msgstr "Amount"
-
-msgid "Amount payed"
-msgstr ""
-
-msgid "analysis_result"
-msgstr "Analysis result"
-
-msgid "is_asset"
-msgstr "is asset"
-
-msgid "Result of error analysis"
-msgstr ""
-
-msgid "announcements"
-msgstr "Announcements"
-
-msgid "Announcements for this %(Classname)s"
-msgstr ""
-
-msgid "approval_required"
-msgstr "Approval required"
-
-msgid ""
-"Only for absence %(Classname)s: Employee must seek approval\n"
-"            via leave submission before booking.\n"
-"         "
-msgstr ""
-
-msgid "approval_hr"
-msgstr "Approval by HR"
-
-msgid ""
-"Only for absence %(Classname)s: Employee must seek approval,\n"
-"            but approval may not be granted by supervisor but by a\n"
-"            special HR role. This field implies\n"
-"         "
-msgstr ""
-
-msgid "\"approval_required\"."
-msgstr "\"Approval required\"."
-
-msgid "approved_supplier"
-msgstr "Approved supplier"
-
-msgid ""
-"Indicate if the supplier is on the list of approved\n"
-"            suppliers (LAS).\n"
-"         "
-msgstr ""
-
-msgid "area"
-msgstr "Area"
-
-msgid "Where this issue belongs to."
-msgstr ""
-
-msgid "artefact"
-msgstr "Artefact type"
-
-msgid ""
-"Defines the detailled characteristic, e.g Project Plan,\n"
-"            Manual, Specification etc.\n"
-"         "
-msgstr ""
-
-msgid "author"
-msgstr "Author"
-
-msgid "Author of this %(Classname)s"
-msgstr ""
-
-msgid "authors"
-msgstr "Authors"
-
-msgid "Authors of the artefact of this %(Classname)s"
-msgstr ""
-
-msgid "balance"
-msgstr "Balance"
-
-msgid ""
-"Overtime balance as in staff report for the date mentioned\n"
-"             in \"valid on\".\n"
-"          "
-msgstr ""
-
-msgid "balance_open"
-msgstr "Open Balance"
-
-msgid "Open amount not yet payed"
-msgstr ""
-
-msgid "bcc"
-msgstr "BCC"
-
-msgid "Additional emails to send to when \""
-msgstr ""
-
-msgid "send_to_customer"
-msgstr "send to customer"
-
-msgid "\" flag is set."
-msgstr ""
-
-msgid " Additional emails will not show up in mail header."
-msgstr ""
-
-msgid "begin"
-msgstr ""
-
-msgid "Begin of period"
-msgstr ""
-
-msgid "birthdate"
-msgstr "Birthdate"
-
-msgid "Date of birth for this %(Classname)s"
-msgstr ""
-
-msgid "bookentry"
-msgstr "Booking date"
-
-msgid "Date when the payment was booked"
-msgstr ""
-
-msgid "bookers"
-msgstr "Admitted users"
-
-msgid ""
-"Users who may book on this %(Classname)s. If nothing is\n"
-"             selected here, all users may book on this %(Classname)s (e.g.,\n"
-"             jour fixe).\n"
-"          "
-msgstr ""
-
-msgid "booking_allowed"
-msgstr "Booking allowed"
-
-msgid ""
-"User is allowed to book time records during the validity span\n"
-"             of the given %(Classname)s\n"
-"          "
-msgstr ""
-
-msgid "Date of birth"
-msgstr ""
-
-msgid "born"
-msgstr ""
-
-msgid "business_unit"
-msgstr "Business Unit"
-
-msgid "%(Property)s responsible for this %(Classname)s"
-msgstr ""
-
-msgid "Type of this %(Classname)s"
-msgstr ""
-
-msgid "card_type"
-msgstr "Card type"
-
-msgid "category"
-msgstr "Category"
-
-msgid ""
-"Category of %(Classname)s. Where this %(Classname)s belongs\n"
-"             to. Each category has a Category-Responsible who is\n"
-"             responsible directly after creation if not specified\n"
-"             otherwise.\n"
-"          "
-msgstr ""
-
-msgid "category++nosy"
-msgstr "Nosy List"
-
-msgid ""
-"For new issues the %(Property)s is copied to the\n"
-"             %(Property)s of the new issue\n"
-"          "
-msgstr ""
-
-msgid "cc"
-msgstr "CC"
-
-msgid "cert_sw"
-msgstr "Cert Software"
-
-msgid ""
-"Mark this %(Classname)s as being certifyable software.\n"
-"             Certifyable software needs special handling, e.g., requires "
-"that\n"
-"             some fields like \"Files affected\" are filled in.\n"
-"          "
-msgstr ""
-
-msgid "city"
-msgstr "City"
-
-msgid "clearance_by"
-msgstr "Approval delegated to"
-
-msgid ""
-"Usually the supervisor of a person approves\n"
-"             time records. This can be delegated using this attribute. It\n"
-"             specifies the person who approves time records for\n"
-"             all people whose supervisor this is.\n"
-"          "
-msgstr ""
-
-msgid "closed"
-msgstr ""
-
-msgid ""
-"When this %(Classname)s was closed. Automatically set by\n"
-"             Roundup.\n"
-"          "
-msgstr ""
-
-msgid "cls"
-msgstr "Class"
-
-msgid "%(Classname)s class"
-msgstr ""
-
-msgid "code"
-msgstr "Code"
-
-msgid "Code of this %(Classname)s"
-msgstr ""
-
-msgid "comment"
-msgstr "Comment"
-
-msgid "Comment for %(Classname)s"
-msgstr ""
-
-msgid "comment_cancel"
-msgstr "Cancel comment"
-
-msgid "Comment for %(Classname)s when cancel is requested"
-msgstr ""
-
-msgid "company"
-msgstr "Company"
-
-msgid "Company for %(Classname)s"
-msgstr ""
-
-msgid "composed_of"
-msgstr "Composed of"
-
-msgid ""
-"Set automagically by roundup on %(Classname)ss being Part of\n"
-"             another %(Classname)s.\n"
-"          "
-msgstr ""
-
-msgid "composed_of.id"
-msgstr "Composed of (id)"
-
-msgid "issue.composed_of.id"
-msgstr "Composed of (id)"
-
-msgid "confidential"
-msgstr ""
-
-msgid ""
-"If set, %(Classname)s is visible only to users on the nosy\n"
-"             list (note that the stakeholder and the responsible person\n"
-"             are always on the nosy list).\n"
-"          "
-msgstr ""
-
-msgid "confirm"
-msgstr "Confirm Password"
-
-msgid ""
-"Confirm the password here: first password and this entry\n"
-"             must match.\n"
-"          "
-msgstr ""
-
-msgid "contact"
-msgstr "Contact"
-
-msgid ""
-"Contact information, e.g., Email address, Phone number, Fax\n"
-"             number, Homepage\n"
-"          "
-msgstr ""
-
-msgid "contacts"
-msgstr "Contacts"
-
-msgid ""
-"Contact information, e.g., Email address, Phone number...\n"
-"             In order to edit a contact (e.g. phone number) please click\n"
-"             on the contact type. Given the right permissions you can\n"
-"             also create a new number in the row below. Deleting a\n"
-"             contact is done by selecting the line in the column\n"
-"             \"remove\" and then pressing \"Submit Changes\" (The\n"
-"             \"remove\" columns is available only with the right\n"
-"             permissions).\n"
-"          "
-msgstr ""
-
-msgid "contact_type"
-msgstr "Contact type"
-
-msgid "Type of contact information, e.g., Email, Phone, Fax, Homepage"
-msgstr ""
-
-msgid "contact_person"
-msgstr "Contact person"
-
-msgid "Personal information about a %(Property)s"
-msgstr ""
-
-msgid "Content of %(Classname)s"
-msgstr ""
-
-msgid "content"
-msgstr "Content"
-
-msgid "continuous_obligation"
-msgstr "Continuous obligation"
-
-msgid ""
-"%(Property)s refers to contracts/purchases that last for a\n"
-"            certain time. (E.g. car leasing, appartment rent etc.)\n"
-"         "
-msgstr ""
-
-msgid "contract_type"
-msgstr "Contract type"
-
-msgid ""
-"%(Property)s specifies the kind of contract that\n"
-"            the staff member has, like (normal) employment contract,\n"
-"            separate marginal employment (in addition to the main\n"
-"            employment contract), contract of work and services\n"
-"            (Werkvertrag), or (AUT only) freier Dienstvertrag (social\n"
-"            insurance liable free-lance contract).\n"
-"      "
-msgstr ""
-
-msgid "cost_center"
-msgstr "Productivity"
-
-msgid "cost_center.id"
-msgstr "Productivity Id"
-
-msgid "cost_center_id"
-msgstr "Productivity Id"
-
-msgid "cost_center_group.id"
-msgstr "Productivity Group Id"
-
-msgid "cost_center_group_id"
-msgstr "Productivity Group Id"
-
-msgid "cost_center_status"
-msgstr "Productivity Status"
-
-msgid "Specifies the Phase of this %(Classname)s item"
-msgstr ""
-
-msgid "Country for this address"
-msgstr ""
-
-msgid "country"
-msgstr "Country"
-
-msgid "Record creation date"
-msgstr ""
-
-msgid "creation"
-msgstr "Creation"
-
-msgid "Person who created this record"
-msgstr ""
-
-msgid "creator"
-msgstr "Creator"
-
-msgid "Delimiter for CSV export"
-msgstr ""
-
-msgid "csv_delimiter"
-msgstr "CSV delimiter"
-
-msgid "Currency for this %(Classname)s"
-msgstr ""
-
-msgid "%(Property)s of %(Classname)s"
-msgstr ""
-
-msgid "cust_supp"
-msgstr "Customer/Supplier"
-
-msgid "customer"
-msgstr "Customer/Supplier"
-
-msgid "customer_status"
-msgstr "Customer Status"
-
-msgid "customer_type"
-msgstr "Customer type"
-
-msgid "customer++confidential"
-msgstr "confidential"
-
-msgid ""
-"If this flag is set for a %(Classname)s, new support issues\n"
-"            created for this %(Classname)s will be confidential.\n"
-"         "
-msgstr ""
-
-msgid "customer++nosy"
-msgstr "Nosy List"
-
-msgid ""
-"Nosy list to use for new support issues from this\n"
-"            %(Classname)s\n"
-"         "
-msgstr ""
-
-msgid "cut_off_date"
-msgstr "Cut-off Date"
-
-msgid "Date until when this %(Classname)s must be finished."
-msgstr ""
-
-msgid "date"
-msgstr "Date"
-
-msgid "Date of this %(Classname)s.<br>"
-msgstr ""
-
-msgid "date_payed"
-msgstr ""
-
-msgid "Date when this %(Classname)s was payed"
-msgstr ""
-
-msgid "daily_hours"
-msgstr "Daily hours"
-
-msgid "daily_record++weekend_allowed"
-msgstr "Weekend allowed"
-
-msgid ""
-"Admits user to book work or travel time on this\n"
-"             weekend-day; should always be preapproved by supervisor.\n"
-"          "
-msgstr ""
-
-msgid "daily_record.user.id"
-msgstr "User Id"
-
-msgid "daily_worktime"
-msgstr "max. Daily worktime"
-
-msgid "Maximum time a person may book for a single day."
-msgstr ""
-
-msgid "defect++superseder"
-msgstr "Duplicate of"
-
-msgid "deadline"
-msgstr "Deadline"
-
-msgid "default_lease_time"
-msgstr "default DHCP lease time"
-
-msgid "Default DHCP lease time for %(Classname)s"
-msgstr ""
-
-msgid "default_nosy"
-msgstr "Default nosy list"
-
-msgid ""
-"If this flag is selected, a new customer created without a nosy\n"
-"            list and without a nosy group will get this mail group as\n"
-"            its nosy group. If several mail groups have this flag, all\n"
-"            will be inherited by a new customer without specified nosy\n"
-"            and nosy groups.\n"
-"         "
-msgstr ""
-
-msgid "default_part_of"
-msgstr "Default Container"
-
-msgid ""
-"When a new issue is created with %(Classname)s set, but\n"
-"            'Part of' not set, then '%(Property)s' will be used as the\n"
-"            default 'Part of'.\n"
-"         "
-msgstr ""
-
-msgid "default_server"
-msgstr "default server"
-
-msgid ""
-"%(Property)s for %(Classname)s: Other DNS services may use\n"
-"            the same protocol but the %(Property)s is the server of the\n"
-"            company who invented the protocol. When selecting a protocol\n"
-"            for use with a DNS service, the %(Property)s is used if no\n"
-"            server is specified.\n"
-"          "
-msgstr ""
-
-msgid "delivery_deadline"
-msgstr "Delivery deadline"
-
-msgid "Deadline by which goods have to be delivered"
-msgstr ""
-
-msgid "department"
-msgstr "Department"
-
-msgid "Department in which the %(Classname)s is based, e.g., SW, Sales."
-msgstr ""
-
-msgid "department.id"
-msgstr "Department Id"
-
-msgid "depends"
-msgstr "Depends"
-
-msgid ""
-"A comma seperated list of %(Classname)s IDs this\n"
-"             %(Classname)s depends on. This information is used for the\n"
-"             planning process and should only contain the IDs of the\n"
-"             issues this issue needs in order to be worked on, e.g., we\n"
-"             actually need a specification before we can start to work on\n"
-"             it. If you have some dependencies here, the depending\n"
-"             %(Classname)ss are hyperlinked.\n"
-"          "
-msgstr ""
-
-msgid "depends.id"
-msgstr "Depends (id)"
-
-msgid "deputy"
-msgstr "Deputy"
-
-msgid "purchasing_agents"
-msgstr "Purchasing agents"
-
-msgid "Substitute for the responsible Person of %(Classname)s"
-msgstr ""
-
-msgid "description"
-msgstr "Description"
-
-msgid "Verbose description of %(Classname)s"
-msgstr ""
-
-msgid "dev"
-msgstr "Device"
-
-msgid "Device type name (product)"
-msgstr ""
-
-msgid "device++adr"
-msgstr "Device address"
-
-msgid "device++name"
-msgstr "Device name"
-
-msgid "device++order"
-msgstr "Device order"
-
-msgid "device_group"
-msgstr "Group"
-
-msgid ""
-"Device group for %(Classname)s -- a device may belong\n"
-"             to one device group which can be configured by the user.\n"
-"          "
-msgstr ""
-
-msgid "dhcp_range"
-msgstr "DHCP range"
-
-msgid ""
-"Range of dynamic IP addresses for %(Classname)s -- used\n"
-"             when generating DHCP configuration. Format: Two IP addresses "
-"in\n"
-"             dot notation separated by a dot. Example:\n"
-"             10.100.99.20&nbsp;10.100.99.250\n"
-"          "
-msgstr ""
-
-msgid "dhcp_server"
-msgstr "DHCP server"
-
-msgid "DHCP Server for this %(Classname)s"
-msgstr ""
-
-msgid "display"
-msgstr ""
-
-msgid ""
-"If enabled, items with %(Classname)s will be displayed\n"
-"             in customer/supplier mask.\n"
-"          "
-msgstr ""
-
-msgid "dist"
-msgstr "Dist."
-
-msgid ""
-"Distribute: In a first step you can enter Start and End time\n"
-"             for each day or the hours you worked during the day. In a\n"
-"             second step you can distribute these hours to the different\n"
-"             work packages you worked on during the week by entering the\n"
-"             work package and the number of hours into the \"Distr.\" "
-"field.\n"
-"             The remaining hours will be distributed to your time records\n"
-"             which don't have a work package associated.\n"
-"             This mechanism works after you press \"Save\" and will split a\n"
-"             single time record into two if necessary.\n"
-"          "
-msgstr ""
-
-msgid ""
-"Type of DNS record generated. If the %(Classname)s points to\n"
-"             another %(Classname)s a CNAME is generated, otherwise an\n"
-"             A-record is assumed. If no DNS information should be\n"
-"             generated, this field should be set to \"invalid\".\n"
-"             This field is auto-generated if left empty.\n"
-"          "
-msgstr ""
-
-msgid "dns_servers"
-msgstr "DNS servers"
-
-msgid ""
-"DNS Servers for this %(Classname)s, used when generating\n"
-"             the DHCP configuration.\n"
-"          "
-msgstr ""
-
-msgid "do_logging"
-msgstr "do logging"
-
-msgid "do_leave_process"
-msgstr "do leave process"
-
-msgid "Log values received for this %(Classname)s"
-msgstr ""
-
-msgid "do_reverse_mapping"
-msgstr "Do reverse mapping"
-
-msgid ""
-"Flag if a reverse DNS entry should be created for this\n"
-"             %(Classname)s -- should usually be enabled. If a\n"
-"             %(Classname)s has multiple A-Records (which is bad style to\n"
-"             say the least) this flag must be set for only one of the\n"
-"             multiple A-Records. The flag is ignored for CNAME records.\n"
-"          "
-msgstr ""
-
-msgid "doc++responsible"
-msgstr "Owner"
-
-msgid ""
-"Owner of this %(Classname)s. Depending on the state, this\n"
-"            shall be the author of the %(Classname)s or the reponsible\n"
-"            person for review/release of the %(Classname)s.\n"
-"         "
-msgstr ""
-
-msgid "doc++link"
-msgstr "Link/CVS/SVN location"
-
-msgid "The location of the file in the repository or on the file server"
-msgstr ""
-
-msgid "doc++status"
-msgstr "Status"
-
-msgid ""
-"The status of the item. Can be one of \"work in progress\",\n"
-"             \"draft\", \"released\" and \"obsolete\". The latter will cause "
-"the\n"
-"             item to not be displayed in the standard query.\n"
-"             For allowed transitions, see the Transistions column in the\n"
-"             <a href=doc_status>Artefact Status</a> page.\n"
-"          "
-msgstr ""
-
-msgid "doc++title"
-msgstr "Title"
-
-msgid ""
-"Should be an intuitive one-line description of the %(Classname)s\n"
-"             consisting of the &lt;short name&gt; and the &lt;long "
-"name&gt;. \n"
-"             Example for a title:\n"
-"             \"ASDM Automotive Software Development Manual\".\n"
-"          "
-msgstr ""
-
-msgid "doc_issue_status"
-msgstr "Doc status"
-
-msgid ""
-"%(Classname)s documentation status, i.e., if this\n"
-"             %(Classname)s has an impact on user documentation or needs to\n"
-"             be documented internally. Note that an %(Classname)s cannot\n"
-"             be set to \"testing\" with the %(Property)s \"undecided\".\n"
-"          "
-msgstr ""
-
-msgid "doc_issue_status++nosy"
-msgstr "Nosy List"
-
-msgid ""
-"People receiving announcements (messages) for issues with\n"
-"             this %(Classname)s, the nosy list is modified when changing\n"
-"             to this %(Classname)s\n"
-"          "
-msgstr ""
-
-msgid "doc_issue_status++order"
-msgstr "Order"
-
-msgid ""
-"Note that the %(Classname)s ordered first will also be the\n"
-"             default value.\n"
-"          "
-msgstr ""
-
-msgid "document_nr"
-msgstr "Artefact number"
-
-msgid ""
-"The %(Property)s is generated when the %(Classname)s is\n"
-"             created. It can be manually overwritten for an old %(Classname)"
-"s\n"
-"             that already has an %(Property)s assigned.\n"
-"          "
-msgstr ""
-
-msgid "domain_part"
-msgstr "Domain part"
-
-msgid ""
-"Part of a domain name. The domain name is built by\n"
-"             concatenation the names of the Organisation and the Location.\n"
-"          "
-msgstr ""
-
-msgid "domino_dn"
-msgstr "Domino DN"
-
-msgid ""
-"Distinguished name for Domino users -- needed for alias\n"
-"             generation.\n"
-"          "
-msgstr ""
-
-msgid "duration"
-msgstr "Duration"
-
-msgid ""
-"Work duration in hours, e.g. 7.25 -- only quarter hours\n"
-"             allowed, e.g., 7.10 is not allowed. The duration is created\n"
-"             automatically by the system when you specify \"Start\" and\n"
-"             \"End\". Attention: If you specify both, \"Start\" and "
-"\"Duration\"\n"
-"             with a duration of more than six hours, the system will\n"
-"             consult your user preferences and add the lunch break, e.g.\n"
-"             specifying \"Start\" 10:00 and \"Duration\" 8 will result in "
-"an\n"
-"             \"End\" time of 18:30.\n"
-"          "
-msgstr ""
-
-msgid "dyndns_service"
-msgstr "DynDNS service"
-
-msgid "Configured %(Property)s to use for this %(Classname)s"
-msgstr ""
-
-msgid "earliest_start"
-msgstr "Earliest Start"
-
-msgid ""
-"When this %(Classname)s can be started to work on. Used to\n"
-"             specify external dependencies (e.g., availability of\n"
-"             hardware).\n"
-"          "
-msgstr ""
-
-msgid "email"
-msgstr "Email"
-
-msgid "Email address for this %(Classname)s"
-msgstr ""
-
-msgid "email++password"
-msgstr "SMTP Password"
-
-msgid "SMTP password for sending alerts"
-msgstr ""
-
-msgid "emails"
-msgstr "Emails"
-
-msgid "cc_emails"
-msgstr "CC-Emails"
-
-msgid "Customer email addresses for this %(Classname)s"
-msgstr ""
-
-msgid "end"
-msgstr "End"
-
-msgid ""
-"Format xx:xx  (e.g. 17:00), is created automatically by the\n"
-"             system when you specify \"Start\" and \"Duration\". Attention: "
-"If\n"
-"             you specify both, \"Start\" and \"End\", with more than six "
-"hours\n"
-"             in between, the system will consult your user preferences and\n"
-"             subtract the lunch break, e.g. specifying \"Start\" 10:00 and\n"
-"             \"End\" 18:00 will result in a duration of 7.5 hours (because\n"
-"             half an hour lunch break was subtracted).\n"
-"          "
-msgstr ""
-
-msgid "ext_attributes"
-msgstr "Ext. Attributes"
-
-msgid ""
-"Attribute values from latest synchronisation with external\n"
-"            tracker. Values are stored as JSON internally and displayed\n"
-"            in human readable form if you click on the "
-msgstr ""
-
-msgid "ext_id"
-msgstr "Ext. ID"
-
-msgid ""
-"ID of this issue in external issue tracker.\n"
-"         "
-msgstr ""
-
-msgid "ext_status"
-msgstr "Ext. Status"
-
-msgid ""
-"Status of this issue in external issue tracker.\n"
-"         "
-msgstr ""
-
-msgid "ext_tracker"
-msgstr "Ext. Tracker"
-
-msgid ""
-"Data about external issue tracker including name and\n"
-"            description of the external tracker.\n"
-"         "
-msgstr ""
-
-msgid ""
-"Data about external issue trackers including name and\n"
-"            description of the external tracker.\n"
-"         "
-msgstr ""
-
-msgid "external_company"
-msgstr "Ext. Company"
-
-msgid ""
-"Company for external users used for access control: all\n"
-"            external users for a company have access if the\n"
-"            %(Classname)s is on the access list for an issue\n"
-"         "
-msgstr ""
-
-msgid "external_ref"
-msgstr "External reference"
-
-msgid "%(Property)s at supplier/customer for this %(Classname)s"
-msgstr ""
-
-msgid "external_users"
-msgstr "External users"
-
-msgid ""
-"Used for access control: all\n"
-"            configured external users have access to this issue -- and\n"
-"            if the issue is a container to all sub-issues.\n"
-"            Containers inherit the permissions of the next higher\n"
-"            container only if the 'Inherit permissions' flag is set.\n"
-"         "
-msgstr ""
-
-msgid "fax"
-msgstr ""
-
-msgid "FAX number for this %(Classname)s"
-msgstr ""
-
-msgid "filename_format"
-msgstr "Filename format"
-
-msgid "Naming convention for a Filename"
-msgstr ""
-
-msgid "files"
-msgstr "Files"
-
-msgid "Files for %(Classname)s"
-msgstr ""
-
-msgid "files_affected"
-msgstr "Files Affected"
-
-msgid ""
-"The %(Property)s entry field is used to identify which\n"
-"             file(s) has/have been changed during the modifications\n"
-"             requested by the current issue, containing the unique\n"
-"             filename and path and the new version. The CVS output from\n"
-"             the command *VCFiltered_Commit* shall be used to fill in\n"
-"             this field!\n"
-"\n"
-"             Example: Consider changed files *os_start.c*, *os_start.h*,\n"
-"             and *os_version.c* in *projects/SW/external/ttpos/src/os*,\n"
-"             resulting in *TTP-OS Version 4.5.23*. The entry to\n"
-"             %(Property)s shall look like::\n"
-"\n"
-"              VCupdate -r1.45 projects/SW/external/ttpos/src/os/os_start.c\n"
-"              VCupdate -r1.23 projects/SW/external/ttpos/src/os/os_start.h\n"
-"              VCupdate -r1.213 projects/SW/external/ttpos/src/os/os_version."
-"c\n"
-"          "
-msgstr ""
-
-msgid "final_meeting_date"
-msgstr "Final Meeting Date"
-
-msgid "Date of final meeting for this %(Classname)s."
-msgstr ""
-
-msgid "Date of first contact"
-msgstr ""
-
-msgid "first_date"
-msgstr "First date"
-
-msgid "First day of %(Classname)s."
-msgstr ""
-
-msgid "first_day"
-msgstr "First day"
-
-msgid "firstname"
-msgstr "First name"
-
-msgid "fixed_in"
-msgstr "Fixed in"
-
-msgid ""
-"Provide the version number where you fixed it. Is needed\n"
-"             when you change the status to testing.\n"
-"             The %(Property)s field contains the build version of the\n"
-"             complete artefact. In the Example from Files affected the\n"
-"             entry for %(Property)s shall look like::\n"
-"\n"
-"               TTP-OS 4.5.23\n"
-"          "
-msgstr ""
-
-msgid "frame_purchase"
-msgstr "Frame purchase"
-
-msgid "frame_purchase_end"
-msgstr "End-date of frame purchase"
-
-msgid ""
-"In order avoid a lot of small purchase request for a\n"
-"             certain item, that gets ordered again and again, it is\n"
-"             possible to create a frame purchase request for a certain\n"
-"             period of time (e.g.  one quarter). This is only possible\n"
-"             if the ordered good is always the same  (e.g. the printing\n"
-"             of product flyers) or if the purchased items form a group\n"
-"             (e.g. all expenses related to a certain fair).\n"
-"             If this is a frame purchase request, please add\n"
-"             details about the intended purchases, time frame,\n"
-"             estimated total amount, reference to budget in the message\n"
-"             field.\n"
-"          "
-msgstr ""
-
-msgid "fromaddress"
-msgstr "Support From-Address"
-
-msgid ""
-"Address in outgoing emails to which the %(Classname)s can reply.\n"
-"             The email address provided must be one of the email\n"
-"             addresses of the roundup tracker.\n"
-"          "
-msgstr ""
-
-msgid "frozen"
-msgstr ""
-
-msgid ""
-"If this is set to \"yes\", all time records up to this date\n"
-"             as well as the dynamic user data up to this date cannot be\n"
-"             changed any more.\n"
-"          "
-msgstr ""
-
-msgid "function"
-msgstr "Address details"
-
-msgid "fw_url"
-msgstr "Firewall URL"
-
-msgid ""
-"Obtain IP address from IP checking page of firewall at\n"
-"            %(Property)s\n"
-"          "
-msgstr ""
-
-msgid "fw_skip"
-msgstr "Firewall skip pattern"
-
-msgid ""
-"Skip any IP address before %(Property)s in output returned\n"
-"            from ip-checking page of firewall\n"
-"          "
-msgstr ""
-
-msgid "fw_login"
-msgstr "Firewall login"
-
-msgid "%(Property)s to log into firewall"
-msgstr ""
-
-msgid "fw_password"
-msgstr "Firewall Password"
-
-msgid "gapint"
-msgstr "Sensor interval"
-
-msgid "Sensor interval for %(Classname)s"
-msgstr ""
-
-msgid "Numeric group ID"
-msgstr ""
-
-msgid "gid_range"
-msgstr "GIDs other"
-
-msgid "Allowed range of group ids"
-msgstr ""
-
-msgid "group"
-msgstr "UNIX-Group"
-
-msgid "UNIX Group for this %(Classname)s"
-msgstr ""
-
-msgid "home_directory"
-msgstr "Home directory"
-
-msgid "UNIX home directory for %(Classname)s"
-msgstr ""
-
-msgid "hostname"
-msgstr "Hostname"
-
-msgid "Name of the host configured in the dynamic DNS service"
-msgstr ""
-
-msgid "hours_mon"
-msgstr "Mon"
-
-msgid "hours_tue"
-msgstr "Tue"
-
-msgid "hours_wed"
-msgstr "Wed"
-
-msgid "hours_thu"
-msgstr "Thu"
-
-msgid "hours_fri"
-msgstr "Fri"
-
-msgid "hours_sat"
-msgstr "Sat"
-
-msgid "hours_sun"
-msgstr "Sun"
-
-msgid "id"
-msgstr "Id"
-
-msgid "index"
-msgstr "Index"
-
-msgid ""
-"%(Property)s of %(Classname)s, Offers are sorted by\n"
-"            %(Property)s in Purchase Request\n"
-"         "
-msgstr ""
-
-msgid "inherit_ext"
-msgstr "Inherit permissions"
-
-msgid ""
-"If this flag is set, and an issue is a container, it inerits\n"
-"            external user permissions from the next higher-level\n"
-"            container. Note that normal issues inherit the permissions\n"
-"            of their container in any case.\n"
-"         "
-msgstr ""
-
-msgid "initial"
-msgstr "Initial"
-
-msgid "Initials of this %(Classname)s"
-msgstr ""
-
-msgid "inreplyto"
-msgstr "In Reply To"
-
-msgid "In Reply To field if this %(Classname)s was received by email"
-msgstr ""
-
-msgid "interface"
-msgstr "Interface"
-
-msgid "%(Property)s to determine IP address from"
-msgstr ""
-
-msgid "interface_skip"
-msgstr "Interface skip pattern"
-
-msgid "Skip any IP address before %(Property)s in output of ifconfig"
-msgstr ""
-
-msgid "interval"
-msgstr "Sample interval"
-
-msgid ""
-"Interval for sending out an invoice in months. If the\n"
-"            invoice_level is non-zero, the distance in months since the\n"
-"            last invoice sent.\n"
-"         "
-msgstr ""
-
-msgid "inventory_no"
-msgstr "Inventory Number"
-
-msgid ""
-"Unique number or name for this %(Classname)s, preferrably the\n"
-"             inventory number for asset tracking\n"
-"          "
-msgstr ""
-
-msgid "invoice"
-msgstr ""
-
-msgid "Link to invoice for this %(Classname)s"
-msgstr ""
-
-msgid "invoice.amount"
-msgstr "Invoice amount"
-
-msgid "invoice++amount"
-msgstr "Amount"
-
-msgid "invoice.payer.firstname"
-msgstr "Payer First name"
-
-msgid "invoice.payer.lastname"
-msgstr "Payer Last name"
-
-msgid "invoice.payer.lookalike_city"
-msgstr "Payer City"
-
-msgid "invoice.payer.lookalike_firstname"
-msgstr "Payer First name"
-
-msgid "invoice.payer.lookalike_function"
-msgstr "Payer Address details"
-
-msgid "invoice.payer.lookalike_lastname"
-msgstr "Payer Last name"
-
-msgid "invoice.payer.lookalike_street"
-msgstr "Payer Street"
-
-msgid "invoice.payer.function"
-msgstr "Payer Address details"
-
-msgid "invoice.payer.valid"
-msgstr "Payer valid"
-
-msgid "invoice.subscriber.lookalike_city"
-msgstr "Subscriber City"
-
-msgid "invoice.subscriber.lookalike_firstname"
-msgstr "Subscriber First name"
-
-msgid "invoice.subscriber.lookalike_function"
-msgstr "Subscriber Address details"
-
-msgid "invoice.subscriber.lookalike_lastname"
-msgstr "Subscriber Last name"
-
-msgid "invoice.subscriber.lookalike_street"
-msgstr "Subscriber Street"
-
-msgid "invoice.subscriber.firstname"
-msgstr "Subscriber First name"
-
-msgid "invoice.subscriber.lastname"
-msgstr "Subscriber Last name"
-
-msgid "invoice.subscriber.valid"
-msgstr "Subscriber valid"
-
-msgid "invoice_address"
-msgstr "Invoice address"
-
-msgid "Data for %(Property)s"
-msgstr ""
-
-msgid "invoice_group"
-msgstr "Invoice group"
-
-msgid "Link to invoice_group for this %(Classname)s"
-msgstr ""
-
-msgid "invoice_level"
-msgstr "Invoice level"
-
-msgid ""
-"When the customer has received more invoices than this number\n"
-"            indicates, an invoice of this type is sent.\n"
-"         "
-msgstr ""
-
-msgid "invoice_no"
-msgstr "Invoice Number"
-
-msgid "Unique number for this invoice, generated by the system"
-msgstr ""
-
-msgid "invoice_template"
-msgstr ""
-
-msgid "An OpenOffice file used as a template for this type of invoice"
-msgstr ""
-
-msgid "invoices"
-msgstr "Invoices"
-
-msgid "List of invoices for this %(Classname)s"
-msgstr ""
-
-msgid "ip"
-msgstr "IP"
-
-msgid "Internet protocol address of this %(Classname)s"
-msgstr ""
-
-msgid "Internet protocol subnet"
-msgstr ""
-
-msgid "is_alias"
-msgstr "Is Alias"
-
-msgid "No real user but only an email alias"
-msgstr ""
-
-msgid ""
-"This %(Classname)s is KPM from VW/Audi. This information is\n"
-"            necessary for displaying additional attributes\n"
-"         "
-msgstr ""
-
-msgid "is_valid"
-msgstr "is valid"
-
-msgid "%(Classname)s is valid"
-msgstr ""
-
-msgid "is_app_sensor"
-msgstr "is application sensor"
-
-msgid ""
-"True if this %(Classname)s is an application sensor (not the\n"
-"            battery or dBm Sensor)\n"
-"          "
-msgstr ""
-
-msgid "is_lotus_user"
-msgstr "Is Lotus user"
-
-msgid "Enable this if the %(Classname)s uses Lotus Notes for mail"
-msgstr ""
-
-msgid "is_actuator"
-msgstr "is actuator"
-
-msgid "This %(Classname)s allows setting a value"
-msgstr ""
-
-msgid "is_public"
-msgstr "is public"
-
-msgid ""
-"Allow all users too book on %(Classname)s. If set, the field\n"
-"             \"Admitted users\" is ignored and all users are allowed to\n"
-"             book on this %(Classname)s.\n"
-"          "
-msgstr ""
-
-msgid "is_public_holiday"
-msgstr "Public Holiday"
-
-msgid ""
-"Flag for public holiday %(Classname)s -- set this if you\n"
-"             want work packages of this %(Classname)s to be used in\n"
-"             automatic public holiday computation.\n"
-"          "
-msgstr ""
-
-msgid "is_series"
-msgstr "Series production"
-
-msgid "This is turned on when the %(Classname)s is a series product"
-msgstr ""
-
-msgid "is_special_leave"
-msgstr "is special leave"
-
-msgid ""
-"Set to True if %(Classname)s is for special leave:\n"
-"            necessary to trigger the right email notifications and for\n"
-"            special leave sum calculation.\n"
-"         "
-msgstr ""
-
-msgid "is_vacation"
-msgstr "is vacation"
-
-msgid "only_hours"
-msgstr "only hours"
-
-msgid ""
-"Set to True if %(Classname)s is for vacation:\n"
-"            necessary for vacation calculation.\n"
-"         "
-msgstr ""
-
-msgid "issue++deadline"
-msgstr "Deadline"
-
-msgid ""
-"Should only be entered on Top-Level workpackages which are\n"
-"             either one single task of work or composed of one or more\n"
-"             subpackages. It should definitely NOT be used to force\n"
-"             dependencies of work packages (e.g. start b after a has\n"
-"             finished on a given date)!!! -- This is done automatically\n"
-"             by the planning tool via the Depends and Part Of fields.\n"
-"          "
-msgstr ""
-
-msgid "issue++title"
-msgstr "Title"
-
-msgid ""
-"Should be an intuitive one-line description of the %(Classname)s.\n"
-"             Since titles of Roundup issues are also extracted into SCI\n"
-"             documents, start with a capital letter, and type all other\n"
-"             letters in lowercase, except names and references.\n"
-"          "
-msgstr ""
-
-msgid "it_int_prio"
-msgstr "IT-Priority"
-
-msgid ""
-"Internal priority set by the IT-Department\n"
-"          "
-msgstr ""
-
-msgid "it_request_type"
-msgstr "Request type"
-
-msgid ""
-"Type of request, ITIL main process.\n"
-"          "
-msgstr ""
-
-msgid "it_issue++superseder"
-msgstr "Duplicate of"
-
-msgid "it_project"
-msgstr "IT-Project"
-
-msgid "Optional IT Project to which this %(Classname)s belongs"
-msgstr ""
-
-msgid "keyword"
-msgstr "Keyword"
-
-msgid "keywords"
-msgstr "Keywords"
-
-msgid "kind"
-msgstr "Kind"
-
-msgid ""
-"What this issue actually is. Be sure to exactly distinguish\n"
-"             between what is actually a Bug (it is not working as\n"
-"             expected) and a Change-Request!\n"
-"             Kind \"Action Item\" identifies a task or activity that is\n"
-"             not directly related to a product or workpackage, it is used\n"
-"             for planning purpose. e.g. \"Create the SRD for this\n"
-"             feature\"\n"
-"          "
-msgstr ""
-
-msgid "klass"
-msgstr "Class"
-
-msgid "Class for this query"
-msgstr ""
-
-msgid "Date of last contact"
-msgstr ""
-
-msgid "last_date"
-msgstr "Last date"
-
-msgid "Last day of %(Classname)s."
-msgstr ""
-
-msgid "last_gid"
-msgstr "Last GID"
-
-msgid "Last used gid in this %(Classname)s"
-msgstr ""
-
-msgid "last_machine_uid"
-msgstr "Last machine UID"
-
-msgid "Last used machine uid in this %(Classname)s"
-msgstr ""
-
-msgid "last_sent"
-msgstr "Last sent"
-
-msgid "Date when an invoice was last sent"
-msgstr ""
-
-msgid "last_uid"
-msgstr "Last UID"
-
-msgid "Last used uid in this %(Classname)s"
-msgstr ""
-
-msgid "lastname"
-msgstr "Last name"
-
-msgid "letter"
-msgstr ""
-
-msgid ""
-"Download of letter -- usually this will open the letter in\n"
-"           OpenOffice\n"
-"        "
-msgstr ""
-
-msgid "letters"
-msgstr ""
-
-msgid "List of letters for this %(Classname)s"
-msgstr ""
-
-msgid "lettertitle"
-msgstr "Letter-title"
-
-msgid "Title of this person used in a letter"
-msgstr ""
-
-msgid "link_field"
-msgstr "Link field"
-
-msgid ""
-"Auxiliary field for use with other software, e.g., asset\n"
-"             tracking\n"
-"          "
-msgstr ""
-
-msgid "local_hostname"
-msgstr "Local hostname"
-
-msgid ""
-"Hostname of the host invoking dyndns service, currently\n"
-"             defaults to localhost, there is currently no mechanism to\n"
-"             configure dyndns services for remote hosts.\n"
-"          "
-msgstr ""
-
-msgid "location"
-msgstr "Location"
-
-msgid "Location of %(Classname)s, e.g., Vienna HQ."
-msgstr ""
-
-msgid "login"
-msgstr "Login"
-
-msgid "login_shell"
-msgstr "Login shell"
-
-msgid "UNIX login shell for %(Classname)s"
-msgstr ""
-
-msgid "lunch_duration"
-msgstr "Lunch Duration"
-
-msgid "Preference for time tracking, duration of lunch break in hours"
-msgstr ""
-
-msgid "lunch_start"
-msgstr "Lunch Start"
-
-msgid "Preference for time tracking, start of lunch break"
-msgstr ""
-
-msgid "mac"
-msgstr "MAC"
-
-msgid ""
-"MAC Address (medium access control layer) e.g. ethernet\n"
-"             hardware address. Should be six hex-numbers separated by\n"
-"             colons, e.g. \"10:0:0:0:0:0\".\n"
-"          "
-msgstr ""
-
-msgid "machine"
-msgstr "Machine"
-
-msgid ""
-"A machine connected to the network to which this\n"
-"             %(Classname)s belongs\n"
-"          "
-msgstr ""
-
-msgid "machine_group"
-msgstr "Machine group"
-
-msgid "Group for pseudo-accounts for machines (used for Samba)"
-msgstr ""
-
-msgid "Link to another %(Classname)s -- converted to a CNAME."
-msgstr ""
-
-msgid "machine_uid"
-msgstr "Machine UID"
-
-msgid "Numeric user id for this samba machine."
-msgstr ""
-
-msgid "machine_uid_range"
-msgstr "UIDs for machines"
-
-msgid "Allowed range of user ids for machines"
-msgstr ""
-
-msgid ""
-"Mail domain of the %(Classname)s. If there is no match for\n"
-"            an incoming support email, the mail domains are tried with\n"
-"            the username part of the email removed. If matched, the new\n"
-"            issue is associated with the customer.\n"
-"         "
-msgstr ""
-
-msgid "manager"
-msgstr "Manager"
-
-msgid "Responsible person of the %(Classname)s"
-msgstr ""
-
-msgid "maturity_index"
-msgstr "Maturity index"
-
-msgid ""
-"Maturity index for this %(Classname)s.\n"
-"             Computed as follows: For a container the sum of all\n"
-"             Maturity index values for all leaf nodes. For a leaf-node\n"
-"             according to the following table:\n"
-"\n"
-"\n"
-"          "
-msgstr ""
-
-msgid "max_hours"
-msgstr "Max hours"
-
-msgid "min_sum"
-msgstr "Max cost for simple approval"
-
-msgid ""
-"If given for a %(Classname)s restricts the number of hours\n"
-"             you can book on this %(Classname)s for a single day.\n"
-"          "
-msgstr ""
-
-msgid "max_lease_time"
-msgstr "maximum DHCP lease time"
-
-msgid "Maximum DHCP lease time for %(Classname)s"
-msgstr ""
-
-msgid "may_change_state_to"
-msgstr "May change status to"
-
-msgid ""
-"Allowed state changes for a given %(Classname)s: Usually\n"
-"             you want to allow all states here but for some\n"
-"             %(Classname)s you may want to disallow certain states, e.g.\n"
-"             don't allow change to \"testing\".\n"
-"          "
-msgstr ""
-
-msgid "measurement"
-msgstr "Measurement"
-
-msgid "Measurement for a given sensor"
-msgstr ""
-
-msgid "messageid"
-msgstr "Message ID"
-
-msgid "Message-ID if this message was received via email"
-msgstr ""
-
-msgid "messages"
-msgstr "Messages"
-
-msgid "List of messages for %(Classname)s."
-msgstr ""
-
-msgid "mint"
-msgstr "Interval"
-
-msgid "Measurement interval for %(Classname)s"
-msgstr ""
-
-msgid "New message or notice for %(Classname)s"
-msgstr ""
-
-msgid "msg_keywords"
-msgstr "Message Keywords"
-
-msgid "n_sent"
-msgstr "Number of times sent"
-
-msgid "Number of times this invoice was sent"
-msgstr ""
-
-msgid "name"
-msgstr "Name"
-
-msgid "Unique %(Classname)s name"
-msgstr ""
-
-msgid "name_version"
-msgstr "Name+Version"
-
-msgid ""
-"Unique name of this %(Classname)s, including the version\n"
-"             number\n"
-"          "
-msgstr ""
-
-msgid "need_msg"
-msgstr "Need message"
-
-msgid ""
-"Changing to this %(Classname)s needs a message from the\n"
-"             user.\n"
-"          "
-msgstr ""
-
-msgid "needs.id"
-msgstr "Needs (id)"
-
-msgid "renegotiations"
-msgstr "Price renegotiations?"
-
-msgid ""
-"Did price renegotiations take place?\n"
-"             If yes, please name the person who did the renegotiations\n"
-"             in the message field. If no, please indicate in the message\n"
-"             field when they will take place.\n"
-"          "
-msgstr ""
-
-msgid "netbios_dd"
-msgstr "NetBIOS datagram servers"
-
-msgid ""
-"Netbios datagram distribution server (NBDD) option for DHCP\n"
-"             config. Specifies list of servers in order of preference.\n"
-"          "
-msgstr ""
-
-msgid "netbios_ns"
-msgstr "NetBIOS WINS servers"
-
-msgid ""
-"Netbios name server (NBNS) option for DHCP config. Specifies\n"
-"             list of servers in order of preference. Netbios name service\n"
-"             is more commonly referred to as WINS.\n"
-"          "
-msgstr ""
-
-msgid "netbios_nodetype"
-msgstr "NetBIOS node type"
-
-msgid ""
-"The Netbios node type option allows NetBIOS over TCP/IP\n"
-"             clients which are configurable to be configured as described\n"
-"             in RFC 1001/1002. The value is specified as a single octet\n"
-"             which identifies the client type. Possible types are:\n"
-"             1: B-node: Broadcast - no WINS, 2: P-node: Peer - WINS only,\n"
-"             4: M-node: Mixed - broadcast, then WINS, 8: H-node: Hybrid -\n"
-"             WINS, then broadcast. (taken from dhcp-options manual page)\n"
-"          "
-msgstr ""
-
-msgid "netmask"
-msgstr "Netmask"
-
-msgid "IP net mask for this %(Classname)s, a number (e.g., 16)."
-msgstr ""
-
-msgid ""
-"Address in the network, including but not limited to IP\n"
-"             address\n"
-"          "
-msgstr ""
-
-msgid "network_interface"
-msgstr "Network interface"
-
-msgid ""
-"Hardware unit to connect to the network. Can be part of the\n"
-"             motherboard or can be a separate unit\n"
-"          "
-msgstr ""
-
-msgid "nickname"
-msgstr "Nickname"
-
-msgid "Nickname (or short name) for this %(Classname)s, e.g., rsc"
-msgstr ""
-
-msgid "no_overtime"
-msgstr "Overtime forbidden"
-
-msgid "no_overtime_day"
-msgstr "No Overtime this day"
-
-msgid ""
-"This flag makes sure that not more than the employee's\n"
-"             normal working time can be registered under this\n"
-"             %(Classname)s\n"
-"          "
-msgstr ""
-
-msgid "nosy"
-msgstr "Nosy List"
-
-msgid "People receiving announcements (messages) for %(Classname)s"
-msgstr ""
-
-msgid "nosygroups"
-msgstr "Nosy groups"
-
-msgid ""
-"Group(s) of nosy lists to use for new support issues from\n"
-"            this %(Classname)s\n"
-"         "
-msgstr ""
-
-msgid "numeric_effort"
-msgstr "Effort"
-
-msgid "effort_hours"
-msgstr "Effort in hours"
-
-msgid ""
-"The estimated effort this work package has. This should be\n"
-"             a fair estimation done by the Responsible of the\n"
-"             %(Classname)s. Be sure to set it for Change-Requests\n"
-"             because otherwise one (1!) day will be used as a rough\n"
-"             guess for the planning procedure -- which -- in most\n"
-"             circumstances -- will NOT be sufficient. The unit is in\n"
-"             person days. One person year = 10 person months, one person\n"
-"             month = 4 person weeks, one person week = 5 person days.\n"
-"             Note that the contents of this field will be rounded to the\n"
-"             next integer, only full days make sense for the work-time\n"
-"             estimates.\n"
-"          "
-msgstr ""
-
-msgid "offer_items"
-msgstr "Offer items"
-
-msgid ""
-"%(Property)s on this %(Classname)s, one per line\n"
-"         "
-msgstr ""
-
-msgid "offer_number"
-msgstr "Offer #"
-
-msgid ""
-"%(Property)s as given on the %(Classname)s by the supplier.\n"
-"          "
-msgstr ""
-
-msgid "op_project"
-msgstr "Project"
-
-msgid ""
-"Flag if this %(Classname)s is a real project or just used for\n"
-"             time tracking.\n"
-"          "
-msgstr ""
-
-msgid "open"
-msgstr ""
-
-msgid ""
-"Indicates if this %(Classname)s is still open. Automatically\n"
-"             maintained by the system\n"
-"         "
-msgstr ""
-
-msgid "opt_reviewers"
-msgstr "Optional Reviewers"
-
-msgid "Optional reviewers for this %(Classname)s"
-msgstr ""
-
-msgid "order"
-msgstr "Order"
-
-msgid "organisation"
-msgstr "Organisation"
-
-msgid "Organisation in which the %(Classname)s is based."
-msgstr ""
-
-msgid ""
-"Organisation and location of this %(Classname)s, cartesian\n"
-"             product of organisation and location -- only the combinations\n"
-"             that really exist are stored in the database of course.\n"
-"          "
-msgstr ""
-
-msgid "org_location++phone"
-msgstr "Phone prefix"
-
-msgid ""
-"Telephone-Network prefix of Telephone number for company\n"
-"             without direct inbound dialling suffix (aka extension)\n"
-"             number\n"
-"          "
-msgstr ""
-
-msgid "organisation.id"
-msgstr "Organisation Id"
-
-msgid "organisation_id"
-msgstr "Organisation Id"
-
-msgid "owner"
-msgstr "Owner"
-
-msgid "User/Owner of this %(Classname)s"
-msgstr ""
-
-msgid "operating_system"
-msgstr "Operating system"
-
-msgid "Operating System running on this %(Classname)s"
-msgstr ""
-
-msgid "Period over which overtime is computed for a person"
-msgstr ""
-
-msgid "overtime_period++required_overtime"
-msgstr "Req. overtime"
-
-msgid "Given overtime is required for the period."
-msgstr ""
-
-msgid "overtime_reduction"
-msgstr "Overtime reduction"
-
-msgid ""
-"Don't count hours booked on this %(Classname)s\n"
-"            for required overtime.\n"
-"         "
-msgstr ""
-
-msgid "parent"
-msgstr "Parent address"
-
-msgid "%(Classname)s to which this %(Classname)s belongs."
-msgstr ""
-
-msgid "part_of"
-msgstr "Part of"
-
-msgid ""
-"If you have a Top-Level work package which consists of other\n"
-"             work packages, you should enter the parent work package\n"
-"             here. This information is needed for the planning process in\n"
-"             order to define what %(Classname)ss compose a larger\n"
-"             project, e.g., Define one Top-Level work package Some New\n"
-"             Feature which is composed of Design, Build Hardware, Write\n"
-"             Software, Put all parts together, and Test. In the\n"
-"             search-mask you can enter\n"
-"             \"-1\" here to find only Top-Level container work packages.\n"
-"          "
-msgstr ""
-
-msgid "part_of_budget"
-msgstr "Part of budget"
-
-msgid ""
-"Indicate if purchase is budgeted for.\n"
-"          "
-msgstr ""
-
-msgid "part_of.id"
-msgstr "Part of (id)"
-
-msgid "issue.part_of.id"
-msgstr "Part of (id)"
-
-msgid "password"
-msgstr "Password"
-
-msgid "payed_abos"
-msgstr ""
-
-msgid "Subscriptions for which this %(Classname)s is paying"
-msgstr ""
-
-msgid "payer"
-msgstr ""
-
-msgid "Address which is paying for this subscription"
-msgstr ""
-
-msgid "payer.firstname"
-msgstr "Payer First name"
-
-msgid "payer.function"
-msgstr "Payer Address details"
-
-msgid "payer.lastname"
-msgstr "Payer Last name"
-
-msgid "payer.lookalike_firstname"
-msgstr "Payer First name"
-
-msgid "payer.lookalike_lastname"
-msgstr "Payer Last name"
-
-msgid "payer.lookalike_function"
-msgstr "Payer Address details"
-
-msgid "payer.valid"
-msgstr "Payer valid"
-
-msgid "payer.adr_type"
-msgstr "Payer Address type"
-
-msgid "payment"
-msgstr "Payment"
-
-msgid "Amount of payment received for this invoice"
-msgstr ""
-
-msgid "peer_reviewers"
-msgstr "Peer Reviewers"
-
-msgid "Peer reviewers for this %(Classname)s"
-msgstr ""
-
-msgid "period"
-msgstr "Period"
-
-msgid "Subscription period in months."
-msgstr ""
-
-msgid "period_end"
-msgstr "Period End"
-
-msgid "Date when this invoice period ends"
-msgstr ""
-
-msgid "period_start"
-msgstr "Period Start"
-
-msgid "Date when this invoice period starts"
-msgstr ""
-
-msgid "person_type"
-msgstr "Person type"
-
-msgid "Type of this %(Classname)s for Customer/Supplier"
-msgstr ""
-
-msgid "person"
-msgstr "personal address"
-
-msgid "personal Information for this %(Classname)s"
-msgstr ""
-
-msgid "person.lookalike_firstname"
-msgstr "Subscriber First name"
-
-msgid "person.lookalike_function"
-msgstr "Subscriber Address details"
-
-msgid "person.lookalike_lastname"
-msgstr "Subscriber Last name"
-
-msgid "planned_effort"
-msgstr "Planned effort (h)"
-
-msgid ""
-"Effort for %(Classname)s in person-hours; as it is stated\n"
-"             in the Project Evaluation Sheet. Warning: This used to be in\n"
-"             person days, so you have to convert old values to hours!\n"
-"          "
-msgstr ""
-
-msgid "position"
-msgstr "Position"
-
-msgid "%(Property)s in the company"
-msgstr ""
-
-msgid "postalcode"
-msgstr ""
-
-msgid "Postal code for this %(Classname)s "
-msgstr ""
-
-msgid "prio"
-msgstr "Priority"
-
-msgid "priority"
-msgstr "Priority"
-
-msgid ""
-"Should be set between 0 and 100. For the planning process\n"
-"             only issues above a specified priority level are taken into\n"
-"             account. On creation of a new issue, the priority is\n"
-"             automatically set to 100.\n"
-"          "
-msgstr ""
-
-msgid "private_for"
-msgstr "Private for"
-
-msgid "Flag if this is a private %(Classname)s"
-msgstr ""
-
-msgid "private_gid_range"
-msgstr "GIDs for persons"
-
-msgid "Allowed range of group ids for users"
-msgstr ""
-
-msgid "prodcat"
-msgstr "Product category"
-
-msgid "Used for classifying products"
-msgstr ""
-
-msgid "prodcat++parent"
-msgstr "Product category parent"
-
-msgid ""
-"Product category which is the parent of the current product\n"
-"            category\n"
-"         "
-msgstr ""
-
-msgid "prodcat.parent"
-msgstr "Product category level 3"
-
-msgid "Product category level 3"
-msgstr ""
-
-msgid "prodcat.parent.parent"
-msgstr "Product category level 2"
-
-msgid "Product category level 2"
-msgstr ""
-
-msgid "prodcat.parent.parent.parent"
-msgstr "Product category level 1"
-
-msgid "Product category level 1"
-msgstr ""
-
-msgid "product"
-msgstr "Product"
-
-msgid "product_family"
-msgstr "Product family"
-
-msgid "The %(Property)s of the %(Classname)s (level 3 classification)."
-msgstr ""
-
-msgid "product_use_case"
-msgstr "Product use-case"
-
-msgid "The %(Property)s of the %(Classname)s (level 2 classification)."
-msgstr ""
-
-msgid "product_line"
-msgstr "Product line"
-
-msgid "The %(Property)s of the %(Classname)s (level 1 classification)."
-msgstr ""
-
-msgid "product_family.id"
-msgstr "Product family Id"
-
-msgid "product_family_id"
-msgstr "Product family Id"
-
-msgid "The Id of %(Property)s."
-msgstr ""
-
-msgid "product_type"
-msgstr "Product type"
-
-msgid "The type of the %(Classname)s."
-msgstr ""
-
-msgid "project"
-msgstr "Time Category"
-
-msgid ""
-"%(Classname)s is part of a Time Category. With the Time\n"
-"             Category name a\n"
-"             %(Classname)s can be clearly  identified\n"
-"          "
-msgstr ""
-
-msgid "project_type"
-msgstr "Project type"
-
-msgid "The %(Property)s of the %(Classname)s."
-msgstr ""
-
-msgid "project_type.id"
-msgstr "Project type Id"
-
-msgid "project_type_id"
-msgstr "Project type Id"
-
-msgid "protocol"
-msgstr "Protocol"
-
-msgid "The dynamic DNS protocol to use with this %(Classname)s."
-msgstr ""
-
-msgid "province"
-msgstr "Province"
-
-msgid "Province where this person lives."
-msgstr ""
-
-msgid ""
-"What should be purchased, fill in appropriate subject.\n"
-"          "
-msgstr ""
-
-msgid "purchase_type"
-msgstr "Purchase type"
-
-msgid "qa_representative"
-msgstr "QA-Representative"
-
-msgid "Representative from the QA department for this %(Classname)s"
-msgstr ""
-
-msgid "query++tmplate"
-msgstr "Query template"
-
-msgid "HTML-template that is used for this %(Classname)s"
-msgstr ""
-
-msgid "queries"
-msgstr "Queries"
-
-msgid "Queries for this %(Classname)s"
-msgstr ""
-
-msgid "realname"
-msgstr "Realname"
-
-msgid "Real name for this %(Classname)s"
-msgstr ""
-
-msgid "receipt_no"
-msgstr "Receipt number"
-
-msgid "Unique identification of this payment"
-msgstr ""
-
-msgid "recipients"
-msgstr "Recipients"
-
-msgid "Only set if message was received via email."
-msgstr ""
-
-msgid "recorder"
-msgstr "Recorder"
-
-msgid "Person responsible for recording findings"
-msgstr ""
-
-msgid "reference"
-msgstr "Artefact reference"
-
-msgid ""
-"Defines the relation to a project, customer, etc. If\n"
-"            necessary, this entry is defined for new customers and/or\n"
-"            products when the project starts.\n"
-"         "
-msgstr ""
-
-msgid "related_issues"
-msgstr "Related issues"
-
-msgid ""
-"Issues related to this %(Classname)s.\n"
-"         "
-msgstr ""
-
-msgid "related_issues.id"
-msgstr "Related issues (id)"
-
-msgid "relaxed"
-msgstr "Relaxed"
-
-msgid ""
-"If set, when changing status, no checks about a message, the\n"
-"            priority and responsible (helpdesk) are done when changing\n"
-"            to this status.\n"
-"         "
-msgstr ""
-
-#.  just to show something in the pop-up, gets set to the last reached milestone
-msgid "release"
-msgstr "Release"
-
-msgid ""
-"The %(Property)s this %(Classname)s was found, either as\n"
-"             bug or as missing feature. For (newly reported) bugs,\n"
-"             %(Property)s *must* be specified. Enter the release name\n"
-"             or, if applicable, the name and version of the tool (e.g.,\n"
-"             \"TTP-Plan 4.3.72\"). For change requests you may enter the\n"
-"             currently used release.\n"
-"          "
-msgstr ""
-
-msgid "remove"
-msgstr ""
-
-msgid ""
-"Remove attached item. Will not remove item from the database,\n"
-"             it can usually still be downloaded via the History button.\n"
-"          "
-msgstr ""
-
-msgid "reporting_group"
-msgstr "Reporting group"
-
-msgid "reporting_group.id"
-msgstr "Reporting group Id"
-
-msgid "reporting_group_id"
-msgstr "Reporting group Id"
-
-msgid "requester"
-msgstr "Requester"
-
-msgid "Name of %(Property)s"
-msgstr ""
-
-msgid "require_msg"
-msgstr "require message"
-
-msgid "Require a message for this %(Classname)s"
-msgstr ""
-
-msgid "require_resp_change"
-msgstr "require responsible change"
-
-msgid "Require change of responsible person for this %(Classname)s"
-msgstr ""
-
-msgid "Overtime preapproved by supervisor and required by project."
-msgstr ""
-
-msgid "responsible"
-msgstr "Responsible"
-
-msgid "Person who is responsible for the %(Classname)s"
-msgstr ""
-
-msgid "return_type"
-msgstr "Customer return type"
-
-msgid "%(Property)s for failures in the field"
-msgstr ""
-
-msgid "review++responsible"
-msgstr "Moderator"
-
-msgid ""
-"Moderator for %(Classname)s -- Note: If you do not specify\n"
-"             the moderator, you will get an indication that the field\n"
-"             \"Responsible\" must be filled in -- the moderator is "
-"reponsible for\n"
-"             %(Classname)s.\n"
-"          "
-msgstr ""
-
-msgid "rmafrom"
-msgstr "RMA From-Address"
-
-msgid ""
-"Address in outgoing emails to which the %(Classname)s can reply.\n"
-"             The email address provided must be one of the email\n"
-"             addresses of the roundup tracker.\n"
-"             This address is used when the support issue in question is\n"
-"             of type RMA.\n"
-"          "
-msgstr ""
-
-msgid "purchase_request++creator"
-msgstr "Creator"
-
-msgid "purchase_request++department"
-msgstr "Department"
-
-msgid "purchase_request++files"
-msgstr "Files"
-
-msgid "purchase_request++organisation"
-msgstr "Organisation"
-
-msgid "purchase_request++nosy"
-msgstr "Nosy List"
-
-msgid "purchase_request++msg"
-msgstr "Message"
-
-msgid "purchase_request++sap_cc"
-msgstr "SAP Cost center"
-
-msgid "purchase_request++status"
-msgstr "Status"
-
-msgid "purchase_request++time_project"
-msgstr "Time Category"
-
-msgid "purchase_request++title"
-msgstr "Title"
-
-msgid "purchase_type++roles"
-msgstr "Approval-Roles"
-
-msgid "pr_roles"
-msgstr "Approval-Roles"
-
-msgid "forced_roles"
-msgstr "Forced Approval-Roles"
-
-msgid "pr_forced_roles"
-msgstr "Forced Approval-Roles"
-
-msgid "pr_offer_item++description"
-msgstr "Description"
-
-msgid "pr_offer_item++time_project"
-msgstr "Time Category"
-
-msgid "pr_offer_item++sap_cc"
-msgstr "SAP Cost center"
-
-msgid "pr_offer_item++purchase_type"
-msgstr "Purchase type"
-
-msgid "roles"
-msgstr "Roles"
-
-msgid "view_roles"
-msgstr "View-Roles"
-
-msgid "pr_view_roles"
-msgstr "View-Roles"
-
-msgid ""
-"Roles for this %(Classname)s -- to give the user more than\n"
-"             one role, enter a comma,separated,list\n"
-"          "
-msgstr ""
-
-msgid "room"
-msgstr "Room"
-
-msgid "Room number"
-msgstr "Room number"
-
-msgid "routers"
-msgstr "Routers"
-
-msgid "Routers for this %(Classname)s, used in DHCP configuration."
-msgstr ""
-
-msgid "safety_critical"
-msgstr "Safety critical"
-
-msgid "If safety critical use is "
-msgstr "If safety critical use is "
-
-msgid "salutation"
-msgstr "Salutation"
-
-msgid "Salutation used for printing an address"
-msgstr ""
-
-msgid "samba_home_drive"
-msgstr "Samba home drive"
-
-msgid "Home drive for %(Classname)s in Windows"
-msgstr ""
-
-msgid "samba_home_path"
-msgstr "Samba home path"
-
-msgid "Path to %(Classname)ss home directory"
-msgstr ""
-
-msgid "samba_kickoff_time"
-msgstr "Samba Kickoff time"
-
-msgid "Windows time that user will automatically logged out"
-msgstr ""
-
-msgid "samba_lm_password"
-msgstr "LM Password"
-
-msgid ""
-"Samba LAN Manager password -- automatically computed when a\n"
-"             new password is entered\n"
-"          "
-msgstr ""
-
-msgid "samba_logon_script"
-msgstr "Samba login script"
-
-msgid "Logon script for %(Classname)s"
-msgstr ""
-
-msgid "samba_nt_password"
-msgstr "NT Password"
-
-msgid ""
-"Samba NT password -- automatically computed when a\n"
-"             new password is entered\n"
-"          "
-msgstr ""
-
-msgid "samba_profile_path"
-msgstr "Samba profile path"
-
-msgid "Path to profile for %(Classname)s"
-msgstr ""
-
-msgid "samba_pwd_can_change"
-msgstr "Samba PWD can change"
-
-msgid ""
-"Earliest time the user may change the password next time.\n"
-"             set by the system to pwd_last_set if nothing else is enabled.\n"
-"          "
-msgstr ""
-
-msgid "samba_pwd_last_set"
-msgstr "Samba PWD last set"
-
-msgid ""
-"Time-stamp the password was last changed, automatically\n"
-"             computed by the system\n"
-"          "
-msgstr ""
-
-msgid "samba_pwd_must_change"
-msgstr "Samba PWD must change"
-
-msgid ""
-"Latest time the user must change the password next time.\n"
-"             set by the system to end of the epoch if nothing else is "
-"enabled.\n"
-"          "
-msgstr ""
-
-msgid "sap_cc"
-msgstr "SAP Cost center"
-
-msgid "sap_reference"
-msgstr "SAP Reference"
-
-msgid "For selecting %(Classname)s information via the %(Property)s"
-msgstr ""
-
-msgid "Material number in SAP"
-msgstr ""
-
-msgid "sap_material"
-msgstr "Material number"
-
-msgid "For tracking in SAP"
-msgstr ""
-
-msgid "sap_ref"
-msgstr "SAP Reference"
-
-msgid "secondary_groups"
-msgstr "Secondary groups"
-
-msgid "secondary UNIX Groups for this %(Classname)s"
-msgstr ""
-
-msgid "send_it"
-msgstr "send?"
-
-msgid ""
-"Flag indicating if this invoice should be sent. If not set,\n"
-"             this invoice will disappear from the current list of invoices. "
-"It\n"
-"             is not sent when generating invoices and is not marked when "
-"sent\n"
-"             invoices are marked.\n"
-"          "
-msgstr ""
-
-msgid "Send to external email addresses (customer)"
-msgstr ""
-
-msgid "severity"
-msgstr "Severity"
-
-msgid ""
-"How severe is the %(Classname)s for the customer or\n"
-"             stakeholder\n"
-"          "
-msgstr ""
-
-msgid "sensor"
-msgstr "Sensor"
-
-msgid "Sensor of this %(Classname)s"
-msgstr ""
-
-msgid "sensor++adr"
-msgstr "Channel"
-
-msgid "sensor++name"
-msgstr "Channel name"
-
-msgid "sensor++order"
-msgstr "Channel order"
-
-msgid "sensor++type"
-msgstr "Channel type"
-
-msgid "serial_number"
-msgstr "Serial numbers"
-
-msgid "Serial numbers of hardware items if applicable, one per line"
-msgstr ""
-
-msgid "server"
-msgstr "Server"
-
-msgid ""
-"The %(Property)s to use for this %(Classname)s:\n"
-"            If left empty the default %(Property)s from the protocol\n"
-"            configuration is used.\n"
-"          "
-msgstr ""
-
-msgid "shadow_last_change"
-msgstr "Shadow last change"
-
-msgid ""
-"Time-stamp the shadow password was last changed,\n"
-"             automatically computed by the system\n"
-"          "
-msgstr ""
-
-msgid "shadow_expire"
-msgstr "Shadow expire"
-
-msgid ""
-"Date at which the users's account expires and will no longer\n"
-"             be accessible.\n"
-"          "
-msgstr ""
-
-msgid "shadow_inactive"
-msgstr "Shadow inactive"
-
-msgid ""
-"Number of days of inactivity after a password has expired\n"
-"             before the account is locked. Note that when the password has\n"
-"             expired the user is required to change it before login is\n"
-"             possible. If no login occurs for a certain time, the account\n"
-"             can be disabled with this setting.\n"
-"          "
-msgstr ""
-
-msgid "shadow_max"
-msgstr "Shadow max"
-
-msgid ""
-"Maximum days after last change when the shadow password must\n"
-"             be changed again.\n"
-"          "
-msgstr ""
-
-msgid "shadow_min"
-msgstr "Shadow min"
-
-msgid ""
-"Minimum days after last change when the shadow password may\n"
-"             be changed again.\n"
-"          "
-msgstr ""
-
-msgid "shadow_used"
-msgstr "Shadow used"
-
-msgid ""
-"Flag if shadow information should be generated, will be\n"
-"             translated to LDAP shadowFlag.\n"
-"          "
-msgstr ""
-
-msgid "shadow_warning"
-msgstr "Shadow warning"
-
-msgid ""
-"Early warning in days before the user is required to change\n"
-"             the password.\n"
-"          "
-msgstr ""
-
-msgid "shelf_life"
-msgstr ""
-
-msgid "Shelf life in months"
-msgstr ""
-
-msgid "shipping_address"
-msgstr "Shipping address"
-
-msgid "show_all_users"
-msgstr "show all users"
-
-msgid "show_obsolete"
-msgstr "show obsolete"
-
-msgid ""
-"If this option is selected, the result will also include\n"
-"             users that do not\n"
-"             have a valid dynamic user record in the selected time\n"
-"             range. If selected, users without a dynamic user record\n"
-"             will be colored yellow for missing entries in the time\n"
-"             range.\n"
-"          "
-msgstr ""
-
-msgid "show_empty"
-msgstr "show empty"
-
-msgid "If selected the result will also show empty records."
-msgstr ""
-
-msgid "show_missing"
-msgstr "Show missing"
-
-msgid ""
-"If this option is selected, the result will contain colored\n"
-"             fields where some values may be missing. Missing values can\n"
-"             result from, e.g., the user not having finished entering\n"
-"             his/her time records, or the time records not yet being\n"
-"             accepted by the supervisor (if you're searching for time\n"
-"             records in category \"accepted\"). Note that you pay a huge\n"
-"             performance penalty for this information: For each day,\n"
-"             each work package and each user in the query we have to\n"
-"             look for possibly missing values! So it's a good idea to\n"
-"             only display small time-ranges with this option turned on.\n"
-"          "
-msgstr ""
-
-msgid "sid"
-msgstr "SID"
-
-msgid ""
-"Samba unique ID but without the last part used for user id or\n"
-"             group id information\n"
-"          "
-msgstr ""
-
-msgid "sint"
-msgstr "Transmit interval"
-
-msgid "Transmit interval for %(Classname)s"
-msgstr ""
-
-msgid "Samba domain for this %(Classname)s"
-msgstr ""
-
-msgid "smb_name"
-msgstr "Samba Name"
-
-msgid "Samba name for this %(Classname)s in the samba domain"
-msgstr ""
-
-msgid "stakeholder"
-msgstr "Stakeholder"
-
-msgid ""
-"Person by/for whom this %(Classname)s was raised. Usually\n"
-"             defaults to the creator of the %(Classname)s, but can be\n"
-"             overridden (e.g. when the IT-Department documents an issue\n"
-"             that came in via telephone).\n"
-"          "
-msgstr ""
-
-msgid ""
-"Format xx:xx (e.g. 09:00), defines your start of work. Has to\n"
-"             be specified except for absences like e.g. holidays or sick\n"
-"             leave.\n"
-"          "
-msgstr ""
-
-msgid "status"
-msgstr "Status"
-
-msgid "There are constraints on status transitions."
-msgstr ""
-
-msgid "street"
-msgstr "Street"
-
-msgid "subject"
-msgstr "Subject"
-
-msgid "Short identification of %(Classname)s"
-msgstr ""
-
-msgid "subscriber"
-msgstr "Subscriber"
-
-msgid "Subscriber of this subscription"
-msgstr ""
-
-msgid "subscriber.lookalike_firstname"
-msgstr "Subscriber First name"
-
-msgid "subscriber.lookalike_function"
-msgstr "Subscriber Address details"
-
-msgid "subscriber.lookalike_lastname"
-msgstr "Subscriber Last name"
-
-msgid "subscriber.firstname"
-msgstr "Subscriber First name"
-
-msgid "subscriber.lastname"
-msgstr "Subscriber Last name"
-
-msgid "subscriber.function"
-msgstr "Subscriber Address details"
-
-msgid "subscriber.valid"
-msgstr "Subscriber valid"
-
-msgid "subscriber.adr_type"
-msgstr "Subscriber Address type"
-
-msgid "substitute"
-msgstr "Substitute"
-
-msgid ""
-"Person who can substitute %(Classname)s for approving time\n"
-"             records.\n"
-"          "
-msgstr ""
-
-msgid "subst_active"
-msgstr "Substitute active"
-
-msgid "subst_until"
-msgstr "Substitute until"
-
-msgid ""
-"This field is set to \"yes\" for enabling the field\n"
-"             \"Substitute\" for delegating time record approval.\n"
-"          "
-msgstr ""
-
-msgid "supplier"
-msgstr "Supplier"
-
-msgid "%(Property)s of this %(Classname)s"
-msgstr ""
-
-msgid "summary"
-msgstr "Summary"
-
-msgid "Short summary of this message (usually first line)"
-msgstr ""
-
-msgid "summary_report++VIEW"
-msgstr "View"
-
-msgid ""
-"The selected items are shown in the summary report; if you\n"
-"             select \"summary\" the report gives summaries over the chosen\n"
-"             summary type (e.g. weekly, monthly sums); if you select\n"
-"             time category please specify which one.\n"
-"          "
-msgstr ""
-
-msgid "summary_report++cost_center"
-msgstr "Productivity"
-
-msgid "summary_report++cost_center_group"
-msgstr "Productivity Group"
-
-msgid "summary_report++date"
-msgstr "Date"
-
-msgid ""
-"please specify the date in this format:\n"
-"             \"YYYY-MM-DD;YYYY-MM-DD\". The \";\" means \"to\" (\"bis\" in\n"
-"             german).  For today (heute) use \".\". Example: March\n"
-"             2006 is specified as \"2006-03-01;2006-03-31\". From the\n"
-"             beginning of 2006 until now would be \"2006-01-01;.\". If you\n"
-"             need the sum of the chosen period select Summary Type\n"
-"             \"range\".\n"
-"          "
-msgstr ""
-
-msgid "summary_report++department"
-msgstr "Department"
-
-msgid ""
-"Selects the users according to their placement in a\n"
-"             department\n"
-"          "
-msgstr ""
-
-msgid "summary_report++op_project"
-msgstr "Project"
-
-msgid ""
-"Flag to search for real-projects or a non-project (just\n"
-"             used for time-tracking). Leave as don't care if it should\n"
-"             not be searched for.\n"
-"          "
-msgstr ""
-
-msgid "summary_report++status"
-msgstr "Status"
-
-msgid ""
-"If you choose \"open, submitted and approved\" yellow times\n"
-"             will be those that have not yet been opened by the user.\n"
-"             Empty but already opened time records will not be displayed\n"
-"             in yellow. If you choose open, all other time records\n"
-"             (submitted and approved as well as not yet opened time\n"
-"             records) are displayed in yellow. If you choose submitted\n"
-"             all time records that are not submitted (but maybe open or\n"
-"             approved) are displayed in yellow. If you choose approved\n"
-"             not approved times turn yellow.\n"
-"          "
-msgstr ""
-
-msgid "summary_report++summary_type"
-msgstr "Summary type"
-
-msgid ""
-"You can form sums over weeks, months and the whole time\n"
-"             range you have selected.\n"
-"          "
-msgstr ""
-
-msgid "summary_report++supervisor"
-msgstr "Supervisor"
-
-msgid "Selects the users of the chosen supervisor(s)"
-msgstr ""
-
-msgid "summary_report++time_project"
-msgstr "Time Category"
-
-msgid "summary_report++time_wp"
-msgstr "Work package"
-
-msgid "Select individual work packages here."
-msgstr ""
-
-msgid "summary_report++time_wp_group"
-msgstr "Work package group"
-
-msgid "summary_report++user"
-msgstr "User"
-
-msgid ""
-"You will only see users for whom you have permission or the\n"
-"             project times for projects you have permission for (via\n"
-"             responsible, deputy or nosy)\n"
-"          "
-msgstr ""
-
-msgid "superior"
-msgstr "Superior"
-
-msgid "Supervisor for %(Classname)s"
-msgstr ""
-
-msgid ""
-"Supplementary hours in Overtime period. If Overtime period\n"
-"             is not specified, this field should be left empty.\n"
-"          "
-msgstr ""
-
-msgid ""
-"Weekly hours including the agreed supplementary hours (e.g.\n"
-"             45h), Format: xx.xx. Please round to whole quarters of an hour\n"
-"             (e.g. 0.5 means a half-hour).\n"
-"\n"
-"             The calculation of the system \"supplementary hours\" -\n"
-"             weekly in the staff report (independant of the number of\n"
-"             hours, be it 38.5h sharp or 40 or 42 or 45 on demand) is\n"
-"             not made in accordance with the daily required hours (7.75,\n"
-"             Fri: 7.5) but by division through 5 over the week.\n"
-"             \n"
-"             E.g.\n"
-"             person has 38.5h sharp system, and changes during a week to\n"
-"             other system. The required hours for the days in the 38.5h\n"
-"             sharp system are 7.7 per day (=38.5/5).  Inconsistencies\n"
-"             occuring in the course of a change to another work-time\n"
-"             system (esp. when there are paid leave times during such a\n"
-"             week of change), must be repaired manually (i.e. by\n"
-"             Overtime Correction).\n"
-"          "
-msgstr ""
-
-msgid "suppclaimfrom"
-msgstr "Supplier-Claim From-Address"
-
-msgid ""
-"Address in outgoing emails to which the %(Classname)s can reply.\n"
-"             The email address provided must be one of the email\n"
-"             addresses of the roundup tracker.\n"
-"             This address is used when the support issue in question is\n"
-"             of type supplier claim.\n"
-"          "
-msgstr ""
-
-msgid "supply_address"
-msgstr "Supply Address"
-
-msgid "support++superseder"
-msgstr "Duplicate of"
-
-msgid "support++type"
-msgstr "Type"
-
-msgid "sync_with_ldap"
-msgstr "Synch with LDAP"
-
-msgid ""
-"Enabled if this %(Classname)s should be synched with ldap --\n"
-"             when the user changes PW via PAM, the pw in roundup will be\n"
-"             changed, too (if the daemon is running)\n"
-"          "
-msgstr ""
-
-msgid "syslog"
-msgstr "enable syslog"
-
-msgid "Enable logging to syslog"
-msgstr ""
-
-msgid "target"
-msgstr "Target"
-
-msgid ""
-"Target of this %(Classname)s, only targets explicitly\n"
-"             enabled will be allowed for status changes.\n"
-"          "
-msgstr ""
-
-msgid "team_members"
-msgstr "Team members"
-
-msgid ""
-"Persons who are assigned to the project and are allowed\n"
-"             to book their effort on this project\n"
-"          "
-msgstr ""
-
-msgid "terms_conditions"
-msgstr "Terms & conditions"
-
-msgid ""
-"Please indicate here which conditions apply, conditions of\n"
-"             supplier or customer (us).\n"
-"          "
-msgstr ""
-
-msgid ""
-"If terms and conditions of supplier apply, please indicate\n"
-"             if the terms and conditions of the supplier correspond to\n"
-"             ours.\n"
-"          "
-msgstr ""
-
-msgid "termination_date"
-msgstr "Termination date"
-
-msgid ""
-"%(Property)s is only to be filled in for continuous\n"
-"             obligations. It refers to the date when a termination\n"
-"             notice for a contract has to be effective (either the date\n"
-"             it is posted, or the date it arrives at the supplier -\n"
-"             depending on the contract)\n"
-"          "
-msgstr ""
-
-msgid "time_activity"
-msgstr "Activity"
-
-msgid "time_activity.id"
-msgstr "Activity Id"
-
-msgid "Specifies the kind of work you did (e.g. meeting, ...)"
-msgstr ""
-
-msgid "time_start"
-msgstr "Timetracking Start"
-
-msgid "Date when %(Classname)s officially starts"
-msgstr ""
-
-msgid "Date when %(Classname)s is officially closed"
-msgstr ""
-
-msgid "time_project.description"
-msgstr "TC Description"
-
-msgid "time_project++status"
-msgstr "Time Category Status"
-
-msgid ""
-"Status of this %(Classname)s. Note that this status is only\n"
-"             used for determining if new work packages may be created for\n"
-"             this %(Classname)s -- it is not used during time recording\n"
-"             for determining if the user may book on a work package.\n"
-"          "
-msgstr ""
-
-msgid "time_project++work_location"
-msgstr "Mandatory work location"
-
-msgid ""
-" If a value is given here, the work location will be\n"
-"             corrected for all time records booked on work packages of\n"
-"             this project.\n"
-"          "
-msgstr ""
-
-msgid "time_project_status++active"
-msgstr "Active"
-
-msgid ""
-"Set if this %(Classname)s is active. This determines if new\n"
-"             work packages may be created for a project with this activity\n"
-"             status. If a status is marked active, new work packages may\n"
-"             be created for a project with this status.\n"
-"          "
-msgstr ""
-
-msgid "time_project.id"
-msgstr "Time Category Id"
-
-msgid "time_project_id"
-msgstr "Time Category Id"
-
-msgid "wp.project.id"
-msgstr "Time Category Id"
-
-msgid "time_wp++travel"
-msgstr "Travel WP"
-
-msgid "time_wp.id"
-msgstr "Work package Id"
-
-msgid "time_wp_id"
-msgstr "Work package Id"
-
-msgid "time_wp.wp_no"
-msgstr "Work package number"
-
-msgid "time_wp_no"
-msgstr "Work package number"
-
-msgid "time_wp_group.id"
-msgstr "Work package group Id"
-
-msgid "time_wp_group_id"
-msgstr "Work package group Id"
-
-msgid "timeout"
-msgstr "Timeout"
-
-msgid "Timeout when new email is sent"
-msgstr ""
-
-msgid "timezone"
-msgstr "Timezone"
-
-msgid "Time zone of this %(Classname)s -- this is a numeric hour offset"
-msgstr ""
-
-msgid "title"
-msgstr "Title"
-
-msgid ""
-"Should be an intuitive one-line description of the %(Classname)s.\n"
-"          "
-msgstr ""
-
-msgid "tmplate"
-msgstr ""
-
-msgid ""
-"Used for writing letters (and invoices if selected as an\n"
-"            invoice template)\n"
-"         "
-msgstr ""
-
-msgid "tmplate_status"
-msgstr "Template Status"
-
-msgid ""
-"Status of template -- used for letter template, invoice\n"
-"             template or none.\n"
-"         "
-msgstr ""
-
-msgid "transceiver"
-msgstr "Transceiver"
-
-msgid ""
-"Transceiver on which devices are handled via radio\n"
-"             connection\n"
-"          "
-msgstr ""
-
-msgid "transitions"
-msgstr "Transitions"
-
-msgid "simple_transitions"
-msgstr "Simple Transitions"
-
-msgid "Allowed transitions to other states"
-msgstr ""
-
-msgid "travel"
-msgstr "Travel"
-
-msgid ""
-" In addition in reports the times booked will be halved (if\n"
-"             exceeding the expected work hours and the person is not\n"
-"             marked \"travel_full\" in the dynamic user data)\n"
-"          "
-msgstr ""
-
-msgid "tr_duration"
-msgstr "Duration (incl. Travel)"
-
-msgid ""
-"Work duration in minutes including special travel computation:\n"
-"             travel times will be halved if exceeding the maximum work\n"
-"             hours.\n"
-"          "
-msgstr ""
-
-msgid "tt_lines"
-msgstr "Time-tracker lines"
-
-msgid ""
-"Number of new lines (per day) in time-tracker (minimum: 1,\n"
-"             maximum: 5). This is not yet working, the logic behind it is\n"
-"             not yet implemented. See also it_issue884.\n"
-"          "
-msgstr ""
-
-msgid "tty"
-msgstr "Serial line"
-
-msgid "Serial line connection to transceiver"
-msgstr ""
-
-msgid "type"
-msgstr "Type"
-
-msgid "Mime type of this file"
-msgstr ""
-
-msgid "typecat"
-msgstr "Type category"
-
-msgid "Category of this %(Classname)s"
-msgstr ""
-
-msgid "Numeric user ID"
-msgstr ""
-
-msgid "uid_range"
-msgstr "UIDs for persons"
-
-msgid "Allowed range of user ids"
-msgstr ""
-
-msgid "unit"
-msgstr "Unit"
-
-msgid "Unit of measurement"
-msgstr ""
-
-msgid "url"
-msgstr "URL"
-
-msgid "Web-Link for this %(Classname)s"
-msgstr ""
-
-msgid "url_template"
-msgstr "URL template"
-
-msgid ""
-"Template used when rendering the contact field for a\n"
-"             contact. You can use fields of the form \"%%(variable)s\" to\n"
-"             render variables, e.g. for a Web-Site the %(Property)s\n"
-"             would be \"%%(contact)s\" to render the contact as a link to\n"
-"             the web-site.\n"
-"          "
-msgstr ""
-
-msgid "use_dhcp"
-msgstr "Use DHCP"
-
-msgid ""
-"Flag if this %(Classname)s should be served by the DHCP\n"
-"             server.\n"
-"          "
-msgstr ""
-
-msgid "use_for_invoice"
-msgstr "Use for Invoice"
-
-msgid ""
-"Flag if templates with this %(Classname)s should be visible\n"
-"             in invoice templates\n"
-"          "
-msgstr ""
-
-msgid "use_for_letter"
-msgstr ""
-
-msgid ""
-"Flag if templates with this %(Classname)s should be visible\n"
-"             as letter templates\n"
-"          "
-msgstr ""
-
-msgid "use_in_ln"
-msgstr "Use in LN"
-
-msgid ""
-"This %(Classname)s should be used with Lotus Notes (e.g.,\n"
-"             no delivery to a program, etc. that is only possible with\n"
-"             a real MTA)\n"
-"          "
-msgstr ""
-
-msgid "user"
-msgstr "User"
-
-msgid ""
-"When creating new freeze-records: Please select the user\n"
-"             whose time record you want to freeze\n"
-"             (with \"Freeze user\") or the supervisor whose team you\n"
-"             want to freeze (with \"Freeze team\").  Freezing a team means\n"
-"             freezing all users whose direct supervisor is the selected\n"
-"             user at the moment. If you select a date and press \"Freeze\n"
-"             all\", the time records of all users up to the selected date\n"
-"             will be frozen.\n"
-"          "
-msgstr ""
-
-msgid "user_dynamic++durations_allowed"
-msgstr "Durations allowed"
-
-msgid "user_password"
-msgstr "User Password"
-
-msgid ""
-"UNIX user password, automatically set by the system when a\n"
-"             new password is entered.\n"
-"          "
-msgstr ""
-
-msgid "user++address"
-msgstr "Email"
-
-msgid "Primary email address for this user"
-msgstr ""
-
-msgid "user++status"
-msgstr "User Status"
-
-msgid "user++title"
-msgstr "Title"
-
-msgid "username"
-msgstr "User Name"
-
-msgid "Login-name for this %(Classname)s, e.g., schlatterbeck"
-msgstr ""
-
-msgid "vacation_remaining"
-msgstr "Remaining vacation"
-
-msgid ""
-"Remaining vacation for this user at the start of a dynamic\n"
-"             user data record.\n"
-"          "
-msgstr ""
-
-msgid "vacation_day"
-msgstr "Vacation date (day)"
-
-msgid ""
-"%(Property)s when new year for this person starts.\n"
-"          "
-msgstr ""
-
-msgid "vacation_month"
-msgstr "Vacation date (month)"
-
-msgid "vacation_yearly"
-msgstr "Yearly vacation"
-
-msgid ""
-"Yearly vacation for this user: This is the amount of vacation\n"
-"             that is added for each year.\n"
-"          "
-msgstr ""
-
-msgid "val"
-msgstr "Value"
-
-msgid "Measured value"
-msgstr ""
-
-msgid "valid"
-msgstr "Valid"
-
-msgid ""
-"If enabled, this %(Classname)s is valid and can be\n"
-"             selected.\n"
-"          "
-msgstr ""
-
-msgid "valid_from"
-msgstr "Valid since"
-
-msgid ""
-"Creation date, or date since when this %(Classname)s can be\n"
-"             booked at\n"
-"          "
-msgstr ""
-
-msgid "valid_to"
-msgstr "Valid until"
-
-msgid ""
-"Expiration date for %(Classname)s. Note that the date given\n"
-"             here is *not* itself part of the validity time.\n"
-"          "
-msgstr ""
-
-msgid "validity_date"
-msgstr "Validity date"
-
-msgid ""
-"Validity date of balance field. May be up to a year\n"
-"             before the freeze date.\n"
-"          "
-msgstr ""
-
-msgid "value"
-msgstr "Value"
-
-msgid "Value of this %(Classname)s"
-msgstr ""
-
-msgid "vat"
-msgstr "VAT%"
-
-msgid "Select country for VAT computation."
-msgstr ""
-
-msgid "visible"
-msgstr ""
-
-msgid ""
-" If you set this option to \"YES\", all time tracker users\n"
-"              can see your private %(Classname)s. If set to \"No\", it\n"
-"              will not be accessible for the other time tracker users\n"
-"              except HR and office.\n"
-"          "
-msgstr ""
-
-msgid "web_url"
-msgstr "Web URL"
-
-msgid ""
-"Obtain IP address from IP checking page at %(Property)s\n"
-"             If no method for detecting IP address is configured, this\n"
-"             method is the default and uses the dyndns url (specify the\n"
-"             word \"dyndns\" here to get this default).\n"
-"          "
-msgstr ""
-
-msgid "web_skip"
-msgstr "Web skip pattern"
-
-msgid ""
-"Skip any IP address before %(Property)s in output returned\n"
-"            from website\n"
-"          "
-msgstr ""
-
-msgid "week"
-msgstr "Week"
-
-msgid ""
-"Week for time tracking, this is an alternative for specifying\n"
-"             a date range: just enter the week number here (for the\n"
-"             current year) or YYYY/WW where YYYY is the year and WW the\n"
-"             week number for that year.\n"
-"          "
-msgstr ""
-
-msgid "weekend_allowed"
-msgstr "Weekend allowed"
-
-msgid "Flag if booking on weekends is allowed for this %(Classname)s."
-msgstr ""
-
-msgid "Expected weekly work-time for %(Classname)s."
-msgstr ""
-
-msgid "wp"
-msgstr "Work package"
-
-msgid ""
-"Only work packages where you have permission to register show\n"
-"             here. If you miss one, please contact the responsible project\n"
-"             manager\n"
-"          "
-msgstr ""
-
-msgid "wp.id"
-msgstr "Work package Id"
-
-msgid "wp_no"
-msgstr "Work package number"
-
-msgid "wp++durations_allowed"
-msgstr "Durations allowed"
-
-msgid ""
-"This is mainly used for special %(Classname)ss, like,\n"
-"             e.g., vacation.\n"
-"          "
-msgstr ""
-
-msgid "wps"
-msgstr "Work packages"
-
-msgid ""
-"For a better handling of the work load of a project it is\n"
-"             split in to work packages. This field defines a list of work\n"
-"             packages for this %(Classname)s\n"
-"          "
-msgstr ""
-
-msgid "wps.id"
-msgstr "Work package Ids"
-
-msgid "work_location"
-msgstr "Work location"
-
-msgid "work_location.id"
-msgstr "Work location Id"
-
 #, python-format
 msgid ""
-"<a %(csscls)s title=\"Help for %(label)s\" href=\"javascript:help_window"
-"('%(cls)s?:template=property_help#%(href)s', '500', '400')\" tabindex=\"-1\">"
-"%(label)s%(endswith)s</a>"
-msgstr ""
-
-msgid "(cal)"
+"<a %(csscls)s title=\"Help for %(i18nprop)s\" href=\"javascript:"
+"help_window('%(cls)s?:template=property_help#%(href)s', '500', '400')\" "
+"tabindex=\"-1\">%(label1)s%(i18nprop)s%(label2)s%(endswith)s</a>"
 msgstr ""
 
 msgid "Welcome to the "
 msgstr ""
 
-msgid "Clear Measurement Data"
-msgstr ""
-
-msgid "Clear Measurements now"
-msgstr ""
-
-msgid "'Really clear measurements now?'"
-msgstr ""
-
-msgid "Remove last Device"
-msgstr ""
-
-msgid "Remove last Device now"
-msgstr ""
-
-msgid "'Really remove last device now?'"
-msgstr ""
-
-msgid "Delete Database"
-msgstr ""
-
-msgid "Delete Database now"
-msgstr ""
-
-msgid "'Really delete database now?'"
-msgstr ""
-
 msgid "Device manager"
 msgstr ""
+
+msgid "device_group"
+msgstr "Group"
 
 msgid "User"
 msgstr "User"
 
 msgid "Configuration"
-msgstr ""
-
-msgid " (min):"
-msgstr ""
-
-msgid " (sec):"
 msgstr ""
 
 #, python-format
@@ -4800,135 +890,22 @@ msgstr ""
 msgid "No files for %(tmplate)s"
 msgstr ""
 
+msgid "cost_center"
+msgstr "Productivity"
+
 msgid "Sum"
 msgstr ""
 
 msgid "Container"
 msgstr "Level"
 
+msgid "time_wp.wp_no"
+msgstr "Work package number"
+
 msgid "time"
 msgstr "Time Period"
 
-#.  for translation in web-interface
-msgid "Staff Report"
-msgstr ""
-
-msgid "balance_start"
-msgstr "Balance Start"
-
-msgid "actual_open"
-msgstr "Actual open"
-
-msgid "actual_submitted"
-msgstr "Actual submitted"
-
-msgid "actual_accepted"
-msgstr "Actual accepted"
-
-msgid "actual_all"
-msgstr "Actual all"
-
-msgid "required"
-msgstr ""
-
-msgid "supp_hours_2"
-msgstr "Supp. hours average"
-
-msgid "overtime_correction"
-msgstr "Overtime correction"
-
-msgid "balance_end"
-msgstr "Balance End"
-
-msgid "achieved_supplementary"
-msgstr "Achieved supplementary hours"
-
-#.  for translation in web-interface
-msgid "Vacation Report"
-msgstr "Vacation Report"
-
-msgid "yearly entitlement"
-msgstr ""
-
-msgid "yearly prorated"
-msgstr ""
-
-msgid "carry forward"
-msgstr "carry forward from previous year"
-
-msgid "entitlement total"
-msgstr ""
-
-msgid "approved days"
-msgstr "approved days"
-
-msgid "approved_submissions"
-msgstr "approved submissions"
-
-msgid "vacation corrections"
-msgstr ""
-
-msgid "remaining vacation"
-msgstr "remaining vacation"
-
-msgid "additional_submitted"
-msgstr "additional submitted"
-
-msgid "flexi_time"
-msgstr "Flexi-Time (approved)"
-
-msgid "flexi_sub"
-msgstr "Flexi-Time (submitted)"
-
-msgid "flexi_max"
-msgstr "Yearly max. Flexi-Time (all in)"
-
-msgid "flexi_rem"
-msgstr "Unused yearly max. Flexi-Time (all in)"
-
-msgid "special_leave"
-msgstr "Special leave (approved)"
-
-msgid "special_sub"
-msgstr "Special leave (submitted)"
-
-msgid "Serial <a href=\"%s\">%s</a> occurs %s times in other support issues"
-msgstr ""
-
-msgid "Submit to %(sunick)s"
-msgstr ""
-
-msgid "Cancel"
-msgstr "Cancel"
-
-msgid "Edit again"
-msgstr "Edit again"
-
-msgid "Request Cancel"
-msgstr ""
-
-msgid "Accept"
-msgstr ""
-
-msgid "Decline"
-msgstr "Decline"
-
-msgid "Allow cancel"
-msgstr ""
-
-msgid "Decline cancel"
-msgstr ""
-
-msgid "To edit ${Classname} click on the field under &quot;${labelprop}&quot;."
-msgstr ""
-
-msgid "Download as CSV"
-msgstr ""
-
-msgid "History"
-msgstr ""
-
-msgid "New item"
+msgid "Summary Report (old)"
 msgstr ""
 
 msgid "${property} help - ${tracker}"
@@ -4955,10 +932,28 @@ msgstr ""
 msgid "History for ${label}"
 msgstr ""
 
+msgid "To edit ${Classname} click on the field under &quot;${labelprop}&quot;."
+msgstr ""
+
+msgid "Download as CSV"
+msgstr ""
+
+msgid "History"
+msgstr ""
+
+msgid "New item"
+msgstr ""
+
 msgid "Help for ${Classname}"
 msgstr ""
 
 msgid "Properties of ${Classname}"
+msgstr ""
+
+msgid "${classname_id} created by ${creator}"
+msgstr ""
+
+msgid "New ${Classname}"
 msgstr ""
 
 msgid "export addresses"
@@ -4966,9 +961,6 @@ msgstr "Export Addresses"
 
 msgid "export legacy"
 msgstr "Legacy Adr. Format"
-
-msgid "New ${Classname}"
-msgstr ""
 
 msgid "x"
 msgstr ""
@@ -4985,6 +977,9 @@ msgstr ""
 msgid "- no selection -"
 msgstr ""
 
+msgid "remove"
+msgstr ""
+
 msgid "Child addresses"
 msgstr ""
 
@@ -4999,9 +994,6 @@ msgstr "Customer agreements"
 
 msgid "new customer_agreement"
 msgstr "new Customer agreement"
-
-msgid "${classname_id} created by ${creator}"
-msgstr ""
 
 msgid "Approvals pending"
 msgstr ""
@@ -5090,6 +1082,9 @@ msgstr ""
 msgid "new dyndns_host"
 msgstr "new DynDNS host"
 
+msgid "Author:"
+msgstr ""
+
 msgid "Welcome"
 msgstr ""
 
@@ -5127,6 +1122,15 @@ msgid "Days"
 msgstr ""
 
 msgid "Remaining vacation after approval"
+msgstr ""
+
+msgid "Yearly max. Flexi-Time (all-in)"
+msgstr ""
+
+msgid "Unused yearly max. Flexi-Time (all-in)"
+msgstr ""
+
+msgid "Avg. hours per Week (all-in)"
 msgstr ""
 
 msgid "Action"
@@ -5234,18 +1238,6 @@ msgstr ""
 msgid "Create"
 msgstr ""
 
-msgid "Network Interfaces"
-msgstr ""
-
-msgid "new network_interface"
-msgstr "new Network interface"
-
-msgid "Network Addresses"
-msgstr ""
-
-msgid "new network_address"
-msgstr "new Network address"
-
 msgid "Welcome:"
 msgstr ""
 
@@ -5282,6 +1274,9 @@ msgstr ""
 msgid "Phone&nbsp;List"
 msgstr ""
 
+msgid "User Manual"
+msgstr ""
+
 msgid "-- Create --"
 msgstr ""
 
@@ -5298,7 +1293,13 @@ msgid ""
 "Created on ${creation} by ${creator}, last changed ${activity} by ${actor}."
 msgstr ""
 
+msgid "Send to Customer"
+msgstr ""
+
 msgid "Create similar"
+msgstr ""
+
+msgid "Mark as Spam"
 msgstr ""
 
 msgid "Note:&nbsp;"
@@ -5308,9 +1309,6 @@ msgid "highlighted"
 msgstr ""
 
 msgid "&nbsp;fields are required."
-msgstr ""
-
-msgid "Author:"
 msgstr ""
 
 msgid "Date:"
@@ -5370,6 +1368,9 @@ msgstr ""
 msgid "Find"
 msgstr ""
 
+msgid "Show as CSV"
+msgstr ""
+
 msgid "This query's name:"
 msgstr ""
 
@@ -5391,7 +1392,25 @@ msgstr ""
 msgid "<span nowrap></span>"
 msgstr ""
 
+msgid "Supplier Ratings"
+msgstr ""
+
+msgid "new Supplier Rating"
+msgstr ""
+
+msgid "Information Security:"
+msgstr ""
+
+msgid "Net price"
+msgstr ""
+
 msgid "Add to LAS / Approved"
+msgstr ""
+
+msgid "Not in LAS, add?"
+msgstr ""
+
+msgid "(Preliminary)"
 msgstr ""
 
 msgid "Sign&Send"
@@ -5401,6 +1420,9 @@ msgid "add swl report"
 msgstr ""
 
 msgid "add secondary qso"
+msgstr ""
+
+msgid "qsl"
 msgstr ""
 
 msgid "2nd QSO"
@@ -5436,7 +1458,13 @@ msgstr ""
 msgid "<th>Created&nbsp;</th> <td> ${creation} by ${creator} </td>"
 msgstr ""
 
+msgid "Set:"
+msgstr ""
+
 msgid "<th>Last changed&nbsp;</th> <td> ${activity} by ${actor} </td>"
+msgstr ""
+
+msgid "Time Project Report&nbsp;"
 msgstr ""
 
 msgid "Current Work Package(s)"
@@ -5564,10 +1592,16 @@ msgstr ""
 msgid "current calendar year per default"
 msgstr ""
 
+msgid "yearly entitlement"
+msgstr ""
+
 msgid ""
 "AUT: 25 days, usually. For employees who are entitled to a 6th week of "
 "vacation already (=after 25 years of employment, min. 12 of those with the "
 "current company - please ask HR for exact conditions), this shows 30 days."
+msgstr ""
+
+msgid "yearly prorated"
 msgstr ""
 
 msgid ""
@@ -5587,20 +1621,32 @@ msgid ""
 "been accrued in."
 msgstr ""
 
+msgid "entitlement total"
+msgstr ""
+
 msgid ""
 "shows the yearly amount of vacation days the employee is are entitled to "
 "(sum of entitlement prorated + carry forward)."
 msgstr ""
+
+msgid "approved days"
+msgstr "approved days"
 
 msgid ""
 "Vacation days that the employee already consumed or submitted with "
 "successful approval."
 msgstr ""
 
+msgid "vacation corrections"
+msgstr ""
+
 msgid ""
 "manual corrections of vacation days by HR (e.g. if vacation is paid at the "
 "end of employment)."
 msgstr ""
+
+msgid "remaining vacation"
+msgstr "remaining vacation"
 
 msgid ""
 "remaining vacation days for the current year at the employee's disposal or "
@@ -5618,33 +1664,12 @@ msgid ""
 "vacation days will decrease accordingly."
 msgstr ""
 
-msgid "Invoice Address"
-msgstr "Invoice address"
-
-msgid "shipping"
-msgstr "shipping"
-
-msgid "Shipping Address"
-msgstr "Shipping address"
-
-msgid "supply"
-msgstr "supply"
-
-msgid "Address used for fetching supplies from supplier"
-msgstr ""
-
-msgid "Address of a personal contact"
-msgstr ""
-
-msgid "Circular logging"
+#, python-format
+msgid "%(pn)s \"%(s)s\" too long (> %(limit)s characters)"
 msgstr ""
 
 #, python-format
-msgid "Name \"%(name)s\" too long (> 25 characters)"
-msgstr ""
-
-#, python-format
-msgid "Duplicate: %s"
+msgid "Duplicate: %s: %s%s"
 msgstr ""
 
 #, python-format
@@ -5666,337 +1691,51 @@ msgstr ""
 msgid "Invalid login"
 msgstr ""
 
-msgid "abo_price"
+msgid "Configuration error: No board roles for this PR"
 msgstr ""
 
-msgid "abo_type"
-msgstr "Subscription type"
-
-msgid "adr_type_cat"
-msgstr "Addr-type category"
-
-msgid "weekday"
-msgstr "Weekday"
-
-msgid "opening_hours"
-msgstr "Opening hours"
-
-msgid "callerid"
+msgid "Configuration error: No finance roles for this PR"
 msgstr ""
 
-msgid "number"
-msgstr "Number"
-
-msgid "milestone"
-msgstr "Milestone"
-
-msgid "task_status"
-msgstr "Workpackage Status"
-
-msgid "task_kind"
-msgstr "Workpackage Kind"
-
-msgid "feature_status"
-msgstr "Requirement Status"
-
-msgid "defect_status"
-msgstr "Defect Status"
-
-msgid "action_item_status"
-msgstr "Status of Action Item"
-
-msgid "review_status"
-msgstr "Review Status"
-
-msgid "comment_status"
-msgstr "Comment Status"
-
-msgid "document_status"
-msgstr "Document status"
-
-msgid "document_type"
-msgstr "Document type"
-
-msgid "prod"
-msgstr "Product"
-
-msgid "meeting"
-msgstr "Meeting"
-
-msgid "action_item"
-msgstr "Action Item"
-
-msgid "document"
-msgstr "Document"
-
-msgid "feature"
-msgstr "Requirement"
-
-msgid "task"
-msgstr "Workpackage"
-
-msgid "defect"
-msgstr "Defect"
-
-#.  `moderator` is implemented with `responsible`
-msgid "review"
-msgstr "Review"
-
-msgid "announcement"
-msgstr "Announcement"
-
-msgid "file"
-msgstr "File"
-
-msgid "query"
-msgstr "Query"
-
-msgid "user_status"
-msgstr "User Status"
-
-msgid "dyndns_protocol"
-msgstr "DynDNS protocol"
-
-msgid "dyndns_host"
-msgstr "DynDNS host"
-
-msgid "dyndns"
-msgstr "DynDNS"
-
-msgid "bank_account"
+msgid "%(tp)s responsible/deputy"
 msgstr ""
 
-msgid "customer_group"
-msgstr "Customer Group"
-
-msgid "discount_group"
-msgstr "Discount group"
-
-msgid "dispatch_type"
+#, python-format
+msgid "%(cc)s responsible/deputy"
 msgstr ""
 
-msgid "group_discount"
-msgstr ""
-
-msgid "invoice_dispatch"
-msgstr "Invoice dispatch"
-
-msgid "measuring_unit"
-msgstr "Measuring unit"
-
-msgid "overall_discount"
-msgstr ""
-
-msgid "packaging_unit"
-msgstr ""
-
-msgid "pharma_ref"
-msgstr ""
-
-msgid "proceeds_group"
-msgstr "Proceeds group"
-
-msgid "product_price"
-msgstr "Product price"
-
-msgid "product_status"
-msgstr "Product status"
-
-msgid "sales_conditions"
-msgstr "Sales conditions"
-
-msgid "shelf_life_code"
-msgstr ""
-
-msgid "storage"
-msgstr "Storage"
-
-msgid "stock"
-msgstr "Stock"
-
-msgid "stocked_product"
-msgstr "Stocked product"
-
-msgid "supplier_group"
-msgstr "Supplier group"
-
-msgid "supplier_status"
-msgstr "Supplier Status"
-
-msgid "Users are allowed to access their own external company"
-msgstr ""
-
-msgid "antenna"
-msgstr ""
-
-msgid "ham_call"
-msgstr "Call"
-
-msgid "ham_mode"
-msgstr "Mode"
-
-msgid "ham_band"
-msgstr "Band"
-
-msgid "qsl_type"
-msgstr "QSL type"
-
-msgid "qsl_status"
-msgstr "QSL status"
-
-msgid "qsl"
-msgstr ""
-
-msgid "qso"
-msgstr ""
-
-msgid "it_category"
-msgstr "IT-Category"
-
-msgid "it_issue_status"
-msgstr "IT-Issue status"
-
-msgid "it_project_status"
-msgstr "IT-Project status"
-
-msgid "legalclient"
-msgstr ""
-
-msgid "device"
-msgstr "Device"
-
-msgid "surrogate"
-msgstr ""
-
-msgid "logstyle"
-msgstr "Logging style"
-
-msgid "alarm"
-msgstr ""
-
-msgid "smb_machine"
-msgstr "Samba machine"
+msgid "position"
+msgstr "Position"
 
 msgid "sex"
 msgstr ""
 
-msgid "pr_approval_status"
-msgstr "Purchase approval status"
+msgid "name"
+msgstr "Name"
 
-msgid "pr_currency"
-msgstr "Currency"
+msgid "doc_issue_status"
+msgstr "Doc status"
 
-msgid "pr_approval"
-msgstr "Purchase approval"
+msgid "may_change_state_to"
+msgstr "May change status to"
 
-msgid "pr_approval_order"
-msgstr "Approval order"
+msgid "description"
+msgstr "Description"
 
-msgid "pr_offer_item"
-msgstr "Offer item"
+msgid "nosy"
+msgstr "Nosy List"
 
-msgid "pr_status"
-msgstr "Purchase request status"
+msgid "need_msg"
+msgstr "Need message"
 
-msgid "pr_supplier"
-msgstr "Approved supplier"
+msgid "transitions"
+msgstr "Transitions"
 
-msgid "purchase_request"
-msgstr "Purchase request"
+msgid "order"
+msgstr "Order"
 
-msgid "User is allowed %(perm)s on"
-msgstr ""
-
-msgid ""
-"User is allowed %(perm)s on %(cls)s if %(cls)s is non-confidential or user "
-"is on nosy list"
-msgstr ""
-
-msgid ""
-"User is allowed %(perm)s on %(linkclass)s if %(linkclass)s is linked from an "
-"item with %(perm)s permission"
-msgstr ""
-
-msgid "sip_device"
-msgstr "SIP Device"
-
-msgid "customer_agreement"
-msgstr "Customer agreement"
-
-msgid "mailgroup"
-msgstr "Email group"
-
-msgid "sup_classification"
-msgstr "Classification"
-
-msgid "sup_execution"
-msgstr "Execution"
-
-msgid "sup_prio"
-msgstr "Priority"
-
-msgid "sup_status"
-msgstr "Support Status"
-
-msgid "sup_type"
-msgstr "Type"
-
-msgid "support"
-msgstr "Support issue"
-
-msgid "time_project_status"
-msgstr "Time Category Status"
-
-msgid "cost_center_group"
-msgstr "Productivity Group"
-
-msgid "daily_record"
-msgstr "Daily Record"
-
-msgid "daily_record_freeze"
-msgstr "Daily Record freeze"
-
-msgid "daily_record_status"
-msgstr "Daily Record Status"
-
-msgid "daily_record.status.id"
-msgstr "Status Id"
-
-msgid "public_holiday"
-msgstr "Public Holiday"
-
-msgid "summary_type"
-msgstr "Summary type"
-
-msgid "time_record"
-msgstr "Time Record"
-
-msgid "time_wp_group"
-msgstr "Work package group"
-
-msgid "user_dynamic"
-msgstr "Dynamic User Data"
-
-msgid "leave_status"
-msgstr "Leave status"
-
-msgid "leave_submission"
-msgstr "Leave submission"
-
-msgid "vacation_correction"
-msgstr "Vacation correction"
-
-msgid "vacation_report"
-msgstr "Vacation report"
-
-msgid "umts"
-msgstr ""
-
-msgid "user_contact"
-msgstr "User contact"
-
-msgid "uc_type"
-msgstr "User-contact type"
+msgid "keyword"
+msgstr "Keyword"
 
 msgid "kpm"
 msgstr "KPM"
@@ -6004,11 +1743,23 @@ msgstr "KPM"
 msgid "reproduceable"
 msgstr "reproduceable"
 
+msgid "kpm_tag"
+msgstr "Tag"
+
 msgid "supplier_answer"
 msgstr "Supplier answer"
 
-msgid "hardware_version"
-msgstr "Hardware version"
+msgid "kpm_occurrence"
+msgstr "Occurrence"
+
+msgid "workaround"
+msgstr "Workaround"
+
+msgid "kpm_hw_variant"
+msgstr "Hardware variant"
+
+msgid "problem_solution"
+msgstr "Problem solution"
 
 msgid "analysis"
 msgstr "Analysis"
@@ -6019,11 +1770,32 @@ msgstr "ready for sync"
 msgid "fault_frequency"
 msgstr "Fault frequency"
 
+msgid "problem_description"
+msgstr "Problem description"
+
+msgid "planned_correction"
+msgstr "Planned correction"
+
+msgid "is_known_limitation"
+msgstr "Known limitation"
+
+msgid "tested_with"
+msgstr "Tested with"
+
+msgid "safety_relevant"
+msgstr "Safety relevant"
+
+msgid "customer_effect"
+msgstr "Customer effect"
+
 msgid "kpm_function"
 msgstr "Function"
 
 msgid "issue"
 msgstr "Issue"
+
+msgid "hardware_version"
+msgstr "Hardware version"
 
 msgid "kpm_group"
 msgstr "Group"
@@ -6031,29 +1803,173 @@ msgstr "Group"
 msgid "kpm_key"
 msgstr "Key"
 
+msgid "valid"
+msgstr "Valid"
+
+msgid "kpm_release"
+msgstr "KPM Release"
+
+msgid "ext_tracker_type"
+msgstr "Ext. Tracker type"
+
+msgid "ext_tracker"
+msgstr "Ext. Tracker"
+
+msgid "url_template"
+msgstr "URL template"
+
+msgid "type"
+msgstr "Type"
+
 msgid "ext_msg"
 msgstr "External message"
+
+msgid "ext_id"
+msgstr "Ext. ID"
 
 msgid "key"
 msgstr "Key"
 
+msgid "ext_tracker_state"
+msgstr "Ext. Tracker state"
+
+msgid "ext_status"
+msgstr "Ext. Status"
+
+msgid "ext_attributes"
+msgstr "Ext. Attributes"
+
+msgid "area"
+msgstr "Area"
+
+msgid "prodcat"
+msgstr "Product category"
+
+msgid "ext_trackers"
+msgstr "Ext. Trackers"
+
+msgid "category"
+msgstr "Category"
+
+msgid "default_part_of"
+msgstr "Default Container"
+
+msgid "responsible"
+msgstr "Responsible"
+
+msgid "cert_sw"
+msgstr "Cert Software"
+
+msgid "kind"
+msgstr "Kind"
+
+msgid "simple"
+msgstr ""
+
+msgid "status"
+msgstr "Status"
+
+msgid "simple_transitions"
+msgstr "Simple Transitions"
+
 msgid "status_transition"
 msgstr "Status Transition"
+
+msgid "require_msg"
+msgstr "require message"
+
+msgid "require_resp_change"
+msgstr "require responsible change"
+
+msgid "target"
+msgstr "Target"
+
+msgid "severity"
+msgstr "Severity"
+
+msgid "abbreviation"
+msgstr "Abbreviation"
 
 msgid "msg_keyword"
 msgstr "Message Keyword"
 
+msgid "safety_level"
+msgstr "Safety level"
+
+msgid "test_level"
+msgstr "Test level"
+
+msgid "inherit_ext"
+msgstr "Inherit permissions"
+
+msgid "external_users"
+msgstr "External users"
+
+msgid "title"
+msgstr "Title"
+
+msgid "files"
+msgstr "Files"
+
+msgid "messages"
+msgstr "Messages"
+
+msgid "composed_of"
+msgstr "Composed of"
+
 msgid "planned_begin"
 msgstr "Planned Start"
+
+msgid "depends"
+msgstr "Depends"
 
 msgid "planned_end"
 msgstr "Planned End"
 
-msgid "needs"
-msgstr "Needs"
+msgid "deadline"
+msgstr "Deadline"
+
+msgid "keywords"
+msgstr "Keywords"
+
+msgid "effort_hours"
+msgstr "Effort in hours"
+
+msgid "priority"
+msgstr "Priority"
+
+msgid "files_affected"
+msgstr "Files Affected"
+
+msgid "fixed_in"
+msgstr "Fixed in"
 
 msgid "cur_est_end"
 msgstr "Estimated End"
+
+msgid "earliest_start"
+msgstr "Earliest Start"
+
+msgid "part_of"
+msgstr "Part of"
+
+msgid "closed"
+msgstr ""
+
+msgid "confidential"
+msgstr ""
+
+msgid "needs"
+msgstr "Needs"
+
+msgid "release"
+msgstr "Release"
+
+msgid "numeric_effort"
+msgstr "Effort"
+
+msgid "maturity_index"
+msgstr "Maturity index"
 
 msgid "cur_est_begin"
 msgstr "Estimated Start"
@@ -6061,113 +1977,119 @@ msgstr "Estimated Start"
 msgid "effective_prio"
 msgstr "Eff. Priority"
 
+msgid "product_type"
+msgstr "Product type"
+
+msgid "reference"
+msgstr "Artefact reference"
+
+msgid "artefact"
+msgstr "Artefact type"
+
+msgid "filename_format"
+msgstr "Filename format"
+
 msgid "doc_status"
 msgstr "Artefact Status"
+
+msgid "rq_link"
+msgstr "Require Link"
 
 msgid "doc"
 msgstr "Artefact record"
 
+msgid "document_nr"
+msgstr "Artefact number"
+
 msgid "link"
 msgstr ""
+
+msgid "department"
+msgstr "Department"
 
 msgid "state_changed_by"
 msgstr ""
 
+msgid "it_category"
+msgstr "IT-Category"
+
+msgid "it_request_type"
+msgstr "Request type"
+
+msgid "log_template"
+msgstr "Log template"
+
+msgid "close_immediately"
+msgstr "close immediately"
+
+msgid "title_regex"
+msgstr "Title regex"
+
 msgid "int_prio"
 msgstr "Priority"
 
-msgid "pdc"
-msgstr "Primary domain controller"
+msgid "it_project"
+msgstr "IT-Project"
 
-msgid "planned"
-msgstr "Planned"
+msgid "stakeholder"
+msgstr "Stakeholder"
 
-msgid "reached"
-msgstr "Reached"
+msgid "it_issue_status"
+msgstr "IT-Issue status"
 
-msgid "cert"
-msgstr "Cert"
+msgid "relaxed"
+msgstr "Relaxed"
 
-msgid "cert_transitions"
-msgstr "Cert Transitions"
+msgid "default"
+msgstr ""
 
-msgid "certifiable"
-msgstr "Certifiable"
+msgid "must_change"
+msgstr ""
 
-msgid "documents"
-msgstr "Documents"
+msgid "it_int_prio"
+msgstr "IT-Priority"
 
-msgid "features"
-msgstr "Requirements"
+msgid "it_project_status"
+msgstr "IT-Project status"
 
-msgid "bugs"
-msgstr "Bugs"
+msgid "legalclient"
+msgstr ""
 
-msgid "milestones"
-msgstr "Milestones"
+msgid "firstname"
+msgstr "First name"
 
-msgid "planned_fixes"
-msgstr "Planned Fixes"
+msgid "first_date"
+msgstr "First date"
 
-msgid "actual_end"
-msgstr "Actual end"
+msgid "lastname"
+msgstr "Last name"
 
-msgid "test_ok"
-msgstr "Test OK"
+msgid "born"
+msgstr ""
 
-msgid "actual_begin"
-msgstr "Actual begin"
+msgid "last_date"
+msgstr "Last date"
 
-msgid "tasks"
-msgstr "Workpackages"
+msgid "adr_type"
+msgstr "Address type"
 
-msgid "defects"
-msgstr "Defects"
+msgid "code"
+msgstr "Code"
 
-msgid "estimated_begin"
-msgstr "Estimated Begin"
+msgid "typecat"
+msgstr "Type category"
 
-msgid "estimated_end"
-msgstr "Estimated End"
-
-msgid "effort"
-msgstr "Effort"
-
-msgid "closer"
-msgstr "Closer"
-
-msgid "found_in_release"
-msgstr "Found in Project"
-
-msgid "solved_in_release"
-msgstr "Solved in Project"
-
-msgid "belongs_to_task"
-msgstr "Belongs to Workpackage"
-
-msgid "belongs_to_feature"
-msgstr "Belongs to Feature"
-
-msgid "estimated_effort"
-msgstr "Estimated Effort"
-
-msgid "version"
-msgstr "Version"
-
-msgid "fixed_until"
-msgstr "Fixed until"
-
-msgid "comments"
-msgstr "Comments"
-
-msgid "line_number"
-msgstr "Linenumber"
-
-msgid "file_name"
-msgstr "Filename"
+msgid "adr_type_cat"
+msgstr "Addr-type category"
 
 msgid "type_valid"
 msgstr "Type valid"
+
+msgid "weekday"
+msgstr "Weekday"
+
+msgid "opening_hours"
+msgstr "Opening hours"
 
 msgid "from_minute"
 msgstr ""
@@ -6181,8 +2103,29 @@ msgstr "from hour"
 msgid "to_hour"
 msgstr "to hour"
 
+msgid "callerid"
+msgstr ""
+
+msgid "number"
+msgstr "Number"
+
+msgid "contact_type"
+msgstr "Contact type"
+
+msgid "address"
+msgstr "Address"
+
 msgid "use_callerid"
 msgstr ""
+
+msgid "person_type"
+msgstr "Person type"
+
+msgid "person"
+msgstr "personal address"
+
+msgid "sip_device"
+msgstr "SIP Device"
 
 msgid "http_username"
 msgstr "HTTP user name"
@@ -6202,11 +2145,101 @@ msgstr "MAC address"
 msgid "http_password"
 msgstr "HTTP password"
 
+msgid "tmplate_status"
+msgstr "Template Status"
+
+msgid "use_for_letter"
+msgstr ""
+
+msgid "use_for_invoice"
+msgstr "Use for Invoice"
+
+msgid "tmplate"
+msgstr ""
+
+msgid "invoice_template"
+msgstr ""
+
+msgid "invoice_level"
+msgstr "Invoice level"
+
+msgid "interval"
+msgstr "Sample interval"
+
+msgid "payment"
+msgstr "Payment"
+
+msgid "receipt_no"
+msgstr "Receipt number"
+
+msgid "amount"
+msgstr "Amount"
+
+msgid "date_payed"
+msgstr ""
+
+msgid "abo"
+msgstr ""
+
+msgid "begin"
+msgstr ""
+
+msgid "end"
+msgstr "End"
+
+msgid "payer"
+msgstr ""
+
+msgid "invoices"
+msgstr "Invoices"
+
+msgid "subscriber"
+msgstr "Subscriber"
+
+msgid "aboprice"
+msgstr "Subscription price"
+
+msgid "abo_price"
+msgstr ""
+
+msgid "abotype"
+msgstr "Subscription type"
+
+msgid "invoice_group"
+msgstr "Invoice group"
+
+msgid "abo_type"
+msgstr "Subscription type"
+
+msgid "period"
+msgstr "Period"
+
+msgid "letters"
+msgstr ""
+
+msgid "province"
+msgstr "Province"
+
 msgid "lookalike_province"
 msgstr "Province"
 
+msgid "birthdate"
+msgstr "Birthdate"
+
+msgid "function"
+msgstr "Address details"
+
+msgid "initial"
+msgstr "Initial"
+
+msgid "affix"
+msgstr "Name affix"
+
 msgid "lookalike_function"
 msgstr "Address details"
+
+msgid "contacts"
+msgstr "Contacts"
 
 msgid "lookalike_firstname"
 msgstr "First name"
@@ -6214,26 +2247,155 @@ msgstr "First name"
 msgid "lookalike_lastname"
 msgstr "Last name"
 
+msgid "salutation"
+msgstr "Salutation"
+
+msgid "lettertitle"
+msgstr "Letter-title"
+
+msgid "cust_supp"
+msgstr "Customer/Supplier"
+
+msgid "abos"
+msgstr ""
+
+msgid "payed_abos"
+msgstr ""
+
+msgid "balance_open"
+msgstr "Open Balance"
+
+msgid "send_it"
+msgstr "send?"
+
+msgid "last_sent"
+msgstr "Last sent"
+
+msgid "n_sent"
+msgstr "Number of times sent"
+
 msgid "amount_payed"
 msgstr ""
+
+msgid "invoice_no"
+msgstr "Invoice Number"
+
+msgid "open"
+msgstr ""
+
+msgid "period_end"
+msgstr "Period End"
+
+msgid "period_start"
+msgstr "Period Start"
+
+msgid "date"
+msgstr "Date"
+
+msgid "subject"
+msgstr "Subject"
+
+msgid "letter"
+msgstr ""
+
+msgid "business_unit"
+msgstr "Business Unit"
+
+msgid "customer"
+msgstr "Customer/Supplier"
 
 msgid "customer_code"
 msgstr "Customer/Supplier Code"
 
+msgid "suppclaimfrom"
+msgstr "Supplier-Claim From-Address"
+
+msgid "nosygroups"
+msgstr "Nosy groups"
+
 msgid "is_customer"
 msgstr "Is customer"
+
+msgid "is_valid"
+msgstr "is valid"
+
+msgid "rmafrom"
+msgstr "RMA From-Address"
 
 msgid "is_supplier"
 msgstr "Is supplier"
 
-msgid "warranty"
-msgstr "Warranty in effect"
+msgid "fromaddress"
+msgstr "Support From-Address"
+
+msgid "customer_agreement"
+msgstr "Customer agreement"
+
+msgid "product"
+msgstr "Product"
+
+msgid "mailgroup"
+msgstr "Email group"
+
+msgid "default_nosy"
+msgstr "Default nosy list"
+
+msgid "product_line"
+msgstr "Product line"
+
+msgid "product_use_case"
+msgstr "Product use-case"
+
+msgid "is_series"
+msgstr "Series production"
+
+msgid "sap_material"
+msgstr "Material number"
+
+msgid "product_family"
+msgstr "Product family"
 
 msgid "sup_warranty"
 msgstr "Warranty status"
 
+msgid "sup_classification"
+msgstr "Classification"
+
+msgid "examples"
+msgstr "Examples"
+
+msgid "sup_execution"
+msgstr "Execution"
+
+msgid "sup_prio"
+msgstr "Priority"
+
+msgid "sup_status"
+msgstr "Support Status"
+
+msgid "sup_type"
+msgstr "Type"
+
+msgid "analysis_result"
+msgstr "Analysis result"
+
+msgid "return_type"
+msgstr "Customer return type"
+
+msgid "support"
+msgstr "Support issue"
+
+msgid "warranty"
+msgstr "Warranty in effect"
+
 msgid "classification"
 msgstr "Classification"
+
+msgid "cc"
+msgstr "CC"
+
+msgid "cc_emails"
+msgstr "CC-Emails"
 
 msgid "satisfied"
 msgstr "Satisfied"
@@ -6244,6 +2406,15 @@ msgstr "Goods received"
 msgid "number_effected"
 msgstr "Number affected"
 
+msgid "sap_ref"
+msgstr "SAP Reference"
+
+msgid "prio"
+msgstr "Priority"
+
+msgid "send_to_customer"
+msgstr "send to customer"
+
 msgid "analysis_end"
 msgstr "Analysis end"
 
@@ -6253,17 +2424,38 @@ msgstr "Goods sent"
 msgid "lot"
 msgstr "Lot code"
 
+msgid "serial_number"
+msgstr "Serial numbers"
+
+msgid "external_ref"
+msgstr "External reference"
+
 msgid "related_support"
 msgstr "Related support issues"
 
 msgid "analysis_start"
 msgstr "Analysis start"
 
+msgid "related_issues"
+msgstr "Related issues"
+
 msgid "execution"
 msgstr "Execution"
 
+msgid "emails"
+msgstr "Emails"
+
 msgid "first_reply"
 msgstr "First reply"
+
+msgid "bcc"
+msgstr "BCC"
+
+msgid "set_first_reply"
+msgstr ""
+
+msgid "bank_account"
+msgstr ""
 
 msgid "act_number"
 msgstr "Account number"
@@ -6280,17 +2472,47 @@ msgstr "IBAN"
 msgid "bank"
 msgstr "Bank"
 
+msgid "supplier_group"
+msgstr "Supplier group"
+
 msgid "credit_limit"
 msgstr ""
 
 msgid "lookalike_name"
 msgstr "Lookalike name"
 
+msgid "customer_group"
+msgstr "Customer Group"
+
+msgid "discount_group"
+msgstr "Discount group"
+
 msgid "invoice_text"
 msgstr "Invoice text"
 
+msgid "supplier_status"
+msgstr "Supplier Status"
+
+msgid "sales_conditions"
+msgstr "Sales conditions"
+
 msgid "order_text"
 msgstr "Order text"
+
+msgid "customer_type"
+msgstr "Customer type"
+
+msgid "pharma_ref"
+msgstr ""
+
+msgid "dispatch_type"
+msgstr ""
+
+msgid "invoice_dispatch"
+msgstr "Invoice dispatch"
+
+msgid "customer_status"
+msgstr "Customer Status"
 
 msgid "attendant"
 msgstr ""
@@ -6298,11 +2520,29 @@ msgstr ""
 msgid "tax_id"
 msgstr "Tax ID"
 
+msgid "display"
+msgstr ""
+
+msgid "group_discount"
+msgstr ""
+
+msgid "overall_discount"
+msgstr ""
+
 msgid "discount"
 msgstr "Discount"
 
+msgid "measuring_unit"
+msgstr "Measuring unit"
+
 msgid "price"
 msgstr "Price"
+
+msgid "packaging_unit"
+msgstr ""
+
+msgid "proceeds_group"
+msgstr "Proceeds group"
 
 msgid "use_lot"
 msgstr "Use lot number"
@@ -6310,8 +2550,17 @@ msgstr "Use lot number"
 msgid "minimum_inventory"
 msgstr "Minimum inventory"
 
+msgid "product_price"
+msgstr "Product price"
+
+msgid "shelf_life_code"
+msgstr ""
+
 msgid "vat_percent"
 msgstr "VAT percent"
+
+msgid "product_status"
+msgstr "Product status"
 
 msgid "payment_days"
 msgstr "Payment (days)"
@@ -6322,8 +2571,20 @@ msgstr ""
 msgid "discount_percent"
 msgstr "Discount percent"
 
+msgid "shelf_life"
+msgstr ""
+
+msgid "storage"
+msgstr "Storage"
+
 msgid "storage_locations"
 msgstr "Storage locations"
+
+msgid "stock"
+msgstr "Stock"
+
+msgid "stocked_product"
+msgstr "Stocked product"
 
 msgid "storage_location"
 msgstr "Storage location"
@@ -6331,14 +2592,29 @@ msgstr "Storage location"
 msgid "on_stock"
 msgstr ""
 
-msgid "lookalike_street"
-msgstr "Street"
+msgid "cost_center_group"
+msgstr "Productivity Group"
 
-msgid "lookalike_city"
-msgstr "City"
+msgid "active"
+msgstr "Active"
+
+msgid "cost_center_status"
+msgstr "Productivity Status"
+
+msgid "daily_record"
+msgstr "Daily Record"
+
+msgid "time_record"
+msgstr "Time Record"
 
 msgid "tr_duration_ok"
 msgstr "Duration (incl. Travel)"
+
+msgid "weekend_allowed"
+msgstr "Weekend allowed"
+
+msgid "daily_record_freeze"
+msgstr "Daily Record freeze"
 
 msgid "month_balance"
 msgstr "Month Balance"
@@ -6346,8 +2622,35 @@ msgstr "Month Balance"
 msgid "month_validity_date"
 msgstr "Month validity date"
 
+msgid "frozen"
+msgstr ""
+
+msgid "validity_date"
+msgstr "Validity date"
+
 msgid "week_balance"
 msgstr "Week Balance"
+
+msgid "achieved_hours"
+msgstr "Achieved hours"
+
+msgid "balance"
+msgstr "Balance"
+
+msgid "overtime_correction"
+msgstr "Overtime correction"
+
+msgid "comment"
+msgstr "Comment"
+
+msgid "value"
+msgstr "Value"
+
+msgid "daily_record_status"
+msgstr "Daily Record Status"
+
+msgid "public_holiday"
+msgstr "Public Holiday"
 
 msgid "is_half"
 msgstr "Half day"
@@ -6355,29 +2658,269 @@ msgstr "Half day"
 msgid "locations"
 msgstr "Locations"
 
+msgid "show_all_users"
+msgstr "show all users"
+
+msgid "reporting_group"
+msgstr "Reporting group"
+
+msgid "project_type"
+msgstr "Project type"
+
+msgid "all_in"
+msgstr "All in"
+
+msgid "show_empty"
+msgstr "show empty"
+
+msgid "op_project"
+msgstr "Project"
+
+msgid "org_location"
+msgstr "Organisation/Location"
+
+msgid "time_wp_summary_no"
+msgstr "Summary work package"
+
+msgid "time_wp_group"
+msgstr "Work package group"
+
+msgid "summary"
+msgstr "Summary"
+
+msgid "planned_effort"
+msgstr "Planned effort (h)"
+
+msgid "summary_type"
+msgstr "Summary type"
+
+msgid "show_missing"
+msgstr "Show missing"
+
 msgid "is_staff"
 msgstr "Needed by staff report"
+
+msgid "time_activity"
+msgstr "Activity"
+
+msgid "travel"
+msgstr "Travel"
+
+msgid "time_report"
+msgstr "Time Category Report"
+
+msgid "last_updated"
+msgstr "Last updated"
+
+msgid "file"
+msgstr "File"
+
+msgid "work_location"
+msgstr "Work location"
+
+msgid "no_overtime"
+msgstr "Overtime forbidden"
+
+msgid "is_vacation"
+msgstr "is vacation"
+
+msgid "is_special_leave"
+msgstr "is special leave"
+
+msgid "only_hours"
+msgstr "only hours"
+
+msgid "no_overtime_day"
+msgstr "No Overtime this day"
+
+msgid "is_public_holiday"
+msgstr "Public Holiday"
+
+msgid "overtime_reduction"
+msgstr "Overtime reduction"
+
+msgid "max_hours"
+msgstr "Max hours"
+
+msgid "approval_hr"
+msgstr "Approval by HR"
+
+msgid "approval_required"
+msgstr "Approval required"
+
+msgid "purchasing_agents"
+msgstr "Purchasing agents"
+
+msgid "deputy"
+msgstr "Deputy"
+
+msgid "infosec_req"
+msgstr "InfoSec Requirements"
+
+msgid "time_project_status"
+msgstr "Time Category Status"
+
+msgid "dist"
+msgstr "Dist."
 
 msgid "end_generated"
 msgstr ""
 
+msgid "tr_duration"
+msgstr "Duration (incl. Travel)"
+
+msgid "wp"
+msgstr "Work package"
+
+msgid "duration"
+msgstr "Duration"
+
 msgid "start_generated"
 msgstr ""
+
+msgid "wp_no"
+msgstr "Work package number"
 
 msgid "has_expiration_date"
 msgstr "Has expiration date"
 
+msgid "bookers"
+msgstr "Admitted users"
+
 msgid "durations_allowed"
 msgstr "Durations allowed"
+
+msgid "time_start"
+msgstr "Timetracking Start"
+
+msgid "project"
+msgstr "Time Category"
+
+msgid "is_public"
+msgstr "is public"
+
+msgid "wps"
+msgstr "Work packages"
+
+msgid "user_dynamic"
+msgstr "Dynamic User Data"
+
+msgid "hours_fri"
+msgstr "Fri"
+
+msgid "hours_sun"
+msgstr "Sun"
+
+msgid "hours_wed"
+msgstr "Wed"
+
+msgid "daily_worktime"
+msgstr "max. Daily worktime"
+
+msgid "contract_type"
+msgstr "Contract type"
+
+msgid "valid_from"
+msgstr "Valid since"
+
+msgid "max_flexitime"
+msgstr "max. Flexi-Time"
+
+msgid "hours_tue"
+msgstr "Tue"
+
+msgid "hours_mon"
+msgstr "Mon"
+
+msgid "hours_thu"
+msgstr "Thu"
+
+msgid "vacation_day"
+msgstr "Vacation date (day)"
+
+msgid "booking_allowed"
+msgstr "Booking allowed"
+
+msgid "valid_to"
+msgstr "Valid until"
 
 msgid "travel_full"
 msgstr "Travel full"
 
+msgid "vacation_month"
+msgstr "Vacation date (month)"
+
+msgid "hours_sat"
+msgstr "Sat"
+
+msgid "leave_status"
+msgstr "Leave status"
+
+msgid "leave_submission"
+msgstr "Leave submission"
+
 msgid "last_day"
 msgstr "Last day"
 
+msgid "comment_cancel"
+msgstr "Cancel comment"
+
+msgid "first_day"
+msgstr "First day"
+
+msgid "vacation_correction"
+msgstr "Vacation correction"
+
 msgid "days"
 msgstr ""
+
+msgid "absolute"
+msgstr ""
+
+msgid "vacation_report"
+msgstr "Vacation report"
+
+msgid "special_sub"
+msgstr "Special leave (submitted)"
+
+msgid "approved_submissions"
+msgstr "approved submissions"
+
+msgid "special_leave"
+msgstr "Special leave (approved)"
+
+msgid "flexi_rem"
+msgstr "Unused yearly max. Flexi-Time (all in)"
+
+msgid "flexi_max"
+msgstr "Yearly max. Flexi-Time (all in)"
+
+msgid "show_obsolete"
+msgstr "show obsolete"
+
+msgid "additional_submitted"
+msgstr "additional submitted"
+
+msgid "flexi_time"
+msgstr "Flexi-Time (approved)"
+
+msgid "flexi_sub"
+msgstr "Flexi-Time (submitted)"
+
+msgid "absence_type"
+msgstr "Absence type"
+
+msgid "cssclass"
+msgstr ""
+
+msgid "absence"
+msgstr "Absence"
+
+msgid "timesheet"
+msgstr ""
+
+msgid "do_leave_process"
+msgstr "do leave process"
 
 msgid "vacation_legal_year"
 msgstr "Vacation legal year"
@@ -6385,47 +2928,392 @@ msgstr "Vacation legal year"
 msgid "phone"
 msgstr "Phone Number"
 
+msgid "location"
+msgstr "Location"
+
 msgid "doc_num"
 msgstr "Document number"
+
+msgid "manager"
+msgstr "Manager"
+
+msgid "domain_part"
+msgstr "Domain part"
+
+msgid "country"
+msgstr "Country"
+
+msgid "company_code"
+msgstr "Company code"
+
+msgid "may_purchase"
+msgstr "may purchase"
 
 msgid "mail_domain"
 msgstr "Mail domain"
 
+msgid "part_of_budget"
+msgstr "Part of budget"
+
+msgid "infosec_level"
+msgstr "InfoSec Security Level"
+
+msgid "pr_currency"
+msgstr "Currency"
+
+msgid "exchange_rate"
+msgstr "Exchange rate"
+
+msgid "min_sum"
+msgstr "Max cost for simple approval"
+
+msgid "key_currency"
+msgstr "Key currency"
+
+msgid "pr_approval_status"
+msgstr "Purchase approval status"
+
+msgid "pr_approval"
+msgstr "Purchase approval"
+
+msgid "role_id"
+msgstr ""
+
 msgid "role"
 msgstr "Role"
+
+msgid "purchase_request"
+msgstr "Purchase request"
 
 msgid "by"
 msgstr ""
 
+msgid "pr_approval_config"
+msgstr "Approval configuration"
+
+msgid "purchase_type"
+msgstr "Purchase type"
+
+msgid "if_not_in_las"
+msgstr "only if not in LAS"
+
+msgid "organisations"
+msgstr "Organisations"
+
+msgid "pr_ext_resource"
+msgstr "External resources"
+
+msgid "infosec_amount"
+msgstr "Amount for InfoSec approval"
+
+msgid "pr_approval_order"
+msgstr "Approval order"
+
+msgid "is_board"
+msgstr "Board role"
+
+msgid "users"
+msgstr ""
+
+msgid "is_finance"
+msgstr "Finance role"
+
+msgid "pr_offer_item"
+msgstr "Offer item"
+
+msgid "is_asset"
+msgstr "is asset"
+
+msgid "add_to_las"
+msgstr "Add to LAS?"
+
 msgid "price_per_unit"
 msgstr "Net price per unit"
+
+msgid "index"
+msgstr "Index"
+
+msgid "supplier"
+msgstr "Supplier"
+
+msgid "offer_number"
+msgstr "Offer #"
+
+msgid "pr_supplier"
+msgstr "Approved supplier"
 
 msgid "units"
 msgstr "Units"
 
+msgid "vat"
+msgstr "VAT%"
+
+msgid "pr_status"
+msgstr "Purchase request status"
+
+msgid "pr_rating_category"
+msgstr "Supplier rating category"
+
+msgid "pr_supplier_rating"
+msgstr "Supplier rating"
+
+msgid "scope"
+msgstr "Scope"
+
+msgid "rating"
+msgstr "Rating"
+
+msgid "pr_forced_roles"
+msgstr "Forced Approval-Roles"
+
+msgid "pr_roles"
+msgstr "Approval-Roles"
+
+msgid "roles"
+msgstr "Roles"
+
+msgid "pr_view_roles"
+msgstr "View-Roles"
+
+msgid "view_roles"
+msgstr "View-Roles"
+
+msgid "forced_roles"
+msgstr "Forced Approval-Roles"
+
+msgid "terms_conditions"
+msgstr "Terms & conditions"
+
+msgid "order_number"
+msgstr ""
+
+msgid "infosec_pt"
+msgstr "InfoSec Purchase Type"
+
+msgid "safety_critical"
+msgstr "Safety critical"
+
+msgid "pr_justification"
+msgstr "PR Justification"
+
+msgid "requester"
+msgstr "Requester"
+
+msgid "sap_reference"
+msgstr "SAP Reference"
+
+msgid "termination_date"
+msgstr "Termination date"
+
+msgid "infosec_project"
+msgstr "InfoSec Project"
+
+msgid "continuous_obligation"
+msgstr "Continuous obligation"
+
+msgid "date_approved"
+msgstr "Approved on"
+
+msgid "frame_purchase"
+msgstr "Frame purchase"
+
 msgid "total_cost"
 msgstr "Total cost"
+
+msgid "intended_duration"
+msgstr "Intended duration"
+
+msgid "pr_risks"
+msgstr "Special risks"
+
+msgid "special_approval"
+msgstr "Special approval"
+
+msgid "frame_purchase_end"
+msgstr "End-date of frame purchase"
+
+msgid "offer_items"
+msgstr "Offer items"
+
+msgid "issue_ids"
+msgstr "PES Issue-Numbers"
+
+msgid "renegotiations"
+msgstr "Price renegotiations?"
 
 msgid "contract_term"
 msgstr "Termination condition"
 
+msgid "date_ordered"
+msgstr "Ordered on"
+
+msgid "dyndns_protocol"
+msgstr "DynDNS protocol"
+
+msgid "default_server"
+msgstr "default server"
+
+msgid "dyndns_service"
+msgstr "DynDNS service"
+
+msgid "protocol"
+msgstr "Protocol"
+
+msgid "login"
+msgstr "Login"
+
+msgid "password"
+msgstr "Password"
+
+msgid "dyndns"
+msgstr "DynDNS"
+
+msgid "server"
+msgstr "Server"
+
+msgid "dyndns_host"
+msgstr "DynDNS host"
+
+msgid "hostname"
+msgstr "Hostname"
+
+msgid "fw_login"
+msgstr "Firewall login"
+
+msgid "fw_password"
+msgstr "Firewall Password"
+
+msgid "web_skip"
+msgstr "Web skip pattern"
+
+msgid "syslog"
+msgstr "enable syslog"
+
+msgid "web_url"
+msgstr "Web URL"
+
+msgid "interface_skip"
+msgstr "Interface skip pattern"
+
+msgid "interface"
+msgstr "Interface"
+
+msgid "fw_skip"
+msgstr "Firewall skip pattern"
+
+msgid "fw_url"
+msgstr "Firewall URL"
+
+msgid "local_hostname"
+msgstr "Local hostname"
+
+msgid "transceiver"
+msgstr "Transceiver"
+
+msgid "tty"
+msgstr "Serial line"
+
 msgid "mint_pending"
+msgstr ""
+
+msgid "sint"
 msgstr ""
 
 msgid "sint_pending"
 msgstr ""
 
+msgid "mint"
+msgstr "Interval"
+
+msgid "device"
+msgstr "Device"
+
+msgid "adr"
+msgstr "Address"
+
+msgid "surrogate"
+msgstr ""
+
+msgid "gapint"
+msgstr "Sensor interval"
+
+msgid "version"
+msgstr "Version"
+
+msgid "dev"
+msgstr "Device"
+
 msgid "rec"
 msgstr "Recording type"
+
+msgid "cls"
+msgstr "Class"
+
+msgid "sensor"
+msgstr "Sensor"
+
+msgid "is_app_sensor"
+msgstr "is application sensor"
+
+msgid "is_actuator"
+msgstr "is actuator"
+
+msgid "almin"
+msgstr "Alarm min"
+
+msgid "almax"
+msgstr "Alarm max"
+
+msgid "do_logging"
+msgstr "do logging"
+
+msgid "unit"
+msgstr "Unit"
+
+msgid "logstyle"
+msgstr "Logging style"
+
+msgid "measurement"
+msgstr "Measurement"
+
+msgid "val"
+msgstr "Value"
+
+msgid "alarm"
+msgstr ""
 
 msgid "last_triggered"
 msgstr "Last triggered"
 
+msgid "timeout"
+msgstr "Timeout"
+
 msgid "is_lower"
 msgstr "is lower"
 
+msgid "umts"
+msgstr ""
+
 msgid "pin"
 msgstr "PIN code"
+
+msgid "external_company"
+msgstr "Ext. Company"
+
+msgid "user_contact"
+msgstr "User contact"
+
+msgid "visible"
+msgstr ""
+
+msgid "room"
+msgstr "Room"
+
+msgid "uc_type"
+msgstr "User-contact type"
+
+msgid "email"
+msgstr "Email"
 
 msgid "user_name"
 msgstr "SMTP User Name"
@@ -6433,14 +3321,794 @@ msgstr "SMTP User Name"
 msgid "sender"
 msgstr "Email Sender"
 
-msgid "call"
+msgid "content"
+msgstr "Content"
+
+msgid "inreplyto"
+msgstr "In Reply To"
+
+msgid "recipients"
+msgstr "Recipients"
+
+msgid "author"
+msgstr "Author"
+
+msgid "messageid"
+msgstr "Message ID"
+
+msgid "query"
+msgstr "Query"
+
+msgid "url"
+msgstr "URL"
+
+msgid "private_for"
+msgstr "Private for"
+
+msgid "klass"
+msgstr "Class"
+
+msgid "guid"
+msgstr ""
+
+msgid "csv_delimiter"
+msgstr "CSV delimiter"
+
+msgid "hide_message_files"
+msgstr "Hide message files"
+
+msgid "subst_until"
+msgstr "Substitute until"
+
+msgid "want_no_messages"
+msgstr "Want no messages"
+
+msgid "timing_info"
+msgstr ""
+
+msgid "timetracking_by"
+msgstr "Timetracking By"
+
+msgid "vie_user"
+msgstr "TTTech internal user"
+
+msgid "aux_username"
+msgstr "Auxiliary username"
+
+msgid "nickname"
+msgstr "Nickname"
+
+msgid "clearance_by"
+msgstr "Approval delegated to"
+
+msgid "substitute"
+msgstr "Substitute"
+
+msgid "lunch_start"
+msgstr "Lunch Start"
+
+msgid "subst_active"
+msgstr "Substitute active"
+
+msgid "tt_lines"
+msgstr "Time-tracker lines"
+
+msgid "job_description"
+msgstr "Job Description"
+
+msgid "pictures"
+msgstr "Picture"
+
+msgid "lunch_duration"
+msgstr "Lunch Duration"
+
+msgid "username"
+msgstr "User Name"
+
+msgid "alternate_addresses"
+msgstr "Alternate Addresses"
+
+msgid "realname"
+msgstr "Realname"
+
+msgid "queries"
+msgstr "Queries"
+
+msgid "timezone"
+msgstr "Timezone"
+
+msgid "ldap_group"
+msgstr "LDAP group"
+
+msgid "timetracking_allowed"
+msgstr ""
+
+msgid "is_nosy"
+msgstr "is nosy"
+
+msgid "user_status"
+msgstr "User Status"
+
+msgid "daily_record.user.org_location.id"
+msgstr "Organisation/Location Id"
+
+msgid "daily_record.user.department.id"
+msgstr "Department Id"
+
+msgid "approve"
+msgstr "Approve"
+
+msgid "deny"
+msgstr "Deny"
+
+msgid "edit again"
+msgstr "Edit again"
+
+msgid "VIEW"
+msgstr "View"
+
+msgid "Abbreviated name"
+msgstr "Abbreviated name"
+
+msgid "abo_type++adr_type"
+msgstr "Address type"
+
+msgid "activity"
+msgstr "Last Activity"
+
+msgid "actor"
+msgstr "Actor"
+
+msgid "add_announcement"
+msgstr "Add Announcement"
+
+msgid "add_file"
+msgstr "Add File"
+
+msgid "address.lookalike_city"
+msgstr "City"
+
+msgid "address.lookalike_firstname"
+msgstr "First name"
+
+msgid "address.lookalike_function"
+msgstr "Address details"
+
+msgid "address.lookalike_lastname"
+msgstr "Last name"
+
+msgid "address.lookalike_street"
+msgstr "Street"
+
+msgid "address++valid"
+msgstr "valid"
+
+msgid "address++title"
+msgstr "Title"
+
+msgid "adr_type_cat.code"
+msgstr "Code"
+
+msgid "adr_type_cat++code"
+msgstr "Code"
+
+msgid "alarm++val"
+msgstr "Threshold"
+
+msgid "announcements"
+msgstr "Announcements"
+
+msgid "\"approval_required\"."
+msgstr "\"Approval required\"."
+
+msgid "authors"
+msgstr "Authors"
+
+msgid "bookentry"
+msgstr "Booking date"
+
+msgid "card_type"
+msgstr "Card type"
+
+msgid "category++nosy"
+msgstr "Nosy List"
+
+msgid "city"
+msgstr "City"
+
+msgid "company"
+msgstr "Company"
+
+msgid "composed_of.id"
+msgstr "Composed of (id)"
+
+msgid "issue.composed_of.id"
+msgstr "Composed of (id)"
+
+msgid "confirm"
+msgstr "Confirm Password"
+
+msgid "contact_person"
+msgstr "Contact person"
+
+msgid "cost_center.id"
+msgstr "Productivity Id"
+
+msgid "cost_center_id"
+msgstr "Productivity Id"
+
+msgid "cost_center_group.id"
+msgstr "Productivity Group Id"
+
+msgid "cost_center_group_id"
+msgstr "Productivity Group Id"
+
+msgid "creation"
+msgstr "Creation"
+
+msgid "creator"
+msgstr "Creator"
+
+msgid "customer++confidential"
+msgstr "confidential"
+
+msgid "customer++nosy"
+msgstr "Nosy List"
+
+msgid "cut_off_date"
+msgstr "Cut-off Date"
+
+msgid "daily_hours"
+msgstr "Daily hours"
+
+msgid "daily_record++weekend_allowed"
+msgstr "Weekend allowed"
+
+msgid "daily_record.user.id"
+msgstr "User Id"
+
+msgid "defect++superseder"
+msgstr "Duplicate of"
+
+msgid "department.id"
+msgstr "Department Id"
+
+msgid "depends.id"
+msgstr "Depends (id)"
+
+msgid "device++adr"
+msgstr "Device address"
+
+msgid "device++name"
+msgstr "Device name"
+
+msgid "device++order"
+msgstr "Device order"
+
+msgid "dns_servers"
+msgstr "DNS servers"
+
+msgid "do_reverse_mapping"
+msgstr "Do reverse mapping"
+
+msgid "doc++responsible"
+msgstr "Owner"
+
+msgid "doc++link"
+msgstr "Link/CVS/SVN location"
+
+msgid "doc++status"
+msgstr "Status"
+
+msgid "doc++title"
+msgstr "Title"
+
+msgid "doc_issue_status++nosy"
+msgstr "Nosy List"
+
+msgid "doc_issue_status++order"
+msgstr "Order"
+
+msgid "final_meeting_date"
+msgstr "Final Meeting Date"
+
+msgid "id"
+msgstr "Id"
+
+msgid "inventory_no"
+msgstr "Inventory Number"
+
+msgid "invoice.amount"
+msgstr "Invoice amount"
+
+msgid "invoice++amount"
+msgstr "Amount"
+
+msgid "invoice.payer.firstname"
+msgstr "Payer First name"
+
+msgid "invoice.payer.lastname"
+msgstr "Payer Last name"
+
+msgid "invoice.payer.lookalike_city"
+msgstr "Payer City"
+
+msgid "invoice.payer.lookalike_firstname"
+msgstr "Payer First name"
+
+msgid "invoice.payer.lookalike_function"
+msgstr "Payer Address details"
+
+msgid "invoice.payer.lookalike_lastname"
+msgstr "Payer Last name"
+
+msgid "invoice.payer.lookalike_street"
+msgstr "Payer Street"
+
+msgid "invoice.payer.function"
+msgstr "Payer Address details"
+
+msgid "invoice.payer.valid"
+msgstr "Payer valid"
+
+msgid "invoice.subscriber.lookalike_city"
+msgstr "Subscriber City"
+
+msgid "invoice.subscriber.lookalike_firstname"
+msgstr "Subscriber First name"
+
+msgid "invoice.subscriber.lookalike_function"
+msgstr "Subscriber Address details"
+
+msgid "invoice.subscriber.lookalike_lastname"
+msgstr "Subscriber Last name"
+
+msgid "invoice.subscriber.lookalike_street"
+msgstr "Subscriber Street"
+
+msgid "invoice.subscriber.firstname"
+msgstr "Subscriber First name"
+
+msgid "invoice.subscriber.lastname"
+msgstr "Subscriber Last name"
+
+msgid "invoice.subscriber.valid"
+msgstr "Subscriber valid"
+
+msgid "invoice_address"
+msgstr "Invoice address"
+
+msgid "ip"
+msgstr "IP"
+
+msgid "is_alias"
+msgstr "Is Alias"
+
+msgid "issue++deadline"
+msgstr "Deadline"
+
+msgid "issue++title"
+msgstr "Title"
+
+msgid "it_issue++superseder"
+msgstr "Duplicate of"
+
+msgid "last_gid"
+msgstr "Last GID"
+
+msgid "last_uid"
+msgstr "Last UID"
+
+msgid "link_field"
+msgstr "Link field"
+
+msgid "mac"
+msgstr "MAC"
+
+msgid "msg_keywords"
+msgstr "Message Keywords"
+
+msgid "name_version"
+msgstr "Name+Version"
+
+msgid "needs.id"
+msgstr "Needs (id)"
+
+msgid "netmask"
+msgstr "Netmask"
+
+msgid "opt_reviewers"
+msgstr "Optional Reviewers"
+
+msgid "org_location++phone"
+msgstr "Phone prefix"
+
+msgid "organisation.id"
+msgstr "Organisation Id"
+
+msgid "organisation_id"
+msgstr "Organisation Id"
+
+msgid "owner"
+msgstr "Owner"
+
+msgid "overtime_period++required_overtime"
+msgstr "Req. overtime"
+
+msgid "parent"
+msgstr "Parent address"
+
+msgid "part_of.id"
+msgstr "Part of (id)"
+
+msgid "issue.part_of.id"
+msgstr "Part of (id)"
+
+msgid "payer.firstname"
+msgstr "Payer First name"
+
+msgid "payer.function"
+msgstr "Payer Address details"
+
+msgid "payer.lastname"
+msgstr "Payer Last name"
+
+msgid "payer.lookalike_firstname"
+msgstr "Payer First name"
+
+msgid "payer.lookalike_lastname"
+msgstr "Payer Last name"
+
+msgid "payer.lookalike_function"
+msgstr "Payer Address details"
+
+msgid "payer.valid"
+msgstr "Payer valid"
+
+msgid "payer.adr_type"
+msgstr "Payer Address type"
+
+msgid "peer_reviewers"
+msgstr "Peer Reviewers"
+
+msgid "person.lookalike_firstname"
+msgstr "Subscriber First name"
+
+msgid "person.lookalike_function"
+msgstr "Subscriber Address details"
+
+msgid "person.lookalike_lastname"
+msgstr "Subscriber Last name"
+
+msgid "prodcat++parent"
+msgstr "Product category parent"
+
+msgid "prodcat.parent"
+msgstr "Product category level 3"
+
+msgid "prodcat.parent.parent"
+msgstr "Product category level 2"
+
+msgid "prodcat.parent.parent.parent"
+msgstr "Product category level 1"
+
+msgid "product_family.id"
+msgstr "Product family Id"
+
+msgid "product_family_id"
+msgstr "Product family Id"
+
+msgid "project_type.id"
+msgstr "Project type Id"
+
+msgid "project_type_id"
+msgstr "Project type Id"
+
+msgid "query++tmplate"
+msgstr "Query template"
+
+msgid "recorder"
+msgstr "Recorder"
+
+msgid "related_issues.id"
+msgstr "Related issues (id)"
+
+msgid "reporting_group.id"
+msgstr "Reporting group Id"
+
+msgid "reporting_group_id"
+msgstr "Reporting group Id"
+
+msgid "review++responsible"
+msgstr "Moderator"
+
+msgid "purchase_request++creator"
+msgstr "Creator"
+
+msgid "purchase_request++department"
+msgstr "Department"
+
+msgid "purchase_request++files"
+msgstr "Files"
+
+msgid "purchase_request++organisation"
+msgstr "Organisation"
+
+msgid "purchase_request++nosy"
+msgstr "Nosy List"
+
+msgid "purchase_request++msg"
+msgstr "Message"
+
+msgid "purchase_request++sap_cc"
+msgstr "SAP Cost center"
+
+msgid "purchase_request++status"
+msgstr "Status"
+
+msgid "purchase_request++time_project"
+msgstr "Time Category"
+
+msgid "purchase_request++title"
+msgstr "Title"
+
+msgid "purchase_type++roles"
+msgstr "Approval-Roles"
+
+msgid "pr_offer_item++description"
+msgstr "Description"
+
+msgid "pr_offer_item++time_project"
+msgstr "Time Category"
+
+msgid "pr_offer_item++sap_cc"
+msgstr "SAP Cost center"
+
+msgid "pr_offer_item++purchase_type"
+msgstr "Purchase type"
+
+msgid "sensor++adr"
+msgstr "Channel"
+
+msgid "sensor++name"
+msgstr "Channel name"
+
+msgid "sensor++order"
+msgstr "Channel order"
+
+msgid "sensor++type"
+msgstr "Channel type"
+
+msgid "shipping_address"
+msgstr "Shipping address"
+
+msgid "street"
+msgstr "Street"
+
+msgid "subscriber.lookalike_firstname"
+msgstr "Subscriber First name"
+
+msgid "subscriber.lookalike_function"
+msgstr "Subscriber Address details"
+
+msgid "subscriber.lookalike_lastname"
+msgstr "Subscriber Last name"
+
+msgid "subscriber.firstname"
+msgstr "Subscriber First name"
+
+msgid "subscriber.lastname"
+msgstr "Subscriber Last name"
+
+msgid "subscriber.function"
+msgstr "Subscriber Address details"
+
+msgid "subscriber.valid"
+msgstr "Subscriber valid"
+
+msgid "subscriber.adr_type"
+msgstr "Subscriber Address type"
+
+msgid "summary_report++VIEW"
+msgstr "View"
+
+msgid "summary_report++cost_center"
+msgstr "Productivity"
+
+msgid "summary_report++cost_center_group"
+msgstr "Productivity Group"
+
+msgid "summary_report++date"
+msgstr "Date"
+
+msgid "summary_report++department"
+msgstr "Department"
+
+msgid "summary_report++op_project"
+msgstr "Project"
+
+msgid "summary_report++status"
+msgstr "Status"
+
+msgid "summary_report++summary_type"
+msgstr "Summary type"
+
+msgid "summary_report++supervisor"
+msgstr "Supervisor"
+
+msgid "summary_report++time_project"
+msgstr "Time Category"
+
+msgid "summary_report++time_wp"
+msgstr "Work package"
+
+msgid "summary_report++time_wp_group"
+msgstr "Work package group"
+
+msgid "summary_report++user"
+msgstr "User"
+
+msgid "supply_address"
+msgstr "Supply Address"
+
+msgid "support++superseder"
+msgstr "Duplicate of"
+
+msgid "support++type"
+msgstr "Type"
+
+msgid "team_members"
+msgstr "Team members"
+
+msgid "time_activity.id"
+msgstr "Activity Id"
+
+msgid "time_project.description"
+msgstr "TC Description"
+
+msgid "time_project++status"
+msgstr "Time Category Status"
+
+msgid "time_project++work_location"
+msgstr "Mandatory work location"
+
+msgid "time_project_status++active"
+msgstr "Active"
+
+msgid "time_project.id"
+msgstr "Time Category Id"
+
+msgid "time_project_id"
+msgstr "Time Category Id"
+
+msgid "wp.project.id"
+msgstr "Time Category Id"
+
+msgid "time_wp++travel"
+msgstr "Travel WP"
+
+msgid "time_wp.id"
+msgstr "Work package Id"
+
+msgid "time_wp_id"
+msgstr "Work package Id"
+
+msgid "time_wp_no"
+msgstr "Work package number"
+
+msgid "time_wp_group.id"
+msgstr "Work package group Id"
+
+msgid "time_wp_group_id"
+msgstr "Work package group Id"
+
+msgid "user_dynamic++durations_allowed"
+msgstr "Durations allowed"
+
+msgid "user++address"
+msgstr "Email"
+
+msgid "user++status"
+msgstr "User Status"
+
+msgid "user++title"
+msgstr "Title"
+
+msgid "vacation_remaining"
+msgstr "Remaining vacation"
+
+msgid "week"
+msgstr "Week"
+
+msgid "wp.id"
+msgstr "Work package Id"
+
+msgid "wp++durations_allowed"
+msgstr "Durations allowed"
+
+msgid "wps.id"
+msgstr "Work package Ids"
+
+msgid "work_location.id"
+msgstr "Work location Id"
+
+msgid "balance_start"
+msgstr "Balance Start"
+
+msgid "actual_open"
+msgstr "Actual open"
+
+msgid "actual_submitted"
+msgstr "Actual submitted"
+
+msgid "actual_accepted"
+msgstr "Actual accepted"
+
+msgid "actual_all"
+msgstr "Actual all"
+
+msgid "supp_hours_2"
+msgstr "Supp. hours average"
+
+msgid "balance_end"
+msgstr "Balance End"
+
+msgid "achieved_supplementary"
+msgstr "Achieved supplementary hours"
+
+msgid "Vacation Report"
+msgstr "Vacation Report"
+
+msgid "carry forward"
+msgstr "carry forward from previous year"
+
+msgid "Cancel"
+msgstr "Cancel"
+
+msgid "Edit again"
+msgstr "Edit again"
+
+msgid "Decline"
+msgstr "Decline"
+
+msgid "ham_call"
 msgstr "Call"
 
-msgid "qth"
-msgstr ""
+msgid "ham_mode"
+msgstr "Mode"
 
-msgid "gridsquare"
-msgstr ""
+msgid "ham_band"
+msgstr "Band"
+
+msgid "qsl_type"
+msgstr "QSL type"
+
+msgid "qsl_status"
+msgstr "QSL status"
+
+msgid "daily_record.status.id"
+msgstr "Status Id"
+
+msgid "fixed_until"
+msgstr "Fixed until"
+
+msgid "comments"
+msgstr "Comments"
+
+msgid "line_number"
+msgstr "Linenumber"
+
+msgid "file_name"
+msgstr "Filename"
+
+msgid "lookalike_street"
+msgstr "Street"
+
+msgid "lookalike_city"
+msgstr "City"
+
+msgid "call"
+msgstr "Call"
 
 msgid "date_sent"
 msgstr "Date sent"
@@ -6484,12 +4152,6 @@ msgstr "RST sent"
 msgid "band"
 msgstr "Band"
 
-msgid "qsl_via"
-msgstr ""
-
-msgid "freq"
-msgstr ""
-
 msgid "qso_start"
 msgstr "QSO start"
 
@@ -6502,104 +4164,11 @@ msgstr "QSL receive status"
 msgid "header"
 msgstr "Mail-Header"
 
-msgid "timing_info"
-msgstr ""
-
-msgid "pictures"
-msgstr "Picture"
-
-msgid "job_description"
-msgstr "Job Description"
-
-msgid "ldap_group"
-msgstr "LDAP group"
-
-msgid "is_nosy"
-msgstr "is nosy"
-
-msgid "ext_tracker_state"
-msgstr "Ext. Tracker state"
-
 msgid "issue.id"
 msgstr "Issue (Id)"
 
-msgid "ext_tracker_type"
-msgstr "Ext. Tracker type"
-
-msgid "ext_trackers"
-msgstr "Ext. Trackers"
-
-msgid "close_immediately"
-msgstr "close immediately"
-
-msgid "log_template"
-msgstr "Log template"
-
-msgid "absence_type"
-msgstr "Absence type"
-
-msgid "absence"
-msgstr "Absence"
-
-msgid "title_regex"
-msgstr "Title regex"
-
-msgid "rating"
-msgstr "Rating"
-
 msgid "ratings"
 msgstr "Ratings"
-
-msgid "pr_supplier_rating"
-msgstr "Supplier rating"
-
-msgid "pr_rating_category"
-msgstr "Supplier rating category"
-
-msgid "may_purchase"
-msgstr "may purchase"
-
-msgid "kpm_release"
-msgstr "KPM Release"
-
-msgid "planned_correction"
-msgstr "Planned correction"
-
-msgid "tested_with"
-msgstr "Tested with"
-
-msgid "safety_relevant"
-msgstr "Safety relevant"
-
-msgid "kpm_tag"
-msgstr "Tag"
-
-msgid "problem_solution"
-msgstr "Problem solution"
-
-msgid "workaround"
-msgstr "Workaround"
-
-msgid "customer_effect"
-msgstr "Customer effect"
-
-msgid "kpm_occurrence"
-msgstr "Occurrence"
-
-msgid "problem_description"
-msgstr "Problem description"
-
-msgid "kpm_hw_variant"
-msgstr "Hardware variant"
-
-msgid "is_known_limitation"
-msgstr "Known limitation"
-
-msgid "intended_duration"
-msgstr "Intended duration"
-
-msgid "scope"
-msgstr "Scope"
 
 msgid "pr_supplier_rating++scope"
 msgstr "Scope"
@@ -6616,107 +4185,20 @@ msgstr "Supplier"
 msgid "purchase_type++confidential"
 msgstr "Confidential"
 
-msgid "examples"
-msgstr "Examples"
-
-msgid "hide_message_files"
-msgstr "Hide message files"
-
-msgid "want_no_messages"
-msgstr "Want no messages"
-
-msgid "safety_level"
-msgstr "Safety level"
-
-msgid "test_level"
-msgstr "Test level"
-
-msgid "time_wp_summary_no"
-msgstr "Summary work package"
-
 msgid "time_wp_summary_no.id"
 msgstr "Summary work package ID"
 
 msgid "time_wp_summary_no_id"
 msgstr "Summary work package ID"
 
-msgid "rq_link"
-msgstr "Require Link"
-
-msgid "pr_justification"
-msgstr "PR Justification"
-
-msgid "internal_order"
-msgstr "Internal order"
-
-msgid "exchange_rate"
-msgstr "Exchange rate"
-
-msgid "key_currency"
-msgstr "Key currency"
-
-msgid "company_code"
-msgstr "Company code"
-
-msgid "pr_approval_config"
-msgstr "Approval configuration"
-
-msgid "special_approval"
-msgstr "Special approval"
-
-msgid "pr_risks"
-msgstr "Special risks"
-
-msgid "if_not_in_las"
-msgstr "only if not in LAS"
-
-msgid "is_finance"
-msgstr "Finance role"
-
-msgid "is_board"
-msgstr "Board role"
-
-msgid "organisations"
-msgstr "Organisations"
-
-msgid "max_flexitime"
-msgstr "max. Flexi-Time"
-
-msgid "pr_ext_resource"
-msgstr "External resources"
-
 msgid "pr_approval_config++pr_ext_resource"
 msgstr "External resources"
-
-msgid "epic_key"
-msgstr "Epic Key"
 
 msgid "sap_cc.id"
 msgstr "SAP Cost center Id"
 
 msgid "sap_cc.description"
 msgstr "SAP Cost center Desc"
-
-msgid "issue_ids"
-msgstr "PES Issue-Numbers"
-
-msgid "infosec_req"
-msgstr "InfoSec Requirements"
-
-msgid "infosec_project"
-msgstr "InfoSec Project"
-
-msgid "infosec_pt"
-msgstr "InfoSec Purchase Type"
-
-msgid "infosec_amount"
-msgstr "Amount for InfoSec approval"
-
-msgid "time_report"
-msgstr "Time Category Report"
-
-msgid "last_updated"
-msgstr "Last updated"
 
 msgid "iota"
 msgstr "IOTA Number"
@@ -6777,3 +4259,28 @@ msgstr "Deputy gets mail"
 
 msgid "renew_until"
 msgstr "Renew until"
+
+msgid "timetracking_by"
+msgstr "Timetracking By"
+
+msgid "aux_username"
+msgstr "Auxiliary username"
+
+msgid "ad_domain"
+msgstr "AD Domain"
+
+msgid "domain_permission"
+msgstr "Domain Permission"
+
+msgid "metadata"
+msgstr "Metadata"
+
+msgid "is_extern"
+msgstr "is extern"
+
+msgid "scale_role"
+msgstr "Scale Role"
+
+msgid "scale_seniority"
+msgstr "Seniority"
+

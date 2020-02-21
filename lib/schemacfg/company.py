@@ -106,20 +106,6 @@ def init \
     # end class Org_Location_Class
     export.update (dict (Org_Location_Class = Org_Location_Class))
 
-    User_Ancestor = kw.get ('User_Class', Ext_Class)
-    class User_Class (User_Ancestor) :
-        """ create the user class with some default attributes
-        """
-        def __init__ (self, db, classname, ** properties) :
-            self.update_properties \
-                ( department             = Link      ("department")
-                , org_location           = Link      ("org_location")
-                )
-            User_Ancestor.__init__ (self, db, classname, ** properties)
-        # end def __init__
-    # end class User_Class
-    export.update (dict (User_Class = User_Class))
-
     return export
 # end def init
 

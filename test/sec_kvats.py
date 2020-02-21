@@ -2,7 +2,9 @@ security = """
 New Web users get the Roles "User,Nosy"
 New Email users get the Roles "User,Nosy"
 Role "admin":
+ User may access the rest interface (Rest Access)
  User may access the web interface (Web Access)
+ User may access the xmlrpc interface (Xmlrpc Access)
  User may create everything (Create)
  User may edit everything (Edit)
  User may manipulate user Roles through the web (Web Roles)
@@ -79,7 +81,9 @@ Role "user":
  User is allowed to search issue (Search for "issue" only)
  User is allowed to view their own files (View for "file" only)
  User is allowed to view their own messages (View for "msg" only)
+ User may access the rest interface (Rest Access)
  User may access the web interface (Web Access)
+ User may access the xmlrpc interface (Xmlrpc Access)
  User may use the email interface (Email Access)
  Users are allowed to view their own and public queries for classes where they have search permission (View for "query" only)
 """.strip ()

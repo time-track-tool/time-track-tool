@@ -11,7 +11,7 @@ sys.path.insert (1, os.path.join (dir, 'lib'))
 
 import ldap_sync
 
-lds = ldap_sync.LDAP_Roundup_Sync (db)
+lds = ldap_sync.LDAP_Roundup_Sync (db, verbose = 2)
 
 print (lds.get_ldap_user_by_username (sys.argv [1]))
 

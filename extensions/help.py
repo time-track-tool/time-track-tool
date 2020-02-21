@@ -167,10 +167,6 @@ pr_sap_cc = Structured_Text ( textwrap.dedent (
       '''))
 purchase_types = \
     ""'''Mandatory in order to trigger correct approval hierarchy.'''
-range_description  = \
-    ""'''as a comma-separated list of ranges (a special case of a range
-         is just one number), e.g., 1-100,300-500
-      '''
 realname_automatic = \
     ''""" -- automatically generated
          by the system from first and last name. Needed by roundup
@@ -360,6 +356,8 @@ _helptext          = \
       [""'''Author of this %(Classname)s''']
     , ""'authors'                     :
       [""'''Authors of the artefact of this %(Classname)s''']
+    , ""'aux_username'                :
+      [""'''Additional username used in subsidiaries or similar''']
     , ""'balance'                     :
       [ ""'''Overtime balance as in staff report for the date mentioned
              in "valid on".
@@ -566,8 +564,6 @@ _helptext          = \
       [superseder]
     , ""'deadline'                    :
       [deadline]
-    , ""'default_lease_time'          :
-      [""'''Default DHCP lease time for %(Classname)s''']
     , ""'default_nosy'                :
       [""'''If this flag is selected, a new customer created without a nosy
             list and without a nosy group will get this mail group as
@@ -624,15 +620,6 @@ _helptext          = \
              to one device group which can be configured by the user.
           '''
       ]
-    , ""'dhcp_range'                  :
-      [ ""'''Range of dynamic IP addresses for %(Classname)s -- used
-             when generating DHCP configuration. Format: Two IP addresses in
-             dot notation separated by a dot. Example:
-             10.100.99.20&nbsp;10.100.99.250
-          '''
-      ]
-    , ""'dhcp_server'                 :
-      [""'''DHCP Server for this %(Classname)s''']
     , ""'display'                     :
       [ ""'''If enabled, items with %(Classname)s will be displayed
              in customer/supplier mask.
@@ -656,11 +643,6 @@ _helptext          = \
              A-record is assumed. If no DNS information should be
              generated, this field should be set to "invalid".
              This field is auto-generated if left empty.
-          '''
-      ]
-    , ""'dns_servers'                 :
-      [ ""'''DNS Servers for this %(Classname)s, used when generating
-             the DHCP configuration.
           '''
       ]
     , ""'do_leave_process'            :
@@ -926,16 +908,8 @@ _helptext          = \
       [""'''Sensor interval for %(Classname)s''']
     , ""'gid'                         :
       [""'''Numeric group ID''']
-    , ""'gid_range'                   :
-      [ ""'''Allowed range of group ids'''
-      , range_description
-      ]
-    , ""'group'                       :
-      [""'''UNIX Group for this %(Classname)s''']
     , ""'hide_message_files'          :
       [""'''If set, do not show files for each message in overview''']
-    , ""'home_directory'              :
-      [""'''UNIX home directory for %(Classname)s''']
     , ""'hostname'                    :
       [""'''Name of the host configured in the dynamic DNS service''']
     , ""'hours_mon'                   : [daily_hours]
@@ -1075,6 +1049,8 @@ _helptext          = \
       ]
     , ""'is_board'                    :
       [""'''If this flag is set, the role is used for board approvals''']
+    , ""'is_extern'                   :
+      [""'''This %(Classname)s is tracked in external software''']
     , ""'is_finance'                  :
       [""'''If this flag is set, the role is used for finance approvals''']
     , ""'is_valid'                    :
@@ -1180,8 +1156,6 @@ _helptext          = \
     , ""'last_day'                    : [ ""'''Last day of %(Classname)s.''']
     , ""'last_gid'                    :
       [""'''Last used gid in this %(Classname)s''']
-    , ""'last_machine_uid'            :
-      [""'''Last used machine uid in this %(Classname)s''']
     , ""'last_sent'                   :
       [""'''Date when an invoice was last sent''']
     , ""'last_uid'                    :
@@ -1218,8 +1192,6 @@ _helptext          = \
          '''
       ]
     , ""'login'                       : [generic]
-    , ""'login_shell'                 :
-      [""'''UNIX login shell for %(Classname)s''']
     , ""'lunch_duration'              :
       [""'''Preference for time tracking, duration of lunch break in hours''']
     , ""'lunch_start'                 :
@@ -1229,21 +1201,6 @@ _helptext          = \
              hardware address. Should be six hex-numbers separated by
              colons, e.g. "10:0:0:0:0:0".
           '''
-      ]
-    , ""'machine'                     :
-      [ ""'''A machine connected to the network to which this
-             %(Classname)s belongs
-          '''
-      ]
-    , ""'machine_group'               :
-      [""'''Group for pseudo-accounts for machines (used for Samba)''']
-    , ""'machine_name'                :
-      [""'''Link to another %(Classname)s -- converted to a CNAME.''']
-    , ""'machine_uid'                 :
-      [""'''Numeric user id for this samba machine.''']
-    , ""'machine_uid_range'           :
-      [ ""'''Allowed range of user ids for machines'''
-      , range_description
       ]
     , ""'maildomain'                  :
       [""'''Mail domain of the %(Classname)s. If there is no match for
@@ -1272,8 +1229,6 @@ _helptext          = \
              you can book on this %(Classname)s for a single day.
           '''
       ]
-    , ""'max_lease_time'              :
-      [""'''Maximum DHCP lease time for %(Classname)s''']
     , ""'may_change_state_to'         :
       [ ""'''Allowed state changes for a given %(Classname)s: Usually
              you want to allow all states here but for some
@@ -1323,39 +1278,8 @@ _helptext          = \
              further activities.
           '''
       ]
-    , ""'netbios_dd'                  :
-      [ ""'''Netbios datagram distribution server (NBDD) option for DHCP
-             config. Specifies list of servers in order of preference.
-          '''
-      ]
-    , ""'netbios_ns'                  :
-      [ ""'''Netbios name server (NBNS) option for DHCP config. Specifies
-             list of servers in order of preference. Netbios name service
-             is more commonly referred to as WINS.
-          '''
-      ]
-    , ""'netbios_nodetype'            :
-      [ ""'''The Netbios node type option allows NetBIOS over TCP/IP
-             clients which are configurable to be configured as described
-             in RFC 1001/1002. The value is specified as a single octet
-             which identifies the client type. Possible types are:
-             1: B-node: Broadcast - no WINS, 2: P-node: Peer - WINS only,
-             4: M-node: Mixed - broadcast, then WINS, 8: H-node: Hybrid -
-             WINS, then broadcast. (taken from dhcp-options manual page)
-          '''
-      ]
     , ""'netmask'                     :
       [""'''IP net mask for this %(Classname)s, a number (e.g., 16).''']
-    , ""'network_address'             :
-      [ ""'''Address in the network, including but not limited to IP
-             address
-          '''
-      ]
-    , ""'network_interface'           :
-      [ ""'''Hardware unit to connect to the network. Can be part of the
-             motherboard or can be a separate unit
-          '''
-      ]
     , ""'nickname'                    :
       [""'''Nickname (or short name) for this %(Classname)s, e.g., rsc''']
     , ""'no_overtime'                 :
@@ -1593,10 +1517,6 @@ _helptext          = \
       ]
     , ""'private_for'                 :
       [""'''Flag if this is a private %(Classname)s''']
-    , ""'private_gid_range'           :
-      [ ""'''Allowed range of group ids for users'''
-      , range_description
-      ]
     , ""'prodcat'                     :
       [""'''Used for classifying products''']
     , ""'prodcat++parent'             :
@@ -1835,8 +1755,6 @@ _helptext          = \
       ]
     , ""'room'                        :
       [""'''Room number''']
-    , ""'routers'                     :
-      [""'''Routers for this %(Classname)s, used in DHCP configuration.''']
     , ""'rq_link'                     :
       [""'''Require Link/CVS/SVN location when changing to this
             %(Classname)s
@@ -1856,41 +1774,6 @@ _helptext          = \
       ]
     , ""'salutation'                  :
       [""'''Salutation used for printing an address''']
-    , ""'samba_home_drive'            :
-      [""'''Home drive for %(Classname)s in Windows''']
-    , ""'samba_home_path'             :
-      [""'''Path to %(Classname)ss home directory''']
-    , ""'samba_kickoff_time'          :
-      [""'''Windows time that user will automatically logged out''']
-    , ""'samba_lm_password'           :
-      [ ""'''Samba LAN Manager password -- automatically computed when a
-             new password is entered
-          '''
-      ]
-    , ""'samba_logon_script'          :
-      [""'''Logon script for %(Classname)s''']
-    , ""'samba_nt_password'           :
-      [ ""'''Samba NT password -- automatically computed when a
-             new password is entered
-          '''
-      ]
-    , ""'samba_profile_path'          :
-      [""'''Path to profile for %(Classname)s''']
-    , ""'samba_pwd_can_change'        :
-      [ ""'''Earliest time the user may change the password next time.
-             set by the system to pwd_last_set if nothing else is enabled.
-          '''
-      ]
-    , ""'samba_pwd_last_set'          :
-      [ ""'''Time-stamp the password was last changed, automatically
-             computed by the system
-          '''
-      ]
-    , ""'samba_pwd_must_change'       :
-      [ ""'''Latest time the user must change the password next time.
-             set by the system to end of the epoch if nothing else is enabled.
-          '''
-      ]
     , ""'sap_cc'                      :
       [""'''For selecting %(Classname)s information via the %(Property)s''']
     , ""'sap_cc.id'                   : [help_id]
@@ -1904,8 +1787,6 @@ _helptext          = \
       ]
     , ""'sap_material'                : [""'''Material number in SAP''']
     , ""'sap_ref'                     : [""'''For tracking in SAP''']
-    , ""'secondary_groups'            :
-      [""'''secondary UNIX Groups for this %(Classname)s''']
     , ""'send_it'                     :
       [ ""'''Flag indicating if this invoice should be sent. If not set,
              this invoice will disappear from the current list of invoices. It
@@ -2006,17 +1887,8 @@ _helptext          = \
              if their balance is below 0.05.
           '''
       ]
-    , ""'sid'                         :
-      [ ""'''Samba unique ID but without the last part used for user id or
-             group id information
-          '''
-      ]
     , ""'sint'                        :
       [""'''Transmit interval for %(Classname)s''']
-    , ""'smb_domain'                  :
-      [""'''Samba domain for this %(Classname)s''']
-    , ""'smb_name'                    :
-      [""'''Samba name for this %(Classname)s in the samba domain''']
     , ""'stakeholder'                 :
       [ ""'''Person by/for whom this %(Classname)s was raised. Usually
              defaults to the creator of the %(Classname)s, but can be
@@ -2248,6 +2120,11 @@ _helptext          = \
     , ""'time_wp_summary_no.id'       : [help_id]
     , ""'timeout'                     :
       [""'''Timeout when new email is sent''']
+    , ""'timetracking_by'             :
+      [""'''Allow given user to edit/submit time tracking info for this
+            %(Classname)s
+         '''
+      ]
     , ""'timezone'                    :
       [""'''Time zone of this %(Classname)s -- this is a numeric hour offset''']
     , ""'title'                       :
@@ -2306,10 +2183,6 @@ _helptext          = \
       [""'''Category of this %(Classname)s''']
     , ""'uid'                         :
       [""'''Numeric user ID''']
-    , ""'uid_range'                   :
-      [ ""'''Allowed range of user ids'''
-      , range_description
-      ]
     , ""'unit'                        :
       [""'''Unit of measurement''']
     , ""'units'                       :
@@ -2322,11 +2195,6 @@ _helptext          = \
              render variables, e.g. for a Web-Site the %(Property)s
              would be "%%(contact)s" to render the contact as a link to
              the web-site.
-          '''
-      ]
-    , ""'use_dhcp'                    :
-      [ ""'''Flag if this %(Classname)s should be served by the DHCP
-             server.
           '''
       ]
     , ""'use_for_invoice'             :
@@ -2357,11 +2225,6 @@ _helptext          = \
           '''
       ]
     , ""'user_dynamic++durations_allowed' : [durations]
-    , ""'user_password'               :
-      [ ""'''UNIX user password, automatically set by the system when a
-             new password is entered.
-          '''
-      ]
     , ""'user++address'               :
       [""'''Primary email address for this user''']
     , ""'user++status'                : [status]
@@ -2420,6 +2283,11 @@ _helptext          = \
             tax is 0%%. In case the the supplier and  entity are located
             in the same country, the local VAT is applicable.
          '''
+      ]
+    , ""'vie_user'                    :
+      [ ""'''Exclusively used for RT-RK to link to the corresponding
+             @ds1.internal user, leave this field empty.
+          '''
       ]
     , ""'view_roles'                  :
       [ ""'''Roles that may view purchase requests of this %(Classname)s

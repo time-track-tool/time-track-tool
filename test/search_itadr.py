@@ -129,6 +129,9 @@ properties = \
         , ( 'description'
           , ['admin', 'adr_readonly', 'contact', 'it', 'itview', 'pbx', 'sec-incident-nosy', 'sec-incident-responsible', 'type', 'user', 'user_view']
           )
+        , ( 'order'
+          , ['admin', 'adr_readonly', 'contact', 'it', 'itview', 'pbx', 'sec-incident-nosy', 'sec-incident-responsible', 'type', 'user', 'user_view']
+          )
         ]
       )
     , ( 'contact_type'

@@ -127,6 +127,10 @@ class _Test_Case (unittest.TestCase) :
         , 'controlling'
         , 'discount'
         , 'doc_admin'
+        , 'dom-user-edit-facility'
+        , 'dom-user-edit-gtt'
+        , 'dom-user-edit-hr'
+        , 'dom-user-edit-office'
         , 'external'
         , 'facility'
         , 'finance'
@@ -454,10 +458,9 @@ class _Test_Case_Summary (_Test_Case) :
             ( username     = self.username0
             , firstname    = 'Test'
             , lastname     = 'User0'
-            , org_location = self.olo
-            , department   = self.dep
             , roles        = roles
             )
+        user_dynamic.user_create_magic (self.db, self.user0, self.olo, self.dep)
         cts  = self.db.user.get (self.user0, 'contacts')
         cmin = 0xFFFF
         mail = self.db.uc_type.lookup ('Email')
@@ -473,9 +476,8 @@ class _Test_Case_Summary (_Test_Case) :
             ( username     = self.username1
             , firstname    = 'Test'
             , lastname     = 'User1'
-            , org_location = self.olo
-            , department   = self.dep
             )
+        user_dynamic.user_create_magic (self.db, self.user1, self.olo, self.dep)
         cts  = self.db.user.get (self.user1, 'contacts')
         cmin = 0xFFFF
         mail = self.db.uc_type.lookup ('Email')
@@ -496,10 +498,9 @@ class _Test_Case_Summary (_Test_Case) :
             ( username     = self.username2
             , firstname    = 'Test'
             , lastname     = 'User2'
-            , org_location = self.olo
-            , department   = self.dep
             , supervisor   = self.user1
             )
+        user_dynamic.user_create_magic (self.db, self.user2, self.olo, self.dep)
         # create initial dyn_user record for each user
         # others will follow during tests
         ud = self.db.user_dynamic.filter (None, dict (user = self.user1))
@@ -766,9 +767,10 @@ class Test_Case_Support_Timetracker (_Test_Case) :
     schemaname = 'sfull'
     roles = \
         [ 'admin', 'adr_readonly', 'anonymous', 'contact', 'controlling'
-        , 'doc_admin', 'facility', 'hr', 'hr-leave-approval', 'hr-org-location'
-        , 'hr-vacation', 'issue_admin', 'it', 'itview', 'msgedit'
-        , 'msgsync', 'nosy', 'office', 'procurement', 'project'
+        , 'doc_admin', 'facility', 'hr'
+        , 'hr-leave-approval', 'hr-org-location'
+        , 'hr-vacation', 'issue_admin', 'it', 'itview'
+        , 'msgedit', 'msgsync', 'nosy', 'office', 'procurement', 'project'
         , 'project_view', 'sec-incident-nosy'
         , 'sec-incident-responsible', 'staff-report', 'summary_view'
         , 'supportadmin', 'time-report', 'type', 'user'
@@ -780,12 +782,77 @@ class Test_Case_Timetracker (_Test_Case_Summary) :
     schemaname = 'time'
     schemafile = 'time_ldap'
     roles = \
-        [ 'admin', 'anonymous', 'controlling', 'doc_admin', 'facility', 'hr'
+        [ 'admin', 'anonymous', 'controlling', 'doc_admin'
+        , 'dom-user-edit-facility', 'dom-user-edit-gtt', 'dom-user-edit-hr'
+        , 'dom-user-edit-office', 'facility', 'hr'
         , 'hr-leave-approval', 'hr-org-location', 'hr-vacation', 'it', 'nosy'
         , 'office', 'pgp', 'procurement', 'project', 'project_view'
         , 'staff-report', 'summary_view', 'time-report', 'user', 'user_view'
         ]
     transprop_perms = transprop_time
+
+    def test_domain_user_edit (self) :
+        self.log.debug ('test_domain_user_edit')
+        self.setup_db ()
+        self.db.user.set (self.user1, roles = 'User,Nosy,Dom-User-Edit-GTT')
+        ad_domain = 'some.test.domain'
+        roles     = 'User,Nosy'
+        valid     = self.db.user_status.lookup ('valid')
+        obsolete  = self.db.user_status.lookup ('obsolete')
+        self.db.domain_permission.create \
+            ( ad_domain       = ad_domain
+            , users           = [self.user1]
+            , default_roles   = roles
+            , timetracking_by = self.user2
+            , clearance_by    = '1'
+            , status          = valid
+            )
+        self.db.commit ()
+        self.db.close ()
+        self.db = self.tracker.open (self.username1)
+        # Now create a user
+        u = self.db.user.create \
+            ( username = 'testuser'
+            , firstname    = 'Testuser'
+            , lastname     = 'Usertestuser'
+            )
+        u_domain = 'testuser@' + ad_domain
+        self.assertEqual (self.db.user.get (u, 'username'), u_domain)
+        self.assertEqual (self.db.user.get (u, 'roles'), roles)
+        self.assertEqual (self.db.user.get (u, 'status'), valid)
+        self.assertEqual (self.db.user.get (u, 'ad_domain'), ad_domain)
+        # Modify it
+        self.db.user.set (u, lastname = 'Nocheintest')
+        self.assertEqual (self.db.user.get (u, 'lastname'), 'Nocheintest')
+        # Verify we cannot set ad_domain to wrong value
+        self.assertRaises \
+            (Reject, self.db.user.set, u, ad_domain = 'example.com')
+        self.assertEqual (self.db.user.get (u, 'ad_domain'), ad_domain)
+        # Verify we cannot set status to wrong value
+        self.db.user.set (u, status = self.db.user_status.lookup ('system'))
+        self.assertEqual (self.db.user.get (u, 'status'), valid)
+        # Allow setting to obsolete
+        self.db.user.set (u, status = obsolete)
+        self.assertEqual (self.db.user.get (u, 'status'), obsolete)
+        # Allow setting to valid again
+        self.db.user.set (u, status = valid)
+        self.assertEqual (self.db.user.get (u, 'status'), valid)
+        # Try editing a different user
+        self.assertRaises \
+            (Reject, self.db.user.set, self.user2, status = obsolete)
+        # Try editing a dynamic user record not belonging to our domain
+        self.assertRaises \
+            (Reject, self.db.user_dynamic.set, '1', vacation_yearly = 27)
+        # Try creating a dynamic user record
+        id = self.db.user_dynamic.create \
+            ( org_location    = self.olo
+            , department      = self.dep
+            , vacation_yearly = 25
+            , user            = u
+            , valid_from      = date.Date ('.')
+            )
+        self.assertEqual (self.db.user_dynamic.get (id, 'vacation_yearly'), 25)
+    # end def test_domain_user_edit
 
     def setup_user11 (self) :
         self.username11 = 'testuser11'
@@ -793,9 +860,9 @@ class Test_Case_Timetracker (_Test_Case_Summary) :
             ( username     = self.username11
             , firstname    = 'Nummer11'
             , lastname     = 'User11'
-            , org_location = self.olo
-            , department   = self.dep
             )
+        user_dynamic.user_create_magic \
+            (self.db, self.user11, self.olo, self.dep)
         # create initial dyn_user record for user
         ud = self.db.user_dynamic.filter (None, dict (user = self.user11))
         self.assertEqual (len (ud), 1)
@@ -1449,8 +1516,6 @@ class Test_Case_Timetracker (_Test_Case_Summary) :
             ( username     = self.username12
             , firstname    = 'Nummer12'
             , lastname     = 'User12'
-            , org_location = self.olo
-            , department   = self.dep
             )
         p = self.db.overtime_period.create \
             ( name              = 'monthly average required'
@@ -1459,9 +1524,6 @@ class Test_Case_Timetracker (_Test_Case_Summary) :
             , required_overtime = True
             , order             = 3
             )
-        ud = self.db.user_dynamic.filter (None, dict (user = self.user12))
-        self.assertEqual (len (ud), 1)
-        self.db.user_dynamic.retire (ud [0])
         self.db.commit ()
     # end def setup_user12
 
@@ -1508,12 +1570,7 @@ class Test_Case_Timetracker (_Test_Case_Summary) :
             ( username     = self.username13
             , firstname    = 'Nummer13'
             , lastname     = 'User13'
-            , org_location = self.olo
-            , department   = self.dep
             )
-        ud = self.db.user_dynamic.filter (None, dict (user = self.user13))
-        self.assertEqual (len (ud), 1)
-        self.db.user_dynamic.retire (ud [0])
         self.db.commit ()
     # end def setup_user13
 
@@ -1594,21 +1651,8 @@ class Test_Case_Timetracker (_Test_Case_Summary) :
                 ( username     = un
                 , firstname    = 'Nummer%s' % un
                 , lastname     = 'User%s' % un
-                , org_location = self.olo
-                , department   = self.dep
                 )
             self.uid_by_name [un] = uid
-        ud = self.db.user_dynamic.filter \
-            (None, dict (user = self.uid_by_name.values ()))
-        self.assertEqual (len (ud), 5)
-        for id in ud :
-            self.db.user_dynamic.retire (id)
-        vc = self.db.vacation_correction.filter \
-            (None, dict (user = self.uid_by_name.values ()))
-        self.assertEqual (len (vc), 5)
-        for id in vc :
-            self.db.vacation_correction.retire (id)
-        self.db.commit ()
         # Allow report
         rl = self.db.user.get (self.user0, 'roles')
         self.db.user.set (self.user0, roles = ','.join ((rl, 'hr-vacation')))
@@ -1793,12 +1837,7 @@ class Test_Case_Timetracker (_Test_Case_Summary) :
             ( username     = self.username14
             , firstname    = 'Nummer14'
             , lastname     = 'User14'
-            , org_location = self.olo
-            , department   = self.dep
             )
-        ud = self.db.user_dynamic.filter (None, dict (user = self.user14))
-        self.assertEqual (len (ud), 1)
-        self.db.user_dynamic.retire (ud [0])
         self.db.commit ()
     # end def setup_user14
 
@@ -3155,9 +3194,9 @@ class Test_Case_Timetracker (_Test_Case_Summary) :
             ( username     = self.username16
             , firstname    = 'Nummer16'
             , lastname     = 'User16'
-            , org_location = self.olo
-            , department   = self.dep
             )
+        user_dynamic.user_create_magic \
+            (self.db, self.user16, self.olo, self.dep)
         ud = self.db.user_dynamic.filter (None, dict (user = self.user16))
         self.assertEqual (len (ud), 1)
         self.db.user_dynamic.retire (ud [0])
@@ -3172,12 +3211,7 @@ class Test_Case_Timetracker (_Test_Case_Summary) :
             ( username     = self.username17
             , firstname    = 'Nummer17'
             , lastname     = 'User17'
-            , org_location = self.olo
-            , department   = self.dep
             )
-        ud = self.db.user_dynamic.filter (None, dict (user = self.user17))
-        self.assertEqual (len (ud), 1)
-        self.db.user_dynamic.retire (ud [0])
         self.db.commit ()
     # end def setup_user17
 
@@ -3187,12 +3221,7 @@ class Test_Case_Timetracker (_Test_Case_Summary) :
             ( username     = self.username18
             , firstname    = 'Nummer18'
             , lastname     = 'User18'
-            , org_location = self.olo
-            , department   = self.dep
             )
-        ud = self.db.user_dynamic.filter (None, dict (user = self.user18))
-        self.assertEqual (len (ud), 1)
-        self.db.user_dynamic.retire (ud [0])
         self.db.commit ()
     # end def setup_user18
 
@@ -3209,11 +3238,13 @@ class Test_Case_Timetracker (_Test_Case_Summary) :
         id = self.db.user_dynamic.filter (None, dict (user = self.user16)) [0]
         dyn = self.db.user_dynamic.getnode (id)
 
-        # simulate edit of valid from from 2018-10-01 to 2018-10-02 in user dynamic
+        # simulate edit of valid from
+        # from 2018-10-01 to 2018-10-02 in user dynamic
         # should succeed
         self.db.user_dynamic.set (id, valid_from = date.Date ('2018-10-02'))
 
-        # simulate edit of valid from from 2018-10-02 to 2018-10-03 in user dynamic
+        # simulate edit of valid from
+        # from 2018-10-02 to 2018-10-03 in user dynamic
         # should fail, because there is a leave request on 2018-10-02
         try :
             self.db.user_dynamic.set (id, valid_from = date.Date ('2018-10-03'))
@@ -3364,32 +3395,32 @@ class Test_Case_Timetracker (_Test_Case_Summary) :
         user18_time.import_data_18 (self.db, self.user18, self.dep, self.olo)
         self.db.commit ()
         ud = self.db.user_dynamic.create \
-	    ( hours_fri          = 1.0
-	    , hours_sun          = 0.0
-	    , additional_hours   = 5.0
-	    , hours_wed          = 1.0
-	    , vacation_yearly    = 25.0
-	    , all_in             = 0
-	    , valid_from         = date.Date ("2019-10-01.00:00:00")
-	    , durations_allowed  = 0
-	    , hours_tue          = 1.0
-	    , weekend_allowed    = 0
-	    , hours_mon          = 1.0
-	    , hours_thu          = 1.0
-	    , vacation_day       = 1.0
-	    , booking_allowed    = 1
-	    , supp_weekly_hours  = 5.0
-	    , valid_to           = date.Date ("2019-12-17.00:00:00")
-	    , weekly_hours       = 5.0
-	    , travel_full        = 0
-	    , vacation_month     = 1.0
-	    , hours_sat          = 0.0
-	    , department         = self.dep
-	    , org_location       = self.olo
-	    , overtime_period    = '1'
-	    , user               = self.user17
-	    , vac_aliq           = '1'
-	    )
+            ( hours_fri          = 1.0
+            , hours_sun          = 0.0
+            , additional_hours   = 5.0
+            , hours_wed          = 1.0
+            , vacation_yearly    = 25.0
+            , all_in             = 0
+            , valid_from         = date.Date ("2019-10-01.00:00:00")
+            , durations_allowed  = 0
+            , hours_tue          = 1.0
+            , weekend_allowed    = 0
+            , hours_mon          = 1.0
+            , hours_thu          = 1.0
+            , vacation_day       = 1.0
+            , booking_allowed    = 1
+            , supp_weekly_hours  = 5.0
+            , valid_to           = date.Date ("2019-12-17.00:00:00")
+            , weekly_hours       = 5.0
+            , travel_full        = 0
+            , vacation_month     = 1.0
+            , hours_sat          = 0.0
+            , department         = self.dep
+            , org_location       = self.olo
+            , overtime_period    = '1'
+            , user               = self.user17
+            , vac_aliq           = '1'
+            )
         dyn = self.db.user_dynamic.getnode (ud)
         self.assertEqual (dyn.valid_from, date.Date ('2019-10-01'))
         self.assertEqual (dyn.valid_to,   date.Date ('2019-12-17'))
@@ -3398,60 +3429,60 @@ class Test_Case_Timetracker (_Test_Case_Summary) :
         self.assertEqual (prev.valid_to,   date.Date ('2019-10-01'))
 
         self.assertRaises (Reject, self.db.user_dynamic.create
-	    , hours_fri          = 7.5
-	    , hours_sun          = 0.0
-	    , additional_hours   = 38.5
-	    , hours_wed          = 7.75
-	    , vacation_yearly    = 25.0
-	    , all_in             = 0
-	    , valid_from         = date.Date ("2019-10-01.00:00:00")
-	    , durations_allowed  = 0
-	    , hours_tue          = 7.75
-	    , weekend_allowed    = 0
-	    , hours_mon          = 7.75
-	    , hours_thu          = 7.75
-	    , vacation_day       = 1.0
-	    , booking_allowed    = 1
-	    , supp_weekly_hours  = 38.5
-	    , valid_to           = date.Date ("2019-12-02.00:00:00")
-	    , weekly_hours       = 38.5
-	    , travel_full        = 0
-	    , vacation_month     = 1.0
-	    , hours_sat          = 0.0
-	    , department         = self.dep
-	    , org_location       = self.olo
-	    , overtime_period    = '1'
-	    , user               = self.user18
-	    , vac_aliq           = '1'
-	    )
+            , hours_fri          = 7.5
+            , hours_sun          = 0.0
+            , additional_hours   = 38.5
+            , hours_wed          = 7.75
+            , vacation_yearly    = 25.0
+            , all_in             = 0
+            , valid_from         = date.Date ("2019-10-01.00:00:00")
+            , durations_allowed  = 0
+            , hours_tue          = 7.75
+            , weekend_allowed    = 0
+            , hours_mon          = 7.75
+            , hours_thu          = 7.75
+            , vacation_day       = 1.0
+            , booking_allowed    = 1
+            , supp_weekly_hours  = 38.5
+            , valid_to           = date.Date ("2019-12-02.00:00:00")
+            , weekly_hours       = 38.5
+            , travel_full        = 0
+            , vacation_month     = 1.0
+            , hours_sat          = 0.0
+            , department         = self.dep
+            , org_location       = self.olo
+            , overtime_period    = '1'
+            , user               = self.user18
+            , vac_aliq           = '1'
+            )
 
         ud = self.db.user_dynamic.create \
-	    ( hours_fri          = 7.5
-	    , hours_sun          = 0.0
-	    , additional_hours   = 38.5
-	    , hours_wed          = 7.75
-	    , vacation_yearly    = 25.0
-	    , all_in             = 0
-	    , valid_from         = date.Date ("2019-10-01.00:00:00")
-	    , durations_allowed  = 0
-	    , hours_tue          = 7.75
-	    , weekend_allowed    = 0
-	    , hours_mon          = 7.75
-	    , hours_thu          = 7.75
-	    , vacation_day       = 1.0
-	    , booking_allowed    = 1
-	    , supp_weekly_hours  = 38.5
-	    , valid_to           = date.Date ("2019-12-01.00:00:00")
-	    , weekly_hours       = 38.5
-	    , travel_full        = 0
-	    , vacation_month     = 1.0
-	    , hours_sat          = 0.0
-	    , department         = self.dep
-	    , org_location       = self.olo
-	    , overtime_period    = '1'
-	    , user               = self.user18
-	    , vac_aliq           = '1'
-	    )
+            ( hours_fri          = 7.5
+            , hours_sun          = 0.0
+            , additional_hours   = 38.5
+            , hours_wed          = 7.75
+            , vacation_yearly    = 25.0
+            , all_in             = 0
+            , valid_from         = date.Date ("2019-10-01.00:00:00")
+            , durations_allowed  = 0
+            , hours_tue          = 7.75
+            , weekend_allowed    = 0
+            , hours_mon          = 7.75
+            , hours_thu          = 7.75
+            , vacation_day       = 1.0
+            , booking_allowed    = 1
+            , supp_weekly_hours  = 38.5
+            , valid_to           = date.Date ("2019-12-01.00:00:00")
+            , weekly_hours       = 38.5
+            , travel_full        = 0
+            , vacation_month     = 1.0
+            , hours_sat          = 0.0
+            , department         = self.dep
+            , org_location       = self.olo
+            , overtime_period    = '1'
+            , user               = self.user18
+            , vac_aliq           = '1'
+            )
         dyn = self.db.user_dynamic.getnode (ud)
         self.assertEqual (dyn.valid_from, date.Date ('2019-10-01'))
         self.assertEqual (dyn.valid_to,   date.Date ('2019-12-01'))
@@ -3466,7 +3497,10 @@ class Test_Case_Tracker (_Test_Case) :
     schemaname = 'track'
     schemafile = 'trackers'
     roles = \
-        [ 'admin', 'anonymous', 'external', 'issue_admin', 'it', 'ituser'
+        [ 'admin', 'anonymous', 'dom-user-edit-facility'
+        , 'dom-user-edit-gtt', 'dom-user-edit-hr'
+        , 'dom-user-edit-office', 'external'
+        , 'issue_admin', 'it', 'ituser'
         , 'itview', 'kpm-admin', 'msgedit', 'msgsync', 'nosy', 'pgp'
         , 'readonly-user', 'sec-incident-nosy'
         , 'sec-incident-responsible', 'supportadmin', 'user', 'user_view'
@@ -3478,6 +3512,8 @@ class Test_Case_Fulltracker (_Test_Case_Summary) :
     schemaname = 'full'
     roles = \
         [ 'admin', 'anonymous', 'contact', 'controlling', 'doc_admin'
+        , 'dom-user-edit-facility', 'dom-user-edit-gtt'
+        , 'dom-user-edit-hr', 'dom-user-edit-office'
         , 'external', 'facility', 'hr', 'hr-leave-approval', 'hr-org-location'
         , 'hr-vacation', 'issue_admin', 'it', 'itview'
         , 'msgedit', 'msgsync', 'nosy'
@@ -3494,9 +3530,8 @@ class Test_Case_Fulltracker (_Test_Case_Summary) :
             ( username     = self.username3
             , firstname    = 'NochEinTest'
             , lastname     = 'User3'
-            , org_location = self.olo
-            , department   = self.dep
             )
+        user_dynamic.user_create_magic (self.db, self.user3, self.olo, self.dep)
         # create initial dyn_user record for user
         ud = self.db.user_dynamic.filter (None, dict (user = self.user3))
         self.assertEqual (len (ud), 1)
@@ -3527,9 +3562,8 @@ class Test_Case_Fulltracker (_Test_Case_Summary) :
             ( username     = self.username4
             , firstname    = 'Nummer4'
             , lastname     = 'User4'
-            , org_location = self.olo
-            , department   = self.dep
             )
+        user_dynamic.user_create_magic (self.db, self.user4, self.olo, self.dep)
         # create initial dyn_user record for user
         ud = self.db.user_dynamic.filter (None, dict (user = self.user4))
         self.assertEqual (len (ud), 1)
@@ -3565,9 +3599,8 @@ class Test_Case_Fulltracker (_Test_Case_Summary) :
             ( username     = self.username5
             , firstname    = 'Nummer5'
             , lastname     = 'User5'
-            , org_location = self.olo
-            , department   = self.dep
             )
+        user_dynamic.user_create_magic (self.db, self.user5, self.olo, self.dep)
         # public holidays
         vienna = self.db.location.lookup ('Vienna')
         hd = \
@@ -3662,9 +3695,8 @@ class Test_Case_Fulltracker (_Test_Case_Summary) :
             ( username     = self.username6
             , firstname    = 'Nummer6'
             , lastname     = 'User6'
-            , org_location = self.olo
-            , department   = self.dep
             )
+        user_dynamic.user_create_magic (self.db, self.user6, self.olo, self.dep)
         # create initial dyn_user record for user
         ud = self.db.user_dynamic.filter (None, dict (user = self.user6))
         self.assertEqual (len (ud), 1)
@@ -3700,9 +3732,8 @@ class Test_Case_Fulltracker (_Test_Case_Summary) :
             ( username     = self.username7
             , firstname    = 'Nummer7'
             , lastname     = 'User7'
-            , org_location = self.olo
-            , department   = self.dep
             )
+        user_dynamic.user_create_magic (self.db, self.user7, self.olo, self.dep)
         # create initial dyn_user record for user
         ud = self.db.user_dynamic.filter (None, dict (user = self.user7))
         self.assertEqual (len (ud), 1)
@@ -3739,9 +3770,8 @@ class Test_Case_Fulltracker (_Test_Case_Summary) :
             ( username     = self.username8
             , firstname    = 'Nummer8'
             , lastname     = 'User8'
-            , org_location = self.olo
-            , department   = self.dep
             )
+        user_dynamic.user_create_magic (self.db, self.user8, self.olo, self.dep)
         # create initial dyn_user record for user
         ud = self.db.user_dynamic.filter (None, dict (user = self.user8))
         self.assertEqual (len (ud), 1)
@@ -3775,9 +3805,8 @@ class Test_Case_Fulltracker (_Test_Case_Summary) :
             ( username     = self.username9
             , firstname    = 'Nummer9'
             , lastname     = 'User9'
-            , org_location = self.olo
-            , department   = self.dep
             )
+        user_dynamic.user_create_magic (self.db, self.user9, self.olo, self.dep)
         # create initial dyn_user record for user
         ud = self.db.user_dynamic.filter (None, dict (user = self.user9))
         self.assertEqual (len (ud), 1)
@@ -3809,9 +3838,9 @@ class Test_Case_Fulltracker (_Test_Case_Summary) :
             ( username     = self.username10
             , firstname    = 'Nummer10'
             , lastname     = 'User10'
-            , org_location = self.olo
-            , department   = self.dep
             )
+        user_dynamic.user_create_magic \
+            (self.db, self.user10, self.olo, self.dep)
         # create initial dyn_user record for user
         ud = self.db.user_dynamic.filter (None, dict (user = self.user10))
         self.assertEqual (len (ud), 1)
@@ -5140,8 +5169,10 @@ class Test_Case_Lielas (_Test_Case) :
 class Test_Case_PR (_Test_Case) :
     schemaname = 'pr'
     roles = \
-        [ 'admin', 'anonymous', 'board', 'controlling', 'finance', 'hr'
-        , 'hr-approval', 'it-approval', 'measurement-approval', 'nosy'
+        [ 'admin', 'anonymous', 'board', 'controlling'
+        , 'dom-user-edit-facility', 'dom-user-edit-gtt', 'dom-user-edit-hr'
+        , 'dom-user-edit-office', 'finance', 'hr'
+        , 'hr-approval', 'it', 'it-approval', 'measurement-approval', 'nosy'
         , 'pgp', 'pr-view', 'procure-approval'
         , 'procurement', 'procurement-admin', 'project'
         , 'project_view', 'quality', 'subcontract', 'subcontract-org'
@@ -5160,8 +5191,8 @@ def test_suite () :
     suite.addTest (unittest.makeSuite (Test_Case_Kvats))
     suite.addTest (unittest.makeSuite (Test_Case_Lielas))
     suite.addTest (unittest.makeSuite (Test_Case_PR))
-    suite.addTest (unittest.makeSuite (Test_Case_Timetracker))
     suite.addTest (unittest.makeSuite (Test_Case_Tracker))
+    suite.addTest (unittest.makeSuite (Test_Case_Timetracker))
     suite.addTest (unittest.makeSuite (Test_Case_Support_Timetracker))
     suite.addTest (unittest.makeSuite (Test_Case_Fulltracker))
     return suite

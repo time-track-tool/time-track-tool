@@ -157,6 +157,8 @@ def own_user_record (db, userid, itemid) :
 def add_search_permission (db, klass, role, properties = None) :
     try :
         p = db.security.getPermission ('Search', klass)
+        if p.properties != properties :
+            raise ValueError ("Props do not match")
     except ValueError :
         p = db.security.addPermission \
             ( name        = 'Search'

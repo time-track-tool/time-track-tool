@@ -72,8 +72,7 @@
                           '@sort=lookalike_lastname,lookalike_firstname&'
                           '@columns=salutation,title,id,lastname,firstname,'
                           'country,street,postalcode,city&'
-                          '@filter=valid&valid=1&@search_text=&'
-                          '@queryname=&@terse=1'
+                          '@filter=valid&valid=1&@search_text=&@terse=1'
    , ('adr_type', '')   : '@columns=id,code,description,typecat&'
                           '@sort=code&@filter=typecat&@pagesize=50&'
                           '@startwith=0&typecat=%s' % typecat
@@ -171,24 +170,11 @@
                           'address.firstname&'
                           '@sort=-date&@pagesize=20&@startwith=0&'
                           '@quiet=1&@terse=1'
-   , ('machine', '')    : '@columns=inventory_no,description,owner&'
-                          '@sort=inventory_no&@pagesize=20&@startwith=0'
-   , ('machine_name', '')
-                        : '@columns=id,name,network_address,machine_name,'
-                          'dns_record_type,do_reverse_mapping&@sort=name&'
-                          '@pagesize=20&@startwith=0'
    , ('measurement', ' (CSV)')
                         : '@sort=date&@filter=date,sensor.is_app_sensor,'
                           'sensor.do_logging&date=.-1w%3B&'
                           'sensor.is_app_sensor=yes&sensor.do_logging=yes'
    , ('measurement', ''): utils.measurement_query
-   , ('network_address', '')
-                        : '@columns=ip,org_location,use_dhcp,network_interface&'
-                          '@sort=ip&@group=org_location&@pagesize=20&'
-                          '@startwith=0'
-   , ('network_interface', '')
-                        : '@columns=id,mac,card_type,description,machine&'
-                          '@sort=-id&@pagesize=2000&@startwith=0'
    , ('overtime_correction', '')
                        : '@columns=id,user,date,value,comment&'
                          '@sort=-date&@filter=user&@pagesize=20&@startwith=0&'
@@ -204,7 +190,6 @@
                           '@columns=salutation,title,id,lastname,firstname,'
                           'function,address.postalcode,address.city&'
                           '@filter=valid&valid=1&@search_text=&'
-                          '@queryname='
    , ('prodcat', '')    : '@columns=name,level&'
                           ':filter=status&:pagesize=50&:startwith=0&status=1'
    , ('product', '')    : '@columns=sap_material,name,description,'
@@ -419,18 +404,10 @@
        )
      , ('legalclient',         'Edit',   '?@template=item', 1)
      , ('location',            'Edit',   '?@template=item', 1)
-     , ('machine',             'Edit',   '?@template=item', 1)
-     , ( 'machine_name'
-       , 'Edit'
-       , '?@template=item&do_reverse_mapping=True'
-       , 1
-       )
      , ('mailgroup',           'Edit',   '?@template=item', 1)
      , ('measurement',         'Create', '?@template=item', 1)
      , ('measuring_unit',      'Edit',   '?@template=item', 1)
      , ('msg_keyword',         'Edit',   '?@template=item', 1)
-     , ('network_address',     'Edit', '?@template=item&use_dhcp=True', 1)
-     , ('network_interface',   'Edit',   '?@template=item', 1)
      , ('operating_system',    'View',   '?@template=item', 1)
      , ('organisation',        'Edit',   '?@template=item', 1)
      , ('org_location',        'View',   '?@template=item', 1)
@@ -468,8 +445,6 @@
      , ('sensor',              'Create', '?@template=item', 1)
      , ('severity',            'Edit',   '?@template=item', 1)
      , ('shelf_life_code',     'Edit',   '?@template=item', 1)
-     , ('smb_domain',          'View',   '?@template=item', 1)
-     , ('smb_machine',         'Edit',   '?@template=item', 1)
      , ('status',              'Edit',   '?@template=item', 1)
      , ('status_transition',   'Edit',   '?@template=item', 1)
      , ('summary_report',      None,     '',                1)
@@ -557,11 +532,7 @@
      , ('legalclient',         'View', 1,               ('',''))
      , ('letter',              'View', 1,               ('',''))
      , ('logstyle',            'View', 1,               ('',''))
-     , ('machine_name',        'View', 1,               ('',''))
-     , ('machine',             'View', 1,               ('',''))
      , ('measurement',         'View', 1,               ('',''))
-     , ('network_address',     'View', 1,               ('',''))
-     , ('network_interface',   'View', 1,               ('',''))
      , ('overtime_correction'
        , 'View'
        , utils.user_has_role (db._db, db._db.getuid (), 'HR', 'Controlling')
@@ -585,7 +556,6 @@
        , ('', '')
        )
      , ('sensor',              'View', 1,               ('',''))
-     , ('smb_machine',         'View', 1,               ('',''))
      , ('summary_report',     'View', 1, ('Staff Report','staff'))
      , ('support',             'View', 1,               ('',''))
      , ('time_project',        'View', 1,               ('',''))
@@ -601,7 +571,7 @@
        , ('Database Management','del')
        )
      , ('user_contact',      'Search', 1,               ('',''))
-     , ('user_dynamic',        'View', 1,               ('',''))
+     , ('user_dynamic',      'Search', 1,               ('',''))
      , ('user',              'Search', 1,               ('',''))
      , ( 'user'
        , 'View'
@@ -858,7 +828,8 @@
      <!-- username -> link to own profile -->
      <span class="classblock" tal:condition="request/user/username/is_view_ok">
       <a tal:attributes="href string:user${request/user/id}"
-         tal:content="string:${request/user/username}"></a>
+         tal:content="python:
+             str(request.user.username).split ('@', 1)[0]"></a>
      </span>
 
      <!-- logout -->

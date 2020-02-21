@@ -644,6 +644,9 @@ def valid_wps (db, filter = {}, user = None, date = None, srt = None) :
     date = date or Date ('.')
     dt   = (date + common.day).pretty (common.ymd)
     d    = dict (time_start = ';%s' % date.pretty (common.ymd))
+    # Only select WPs that are not exclusively managed by external tool
+    d ['is_extern']         = False
+    d ['project.is_extern'] = False
     d.update (filter)
 
     wp  = []

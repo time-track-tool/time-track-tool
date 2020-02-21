@@ -79,33 +79,9 @@ classes = \
 
 
 prop_perms = \
-    [ ( "user", "Edit", ["HR"]
-      , ( "address"
-        , "alternate_addresses"
-        , "nickname"
-        , "password"
-        , "timezone"
-        , "username"
-        )
-      )
-    , ( "user", "Edit", ["HR"]
-      , ( "clearance_by", "firstname"
-        , "job_description", "lastname", "lunch_duration", "lunch_start"
-        , "pictures", "position", "realname"
-        , "room", "sex", "status", "subst_active", "substitute", "supervisor"
-        , "title", "roles", "tt_lines"
-        )
-      )
-    , ( "user", "Edit", ["Office"]
-      , ( "title", "room", "position"
-        )
-      )
-    , ( "user", "Edit", ["Office"]
-      , ( "title", "room", "position"
-        )
-      )
-    , ( "user", "Edit", ["IT"]
-      , ( "roles", "password"
+    [ ( "user", "Edit", ["IT"]
+      , ( "nickname", "pictures", "password", "roles", "timezone"
+        , "timetracking_by", "username", "ad_domain"
         )
       )
     , ( "user", "View", ["Controlling"], ("roles",))
@@ -116,8 +92,7 @@ prop_perms = \
         , "id", "lunch_duration", "lunch_start", "nickname"
         , "pictures", "position", "queries", "realname", "room", "sex"
         , "status", "subst_active", "substitute", "supervisor", "timezone"
-        , "title", "username", "home_directory", "login_shell"
-        , "samba_home_drive", "samba_home_path", "tt_lines"
+        , "title", "username", "tt_lines", "ad_domain"
         )
       )
     ]

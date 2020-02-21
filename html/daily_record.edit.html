@@ -248,7 +248,8 @@
               "/>
             </td>
             <td class="nb" tal:content="structure python: utils.ExtProperty
-             (utils, r.time_activity, item = r, editable = editable).menu ()"/>
+             (utils, r.time_activity, item = r, editable = editable)
+             .menu (id = utils.valid_activities (db, i.date))"/>
             <td style="text-align:right;"
              tal:condition="python:editable or r.comment"
              tal:content="structure python: utils.ExtProperty
@@ -287,7 +288,8 @@
              </select>
             </td>
             <td class="nb" tal:content="structure python:utils.new_property
-               (context, db, 'time_record', -n, 'time_activity').menu ()"/>
+               (context, db, 'time_record', -n, 'time_activity')
+               .menu (id = utils.valid_activities (db, i.date))"/>
             <td style="text-align:right;"
              tal:content="structure python:utils.comment_edit
                ('time_record', 'time_record-%d@comment'%n

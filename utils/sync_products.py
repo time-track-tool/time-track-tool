@@ -1,4 +1,5 @@
 #!/usr/bin/python
+# -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 from __future__ import print_function
 import os
@@ -47,7 +48,7 @@ def normalize_name (name) :
     GENERAL-PURPOSE-ECUS-HMIS
     >>> print (normalize_name ('GENERAL-PURPOSE-ECUS/HMIS'))
     GENERAL-PURPOSE-ECUS-HMIS
-    >>> print (normalize_name ('HY-eVision\xb2 7.0'))
+    >>> print (normalize_name (u'HY-eVision\xb2 7.0'))
     VISION2
     >>> print (normalize_name ('HY-TTC 200'))
     TTC-200

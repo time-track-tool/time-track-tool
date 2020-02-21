@@ -2,7 +2,9 @@ security = """
 New Web users get the Roles "User,Nosy"
 New Email users get the Role "User"
 Role "admin":
+ User may access the rest interface (Rest Access)
  User may access the web interface (Web Access)
+ User may access the xmlrpc interface (Xmlrpc Access)
  User may create everything (Create)
  User may edit everything (Edit)
  User may manipulate user Roles through the web (Web Roles)
@@ -20,9 +22,33 @@ Role "controlling":
  User is allowed to create query (Create for "query" only)
  User is allowed to edit organisation (Edit for "organisation" only)
  User is allowed to edit query (Edit for "query" only)
+Role "dom-user-edit-facility":
+ Users may view/edit user records for ad_domain for which they are in the domain_permission for the user (Edit for "user": ['room'] only)
+ Users may view/edit user records for ad_domain for which they are in the domain_permission for the user (View for "user": ['room'] only)
+Role "dom-user-edit-gtt":
+  (Search for "user_dynamic" only)
+ User is allowed to create user (Create for "user" only)
+ Users may view user_dynamic records for ad_domain for which they are in the domain_permission for the user (View for "user_dynamic" only)
+ Users may view/edit user records for ad_domain for which they are in the domain_permission for the user (Edit for "user": ['contacts', 'csv_delimiter', 'firstname', 'hide_message_files', 'job_description', 'lastname', 'lunch_duration', 'lunch_start', 'nickname', 'pictures', 'position', 'room', 'scale_role', 'scale_seniority', 'sex', 'status', 'subst_active', 'substitute', 'supervisor', 'timezone', 'title', 'tt_lines', 'username', 'vie_user'] only)
+ Users may view/edit user records for ad_domain for which they are in the domain_permission for the user (View for "user": ['contacts', 'csv_delimiter', 'firstname', 'hide_message_files', 'job_description', 'lastname', 'lunch_duration', 'lunch_start', 'nickname', 'pictures', 'position', 'room', 'scale_role', 'scale_seniority', 'sex', 'status', 'subst_active', 'substitute', 'supervisor', 'timezone', 'title', 'tt_lines', 'username', 'vie_user'] only)
+Role "dom-user-edit-hr":
+  (Search for "user_dynamic" only)
+ Users may view user_dynamic records for ad_domain for which they are in the domain_permission for the user (View for "user_dynamic" only)
+ Users may view/edit user records for ad_domain for which they are in the domain_permission for the user (Edit for "user": ['clearance_by', 'contacts', 'csv_delimiter', 'firstname', 'hide_message_files', 'job_description', 'lastname', 'lunch_duration', 'lunch_start', 'nickname', 'pictures', 'position', 'roles', 'room', 'scale_role', 'scale_seniority', 'sex', 'status', 'subst_active', 'substitute', 'supervisor', 'timezone', 'title', 'tt_lines', 'vie_user'] only)
+ Users may view/edit user records for ad_domain for which they are in the domain_permission for the user (View for "user": ['clearance_by', 'contacts', 'csv_delimiter', 'firstname', 'hide_message_files', 'job_description', 'lastname', 'lunch_duration', 'lunch_start', 'nickname', 'pictures', 'position', 'roles', 'room', 'scale_role', 'scale_seniority', 'sex', 'status', 'subst_active', 'substitute', 'supervisor', 'timezone', 'title', 'tt_lines', 'vie_user'] only)
+Role "dom-user-edit-office":
+ Users may view/edit user records for ad_domain for which they are in the domain_permission for the user (Edit for "user": ['contacts', 'position', 'room', 'title'] only)
+ Users may view/edit user records for ad_domain for which they are in the domain_permission for the user (View for "user": ['contacts', 'position', 'room', 'title'] only)
 Role "finance":
 Role "hr":
 Role "hr-approval":
+Role "it":
+ User is allowed Edit on file if file is linked from an item with Edit permission (Edit for "file" only)
+ User is allowed Edit on msg if msg is linked from an item with Edit permission (Edit for "msg" only)
+ User is allowed View on file if file is linked from an item with View permission (View for "file" only)
+ User is allowed to access domain_permission (View for "domain_permission" only)
+ User is allowed to create domain_permission (Create for "domain_permission" only)
+ User is allowed to edit domain_permission (Edit for "domain_permission" only)
 Role "it-approval":
 Role "measurement-approval":
 Role "nosy":
@@ -36,14 +62,15 @@ Role "procure-approval":
 Role "procurement":
   (View for "sap_cc" only)
   (View for "time_project" only)
- User is allowed Edit on (Edit for "sap_cc": ('purchasing_agents',) only)
- User is allowed Edit on (Edit for "time_project": ('purchasing_agents',) only)
+ User is allowed Edit on (Edit for "sap_cc": ('deputy_gets_mail', 'purchasing_agents') only)
+ User is allowed Edit on (Edit for "time_project": ('deputy_gets_mail', 'purchasing_agents') only)
  User is allowed to access pr_approval (View for "pr_approval" only)
  User is allowed to access pr_approval_config (View for "pr_approval_config" only)
  User is allowed to access pr_approval_order (View for "pr_approval_order" only)
  User is allowed to edit special risks if the PR has appropriate status (Edit for "purchase_request": ('pr_risks',) only)
 Role "procurement-admin":
   (Search for "user" only)
+ User is allowed Edit on (Edit for "purchase_request": ('renew_until',) only)
  User is allowed Edit on (Edit for "user": ('clearance_by', 'password', 'roles', 'subst_until', 'substitute') only)
  User is allowed Edit on (Edit for "user": ('want_no_messages',) only)
  User is allowed to access user (View for "user" only)
@@ -137,7 +164,9 @@ Role "user":
  User is allowed to view special risks if the PR has appropriate status and the user is creator or owner of the PR or has one of the view roles (View for "purchase_request": ('pr_risks',) only)
  User is allowed to view their own files (View for "file" only)
  User is allowed to view their own messages (View for "msg" only)
+ User may access the rest interface (Rest Access)
  User may access the web interface (Web Access)
+ User may access the xmlrpc interface (Xmlrpc Access)
  User may use the email interface (Email Access)
  User may view time category if user is owner or deputy of time category or on nosy list of time category or if user is department manager of time category (View for "time_project" only)
  User with view role is allowed editing if status is 'approved' or 'ordered' (Edit for "purchase_request": ('files', 'messages', 'nosy', 'status') only)

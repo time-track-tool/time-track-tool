@@ -7,6 +7,15 @@ properties = \
         , 'part_of'
         ]
       )
+    , ( 'domain_permission'
+      , [ 'ad_domain'
+        , 'clearance_by'
+        , 'default_roles'
+        , 'status'
+        , 'timetracking_by'
+        , 'users'
+        ]
+      )
     , ( 'file'
       , [ 'content'
         , 'name'
@@ -67,6 +76,7 @@ properties = \
       , [ 'by'
         , 'date'
         , 'deputy'
+        , 'deputy_gets_mail'
         , 'description'
         , 'msg'
         , 'order'
@@ -183,6 +193,7 @@ properties = \
         , 'purchase_type'
         , 'purchasing_agents'
         , 'renegotiations'
+        , 'renew_until'
         , 'requester'
         , 'responsible'
         , 'safety_critical'
@@ -224,6 +235,7 @@ properties = \
       )
     , ( 'sap_cc'
       , [ 'deputy'
+        , 'deputy_gets_mail'
         , 'description'
         , 'name'
         , 'organisation'
@@ -242,6 +254,7 @@ properties = \
     , ( 'time_project'
       , [ 'department'
         , 'deputy'
+        , 'deputy_gets_mail'
         , 'description'
         , 'infosec_req'
         , 'name'
@@ -260,14 +273,13 @@ properties = \
         ]
       )
     , ( 'user'
-      , [ 'address'
+      , [ 'ad_domain'
+        , 'address'
         , 'alternate_addresses'
         , 'clearance_by'
         , 'csv_delimiter'
-        , 'department'
         , 'guid'
         , 'hide_message_files'
-        , 'org_location'
         , 'password'
         , 'queries'
         , 'realname'

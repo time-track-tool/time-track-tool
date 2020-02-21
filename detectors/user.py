@@ -1,6 +1,5 @@
 #! /usr/bin/python
-# -*- coding: iso-8859-1 -*-
-# Copyright (C) 2006-13 Dr. Ralf Schlatterbeck Open Source Consulting.
+# Copyright (C) 2006-19 Dr. Ralf Schlatterbeck Open Source Consulting.
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -27,11 +26,11 @@ from roundup.exceptions             import Reject
 
 import common
 import rup_utils
+import user_dynamic
 try :
     import ldap_sync
 except ImportError :
     ldap_sync = None
-from user_dynamic                   import get_user_dynamic, last_user_dynamic
 
 maxlen = dict \
     ( firstname = 64
@@ -45,15 +44,6 @@ def common_user_checks (db, cl, nodeid, new_values) :
         - email address has no spaces in it
         - roles specified exist
     '''
-    if 'org_location' in cl.properties :
-        olo = new_values.get ('org_location')
-        if not olo and nodeid :
-            olo = cl.get (nodeid, 'org_location')
-        if not olo and nodeid and 'user_dynamic' in cl.properties :
-            dyn = get_user_dynamic (db, nodeid, Date ('.'))
-            if dyn :
-                olo = new_values ['org_location'] = dyn.org_location
-                new_values ['department']         = dyn.department
     if  (   'address' in new_values
         and new_values ['address']
         and ' ' in new_values['address']
@@ -92,32 +82,15 @@ def common_user_checks (db, cl, nodeid, new_values) :
     if 'supervisor' in new_values :
         common.check_loop \
             (_, cl, nodeid, 'supervisor', new_values ['supervisor'])
-    for a in 'uid', 'nickname' :
-        if a in new_values :
-            v = new_values [a]
-            # Allow nickname to be empty
-            if a == 'nickname' and not v :
-                continue
-            common.check_unique (_, cl, nodeid, ** {a : v})
-            if a == 'nickname' :
-                common.check_unique (_, cl, nodeid, username = v)
+    # Allow nickname to be empty
+    # Nick must be unique and must not collide with a username
+    # This is checked in both directions
+    if 'nickname' in new_values and new_values ['nickname'] :
+        v = new_values ['nickname']
+        common.check_unique (_, cl, nodeid, nickname = v)
+        common.check_unique (_, cl, nodeid, username = v)
     if 'nickname' in cl.properties and 'username' in new_values :
         common.check_unique (_, cl, nodeid, nickname = new_values ['username'])
-    if 'uid' in new_values and new_values ['uid'] :
-        if not olo :
-            raise Reject, _("%(uid)s specified for user without %(org_loc)s") \
-                % dict (uid = _('uid'), org_loc = _('org_location'))
-        uid     = new_values ['uid']
-        uidname = _ ('uid')
-        id  = db.org_location.get (olo, 'smb_domain')
-        if id :
-            sd  = db.smb_domain.getnode (id)
-            if not common.uid_or_gid_in_range (uid, sd.uid_range) :
-                raise Reject, _("Invalid %(uidname)s: %(uid)s") % locals ()
-            db.smb_domain.set (sd.id, last_uid = max (uid, sd.last_uid))
-        else :
-            raise Reject, _ \
-                ("%(uidname)s specified but no samba domain configured")
     for k in maxlen :
         if k in new_values :
             if new_values [k] is None :
@@ -128,31 +101,18 @@ def common_user_checks (db, cl, nodeid, new_values) :
                 raise Reject (_ ('%(fn)s too long: > %(l)s' % locals ()))
 # end def common_user_checks
 
-def create_dynuser (db, cl, nodeid, old_values) :
-    u = db.user.getnode (nodeid)
-    s = None
-    if 'user_status' in db.classes :
-	s = db.user_status.lookup ('valid')
-    olo = cl.get (nodeid, 'org_location')
-    dep = cl.get (nodeid, 'department')
-    dyn = last_user_dynamic (db, nodeid)
-    if nodeid > 2 and (not s or u.status == s) and not dyn and olo and dep :
-	db.user_dynamic.create \
-	    ( user            = nodeid
-	    , valid_from      = Date ('.')
-	    , org_location    = olo
-	    , department      = dep
-            , vacation_yearly = 25
-	    )
-# end def create_dynuser
-
-def check_email (db, contacts, email, t_email) :
-    for c in contacts :
-        contact = db.user_contact.getnode (c)
-        if (contact.contact == email and contact.contact_type == t_email) :
-            return True
-    return False
-# end def check_email
+def is_valid_user_status (db, new_values) :
+    """ Get all stati with 'timetracking_allowed' set it property exists
+        Otherwise simply use 'valid' status
+        If no user_status class exists, always return True
+    """
+    if 'user_dynamic' in db.classes and 'user_status' in db.classes :
+        if 'status' not in new_values :
+            return False
+        status = new_values ['status']
+        return user_dynamic.is_tt_user_status (db, status)
+    return True
+# end def is_valid_user_status
 
 def new_user (db, cl, nodeid, new_values) :
     # No checks for special accounts:
@@ -161,10 +121,10 @@ def new_user (db, cl, nodeid, new_values) :
     # status set to a value different from valid: no checks
     if 'user_status' in db.classes :
         valid = db.user_status.lookup ('valid')
-        if new_values.get ('status', valid) != valid :
-            return
         if 'status' not in new_values :
             new_values ['status'] = valid
+        if not is_valid_user_status (db, new_values) :
+            return
         status = new_values ['status']
     common.require_attributes \
         ( _
@@ -177,98 +137,6 @@ def new_user (db, cl, nodeid, new_values) :
         )
     if 'tt_lines' in cl.properties and 'tt_lines' not in new_values :
         new_values ['tt_lines'] = 1
-
-    id = nodeid
-    sd = None
-    if 'nickname' in cl.properties :
-        nickname = new_values.get ('nickname')
-    if 'firstname' in cl.properties :
-        fn    = new_values ['firstname']
-        ln    = new_values ['lastname']
-        lfn   = common.tolower_ascii (fn)
-        lln   = common.tolower_ascii (ln)
-        cnick = getattr (db.config.ext, 'MISC_CREATE_NICKNAME', None)
-        if cnick is None :
-            cnick = 'yes'
-        cnick = cnick.lower () in ('yes', 'true')
-        if  (   'nickname' in cl.properties
-            and 'nickname' not in new_values
-            and status == valid
-            and cnick
-            ) :
-            nick = common.new_nickname (_, cl, nodeid, lfn, lln)
-            if nick :
-                new_values ['nickname'] = nick
-                nickname = new_values ['nickname']
-            else :
-                nickname = None
-    maildomain = None
-    if 'org_location' in db.classes and 'org_location' in new_values :
-        olo   = new_values ['org_location']
-        org        = db.org_location.get   (olo, 'organisation')
-        if 'mail_domain' in db.organisation.properties :
-            maildomain = db.organisation.get   (org, 'mail_domain')
-        if 'smb_domain' in db.classes :
-            id = db.org_location.get (olo, 'smb_domain')
-            if id :
-                sd = db.smb_domain.getnode (id)
-
-    username   = new_values ['username']
-    # defaults:
-    if new_values ['status'] == valid and maildomain :
-        if 'contacts' in cl.properties :
-            if 'contacts' not in new_values :
-                new_values ['contacts'] = []
-            try :
-                email = db.uc_type.lookup ('Email')
-            except KeyError :
-                email = None
-            contacts = []
-            m = '@'.join (('.'.join ((lfn, lln)), maildomain))
-            if not check_email (db, new_values ['contacts'], m, email) :
-                c = db.user_contact.create \
-                    ( contact      = m
-                    , contact_type = email
-                    , order        = 1
-                    )
-                contacts.append (c)
-            for n, i in enumerate ((nickname, username)) :
-                if not i :
-                    continue
-                m = '@'.join ((i, maildomain))
-                if not check_email (db, new_values ['contacts'], m, email) :
-                    c = db.user_contact.create \
-                        ( contact      = '@'.join ((i, maildomain))
-                        , contact_type = email
-                        , order        = 2 + n
-                        )
-                    contacts.append (c)
-            new_values ['contacts'].extend (contacts)
-        elif 'nickname' in cl.properties :
-            if 'address' not in new_values :
-                new_values ['address'] = \
-                    '@'.join (('.'.join ((lfn, lln)), maildomain))
-            if 'alternate_addresses' not in new_values :
-                new_values ['alternate_addresses'] = '\n'.join \
-                    ('@'.join ((i, maildomain))
-                     for i in (nickname, username) if i
-                    )
-    if new_values ['status'] == valid :
-        if 'lunch_duration' in cl.properties :
-            if 'lunch_duration' not in new_values :
-                new_values ['lunch_duration'] = .5
-            if 'lunch_start'    not in new_values :
-                new_values ['lunch_start'] = '12:00'
-        if sd and 'uid' in cl.properties and 'uid' not in new_values :
-            new_values ['uid'] = common.next_uid_or_gid \
-                (sd.last_uid, sd.uid_range)
-            uid = new_values ['uid']
-            if 'group' not in new_values :
-                new_values ['group'] = db.group.create \
-                    ( name         = username
-                    , gid          = uid
-                    , org_location = olo
-                    )
     common_user_checks (db, cl, nodeid, new_values)
 # end def new_user
 
@@ -286,20 +154,6 @@ def audit_user_fields(db, cl, nodeid, new_values):
         ) :
         if n in new_values and new_values [n] is None and cl.get (nodeid, n) :
             raise Reject, "%(attr)s may not be undefined" % {'attr' : _ (n)}
-    if 'status' in cl.properties :
-        status = new_values.get ('status', cl.get (nodeid, 'status'))
-        if status == db.user_status.lookup ('valid') :
-            for n in \
-                ( 'org_location'
-                , 'department'
-                ) :
-                if n in new_values and new_values [n] is None :
-                    dyn = get_user_dynamic (db, nodeid, Date ('.'))
-                    if dyn :
-                        new_values [n] = getattr (dyn, n)
-                    else :
-                        raise Reject, "%(attr)s may not be undefined" \
-                            % {'attr' : _ (n)}
     common_user_checks (db, cl, nodeid, new_values)
 # end def audit_user_fields
 
@@ -319,7 +173,8 @@ def update_userlist_html (db, cl, nodeid, old_values) :
 # end def update_userlist_html
 
 def check_retire (db, cl, nodeid, old_values) :
-    raise Reject, _ ("Not allowed to retire a user")
+    if db.getuid () != '1' :
+        raise Reject, _ ("Not allowed to retire a user")
 # end def check_retire
 
 def obsolete_action (db, cl, nodeid, new_values) :
@@ -331,8 +186,11 @@ def obsolete_action (db, cl, nodeid, new_values) :
 
 def sync_to_ldap (db, cl, nodeid, old_values) :
     user = cl.getnode (nodeid)
-    ld   = ldap_sync.LDAP_Roundup_Sync (db)
+    ld   = ldap_sync.LDAP_Roundup_Sync (db, verbose = 0)
     if user.status not in ld.status_sync :
+        return
+    # Don't sync obsolete users back to ldap
+    if user.status == ld.status_obsolete :
         return
     ld.sync_user_to_ldap (user.username)
 # end def sync_to_ldap
@@ -396,10 +254,120 @@ def deny_system_user (db, cl, nodeid, new_values) :
         return
     system = db.user_status.lookup ('system')
     status = db.user.get (uid, 'status')
-    print "Trying to create user:", new_values
     if status == system :
         raise Reject, _ ("System users may not create users")
 # end def deny_system_user
+
+def _domain_user_role_check (db) :
+    # Get role of user and check permission
+    uid  = db.getuid ()
+    # Allow admin user
+    if uid == '1' :
+        return False
+    roles = ("Dom-User-Edit-GTT", "Dom-User-Edit-HR", "Dom-User-Edit-Office")
+    if not common.user_has_role (db, uid, * roles) :
+        return False
+    return True
+# end def _domain_user_role_check
+
+def domain_user_edit (db, cl, nodeid, new_values) :
+    """ If a user change/create happens and the user doing the
+        modification has the 'Domain-User-Edit' role, we need to perform
+        additional checks.
+    """
+    if not _domain_user_role_check (db) :
+        return
+    uid = db.getuid ()
+    # Find entries in domain_permission
+    dpids = db.domain_permission.filter (None, dict (users = uid))
+    if not dpids :
+        raise Reject (_ ("No permission to edit/create users with any domain"))
+    ad_domain = new_values.get ('ad_domain', None)
+    if not ad_domain and nodeid :
+        ad_domain = cl.get (nodeid, 'ad_domain')
+    if ad_domain or nodeid :
+        for d in dpids :
+            dp = db.domain_permission.getnode (d)
+            if dp.ad_domain == ad_domain :
+                break
+        else :
+            raise Reject \
+                (_ ('No permission for user with AD-Domain: "%s"' % ad_domain))
+    else :
+        if len (dpids) == 1 :
+            dp = db.domain_permission.getnode (dpids [0])
+            ad_domain = dp.ad_domain
+        else :
+            raise Reject (_ ("AD-Domain must be specified"))
+    perm = db.security.hasPermission
+    # Force this to valid value
+    if not nodeid or ad_domain in new_values :
+        new_values ['ad_domain'] = ad_domain
+    if  (   not nodeid or 'roles' in new_values
+        and not perm ('Edit', uid, 'user', 'roles')
+        ) :
+        new_values ['roles'] = dp.default_roles
+    if not nodeid or 'timetracking_by' in new_values :
+        new_values ['timetracking_by'] = dp.timetracking_by
+    if not nodeid and 'clearance_by' not in new_values :
+        new_values ['clearance_by'] = dp.clearance_by
+    if  (   'clearance_by' in new_values
+        and not perm ('Edit', uid, 'user', 'clearance_by')
+        ) :
+        new_values ['clearance_by'] = dp.clearance_by
+    obsolete = db.user_status.lookup ('obsolete')
+    if not nodeid or 'status' in new_values :
+        nstatus = new_values.get ('status', None)
+        if (nstatus and nstatus != obsolete) or not nodeid :
+            new_values ['status'] = dp.status
+# end def domain_user_edit
+
+def domain_user_check (db, cl, nodeid, new_values) :
+    """ This checks for items that are editable if the linked user (in
+        the property 'user') has the correct ad_domain. Currently used
+        for user_dynamic and user_contact classes.
+    """
+    if not _domain_user_role_check (db) :
+        return
+    uid = db.getuid ()
+    # Find entries in domain_permission
+    dpids = db.domain_permission.filter (None, dict (users = uid))
+    if not dpids :
+        raise Reject (_ ("No permission to edit/create users with any domain"))
+    uid = new_values.get ('user', None)
+    if nodeid and not uid :
+        uid = cl.get (nodeid, 'user')
+    if not uid :
+        classname = _ (cl.classname)
+        raise Reject (_ ("No permission to edit/create %(classname)s"))
+    ad_domain =  db.user.get (uid, 'ad_domain')
+    for d in dpids :
+        dp = db.domain_permission.getnode (d)
+        if dp.ad_domain == ad_domain :
+            break
+    else :
+        raise Reject \
+            (_ ('No permission for user with AD-Domain: "%s"' % ad_domain))
+# end def domain_user_check
+
+def fix_domain_username (db, cl, nodeid, new_values) :
+    if 'username' not in new_values and 'ad_domain' not in new_values :
+        return
+    ad_domain = new_values.get ('ad_domain', None)
+    username  = new_values.get ('username', None)
+    if not username :
+        username = cl.get (nodeid, 'username')
+    if not ad_domain and nodeid :
+        ad_domain = cl.get (nodeid, 'ad_domain')
+    if not ad_domain :
+        if username and '@' in username :
+            raise Reject (_ ("No domain allowed for username"))
+        return
+    assert username
+    if '@' in username :
+        username = username.split ('@') [0]
+    new_values ['username'] = '@'.join ((username, ad_domain))
+# end def fix_domain_username
 
 def init (db) :
     global _
@@ -408,8 +376,6 @@ def init (db) :
     db.user.audit ("set",    audit_user_fields)
     db.user.audit ("create", new_user)
     db.user.react ("create", update_userlist_html)
-    if 'user_dynamic' in db.classes :
-        db.user.react ("create", create_dynuser)
     if 'external_company' in db.classes :
         db.user.audit ("create", check_ext_company)
         db.user.audit ("set",    check_ext_company)
@@ -426,3 +392,14 @@ def init (db) :
         db.user_status.audit ("create", check_user_status)
         db.user_status.audit ("set",    check_user_status)
         db.user.audit        ("create", deny_system_user)
+    if 'domain_permission' in db.classes :
+        db.user.audit ("create", domain_user_edit)
+        db.user.audit ("set",    domain_user_edit)
+        db.user.audit ("create", fix_domain_username)
+        db.user.audit ("set",    fix_domain_username)
+    if 'user_dynamic' in db.classes :
+        db.user_dynamic.audit ("create", domain_user_check)
+        db.user_dynamic.audit ("set",    domain_user_check)
+    if 'user_contact' in db.classes :
+        db.user_contact.audit ("create", domain_user_check)
+        db.user_contact.audit ("set",    domain_user_check)

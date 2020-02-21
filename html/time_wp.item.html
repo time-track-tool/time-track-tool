@@ -109,6 +109,11 @@
     </tr>
     <tr>
      <th tal:content="structure python:utils.fieldname
+         (classname, 'is_extern')"/>
+     <td tal:content="structure python:context.is_extern.field ()"/>
+    </tr>
+    <tr>
+     <th tal:content="structure python:utils.fieldname
          (classname, 'planned_effort')"/>
      <td tal:content="structure python:context.planned_effort.field ()"/>
      <th tal:content="structure python:utils.fieldname
@@ -120,8 +125,6 @@
      <th tal:content="structure python:utils.fieldname
          (classname, 'durations_allowed')"/>
      <td tal:content="structure python:context.durations_allowed.field ()"/>
-     <th tal:content="structure python:utils.fieldname (classname, 'travel')"/>
-     <td tal:content="structure python:context.travel.field ()"/>
     </tr>
     <tr>
     </tr>
