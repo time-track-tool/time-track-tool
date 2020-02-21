@@ -101,8 +101,8 @@ for u in all_users:
     user = db.user.getnode (u)
     username = user.username
     roles = set (common.role_list (user.roles))
-    domain_permission_node = db.domain_permission.filter (None, dict (ad_domain = domain))
-    domain_permission = db.domain_permission.getnode (domain_permission_node[0])
+    domain_permission_node = db.domain_permission.filter (None, dict (ad_domain = domain)) [0]
+    domain_permission = db.domain_permission.getnode (domain_permission_node)
     domain_permission_users = domain_permission.users
     logger.debug('Current user: %s', username)
     logger.debug('Current roles: %s', ','.join([str(r) for r in roles]))
@@ -115,31 +115,33 @@ for u in all_users:
             continue
     # the dom-user roles restrict what you may edit, don't do this to it
     if 'it' not in roles :
-        if 'hr' in roles and not 'dom-user-edit-hr' in roles :
-            logger.info("Add role 'dom-user-edit-hr' to user '%s'", username)
-            roles.add ('dom-user-edit-hr')
-        if 'hr' in roles and not username in domain_permission.users :
-            logger.info("Add user '%s' to domain_permisson '%s'", username, domain)
-            domain_permission_users.append (username)
-        if 'office' in roles and not 'dom-user-edit-office' in roles:
-            logger.info("Add role 'dom-user-edit-office' to user '%s'", username)
-            roles.add ('dom-user-edit-office')
-        if 'office' in roles and not username in domain_permission.users :
-            logger.info("Add user '%s' to domain_permisson '%s'", username, domain)
-            domain_permission_users.append (username)
-        if 'facility' in roles and not 'dom-user-edit-facility' in roles:
-            logger.info("Add role 'dom-user-edit-facility' to user '%s'", username)
-            roles.add ('dom-user-edit-facility')
-        if 'facility' in roles and not username in domain_permission.users :
-            logger.info("Add user '%s' to domain_permisson '%s'", username, domain)
-            domain_permission_users.append (username)
+        if 'hr' in roles :
+            if 'dom-user-edit-hr' not in roles :
+                logger.info("Add role 'dom-user-edit-hr' to user '%s'", username)
+                roles.add ('dom-user-edit-hr')
+            if u not in domain_permission.users :
+                logger.info("Add user '%s' to domain_permisson '%s'", username, domain)
+                domain_permission_users.append (u)
+        if 'office' in roles :
+            if 'dom-user-edit-office' not in roles:
+                logger.info("Add role 'dom-user-edit-office' to user '%s'", username)
+                roles.add ('dom-user-edit-office')
+            if u not in domain_permission.users :
+                logger.info("Add user '%s' to domain_permisson '%s'", username, domain)
+                domain_permission_users.append (u)
+        if 'facility' in roles :
+            if 'dom-user-edit-facility' not in roles:
+                logger.info("Add role 'dom-user-edit-facility' to user '%s'", username)
+                roles.add ('dom-user-edit-facility')
+            if u not in domain_permission.users :
+                logger.info("Add user '%s' to domain_permisson '%s'", username, domain)
+                domain_permission_users.append (u)
     if roles != set (common.role_list (user.roles)) :
         logger.info("Save changed roles '%s' for user '%s'", ','.join (sorted (roles)), username)
         db.user.set (u, roles = ','.join (sorted (roles)))
-    domain_permission_users = list(set (domain_permission_users))
     if domain_permission.users != domain_permission_users :
         logger.info("Save changed domain permission '%s' users '%s:'", domain, ','.join (sorted (domain_permission_users)))
-        db.domain_permission.set (domain_permission_node, users = ','.join (sorted (domain_permission_users)))
+        db.domain_permission.set (domain_permission_node, users = domain_permission_users)
 db.commit ()
 
 logger.info("Loop over all active time_projects and set is_extern to False")
