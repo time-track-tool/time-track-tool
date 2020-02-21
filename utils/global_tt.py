@@ -125,8 +125,9 @@ db.commit ()
 logger.info("Loop over all work packages and set is_extern to False")
 for wpid in db.time_wp.getnodeids (retired = False) :
     wp = db.time_wp.getnode (wpid)
+    tp = db.time_project.getnode (wp.project)
     # This must be set, should be for all active wps
-    if not wp.time_wp_summary_no :
+    if not wp.time_wp_summary_no and tp.op_project :
         logger.info("'time_wp%s': Skip because wp has no summary work package" % wpid)
         continue
     if wp.is_extern is None :
