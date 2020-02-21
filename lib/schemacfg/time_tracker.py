@@ -1218,12 +1218,11 @@ def security (db, ** kw) :
         )
     db.security.addPermissionToRole ('User', p)
     tp_properties = \
-        ( 'name', 'description', 'responsible', 'deputy', 'organisation'
+        ( 'name', 'description', 'responsible', 'deputy'
         , 'status', 'work_location', 'op_project', 'id'
         , 'is_public_holiday', 'is_vacation', 'is_special_leave'
         , 'creation', 'creator', 'activity', 'actor'
-        , 'cost_center', 'overtime_reduction'
-        , 'product_family', 'project_type', 'reporting_group'
+        , 'overtime_reduction'
         , 'only_hours', 'is_extern'
         )
     p = db.security.addPermission \
