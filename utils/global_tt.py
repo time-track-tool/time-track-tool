@@ -69,6 +69,22 @@ except KeyError :
         )
     db.commit ()
 
+# Setup domain permissions for TTTech internal users
+# Create domain, all users that need this role will be set in next task
+# that is about specific permissions and roles
+domain = 'ds1.internal'
+try :
+    domain_permission = db.domain_permission.lookup (domain)
+    logger.info("Domain permisson for '%s' already created. Skip task.", domain)
+except KeyError :
+    logger.info("Create domain permission for '%s'", domain)
+    domain_permission = db.domain_permission.create \
+        ( ad_domain     = domain
+        , default_roles = 'user,nosy'
+        , status        =  db.user_status.lookup ('valid-ad')
+        )
+    db.commit()
+
 # Check if appropriate permission exist
 # Loop over *all* valid* users and check roles:
 # - Add 'Dom-User-Edit-GTT' to gtime-sync-users for currently supported
