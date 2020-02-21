@@ -117,6 +117,9 @@ properties = \
         , ( 'description'
           , ['admin', 'adr_readonly', 'contact', 'letter', 'type', 'user', 'user_view']
           )
+        , ( 'order'
+          , ['admin', 'adr_readonly', 'contact', 'letter', 'type', 'user', 'user_view']
+          )
         ]
       )
     , ( 'contact_type'

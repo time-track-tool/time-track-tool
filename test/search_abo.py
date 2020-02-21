@@ -195,6 +195,9 @@ properties = \
         , ( 'description'
           , ['abo', 'abo+invoice', 'admin', 'adr_readonly', 'contact', 'invoice', 'letter', 'product', 'type', 'user', 'user_view']
           )
+        , ( 'order'
+          , ['abo', 'abo+invoice', 'admin', 'adr_readonly', 'contact', 'invoice', 'letter', 'product', 'type', 'user', 'user_view']
+          )
         ]
       )
     , ( 'contact_type'

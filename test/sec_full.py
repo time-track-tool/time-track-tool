@@ -313,8 +313,8 @@ Role "pgp":
 Role "procurement":
   (View for "sap_cc" only)
   (View for "time_project" only)
- User is allowed Edit on (Edit for "sap_cc": ('purchasing_agents',) only)
- User is allowed Edit on (Edit for "time_project": ('purchasing_agents',) only)
+ User is allowed Edit on (Edit for "sap_cc": ('deputy_gets_mail', 'purchasing_agents') only)
+ User is allowed Edit on (Edit for "time_project": ('deputy_gets_mail', 'purchasing_agents') only)
 Role "project":
  User is allowed Edit on (Edit for "time_project": ('cost_center', 'department', 'deputy', 'description', 'name', 'nosy', 'organisation', 'responsible', 'status') only)
  User is allowed Edit on (Edit for "time_project": ('infosec_req', 'is_extern', 'max_hours', 'op_project', 'planned_effort', 'product_family', 'project_type', 'reporting_group', 'work_location') only)
@@ -373,9 +373,9 @@ Role "time-report":
  User is allowed to edit time_report (Edit for "time_report" only)
  User may edit own file (file created by user) (Edit for "file" only)
 Role "user":
-  (Search for "time_project": ('activity', 'actor', 'cost_center', 'creation', 'creator', 'deputy', 'description', 'id', 'is_extern', 'is_public_holiday', 'is_special_leave', 'is_vacation', 'name', 'only_hours', 'op_project', 'organisation', 'overtime_reduction', 'product_family', 'project_type', 'reporting_group', 'responsible', 'status', 'work_location') only)
+  (Search for "time_project": ('activity', 'actor', 'creation', 'creator', 'deputy', 'description', 'id', 'is_extern', 'is_public_holiday', 'is_special_leave', 'is_vacation', 'name', 'only_hours', 'op_project', 'overtime_reduction', 'responsible', 'status', 'work_location') only)
   (Search for "time_wp": ('activity', 'actor', 'bookers', 'cost_center', 'creation', 'creator', 'description', 'durations_allowed', 'epic_key', 'has_expiration_date', 'id', 'is_extern', 'is_public', 'name', 'project', 'responsible', 'time_end', 'time_start', 'time_wp_summary_no', 'travel', 'wp_no') only)
-  (View for "time_project": ('activity', 'actor', 'cost_center', 'creation', 'creator', 'deputy', 'description', 'id', 'is_extern', 'is_public_holiday', 'is_special_leave', 'is_vacation', 'name', 'only_hours', 'op_project', 'organisation', 'overtime_reduction', 'product_family', 'project_type', 'reporting_group', 'responsible', 'status', 'work_location') only)
+  (View for "time_project": ('activity', 'actor', 'creation', 'creator', 'deputy', 'description', 'id', 'is_extern', 'is_public_holiday', 'is_special_leave', 'is_vacation', 'name', 'only_hours', 'op_project', 'overtime_reduction', 'responsible', 'status', 'work_location') only)
  Search (Search for "user_contact" only)
  User is allowed Edit on (Edit for "msg": ('keywords',) only)
  User is allowed Edit on file if file is linked from an item with Edit permission (Edit for "file" only)
@@ -511,8 +511,8 @@ Role "user":
  User is allowed to view their own messages (View for "msg" only)
  User is allowed to view their own overtime information (View for "overtime_correction" only)
  User is allowed to view time record if he is the supervisor or the person to whom approvals are delegated (View for "time_record" only)
- User is allowed to view work package and time category names if he/she is department manager or supervisor or has role HR or HR-Org-Location (View for "time_project": ('name', 'project') only)
- User is allowed to view work package and time category names if he/she is department manager or supervisor or has role HR or HR-Org-Location (View for "time_wp": ('name', 'project') only)
+ User is allowed to view work package and time category names if he/she has role HR or HR-Org-Location (View for "time_project": ('name', 'project') only)
+ User is allowed to view work package and time category names if he/she has role HR or HR-Org-Location (View for "time_wp": ('name', 'project') only)
  User is allowed to view/edit workpackage if he is owner or project responsible/deputy (Edit for "time_wp": ('bookers', 'description', 'epic_key', 'planned_effort', 'time_end', 'time_start', 'time_wp_summary_no') only)
  User may access the rest interface (Rest Access)
  User may access the web interface (Web Access)

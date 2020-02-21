@@ -51,6 +51,7 @@ properties = \
         , 'contact'
         , 'contact_type'
         , 'description'
+        , 'order'
         ]
       )
     , ( 'contact_type'

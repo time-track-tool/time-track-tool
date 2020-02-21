@@ -62,14 +62,15 @@ Role "procure-approval":
 Role "procurement":
   (View for "sap_cc" only)
   (View for "time_project" only)
- User is allowed Edit on (Edit for "sap_cc": ('purchasing_agents',) only)
- User is allowed Edit on (Edit for "time_project": ('purchasing_agents',) only)
+ User is allowed Edit on (Edit for "sap_cc": ('deputy_gets_mail', 'purchasing_agents') only)
+ User is allowed Edit on (Edit for "time_project": ('deputy_gets_mail', 'purchasing_agents') only)
  User is allowed to access pr_approval (View for "pr_approval" only)
  User is allowed to access pr_approval_config (View for "pr_approval_config" only)
  User is allowed to access pr_approval_order (View for "pr_approval_order" only)
  User is allowed to edit special risks if the PR has appropriate status (Edit for "purchase_request": ('pr_risks',) only)
 Role "procurement-admin":
   (Search for "user" only)
+ User is allowed Edit on (Edit for "purchase_request": ('renew_until',) only)
  User is allowed Edit on (Edit for "user": ('clearance_by', 'password', 'roles', 'subst_until', 'substitute') only)
  User is allowed Edit on (Edit for "user": ('want_no_messages',) only)
  User is allowed to access user (View for "user" only)
