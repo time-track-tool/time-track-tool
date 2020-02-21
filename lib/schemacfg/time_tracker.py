@@ -940,14 +940,9 @@ def security (db, ** kw) :
 
     def project_or_wp_name_visible (db, userid, itemid) :
         """User is allowed to view work package and time category names
-           if he/she is department manager or supervisor or has role HR
-           or HR-Org-Location.
+           if he/she has role HR or HR-Org-Location.
         """
         if common.user_has_role (db, userid, 'HR', 'HR-Org-Location') :
-            return True
-        if db.department.filter (None, dict (manager = userid)) :
-            return True
-        if db.user.filter (None, dict (supervisor = userid)) :
             return True
     # end def project_or_wp_name_visible
 
