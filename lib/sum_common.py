@@ -116,12 +116,14 @@ def daily_record_viewable (db, userid, itemid) :
     if user_dynamic.hr_olo_role_for_this_user (db, userid, dr.user, dr.date) :
         return True
     # find departments managed by userid
-    deps = db.department.filter (None, dict (manager = userid))
-    # find all users which are member of above departments:
+    # FIXME: This needs a cache of users in departments
+    # For now no access by department is granted
+    # deps = db.department.filter (None, dict (manager = userid))
+    # # find all users which are member of above departments:
     depusers = {}
-    if deps :
-        depusers = dict.fromkeys \
-            (db.user.filter (None, dict (department = deps)))
+    # if deps :
+    #     depusers = dict.fromkeys \
+    #         (db.user.filter (None, dict (department = deps)))
     return \
         (  dr.user in depusers
         or dr.user in supervised_users (db, userid)
