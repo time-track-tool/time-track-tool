@@ -74,7 +74,7 @@
     , utils.ExtProperty
         ( utils, pdict ['nosy']
         , help_props   = ['firstname', 'lastname']
-        , filter       = dict (status = db._db.user_status.lookup ('valid'))
+        , filter       = dict (status = utils.valid_user_stati (db))
         )
     , utils.ExtProperty
         ( utils, pdict ['creator']

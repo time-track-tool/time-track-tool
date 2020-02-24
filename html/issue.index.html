@@ -41,7 +41,7 @@
     , ('superseder',         {})
     , ('nosy'
       , dict ( help_props = ['firstname', 'lastname']
-             , filter     = dict (status = db._db.user_status.lookup ('valid'))
+             , filter     = dict (status = utils.valid_user_stati (db))
              )
       )
     , ('creator',            dict (help_props = ['firstname', 'lastname']))
