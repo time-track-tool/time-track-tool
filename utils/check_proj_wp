@@ -1,0 +1,114 @@
+#!/usr/bin/python
+
+import sys
+import requests
+from getpass import getpass
+from netrc   import netrc
+try :
+    from urllib.parse import urlparse, urlencode
+except ImportError:
+    from urlparse import urlparse
+    from urllib   import urlencode
+
+class Getter (object) :
+
+    def __init__ (self, url, username) :
+        self.session  = requests.session ()
+        self.password = self._pw = None
+        self.username = username
+        self.headers = dict \
+            ( Origin  = url.rstrip ('/')
+            , Referer = url
+            )
+        self.url = url + 'rest/data/'
+        self.session.auth = (username, self.get_pw ())
+    # end def __init__
+
+    def get (self, s, as_text=False) :
+        r = self.session.get (self.url + s, headers = self.headers)
+        if not (200 <= r.status_code <= 299) :
+            raise RuntimeError \
+                ( 'Invalid get result: %s: %s\n    %s'
+                % (r.status_code, r.reason, r.text)
+                )
+        if as_text :
+            return r.text
+        return r.json ()
+    # end def get
+
+    def get_pw (self) :
+        """ Password given as option takes precedence.
+            Next we try password via .netrc. If that doesn't work we ask.
+        """
+        if self._pw :
+            return self._pw
+        if self.password :
+            self._pw = self.password
+            return self.password
+        a = n = None
+        try :
+            n = netrc ()
+        except IOError :
+            pass
+        if n :
+            t = urlparse (self.url)
+            a = n.authenticators (t.netloc)
+        if a :
+            un, d, pw = a
+            if un != self.username :
+                raise ValueError ("Netrc username doesn't match")
+            self._pw = pw
+            return pw
+        pw = getpass ('Password: ')
+        self._pw = pw
+        return pw
+    # end def get_pw
+
+    def check_wps (self) :
+        d = dict ()
+        d ['@fields'] = \
+            'name,project,project.op_project,time_wp_summary_no,time_end'
+        d ['time_wp_summary_no'] = '-1'
+        d ['project.op_project'] = 1
+	j = self.get ('time_wp?' + urlencode (d))
+        wps = j ['data']['collection']
+        count = 0
+        for wp in wps :
+            # Search only those where the time_wp_summary_no is empty
+            if wp ['time_wp_summary_no'] :
+                continue
+            if wp ['time_end'] and wp ['time_end'] < '2020-02-21' :
+                continue
+            if not wp ['project.op_project'] :
+                continue
+            print ("time_wp%s: %s" % (wp ['id'], wp ['name']))
+            count += 1
+        if not count :
+            print ("No matching WP found")
+        else :
+            print ("Found %s WPs that matched" % count)
+    # end def check_wps
+
+    def check_tcs (self) :
+        d = dict (active = True)
+        j = self.get ('time_project_status?' + urlencode (d))
+        stati = [x ['id'] for x in j ['data']['collection']]
+        d = dict (status = ','.join (stati), cost_center = '-1')
+        d ['@fields'] = 'name,cost_center'
+        j = self.get ('time_project?' + urlencode (d))
+        found = False
+        for tc in j ['data']['collection'] :
+            if not tc ['cost_center'] :
+                print ("time_project%s: %s" % (tc ['id'], tc ['name']))
+                found = True
+        if not found :
+            print ("No matching project/Time Category found")
+    # end def check_tcs
+
+# end class Getter
+
+url = sys.argv [1]
+g = Getter (url, sys.argv [2])
+
+g.check_tcs ()
+g.check_wps ()
