@@ -273,7 +273,7 @@ class Leave_Display (object) :
 
     def __init__ (self, db, request) :
         self.db = db = db._db
-        now        = Date ('.')
+        now        = self.now = Date ('.')
         user       = None
         dt         = None
         department = None
@@ -312,10 +312,17 @@ class Leave_Display (object) :
                 (None, dict (supervisor = supervisor), sort = srt)
             users.extend (u)
         if department :
-            u = db.user.filter \
-                (None, dict (department = department), sort = srt)
+            did = db.user_dynamic.filter (None, dict (department = department))
+            u = []
+            for d in did :
+                dyn = db.user_dynamic.getnode (d)
+                if dyn.valid_from > now :
+                    continue
+                if dyn.valid_to and dyn.valid_to < now :
+                    continue
+                u.append (dyn.user)
             users.extend (u)
-        valid = db.user_status.lookup ('valid')
+        valid = db.user_status.filter (None, dict (name = 'valid'))
         if not self.users :
             users = db.user.filter (None, dict (status = valid), sort = srt)
             self.users = users
@@ -400,8 +407,9 @@ class Leave_Display (object) :
             ret.append ('  <td class="name">%s</td>'
                        % (user.nickname and user.nickname.upper () or ''))
             loc = None
-            if user.org_location :
-                loc = db.org_location.get (user.org_location, 'location')
+            dyn = user_dynamic.get_user_dynamic (db, u, self.now)
+            if dyn and dyn.org_location :
+                loc = db.org_location.get (dyn.org_location, 'location')
                 holidays = dict \
                     ((h.date.pretty (common.ymd), h)
                      for h in self.by_location.get (loc, [])
