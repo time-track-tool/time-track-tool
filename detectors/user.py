@@ -197,8 +197,14 @@ def sync_to_ldap (db, cl, nodeid, old_values) :
 
 def sync_to_ldap_ud (db, cl, nodeid, old_values) :
     ud = cl.getnode (nodeid)
-    if 'sap_cc' in old_values and old_values ['sap_cc'] != ud.sap_cc :
-        sync_to_ldap (db, db.user, ud.user, {})
+    props = ('sap_cc', 'department', 'org_location')
+    for p in props :
+        if p in old_values and old_values [p] != getattr (ud, p, '-1') :
+            break
+    else :
+        # Nothing to do, none of the props changed
+        return
+    sync_to_ldap (db, db.user, ud.user, {})
 # end def sync_to_ldap_ud
 
 def check_pictures (db, cl, nodeid, new_values) :
