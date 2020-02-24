@@ -102,7 +102,7 @@
             ( utils.user_props (db)
             , property='bookers'
             , width='600'
-            , filter='status=%s' % utils.valid_user_stati (db)
+            , filter='status=%s' % utils.valid_user_stati_filter (db)
             , pagesize=5000
             )"/>
      </td>

@@ -30,7 +30,7 @@
        <tal:block tal:replace="structure python:db.user.classhelp
              ( utils.user_props (db)
              , property='author'
-             , filter='status=%s' % utils.valid_user_stati (db)
+             , filter='status=%s' % utils.valid_user_stati_filter (db)
              , inputtype='radio'
              , width='600'
              , pagesize=500

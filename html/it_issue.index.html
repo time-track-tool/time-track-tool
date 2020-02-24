@@ -16,7 +16,7 @@
     , ( 'nosy'
       , dict
         (help_props = ['firstname', 'lastname']
-        , help_filter = 'status=%s' % utils.valid_user_stati (db)
+        , help_filter = 'status=%s' % utils.valid_user_stati_filter (db)
         )
       )
     , ('status',          dict (multiselect = 1))

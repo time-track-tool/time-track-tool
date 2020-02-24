@@ -30,8 +30,13 @@ def valid_user_stati (db) :
     return db.user_status.filter (None, dict (name = 'valid'))
 # end def valid_user_stati
 
+def valid_user_stati_filter (db) :
+    return ','.join (valid_user_stati (db))
+# end def valid_user_stati_filter
+
 def init (instance) :
     reg = instance.registerUtil
     reg ('valid_user_stati',             valid_user_stati)
+    reg ('valid_user_stati_filter',      valid_user_stati_filter)
 # end def init
 

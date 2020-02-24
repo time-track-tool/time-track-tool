@@ -162,7 +162,7 @@
              , property='user'
              , inputtype='radio'
              , width='600'
-             , filter='status=%s' % utils.valid_user_stati (db)
+             , filter='status=%s' % utils.valid_user_stati_filter (db)
              , pagesize=500
              )"/>
       </td>

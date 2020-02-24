@@ -35,7 +35,7 @@
     , ('planned_effort',      {})
     , ('bookers', dict
         ( help_props  = ['firstname', 'lastname']
-        , help_filter = 'status=%s' % utils.valid_user_stati (db)
+        , help_filter = 'status=%s' % utils.valid_user_stati_filter (db)
         )
       )
     , ('cost_center',         dict (multiselect = 1))

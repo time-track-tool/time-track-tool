@@ -15,7 +15,7 @@
     , utils.ExtProperty
         ( utils, pdict ['nosy']
         , help_props  = ['firstname', 'lastname']
-        , help_filter = 'status=%s' % utils.valid_user_stati (db)
+        , help_filter = 'status=%s' % utils.valid_user_stati_filter (db)
         )
     , utils.ExtProperty (utils, pdict ['status'],      multiselect = 1)
     , utils.ExtProperty (utils, pdict ['it_prio'],     multiselect = 1)
