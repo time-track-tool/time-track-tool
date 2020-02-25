@@ -32,6 +32,7 @@
 
 import common
 import user_dynamic
+from roundup.date import Date
 
 def time_project_viewable (db, userid, itemid) :
     """User may view time category if user is owner or deputy of time
@@ -98,6 +99,31 @@ def supervised_users (db, uid = None, use_sv = True) :
     return db.sup_cache [uid]
 # end def supervised_users
 
+def department_users (db, department_id) :
+    """ Find all valid dynamic user records with a given department
+        and return all user ids (not the dynamic user but only the uid)
+    """
+    now = Date ('.')
+    dt  = common.pretty_range (None, now)
+    try :
+        if department_id in db.dep_uid_cache :
+            return db.dep_uid_cache [department_id]
+    except AttributeError :
+        def dep_uid_cache_clear (db) :
+            db.dep_uid_cache = {}
+        db.registerClearCacheCallback (dep_uid_cache_clear, db)
+        db.dep_uid_cache = {}
+    users = {}
+    d = dict (department = department_id, valid_from = dt)
+    for did in db.user_dynamic.filter (None, d) :
+        dyn = db.user_dynamic.getnode (did)
+        if dyn.valid_to and dyn.valid_to < now :
+            continue
+        users [dyn.user] = 1
+    db.dep_uid_cache [department_id] = users
+    return db.dep_uid_cache [department_id]
+# end def department_users
+
 def daily_record_viewable (db, userid, itemid) :
     """User may view a daily_record (and time_records that are attached
        to that daily_record) if the user owns the daily_record or has
@@ -116,14 +142,11 @@ def daily_record_viewable (db, userid, itemid) :
     if user_dynamic.hr_olo_role_for_this_user (db, userid, dr.user, dr.date) :
         return True
     # find departments managed by userid
-    # FIXME: This needs a cache of users in departments
-    # For now no access by department is granted
-    # deps = db.department.filter (None, dict (manager = userid))
-    # # find all users which are member of above departments:
+    deps = db.department.filter (None, dict (manager = userid))
+    # find all users which are member of above departments:
     depusers = {}
-    # if deps :
-    #     depusers = dict.fromkeys \
-    #         (db.user.filter (None, dict (department = deps)))
+    for depid in deps :
+        depusers.update (department_users (db, depid))
     return \
         (  dr.user in depusers
         or dr.user in supervised_users (db, userid)
