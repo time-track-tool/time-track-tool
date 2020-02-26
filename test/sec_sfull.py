@@ -314,9 +314,9 @@ Role "type":
  User is allowed to edit adr_type (Edit for "adr_type" only)
  User is allowed to edit adr_type_cat (Edit for "adr_type_cat" only)
 Role "user":
-  (Search for "time_project": ('activity', 'actor', 'creation', 'creator', 'deputy', 'description', 'id', 'is_extern', 'is_public_holiday', 'is_special_leave', 'is_vacation', 'name', 'only_hours', 'op_project', 'overtime_reduction', 'responsible', 'status', 'work_location') only)
+  (Search for "time_project": ('activity', 'actor', 'creation', 'creator', 'deputy', 'description', 'id', 'is_extern', 'is_public_holiday', 'is_special_leave', 'is_vacation', 'name', 'nosy', 'only_hours', 'op_project', 'overtime_reduction', 'responsible', 'status', 'work_location') only)
   (Search for "time_wp": ('activity', 'actor', 'bookers', 'cost_center', 'creation', 'creator', 'description', 'durations_allowed', 'epic_key', 'has_expiration_date', 'id', 'is_extern', 'is_public', 'name', 'project', 'responsible', 'time_end', 'time_start', 'time_wp_summary_no', 'travel', 'wp_no') only)
-  (View for "time_project": ('activity', 'actor', 'creation', 'creator', 'deputy', 'description', 'id', 'is_extern', 'is_public_holiday', 'is_special_leave', 'is_vacation', 'name', 'only_hours', 'op_project', 'overtime_reduction', 'responsible', 'status', 'work_location') only)
+  (View for "time_project": ('activity', 'actor', 'creation', 'creator', 'deputy', 'description', 'id', 'is_extern', 'is_public_holiday', 'is_special_leave', 'is_vacation', 'name', 'nosy', 'only_hours', 'op_project', 'overtime_reduction', 'responsible', 'status', 'work_location') only)
  User is allowed Edit on (Edit for "msg": ('keywords',) only)
  User is allowed Edit on file if file is linked from an item with Edit permission (Edit for "file" only)
  User is allowed Edit on issue if issue is non-confidential or user is on nosy list (Edit for "issue" only)

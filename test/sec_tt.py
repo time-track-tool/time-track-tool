@@ -225,9 +225,9 @@ Role "time-report":
  User is allowed to edit time_report (Edit for "time_report" only)
  User may edit own file (file created by user) (Edit for "file" only)
 Role "user":
-  (Search for "time_project": ('activity', 'actor', 'creation', 'creator', 'deputy', 'description', 'id', 'is_extern', 'is_public_holiday', 'is_special_leave', 'is_vacation', 'name', 'only_hours', 'op_project', 'overtime_reduction', 'responsible', 'status', 'work_location') only)
+  (Search for "time_project": ('activity', 'actor', 'creation', 'creator', 'deputy', 'description', 'id', 'is_extern', 'is_public_holiday', 'is_special_leave', 'is_vacation', 'name', 'nosy', 'only_hours', 'op_project', 'overtime_reduction', 'responsible', 'status', 'work_location') only)
   (Search for "time_wp": ('activity', 'actor', 'bookers', 'cost_center', 'creation', 'creator', 'description', 'durations_allowed', 'epic_key', 'has_expiration_date', 'id', 'is_extern', 'is_public', 'name', 'project', 'responsible', 'time_end', 'time_start', 'time_wp_summary_no', 'travel', 'wp_no') only)
-  (View for "time_project": ('activity', 'actor', 'creation', 'creator', 'deputy', 'description', 'id', 'is_extern', 'is_public_holiday', 'is_special_leave', 'is_vacation', 'name', 'only_hours', 'op_project', 'overtime_reduction', 'responsible', 'status', 'work_location') only)
+  (View for "time_project": ('activity', 'actor', 'creation', 'creator', 'deputy', 'description', 'id', 'is_extern', 'is_public_holiday', 'is_special_leave', 'is_vacation', 'name', 'nosy', 'only_hours', 'op_project', 'overtime_reduction', 'responsible', 'status', 'work_location') only)
  Search (Search for "user_contact" only)
  User is allowed Edit on file if file is linked from an item with Edit permission (Edit for "file" only)
  User is allowed View on (View for "user": ('activity', 'actor', 'ad_domain', 'address', 'alternate_addresses', 'clearance_by', 'creation', 'creator', 'department', 'firstname', 'job_description', 'lastname', 'id', 'lunch_duration', 'lunch_start', 'nickname', 'pictures', 'position', 'queries', 'realname', 'room', 'sex', 'status', 'subst_active', 'substitute', 'supervisor', 'timezone', 'title', 'username', 'tt_lines') only)

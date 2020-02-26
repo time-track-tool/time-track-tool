@@ -1217,8 +1217,7 @@ def security (db, ** kw) :
         , 'status', 'work_location', 'op_project', 'id'
         , 'is_public_holiday', 'is_vacation', 'is_special_leave'
         , 'creation', 'creator', 'activity', 'actor'
-        , 'overtime_reduction'
-        , 'only_hours', 'is_extern'
+        , 'overtime_reduction', 'only_hours', 'is_extern', 'nosy'
         )
     p = db.security.addPermission \
         ( name        = 'View'
