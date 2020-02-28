@@ -43,9 +43,10 @@ from request_util          import True_Value
 
 locale = None
 
-def latin1 (x) :
+def charsetconv (x) :
+    # FIXME: This should be utf-8 at some point
     return str (x).decode ('utf-8').encode ('latin1', 'replace')
-# end def latin1
+# end def charsetconv
 
 class Repr_Str (autosuper) :
     def __init__ (self, klass) :
@@ -54,7 +55,7 @@ class Repr_Str (autosuper) :
     # end def __init__
 
     def conv (self, x) :
-        return latin1 (x)
+        return charsetconv (x)
     # end def conv
 
     def __call__ (self, itemid, col, x = None) :
@@ -296,11 +297,13 @@ class Export_CSV_Names (Action, autosuper) :
                 ( self.utils, prop
                 , searchname  = col
                 , pretty      = str
+                , text_only   = True
                 )
             def f (itemid, col) :
                 item = templating.HTMLItem \
                     (self.client, self.request.classname, itemid)
-                return latin1 (ep.as_listentry (item = item, as_link = False))
+                s = ep.as_listentry (item = item, as_link = False)
+                return charsetconv (s)
             # end def f
             return f
         # end def repr_extprop
@@ -369,7 +372,13 @@ class Export_CSV_Names (Action, autosuper) :
                 if itemid is None :
                     return True
                 prop = cls.getprops () [pn]
-                if not self.hasPermission \
+                if isinstance (itemid, list) :
+                    for i in itemid :
+                        if not self.hasTransitivePermission \
+                            (perm, i, cls.classname, pn) :
+                            return False
+                    return True
+                elif not self.hasPermission \
                     ( perm
                     , itemid    = itemid
                     , classname = cls.classname
@@ -583,19 +592,19 @@ class Export_CSV_Lielas (Export_CSV_Names, SearchAction) :
             else :
                 dg = None
             if dg and dg.id != last_dg :
-                lines [0].append (latin1 (dg.name))
+                lines [0].append (charsetconv (dg.name))
                 last_dg = dg.id
             else :
                 lines [0].append ('')
             if d.id != last_d :
-                lines [1].append (latin1 (d.name))
-                lines [2].append (latin1 (d.adr))
+                lines [1].append (charsetconv (d.name))
+                lines [2].append (charsetconv (d.adr))
                 last_d = d.id
             else :
                 lines [1].append ('')
                 lines [2].append ('')
-            lines [3].append (latin1 (s.name))
-            lines [4].append (latin1 (s.unit))
+            lines [3].append (charsetconv (s.name))
+            lines [4].append (charsetconv (s.unit))
             sids.append (s.id)
         index_by_sid = {}
         for n, sid in enumerate (sids) :

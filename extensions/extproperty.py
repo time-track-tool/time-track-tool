@@ -199,6 +199,8 @@ class ExtProperty :
             retrieved values from the database
         url_template: A (transitive) property of our item that tells us
             how to format this property as a link
+        text_only: By default (text_only = False) everything is rendered as
+            HTML. If True, do not create html entities etc.
 
         Internal attributes:
         name: name of the property
@@ -244,6 +246,7 @@ class ExtProperty :
         , multi_add     = ()
         , multi_selonly = False
         , editparams    = {}
+        , text_only     = False
         ) :
         if not hasattr (prop._db, '_') :
             prop._db._ = _
@@ -288,6 +291,7 @@ class ExtProperty :
         self.multi_selonly = multi_selonly
         self.translate     = translate
         self.editparams    = editparams
+        self.text_only     = text_only
         if self.sortable is None :
             self.sortable = not isinstance (self.prop, MultilinkHTMLProperty)
         if isinstance (self.prop, MissingValue) :
@@ -384,7 +388,8 @@ class ExtProperty :
             return ""
         if self.displayprop :
             format = self.format or '%s'
-            return format % str (self.item [self.displayprop])
+            p = self.item [self.displayprop].plain (escape = not self.text_only)
+            return format % str (p)
         if isinstance (self.prop, DateHTMLProperty) :
             format = self.format or '%Y-%m-%d'
             if isinstance (self.prop, type ('')) :
@@ -394,7 +399,7 @@ class ExtProperty :
             return self.format % self.item [self.name]
         if isinstance (self.prop, type ('')) :
             return self.prop
-        return str (self.prop.plain (escape=1))
+        return str (self.prop.plain (escape = not self.text_only))
     # end def formatted
 
     def need_lookup (self) :
@@ -403,8 +408,9 @@ class ExtProperty :
     # end def need_lookup
 
     def as_listentry (self, item = None, as_link = True) :
+        usehtml = not self.text_only
         self._set_item (item)
-        if self.editable and self.prop.is_edit_ok () :
+        if usehtml and self.editable and self.prop.is_edit_ok () :
             return self.editfield ()
         if self.name != 'id' and not self.prop.is_view_ok () :
             return self.pretty ('[hidden]')
@@ -413,7 +419,7 @@ class ExtProperty :
             for t in self.url_template.split ('.') :
                 tpl = tpl [t]
             tpl = str (tpl)
-            if tpl :
+            if usehtml and tpl :
                 return '<a href="%s">%s</a>' \
                     % (tpl % self.item, self.formatted ())
             else :
@@ -463,6 +469,7 @@ class ExtProperty :
                 , pretty       = self.pretty
                 , get_cssclass = self.get_cssclass
                 , displayprop  = 'id'
+                , text_only    = self.text_only
                 )
         # TODO: Handle multilinks in the transitive search
         # this will also be needed in callers of deref, e.g.,
@@ -481,6 +488,7 @@ class ExtProperty :
             , pretty       = self.pretty
             , get_cssclass = self.get_cssclass
             , format       = self.format
+            , text_only    = self.text_only
             )
     # end def deref
 
@@ -495,6 +503,8 @@ class ExtProperty :
             or self.name != 'id' and not self.prop.is_view_ok ()
             ) :
             return ""
+        if self.text_only :
+            return self.formatted ()
         hidden = ""
         if self.add_hidden :
             hidden = """<input name="%s" value="%s" type="hidden"/>""" \
