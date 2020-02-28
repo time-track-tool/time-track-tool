@@ -174,6 +174,18 @@ class Repr_Country (Repr_Str) :
 # end class Repr_Country
 
 class Repr_Multilink (Repr_Str) :
+
+    def __call__ (self, itemid, col, x = None) :
+        self.col = col
+        if x is None :
+            itm = self.klass.get (itemid, col)
+            cls = self.klass.db.getclass (self.props [col].classname)
+            lbl = cls.labelprop ()
+            x = [cls.get (i, lbl) for i in itm]
+        x = x or ""
+        return self.conv (x)
+    # end def __call__
+
     def conv (self, x) :
         if x :
             x = ','.join (x)
