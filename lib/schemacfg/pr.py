@@ -89,7 +89,9 @@ def init \
     pr_approval = Class \
         ( db, ''"pr_approval"
         , role                  = String    ()
-        , role_id               = Link      ("pr_approval_order")
+        , role_id               = Link      ( "pr_approval_order"
+                                            , do_journal = 'no'
+                                            )
         , user                  = Link      ("user", do_journal = 'no')
         , deputy                = Link      ("user", do_journal = 'no')
         , deputy_gets_mail      = Boolean   ()
@@ -398,7 +400,7 @@ def security (db, ** kw) :
         , ( "user", "Edit", ["Procurement-Admin"]
           , ("want_no_messages",)
           )
-        , ( "purchase_request", "Edit", ["Procurement-Admin"]
+        , ( "purchase_request", "Edit", ["Procurement", "Procurement-Admin"]
           , ("renew_until",)
           )
         ]
@@ -619,7 +621,7 @@ def security (db, ** kw) :
         , klass = 'purchase_request'
         , check = own_pr
         , description = fixdoc (own_pr.__doc__)
-        , properties = ('messages', 'nosy', 'files')
+        , properties = ('messages', 'nosy', 'files', 'renew_until')
         )
     db.security.addPermissionToRole ('User', p)
 
