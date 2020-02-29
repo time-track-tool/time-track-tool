@@ -46,8 +46,6 @@ class PR_Sync (autosuper) :
          , ('time_project.responsible',       'user')
          , ('time_project.purchasing_agents', 'user')
          , ('time_project.status',            'time_project_status')
-         #, ('user.department',                'department')
-         , ('user.org_location',              'org_location')
          , ('user.status',                    'user_status')
          , ('user.supervisor',                'user')
         ))
@@ -122,7 +120,7 @@ class PR_Sync (autosuper) :
         if user ['username'] in ('admin', 'anonymous') :
             return True
         if not self.uvalid :
-            self.uvalid = self.srv.lookup ('user_status', 'valid')
+            self.uvalid = self.srv.lookup ('user_status', 'valid-ad')
         return user ['status'] == self.uvalid
     # end def check_user
 
@@ -191,11 +189,10 @@ class PR_Sync (autosuper) :
             ( 'user_status'
             , ('name', 'description', 'is_nosy', 'ldap_group', 'roles')
             )
-        # FIXME: Add department when we sync it again
         self.sync_class \
             ( 'user'
             , ( 'username', 'address', 'alternate_addresses'
-              , 'org_location', 'realname', 'status', 'supervisor'
+              , 'realname', 'status', 'supervisor'
               )
             , key       = 'username'
             , roles     = 'User,Nosy'
