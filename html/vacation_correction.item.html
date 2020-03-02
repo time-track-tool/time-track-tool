@@ -25,7 +25,19 @@
      <tr>
       <th tal:content="structure python:utils.fieldname (classname, 'user')"
           class="required"/>
-      <td tal:content="structure python:context.user.field ()" />
+      <td tal:condition="context/id"
+        tal:content="structure python:utils.ExtProperty
+         ( utils, context.user.username
+         , add_hidden = True
+         , item       = context.user
+         , searchname = 'user'
+         ).formatlink ()"/>
+      <td tal:condition="not:context/id">
+        <span tal:replace="structure context/user/field"/>
+        <span tal:replace="structure python:utils.user_classhelp
+              (db, property = 'user')"/>
+      </td>
+
       <th tal:content="structure python:utils.fieldname (classname, 'date')"
           class="required"/>
       <td tal:content="structure python:context.date.field ()" />
