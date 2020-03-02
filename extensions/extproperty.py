@@ -388,7 +388,9 @@ class ExtProperty :
             return ""
         if self.displayprop :
             format = self.format or '%s'
-            p = self.item [self.displayprop].plain (escape = not self.text_only)
+            p = self.item [self.displayprop]
+            if not isinstance (p, type ('')) :
+                p = p.plain (escape = not self.text_only)
             return format % str (p)
         if isinstance (self.prop, DateHTMLProperty) :
             format = self.format or '%Y-%m-%d'
