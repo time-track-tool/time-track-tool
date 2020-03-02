@@ -69,13 +69,6 @@ def check_tp_rq (db, cl, nodeid, new_values) :
             new_values ['organisation'] = org = sc.organisation
     if new_values.get ('requester', None) :
         rq = db.user.getnode (new_values ['requester'])
-        # FIXME: At some point we want to re-enable department
-        #if not dep and rq.department :
-        #    new_values ['department'] = dep = rq.department
-        if not org and rq.org_location :
-            org = db.org_location.get (rq.org_location, 'organisation')
-            if db.organisation.get (org, 'may_purchase') :
-                new_values ['organisation'] = org
         if nodeid :
             apps = db.pr_approval.filter \
                 (None, dict (purchase_request = nodeid))
