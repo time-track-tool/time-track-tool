@@ -51,7 +51,7 @@
       , utils.ExtProperty
         ( utils, pdict ['department']
         , multiselect = True
-        , filter      = dict (id = utils.valid_departments (db))
+        , filter      = utils.valid_item (now)
         )
       )
     ;sprops          python: []

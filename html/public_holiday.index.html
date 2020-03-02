@@ -13,7 +13,11 @@
     , utils.ExtProperty (utils, pdict ['name'])
     , utils.ExtProperty (utils, pdict ['description'])
     , utils.ExtProperty (utils, pdict ['date'])
-    , utils.ExtProperty (utils, pdict ['locations'],   multiselect = 1)
+    , utils.ExtProperty 
+      ( utils, pdict ['locations']
+      , multiselect = 1
+      , filter      = utils.valid_item (now)
+      )
     , utils.ExtProperty (utils, pdict ['is_half'])
     );
    "

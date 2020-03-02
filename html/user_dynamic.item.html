@@ -197,11 +197,12 @@
      <tr>
       <th tal:content="structure python:utils.fieldname
           (classname, 'org_location')"/>
-      <td tal:content="structure python:context.org_location.menu ()"/>
+      <td tal:content="structure python:context.org_location.menu
+          (**utils.valid_item (now))"/>
       <th tal:content="structure python:utils.fieldname
           (classname, 'department')"/>
       <td tal:content="structure python:
-          context.department.menu (id = utils.valid_departments (db))"/>
+          context.department.menu (**utils.valid_item (now))"/>
      </tr>
      <tr>
       <th tal:content="structure python:utils.fieldname (classname, 'sap_cc')"/>

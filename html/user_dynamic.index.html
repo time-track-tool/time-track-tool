@@ -35,11 +35,16 @@
     , ('hours_fri',         {})
     , ('hours_sat',         {})
     , ('hours_sun',         {})
-    , ('org_location',      dict (multiselect = 1))
+    , ( 'org_location'
+      , dict
+        ( multiselect = 1
+        , filter      = utils.valid_item (now)
+        )
+      )
     , ('department'
       , dict
         ( multiselect = 1
-        , filter      = dict (id = utils.valid_departments (db))
+        , filter      = utils.valid_item (now)
         )
       )
     , ('overtime_period', dict (multiselect = 1))

@@ -94,11 +94,12 @@
     <tr>
      <th tal:content="structure python:utils.fieldname
          (classname, 'organisation')"/>
-     <td tal:content="structure python:context.organisation.menu ()"/>
+     <td tal:content="structure python:context.organisation.menu
+         (**utils.valid_item (now))"/>
      <th tal:content="structure python:utils.fieldname
          (classname, 'department')"/>
      <td tal:content="structure python:
-         context.department.menu (id = utils.valid_departments (db))"/>
+         context.department.menu (**utils.valid_item (now))"/>
     </tr>
     <tr tal:condition="python: context.id and context.organisation">
      <th tal:content="structure python:utils.fieldname

@@ -13,6 +13,7 @@
  ; klass           python: db [classname] or default
  ; bclass          python: db._db.getclass (classname) or default
  ; login           request/form/:login/value | nothing
+ ; now             python: utils.now ()
  ; is_user         python: request.user.username!='anonymous'
                            or (   'issue' in db._db.classes
                               and db.issue.is_view_ok ()
@@ -697,7 +698,7 @@
       </span>
       <span class="classblock"
        tal:define="dyn python: utils.get_user_dynamic
-          (db._db, db._db.getuid (), utils.now ())"
+          (db._db, db._db.getuid (), now)"
        tal:condition="python:
             utils.get_vacation_correction (db._db, request.user.id)
             and dyn

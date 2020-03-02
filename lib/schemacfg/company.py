@@ -84,6 +84,8 @@ def init \
             self.update_properties \
                 ( name                  = String    ()
                 , country               = String    ()
+                , valid_from            = Date      ()
+                , valid_to              = Date      ()
                 )
             Ext_Class.__init__ (self, db, classname, ** properties)
             self.setkey ('name')
@@ -99,6 +101,8 @@ def init \
                 ( name                  = String    ()
                 , organisation          = Link      ("organisation")
                 , location              = Link      ("location")
+                , valid_from            = Date      ()
+                , valid_to              = Date      ()
                 )
             Ext_Class.__init__ (self, db, classname, ** properties)
             self.setkey ('name')

@@ -16,7 +16,12 @@
     , ('deputy',             dict (multiselect = 1))
     , ('deputy_get_mail',    {})
     , ('purchasing_agents',  dict (multiselect = 1))
-    , ('organisation',       dict (multiselect = 1))
+    , ( 'organisation'
+      , dict
+        ( multiselect = 1
+        , filter      = utils.valid_item (now)
+        )
+      )
     , ('organisation'
       , dict (searchname = 'organisation.id', searchable  = False)
       )
@@ -26,7 +31,7 @@
     , ( 'department'
       , dict
         ( multiselect = 1
-        , filter      = dict (id = utils.valid_departments (db))
+        , filter      = utils.valid_item (now)
         )
       )
     , ('department'

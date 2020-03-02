@@ -35,7 +35,8 @@
     <tr>
      <th tal:content="structure python:utils.fieldname
          (classname, 'locations')"/>
-     <td tal:content="structure python:context.locations.menu (height=5)"/>
+     <td tal:content="structure python:context.locations.menu
+         (height=5, **utils.valid_item (now))"/>
     </tr>
    </tal:block>
   </tal:block>

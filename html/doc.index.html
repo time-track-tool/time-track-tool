@@ -22,7 +22,7 @@
         ( utils
         , pdict ['department']
         , multiselect = 1
-        , filter      = dict (id = utils.valid_departments (db))
+        , filter      = utils.valid_item (now)
         )
     , utils.ExtProperty (utils, pdict ['status'],       multiselect = 1)
     , utils.ExtProperty (utils, pdict ['responsible'])

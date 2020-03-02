@@ -53,7 +53,7 @@
      <th class="required"
       tal:content="structure python:fieldname ('department')" />
      <td tal:content="structure python:
-         context.department.menu (id = utils.valid_departments (db))" />
+         context.department.menu (**utils.valid_item (now))" />
     </tr>
     <tr
      tal:condition="python: context.id or is_doc_admin">

@@ -507,6 +507,16 @@ def valid_activities (db, date) :
     return all_activities
 # end def valid_activities
 
+def valid_item (now) :
+    """ Return parameters for querying valid items of a class that has
+        valid_from and valid_to properties.
+    """
+    pr = common.pretty_range
+    d  = dict \
+        (valid_from = pr (None, now), valid_to = ','.join ((pr (now), '-')))
+    return d
+# end def valid_item
+
 def init (instance) :
     reg = instance.registerUtil
     reg ("correct_midnight_date_string", correct_midnight_date_string)
@@ -545,3 +555,4 @@ def init (instance) :
     reg ("artefact_link_match",          artefact_link_match)
     reg ("pr_agents",                    pr_agents)
     reg ("valid_activities",             valid_activities)
+    reg ("valid_item",                   valid_item)
