@@ -345,7 +345,8 @@ def domain_user_check (db, cl, nodeid, new_values) :
         uid = cl.get (nodeid, 'user')
     if not uid :
         classname = _ (cl.classname)
-        raise Reject (_ ("No permission to edit/create %(classname)s"))
+        raise Reject \
+            (_ ("No permission to edit/create %(classname)s") % locals ())
     ad_domain =  db.user.get (uid, 'ad_domain')
     for d in dpids :
         dp = db.domain_permission.getnode (d)
