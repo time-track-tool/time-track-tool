@@ -168,6 +168,8 @@ def check_submission (db, cl, nodeid, new_values) :
         common.reject_attributes \
             (_, new_values, 'first_day', 'last_day', 'time_wp', 'comment')
     fix_dates (new_values)
+    common.require_attributes \
+        (_, cl, nodeid, new_values, 'first_day', 'last_day')
     first_day = new_values.get ('first_day', cl.get (nodeid, 'first_day'))
     last_day  = new_values.get ('last_day',  cl.get (nodeid, 'last_day'))
     if freeze.frozen (db, user, first_day) :

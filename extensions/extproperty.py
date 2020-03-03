@@ -40,6 +40,7 @@ from roundup.cgi.templating         import MultilinkHTMLProperty     \
 from roundup.cgi.TranslationService import get_translation
 from xml.sax.saxutils               import quoteattr as quote
 from roundup.hyperdb                import Link, Multilink, Boolean
+from roundup.date                   import Date
 
 _ = None
 
@@ -394,7 +395,9 @@ class ExtProperty :
             return format % str (p)
         if isinstance (self.prop, DateHTMLProperty) :
             format = self.format or '%Y-%m-%d'
-            if not getattr (self.prop, 'pretty', None) :
+            if  (  not getattr (self.prop, 'pretty', None)
+                or not isinstance (self.prop._value, Date)
+                ) :
                 return str (self.prop)
             return self.prop.pretty (format)
         if self.format :

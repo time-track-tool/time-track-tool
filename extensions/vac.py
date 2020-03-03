@@ -239,6 +239,8 @@ class New_Leave_Action (NewItemAction) :
 # end class New_Leave_Action
 
 def leave_days (db, user, first_day, last_day) :
+    if first_day is None or last_day is None :
+        return 0
     if not isinstance (first_day, Date) :
         try :
             first_day = Date (first_day._value)
@@ -559,6 +561,8 @@ def avg_hours (db, user, dy) :
         db = db._db
     except AttributeError :
         pass
+    if not isinstance (dy, Date) :
+        return "00.00"
     return "%2.2f" % vacation.avg_hours_per_week_this_year (db, user, dy)
 # end def avg_hours
 
@@ -572,6 +576,28 @@ def current_user_dynamic (context, user = None) :
         dyn = HTMLItem (client, 'user_dynamic', dyn.id)
     return dyn
 # end def current_user_dynamic
+
+def flexi_alliquot_html (db, user, date_in_year, ctype) :
+    if date_in_year is None :
+        return 0.0
+    if not isinstance (date_in_year, Date) :
+        try :
+            date_in_year = Date (date_in_year)
+        except ValueError :
+            return 0.0
+    return vacation.flexi_alliquot (db, user, date_in_year, ctype)
+# end def flexi_alliquot_html
+
+def flexi_remain_html (db, user, date_in_year, ctype) :
+    if date_in_year is None :
+        return 0.0
+    if not isinstance (date_in_year, Date) :
+        try :
+            date_in_year = Date (date_in_year)
+        except ValueError :
+            return 0.0
+    return vacation.flexi_remain (db, user, date_in_year, ctype)
+# end def flexi_remain_html
 
 def init (instance) :
     reg = instance.registerUtil
@@ -595,8 +621,8 @@ def init (instance) :
     reg ('eoy_vacation',                 eoy_vacation)
     reg ('Leave_Display',                Leave_Display)
     reg ('month_name',                   month_name)
-    reg ('flexi_alliquot',               vacation.flexi_alliquot)
-    reg ('flexi_remain',                 vacation.flexi_remain)
+    reg ('flexi_alliquot',               flexi_alliquot_html)
+    reg ('flexi_remain',                 flexi_remain_html)
     reg ('avg_hours_per_week_this_year', avg_hours)
     reg ('get_current_ctype',            vacation.get_current_ctype)
     reg ('current_user_dynamic',         current_user_dynamic)
