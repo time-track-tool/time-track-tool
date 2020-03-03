@@ -143,6 +143,8 @@ properties = \
         , 'country'
         , 'domain_part'
         , 'name'
+        , 'valid_from'
+        , 'valid_to'
         ]
       )
     , ( 'msg'
@@ -166,6 +168,8 @@ properties = \
         , 'vac_aliq'
         , 'vacation_legal_year'
         , 'vacation_yearly'
+        , 'valid_from'
+        , 'valid_to'
         ]
       )
     , ( 'organisation'

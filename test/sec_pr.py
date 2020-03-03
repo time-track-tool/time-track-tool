@@ -62,6 +62,7 @@ Role "procure-approval":
 Role "procurement":
   (View for "sap_cc" only)
   (View for "time_project" only)
+ User is allowed Edit on (Edit for "purchase_request": ('renew_until',) only)
  User is allowed Edit on (Edit for "sap_cc": ('deputy_gets_mail', 'purchasing_agents') only)
  User is allowed Edit on (Edit for "time_project": ('deputy_gets_mail', 'purchasing_agents') only)
  User is allowed to access pr_approval (View for "pr_approval" only)
@@ -122,7 +123,7 @@ Role "user":
  User is allowed if on the nosy list (View for "purchase_request" only)
  User is allowed if on the nosy list of the PR (View for "pr_approval" only)
  User is allowed if on the nosy list of the PR (View for "pr_offer_item" only)
- User is allowed permission on their own PRs if either creator or requester or supervisor of requester (Edit for "purchase_request": ('files', 'messages', 'nosy') only)
+ User is allowed permission on their own PRs if either creator or requester or supervisor of requester (Edit for "purchase_request": ('files', 'messages', 'nosy', 'renew_until') only)
  User is allowed permission on their own PRs if either creator or requester or supervisor of requester (View for "purchase_request" only)
  User is allowed to access department (View for "department" only)
  User is allowed to access infosec_level (View for "infosec_level" only)

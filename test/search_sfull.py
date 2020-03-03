@@ -928,6 +928,12 @@ properties = \
         , ( 'name'
           , ['admin', 'contact', 'controlling', 'doc_admin', 'facility', 'hr', 'hr-leave-approval', 'hr-vacation', 'issue_admin', 'it', 'itview', 'msgedit', 'msgsync', 'office', 'procurement', 'project', 'project_view', 'sec-incident-nosy', 'sec-incident-responsible', 'summary_view', 'supportadmin', 'time-report', 'type', 'user']
           )
+        , ( 'valid_from'
+          , ['admin', 'contact', 'controlling', 'doc_admin', 'facility', 'hr', 'hr-leave-approval', 'hr-vacation', 'issue_admin', 'it', 'itview', 'msgedit', 'msgsync', 'office', 'procurement', 'project', 'project_view', 'sec-incident-nosy', 'sec-incident-responsible', 'summary_view', 'supportadmin', 'time-report', 'type', 'user']
+          )
+        , ( 'valid_to'
+          , ['admin', 'contact', 'controlling', 'doc_admin', 'facility', 'hr', 'hr-leave-approval', 'hr-vacation', 'issue_admin', 'it', 'itview', 'msgedit', 'msgsync', 'office', 'procurement', 'project', 'project_view', 'sec-incident-nosy', 'sec-incident-responsible', 'summary_view', 'supportadmin', 'time-report', 'type', 'user']
+          )
         ]
       )
     , ( 'mailgroup'
@@ -1013,6 +1019,12 @@ properties = \
           , ['admin', 'contact', 'controlling', 'doc_admin', 'facility', 'hr', 'hr-leave-approval', 'hr-vacation', 'issue_admin', 'it', 'itview', 'msgedit', 'msgsync', 'office', 'procurement', 'project', 'project_view', 'sec-incident-nosy', 'sec-incident-responsible', 'summary_view', 'supportadmin', 'time-report', 'type', 'user']
           )
         , ( 'vacation_yearly'
+          , ['admin', 'contact', 'controlling', 'doc_admin', 'facility', 'hr', 'hr-leave-approval', 'hr-vacation', 'issue_admin', 'it', 'itview', 'msgedit', 'msgsync', 'office', 'procurement', 'project', 'project_view', 'sec-incident-nosy', 'sec-incident-responsible', 'summary_view', 'supportadmin', 'time-report', 'type', 'user']
+          )
+        , ( 'valid_from'
+          , ['admin', 'contact', 'controlling', 'doc_admin', 'facility', 'hr', 'hr-leave-approval', 'hr-vacation', 'issue_admin', 'it', 'itview', 'msgedit', 'msgsync', 'office', 'procurement', 'project', 'project_view', 'sec-incident-nosy', 'sec-incident-responsible', 'summary_view', 'supportadmin', 'time-report', 'type', 'user']
+          )
+        , ( 'valid_to'
           , ['admin', 'contact', 'controlling', 'doc_admin', 'facility', 'hr', 'hr-leave-approval', 'hr-vacation', 'issue_admin', 'it', 'itview', 'msgedit', 'msgsync', 'office', 'procurement', 'project', 'project_view', 'sec-incident-nosy', 'sec-incident-responsible', 'summary_view', 'supportadmin', 'time-report', 'type', 'user']
           )
         ]

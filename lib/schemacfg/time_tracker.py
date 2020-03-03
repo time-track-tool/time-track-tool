@@ -925,7 +925,8 @@ def security (db, ** kw) :
 
     def wp_admitted (db, userid, itemid) :
         """User is allowed to view selected fields in work package if
-           booking is allowed for this user
+           booking is allowed for this user (also applies to
+           timetracking by, supervisor and approval delegated)
         """
         wp = db.time_wp.getnode (itemid)
         if wp.is_public or userid in wp.bookers :
@@ -935,6 +936,12 @@ def security (db, ** kw) :
         for u in users :
             if u in wp.bookers :
                 return True
+        # Get all users for which *this* user is in clearance_by or a
+        # substitute
+        for b in wp.bookers :
+            for u in common.tt_clearance_by (db, b) :
+                if u == userid :
+                    return True
         return False
     # end def wp_admitted
 

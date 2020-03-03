@@ -327,6 +327,12 @@ properties = \
         , ( 'name'
           , ['admin', 'controlling', 'doc_admin', 'dom-user-edit-facility', 'dom-user-edit-gtt', 'dom-user-edit-hr', 'dom-user-edit-office', 'facility', 'hr', 'hr-leave-approval', 'hr-vacation', 'it', 'office', 'pgp', 'procurement', 'project', 'project_view', 'summary_view', 'time-report', 'user', 'user_view']
           )
+        , ( 'valid_from'
+          , ['admin', 'controlling', 'doc_admin', 'dom-user-edit-facility', 'dom-user-edit-gtt', 'dom-user-edit-hr', 'dom-user-edit-office', 'facility', 'hr', 'hr-leave-approval', 'hr-vacation', 'it', 'office', 'pgp', 'procurement', 'project', 'project_view', 'summary_view', 'time-report', 'user', 'user_view']
+          )
+        , ( 'valid_to'
+          , ['admin', 'controlling', 'doc_admin', 'dom-user-edit-facility', 'dom-user-edit-gtt', 'dom-user-edit-hr', 'dom-user-edit-office', 'facility', 'hr', 'hr-leave-approval', 'hr-vacation', 'it', 'office', 'pgp', 'procurement', 'project', 'project_view', 'summary_view', 'time-report', 'user', 'user_view']
+          )
         ]
       )
     , ( 'msg'
@@ -382,6 +388,12 @@ properties = \
           , ['admin', 'controlling', 'doc_admin', 'dom-user-edit-facility', 'dom-user-edit-gtt', 'dom-user-edit-hr', 'dom-user-edit-office', 'facility', 'hr', 'hr-leave-approval', 'hr-vacation', 'it', 'office', 'pgp', 'procurement', 'project', 'project_view', 'summary_view', 'time-report', 'user', 'user_view']
           )
         , ( 'vacation_yearly'
+          , ['admin', 'controlling', 'doc_admin', 'dom-user-edit-facility', 'dom-user-edit-gtt', 'dom-user-edit-hr', 'dom-user-edit-office', 'facility', 'hr', 'hr-leave-approval', 'hr-vacation', 'it', 'office', 'pgp', 'procurement', 'project', 'project_view', 'summary_view', 'time-report', 'user', 'user_view']
+          )
+        , ( 'valid_from'
+          , ['admin', 'controlling', 'doc_admin', 'dom-user-edit-facility', 'dom-user-edit-gtt', 'dom-user-edit-hr', 'dom-user-edit-office', 'facility', 'hr', 'hr-leave-approval', 'hr-vacation', 'it', 'office', 'pgp', 'procurement', 'project', 'project_view', 'summary_view', 'time-report', 'user', 'user_view']
+          )
+        , ( 'valid_to'
           , ['admin', 'controlling', 'doc_admin', 'dom-user-edit-facility', 'dom-user-edit-gtt', 'dom-user-edit-hr', 'dom-user-edit-office', 'facility', 'hr', 'hr-leave-approval', 'hr-vacation', 'it', 'office', 'pgp', 'procurement', 'project', 'project_view', 'summary_view', 'time-report', 'user', 'user_view']
           )
         ]

@@ -506,7 +506,7 @@ Role "user":
  User is allowed to view contact if he's the owner of the contact or the contact is marked visible (View for "user_contact" only)
  User is allowed to view leave submission if he is the supervisor or the person to whom approvals are delegated (Edit for "leave_submission": ('status',) only)
  User is allowed to view leave submission if he is the supervisor or the person to whom approvals are delegated (View for "leave_submission" only)
- User is allowed to view selected fields in work package if booking is allowed for this user (View for "time_wp": ('activity', 'actor', 'cost_center', 'creation', 'creator', 'description', 'durations_allowed', 'epic_key', 'has_expiration_date', 'id', 'is_extern', 'is_public', 'name', 'project', 'responsible', 'time_end', 'time_start', 'time_wp_summary_no', 'travel', 'wp_no') only)
+ User is allowed to view selected fields in work package if booking is allowed for this user (also applies to timetracking by, supervisor and approval delegated) (View for "time_wp": ('activity', 'actor', 'cost_center', 'creation', 'creator', 'description', 'durations_allowed', 'epic_key', 'has_expiration_date', 'id', 'is_extern', 'is_public', 'name', 'project', 'responsible', 'time_end', 'time_start', 'time_wp_summary_no', 'travel', 'wp_no') only)
  User is allowed to view their own files (View for "file" only)
  User is allowed to view their own messages (View for "msg" only)
  User is allowed to view their own overtime information (View for "overtime_correction" only)

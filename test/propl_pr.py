@@ -37,6 +37,8 @@ properties = \
       , [ 'country'
         , 'name'
         , 'sync_id'
+        , 'valid_from'
+        , 'valid_to'
         ]
       )
     , ( 'msg'
@@ -56,6 +58,8 @@ properties = \
         , 'name'
         , 'organisation'
         , 'sync_id'
+        , 'valid_from'
+        , 'valid_to'
         ]
       )
     , ( 'organisation'
