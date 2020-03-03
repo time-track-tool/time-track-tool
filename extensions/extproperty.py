@@ -389,7 +389,7 @@ class ExtProperty :
         if self.displayprop :
             format = self.format or '%s'
             p = self.item [self.displayprop]
-            if not isinstance (p, type ('')) :
+            if getattr (p, 'plain', None) :
                 p = p.plain (escape = not self.text_only)
             return format % str (p)
         if isinstance (self.prop, DateHTMLProperty) :
