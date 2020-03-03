@@ -394,8 +394,8 @@ class ExtProperty :
             return format % str (p)
         if isinstance (self.prop, DateHTMLProperty) :
             format = self.format or '%Y-%m-%d'
-            if isinstance (self.prop, type ('')) :
-                return self.prop
+            if not getattr (self.prop, 'pretty', None) :
+                return str (self.prop)
             return self.prop.pretty (format)
         if self.format :
             return self.format % self.item [self.name]
