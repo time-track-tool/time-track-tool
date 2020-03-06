@@ -498,6 +498,7 @@ properties = \
     , ( 'project_type'
       , [ 'name'
         , 'order'
+        , 'valid'
         ]
       )
     , ( 'public_holiday'

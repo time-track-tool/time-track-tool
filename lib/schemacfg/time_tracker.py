@@ -193,8 +193,9 @@ def init \
     project_type = Class \
         ( db
         , ''"project_type"
-        , name                  = String    ()
-        , order                 = Number    ()
+        , name                  = String     ()
+        , order                 = Number     ()
+        , valid                 = Boolean    ()
         )
     project_type.setkey ("name")
 
@@ -627,7 +628,7 @@ def security (db, ** kw) :
           )
         , ( "project_type"
           , ["User"]
-          , ["HR", "Controlling"]
+          , []
           )
         , ( "reporting_group"
           , ["User"]

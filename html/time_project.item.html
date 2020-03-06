@@ -79,7 +79,8 @@
     <tr tal:condition="python: 'project_type' in db._db.classes">
      <th tal:content="structure python:utils.fieldname
          (classname, 'project_type')"/>
-     <td tal:content="structure python:context.project_type.menu ()"/>
+     <td tal:content="structure python:
+         context.project_type.menu (valid = True)"/>
     </tr>
     <tr tal:condition="python: 'reporting_group' in db._db.classes">
      <th tal:content="structure python:utils.fieldname

@@ -153,20 +153,6 @@ def check_name (db, cl, nodeid, new_values) :
                 raise Reject (_ ("Name contains forbidden character %s") % c)
 # end def check_name
 
-def check_summary_no (db, cl, nodeid, new_values) :
-    """ Ensure that summary_no is filled in for wps that belong to a
-        time_project with 'project=yes'
-    """
-    prid = new_values.get ('project')
-    if not prid :
-        assert nodeid
-        prid = cl.get (nodeid, 'project')
-    prj = db.time_project.getnode (prid)
-    if prj.op_project :
-        common.require_attributes \
-            (_, cl, nodeid, new_values, 'time_wp_summary_no')
-# end def check_summary_no
-
 def check_epic_key (db, cl, nodeid, new_values) :
     """ Ensure that the epic_key matches the format of keys in Jira
     """
