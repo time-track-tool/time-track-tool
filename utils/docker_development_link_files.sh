@@ -1,5 +1,9 @@
 #!/bin/bash
 
+# Call script from mounted time-track-tool-code to replace installed files
+# with links to git versionen files and folders
+# E.g. /opt/timetracker/time-track-tool/utils/docker_development_link_files.sh
+
 folders=("detectors" "html" "lib" "utils")
 
 for f in "${folders[@]}"
@@ -17,5 +21,5 @@ do
 done
 ls -l
 make --directory $TRACKER_HOME/html
-chown -R 51784:50000 $TRACKER_HOME/html/userlist.html
+chown -R www-data:www-data $TRACKER_HOME/html/userlist.html
 chmod 644 $TRACKER_HOME/html/userlist.html
