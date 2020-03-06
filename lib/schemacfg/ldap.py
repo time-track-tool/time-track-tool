@@ -124,7 +124,7 @@ def security (db, ** kw) :
         , 'scale_seniority'
         , 'vie_user'
 	]
-    user_props_hr  = user_props + ['clearance_by', 'roles']
+    user_props_hr  = user_props + ['clearance_by', 'roles', 'reduced_activity_list']
     user_props_gtt = user_props + ['username']
     user_props_office = ['contacts', 'position', 'room', 'title']
     user_props_facility = ['room']
