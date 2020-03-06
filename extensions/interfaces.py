@@ -503,7 +503,7 @@ def valid_activities (db, date) :
         return all_activities
     ts = db.user.get (db.getuid (), 'reduced_activity_list')
     if ts and ts <= date :
-        return list (set (all_activities).intersection (['10', '11', '24']))
+        return list (set (all_activities).intersection (['10', '11']))
     return all_activities
 # end def valid_activities
 
