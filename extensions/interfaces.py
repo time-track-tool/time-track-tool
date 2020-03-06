@@ -513,7 +513,9 @@ def valid_item (now) :
     """
     pr = common.pretty_range
     d  = dict \
-        (valid_from = pr (None, now), valid_to = ','.join ((pr (now), '-')))
+        ( valid_from = ','.join ((pr (None, now), '-'))
+        , valid_to   = ','.join ((pr (now),       '-'))
+        )
     return d
 # end def valid_item
 
