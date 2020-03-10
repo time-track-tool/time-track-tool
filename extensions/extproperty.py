@@ -58,7 +58,7 @@ def sorted_properties (db, context) :
 
 def properties_dict (db, context) :
     props = {}
-    for prop in db [context._classname].properties () :
+    for prop in db [context._classname].properties (cansearch = False) :
         props [prop._name] = prop
     return props
 # end def properties_dict
