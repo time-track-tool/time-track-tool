@@ -70,9 +70,10 @@
          , searchname = 'user'
          ).formatlink ()"/>
       <th/>
+      <!-- class.is_edit_ok check for create permission -->
       <td tal:condition="python:
              (    context.id
-             and utils.user_has_role (db._db, request.user.id, 'HR')
+             and db.user_dynamic.is_edit_ok ()
              and not utils.dynuser_frozen (context)
              ) ">
         <a i18n:translate="" tal:attributes="href python:
