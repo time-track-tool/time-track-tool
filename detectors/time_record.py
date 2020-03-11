@@ -817,7 +817,8 @@ def check_time_record (db, cl, nodeid, new_values) :
 # end def check_time_record
 
 def check_for_retire_and_duration (db, cl, nodeid, old_values) :
-    if cl.get (nodeid, 'duration') is None :
+    dur = cl.get (nodeid, 'duration')
+    if dur is None or dur == 0 :
         cl.retire (nodeid)
     elif (common.changed_values (old_values, cl, nodeid)
          not in (['tr_duration'], [])
@@ -841,9 +842,11 @@ def check_retire (db, cl, nodeid, new_values) :
     dr = db.daily_record.getnode (tr.daily_record)
     if frozen (db, dr.user, dr.date) :
         raise Reject (_ ("Can't retire frozen time record"))
+    tt_by = db.user.get (dr.user, 'timetracking_by')
     allowed = True
     if dr.status == st_open :
         if  (   uid != dr.user
+            and uid != tt_by
             and not common.user_has_role (db, uid, 'controlling', 'admin')
             ) :
             # Must have a leave submission in status accepted, then we
