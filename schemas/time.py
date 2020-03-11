@@ -102,7 +102,7 @@ prop_perms = \
     , ( "user", "View", ["Controlling"], ("roles",))
     , ( "user", "View", ["User"]
       , ( "activity", "actor", "address", "alternate_addresses"
-        , "clearance_by", "creation", "creator", "department"
+        , "clearance_by", "creation", "creator"
         , "firstname", "job_description", "lastname"
         , "id", "lunch_duration", "lunch_start", "nickname"
         , "pictures", "position", "queries", "realname", "room", "sex"

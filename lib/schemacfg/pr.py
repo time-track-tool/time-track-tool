@@ -403,6 +403,12 @@ def security (db, ** kw) :
         , ( "purchase_request", "Edit", ["Procurement", "Procurement-Admin"]
           , ("renew_until",)
           )
+        , ( "time_project", "Edit", ["Procurement"]
+          , ("deputy_gets_mail",)
+          )
+        , ( "sap_cc", "Edit", ["Procurement"]
+          , ("deputy_gets_mail",)
+          )
         ]
 
     schemadef.register_roles             (db, roles)

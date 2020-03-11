@@ -1124,6 +1124,17 @@ def security (db, ** kw) :
             )
         db.security.addPermissionToRole ('User', p)
 
+    # Allow retire and restore for own (or timetracking_by) timerecs
+    for perm in 'Retire', 'Restore' :
+        p = db.security.addPermission \
+            ( name        = perm
+            , klass       = 'time_record'
+            , check       = own_time_record
+            , description = fixdoc (own_time_record.__doc__)
+            )
+        db.security.addPermissionToRole ('User', p)
+
+
     p = db.security.addPermission \
         ( name        = 'View'
         , klass       = 'leave_submission'
@@ -1241,15 +1252,22 @@ def security (db, ** kw) :
         )
     db.security.addPermissionToRole ('User', p)
 
-    for klass in 'time_project', 'time_wp' :
-        p = db.security.addPermission \
-            ( name        = 'View'
-            , klass       = klass
-            , check       = project_or_wp_name_visible
-            , description = fixdoc (project_or_wp_name_visible.__doc__)
-            , properties  = ('name', 'project')
-            )
-        db.security.addPermissionToRole ('User', p)
+    p = db.security.addPermission \
+        ( name        = 'View'
+        , klass       = 'time_wp'
+        , check       = project_or_wp_name_visible
+        , description = fixdoc (project_or_wp_name_visible.__doc__)
+        , properties  = ('name', 'project')
+        )
+    db.security.addPermissionToRole ('User', p)
+    p = db.security.addPermission \
+        ( name        = 'View'
+        , klass       = 'time_project'
+        , check       = project_or_wp_name_visible
+        , description = fixdoc (project_or_wp_name_visible.__doc__)
+        , properties  = ('name',)
+        )
+    db.security.addPermissionToRole ('User', p)
     p = db.security.addPermission \
         ( name        = 'Edit'
         , klass       = 'overtime_period'

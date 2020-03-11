@@ -50,7 +50,7 @@ def security (db, ** kw) :
     prop_perms = \
         [ ( "user", "View", ["User"]
           , ( "activity", "actor", "address", "alternate_addresses"
-            , "clearance_by", "creation", "creator", "department"
+            , "clearance_by", "creation", "creator"
             , "firstname", "id", "job_description", "lastname"
             , "lunch_duration", "lunch_start", "nickname"
             , "pictures", "position", "queries", "realname", "room", "sex"
