@@ -1,5 +1,4 @@
 #!/usr/bin/python
-# -*- coding: iso-8859-1 -*-
 
 try :
     from ldap_sync import LdapLoginAction, LDAP_Roundup_Sync
