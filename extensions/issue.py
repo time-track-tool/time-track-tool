@@ -1,4 +1,3 @@
-# -*- coding: iso-8859-1 -*-
 # Copyright (C) 2007 Philipp Gortan <gortan@tttech.com>
 # Copyright (C) 2010-15 Dr. Ralf Schlatterbeck Open Source Consulting
 # Web: http://www.runtux.com Email: office@runtux.com

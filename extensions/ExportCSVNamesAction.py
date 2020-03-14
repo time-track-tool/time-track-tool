@@ -1,5 +1,4 @@
 #! /usr/bin/python
-# -*- coding: iso-8859-1 -*-
 # Copyright (C) 2004-2010 Dr. Ralf Schlatterbeck Open Source Consulting.
 # 
 # Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -532,14 +531,14 @@ class Export_CSV_Legacy_Format (Export_CSV_Names) :
             ( 'Anrede'
             , 'Titel'
             , 'Name'
-            , 'Straße'
+            , 'Strasse'
             , 'PLZ'
             , 'Ort'
             , 'Geburtsdatum'
             , 'Telefon'
             , 'Bemerkungen'
             , 'Eintragedatum'
-            , 'Letzte Änderung'
+            , 'Letzte Aenderung'
             , 'E-mail'
             , 'EU-Aus-Pet.'
             , 'DD-Vb'

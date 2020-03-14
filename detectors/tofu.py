@@ -1,5 +1,4 @@
 #! /usr/bin/python
-# -*- coding: iso-8859-1 -*-
 # Copyright (C) 2006 Dr. Ralf Schlatterbeck Open Source Consulting.
 # Reichergasse 131, A-3411 Weidling.
 # Web: http://www.runtux.com Email: office@runtux.com
@@ -59,7 +58,7 @@ Tofu_msg = \
    auf eine Mail zu reagieren, sondern entweder den "Reply" Button
    verwenden, oder den "Quoted Reply" Button. Bei letzterem aber auch
    aus der Original-Mail nur die interessanten Zeilen aufheben, den Rest
-   bitte löschen.
+   bitte loeschen.
 """
 
 Autoreply_msg = \

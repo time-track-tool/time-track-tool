@@ -1,5 +1,4 @@
 #! /usr/bin/python
-# -*- coding: iso-8859-1 -*-
 # Copyright (c) 2007-13 Ralf Schlatterbeck (rsc@runtux.com)
 # 
 # Permission is hereby granted, free of charge, to any person obtaining a copy

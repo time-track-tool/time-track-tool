@@ -1,4 +1,3 @@
-# -*- coding: iso-8859-1 -*-
 #
 # Copyright (c) 2001 Bizar Software Pty Ltd (http://www.bizarsoftware.com.au/)
 # Copyright (c) 2004-10 Dr. Ralf Schlatterbeck Open Source Consulting.

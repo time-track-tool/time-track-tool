@@ -1,5 +1,4 @@
 #!/usr/bin/python
-# -*- coding: iso-8859-1 -*-
 
 try :
     from imap_sync import ImapLoginAction, check_imap_config
