@@ -3366,14 +3366,8 @@ msgstr "Want no messages"
 msgid "timing_info"
 msgstr ""
 
-msgid "timetracking_by"
-msgstr "Timetracking By"
-
 msgid "vie_user"
 msgstr "TTTech internal user"
-
-msgid "aux_username"
-msgstr "Auxiliary username"
 
 msgid "nickname"
 msgstr "Nickname"
@@ -4245,15 +4239,6 @@ msgstr "ADIF Mode"
 msgid "adif_submode"
 msgstr "ADIF Submode"
 
-msgid "infosec_level"
-msgstr "InfoSec Security Level"
-
-msgid "date_approved"
-msgstr "Approved on"
-
-msgid "date_ordered"
-msgstr "Ordered on"
-
 msgid "deputy_gets_mail"
 msgstr "Deputy gets mail"
 
@@ -4262,9 +4247,6 @@ msgstr "Renew until"
 
 msgid "timetracking_by"
 msgstr "Timetracking By"
-
-msgid "aux_username"
-msgstr "Auxiliary username"
 
 msgid "ad_domain"
 msgstr "AD Domain"
