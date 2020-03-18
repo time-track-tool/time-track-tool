@@ -1,5 +1,5 @@
 #! /usr/bin/python
-# Copyright (C) 2006-19 Dr. Ralf Schlatterbeck Open Source Consulting.
+# Copyright (C) 2006-20 Dr. Ralf Schlatterbeck Open Source Consulting.
 # Reichergasse 131, A-3411 Weidling.
 # Web: http://www.runtux.com Email: office@runtux.com
 # All rights reserved
@@ -817,7 +817,7 @@ def check_time_record (db, cl, nodeid, new_values) :
 
 def check_for_retire_and_duration (db, cl, nodeid, old_values) :
     dur = cl.get (nodeid, 'duration')
-    if dur is None or dur == 0 :
+    if dur is None :
         cl.retire (nodeid)
     elif (common.changed_values (old_values, cl, nodeid)
          not in (['tr_duration'], [])
