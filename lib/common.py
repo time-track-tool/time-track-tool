@@ -1296,10 +1296,15 @@ def copy_url (context, attributes = None) :
             if context [a] :
                 val = ','.join (p.id for p in context [a])
         elif isinstance (context [a], LinkHTMLProperty) :
-            if  ( context [a].id and str (context [a].id).isdigit ()
-                and not context [a].is_retired ()
-                ) :
-                val = context [a].id
+            if  (context [a].id and str (context [a].id).isdigit ()) :
+                try :
+                    retired = context [a].is_retired ()
+                except TypeError :
+                    retired = True
+                if retired :
+                    val = stresc (context [a])
+                else :
+                    val = context [a].id
         else :
             val = stresc (context [a])
         url.append ('%s=%s' % (a, urlquote (val)))
