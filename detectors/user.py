@@ -335,18 +335,16 @@ def domain_user_check (db, cl, nodeid, new_values) :
     """
     if not _domain_user_role_check (db) :
         return
-    uid = db.getuid ()
     # Find entries in domain_permission
-    dpids = db.domain_permission.filter (None, dict (users = uid))
+    dpids = db.domain_permission.filter (None, dict (users = db.getuid ()))
     if not dpids :
         raise Reject (_ ("No permission to edit/create users with any domain"))
     uid = new_values.get ('user', None)
     if nodeid and not uid :
         uid = cl.get (nodeid, 'user')
+    # Allow creation of empty user
     if not uid :
-        classname = _ (cl.classname)
-        raise Reject \
-            (_ ("No permission to edit/create %(classname)s") % locals ())
+        return
     ad_domain =  db.user.get (uid, 'ad_domain')
     for d in dpids :
         dp = db.domain_permission.getnode (d)

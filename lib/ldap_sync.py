@@ -766,6 +766,7 @@ class LDAP_Roundup_Sync (object) :
                             ( contact_type = tid
                             , contact      = ldit
                             , order        = order
+                            , user         = user.id
                             )
                         new_contacts.append (id)
                         changed = True
