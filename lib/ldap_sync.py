@@ -740,8 +740,10 @@ class LDAP_Roundup_Sync (object) :
             (((ctypes [n.contact_type], n.contact), n)
              for n in oct.itervalues ()
             )
+        found = {}
         new_contacts = []
-        for type, lds in self.attr_map ['user_contact'].iteritems () :
+        for type in self.attr_map ['user_contact'] :
+            lds = self.attr_map ['user_contact'][type]
             tid = self.db.uc_type.lookup (type)
             order = 1
             for ld in lds :
@@ -755,6 +757,10 @@ class LDAP_Roundup_Sync (object) :
                             self.db.user_contact.set (n.id, order = order)
                             changed = True
                         del oldmap [key]
+                        found [key] = 1
+                    elif key in found :
+                        print >> sys.stderr, "Duplicate: %s" % ':'.join (key)
+                        continue
                     elif self.update_roundup :
                         id = self.db.user_contact.create \
                             ( contact_type = tid
@@ -847,7 +853,8 @@ class LDAP_Roundup_Sync (object) :
                     changed = True
             else :
                 d = {}
-                for k, (lk, x, method, em) in self.attr_map ['user'].iteritems () :
+                for k in self.attr_map ['user'] :
+                    lk, x, method, em = self.attr_map ['user'][k]
                     if method :
                         v = method (luser, lk)
                         if v or em :
