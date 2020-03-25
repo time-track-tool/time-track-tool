@@ -8,24 +8,12 @@ import sys
 import xmlrpclib
 from   datetime          import datetime
 from   argparse          import ArgumentParser
-from   rsclib.autosuper  import autosuper
 from   rsclib.pycompat   import text_type
 from   roundup           import instance
 from   roundup.date      import Date
-try :
-    from ssl import SSLContext, PROTOCOL_SSLv23
-except ImportError :
-    SSLContext = None
+from   requester         import Requester, urlencode
 
-def date_from_xml (s) :
-    assert s.startswith ('<Date ')
-    assert s.endswith   ('>')
-    s = s [6:-1]
-    s = s.replace (' ', '.')
-    return Date (s)
-# end def date_from_xml
-
-class PR_Sync (autosuper) :
+class PR_Sync (Requester) :
     """ Sync Time-Tracker data from remote time tracker vie XMLRPC.
     """
 
@@ -51,19 +39,12 @@ class PR_Sync (autosuper) :
         ))
 
     def __init__ (self, args) :
-        proxy_args     = dict (allow_none = True)
-        if SSLContext and args.disable_cert_check :
-            proxy_args ['context'] = SSLContext (PROTOCOL_SSLv23)
-        self.srv       = xmlrpclib.ServerProxy (args.url, ** proxy_args)
-        self.schema    = schema = self.srv.schema ()
-        for cl in schema.keys () :
-            schema [cl] = dict (schema [cl])
+        self.__super.__init__ (args)
         tracker        = instance.open (args.database_directory)
         self.db        = tracker.open (args.user)
         sys.path.insert (1, os.path.join (args.database_directory, 'lib'))
         global common
         common         = __import__ ('common')
-        self.args      = args
         self.update    = args.update
         self.classname = None
         self.idmap     = {}
@@ -71,22 +52,24 @@ class PR_Sync (autosuper) :
         self.now       = Date ('.')
         self.uvalid    = None
         self.obsolete  = None
-        self.tc_active = self.srv.filter \
-            ('time_project_status', None, dict (active = True))
-        self.tc_active = dict.fromkeys (self.tc_active)
+        r = self.get ('time_project_status?active=True')
+        self.tc_active = dict.fromkeys \
+            (x ['id'] for x in r ['data']['collection'])
     # end def __init__
 
     # Check methods that check if a class item is valid
     def check_organisation (self, item) :
         d = item ['valid_to']
         if d :
-            d = date_from_xml (d)
+            if isinstance (d, text_type) :
+                d = str (d)
+            d = Date (d)
         return not d or d > self.now
     # end def check_organisation
     check_department = check_organisation
 
     def check_time_project (self, item) :
-        if item ['status'] not in self.tc_active :
+        if item ['status']['id'] not in self.tc_active :
             return False
         return bool \
             (   not item ['approval_hr']
@@ -104,29 +87,36 @@ class PR_Sync (autosuper) :
         """ Add org_id-id as description
             Add default purchasing_agents if missing.
         """
-        item ['description'] = '-'.join ((item ['organisation'] or '', id))
+        orgid = ''
+        if item ['organisation'] :
+            orgid = item ['organisation']['id']
+        item ['description'] = '-'.join ((orgid, id))
         if self.args.purchasing_agent and not item ['purchasing_agents'] :
-            item ['purchasing_agents'] = [self.args.purchasing_agent]
+            item ['purchasing_agents'] = \
+                [dict (id = self.args.purchasing_agent)]
     # end def fix_time_project
 
     def fix_sap_cc (self, item, id) :
         """ Add default purchasing_agent if missing.
         """
         if self.args.purchasing_agent and not item ['purchasing_agents'] :
-            item ['purchasing_agents'] = [self.args.purchasing_agent]
+            item ['purchasing_agents'] = \
+                [dict (id = self.args.purchasing_agent)]
     # end def fix_sap_cc
 
     def check_user (self, user) :
         if user ['username'] in ('admin', 'anonymous') :
             return True
         if not self.uvalid :
-            self.uvalid = self.srv.lookup ('user_status', 'valid-ad')
-        return user ['status'] == self.uvalid
+            r = self.get ('user_status?name=valid-ad')
+            assert len (r ['data']['collection']) == 1
+            self.uvalid = r ['data']['collection'][0]['id']
+        return user ['status']['id'] == self.uvalid
     # end def check_user
 
     def search_time_project (self, item, id) :
-        """ Try to find time_project by description which contains the
-            *original*  id.
+        """ Try to find local time_project by description which contains
+            the *original* id.
         """
         d = item ['description']
         if not d :
@@ -149,20 +139,22 @@ class PR_Sync (autosuper) :
         return self.property_classes.get ('%s.%s' % (cn, prop), None)
     # end def getpropclass
 
-    def is_multilink (self, classname, propname) :
-        mstr = '<roundup.hyperdb.Multilink'
-        return self.schema [classname][propname].startswith (mstr)
-    # end def is_multilink
-
     def map_id (self, prop, value) :
-        if value is None :
+        if value is None or isinstance (value, type ([])) and not value :
             return None
         idm = self.idmap [self.getpropclass (prop)]
-        if self.is_multilink (self.classname, prop) :
-            v = [idm [x] for x in value if x in idm]
+        if isinstance (value, type ([])) :
+            v = []
+            for x in value :
+                if isinstance (x, dict) :
+                    x = x ['id']
+                if x in idm :
+                    v.append (idm [x])
             if v :
                 return v
             return None
+        if isinstance (value, dict) :
+            return idm [value ['id']]
         return idm [value]
     # end def map_id
 
@@ -237,7 +229,7 @@ class PR_Sync (autosuper) :
         , update     = True
         , **default
         ) :
-        self.verbose ('Syncing: %s (upd=%s)' % (classname, update), level = 2)
+        self.verbose ('Syncing: %s (upd=%s)' % (classname, update))
         assert key in propnames
         for r in required :
             assert r in propnames
@@ -259,14 +251,16 @@ class PR_Sync (autosuper) :
         if pending and update :
             self.pendmap [classname] = {}
         found = {}
-        for id in self.srv.filter (classname, None, {}) :
+        d    = {}
+        d ['@fields'] = ','.join (propnames + additional)
+        coll = self.get (classname + '?' + urlencode (d)) ['data']['collection']
+        for item in coll :
+            id  = item ['id']
             lid = None
-            item = self.srv.display (classname + id, * (propnames + additional))
             if id in dont_sync :
                 lid = cls.lookup (self.fix_prop (item [key]))
                 found [lid] = True
                 continue
-            item = self.srv.display (classname + id, * (propnames + additional))
             valid = True
             check = getattr (self, 'check_' + classname, None)
             if check :
@@ -283,7 +277,8 @@ class PR_Sync (autosuper) :
                     lid = lids [0]
                     self.verbose \
                         ( "Found via sync_id: %s%s->%s%s"
-                        % (classname, id, classname, lid), level = 3
+                        % (classname, id, classname, lid)
+                        , level = 3
                         )
             if lid is None :
                 try :
@@ -303,13 +298,16 @@ class PR_Sync (autosuper) :
                     if 'sync_id' in cls.properties :
                         params ['sync_id'] = id
                     for k in mapped :
+                        itemid = item [k]
+                        if isinstance (itemid, dict) :
+                            itemid = itemid ['id']
                         try :
-                            v = self.map_id (k, item [k])
+                            v = self.map_id (k, itemid)
                         except KeyError :
                             if k in item :
                                 print \
                                     ( "WARN: Not in map: %s%s %s:%s"
-                                    % (classname, id, k, item [k])
+                                    % (classname, id, k, itemid)
                                     )
                             else :
                                 print \
@@ -329,7 +327,8 @@ class PR_Sync (autosuper) :
                                 )
                             break
                     else :
-                        self.verbose ("Create: %s %s" % (classname, params))
+                        self.verbose \
+                            ("Create: %s %s" % (classname, params), level = 2)
                         if self.update and update :
                             lid = cls.create (** params)
                             found [lid] = True
@@ -356,12 +355,15 @@ class PR_Sync (autosuper) :
                         if ritem != litem [p] :
                             d [p] = ritem
                     for p in mapped :
+                        itemid = item [p]
+                        if isinstance (itemid, dict) :
+                            itemid = itemid ['id']
                         try :
-                            v = self.map_id (p, item [p])
+                            v = self.map_id (p, itemid)
                         except KeyError :
                             print \
                                 ( "WARN: Not in map: %s%s %s:%s"
-                                % (classname, id, p, item [p])
+                                % (classname, id, p, itemid)
                                 )
                             v = None
                         if v is None :
@@ -372,23 +374,30 @@ class PR_Sync (autosuper) :
                         self.verbose \
                             ( "Set: %s%s->%s%s %s"
                             % (classname, id, classname, lid, d)
+                            , level = 2
                             )
                         if self.update and update :
                             cls.set (lid, ** d)
                 self.idmap [classname][id] = lid
                 if pending and update :
-                    self.pendmap [classname][lid] = dict \
-                        ((k, item [k]) for k in pending if item [k] is not None)
+                    self.pendmap [classname][lid] = {}
+                    for k in pending :
+                        if item [k] is not None :
+                            it = item [k]
+                            if isinstance (it, dict) :
+                                it = it ['id']
+                            self.pendmap [classname][lid][k] = it
             elif lid :
                 if classname != 'user' :
-                    self.verbose ("Retire: %s%s" % (classname, lid))
+                    self.verbose ("Retire: %s%s" % (classname, lid), level = 2)
                     if self.update and update :
                         cls.retire (lid)
                 else :
                     if not self.obsolete :
                         self.obsolete = self.db.user_status.lookup ('obsolete')
                     if item ['status'] != self.obsolete :
-                        self.verbose ("Marking obsolete: user%s" % lid)
+                        self.verbose \
+                            ("Marking obsolete: user%s" % lid, level = 2)
                         if self.update and update :
                             cls.set (lid, status = self.obsolete)
         for lid in cls.getnodeids (retired = False) :
@@ -397,11 +406,11 @@ class PR_Sync (autosuper) :
                 continue
             if lid not in found :
                 if classname == 'user' :
-                    self.verbose ("MARKING obsolete: user%s" % lid)
+                    self.verbose ("MARKING obsolete: user%s" % lid, level = 2)
                     if self.update and update :
                         cls.set (lid, status = self.obsolete)
                 else :
-                    self.verbose ("RETIRE: %s%s" % (classname, lid))
+                    self.verbose ("RETIRE: %s%s" % (classname, lid), level = 2)
                     if self.update and update :
                         cls.retire (lid)
 
@@ -421,7 +430,7 @@ class PR_Sync (autosuper) :
                     if lv != litem [k] :
                         d [k] = lv
                 if d :
-                    self.verbose ("Set: %s%s %s" % (cn, lid, d))
+                    self.verbose ("Set: %s%s %s" % (cn, lid, d), level = 2)
                     if self.update :
                         cls.set (lid, ** d)
         self.pendmap = {}
@@ -438,15 +447,14 @@ def main () :
     cmd = ArgumentParser ()
     cmd.add_argument \
         ( 'url'
-        , help   = 'XMLRPC URL of remote tracker'
+        , help   = 'REST-API URL of remote tracker'
         )
-    if SSLContext :
-        cmd.add_argument \
-            ( "-C", "--disable-cert-check"
-            , help    = "Disable certificate check for https connection"
-            , default = False
-            , action  = 'store_true'
-            )
+    cmd.add_argument \
+        ( "-C", "--disable-cert-check-warning"
+        , help    = "Disable certificate check warning for https connection"
+        , default = False
+        , action  = 'store_true'
+        )
     cmd.add_argument \
         ( "-d", "--database-directory"
         , dest    = "database_directory"
@@ -454,10 +462,20 @@ def main () :
         , default = '.'
         )
     cmd.add_argument \
+        ( "-P", "--password"
+        , help    = "Password, better use .netrc"
+        )
+    cmd.add_argument \
         ( "-p", "--default-purchasing-agent"
         , dest    = "purchasing_agent"
         , help    = "Default for purchasing_agent if none specified"
         , default = '921'
+        )
+    cmd.add_argument \
+        ( "-r", "--remote-user"
+        , dest    = 'username' # For compat with Requester base class
+        , help    = "Remote API user"
+        , default = 'prtracker-sync'
         )
     cmd.add_argument \
         ( "-s", "--sync-user"
@@ -473,7 +491,7 @@ def main () :
         )
     cmd.add_argument \
         ( "-U", "--user"
-        , help    = "Database user"
+        , help    = "Local database user"
         , default = 'admin'
         )
     cmd.add_argument \

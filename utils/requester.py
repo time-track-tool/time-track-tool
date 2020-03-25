@@ -5,21 +5,25 @@ from __future__ import print_function
 import sys
 import os
 import json
+import urllib3
 import requests
 from datetime import datetime
 from argparse import ArgumentParser
 from netrc    import netrc
 from getpass  import getpass
+from rsclib.autosuper import autosuper
 try :
     from urllib.parse import urlparse, urlencode
 except ImportError:
     from urlparse import urlparse
     from urllib   import urlencode
 
-class Requester (object) :
+class Requester (autosuper) :
 
     def __init__ (self, args) :
         self.args    = args
+        if args.disable_cert_check_warning :
+            urllib3.disable_warnings (urllib3.exceptions.InsecureRequestWarning)
         self.session = requests.session ()
         self.session.verify = False
         self.user    = args.username
@@ -67,7 +71,10 @@ class Requester (object) :
         if a :
             un, d, pw = a
             if un != self.user :
-                raise ValueError ("Netrc username doesn't match")
+                raise ValueError \
+                    ( "Netrc username doesn't match: %s vs.  %s"
+                    % (un, self.user)
+                    )
             return pw
         pw = getpass ('Password: ')
         return pw
@@ -118,6 +125,12 @@ def main (argv = None) :
     if argv is None :
         argv = sys.argv [1:]
     cmd = ArgumentParser ()
+    cmd.add_argument \
+        ( "-C", "--disable-cert-check-warning"
+        , help    = "Disable certificate check warning for https connection"
+        , default = False
+        , action  = 'store_true'
+        )
     cmd.add_argument \
         ( "-U", "--url"
         , help    = "URL of tracker (without rest path) default: %(default)s"
