@@ -44,10 +44,10 @@ def check_time_project (db, cl, nodeid, new_values) :
         if not wl :
             common.require_attributes \
                 (_, cl, nodeid, new_values, 'organisation')
-    common.require_attributes \
-        ( _, cl, nodeid, new_values
-        , 'cost_center', 'approval_hr', 'approval_required', 'is_extern'
-        )
+    required = ['cost_center', 'approval_hr', 'approval_required']
+    if 'is_extern' in cl.properties :
+        required.append ('is_extern')
+    common.require_attributes (_, cl, nodeid, new_values, *required)
 # end def check_time_project
 
 def new_time_project (db, cl, nodeid, new_values) :
@@ -57,7 +57,7 @@ def new_time_project (db, cl, nodeid, new_values) :
         , ('op_project',        True)
         )
     common.require_attributes (_, cl, nodeid, new_values, 'name', 'responsible')
-    if 'is_extern' not in new_values :
+    if 'is_extern' in cl.properties and 'is_extern' not in new_values :
         new_values ['is_extern'] = False
     if 'work_location' in cl.properties and 'work_location' not in new_values :
         common.require_attributes (_, cl, nodeid, new_values, 'organisation')
