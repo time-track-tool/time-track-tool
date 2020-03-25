@@ -798,11 +798,12 @@ class LDAP_Roundup_Sync (object) :
         if self.ad_domain :
             if '@' not in username :
                 if allow_empty :
-                    return
+                    return False
                 raise ValueError ("User without domain: %s" % username)
             dom = username.split ('@', 1) [1]
             if dom not in self.ad_domain :
                 raise ValueError ("User with invalid domain: %s" % username)
+        return True
     # end def domain_user_check
 
     def sync_user_from_ldap (self, username, update = None) :
@@ -991,9 +992,18 @@ class LDAP_Roundup_Sync (object) :
     # end def sync_contacts_to_ldap
 
     def sync_user_to_ldap (self, username, update = None) :
-        self.domain_user_check (username)
         if update is not None :
             self.update_ldap = update
+        allow_empty = False
+        if not self.update_ldap :
+            allow_empty = True
+        check = self.domain_user_check (username, allow_empty = allow_empty)
+        # Do nothing if empty domain and we would require one and we
+        # don't update anyway
+        if not check :
+            if self.verbose :
+                print "Not syncing user with empty domain: %s" % user.username
+            return
         uid  = self.db.user.lookup (username)
         user = self.db.user.getnode (uid)
         assert (user.status in self.status_sync)

@@ -1022,7 +1022,7 @@ def user_create_magic (db, uid, olo, dep) :
     org_location = None
     if olo :
         org_location = db.org_location.getnode (olo)
-    if uid > 2 and olo and dep :
+    if 'user_dynamic' in db.classes and uid > 2 and olo and dep :
         db.user_dynamic.create \
             ( user            = uid
             , valid_from      = Date ('.')
@@ -1035,7 +1035,9 @@ def user_create_magic (db, uid, olo, dep) :
         (db.config.TRACKER_LANGUAGE, db.config.TRACKER_HOME).gettext
 
     update_dict = {}
-    if not user.nickname and 'firstname' in cl.properties :
+    if  (   'nickname' in cl.properties and 'firstname' in cl.properties
+        and not user.nickname
+        ) :
         fn    = user.firstname
         ln    = user.lastname
         lfn   = common.tolower_ascii (fn)
