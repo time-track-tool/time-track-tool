@@ -195,9 +195,16 @@ def sync_to_ldap (db, cl, nodeid, old_values) :
     ld.sync_user_to_ldap (user.username)
 # end def sync_to_ldap
 
-def sync_to_ldap_ud (db, cl, nodeid, old_values) :
+def sync_to_ldap_ud_c (db, cl, nodeid, old_values) :
+    """ For things linked to user trigger the ldap sync if modified.
+        Currently done for user_dynamic and user_contact.
+    """
     ud = cl.getnode (nodeid)
-    props = ('sap_cc', 'department', 'org_location')
+    props_by_classname = dict \
+        ( user_dynamic = ('sap_cc', 'department', 'org_location')
+        , user_contact = ('contact', 'contact_type', 'order')
+        )
+    props = props_by_classname [cl.classname]
     for p in props :
         if p in old_values and old_values [p] != getattr (ud, p, '-1') :
             break
@@ -205,7 +212,7 @@ def sync_to_ldap_ud (db, cl, nodeid, old_values) :
         # Nothing to do, none of the props changed
         return
     sync_to_ldap (db, db.user, ud.user, {})
-# end def sync_to_ldap_ud
+# end def sync_to_ldap_ud_c
 
 def check_pictures (db, cl, nodeid, new_values) :
     limit = common.Size_Limit (db, 'LIMIT_PICTURE_SIZE')
@@ -331,7 +338,9 @@ def domain_user_edit (db, cl, nodeid, new_values) :
 def domain_user_check (db, cl, nodeid, new_values) :
     """ This checks for items that are editable if the linked user (in
         the property 'user') has the correct ad_domain. Currently used
-        for user_dynamic and user_contact classes.
+        for user_dynamic user_contact classes. For user_contact we check
+        this only on modify not on creation because user_contact items
+        are first created without a user and later added to the user.
     """
     if not _domain_user_role_check (db) :
         return
@@ -400,7 +409,7 @@ def init (db) :
     if ldap_sync and ldap_sync.check_ldap_config (db) :
         db.user.react ("set", sync_to_ldap, priority = 200)
         if 'user_dynamic' in db.classes :
-            db.user_dynamic.react ("set", sync_to_ldap_ud, priority = 200)
+            db.user_dynamic.react ("set", sync_to_ldap_ud_c, priority = 200)
     if 'user_status' in db.classes :
         db.user_status.audit ("create", check_user_status)
         db.user_status.audit ("set",    check_user_status)
@@ -414,7 +423,8 @@ def init (db) :
         db.user_dynamic.audit ("create", domain_user_check)
         db.user_dynamic.audit ("set",    domain_user_check)
     if 'user_contact' in db.classes :
-        db.user_contact.audit ("create", domain_user_check)
         db.user_contact.audit ("set",    domain_user_check)
+        if ldap_sync and ldap_sync.check_ldap_config (db) :
+            db.user_contact.react ("set", sync_to_ldap_ud_c, priority = 200)
     if 'reduced_activity_list' in db.user.properties :
         db.user.audit ("create", default_reduced_activity_list)
