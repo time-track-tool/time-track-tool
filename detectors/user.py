@@ -374,6 +374,14 @@ def fix_domain_username (db, cl, nodeid, new_values) :
     new_values ['username'] = '@'.join ((username, ad_domain))
 # end def fix_domain_username
 
+def default_reduced_activity_list (db, cl, nodeid, new_values) :
+    """ This is the cut-off date where every new user should have the
+        value set.
+    """
+    if 'reduced_activity_list' not in new_values :
+        new_values ['reduced_activity_list'] = Date ('2020-04-01')
+# end def default_reduced_activity_list
+
 def init (db) :
     global _
     _   = get_translation \
@@ -408,3 +416,5 @@ def init (db) :
     if 'user_contact' in db.classes :
         db.user_contact.audit ("create", domain_user_check)
         db.user_contact.audit ("set",    domain_user_check)
+    if 'reduced_activity_list' in db.user.properties :
+        db.user.audit ("create", default_reduced_activity_list)
