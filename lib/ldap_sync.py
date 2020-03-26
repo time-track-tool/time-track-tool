@@ -763,12 +763,15 @@ class LDAP_Roundup_Sync (object) :
                         print >> sys.stderr, "Duplicate: %s" % ':'.join (key)
                         continue
                     elif self.update_roundup :
-                        id = self.db.user_contact.create \
+                        d = dict \
                             ( contact_type = tid
                             , contact      = ldit
                             , order        = order
-                            , user         = user.id
                             )
+                        # If we have the user id at this point add it
+                        if user :
+                            d ['user'] = user.id
+                        id = self.db.user_contact.create (** d)
                         new_contacts.append (id)
                         changed = True
                     order += 1
