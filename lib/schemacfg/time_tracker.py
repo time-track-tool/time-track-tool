@@ -523,6 +523,8 @@ def init \
                 , vacation_yearly            = Number    ()
                 , do_leave_process           = Boolean   ()
                 , vac_aliq                   = Link      ("vac_aliq")
+                , group_external             = Boolean   ()
+                , sap_lifnr                  = String    ()
                 )
             ancestor.__init__ (self, db, classname, ** properties)
         # end def __init__

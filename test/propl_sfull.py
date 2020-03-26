@@ -425,10 +425,12 @@ properties = \
       )
     , ( 'org_location'
       , [ 'do_leave_process'
+        , 'group_external'
         , 'location'
         , 'name'
         , 'organisation'
         , 'phone'
+        , 'sap_lifnr'
         , 'vac_aliq'
         , 'vacation_legal_year'
         , 'vacation_yearly'
