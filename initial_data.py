@@ -1,7 +1,5 @@
 #! /usr/bin/python
-# -*- coding: utf-8 -*-
-# äöüÄÖÜß
-# Copyright (C) 2004-12 Dr. Ralf Schlatterbeck Open Source Consulting.
+# Copyright (C) 2004-20 Dr. Ralf Schlatterbeck Open Source Consulting.
 # Reichergasse 131, A-3411 Weidling.
 # Web: http://www.runtux.com Email: office@runtux.com
 # All rights reserved
@@ -657,8 +655,8 @@ if 'currency' in db.classes :
 if 'valid' in db.classes :
     valid = db.getclass ('valid')
     valid.create \
-        ( name = 'gültig'
-        , description = 'Gültige Adresse'
+        ( name = b'g\xc3\xbcltig'
+        , description = b'G\xc3\xbcltige Adresse'
         )
 
 if 'adr_type_cat' in db.classes :
@@ -694,13 +692,13 @@ if 'contact_type' in db.classes :
         )
 if 'customer_status' in db.classes :
     db.customer_status.create \
-        ( name         = 'gültig'
-        , description  = 'Gültiger Kunde'
+        ( name         = b'g\xc3\xbcltig'
+        , description  = b'G\xc3\xbcltiger Kunde'
         , order        = 1
         , valid        = True
         )
     db.customer_status.create \
-        ( name         = 'ungültig'
+        ( name         = b'ung\xc3\xbcltig'
         , description  = 'Kein Kunde'
         , order        = 2
         , valid        = False
@@ -708,13 +706,13 @@ if 'customer_status' in db.classes :
 
 if 'supplier_status' in db.classes :
     db.supplier_status.create \
-        ( name         = 'gültig'
-        , description  = 'Gültiger Lieferant'
+        ( name         = b'g\xc3\xbcltig'
+        , description  = b'G\xc3\xbcltiger Lieferant'
         , order        = 1
         , valid        = True
         )
     db.supplier_status.create \
-        ( name         = 'ungültig'
+        ( name         = b'ung\xc3\xbcltig'
         , description  = 'Kein Lieferant'
         , order        = 2
         , valid        = False
@@ -722,14 +720,14 @@ if 'supplier_status' in db.classes :
 
 if 'product_status' in db.classes :
     db.product_status.create \
-        ( name         = 'gültig'
-        , description  = 'Gültiger Artikel'
+        ( name         = b'g\xc3\xbcltig'
+        , description  = b'G\xc3\xbcltiger Artikel'
         , order        = 1
         , valid        = True
         )
     db.product_status.create \
-        ( name         = 'ungültig'
-        , description  = 'Kein gültiger Artikel'
+        ( name         = b'ung\xc3\xbcltig'
+        , description  = b'Kein g\xc3\xbcltiger Artikel'
         , order        = 2
         , valid        = False
         )
@@ -760,19 +758,19 @@ if 'tmplate_status' in db.classes :
     db.tmplate_status.create \
         ( name            = 'Brief'
         , order           = 1
-        , description     = 'Vorlage für Briefe'
+        , description     = b'Vorlage f\xc3\xbcr Briefe'
         , use_for_invoice = False
         , use_for_letter  = True
         )
     db.tmplate_status.create \
         ( name            = 'Rechnung'
         , order           = 2
-        , description     = 'Vorlage für Rechnungen'
+        , description     = b'Vorlage f\xc3\xbcr Rechnungen'
         , use_for_invoice = True
         , use_for_letter  = False
         )
     db.tmplate_status.create \
-        ( name            = 'Ungültig'
+        ( name            = b'Ung\xc3\xbcltig'
         , order           = 1
         , description     = 'Vorlage derzeit nicht in Verwendung'
         , use_for_invoice = False
