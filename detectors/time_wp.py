@@ -98,7 +98,7 @@ def new_time_wp (db, cl, nodeid, new_values) :
         , 'project'
         , 'is_public'
         )
-    if 'is_extern' not in new_values :
+    if 'is_extern' in cl.properties and 'is_extern' not in new_values :
         new_values ['is_extern'] = False
     prid = new_values ['project']
     uid  = db.getuid ()

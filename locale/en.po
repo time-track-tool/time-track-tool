@@ -4266,3 +4266,9 @@ msgstr "Scale Role"
 msgid "scale_seniority"
 msgstr "Seniority"
 
+msgid "group_external"
+msgstr "Group external"
+
+msgid "sap_lifnr"
+msgstr "SAP creditor (LIFNR)"
+

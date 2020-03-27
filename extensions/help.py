@@ -907,6 +907,13 @@ _helptext          = \
       [""'''Sensor interval for %(Classname)s''']
     , ""'gid'                         :
       [""'''Numeric group ID''']
+    , ""'group_external'                         :
+      [""'''Mark yes, if this company isn't a member of our corporate
+            group. A corporate group is a collection of parent and
+            subsidiary corporations that function as a single economic
+            entity through a common source of control.
+         '''
+      ]
     , ""'hide_message_files'          :
       [""'''If set, do not show files for each message in overview''']
     , ""'hostname'                    :
@@ -1778,6 +1785,12 @@ _helptext          = \
     , ""'sap_cc.id'                   : [help_id]
     , ""'sap_cc.description'          :
       [""'''Verbose description of %(Classname)s''']
+    , ""'sap_lifnr'                   :
+      [""'''Account Number of Vendor or Creditor: Alphanumeric key that
+            uniquely identifies the vendor in the SAP system. Technical
+            Field Name in SAP: LIFNR
+         '''
+      ]
     , ""'sap_reference'               :
       [""'''Reference number to purchase order (e.g. SAP order number).
             The field may also be used to insert other references (e.g.
