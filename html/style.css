@@ -395,15 +395,20 @@ table.list td {
 
 table.list td.subhead {
   font-weight: bold;
+  hyphens: none;
+  white-space: nowrap;
 }
 
 table.list td.subhead-nb {
   font-weight: bold;
   border-right: 0
+  hyphens: none;
+  white-space: nowrap;
 }
 
 table.list td.nb {
   border-right: 0
+  hyphens: none;
 }
 
 table.list td.generated input {
@@ -771,8 +776,31 @@ table.otherinfo th.header2 {
 
 table.otherinfo td {
   vertical-align: top;
+  hyphens: none;
+  -webkit-hyphens: none;
+  -ms-hyphens: none;
 }
 
+table.otherinfo td a[href]:hover
+{
+  hyphens: none;
+  -webkit-hyphens: none;
+  -ms-hyphens: none;
+}
+
+table.otherinfo td a[href]:link
+{
+  hyphens: none;
+  -webkit-hyphens: none;
+  -ms-hyphens: none;
+}
+
+table.otherinfo td a[href]
+{
+  hyphens: none;
+  -webkit-hyphens: none;
+  -ms-hyphens: none;
+}
 
 table.timesheet {
   border-collapse: collapse;
