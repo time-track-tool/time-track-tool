@@ -1056,7 +1056,10 @@ _helptext          = \
     , ""'is_board'                    :
       [""'''If this flag is set, the role is used for board approvals''']
     , ""'is_extern'                   :
-      [""'''This %(Classname)s is tracked in external software''']
+      [""'''This %(Classname)s is tracked in external software. Setting to Yes
+            will disallow booking on this %(Classname)s.
+         '''
+      ]
     , ""'is_finance'                  :
       [""'''If this flag is set, the role is used for finance approvals''']
     , ""'is_valid'                    :
