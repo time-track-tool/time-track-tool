@@ -157,8 +157,8 @@ def audit_user_fields(db, cl, nodeid, new_values):
     common_user_checks (db, cl, nodeid, new_values)
 # end def audit_user_fields
 
-def update_userlist_html (db, cl, nodeid, old_values) :
-    """newly create user_list.html macro page
+def update_userlist (db, cl, nodeid, old_values) :
+    """newly create user_list.html and json files
     """
     changed    = False
     for i in 'username', 'status', 'roles' :
@@ -170,7 +170,8 @@ def update_userlist_html (db, cl, nodeid, old_values) :
     if not changed :
         return
     rup_utils.update_userlist_html (db)
-# end def update_userlist_html
+    rup_utils.update_userlist_json (db)
+# end def update_userlist
 
 def check_retire (db, cl, nodeid, old_values) :
     if db.getuid () != '1' :
@@ -397,11 +398,11 @@ def init (db) :
         (db.config.TRACKER_LANGUAGE, db.config.TRACKER_HOME).gettext
     db.user.audit ("set",    audit_user_fields)
     db.user.audit ("create", new_user)
-    db.user.react ("create", update_userlist_html)
+    db.user.react ("create", update_userlist)
     if 'external_company' in db.classes :
         db.user.audit ("create", check_ext_company)
         db.user.audit ("set",    check_ext_company)
-    db.user.react ("set",    update_userlist_html)
+    db.user.react ("set",    update_userlist)
     db.user.audit ("retire", check_retire)
     db.user.audit ("set",    obsolete_action)
     db.user.audit ("set",    check_pictures)

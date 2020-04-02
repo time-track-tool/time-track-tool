@@ -21,6 +21,7 @@
 # Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 # ****************************************************************************
 
+from __future__ import print_function
 import os
 import shutil
 from   tempfile import mkstemp
@@ -201,3 +202,31 @@ def update_userlist_html (db, cl = None) :
     f.close ()
     shutil.move (tmpname, os.path.join (root, userlist))
 # end def update_userlist_html
+
+def update_userlist_json (db, cl = None) :
+    """newly create user_list.js page
+    """
+    if not cl :
+        cl = db.user
+    root       = os.path.join (db.config.TRACKER_HOME, "html")
+    userlist   = "userlist.js"
+    f, tmpname = mkstemp (".js", "userlist", root)
+    f = os.fdopen (f, 'w')
+    print ("var userlist =", file = f)
+    spec = {}
+    if 'status' in cl.properties :
+        stati  = db.user_status.filter (None, dict (is_nosy = True))
+        spec   = {"status" : stati}
+    users = cl.filter (None, filterspec = spec, sort = ("+", "username"))
+    for n, u in enumerate (users) :
+        first = ','
+        if not n :
+            first = '['
+        user = cl.getnode (u)
+        if '"' in user.username :
+            continue
+        print ('    %s "%s"' % (first, user.username), file = f)
+    print ('];', file = f)
+    f.close ()
+    shutil.move (tmpname, os.path.join (root, userlist))
+# end def update_userlist_json
