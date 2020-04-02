@@ -1,0 +1,50 @@
+<tal:block metal:use-macro="templates/page/macros/icing">
+<tal:block metal:fill-slot="create_or_query">
+ <tal:block 
+  metal:use-macro="templates/page/macros/create_or_query_new_tracker_item" />
+</tal:block>
+
+<tal:block metal:fill-slot="content">
+ <tal:block tal:define=
+  "batch request/batch;
+   pdict python: utils.properties_dict (db, context);
+   props python:
+    ( utils.ExtProperty (utils, pdict ['id'])
+    , utils.ExtProperty (utils, pdict ['name'])
+    , utils.ExtProperty
+        ( utils, pdict ['organisation']
+        , multiselect = 1
+        , filter      = utils.valid_item (now)
+        )
+    , utils.ExtProperty
+        ( utils, pdict ['location']
+        , multiselect = 1
+        , filter      = utils.valid_item (now)
+        )
+    , utils.ExtProperty
+        ( utils, pdict ['valid_from']
+        , get_cssclass = lambda x: 'nobreak'
+        )
+    , utils.ExtProperty
+        ( utils, pdict ['valid_to']
+        , get_cssclass = lambda x: 'nobreak'
+        )
+    , utils.ExtProperty (utils, pdict ['do_leave_process'])
+    , utils.ExtProperty (utils, pdict ['vacation_yearly'])
+    , utils.ExtProperty (utils, pdict ['vacation_legal_year'])
+    , utils.ExtProperty
+        ( utils, pdict ['vac_aliq']
+        , multiselect = 1
+        )
+    , utils.ExtProperty (utils, pdict ['phone'])
+    , utils.ExtProperty (utils, pdict ['group_external'])
+    , utils.ExtProperty (utils, pdict ['sap_lifnr'])
+    );
+   "
+  tal:condition="context/is_view_ok">
+
+  <tal:block metal:use-macro="templates/page/macros/search_results"/>
+  <tal:block metal:use-macro="templates/page/macros/simple_search_form"/>
+ </tal:block>
+</tal:block>
+</tal:block>

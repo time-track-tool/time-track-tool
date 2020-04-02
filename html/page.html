@@ -171,11 +171,28 @@
                           'address.firstname&'
                           '@sort=-date&@pagesize=20&@startwith=0&'
                           '@quiet=1&@terse=1'
+   , ('location', '')   : '@columns=id,name,country,address,'
+                          'valid_from,valid_to&'
+                          '@sort=name&'
+                          '@filter=valid_from,valid_to&'
+                          'valid_from=%3B.%2C-&valid_to=.%3B%2C-'
    , ('measurement', ' (CSV)')
                         : '@sort=date&@filter=date,sensor.is_app_sensor,'
                           'sensor.do_logging&date=.-1w%3B&'
                           'sensor.is_app_sensor=yes&sensor.do_logging=yes'
    , ('measurement', ''): utils.measurement_query
+   , ('org_location', '') : '@columns=id,name,organisation,location,'
+                          'valid_from,valid_to,do_leave_process,'
+                          'vacation_yearly,vacation_legal_year,vac_aliq,'
+                          'group_external,sap_lifnr&'
+                          '@sort=name&'
+                          '@filter=valid_from,valid_to&'
+                          'valid_from=%3B.%2C-&valid_to=.%3B%2C-'
+   , ('organisation', '') : '@columns=id,name,company_code,description,'
+                          'valid_from,valid_to,may_purchase&'
+                          '@sort=name&'
+                          '@filter=valid_from,valid_to&'
+                          'valid_from=%3B.%2C-&valid_to=.%3B%2C-'
    , ('overtime_correction', '')
                        : '@columns=id,user,date,value,comment&'
                          '@sort=-date&@filter=user&@pagesize=20&@startwith=0&'
@@ -228,9 +245,8 @@
    , ('qso', '')        : '@columns=call,band,qso_start,qso_end,rst_rcvd,'
                           'mode,owner&'
                           '@sort=-qso_end&@pagesize=20&@startwith=0'
-   , ('sap_cc', '')     : '@columns=deputy,description,id,name,'
-                          'organisation,responsible,'
-                          'valid,sync_id'
+   , ('sap_cc', '')     : '@columns=deputy,id,name,organisation,responsible,'
+                          'valid&@filter=valid&valid=True'
    , ('sensor', '')     : utils.sensor_query
    , ('summary_report', 'staff')
                         : '@startwith=0&@pagesize=50&'
@@ -411,7 +427,7 @@
      , ('msg_keyword',         'Edit',   '?@template=item', 1)
      , ('operating_system',    'View',   '?@template=item', 1)
      , ('organisation',        'Edit',   '?@template=item', 1)
-     , ('org_location',        'View',   '?@template=item', 1)
+     , ('org_location',        'Edit',   '?@template=item', 1)
      , ('overtime_correction', 'Edit',   '?@template=item', 1)
      , ('overtime_period',     'Edit',   '?@template=item', 1)
      , ('packaging_unit',      'Edit',   '?@template=item', 1)
@@ -532,8 +548,11 @@
        )
      , ('legalclient',         'View', 1,               ('',''))
      , ('letter',              'View', 1,               ('',''))
+     , ('location',            'View', 1,               ('',''))
      , ('logstyle',            'View', 1,               ('',''))
      , ('measurement',         'View', 1,               ('',''))
+     , ('org_location',        'View', 1,               ('',''))
+     , ('organisation',        'View', 1,               ('',''))
      , ('overtime_correction'
        , 'View'
        , utils.user_has_role (db._db, db._db.getuid (), 'HR', 'Controlling')
@@ -551,11 +570,7 @@
      , ('qsl',                 'View', 1,               ('',''))
      , ('qso',                 'View', 1,               ('',''))
      , ('reference',           'View', 1,               ('',''))
-     , ( 'sap_cc'
-       , 'View'
-       , not request.user.hasPermission ('Edit', 'sap_cc')
-       , ('', '')
-       )
+     , ('sap_cc',              'View', 1,               ('',''))
      , ('sensor',              'View', 1,               ('',''))
      , ('summary_report',     'View', 1, ('Staff Report','staff'))
      , ('support',             'View', 1,               ('',''))
@@ -602,6 +617,7 @@
             src="@@file/lfiles/js/formhandler.js"></script>
   <script type="text/javascript"
           src="@@file/lfiles/js/jquery.issuetracker.js"></script>
+  <script type="text/javascript" src="@@file/userlist.js"></script>
   <link rel="stylesheet" type="text/css" href="@@file/lfiles/libs/select2/4.0.7/css/select2.min.css">
   <script type="text/javascript"
           src="@@file/lfiles/libs/select2/4.0.7/js/select2.min.js"></script>

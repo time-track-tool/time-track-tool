@@ -449,6 +449,13 @@ table.list td.travel {
   background-color: yellowgreen;
 }
 
+table.list td.nobreak {
+  white-space: nowrap;
+  hyphens: none;
+  -webkit-hyphens: none;
+  -ms-hyphens: none;
+}
+
 table.list tr.time-nav th {
   border-style: hidden;
   text-align: center;

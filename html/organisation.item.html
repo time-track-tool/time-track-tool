@@ -1,0 +1,56 @@
+<tal:block metal:use-macro="templates/page/macros/icing">
+ <title metal:fill-slot="head_title">
+  <tal:block tal:condition="context/id" i18n:translate="">
+   <span tal:replace="string:${Classname}: ${context/id}"
+    i18n:name="classname_id"/>
+   created by
+   <span tal:replace="context/creator" i18n:name="creator"/>
+  </tal:block>
+  <tal:block tal:condition="not:context/id" i18n:translate="">New
+   <span tal:replace="Classname" i18n:name="Classname" />
+  </tal:block>
+ </title>
+  <tal:block metal:fill-slot="create_or_query">
+    <tal:block 
+     metal:use-macro="templates/page/macros/create_or_query_new_tracker_item" />
+  </tal:block> 
+
+ <tal:block metal:fill-slot="content">
+  <tal:block tal:define="use_labelprop python:True">
+  <tal:block metal:use-macro="templates/page/macros/formatted_class">
+   <tal:block metal:fill-slot="formatted_class_content">
+    <tr>
+     <th tal:content="structure python:utils.fieldname
+         (classname, 'company_code')"/>
+     <td tal:content="structure python:context.company_code.field ()"/>
+    </tr>
+    <tr>
+     <th tal:content="structure python:utils.fieldname
+         (classname, 'description')"/>
+     <td tal:content="structure python:context.description.field ()"/>
+    </tr>
+    <tr>
+     <th tal:content="structure python:utils.fieldname
+         (classname, 'valid_from')"/>
+     <td tal:content="structure python:context.valid_from.field ()"/>
+    </tr>
+    <tr>
+     <th tal:content="structure python:utils.fieldname
+         (classname, 'valid_to')"/>
+     <td tal:content="structure python:context.valid_to.field ()"/>
+    </tr>
+    <tr>
+     <th tal:content="structure python:utils.fieldname
+         (classname, 'may_purchase')"/>
+     <td tal:content="structure python:context.may_purchase.field ()"/>
+    </tr>
+    <tr>
+     <th tal:content="structure python:utils.fieldname
+         (classname, 'mail_domain')"/>
+     <td tal:content="structure python:context.mail_domain.field ()"/>
+    </tr>
+   </tal:block>
+  </tal:block>
+ </tal:block>
+ </tal:block>
+</tal:block>

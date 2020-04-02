@@ -1,0 +1,82 @@
+<tal:block metal:use-macro="templates/page/macros/icing">
+ <title metal:fill-slot="head_title">
+  <tal:block tal:condition="context/id" i18n:translate="">
+   <span tal:replace="string:${Classname}: ${context/id}"
+    i18n:name="classname_id"/>
+   created by
+   <span tal:replace="context/creator" i18n:name="creator"/>
+  </tal:block>
+  <tal:block tal:condition="not:context/id" i18n:translate="">New
+   <span tal:replace="Classname" i18n:name="Classname" />
+  </tal:block>
+ </title>
+  <tal:block metal:fill-slot="create_or_query">
+    <tal:block 
+     metal:use-macro="templates/page/macros/create_or_query_new_tracker_item" />
+  </tal:block> 
+
+ <tal:block metal:fill-slot="content">
+  <tal:block tal:define="use_labelprop python:True">
+  <tal:block metal:use-macro="templates/page/macros/formatted_class">
+   <tal:block metal:fill-slot="formatted_class_content">
+    <tr>
+     <th tal:content="structure python:utils.fieldname
+         (classname, 'organisation')"/>
+     <td tal:content="structure python:context.organisation.menu
+         (**utils.valid_item (now))"/>
+    </tr>
+    <tr>
+     <th tal:content="structure python:utils.fieldname
+         (classname, 'location')"/>
+     <td tal:content="structure python:context.location.menu
+         (**utils.valid_item (now))"/>
+    </tr>
+    <tr>
+     <th tal:content="structure python:utils.fieldname
+         (classname, 'valid_from')"/>
+     <td tal:content="structure python:context.valid_from.field ()"/>
+    </tr>
+    <tr>
+     <th tal:content="structure python:utils.fieldname
+         (classname, 'valid_to')"/>
+     <td tal:content="structure python:context.valid_to.field ()"/>
+    </tr>
+    <tr>
+     <th tal:content="structure python:utils.fieldname
+         (classname, 'do_leave_process')"/>
+     <td tal:content="structure python:context.do_leave_process.field ()"/>
+    </tr>
+    <tr>
+     <th tal:content="structure python:utils.fieldname
+         (classname, 'vacation_yearly')"/>
+     <td tal:content="structure python:context.vacation_yearly.field ()"/>
+    </tr>
+    <tr>
+     <th tal:content="structure python:utils.fieldname
+         (classname, 'vacation_legal_year')"/>
+     <td tal:content="structure python:context.vacation_legal_year.field ()"/>
+    </tr>
+    <tr>
+     <th tal:content="structure python:utils.fieldname
+         (classname, 'vac_aliq')"/>
+     <td tal:content="structure python:context.vac_aliq.menu ()"/>
+    </tr>
+    <tr>
+     <th tal:content="structure python:utils.fieldname (classname, 'phone')"/>
+     <td tal:content="structure python:context.phone.field ()"/>
+    </tr>
+    <tr>
+     <th tal:content="structure python:utils.fieldname
+         (classname, 'group_external')"/>
+     <td tal:content="structure python:context.group_external.field ()"/>
+    </tr>
+    <tr>
+     <th tal:content="structure python:utils.fieldname
+         (classname, 'sap_lifnr')"/>
+     <td tal:content="structure python:context.sap_lifnr.field ()"/>
+    </tr>
+   </tal:block>
+  </tal:block>
+ </tal:block>
+ </tal:block>
+</tal:block>
