@@ -724,7 +724,8 @@ def security (db, ** kw) :
         , description = fixdoc (approving_or_approved.__doc__)
         , properties = ('status', 'messages')
         )
-    db.security.addPermissionToRole ('Procurement-Admin', p)
+    for r in prlib.reject_roles :
+        db.security.addPermissionToRole (r, p)
 
     def reopen_rejected_pr (db, userid, itemid) :
         """ User is allowed to reopen their own rejected PR.

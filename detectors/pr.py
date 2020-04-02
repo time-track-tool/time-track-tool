@@ -330,7 +330,7 @@ def change_pr (db, cl, nodeid, new_values) :
                     break
             else :
                 uid = db.getuid ()
-                if not common.user_has_role (db, uid, 'Procurement-Admin') :
+                if not common.user_has_role (db, uid, *prlib.reject_roles) :
                     raise Reject (_ ("No rejected approval-record found"))
             new_values ['date_approved'] = None
             new_values ['date_ordered']  = None

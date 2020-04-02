@@ -333,3 +333,5 @@ pr_justification = \
       , 'please state possible consequences of rejecting the purchase'
       )
     )
+
+reject_roles = ('Procurement-Admin', 'Procurement')
