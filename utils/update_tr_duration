@@ -1,0 +1,46 @@
+#!/usr/bin/python
+
+import os
+import sys
+from argparse import ArgumentParser
+from roundup  import instance
+
+# Loop over all non-frozen (or of --all is specified over *all* daily
+# records) and call update_tr_duration. Note that we don't need to check
+# if tr_duration_ok is set on the daily_record since this is done at the
+# start of update_tr_duration
+
+
+cmd = ArgumentParser ()
+cmd.add_argument \
+    ( "--all"
+    , help    = "Call update_tr_duration on *all* daily records"
+    , action  = "store_true"
+    )
+cmd.add_argument \
+    ( "-d", "--dir"
+    , help    = "Directory of roundup tracker, default: %(default)s"
+    , default = os.getcwd ()
+    )
+args = cmd.parse_args ()
+tracker = instance.open (args.dir)
+db      = tracker.open ('admin')
+sys.path.insert (1, os.path.join (args.dir, 'lib'))
+import user_dynamic
+import common
+
+if args.all :
+    drs = db.daily_record.getnodeids (retired = False)
+else :
+    # Find just *one* of the latest freeze records, we just want the
+    # date of the latest freeze
+    fid = db.daily_record_freeze.filter \
+        (None, {}, sort = ('-', 'date'), limit = 1)
+    f = db.daily_record_freeze.getnode (fid [0])
+    print f.date
+    drs = db.daily_record.filter \
+        (None, dict (date = common.pretty_range (f.date)))
+for drid in drs :
+    dr = db.daily_record.getnode (drid)
+    user_dynamic.update_tr_duration (db, dr)
+db.commit ()

@@ -965,6 +965,15 @@ def check_metadata (db, cl, nodeid, new_values) :
                 raise Reject (_ ('Invalid metadata, level: expect: %d' % (n+1)))
 # end def check_metadata
 
+def fix_tr_duration (db, cl, nodeid, old_values) :
+    """ If the tr_duration_ok was set to None we recompute the
+        tr_duration here.
+    """
+    dr = cl.getnode (nodeid)
+    if dr.tr_duration_ok is None :
+        user_dynamic.update_tr_duration (db, dr)
+# end def fix_tr_duration
+
 def init (db) :
     if 'time_record' not in db.classes :
         return
@@ -982,6 +991,8 @@ def init (db) :
     db.daily_record.react ("set",    send_mail_on_deny)
     db.daily_record.audit ("create", check_metadata)
     db.daily_record.audit ("set",    check_metadata)
+    db.daily_record.react ("set",    fix_tr_duration, priority = 200)
+    db.daily_record.react ("create", fix_tr_duration, priority = 200)
 # end def init
 
 ### __END__ time_record

@@ -375,7 +375,6 @@ def color_duration (tr) :
         if not tr.tr_duration or tr.activity < tr.daily_record.activity :
             id = tr.daily_record.id
             user_dynamic.update_tr_duration (db, db.daily_record.getnode (id))
-            db.commit()
         return 'travel'
     return ''
 # end def color_duration
