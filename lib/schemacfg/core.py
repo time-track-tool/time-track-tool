@@ -230,4 +230,12 @@ def security (db, ** kw) :
     db.security.addPermissionToRole ('User', 'Rest Access')
     db.security.addPermissionToRole ('User', 'Xmlrpc Access')
 
+    # This is needed for user completion
+    p = db.security.addPermission \
+        ( name        = 'Search'
+        , klass       = 'user'
+        , description = "User is allowed to search user_status"
+        , properties  = ('status',)
+        )
+    db.security.addPermissionToRole('User', p)
 # end def security

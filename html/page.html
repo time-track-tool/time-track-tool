@@ -617,12 +617,25 @@
             src="@@file/lfiles/js/formhandler.js"></script>
   <script type="text/javascript"
           src="@@file/lfiles/js/jquery.issuetracker.js"></script>
-  <script type="text/javascript" src="@@file/userlist.js"></script>
   <link rel="stylesheet" type="text/css" href="@@file/lfiles/libs/select2/4.0.7/css/select2.min.css">
   <script type="text/javascript"
           src="@@file/lfiles/libs/select2/4.0.7/js/select2.min.js"></script>
   <script type="text/javascript"
           src="@@file/lfiles/js/daily_record_advanced.js"></script>
+  <script type="text/javascript">
+    var userlist = [];
+    $(document).ready (function() {
+        $.ajax({
+          url: "rest/data/user?status.is_nosy=True&@fields=username",
+          dataType: "json",
+          success: function(data) {
+            for (let i=0; i<data ['data']['@total_size']; i++) {
+                userlist.push (data ['data']['collection'][i]['username']);
+            }
+          }
+        });
+      });
+  </script>
   <tal:block metal:define-slot="add-js"></tal:block>
  </head>
  <body class="body">
