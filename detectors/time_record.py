@@ -622,10 +622,15 @@ def new_time_record (db, cl, nodeid, new_values) :
                 raise Reject, _ ('No weekend booking allowed')
     dstart, dend = check_start_end_duration \
         (dr.date, start, end, duration, new_values)
+    # set default work location for new time record by work location ID
+    # for ID reference values check file initial_data.py or use endpoint
+    # /work_location in the web interface
     if 'work_location' not in new_values :
         new_values ['work_location'] = '1'
+    # set default values according to selected work package
     if 'wp' in new_values and new_values ['wp'] :
         wp = new_values ['wp']
+        # overwrite work location default if default specified in time category
         correct_work_location (db, wp, new_values)
         travel = travel or db.time_wp.get (wp, 'travel')
     if 'time_activity' in new_values and new_values ['time_activity'] :
