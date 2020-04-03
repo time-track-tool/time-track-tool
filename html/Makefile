@@ -7,7 +7,7 @@ all: _generic.item.html userlist.html person.item.html person.index.html \
 _generic.item.html: _generic.index.html
 	ln -s _generic.index.html _generic.item.html
 
-userlist.html userlist.js:
+userlist.html:
 	cd .. && utils/userlist.py
 
 customer.index.html: address.index.html

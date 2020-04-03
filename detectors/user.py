@@ -170,7 +170,6 @@ def update_userlist (db, cl, nodeid, old_values) :
     if not changed :
         return
     rup_utils.update_userlist_html (db)
-    rup_utils.update_userlist_json (db)
 # end def update_userlist
 
 def check_retire (db, cl, nodeid, old_values) :
