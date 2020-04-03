@@ -626,7 +626,7 @@ def new_time_record (db, cl, nodeid, new_values) :
     # for ID reference values check file initial_data.py or use endpoint
     # /work_location in the web interface
     if 'work_location' not in new_values :
-        new_values ['work_location'] = '1'
+        new_values ['work_location'] = '2'
     # set default values according to selected work package
     if 'wp' in new_values and new_values ['wp'] :
         wp = new_values ['wp']
