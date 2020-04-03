@@ -401,13 +401,13 @@ table.list td.subhead {
 
 table.list td.subhead-nb {
   font-weight: bold;
-  border-right: 0
+  border-right: 0;
   hyphens: none;
   white-space: nowrap;
 }
 
 table.list td.nb {
-  border-right: 0
+  border-right: 0;
   hyphens: none;
 }
 
@@ -867,7 +867,6 @@ table.timesheet td.name {
         border-left:1.0pt solid windowtext;
         padding-left: 5pt;
         padding-right: 5pt;
-        width:none;
 }
 table.timesheet td a {
         display: block;
