@@ -379,13 +379,12 @@ def update_timerecs (db, time_record_id, set_it) :
     trecs.sort ()
     if trecs != trecs_o :
         dr = db.daily_record.getnode (drec_id)
-        user_dynamic.invalidate_tr_duration (db, dr.user, dr.date, dr.date)
         db.daily_record.set \
             ( drec_id
             , time_record    = [str (i) for i in trecs]
             , tr_duration_ok = None
             )
-        dr = db.daily_record.getnode (drec_id)
+        user_dynamic.invalidate_tr_duration (db, dr.user, dr.date, dr.date)
 # end def update_timerecs
 
 def update_time_record_in_daily_record (db, cl, nodeid, old_values) :
