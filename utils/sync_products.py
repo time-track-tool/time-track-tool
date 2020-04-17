@@ -4,10 +4,19 @@ from __future__ import unicode_literals
 from __future__ import print_function
 import os
 import re
+import requests
 
 from csv      import DictReader
 from roundup  import instance
 from argparse import ArgumentParser
+from netrc    import netrc
+from bs4      import BeautifulSoup
+
+try :
+    from urllib.parse import urlunparse, quote
+except ImportError :
+    from urlparse import urlunparse
+    from urllib   import quote
 
 splitre = re.compile (r'[ +_/&-]+')
 
@@ -101,8 +110,6 @@ class Unicode_DictReader (object) :
         for d in self.reader :
             r = []
             for k, v in d.iteritems () :
-                if k is None :
-                    import pdb; pdb.set_trace ()
                 k = k.decode ('utf-8')
                 if v is not None :
                     v = v.decode ('utf-8')
@@ -115,15 +122,16 @@ class Unicode_DictReader (object) :
 class Product_Sync (object) :
 
     levels  = \
-        { ('Product Line', 'Product line')         : 1
-        , ('Product Use Case', 'Product use-case') : 2
-        , ('Product Family', 'Product family')     : 3
+        { ('T179T~VTEXT1', 'Product Line', 'Product line')         : 1
+        , ('T179T~VTEXT2', 'Product Use Case', 'Product use-case') : 2
+        , ('T179T~VTEXT3', 'Product Family', 'Product family')     : 3
         }
 
     def __init__ (self, args) :
         self.args     = args
+        self._url     = None
         tracker       = instance.open (args.dir)
-        self.db       = db = tracker.open ('admin')
+        self.db       = db = tracker.open (args.user)
         self.prodcats = {}
         self.prodused = {}
         for id in db.prodcat.getnodeids (retired = False) :
@@ -164,7 +172,8 @@ class Product_Sync (object) :
 
     def get_description (self, rec) :
         l = \
-            ( 'Material Description'
+            ( 'MAKT~MAKTX'
+            , 'Material Description'
             , 'Materialkurztext'
             , 'Bezeichnung'
             , 'Description'
@@ -199,8 +208,32 @@ class Product_Sync (object) :
         return v
     # end def get_family
 
+    def get_latest_export_url (self) :
+        """ The URL given is a directory url of an apache directory listing.
+            We search through all files in that directory and return the URL
+            which contains the latest file. The format of the filenames we
+            search for is prefix + YYYYmmddHHMMSS + suffix.
+            For this we simply search for all the hrefs matching the
+            pattern. We sort these by name (the date format above is
+            sortable) and return the latest and greatest.
+        """
+        page = requests.get (self.url).text
+        soup = BeautifulSoup (page, 'html.parser')
+        res  = []
+        for a in soup.find_all ('a') :
+            href = a.get ('href')
+            if not href.startswith (self.args.prefix) :
+                continue
+            if not href.endswith (self.args.suffix) :
+                continue
+            res.append (href)
+        res.sort ()
+        if res :
+            return res [-1]
+    # end def get_latest_export_url
+
     def get_material (self, rec) :
-        for n in 'Material', 'Artikelkode', 'Material number' :
+        for n in 'MARA~MATNR', 'Material', 'Artikelkode', 'Material number' :
             try :
                 v = rec [n]
                 break
@@ -215,51 +248,17 @@ class Product_Sync (object) :
         return v
     # end def get_material
 
-    def get_oldcode (self, rec) :
-        """ The old code is no longer available in newer exports.
-            We return an empty string in that case.
-        """
-        for n in 'Old material number', 'Alte Materialnr.', 'Alter Artikelkode':
-            try :
-                v = rec [n]
-                break
-            except KeyError :
-                pass
-        else :
-            return ''
-        try :
-            v = str (int (v))
-        except ValueError :
-            pass
-        return v
-    # end def get_oldcode
-
     def fixer_sap (self) :
-        with codecs.open (self.args.sapfile, 'r', self.args.encoding) as f :
-            #l = f.next ()
-            #assert 'MM Report Material Stammdaten' in l
-            #l = f.next ()
-            #assert l.strip () == ''
-            #l = f.next ()
-            #assert l.startswith ('MM Report Material Stammdaten')
-            #l = f.next ()
-            #assert l.strip () == ''
-            #l = f.next ()
-            #delim = self.args.delimiter
-            #dd = delim * 2
-            #assert ('%sMaterial' % delim) in l
-            #n = 0
-            #while dd in l :
-            #    l = l.replace (dd, '%sIgnore-me%s%s' % (delim, n, delim), 1)
-            #    n += 1
-            #if l.startswith (delim) :
-            #    l = 'Ignore-me%s' % n + l
-            #    n += 1
-            #if l.endswith (delim) :
-            #    l = l + 'Ignore-me%s' % n
-            #yield l
-            for line in f :
-                yield (line)
+        if self.args.sapfile :
+            with codecs.open (self.args.sapfile, 'r', self.args.encoding) as f :
+                for line in f :
+                    yield (line)
+        else :
+            fn  = self.get_latest_export_url ()
+            url = '/'.join ((self.url, fn))
+            gr  = requests.get (url)
+            for line in gr.iter_lines () :
+                yield (line.decode ('utf-8'))
     # end def fixer_sap
 
     def rec_iter (self) :
@@ -272,7 +271,7 @@ class Product_Sync (object) :
         skey = lambda x : x [1]
         for rec in self.rec_iter () :
             if not self.get_family (rec).strip () :
-                self.warn ('Ignoring: %r' % rec)
+                self.warn ('Ignoring (no family): %r' % rec)
                 continue
             pcats = []
             for keys, lvl in sorted (self.levels.iteritems (), key = skey) :
@@ -299,36 +298,15 @@ class Product_Sync (object) :
 
             v = self.get_material    (rec)
             d = self.get_description (rec)
-            a = self.get_oldcode     (rec)
-            if a == '-' :
-                a = None
-            n = a
-            if not n :
-                n = v
 
-            key  = normalize_name (n)
-            key2 = normalize_name (v)
-            if key and key2 and key != key2 :
-                k1 = k2 = None
-                try :
-                    k1 = int (key)
-                    k2 = int (key2)
-                except ValueError :
-                    pass
-                if k1 and k2 and k1 != k2 :
-                    self.warn \
-                        ( "Differing numeric Old/New material number: %s %s"
-                        % (k1, k2)
-                        )
-                    #print (key, key2, a, n, v)
-                    key2 = a = None
-                    n = v
-                    key = normalize_name (n)
-                    #print (key, key2, a, n, v)
-               
+            # strip leading 0s from material number
+            v = v.lstrip ('0')
+
+            key = normalize_name (v)
+
             if v and v != '0' and len (pcats) == 3 :
                 par = dict \
-                    ( name             = n.encode ('utf-8')
+                    ( name             = v.encode ('utf-8')
                     , description      = d.encode ('utf-8')
                     , sap_material     = v.encode ('utf-8')
                     , valid            = True
@@ -338,43 +316,28 @@ class Product_Sync (object) :
                     )
                 self.debug (repr (par))
                 p = self.update_table \
-                    ( self.db.product
-                    , self.products
-                    , self.pr_used
-                    , key
-                    , par
-                    , key2
-                    )
-        self.validity (self.db.prodcat,       self.prodcats, self.prodused)
-        #self.validity (self.db.product,       self.products, self.pr_used)
+                    (self.db.product, self.products, self.pr_used, key, par)
+        self.validity (self.db.prodcat, self.prodcats, self.prodused)
         if self.args.update :
             self.db.commit()
     # end def sync
 
-    def update_table (self, cls, nodedict, usedict, key, params, key2 = None) :
-        assert key or key2
-        if key2 and key != key2 and key in nodedict and key2 in nodedict :
-            self.warn \
-                ("Product %s with material-num %s found twice: %s/%s "
-                 "using material number: %s"
-                % (key, key2, nodedict [key], nodedict [key2], key2)
-                )
-            key = key2
-            self.warn ("KEY: %s" % key2)
-        k = key
-        if key2 in nodedict :
-            k = key2
+    def update_table (self, cls, nodedict, usedict, k, params) :
+        assert k
         if k in nodedict :
             # Update name on first match if we have a new spelling
             if not usedict [k] :
                 node = cls.getnode (nodedict [k])
                 d = {}
-                # We don't update name: This could only mean that up to
-                # now we had the SAP-Name (which is fine) and found some
-                # long-obsolete old-name in Radix.
-                l = ( 'parent', 'prodcat', 'description', 'sap_material'
+                # We don't update name for product:
+                # This could only mean that up to now we had the
+                # SAP-Name (which is fine) and found some long-obsolete
+                # old-name in Radix.
+                l = [ 'parent', 'prodcat', 'description', 'sap_material'
                     , 'product_family', 'product_line', 'product_use_case'
-                    )
+                    ]
+                if cls.classname == 'prodcat' :
+                    l.append ('name')
                 for a in l :
                     if a in params and getattr (node, a) != params [a] :
                         d [str (a)] = params [a]
@@ -386,8 +349,6 @@ class Product_Sync (object) :
             assert 'sap_material' in params or cls != self.db.product
             if 'sap_material' in params :
                 params ['name'] = params ['sap_material']
-            if key2 :
-                k = key2
             if self.args.update :
                 id = cls.create (** params)
             else :
@@ -398,6 +359,44 @@ class Product_Sync (object) :
         usedict [k] = True
         return nodedict [k]
     # end def update_table
+
+    @property
+    def url (self) :
+        if self._url :
+            return self._url
+        username = ''
+        password = ''
+        a = n = None
+        try :
+            n = netrc ()
+        except IOError :
+            pass
+        if n and self.args.hostname :
+            a = n.authenticators (self.args.hostname)
+        if a :
+            un, d, pw = a
+            username = un
+            password = pw
+        un = ''
+        if username :
+            un = [username]
+            if password :
+                un.append (':')
+                un.append (quote (password))
+            un.append ('@')
+            un = ''.join (un)
+        netloc = []
+        if un :
+            netloc.append (un)
+        netloc.append (self.args.hostname)
+        if self.args.port :
+            netloc.append (':')
+            netloc.append (self.args.port)
+        netloc = ''.join (netloc)
+        self._url = urlunparse \
+            ((self.args.scheme, netloc, self.args.path, '', '', ''))
+        return self._url
+    # end def url
 
     def validity (self, cls, nodedict, usedict) :
         for k, v in usedict.iteritems () :
@@ -426,13 +425,15 @@ def main () :
 
     cmd = ArgumentParser ()
     cmd.add_argument \
-        ( str ('sapfile')
-        , help    = 'SAP import file'
+        ( 'sapfile'
+        , help    = 'Optional SAP import file'
+                    " -- we're using the URL to retrieve the file if not given"
+        , nargs   = '?'
         )
     cmd.add_argument \
         ( str ('-d'), str ('--directory')
         , dest    = 'dir'
-        , help    = 'Tracker instance directory'
+        , help    = 'Tracker instance directory, default=%(default)s'
         , default = dir
         )
     cmd.add_argument \
@@ -444,16 +445,15 @@ def main () :
     cmd.add_argument \
         ( str ('-D'), str ('--sap-delimiter')
         , dest    = 'delimiter'
-        , help    = 'CSV delimiter for SAP input-file,'
-                    ' default = TAB'
-        , default = '\t'
+        , help    = 'CSV delimiter for SAP input-file, default="%(default)s"'
+        , default = ';'
         )
     cmd.add_argument \
         ( str ('-E'), str ('--encoding')
         , dest    = 'encoding'
         , help    = 'CSV character encoding for SAP input-file,'
-                    ' default = "%(default)s"'
-        , default = 'latin1'
+                    ' default="%(default)s"'
+        , default = 'utf-8'
         )
     cmd.add_argument \
         ( str ('-i'), str ('--invalidate')
@@ -462,7 +462,43 @@ def main () :
         , action = 'store_true'
         )
     cmd.add_argument \
-        ( str ('-u'), str ('--update')
+        ( "-n", "--hostname"
+        , help    = "URL for data download, default=%(default)s"
+        , default = "data-export.vie.at.tttech.ttt"
+        )
+    cmd.add_argument \
+        ( "-P", "--port"
+        , help    = '"Port for retrieving file, default="%(default)s"'
+        , default = ""
+        )
+    cmd.add_argument \
+        ( "-p", "--path"
+        , help    = "Directory component of URL for data download, "
+                    "default=%(default)s"
+        , default = "/sap-export/erp-productive/masterdata/MAT"
+        )
+    cmd.add_argument \
+        ( "--prefix"
+        , help    = "Filename prefix on remote storage, default=%(default)s"
+        , default = "MAT_"
+        )
+    cmd.add_argument \
+        ( "-s", "--scheme"
+        , help    = "URL schem for retrieving file, default=%(default)s"
+        , default = "http"
+        )
+    cmd.add_argument \
+        ( "--suffix"
+        , help    = "Filename suffix on remote storage, default=%(default)s"
+        , default = ".CSV"
+        )
+    cmd.add_argument \
+        ( "-u", "--user"
+        , help    = "User to open the tracker as (%(default)s)"
+        , default = 'admin'
+        )
+    cmd.add_argument \
+        ( str ('-U'), str ('--update')
         , dest   = 'update'
         , help   = 'Really do synchronisation'
         , action = 'store_true'
