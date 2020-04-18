@@ -93,7 +93,7 @@ class Renew_Reminder (object) :
         message = MIMEText ('', 'plain', 'utf-8')
         message.set_charset (utf8)
         smtp = SMTP (self.args.mailhost)
-        message ['Subject'] = 'Purchase Requests needs renewal'
+        message ['Subject'] = 'Purchase Requests need renewal'
         message ['Date'] = formatdate ()
         frm = self.args.frm
         if '@' not in self.args.frm :
