@@ -765,6 +765,8 @@ _helptext          = \
           '''
       , green
       ]
+    , ""'entry_date'                  :
+      [""'''Date of entry into the group''']
     , ""'epic_key'                    :
       [ ""'''Unique identifier of the corresponding Epic Issue in Jira
              that is to be synced with the Work Package. It consists of
@@ -1451,8 +1453,10 @@ _helptext          = \
              person days, so you have to convert old values to hours!
           '''
       ]
+    , ""'position_text'               :
+      [""'''%(Property)s in the group''']
     , ""'position'                    :
-      [""'''%(Property)s in the company''']
+      [""'''%(Property)s in the group''']
     , ""'postalcode'                  :
       [""'''Postal code for this %(Classname)s ''']
     , ""'pr_approval_config++pr_ext_resource' :
@@ -2051,6 +2055,11 @@ _helptext          = \
       [superseder, multiple_allowed]
     , ""'support++type'               :
       [""'Type of %(Classname)s']
+    , ""'sync_foreign_key'            :
+      [""'''Sync-key for synchronizing with external database, leave
+            empty if unsure.
+         '''
+      ]
     , ""'sync_with_ldap'              :
       [ ""'''Enabled if this %(Classname)s should be synched with ldap --
              when the user changes PW via PAM, the pw in roundup will be
@@ -2299,9 +2308,11 @@ _helptext          = \
             in the same country, the local VAT is applicable.
          '''
       ]
-    , ""'vie_user'                    :
-      [ ""'''Exclusively used for RT-RK to link to the corresponding
-             @ds1.internal user, leave this field empty.
+    , ""'vie_user_text'               :
+      [ ""'''Exclusively used for linking to the corresponding
+             @ds1.internal user, leave this field empty. Note that this
+             is now a text-field since most users are not in the
+             time-tracker.
           '''
       ]
     , ""'view_roles'                  :

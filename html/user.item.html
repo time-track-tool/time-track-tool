@@ -225,6 +225,12 @@
       <td tal:content="structure context/scale_role/field"/>
      </tr>
      <tr tal:condition="python:
+       'entry_date' in bclass.properties and context.entry_date.is_view_ok ()">
+      <th tal:content="structure python:utils.fieldname
+          ('user', 'entry_date')"/>
+      <td tal:content="structure context/entry_date/field"/>
+     </tr>
+     <tr tal:condition="python:
        'scale_seniority' in bclass.properties
        and context.scale_seniority.is_view_ok ()">
       <th tal:content="structure python:utils.fieldname
@@ -303,21 +309,12 @@
       <td tal:content="context/clearance_by/plain"
        tal:condition="not:context/clearance_by/is_edit_ok"/>
      </tr>
-     <tr tal:condition="python:'vie_user' in bclass.properties">
+     <tr tal:condition="python:
+         'vie_user_text' in bclass.properties
+         and context.vie_user_text.is_view_ok ()">
       <th tal:content="structure python:utils.fieldname
-          ('user', 'vie_user')"/>
-      <td tal:condition="context/vie_user/is_edit_ok">
-       <tal:block tal:define=
-         "name      string:vie_user;
-          form      formname;
-          dont_care string:don't care;
-          selected  python:
-            context.vie_user and context.vie_user.id or 0">
-        <tal:block metal:use-macro="templates/userlist/macros/user"></tal:block>
-       </tal:block>
-      </td>
-      <td tal:content="context/vie_user/plain"
-       tal:condition="not:context/vie_user/is_edit_ok"/>
+          ('user', 'vie_user_text')"/>
+      <td tal:content="structure context/vie_user_text/field"/>
      </tr>
      <tr tal:condition="python:'job_description' in bclass.properties">
       <th tal:content="structure

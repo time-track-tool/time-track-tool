@@ -102,6 +102,7 @@ def security (db, ** kw) :
     user_props = \
         [ 'contacts'
         , 'csv_delimiter'
+        , 'entry_date'
         , 'firstname'
         , 'hide_message_files'
         , 'job_description'
@@ -111,6 +112,7 @@ def security (db, ** kw) :
         , 'nickname'
         , 'pictures'
         , 'position'
+        , 'position_text'
         , 'room'
         , 'sex'
         , 'status'
@@ -122,10 +124,11 @@ def security (db, ** kw) :
         , 'tt_lines'
         , 'scale_role'
         , 'scale_seniority'
-        , 'vie_user'
+        , 'vie_user_text'
 	]
-    user_props_hr  = user_props + ['clearance_by', 'roles', 'reduced_activity_list']
-    user_props_gtt = user_props + ['username']
+    user_props_hr  = user_props + \
+        ['clearance_by', 'roles', 'reduced_activity_list']
+    user_props_gtt = user_props + ['username', 'sync_foreign_key']
     user_props_office = ['contacts', 'position', 'room', 'title']
     user_props_facility = ['room']
     role_perms = \

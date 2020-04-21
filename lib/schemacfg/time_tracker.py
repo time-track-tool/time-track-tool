@@ -492,7 +492,10 @@ def init \
                 , scale_role             = String    ()
                 , scale_seniority        = String    ()
                 , reduced_activity_list  = Date      ()
-                , vie_user               = Link      ("user")
+                , entry_date             = Date      ()
+                , position_text          = String    ()
+                , vie_user_text          = String    ()
+                , sync_foreign_key       = String    ()
                 )
             kw ['User_Class'].__init__ (self, db, classname, ** properties)
         # end def __init__
@@ -724,7 +727,7 @@ def security (db, ** kw) :
           , ( "id", "sap_cc", "user", "valid_from", "valid_to")
           )
         , ( "user",         "View", ["User"]
-          , ( "timetracking_by", "vie_user")
+          , ( "timetracking_by", "vie_user_text", "entry_date")
           )
         , ( "user_dynamic", "View", ["User"]
           , ( "org_location", "department")

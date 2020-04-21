@@ -3366,7 +3366,7 @@ msgstr "Want no messages"
 msgid "timing_info"
 msgstr ""
 
-msgid "vie_user"
+msgid "vie_user_text"
 msgstr "TTTech internal user"
 
 msgid "nickname"
@@ -4271,4 +4271,13 @@ msgstr "Group external"
 
 msgid "sap_lifnr"
 msgstr "SAP creditor (LIFNR)"
+
+msgid "sync_foreign_key"
+msgstr "Sync Key"
+
+msgid "entry_date"
+msgstr "Entry date"
+
+msgid "position_text"
+msgstr "Position (Text)"
 
