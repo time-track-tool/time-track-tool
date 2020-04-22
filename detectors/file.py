@@ -40,6 +40,8 @@ def check_size (db, cl, nodeid, new_values) :
     limit = common.Size_Limit (db, 'LIMIT_FILE_SIZE')
     if not limit :
         return
+    if new_values ['content'] is None :
+        return
     length = len (new_values ['content'])
     if length > limit.limit :
         raise Reject, _ \
