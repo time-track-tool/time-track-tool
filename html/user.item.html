@@ -219,12 +219,6 @@
       <td tal:content="structure context/position/menu"/>
      </tr>
      <tr tal:condition="python:
-       'scale_role' in bclass.properties and context.scale_role.is_view_ok ()">
-      <th tal:content="structure python:utils.fieldname
-          ('user', 'scale_role')"/>
-      <td tal:content="structure context/scale_role/field"/>
-     </tr>
-     <tr tal:condition="python:
        'entry_date' in bclass.properties and context.entry_date.is_view_ok ()">
       <th tal:content="structure python:utils.fieldname
           ('user', 'entry_date')"/>

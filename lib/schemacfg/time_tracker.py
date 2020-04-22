@@ -482,6 +482,21 @@ def init \
         )
     work_location.setkey ("code")
 
+    functional_role = Class \
+        ( db, ''"functional_role"
+        , name                  = String    ()
+        , name_group            = String    ()
+        , rank                  = Number    ()
+        )
+    functional_role.setkey ("name")
+
+    user_functional_role = Class \
+        ( db, ''"user_functional_role"
+        , user                  = Link      ("user")
+        , functional_role       = Link      ("functional_role")
+        , ratio                 = Number    ()
+        )
+
     class User_Class (kw ['User_Class']) :
         """ add some attrs to user class
         """
@@ -489,7 +504,6 @@ def init \
             self.update_properties \
                 ( timing_info            = Boolean   ()
                 , timetracking_by        = Link      ("user")
-                , scale_role             = String    ()
                 , scale_seniority        = String    ()
                 , reduced_activity_list  = Date      ()
                 , entry_date             = Date      ()
@@ -694,6 +708,14 @@ def security (db, ** kw) :
         , ( "time_report"
           , ["Time-Report", "Controlling", "Project", "Project_View"]
           , ["Time-Report"]
+          )
+        , ( "functional_role"
+          , ["User"]
+          , []
+          )
+        , ( "user_functional_role"
+          , ["User"]
+          , []
           )
         ]
 

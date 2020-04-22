@@ -247,6 +247,12 @@ properties = \
         , 'type'
         ]
       )
+    , ( 'functional_role'
+      , [ 'name'
+        , 'name_group'
+        , 'rank'
+        ]
+      )
     , ( 'issue'
       , [ 'area'
         , 'category'
@@ -808,6 +814,7 @@ properties = \
       , [ 'address'
         , 'alternate_addresses'
         , 'clearance_by'
+        , 'entry_date'
         , 'firstname'
         , 'job_description'
         , 'lastname'
@@ -817,25 +824,26 @@ properties = \
         , 'password'
         , 'pictures'
         , 'position'
+        , 'position_text'
         , 'queries'
         , 'realname'
         , 'reduced_activity_list'
         , 'roles'
         , 'room'
-        , 'scale_role'
         , 'scale_seniority'
         , 'sex'
         , 'status'
         , 'subst_active'
         , 'substitute'
         , 'supervisor'
+        , 'sync_foreign_key'
         , 'timetracking_by'
         , 'timezone'
         , 'timing_info'
         , 'title'
         , 'tt_lines'
         , 'username'
-        , 'vie_user'
+        , 'vie_user_text'
         ]
       )
     , ( 'user_dynamic'
@@ -869,6 +877,12 @@ properties = \
         , 'valid_to'
         , 'weekend_allowed'
         , 'weekly_hours'
+        ]
+      )
+    , ( 'user_functional_role'
+      , [ 'functional_role'
+        , 'ratio'
+        , 'user'
         ]
       )
     , ( 'user_status'

@@ -334,7 +334,7 @@ properties = \
           , ['admin']
           )
         , ( 'status'
-          , ['admin']
+          , ['admin', 'issue_admin', 'msgedit', 'msgsync', 'user']
           )
         , ( 'timezone'
           , ['admin']

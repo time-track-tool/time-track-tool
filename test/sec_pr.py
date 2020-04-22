@@ -29,13 +29,13 @@ Role "dom-user-edit-gtt":
   (Search for "user_dynamic" only)
  User is allowed to create user (Create for "user" only)
  Users may view user_dynamic records for ad_domain for which they are in the domain_permission for the user (View for "user_dynamic" only)
- Users may view/edit user records for ad_domain for which they are in the domain_permission for the user (Edit for "user": ['contacts', 'csv_delimiter', 'firstname', 'hide_message_files', 'job_description', 'lastname', 'lunch_duration', 'lunch_start', 'nickname', 'pictures', 'position', 'room', 'scale_role', 'scale_seniority', 'sex', 'status', 'subst_active', 'substitute', 'supervisor', 'timezone', 'title', 'tt_lines', 'username', 'vie_user'] only)
- Users may view/edit user records for ad_domain for which they are in the domain_permission for the user (View for "user": ['contacts', 'csv_delimiter', 'firstname', 'hide_message_files', 'job_description', 'lastname', 'lunch_duration', 'lunch_start', 'nickname', 'pictures', 'position', 'room', 'scale_role', 'scale_seniority', 'sex', 'status', 'subst_active', 'substitute', 'supervisor', 'timezone', 'title', 'tt_lines', 'username', 'vie_user'] only)
+ Users may view/edit user records for ad_domain for which they are in the domain_permission for the user (Edit for "user": ['contacts', 'csv_delimiter', 'entry_date', 'firstname', 'hide_message_files', 'job_description', 'lastname', 'lunch_duration', 'lunch_start', 'nickname', 'pictures', 'position', 'position_text', 'room', 'scale_seniority', 'sex', 'status', 'subst_active', 'substitute', 'supervisor', 'sync_foreign_key', 'timezone', 'title', 'tt_lines', 'username', 'vie_user_text'] only)
+ Users may view/edit user records for ad_domain for which they are in the domain_permission for the user (View for "user": ['contacts', 'csv_delimiter', 'entry_date', 'firstname', 'hide_message_files', 'job_description', 'lastname', 'lunch_duration', 'lunch_start', 'nickname', 'pictures', 'position', 'position_text', 'room', 'scale_seniority', 'sex', 'status', 'subst_active', 'substitute', 'supervisor', 'sync_foreign_key', 'timezone', 'title', 'tt_lines', 'username', 'vie_user_text'] only)
 Role "dom-user-edit-hr":
   (Search for "user_dynamic" only)
  Users may view user_dynamic records for ad_domain for which they are in the domain_permission for the user (View for "user_dynamic" only)
- Users may view/edit user records for ad_domain for which they are in the domain_permission for the user (Edit for "user": ['clearance_by', 'contacts', 'csv_delimiter', 'firstname', 'hide_message_files', 'job_description', 'lastname', 'lunch_duration', 'lunch_start', 'nickname', 'pictures', 'position', 'reduced_activity_list', 'roles', 'room', 'scale_role', 'scale_seniority', 'sex', 'status', 'subst_active', 'substitute', 'supervisor', 'timezone', 'title', 'tt_lines', 'vie_user'] only)
- Users may view/edit user records for ad_domain for which they are in the domain_permission for the user (View for "user": ['clearance_by', 'contacts', 'csv_delimiter', 'firstname', 'hide_message_files', 'job_description', 'lastname', 'lunch_duration', 'lunch_start', 'nickname', 'pictures', 'position', 'reduced_activity_list', 'roles', 'room', 'scale_role', 'scale_seniority', 'sex', 'status', 'subst_active', 'substitute', 'supervisor', 'timezone', 'title', 'tt_lines', 'vie_user'] only)
+ Users may view/edit user records for ad_domain for which they are in the domain_permission for the user (Edit for "user": ['clearance_by', 'contacts', 'csv_delimiter', 'entry_date', 'firstname', 'hide_message_files', 'job_description', 'lastname', 'lunch_duration', 'lunch_start', 'nickname', 'pictures', 'position', 'position_text', 'reduced_activity_list', 'roles', 'room', 'scale_seniority', 'sex', 'status', 'subst_active', 'substitute', 'supervisor', 'timezone', 'title', 'tt_lines', 'vie_user_text'] only)
+ Users may view/edit user records for ad_domain for which they are in the domain_permission for the user (View for "user": ['clearance_by', 'contacts', 'csv_delimiter', 'entry_date', 'firstname', 'hide_message_files', 'job_description', 'lastname', 'lunch_duration', 'lunch_start', 'nickname', 'pictures', 'position', 'position_text', 'reduced_activity_list', 'roles', 'room', 'scale_seniority', 'sex', 'status', 'subst_active', 'substitute', 'supervisor', 'timezone', 'title', 'tt_lines', 'vie_user_text'] only)
 Role "dom-user-edit-office":
  Users may view/edit user records for ad_domain for which they are in the domain_permission for the user (Edit for "user": ['contacts', 'position', 'room', 'title'] only)
  Users may view/edit user records for ad_domain for which they are in the domain_permission for the user (View for "user": ['contacts', 'position', 'room', 'title'] only)
@@ -71,6 +71,7 @@ Role "procurement":
  User is allowed to access pr_approval_config (View for "pr_approval_config" only)
  User is allowed to access pr_approval_order (View for "pr_approval_order" only)
  User is allowed to edit special risks if the PR has appropriate status (Edit for "purchase_request": ('pr_risks',) only)
+ User is allowed to reject PR in state approving or approved (Edit for "purchase_request": ('messages', 'status') only)
 Role "procurement-admin":
   (Search for "user" only)
  User is allowed Edit on (Edit for "purchase_request": ('renew_until',) only)
@@ -163,6 +164,7 @@ Role "user":
  User is allowed to search for their own files (Search for "file" only)
  User is allowed to search for their own messages (Search for "msg" only)
  User is allowed to search for their queries (Search for "query" only)
+ User is allowed to search user_status (Search for "user": ('status',) only)
  User is allowed to view (some of) their own user details (View for "user": ('activity', 'address', 'alternate_addresses', 'creation', 'csv_delimiter', 'hide_message_files', 'password', 'queries', 'realname', 'subst_until', 'substitute', 'timezone') only)
  User is allowed to view special risks if the PR has appropriate status and the user is creator or owner of the PR or has one of the view roles (View for "purchase_request": ('pr_risks',) only)
  User is allowed to view their own files (View for "file" only)

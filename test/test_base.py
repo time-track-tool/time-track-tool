@@ -1,5 +1,5 @@
-# -*- coding: iso-8859-1 -*-
-# Copyright (C) 2010-13 Ralf Schlatterbeck. All rights reserved
+# -*- coding: utf-8 -*-
+# Copyright (C) 2010-20 Ralf Schlatterbeck. All rights reserved
 # Reichergasse 131, A-3411 Weidling
 # ****************************************************************************
 #
@@ -1981,7 +1981,7 @@ class Test_Case_Timetracker (_Test_Case_Summary) :
         self.assertEqual (lines  [1] [5], '')
         self.assertEqual (lines  [1] [6], 'off')
         self.assertEqual (lines  [1] [7], '7.75')
-        self.assertEqual (lines  [1] [8], '')
+        self.assertEqual (lines  [1] [8], '7.75')
         self.assertEqual (lines  [1] [9], '')
     # end def test_user14_tr_csv
 
@@ -3951,7 +3951,7 @@ class Test_Case_Fulltracker (_Test_Case_Summary) :
             , max_flexitime     = 5
             )
         self.db.clearCache ()
-        self.assertEqual (dr.tr_duration_ok, None)
+        self.assertEqual (dr.tr_duration_ok, 0)
         self.db.user_dynamic.create \
             ( user              = self.user1
             , valid_from        = date.Date ('2008-01-01')
@@ -4238,6 +4238,9 @@ class Test_Case_Fulltracker (_Test_Case_Summary) :
         dr2 = self.db.daily_record.getnode (dr2)
         user_dynamic.update_tr_duration (self.db, dr2)
         self.assertEqual (dr2.tr_duration_ok, 7.5)
+        # Get len of journal
+        l1_1 = len (self.db.getjournal ('daily_record', dr1.id))
+        l2_1 = len (self.db.getjournal ('daily_record', dr2.id))
         self.db.user_dynamic.create \
             ( user              = self.user2
             , valid_from        = date.Date ('2010-01-01')
@@ -4257,7 +4260,16 @@ class Test_Case_Fulltracker (_Test_Case_Summary) :
             )
         self.db.clearCache ()
         self.assertEqual (dr1.tr_duration_ok, 7.75)
-        self.assertEqual (dr2.tr_duration_ok, None)
+        self.assertEqual (dr2.tr_duration_ok, 7.5)
+        # Get len of journal, tr_duration_ok should have been recomputed
+        l1_2 = len (self.db.getjournal ('daily_record', dr1.id))
+        l2_2 = len (self.db.getjournal ('daily_record', dr2.id))
+        # Rec dr1 was *not* updated
+        self.assertEqual (l1_1, l1_2)
+        # Rec dr2 *was* updated due to update of user_dynamic. Since
+        # the *old* user_dynamic record was changed *and* the new one
+        # was created we have more than two updates.
+        self.assertEqual (l2_2 - l2_1 >= 4, True)
     # end def test_user2
 
     def test_user3 (self) :
@@ -4312,12 +4324,6 @@ class Test_Case_Fulltracker (_Test_Case_Summary) :
         user4_time.import_data_4 (self.db, self.user4)
         self.db.close ()
         self.db = self.tracker.open (self.username0)
-        #from roundup.admin import AdminTool
-        #t = AdminTool ()
-        #t.tracker_home = '.'
-        #t.db = self.db
-        #t.verbose = False
-        #t.do_export (['/var/tmp/user4'])
         dr = self.db.daily_record.filter \
             (None, dict (user = self.user4, date = '2012-05-04'))
         self.assertEqual (len (dr), 1)
@@ -4326,7 +4332,7 @@ class Test_Case_Fulltracker (_Test_Case_Summary) :
         self.assertEqual (len (tr), 1)
         tr = self.db.time_record.getnode (tr [0])
         self.assertEqual (tr.duration, 12)
-        self.assertEqual (tr.tr_duration, None)
+        self.assertEqual (round (tr.tr_duration, 2), round (7.804, 2))
         user_dynamic.update_tr_duration (self.db, dr)
         self.assertEqual (round (tr.tr_duration, 2), round (7.804, 2))
         summary.init (self.tracker)
@@ -4839,9 +4845,16 @@ class Test_Case_Fulltracker (_Test_Case_Summary) :
         self.db2.commit ()
         user_dynamic.update_tr_duration (self.db2, dr)
         self.log.debug ("db2.commit - 2 after update_tr_duration")
+        l2 = len (self.db2.getjournal ('daily_record', drid))
         self.db2.commit ()
 
+        l1 = len (self.db1.getjournal ('daily_record', drid))
         self.db1.commit ()
+
+        # Since the update happened immediately after transaction in d1,
+        # the update_tr_duration did nothing and we should not see a
+        # different count here.
+        self.assertEqual (l1, l2)
 
         self.log.debug ("before method")
         method (drid, trid)
@@ -4850,8 +4863,24 @@ class Test_Case_Fulltracker (_Test_Case_Summary) :
 
         self.db1.clearCache ()
 
+        # Verify that the history has grown and that the last element in
+        # the history is value 'None' -- means that the tr_duration_ok
+        # was set to None by some auditor and was automagically
+        # recomputed by the reactor, resulting in the *previous* value
+        # (the one in the journal) to be None
+        j  = list \
+            ( sorted
+                ( self.db1.getjournal ('daily_record', drid)
+                , key = lambda x : x [1]
+                )
+            )
+        l3 = len (j)
+        self.assertEqual (l3 > l1, True)
+        self.assertEqual (j [-1][-1]['tr_duration_ok'], None)
         self.assertEqual \
-            (self.db1.daily_record.get (drid, 'tr_duration_ok'), None)
+            ( self.db1.daily_record.get (drid, 'tr_duration_ok') is not None
+            , True
+            )
     # end def concurrency
 
     def concurrency_create (self, drid, trid) :
@@ -5088,18 +5117,23 @@ class Test_Case_Fulltracker (_Test_Case_Summary) :
         self.db.clearCache ()
 
         trok = self.db.daily_record.get (drid, 'tr_duration_ok')
-        self.assertEqual (trok, None)
+        self.assertEqual (trok, 8)
         self.assertEqual (self.db.time_record.get (trid, 'duration'), 8)
-        self.assertEqual (self.db.time_record.get (trid, 'tr_duration'), None)
+        self.assertEqual (self.db.time_record.get (trid, 'tr_duration'), 8)
+        l1 = len (self.db.getjournal ('daily_record', drid))
         self.db.clearCache ()
 
         dr = self.db.daily_record.getnode (drid)
         user_dynamic.update_tr_duration (self.db, dr)
         self.db.commit ()
         self.db.clearCache ()
+        l2 = len (self.db.getjournal ('daily_record', drid))
         self.assertEqual (self.db.time_record.get (trid, 'duration'), 8)
         self.assertEqual (self.db.time_record.get (trid, 'tr_duration'), 8)
         self.assertEqual (self.db.daily_record.get (drid, 'tr_duration_ok'), 8)
+        # No change in history with update_tr_duration: tr_duration_ok
+        # has already been computed when setting time_record
+        self.assertEqual (l1, l2)
     # end def test_tr_duration
 # end class Test_Case_Fulltracker
 

@@ -122,7 +122,6 @@ def security (db, ** kw) :
         , 'timezone'
         , 'title'
         , 'tt_lines'
-        , 'scale_role'
         , 'scale_seniority'
         , 'vie_user_text'
 	]
@@ -152,6 +151,16 @@ def security (db, ** kw) :
                   )
                 )
             db.security.addPermissionToRole (role, 'Create', 'user_contact')
+    if 'user_functional_role' in db.classes :
+        for role, x in role_perms [:2] :
+            classes.append \
+                ( ( "user_functional_role"
+                  , []
+                  , [role]
+                  )
+                )
+            db.security.addPermissionToRole \
+                (role, 'Create', 'user_functional_role')
     prop_perms = []
     schemadef.register_class_permissions (db, classes, prop_perms)
     fixdoc = schemadef.security_doc_from_docstring
