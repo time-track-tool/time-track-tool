@@ -4278,3 +4278,15 @@ msgstr "Entry date"
 msgid "position_text"
 msgstr "Position (Text)"
 
+msgid "ratio"
+msgstr "Ratio"
+
+msgid "name_group"
+msgstr "Name group"
+
+msgid "functional_role"
+msgstr "Functional role"
+
+msgid "user_functional_role"
+msgstr "Functional role for user"
+

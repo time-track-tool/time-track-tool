@@ -4,7 +4,7 @@
   <tal:block i18n:translate="" tal:condition="context/id"
    tal:define="_update python:utils.sync_from_ldap and
        utils.sync_from_ldap (db._db, str (context.username))">
-   User 
+   User
    <span tal:replace="string:${context/id}: ${context/username}"/>
   </tal:block>
   <tal:block i18n:translate=""
@@ -17,7 +17,7 @@
  </span>
 
  <tal:block metal:fill-slot="create_or_query">
-  <tal:block 
+  <tal:block
    metal:use-macro="templates/page/macros/create_or_query_new_tracker_item"/>
  </tal:block>
 
@@ -435,7 +435,7 @@
      <tr>
        <td/>
        <td tal:condition="python: utils.Size_Limit (db, 'LIMIT_PICTURE_SIZE')"
-           i18n:translate="">max. size of picture: 
+           i18n:translate="">max. size of picture:
          <span tal:content="python:
                utils.Size_Limit (db, 'LIMIT_PICTURE_SIZE')"/>
        </td>
@@ -466,43 +466,68 @@
             )" />
      </td>
     </tr>
-   </tal:block>
+   </tal:block><!-- formatted_class_content -->
+  </tal:block><!-- formatted_class -->
+  <tal:block
+   tal:condition="python:
+       context.id and 'user_functional_role' in db._db.classes"
+   tal:define="frs python:db.user_functional_role.filter
+       (None, {'user' : context.id})">
+    <table class="files" tal:condition="frs">
+     <tr>
+      <th colspan="3" class="header" i18n:translate="">Functional Roles</th>
+     </tr>
+     <tr>
+      <th tal:content="structure python:utils.fieldname
+          ('functional_role', 'name_group')"/>
+      <th tal:content="structure python:utils.fieldname
+          ('functional_role', 'name')"/>
+      <th tal:content="structure python:utils.fieldname
+          ('functional_role', 'ratio')"/>
+     </tr>
+     <tr tal:repeat="fr frs">
+      <td tal:content="fr/functional_role/name_group"/>
+      <td tal:content="fr/functional_role/name"/>
+      <td tal:content="python: '%2.2f%%' % (float (fr.ratio) * 100.)"/>
+     </tr>
+    </table>
   </tal:block>
- </tal:block>
+ </tal:block><!-- content -->
 
- <table class="files"
-  tal:condition="python:
-   (   'pictures' in bclass.properties
-   and context.pictures
-   and context.pictures.is_edit_ok ()
-   )">
-  <tr>
-   <th colspan="4" class="header" i18n:translate="">pictures</th>
-  </tr>
-  <tr>
-   <th tal:content="structure python:utils.fieldname ('file', 'name')"/>
-   <th tal:content="structure python:utils.fieldname ('file', 'creation')"/>
-   <th tal:content="structure python:utils.fieldname ('file', 'type')"/>
-   <th tal:content="structure python:utils.fieldname ('file', 'remove')"/>
-  </tr>
-  <tr tal:repeat="file context/pictures">
-   <td>
-    <img width="112" tal:attributes="src file/download_url">
-   </td>
-   <td>
-    <span tal:content="file/creator">creator's name</span>,
-    <span tal:content="file/creation">creation date</span>
-   </td>
-   <td tal:content="file/type"/>
-   <td>
-    <form style="padding:0"
-          tal:condition="context/is_edit_ok"
-          tal:attributes="action string:user${context/id}">
-     <input type="hidden" name="@remove@pictures" tal:attributes="value file/id">
-     <input type="hidden" name="@action" value="edit">
-     <input type="submit" value="remove">
-    </form>
-   </td>
-  </tr>
- </table>
+  <!-- disabled (wrong position would need to be inside content above) -->
+  <table class="files"
+   tal:condition="python:
+    (   'pictures' in bclass.properties
+    and context.pictures
+    and context.pictures.is_edit_ok ()
+    )">
+   <tr>
+    <th colspan="4" class="header" i18n:translate="">pictures</th>
+   </tr>
+   <tr>
+    <th tal:content="structure python:utils.fieldname ('file', 'name')"/>
+    <th tal:content="structure python:utils.fieldname ('file', 'creation')"/>
+    <th tal:content="structure python:utils.fieldname ('file', 'type')"/>
+    <th tal:content="structure python:utils.fieldname ('file', 'remove')"/>
+   </tr>
+   <tr tal:repeat="file context/pictures">
+    <td>
+     <img width="112" tal:attributes="src file/download_url">
+    </td>
+    <td>
+     <span tal:content="file/creator">creator's name</span>,
+     <span tal:content="file/creation">creation date</span>
+    </td>
+    <td tal:content="file/type"/>
+    <td>
+     <form style="padding:0"
+           tal:condition="context/is_edit_ok"
+           tal:attributes="action string:user${context/id}">
+      <input type="hidden" name="@remove@pictures" tal:attributes="value file/id">
+      <input type="hidden" name="@action" value="edit">
+      <input type="submit" value="remove">
+     </form>
+    </td>
+   </tr>
+  </table>
 </tal:block>

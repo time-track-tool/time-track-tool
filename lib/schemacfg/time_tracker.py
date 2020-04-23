@@ -489,6 +489,7 @@ def init \
         , rank                  = Number    ()
         )
     functional_role.setkey ("name")
+    functional_role.setorderprop ("rank")
 
     user_functional_role = Class \
         ( db, ''"user_functional_role"
