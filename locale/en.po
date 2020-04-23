@@ -4281,6 +4281,9 @@ msgstr "Position (Text)"
 msgid "ratio"
 msgstr "Ratio"
 
+msgid "rank"
+msgstr "Rank"
+
 msgid "name_group"
 msgstr "Name group"
 

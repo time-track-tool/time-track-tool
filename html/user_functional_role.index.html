@@ -1,0 +1,63 @@
+<tal:block metal:use-macro="templates/page/macros/icing">
+<tal:block metal:fill-slot="create_or_query">
+ <tal:block 
+  metal:use-macro="templates/page/macros/create_or_query_new_tracker_item" />
+</tal:block>
+
+<tal:block metal:fill-slot="content">
+ <tal:block tal:define=
+  "batch request/batch;
+   pdict python: utils.properties_dict (db, context);
+   l python:
+    ( ('id',                                  {})
+    , ('ratio',                               {})
+    , ('functional_role', dict (multiselect = 1))
+    , ( 'functional_role', dict
+        ( searchname = 'functional_role.name_group'
+        , searchable = True
+        , sortable   = True
+        )
+      )
+    , ( 'functional_role', dict
+        ( searchname = 'functional_role.rank'
+        , searchable = True
+        , sortable   = True
+        )
+      )
+    , ('user', dict
+       ( help_props = ['firstname', 'lastname', 'nickname']
+       , filter     = dict (status = nosy_stati)
+       )
+      )
+    , ('user', dict
+       ( searchname = 'user.firstname'
+        , searchable = True
+        , sortable   = True
+       )
+      )
+    , ('user', dict
+       ( searchname = 'user.lastname'
+        , searchable = True
+        , sortable   = True
+       )
+      )
+    , ('user', dict
+       ( searchname = 'user.nickname'
+        , searchable = True
+        , sortable   = True
+       )
+      )
+    );
+   props python:
+       [utils.ExtProperty (utils, pdict [k [0]], ** (k [1])) for k in l
+        if k [0] in pdict and
+           utils.search_allowed (db, request, 'user_functional_role', k [0])
+       ];
+   "
+  tal:condition="context/is_view_ok">
+
+  <tal:block metal:use-macro="templates/page/macros/search_results"/>
+  <tal:block metal:use-macro="templates/page/macros/simple_search_form"/>
+ </tal:block>
+</tal:block>
+</tal:block>

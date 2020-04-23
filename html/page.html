@@ -28,7 +28,7 @@
  ; want_files      python: True
  ; has_resp        python: 'responsible' in props
  ; has_nosy        python: 'nosy'        in props
- ; nosy_stati      python: None
+ ; nosy_stati      python: 'valid,valid-ad'
  ; use_labelprop   python: 1
  ; approval_for    python: (   'time_record' in db._db.classes
                            and utils.approval_for (db, True)
@@ -329,6 +329,10 @@
                           '@filter=user.status,contact_type&'
                           '@pagesize=5000&@startwith=0&'
                           'user.status=1&contact_type=2,3,5,6'
+   , ('user_functional_role', '')
+                        : ':columns=id,ratio,functional_role,'
+                          'functional_role.name_group,user,user.firstname,'
+                          'user.lastname&:pagesize=50&:startwith=0'
    , ('vacation_report', '')
                         : '@columns=additional_submitted&@filter=user&'
                           '@pagesize=200&@startwith=0&'
