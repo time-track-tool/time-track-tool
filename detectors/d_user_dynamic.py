@@ -38,11 +38,19 @@ import freeze
 import user_dynamic
 import vacation
 
-def check_ranges (cl, nodeid, user, valid_from, valid_to) :
+def check_ranges (cl, nodeid, user, valid_from, valid_to, allow_same = False) :
+    """ We allow valid_to == valid_from if allow_same is True
+        This results in the record to be retired.
+        Of course the caller will set allow_same = False for new records.
+    """
     if valid_to :
         valid_to.hour   = valid_to.minute   = valid_to.second   = 0
     valid_from.hour     = valid_from.minute = valid_from.second = 0
-    if valid_to and valid_from >= valid_to :
+    if  (   valid_to
+        and (  valid_from > valid_to
+            or (not allow_same and valid_from == valid_to)
+            )
+        ) :
         raise Reject \
             (_ ("valid_from (%(valid_from)s) must be > valid_to (%(valid_to)s)")
             % locals ()
@@ -323,7 +331,8 @@ def check_user_dynamic (db, cl, nodeid, new_values) :
     last = user_dynamic.last_user_dynamic (db, user)
     if 'valid_from' in new_values or 'valid_to' in new_values :
         new_values ['valid_from'], new_values ['valid_to'] = \
-            check_ranges (cl, nodeid, user, val_from, val_to)
+            check_ranges \
+                (cl, nodeid, user, val_from, val_to, allow_same = True)
         val_from = new_values ['valid_from']
         val_to   = new_values ['valid_to']
     if not vac_fix and not flexi_fix :
@@ -548,6 +557,14 @@ def try_fix_vacation (db, cl, nodeid, old_values) :
         to = to - common.day
     vacation.fix_vacation (db, item.user, item.valid_from, to)
 # end def try_fix_vacation
+
+def retire_if_empty_range (db, cl, nodeid, old_values) :
+    """ If valid_from == valid_to retire this record
+    """
+    node = cl.getnode (nodeid)
+    if node.valid_from == node.valid_to :
+        cl.retire (nodeid)
+# end def retire_if_empty_range
 
 def close_existing (db, cl, nodeid, old_values) :
     """ Check if there is already a user_dynamic record with the same
@@ -833,6 +850,7 @@ def init (db) :
     db.user_dynamic.react    ("create", try_fix_vacation)
     db.user_dynamic.audit    ("set",    find_existing_leave)
     db.user_dynamic.audit    ("set",    find_time_records, priority = 120)
+    db.user_dynamic.react    ("set",    retire_if_empty_range, priority = 200)
     db.overtime_period.audit ("create", overtime_check)
     db.overtime_period.audit ("set",    overtime_check)
     db.org_location.audit    ("create", olo_check)
