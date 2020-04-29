@@ -4261,7 +4261,7 @@ msgid "is_extern"
 msgstr "is extern"
 
 msgid "scale_seniority"
-msgstr "Seniority"
+msgstr "Functional Seniority"
 
 msgid "group_external"
 msgstr "Group external"
