@@ -1022,10 +1022,15 @@ def user_create_magic (db, uid, olo, dep) :
     org_location = None
     if olo :
         org_location = db.org_location.getnode (olo)
+    # if we create a new dynamic user record we will use current date
+    # +1 year as valid_from. Otherwise the user would be active and
+    # valid already after the first LDAP sync which is probably before
+    # the start of the contract. HR is editing this date to the correct
+    # start date afterwards.
     if 'user_dynamic' in db.classes and uid > 2 and olo and dep :
         db.user_dynamic.create \
             ( user            = uid
-            , valid_from      = Date ('.')
+            , valid_from      = Date ('+1y')
             , org_location    = olo
             , department      = dep
             , vacation_yearly = 25
