@@ -287,7 +287,9 @@ def init \
         , wp_no                 = String    ()
         , description           = String    ()
         , responsible           = Link      ("user")
-        , project               = Link      ("time_project")
+        , project               = Link      ( "time_project"
+                                            , rev_multilink='wps'
+                                            )
         , time_start            = Date      (offset = 0)
         , time_end              = Date      (offset = 0)
         , planned_effort        = Number    ()
@@ -493,10 +495,13 @@ def init \
 
     user_functional_role = Class \
         ( db, ''"user_functional_role"
-        , user                  = Link      ("user")
+        , user                  = Link      ("user"
+                                            , rev_multilink='planning_role'
+                                            )
         , functional_role       = Link      ("functional_role")
         , ratio                 = Number    ()
         )
+    user_functional_role.setlabelprop ("functional_role")
 
     class User_Class (kw ['User_Class']) :
         """ add some attrs to user class

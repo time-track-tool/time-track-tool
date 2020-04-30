@@ -268,8 +268,9 @@
                           'responsible=%s' % uid
    , ('time_project', '')
                         : '@columns=name,responsible,organisation,cost_center'
-                          ',status&@sort=name&@filter=status&@pagesize=20&'
-                          '@startwith=0&status=1,2'
+                          ',status&@sort=name&@filter=status,wps.bookers&'
+                          '@pagesize=20&@startwith=0&status=1,2'
+                          '&wps.bookers=%s' % uid
    , ('time_record', '')
                         : '@columns=daily_record.user,daily_record.date,'
                           'daily_record.status,wp.project,wp,time_activity,'
