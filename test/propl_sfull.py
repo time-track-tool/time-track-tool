@@ -741,6 +741,7 @@ properties = \
         , 'responsible'
         , 'status'
         , 'work_location'
+        , 'wps'
         ]
       )
     , ( 'time_project_status'
@@ -823,6 +824,7 @@ properties = \
         , 'nickname'
         , 'password'
         , 'pictures'
+        , 'planning_role'
         , 'position'
         , 'position_text'
         , 'queries'

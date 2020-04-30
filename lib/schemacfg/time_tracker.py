@@ -755,7 +755,9 @@ def security (db, ** kw) :
           , ( "id", "sap_cc", "user", "valid_from", "valid_to")
           )
         , ( "user",         "View", ["User"]
-          , ( "timetracking_by", "vie_user_text", "entry_date")
+          , ( "timetracking_by", "vie_user_text", "entry_date"
+            , "planning_role"
+            )
           )
         , ( "user_dynamic", "View", ["User"]
           , ( "org_location", "department")
@@ -1270,6 +1272,7 @@ def security (db, ** kw) :
         , 'is_public_holiday', 'is_vacation', 'is_special_leave'
         , 'creation', 'creator', 'activity', 'actor'
         , 'overtime_reduction', 'only_hours', 'is_extern', 'nosy'
+        , 'wps'
         )
     p = db.security.addPermission \
         ( name        = 'View'
