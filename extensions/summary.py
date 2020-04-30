@@ -626,7 +626,7 @@ class _Report (autosuper) :
             item = self.htmldb [classname].getItem (id)
             prop = getattr (item, propname)
             return self.utils.ExtProperty (self.utils, prop, item = item)
-        except AttributeError :
+        except (AttributeError, TypeError) :
             return self.db.getclass (classname).get (id, propname)
     # end def linked_type
 
