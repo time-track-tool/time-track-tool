@@ -157,8 +157,8 @@ def security (db, ** kw) :
 
     if 'user_dynamic' in db.classes :
 
-        def view_user_dynamic_dom (db, userid, itemid) :
-            """ May only view records with the correct domain
+        def user_dynamic_dom (db, userid, itemid) :
+            """ May only view/edit records with the correct domain
             """
             dyn   = db.user_dynamic.getnode (itemid)
             user  = db.user.getnode (dyn.user)
@@ -168,17 +168,18 @@ def security (db, ** kw) :
                 if dp.ad_domain == user.ad_domain :
                     return True
             return False
-        # end def view_user_dynamic_dom
+        # end def user_dynamic_dom
 
         for role in ("Dom-User-Edit-GTT", "Dom-User-Edit-HR") :
             db.security.addPermissionToRole (role, 'Create', 'user_dynamic')
-            p = db.security.addPermission \
-                ( name        = 'View'
-                , klass       = 'user_dynamic'
-                , check       = view_user_dynamic_dom
-                , description = fixdoc (view_user_dynamic_dom.__doc__)
-                )
-            db.security.addPermissionToRole (role, p)
+            for perm in ('View', 'Edit') :
+                p = db.security.addPermission \
+                    ( name        = perm
+                    , klass       = 'user_dynamic'
+                    , check       = user_dynamic_dom
+                    , description = fixdoc (user_dynamic_dom.__doc__)
+                    )
+                db.security.addPermissionToRole (role, p)
 
     def domain_access_user (db, userid, itemid) :
         """ Users may view/edit user records for ad_domain for which they

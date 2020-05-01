@@ -76,7 +76,8 @@ Role "dom-user-edit-facility":
  Users may view/edit user records for ad_domain for which they are in the domain_permission for the user (View for "user": ['room'] only)
 Role "dom-user-edit-gtt":
   (Search for "user_dynamic" only)
- May only view records with the correct domain (View for "user_dynamic" only)
+ May only view/edit records with the correct domain (Edit for "user_dynamic" only)
+ May only view/edit records with the correct domain (View for "user_dynamic" only)
  User is allowed to create user (Create for "user" only)
  User is allowed to create user_contact (Create for "user_contact" only)
  User is allowed to create user_dynamic (Create for "user_dynamic" only)
@@ -86,7 +87,8 @@ Role "dom-user-edit-gtt":
  Users may view/edit user records for ad_domain for which they are in the domain_permission for the user (View for "user": ['contacts', 'csv_delimiter', 'entry_date', 'firstname', 'hide_message_files', 'job_description', 'lastname', 'lunch_duration', 'lunch_start', 'nickname', 'pictures', 'position', 'position_text', 'room', 'scale_seniority', 'sex', 'status', 'subst_active', 'substitute', 'supervisor', 'sync_foreign_key', 'timezone', 'title', 'tt_lines', 'username', 'vie_user_text'] only)
 Role "dom-user-edit-hr":
   (Search for "user_dynamic" only)
- May only view records with the correct domain (View for "user_dynamic" only)
+ May only view/edit records with the correct domain (Edit for "user_dynamic" only)
+ May only view/edit records with the correct domain (View for "user_dynamic" only)
  User is allowed to create user_contact (Create for "user_contact" only)
  User is allowed to create user_dynamic (Create for "user_dynamic" only)
  User is allowed to edit user_contact (Edit for "user_contact" only)
