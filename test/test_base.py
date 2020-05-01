@@ -110,7 +110,7 @@ def header_decode (h) :
     return header_regex.sub ('', h)
 # end def header_decode
 
-class _Test_Case (unittest.TestCase) :
+class _Test_Case () :
     count = 0
     db = None
     roles = ['admin']
@@ -765,7 +765,7 @@ class _Test_Case_Summary (_Test_Case) :
 # end class _Test_Case_Summary
 
 
-class Test_Case_Support_Timetracker (_Test_Case) :
+class Test_Case_Support_Timetracker (_Test_Case, unittest.TestCase) :
     schemaname = 'sfull'
     roles = \
         [ 'admin', 'adr_readonly', 'anonymous', 'contact', 'controlling'
@@ -781,7 +781,7 @@ class Test_Case_Support_Timetracker (_Test_Case) :
     transprop_perms = transprop_sfull
 # end class Test_Case_Support_Timetracker
 
-class Test_Case_Timetracker (_Test_Case_Summary) :
+class Test_Case_Timetracker (_Test_Case_Summary, unittest.TestCase) :
     schemaname = 'time'
     schemafile = 'time_ldap'
     roles = \
@@ -3497,7 +3497,7 @@ class Test_Case_Timetracker (_Test_Case_Summary) :
 
 # end class Test_Case_Timetracker
 
-class Test_Case_Tracker (_Test_Case) :
+class Test_Case_Tracker (_Test_Case, unittest.TestCase) :
     schemaname = 'track'
     schemafile = 'trackers'
     roles = \
@@ -3512,7 +3512,7 @@ class Test_Case_Tracker (_Test_Case) :
     transprop_perms = transprop_track
 # end class Test_Case_Tracker
 
-class Test_Case_Fulltracker (_Test_Case_Summary) :
+class Test_Case_Fulltracker (_Test_Case_Summary, unittest.TestCase) :
     schemaname = 'full'
     roles = \
         [ 'admin', 'anonymous', 'contact', 'controlling', 'doc_admin'
@@ -5142,7 +5142,7 @@ class Test_Case_Fulltracker (_Test_Case_Summary) :
     # end def test_tr_duration
 # end class Test_Case_Fulltracker
 
-class Test_Case_Abo (_Test_Case) :
+class Test_Case_Abo (_Test_Case, unittest.TestCase) :
     schemaname = 'abo'
     roles = \
         [ 'abo', 'admin', 'adr_readonly', 'anonymous', 'contact'
@@ -5151,7 +5151,7 @@ class Test_Case_Abo (_Test_Case) :
     transprop_perms = transprop_abo
 # end class Test_Case_Abo
 
-class Test_Case_Adr (_Test_Case) :
+class Test_Case_Adr (_Test_Case, unittest.TestCase) :
     schemaname = 'adr'
     roles = \
         [ 'admin', 'adr_readonly', 'anonymous', 'contact', 'letter'
@@ -5160,7 +5160,7 @@ class Test_Case_Adr (_Test_Case) :
     transprop_perms = transprop_adr
 # end class Test_Case_Adr
 
-class Test_Case_ERP (_Test_Case) :
+class Test_Case_ERP (_Test_Case, unittest.TestCase) :
     schemaname = 'erp'
     roles = \
         [ 'admin', 'adr_readonly', 'anonymous', 'contact', 'discount'
@@ -5169,7 +5169,7 @@ class Test_Case_ERP (_Test_Case) :
     transprop_perms = transprop_erp
 # end class Test_Case_ERP
 
-class Test_Case_IT (_Test_Case) :
+class Test_Case_IT (_Test_Case, unittest.TestCase) :
     schemaname = 'it'
     roles = \
         [ 'admin', 'anonymous'
@@ -5179,7 +5179,7 @@ class Test_Case_IT (_Test_Case) :
         ]
 # end class Test_Case_IT
 
-class Test_Case_ITAdr (_Test_Case) :
+class Test_Case_ITAdr (_Test_Case, unittest.TestCase) :
     schemaname = 'itadr'
     roles = \
         [ 'admin', 'adr_readonly', 'anonymous', 'contact', 'it'
@@ -5190,7 +5190,7 @@ class Test_Case_ITAdr (_Test_Case) :
     transprop_perms = transprop_itadr
 # end class Test_Case_ITAdr
 
-class Test_Case_Kvats (_Test_Case) :
+class Test_Case_Kvats (_Test_Case, unittest.TestCase) :
     schemaname = 'kvats'
     roles = \
         [ 'admin', 'anonymous', 'issue_admin'
@@ -5199,13 +5199,13 @@ class Test_Case_Kvats (_Test_Case) :
     transprop_perms = transprop_kvats
 # end class Test_Case_Kvats
 
-class Test_Case_Lielas (_Test_Case) :
+class Test_Case_Lielas (_Test_Case, unittest.TestCase) :
     schemaname = 'lielas'
     roles = ['admin', 'anonymous', 'guest', 'logger', 'user', 'user_view']
     transprop_perms = transprop_lielas
 # end class Test_Case_Lielas
 
-class Test_Case_PR (_Test_Case) :
+class Test_Case_PR (_Test_Case, unittest.TestCase) :
     schemaname = 'pr'
     roles = \
         [ 'admin', 'anonymous', 'board', 'controlling'
