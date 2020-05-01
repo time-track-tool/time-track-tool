@@ -45,6 +45,9 @@ transprop_perms = \
     , ( 'time_project.organisation.id'
       , ['admin', 'controlling', 'procurement', 'project', 'project_view']
       )
+    , ( 'time_project.wps.bookers'
+      , ['admin', 'contact', 'controlling', 'doc_admin', 'facility', 'functional-role', 'hr', 'hr-leave-approval', 'hr-vacation', 'issue_admin', 'it', 'itview', 'msgedit', 'msgsync', 'office', 'organisation', 'procurement', 'project', 'project_view', 'sec-incident-nosy', 'sec-incident-responsible', 'summary_view', 'supportadmin', 'time-report', 'type', 'user']
+      )
     , ( 'time_record.daily_record.date'
       , ['admin', 'contact', 'controlling', 'doc_admin', 'facility', 'functional-role', 'hr', 'hr-leave-approval', 'hr-vacation', 'issue_admin', 'it', 'itview', 'msgedit', 'msgsync', 'office', 'organisation', 'procurement', 'project', 'project_view', 'sec-incident-nosy', 'sec-incident-responsible', 'summary_view', 'supportadmin', 'time-report', 'type', 'user']
       )
@@ -56,5 +59,8 @@ transprop_perms = \
       )
     , ( 'time_record.wp.project'
       , ['admin', 'contact', 'controlling', 'doc_admin', 'facility', 'functional-role', 'hr', 'hr-leave-approval', 'hr-vacation', 'issue_admin', 'it', 'itview', 'msgedit', 'msgsync', 'office', 'organisation', 'procurement', 'project', 'project_view', 'sec-incident-nosy', 'sec-incident-responsible', 'summary_view', 'supportadmin', 'time-report', 'type', 'user']
+      )
+    , ( 'user.planning_role.functional_role'
+      , ['admin', 'functional-role']
       )
     ]

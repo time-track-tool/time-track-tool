@@ -5,6 +5,9 @@ transprop_perms = \
     , ( 'time_project.organisation.id'
       , ['admin', 'controlling', 'procurement', 'project', 'project_view']
       )
+    , ( 'time_project.wps.bookers'
+      , ['admin', 'controlling', 'doc_admin', 'dom-user-edit-facility', 'dom-user-edit-gtt', 'dom-user-edit-hr', 'dom-user-edit-office', 'facility', 'functional-role', 'hr', 'hr-leave-approval', 'hr-vacation', 'it', 'office', 'organisation', 'pgp', 'procurement', 'project', 'project_view', 'summary_view', 'time-report', 'user', 'user_view']
+      )
     , ( 'time_record.daily_record.date'
       , ['admin', 'controlling', 'doc_admin', 'dom-user-edit-facility', 'dom-user-edit-gtt', 'dom-user-edit-hr', 'dom-user-edit-office', 'facility', 'functional-role', 'hr', 'hr-leave-approval', 'hr-vacation', 'it', 'office', 'organisation', 'pgp', 'procurement', 'project', 'project_view', 'summary_view', 'time-report', 'user', 'user_view']
       )
@@ -16,5 +19,8 @@ transprop_perms = \
       )
     , ( 'time_record.wp.project'
       , ['admin', 'controlling', 'doc_admin', 'dom-user-edit-facility', 'dom-user-edit-gtt', 'dom-user-edit-hr', 'dom-user-edit-office', 'facility', 'functional-role', 'hr', 'hr-leave-approval', 'hr-vacation', 'it', 'office', 'organisation', 'pgp', 'procurement', 'project', 'project_view', 'summary_view', 'time-report', 'user', 'user_view']
+      )
+    , ( 'user.planning_role.functional_role'
+      , ['admin', 'functional-role']
       )
     ]
