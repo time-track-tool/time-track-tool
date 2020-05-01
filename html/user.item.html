@@ -487,7 +487,10 @@
      </tr>
      <tr tal:repeat="fr frs">
       <td tal:content="fr/functional_role/name_group"/>
-      <td tal:content="fr/functional_role/name"/>
+      <td tal:content="structure python:utils.ExtProperty
+          ( utils, fr.functional_role
+          , item = fr
+          ).formatlink ()"/>
       <td tal:content="python: '%2.2f%%' % (float (fr.ratio) * 100.)"/>
      </tr>
     </table>

@@ -45,5 +45,25 @@
    </tal:block>
   </tal:block>
  </tal:block>
+    <div tal:condition="python:
+        not context.is_retired () and context.is_retire_ok ()">
+     <div>
+      <form method="POST" style="padding:0"
+            tal:attributes="action string:user_functional_role${context/id}">
+       <input type="hidden" name="@action" value="retire">
+       <input type="submit" value="Retire">
+      </form>
+     </div>
+    </div>
+    <div tal:condition="python:
+        context.is_retired () and context.is_restore_ok ()">
+     <div>
+      <form method="POST" style="padding:0"
+            tal:attributes="action string:user_functional_role${context/id}">
+       <input type="hidden" name="@action" value="restore">
+       <input type="submit" value="Restore">
+      </form>
+     </div>
+    </div>
  </tal:block>
 </tal:block>
