@@ -581,6 +581,8 @@ def security (db, ** kw) :
         , ("Summary_View",      "View full summary report and all WPs")
         , ("Office",            "Office")
         , ("Time-Report",       "External time reports")
+        , ("Functional-Role",   "Editing of functional role related items")
+        , ("Organisation",      "Editing of organisation-related items")
         ]
 
     #     classname
@@ -720,8 +722,20 @@ def security (db, ** kw) :
           , []
           )
         , ( "user_functional_role"
-          , ["User"]
-          , []
+          , ["functional-role"]
+          , ["functional-role"]
+          )
+        , ( "organisation"
+          , ["Organisation"]
+          , ["Organisation"]
+          )
+        , ( "location"
+          , ["Organisation"]
+          , ["Organisation"]
+          )
+        , ( "org_location"
+          , ["Organisation"]
+          , ["Organisation"]
           )
         ]
 
@@ -825,6 +839,15 @@ def security (db, ** kw) :
             return owner.timetracking_by == userid
         return userid == ownerid
     # end def own_time_record
+
+    def own_user_functional_role (db, userid, itemid) :
+        """User may view their own user functional role
+        """
+        if int (itemid) < 0 : # allow creation
+            return True
+        ownerid = db.user_functional_role.get (itemid, 'user')
+        return userid == ownerid
+    # end def own_user_functional_role
 
     def own_leave_submission (db, userid, itemid) :
         """ User may edit own leave submissions. """
@@ -1381,4 +1404,12 @@ def security (db, ** kw) :
         , description = fixdoc (time_report_visible.__doc__)
         )
     db.security.addPermissionToRole ('User', p)
+    p = db.security.addPermission \
+        ( name        = 'View'
+        , klass       = 'user_functional_role'
+        , check       = own_user_functional_role
+        , description = fixdoc (own_user_functional_role.__doc__)
+        )
+    db.security.addPermissionToRole ('User', p)
+
 # end def security

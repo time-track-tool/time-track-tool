@@ -81,6 +81,10 @@ Role "doc_admin":
 Role "facility":
  User is allowed to create room (Create for "room" only)
  User is allowed to edit room (Edit for "room" only)
+Role "functional-role":
+ User is allowed to access user_functional_role (View for "user_functional_role" only)
+ User is allowed to create user_functional_role (Create for "user_functional_role" only)
+ User is allowed to edit user_functional_role (Edit for "user_functional_role" only)
 Role "hr":
   (Edit for "overtime_period": ('name', 'order') only)
  User is allowed Edit on (Edit for "daily_record": ('required_overtime', 'weekend_allowed') only)
@@ -236,6 +240,16 @@ Role "office":
  User is allowed to edit absence (Edit for "absence" only)
  User is allowed to edit absence_type (Edit for "absence_type" only)
  User is allowed to edit room (Edit for "room" only)
+Role "organisation":
+ User is allowed to access location (View for "location" only)
+ User is allowed to access org_location (View for "org_location" only)
+ User is allowed to access organisation (View for "organisation" only)
+ User is allowed to create location (Create for "location" only)
+ User is allowed to create org_location (Create for "org_location" only)
+ User is allowed to create organisation (Create for "organisation" only)
+ User is allowed to edit location (Edit for "location" only)
+ User is allowed to edit org_location (Edit for "org_location" only)
+ User is allowed to edit organisation (Edit for "organisation" only)
 Role "procurement":
   (View for "sap_cc" only)
   (View for "time_project" only)
@@ -401,7 +415,6 @@ Role "user":
  User is allowed to access time_wp_group (View for "time_wp_group" only)
  User is allowed to access time_wp_summary_no (View for "time_wp_summary_no" only)
  User is allowed to access timesheet (View for "timesheet" only)
- User is allowed to access user_functional_role (View for "user_functional_role" only)
  User is allowed to access user_status (View for "user_status" only)
  User is allowed to access vac_aliq (View for "vac_aliq" only)
  User is allowed to access vacation_report (View for "vacation_report" only)
@@ -460,6 +473,7 @@ Role "user":
  User may see time report if reponsible or deputy of time project or on nosy list of time project (View for "time_report" only)
  User may use the email interface (Email Access)
  User may view a daily_record (and time_records that are attached to that daily_record) if the user owns the daily_record or has role 'HR' or 'Controlling', or the user is supervisor or substitute supervisor of the owner of the daily record (the supervisor relationship is transitive) or the user is the department manager of the owner of the daily record. If user has role HR-Org-Location and is in the same Org-Location as the record, it may also be seen (View for "daily_record" only)
+ User may view their own user functional role (View for "user_functional_role" only)
  User may view time category if user is owner or deputy of time category or on nosy list of time category or if user is department manager of time category (View for "time_project" only)
  User may view work package if responsible for it, if user is owner or deputy of time category or on nosy list of time category or if user is department manager of time category (View for "time_wp" only)
  User or Timetracking by user may edit time_records owned by user (Edit for "time_record" only)
