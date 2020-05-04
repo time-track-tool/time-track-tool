@@ -408,7 +408,11 @@ class Product_Sync (object) :
     # end def verbose
 
     def warn (self, text) :
-        print ('Warning: %s' % text)
+        """ For automating in cron we also show warnings only in verbose
+            mode.
+        """
+        if self.args.verbose :
+            print ('Warning: %s' % text)
     # end def warn
 
 # end class Product_Sync
