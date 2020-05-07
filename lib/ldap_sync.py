@@ -831,10 +831,13 @@ class LDAP_Roundup_Sync (object) :
             assert len (uids) == 1
             uid = uids [0]
         else :
-            try :
-                uid   = self.db.user.lookup  (username)
-            except KeyError :
-                pass
+            # Try with full username and with username without domain
+            for u in (username, username.split ('@') [0]) :
+                try :
+                    uid   = self.db.user.lookup  (u)
+                    break
+                except KeyError :
+                    pass
         user  = uid and self.db.user.getnode (uid)
         if user and not luser and user.guid :
             luser = self.get_ldap_user_by_guid (fromhex (user.guid))
@@ -902,26 +905,27 @@ class LDAP_Roundup_Sync (object) :
                     uid = self.db.user.create (** d)
                     changed = True
                     # Perform user creation magic for new user
-                    olo = dep = None
-                    if 'company' in luser :
-                        olo = luser ['company'][0]
-                        try :
-                            olo = self.db.org_location.lookup (olo)
-                        except KeyError :
-                            olo = None
-                    if 'department' in luser :
-                        dep = luser ['department'][0]
-                        try :
-                            dep = self.db.department.lookup (dep)
-                        except KeyError :
-                            dep = None
-                    if self.verbose :
-                        print \
-                            ( "Dynamic user create magic: %s, "
-                              "org_location: %s, department: %s"
-                            % (username, olo, dep)
-                            )
-                    user_dynamic.user_create_magic (self.db, uid, olo, dep)
+                    if 'org_location' in self.db.classes :
+                        olo = dep = None
+                        if 'company' in luser :
+                            olo = luser ['company'][0]
+                            try :
+                                olo = self.db.org_location.lookup (olo)
+                            except KeyError :
+                                olo = None
+                        if 'department' in luser :
+                            dep = luser ['department'][0]
+                            try :
+                                dep = self.db.department.lookup (dep)
+                            except KeyError :
+                                dep = None
+                        if self.verbose :
+                            print \
+                                ( "Dynamic user create magic: %s, "
+                                  "org_location: %s, department: %s"
+                                % (username, olo, dep)
+                                )
+                        user_dynamic.user_create_magic (self.db, uid, olo, dep)
         if changed and self.update_roundup :
             self.db.commit ()
     # end def sync_user_from_ldap

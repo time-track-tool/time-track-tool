@@ -120,7 +120,10 @@ def new_user (db, cl, nodeid, new_values) :
         return
     # status set to a value different from valid: no checks
     if 'user_status' in db.classes :
-        valid = db.user_status.lookup ('valid')
+        try :
+            valid = db.user_status.lookup ('valid')
+        except KeyError :
+            valid = db.user_status.filter (None, dict (name = 'valid')) [0]
         if 'status' not in new_values :
             new_values ['status'] = valid
         if not is_valid_user_status (db, new_values) :

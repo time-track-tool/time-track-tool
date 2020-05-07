@@ -6,7 +6,7 @@ Upgrade and configuration script for:
  - Providing roles for subsidiaries to sync users
 """
 
-__author__ = "Ralf Schaltterbeck, Robert Klonner"
+__author__ = "Ralf Schlatterbeck, Robert Klonner"
 
 import logging
 import os
