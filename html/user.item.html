@@ -470,8 +470,8 @@
   </tal:block><!-- formatted_class -->
   <tal:block
    tal:condition="python:
-       context.id and 'user_functional_role' in db._db.classes"
-   tal:define="frs python:db.user_functional_role.filter
+       context.id and 'user_functional_role' in db._db.classes">
+   <tal:block tal:define="frs python:db.user_functional_role.filter
        (None, {'user' : context.id})">
     <table class="files" tal:condition="frs">
      <tr>
@@ -494,6 +494,7 @@
       <td tal:content="python: '%2.2f%%' % (float (fr.ratio) * 100.)"/>
      </tr>
     </table>
+   </tal:block>
   </tal:block>
  </tal:block><!-- content -->
 
