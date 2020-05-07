@@ -141,11 +141,14 @@ def security (db, ** kw) :
           , ["IT"]
           , ["IT"]
           )
-        , ( "contract_type"
-          , ["Dom-User-Edit-GTT", "Dom-User-Edit-HR"]
-          , []
-          )
         ]
+    if 'contract_type' in db.classes :
+        classes.append \
+            ( ( "contract_type"
+              , ["Dom-User-Edit-GTT", "Dom-User-Edit-HR"]
+              , []
+              )
+            )
     if 'user_contact' in db.classes :
         for role, x in role_perms [:3] :
             classes.append \
