@@ -145,26 +145,19 @@
      <tr tal:condition="python:'contacts' in props">
       <th tal:content="structure python:utils.fieldname('user', 'contacts')"/>
       <td colspan="3">
-       <table class="form" border="0"
-              style="border-spacing:0px;padding-top:0px;padding-left:0px">
+       <table class="form inner-form">
         <tr>
-         <th style="text-align:left"
-             tal:content="structure python:utils.fieldname
+         <th tal:content="structure python:utils.fieldname
              ('user_contact', 'contact_type')"/>
-         <th style="text-align:left"
-             tal:content="structure python:utils.fieldname
+         <th tal:content="structure python:utils.fieldname
              ('user_contact', 'contact')" class="required"/>
-         <th style="text-align:left"
-             tal:content="structure python:utils.fieldname
+         <th tal:content="structure python:utils.fieldname
              ('user_contact', 'order')"/>
-         <th style="text-align:left"
-             tal:content="structure python:utils.fieldname
+         <th tal:content="structure python:utils.fieldname
              ('user_contact', 'description')"/>
-         <th style="text-align:left"
-             tal:content="structure python:utils.fieldname
+         <th tal:content="structure python:utils.fieldname
              ('user_contact', 'visible')"/>
-         <th style="text-align:left"
-             tal:condition="context/contacts/is_edit_ok" i18n:translate="">
+         <th tal:condition="context/contacts/is_edit_ok" i18n:translate="">
              remove
          </th>
         </tr>
@@ -172,8 +165,7 @@
             ( context.contacts
             , key = lambda x : (x.contact_type.order, x.order, x.contact)
             )">
-         <th style="vertical-align:top;text-align:left"
-             tal:content="structure python:utils.ExtProperty
+         <th tal:content="structure python:utils.ExtProperty
              (utils, ct.contact_type, item = ct).formatlink () + '&nbsp;'"/>
          <td>
           <a tal:condition="python: ct.contact_type.url_template"
@@ -231,6 +223,33 @@
           ('user', 'scale_seniority')"/>
       <td tal:content="structure context/scale_seniority/field"/>
      </tr>
+     <tal:block
+      tal:condition="python:
+          context.id and 'user_functional_role' in db._db.classes">
+      <tr tal:condition="python:context.planning_role">
+       <th i18n:translate="">Functional Roles</th>
+       <td colspan="3">
+        <table class="form inner-form">
+         <tr>
+          <th tal:content="structure python:utils.fieldname
+              ('functional_role', 'name_group')"/>
+          <th tal:content="structure python:utils.fieldname
+              ('functional_role', 'name')"/>
+          <th tal:content="structure python:utils.fieldname
+              ('functional_role', 'ratio')"/>
+         </tr>
+         <tr tal:repeat="fr context/planning_role">
+          <td tal:content="fr/functional_role/name_group"/>
+          <td tal:content="structure python:utils.ExtProperty
+              ( utils, fr.functional_role
+              , item = fr
+              ).formatlink ()"/>
+          <td tal:content="python: '%2.2f%%' % (float (fr.ratio) * 100.)"/>
+         </tr>
+        </table>
+       </td>
+      </tr>
+     </tal:block>
      <tr tal:condition="python:'supervisor' in bclass.properties">
       <th tal:content="structure python:utils.fieldname('user', 'supervisor')"/>
       <td>
@@ -468,34 +487,6 @@
     </tr>
    </tal:block><!-- formatted_class_content -->
   </tal:block><!-- formatted_class -->
-  <tal:block
-   tal:condition="python:
-       context.id and 'user_functional_role' in db._db.classes">
-   <tal:block tal:define="frs python:db.user_functional_role.filter
-       (None, {'user' : context.id})">
-    <table class="files" tal:condition="frs">
-     <tr>
-      <th colspan="3" class="header" i18n:translate="">Functional Roles</th>
-     </tr>
-     <tr>
-      <th tal:content="structure python:utils.fieldname
-          ('functional_role', 'name_group')"/>
-      <th tal:content="structure python:utils.fieldname
-          ('functional_role', 'name')"/>
-      <th tal:content="structure python:utils.fieldname
-          ('functional_role', 'ratio')"/>
-     </tr>
-     <tr tal:repeat="fr frs">
-      <td tal:content="fr/functional_role/name_group"/>
-      <td tal:content="structure python:utils.ExtProperty
-          ( utils, fr.functional_role
-          , item = fr
-          ).formatlink ()"/>
-      <td tal:content="python: '%2.2f%%' % (float (fr.ratio) * 100.)"/>
-     </tr>
-    </table>
-   </tal:block>
-  </tal:block>
  </tal:block><!-- content -->
 
   <!-- disabled (wrong position would need to be inside content above) -->
