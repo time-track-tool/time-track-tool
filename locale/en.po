@@ -4291,7 +4291,7 @@ msgid "functional_role"
 msgstr "Functional role"
 
 msgid "user_functional_role"
-msgstr "Functional role for user"
+msgstr "Functional role of user"
 
 msgid "planning_role"
 msgstr "Planning role"
