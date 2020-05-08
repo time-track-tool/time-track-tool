@@ -158,6 +158,20 @@ def security (db, ** kw) :
                   )
                 )
             db.security.addPermissionToRole (role, 'Create', 'user_contact')
+    if 'user_functional_role' in db.classes :
+        classes.append \
+            ( ( "user_functional_role"
+              , ["Dom-User-Edit-HR"]
+              , ["Dom-User-Edit-HR"]
+              )
+            )
+        # Only for Dom-User-Edit-HR
+        for perm in 'Retire', 'Restore' :
+            p = db.security.addPermission \
+                ( name        = perm
+                , klass       = 'user_functional_role'
+                )
+            db.security.addPermissionToRole ("Dom-User-Edit-HR", p)
     prop_perms = []
     schemadef.register_class_permissions (db, classes, prop_perms)
     fixdoc = schemadef.security_doc_from_docstring

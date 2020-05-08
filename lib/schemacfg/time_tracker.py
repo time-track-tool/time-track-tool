@@ -773,6 +773,10 @@ def security (db, ** kw) :
             , "planning_role"
             )
           )
+        , ( "user",         "Edit", ["Functional-Role"]
+          , ( "scale_seniority",
+            )
+          )
         , ( "user_dynamic", "View", ["User"]
           , ( "org_location", "department")
           )
@@ -780,6 +784,14 @@ def security (db, ** kw) :
 
     schemadef.register_roles             (db, roles)
     schemadef.register_class_permissions (db, classes, prop_perms)
+
+    # Allow retire/restore for Functional-Role
+    for perm in 'Retire', 'Restore' :
+        p = db.security.addPermission \
+            ( name        = perm
+            , klass       = 'user_functional_role'
+            )
+        db.security.addPermissionToRole ('Functional-Role', p)
 
     # For the following the use is regulated by auditors.
     db.security.addPermissionToRole ('User', 'Create', 'time_record')

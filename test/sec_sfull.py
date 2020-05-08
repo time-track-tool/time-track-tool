@@ -82,6 +82,9 @@ Role "facility":
  User is allowed to create room (Create for "room" only)
  User is allowed to edit room (Edit for "room" only)
 Role "functional-role":
+  (Restore for "user_functional_role" only)
+  (Retire for "user_functional_role" only)
+ User is allowed Edit on (Edit for "user": ('scale_seniority',) only)
  User is allowed to access user_functional_role (View for "user_functional_role" only)
  User is allowed to create user_functional_role (Create for "user_functional_role" only)
  User is allowed to edit user_functional_role (Edit for "user_functional_role" only)
@@ -453,7 +456,7 @@ Role "user":
  User is allowed to search support (Search for "support" only)
  User is allowed to search time_record (Search for "time_record" only)
  User is allowed to search time_wp (Search for "time_wp": ('activity', 'actor', 'cost_center', 'creation', 'creator', 'description', 'durations_allowed', 'epic_key', 'has_expiration_date', 'id', 'is_extern', 'is_public', 'name', 'project', 'responsible', 'time_end', 'time_start', 'time_wp_summary_no', 'travel', 'wp_no') only)
- User is allowed to search user_status (Search for "user": (\'status\',) only)
+ User is allowed to search user_status (Search for "user": ('status',) only)
  User is allowed to see time record if he is allowed to see all details on work package or User may view a daily_record (and time_records that are attached to that daily_record) if the user owns the daily_record or has role 'HR' or 'Controlling', or the user is supervisor or substitute supervisor of the owner of the daily record (the supervisor relationship is transitive) or the user is the department manager of the owner of the daily record. If user has role HR-Org-Location and is in the same Org-Location as the record, it may also be seen (View for "time_record" only)
  User is allowed to view leave submission if he is the supervisor or the person to whom approvals are delegated (Edit for "leave_submission": ('status',) only)
  User is allowed to view leave submission if he is the supervisor or the person to whom approvals are delegated (View for "leave_submission" only)

@@ -127,13 +127,13 @@ properties = \
       )
     , ( 'contract_type'
       , [ ( 'description'
-          , ['admin', 'controlling', 'hr', 'hr-leave-approval', 'hr-vacation']
+          , ['admin', 'controlling', 'dom-user-edit-gtt', 'dom-user-edit-hr', 'hr', 'hr-leave-approval', 'hr-vacation']
           )
         , ( 'name'
-          , ['admin', 'controlling', 'hr', 'hr-leave-approval', 'hr-vacation']
+          , ['admin', 'controlling', 'dom-user-edit-gtt', 'dom-user-edit-hr', 'hr', 'hr-leave-approval', 'hr-vacation']
           )
         , ( 'order'
-          , ['admin', 'controlling', 'hr', 'hr-leave-approval', 'hr-vacation']
+          , ['admin', 'controlling', 'dom-user-edit-gtt', 'dom-user-edit-hr', 'hr', 'hr-leave-approval', 'hr-vacation']
           )
         ]
       )
@@ -1922,7 +1922,7 @@ properties = \
           , ['admin', 'contact', 'controlling', 'doc_admin', 'dom-user-edit-facility', 'dom-user-edit-gtt', 'dom-user-edit-hr', 'dom-user-edit-office', 'facility', 'functional-role', 'hr', 'hr-leave-approval', 'hr-vacation', 'issue_admin', 'it', 'itview', 'msgedit', 'msgsync', 'office', 'organisation', 'pgp', 'procurement', 'project', 'project_view', 'sec-incident-nosy', 'sec-incident-responsible', 'summary_view', 'supportadmin', 'time-report', 'user', 'user_view']
           )
         , ( 'planning_role'
-          , ['admin', 'functional-role']
+          , ['admin', 'dom-user-edit-hr', 'functional-role']
           )
         , ( 'position'
           , ['admin', 'contact', 'controlling', 'doc_admin', 'dom-user-edit-facility', 'dom-user-edit-gtt', 'dom-user-edit-hr', 'dom-user-edit-office', 'facility', 'functional-role', 'hr', 'hr-leave-approval', 'hr-vacation', 'issue_admin', 'it', 'itview', 'msgedit', 'msgsync', 'office', 'organisation', 'pgp', 'procurement', 'project', 'project_view', 'sec-incident-nosy', 'sec-incident-responsible', 'summary_view', 'supportadmin', 'time-report', 'user', 'user_view']
@@ -2024,7 +2024,7 @@ properties = \
           , ["admin", "dom-user-edit-gtt", "dom-user-edit-hr", "hr", "hr-org-location"]
           )
         , ( 'contract_type'
-          , ["admin", "hr"]
+          , ['admin', 'dom-user-edit-gtt', 'dom-user-edit-hr', 'hr']
           )
         , ( 'daily_worktime'
           , ["admin", "dom-user-edit-gtt", "dom-user-edit-hr", "hr", "hr-org-location"]
@@ -2109,13 +2109,13 @@ properties = \
       )
     , ( 'user_functional_role'
       , [ ( 'functional_role'
-          , ['admin', 'functional-role']
+          , ['admin', 'dom-user-edit-hr', 'functional-role']
           )
         , ( 'ratio'
-          , ['admin', 'functional-role']
+          , ['admin', 'dom-user-edit-hr', 'functional-role']
           )
         , ( 'user'
-          , ['admin', 'functional-role']
+          , ['admin', 'dom-user-edit-hr', 'functional-role']
           )
         ]
       )
