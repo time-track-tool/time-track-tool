@@ -2350,6 +2350,8 @@ _helptext          = \
       [""'''Flag if booking on weekends is allowed for this %(Classname)s.''']
     , ""'weekly_hours'                :
       [""'''Expected weekly work-time for %(Classname)s.''']
+    , ""'weekly_hours_fte'            :
+      [""'''Weekly full time equivalent hours for %(Classname)s.''']
     , ""'wp'                          :
       [ ""'''Only work packages where you have permission to register show
              here. If you miss one, please contact the responsible project

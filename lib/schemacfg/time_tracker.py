@@ -48,7 +48,6 @@ def init \
     , Boolean
     , Number
     , Department_Class
-    , Location_Class
     , Organisation_Class
     , Time_Project_Status_Class
     , SAP_CC_Class
@@ -556,10 +555,23 @@ def init \
     export.update (dict (Org_Location_Class = Org_Location_Class))
     Org_Location_Class (db, ''"org_location")
 
+    class Location_Class (kw ['Location_Class']) :
+        """ Add some attributes needed for time tracker
+        """
+        def __init__ (self, db, classname, ** properties) :
+            ancestor = kw ['Location_Class']
+            self.update_properties \
+                ( weekly_hours_fte           = Number    ()
+                )
+            ancestor.__init__ (self, db, classname, ** properties)
+        # end def __init__
+    # end class Location_Class
+    export.update (dict (Location_Class = Location_Class))
+    Location_Class     (db, ''"location")
+
     # Some classes defined elsewhere which are required (and possibly
     # extended in several other include files)
     Department_Class   (db, ''"department")
-    Location_Class     (db, ''"location")
     Organisation_Class (db, ''"organisation")
 
     return export

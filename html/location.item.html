@@ -41,6 +41,11 @@
     </tr>
     <tr>
      <th tal:content="structure python:utils.fieldname
+         (classname, 'weekly_hours_fte')"/>
+     <td tal:content="structure python:context.weekly_hours_fte.field ()"/>
+    </tr>
+    <tr>
+     <th tal:content="structure python:utils.fieldname
          (classname, 'domain_part')"/>
      <td tal:content="structure python:context.domain_part.field ()"/>
     </tr>

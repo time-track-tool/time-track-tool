@@ -4299,3 +4299,6 @@ msgstr "Planning role"
 msgid "department_temp"
 msgstr "Department (temp)"
 
+msgid "weekly_hours_fte"
+msgstr "Weekly hours FTE"
+
