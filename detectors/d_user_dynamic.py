@@ -314,6 +314,11 @@ def check_user_dynamic (db, cl, nodeid, new_values) :
         )
     flexi_fix = \
         new_values.keys () == ['max_flexitime'] and old_flexmax is None
+    exemption = \
+        (   list (new_values.keys ()) == ['exemption']
+        and new_values ['exemption'] == False
+        and db.getuid () == '1'
+        )
     if  (   freeze.frozen (db, user, old_from)
         and (  new_values.keys () != ['valid_to']
             or not val_to
@@ -326,6 +331,7 @@ def check_user_dynamic (db, cl, nodeid, new_values) :
             )
         and (db.getuid () != '1' or not flexi_fix)
         and not vac_fix
+        and not exemption
         ) :
         raise Reject (_ ("Frozen: %(old_from)s") % locals ())
     last = user_dynamic.last_user_dynamic (db, user)
@@ -525,6 +531,9 @@ def user_dyn_react (db, cl, nodeid, old_values) :
     if len (ud) == 1 :
         assert ud [0] == nodeid
         year = dyn.valid_from.get_tuple () [0]
+        # Probably something ancient being modified during an update:
+        if dyn.vacation_month is None or dyn.vacation_day is None :
+            return
         date = Date \
             ('%s-%02d-%02d' % (year, dyn.vacation_month, dyn.vacation_day))
         vc = db.vacation_correction.filter (None, dict (user = dyn.user))

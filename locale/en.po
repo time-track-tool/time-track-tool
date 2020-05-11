@@ -4302,3 +4302,8 @@ msgstr "Department (temp)"
 msgid "weekly_hours_fte"
 msgstr "Weekly hours FTE"
 
+msgid "exemption"
+msgstr "Exemption"
+
+msgid "short_term_work_hours"
+msgstr "Short-term work hours"

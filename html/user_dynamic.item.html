@@ -217,6 +217,15 @@
          )"/>
       </td>
      </tr>
+     <tr>
+      <th tal:content="structure python:utils.fieldname
+          (classname, 'exemption')"/>
+      <td tal:content="structure python:context.exemption.field ()"/>
+      <th tal:content="structure python:utils.fieldname
+          (classname, 'short_term_work_hours')"/>
+      <td tal:content="structure python:
+          context.short_term_work_hours.field ()"/>
+     </tr>
     </tal:block>
    </tal:block>
   </tal:block>

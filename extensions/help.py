@@ -779,6 +779,11 @@ _helptext          = \
              we get for one Euro)
           '''
       ]
+    , ""'exemption'                   :
+      [ ""'''Select yes, if exempted. If selected, this person is not
+             available in the staff planning.
+          '''
+      ]
     , ""'ext_attributes'              :
       [""'''Attribute values from latest synchronisation with external
             tracker. Values are stored as JSON internally and displayed
@@ -1877,6 +1882,11 @@ _helptext          = \
       [ ""'''Shelf life in months''' ]
     , ""'shipping_address'            :
       [""'''Data for %(Property)s''']
+    , ""'short_term_work_hours'       :
+      [ ""'''Weekly hours reported in FTE reporting if this person is
+             working short term
+          '''
+      ]
     , ""'show_all_users'              :
       [ ""'''If this option is selected, the result will also include
              users that do not
