@@ -4296,3 +4296,6 @@ msgstr "Functional role of user"
 msgid "planning_role"
 msgstr "Planning role"
 
+msgid "department_temp"
+msgstr "Department (temp)"
+

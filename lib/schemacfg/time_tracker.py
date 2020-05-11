@@ -516,6 +516,7 @@ def init \
                 , position_text          = String    ()
                 , vie_user_text          = String    ()
                 , sync_foreign_key       = String    ()
+                , department_temp        = String    ()
                 )
             kw ['User_Class'].__init__ (self, db, classname, ** properties)
         # end def __init__
@@ -770,7 +771,7 @@ def security (db, ** kw) :
           )
         , ( "user",         "View", ["User"]
           , ( "timetracking_by", "vie_user_text", "entry_date"
-            , "planning_role"
+            , "planning_role", "department_temp"
             )
           )
         , ( "user",         "Edit", ["Functional-Role"]
