@@ -2475,7 +2475,7 @@ def fieldname \
     return (_ (''"""<a %(csscls)s title=\"Help for %(i18nprop)s\" """
                """href=\"javascript:help_window"""
                """('%(cls)s?:template=property_help#%(href)s', """
-               """'500', '400')\" """
+               """'800', '400')\" """
                """tabindex="-1">%(label1)s"""
                """%(i18nprop)s%(label2)s%(endswith)s</a>""" \
               ) % locals ()
