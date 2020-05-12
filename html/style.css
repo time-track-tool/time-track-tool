@@ -938,3 +938,11 @@ a[href]:link.back-to-top {
 .select2-search--dropdown .select2-search__field {
 	padding: 1px !important;
 }
+
+div.formdiv {
+  position: relative;
+}
+
+input.rbutton {
+  visibility: hidden;
+}

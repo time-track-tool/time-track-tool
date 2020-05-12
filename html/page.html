@@ -1039,141 +1039,145 @@
  <span tal:condition="python:not (context.is_view_ok() or context.is_edit_ok())">
  You are not allowed to view this page.
  </span>
- <form method="POST"
-       onSubmit="return submit_once()"
-       enctype="multipart/form-data"
-       tal:attributes="action context/designator; name formname"
-       tal:condition="python:context.is_view_ok() or context.is_edit_ok()">
+ <div class="formdiv">
+  <form method="POST"
+        onSubmit="return submit_once()"
+        enctype="multipart/form-data"
+        tal:attributes="action context/designator; name formname"
+        tal:condition="python:context.is_view_ok() or context.is_edit_ok()">
 
-  <input type="hidden" name="@template" tal:attributes="value form_template">
+   <input type="hidden" name="@template" tal:attributes="value form_template">
 
-  <table tal:attributes="class python:form_class">
-   <tr tal:condition="use_labelprop">
-    <th class="required"
-     tal:content="structure python:utils.fieldname(classname, labelprop)"/>
-    <input tal:condition="python:not context [labelprop].is_edit_ok ()"
-     type="hidden" tal:attributes=
-      " name  labelprop
-      ; value python:context [labelprop]
-      ">
-    <td colspan="3"
-        tal:content="structure python:context [labelprop].field (size=60)"/>
-   </tr>
-   <tal:block metal:use-macro="templates/page/macros/responsible"/>
-   <tal:block metal:define-slot="formatted_class_content"/>
+   <table tal:attributes="class python:form_class">
+    <tr tal:condition="use_labelprop">
+     <th class="required"
+      tal:content="structure python:utils.fieldname(classname, labelprop)"/>
+     <input tal:condition="python:not context [labelprop].is_edit_ok ()"
+      type="hidden" tal:attributes=
+       " name  labelprop
+       ; value python:context [labelprop]
+       ">
+     <td colspan="3"
+         tal:content="structure python:context [labelprop].field (size=60)"/>
+    </tr>
+    <tal:block metal:use-macro="templates/page/macros/responsible"/>
+    <tal:block metal:define-slot="formatted_class_content"/>
 
-   <tr tal:condition="python:has_nosy and context.nosy.is_view_ok ()">
-    <th tal:content="structure python:utils.fieldname(classname, 'nosy')"/>
-    <td colspan="3">
-     <span tal:replace="structure python:context.nosy.field(70)"/>
-     <span tal:condition="context/is_edit_ok"
-           tal:replace="structure python:utils.user_classhelp
-             ( db
-             , property='nosy'
-             , inputtype='checkbox'
-             , user_status = nosy_stati
-             )"/><br>
-    </td>
-   </tr>
-   <tal:block metal:define-slot="below-nosy" />
+    <tr tal:condition="python:has_nosy and context.nosy.is_view_ok ()">
+     <th tal:content="structure python:utils.fieldname(classname, 'nosy')"/>
+     <td colspan="3">
+      <span tal:replace="structure python:context.nosy.field(70)"/>
+      <span tal:condition="context/is_edit_ok"
+            tal:replace="structure python:utils.user_classhelp
+              ( db
+              , property='nosy'
+              , inputtype='checkbox'
+              , user_status = nosy_stati
+              )"/><br>
+     </td>
+    </tr>
+    <tal:block metal:define-slot="below-nosy" />
 
-   <tr metal:use-macro="templates/page/macros/message_box"/>
-   <tr metal:define-slot="after-message-box" />
+    <tr metal:use-macro="templates/page/macros/message_box"/>
+    <tr metal:define-slot="after-message-box" />
 
-   <tr tal:condition="python:
-       has_files and want_files and context.files.is_edit_ok ()">
-    <th tal:content="structure python:utils.fieldname(classname, 'files')"/>
-    <td colspan="3">
-      <input type="file" name="@file" size="40" multiple="multiple"/>
-      <tal:block tal:condition="python:
-           utils.Size_Limit (db, 'LIMIT_FILE_SIZE')">
-        &nbsp;Max:&nbsp;
-        <span tal:content="python:
-              utils.Size_Limit (db, 'LIMIT_FILE_SIZE')"/>
+    <tr tal:condition="python:
+        has_files and want_files and context.files.is_edit_ok ()">
+     <th tal:content="structure python:utils.fieldname(classname, 'files')"/>
+     <td colspan="3">
+       <input type="file" name="@file" size="40" multiple="multiple"/>
+       <tal:block tal:condition="python:
+            utils.Size_Limit (db, 'LIMIT_FILE_SIZE')">
+         &nbsp;Max:&nbsp;
+         <span tal:content="python:
+               utils.Size_Limit (db, 'LIMIT_FILE_SIZE')"/>
+       </tal:block>
+     </td>
+    </tr>
+
+    <tr>
+     <th></th>
+     <td colspan="3">
+      <tal:block metal:define-slot="button_slot"
+       tal:condition="context/is_edit_ok">
+          <tal:block tal:replace="structure context/submit"/>
       </tal:block>
-    </td>
-   </tr>
-
-   <tr>
-    <th></th>
-    <td colspan="3">
-     <tal:block metal:define-slot="button_slot"
-      tal:condition="context/is_edit_ok">
-         <tal:block tal:replace="structure context/submit"/>
-     </tal:block>
-     <tal:block metal:define-slot="additional_button"/>
-     <input tal:condition="context/id"
-            type="button" value="Show History"
-            i18n:attributes="value"
-            tal:attributes="onClick string:javascript:help_window('${context/designator}?@template=history','600','300')">
-     <tal:block metal:define-slot="right_of_show_history"/>
-    </td>
-   </tr>
-   <tr metal:define-slot="formatted_class_listentry"/>
-   <tr tal:condition="has_invoices">
-    <th style="text-align:left" class="required"
-     tal:content="structure python:utils.fieldname(classname, 'invoices')"
-     tal:condition="context/invoices" />
-   </tr>
-   <tal:block tal:repeat="inv context/invoices/reverse"
-    tal:condition="has_invoices">
-    <tr>
-     <th tal:content="structure python:
-      utils.fieldname ('invoice','invoice_no')"/>
-     <td tal:content="structure python:''.join
-         (( utils.ExtProperty
-            (utils, inv.invoice_no, item = inv).as_listentry ()
-         ,
-         ))"/>
-     <th tal:content="structure python:
-      utils.fieldname ('invoice', 'period', 'period_start')"/>
-     <td tal:content="structure python:''.join
-         (( utils.ExtProperty
-            (utils, inv.period_start, item = inv).as_listentry ()
-         , '-'
-         ,  utils.ExtProperty
-            (utils, inv.period_end,   item = inv).as_listentry ()
-         ))"/>
+      <tal:block metal:define-slot="additional_button"/>
+      <input tal:condition="context/id"
+             id="history-button"
+             type="button" value="Show History"
+             i18n:attributes="value"
+             tal:attributes="onClick string:javascript:help_window('${context/designator}?@template=history','600','300')">
+      <tal:block metal:define-slot="right_of_show_history"/>
+     </td>
     </tr>
-   </tal:block>
-   <tr tal:condition="python:has_letters and context.letters">
-    <th style="text-align:left" class="required"
-     tal:content="structure python:utils.fieldname (classname, 'letters')"/>
-   </tr>
-   <tal:block tal:repeat="ltr context/letters/reverse"
-    tal:condition="has_letters">
-    <tr>
-     <th tal:content="structure python:utils.fieldname ('letter','period')"/>
-     <td tal:content="structure python:''.join
-         (( utils.ExtProperty
-            (utils, ltr.date, item = ltr, is_labelprop = 1).as_listentry ()
-          , '&nbsp;'
-          , '--'
-          , '&nbsp;'
-          , utils.letter_link (request, ltr.id)
-         ))"/>
-     <th tal:content="structure python:utils.fieldname ('letter', 'subject')"/>
-     <td tal:content="structure python:''.join
-         ((  utils.ExtProperty
-            (utils, ltr.subject, item = ltr).as_listentry ()
+    <tr metal:define-slot="formatted_class_listentry"/>
+    <tr tal:condition="has_invoices">
+     <th style="text-align:left" class="required"
+      tal:content="structure python:utils.fieldname(classname, 'invoices')"
+      tal:condition="context/invoices" />
+    </tr>
+    <tal:block tal:repeat="inv context/invoices/reverse"
+     tal:condition="has_invoices">
+     <tr>
+      <th tal:content="structure python:
+       utils.fieldname ('invoice','invoice_no')"/>
+      <td tal:content="structure python:''.join
+          (( utils.ExtProperty
+             (utils, inv.invoice_no, item = inv).as_listentry ()
           ,
-         ))"/>
+          ))"/>
+      <th tal:content="structure python:
+       utils.fieldname ('invoice', 'period', 'period_start')"/>
+      <td tal:content="structure python:''.join
+          (( utils.ExtProperty
+             (utils, inv.period_start, item = inv).as_listentry ()
+          , '-'
+          ,  utils.ExtProperty
+             (utils, inv.period_end,   item = inv).as_listentry ()
+          ))"/>
+     </tr>
+    </tal:block>
+    <tr tal:condition="python:has_letters and context.letters">
+     <th style="text-align:left" class="required"
+      tal:content="structure python:utils.fieldname (classname, 'letters')"/>
     </tr>
-   </tal:block>
-  </table>
-  <p tal:condition="python:context.id and show_creation" i18n:translate="">
-   Created on
-   <b i18n:name="creation" tal:content="python:context.creation.pretty
-      ('%Y-%m-%d %H:%M:%S')"/> by
-   <b i18n:name="creator"  tal:content="context/creator"/>, last changed
-   <b i18n:name="activity" tal:content="python:context.activity.pretty
-      ('%Y-%m-%d %H:%M:%S')"/> by
-   <b i18n:name="actor"    tal:content="context/actor"/>.
-  </p>
-  <input type="hidden" name="@required"
-         tal:attributes="value required_attributes | labelprop">
+    <tal:block tal:repeat="ltr context/letters/reverse"
+     tal:condition="has_letters">
+     <tr>
+      <th tal:content="structure python:utils.fieldname ('letter','period')"/>
+      <td tal:content="structure python:''.join
+          (( utils.ExtProperty
+             (utils, ltr.date, item = ltr, is_labelprop = 1).as_listentry ()
+           , '&nbsp;'
+           , '--'
+           , '&nbsp;'
+           , utils.letter_link (request, ltr.id)
+          ))"/>
+      <th tal:content="structure python:utils.fieldname ('letter', 'subject')"/>
+      <td tal:content="structure python:''.join
+          ((  utils.ExtProperty
+             (utils, ltr.subject, item = ltr).as_listentry ()
+           ,
+          ))"/>
+     </tr>
+    </tal:block>
+   </table>
+   <p tal:condition="python:context.id and show_creation" i18n:translate="">
+    Created on
+    <b i18n:name="creation" tal:content="python:context.creation.pretty
+       ('%Y-%m-%d %H:%M:%S')"/> by
+    <b i18n:name="creator"  tal:content="context/creator"/>, last changed
+    <b i18n:name="activity" tal:content="python:context.activity.pretty
+       ('%Y-%m-%d %H:%M:%S')"/> by
+    <b i18n:name="actor"    tal:content="context/actor"/>.
+   </p>
+   <input type="hidden" name="@required"
+          tal:attributes="value required_attributes | labelprop">
 
- </form>
+  </form>
+  <tal:block metal:define-slot="after-form"/>
+ </div>
 
  <tal:block metal:define-slot="before_messages"/>
 

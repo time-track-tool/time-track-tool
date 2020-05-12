@@ -1,4 +1,15 @@
 <tal:block metal:use-macro="templates/page/macros/icing">
+ <tal:block metal:fill-slot="add-js">
+  <script type="text/javascript">
+   $(document).ready (function () {
+    var rbut = $('#rbutton');
+    rbut.css ('left',  $('#retire-button-space').position ().left);
+    rbut.css ('top',   $('#history-button').position ().top);
+    rbut.css ('position',   'absolute');
+    rbut.css ('visibility', 'visible');
+   });
+  </script>
+ </tal:block>
  <title metal:fill-slot="head_title">
   <tal:block tal:condition="context/id" i18n:translate="">
    <span tal:replace="string:${Classname}: ${context/id}"
@@ -20,6 +31,33 @@
        use_labelprop       python:False;
        required_attributes python:'functional_role,user,ratio'">
    <tal:block metal:use-macro="templates/page/macros/formatted_class">
+    <tal:block metal:fill-slot="after-form">
+     <tal:block tal:condition="context/id">
+        <div tal:condition="python:
+            not context.is_retired () and context.is_retire_ok ()">
+         <div>
+          <form method="POST" style="padding:0"
+             tal:attributes="action string:user_functional_role${context/id}">
+           <input type="hidden" name="@action" value="retire">
+           <input type="submit" value="Retire" class="rbutton" id="rbutton">
+          </form>
+         </div>
+        </div>
+        <div tal:condition="python:
+            context.is_retired () and context.is_restore_ok ()">
+         <div>
+          <form method="POST" style="padding:0"
+             tal:attributes="action string:user_functional_role${context/id}">
+           <input type="hidden" name="@action" value="restore">
+           <input type="submit" value="Restore" class="rbutton" id="rbutton">
+          </form>
+         </div>
+        </div>
+     </tal:block>
+    </tal:block>
+    <tal:block metal:fill-slot="right_of_show_history">
+     <span id="retire-button-space">&nbsp;</span>
+    </tal:block>
     <tal:block metal:fill-slot="formatted_class_content">
      <tr>
       <th tal:content="structure python:utils.fieldname (classname, 'user')"/>
@@ -44,28 +82,6 @@
      </tr>
     </tal:block>
    </tal:block>
-  </tal:block>
-  <tal:block tal:condition="context/id">
-     <div tal:condition="python:
-         not context.is_retired () and context.is_retire_ok ()">
-      <div>
-       <form method="POST" style="padding:0"
-             tal:attributes="action string:user_functional_role${context/id}">
-        <input type="hidden" name="@action" value="retire">
-        <input type="submit" value="Retire">
-       </form>
-      </div>
-     </div>
-     <div tal:condition="python:
-         context.is_retired () and context.is_restore_ok ()">
-      <div>
-       <form method="POST" style="padding:0"
-             tal:attributes="action string:user_functional_role${context/id}">
-        <input type="hidden" name="@action" value="restore">
-        <input type="submit" value="Restore">
-       </form>
-      </div>
-     </div>
   </tal:block>
  </tal:block>
 </tal:block>
