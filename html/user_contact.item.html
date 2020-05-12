@@ -114,15 +114,6 @@
            ).formatlink ()"/>)
       </td>
      </tr>
-     <tr tal:condition="python:
-         context.id and 'room' in db._db.classes and context.room">
-      <th tal:content="structure python:utils.fieldname
-          (classname, 'room')"/>
-      <td tal:content="structure python:ExtProperty
-         ( utils, context.room.name
-         , item = context.room
-         ).formatlink ()"/>
-     </tr>
     </tal:block>
    </tal:block>
   </tal:block>
