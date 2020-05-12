@@ -52,6 +52,7 @@ schemas = \
     , 'user_contact'
     , 'time_project'
     , 'time_tracker'
+    , 'job_log'
     , 'ldap'
     , 'core'
     )

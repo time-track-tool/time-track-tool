@@ -4307,3 +4307,13 @@ msgstr "Exemption"
 
 msgid "short_term_work_hours"
 msgstr "Short-term work hours"
+
+msgid "job_log"
+msgstr "Job log"
+
+msgid "job_key"
+msgstr "Job key"
+
+msgid "timestamp"
+msgstr "Timestamp"
+
