@@ -188,6 +188,7 @@ def allow_user_details (db, role, permission, *additional_props) :
         , 'timezone'
         , 'title'
         , 'tt_lines'
+        , 'entry_date'
         ]
     props = []
     allprops = dict.fromkeys (default_props)

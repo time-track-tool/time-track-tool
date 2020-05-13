@@ -784,7 +784,7 @@ def security (db, ** kw) :
           , ( "id", "sap_cc", "user", "valid_from", "valid_to")
           )
         , ( "user",         "View", ["User"]
-          , ( "timetracking_by", "vie_user_text", "entry_date"
+          , ( "timetracking_by", "vie_user_text"
             , "planning_role", "department_temp"
             )
           )
