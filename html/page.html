@@ -245,6 +245,8 @@
    , ('qso', '')        : '@columns=call,band,qso_start,qso_end,rst_rcvd,'
                           'mode,owner&'
                           '@sort=-qso_end&@pagesize=20&@startwith=0'
+   , ('room', '')       : '@columns=name,location,description&'
+                          '@sort=name&@pagesize=50&@startwith=0'
    , ('sap_cc', '')     : '@columns=deputy,id,name,organisation,responsible,'
                           'valid&@filter=valid&valid=True'
    , ('sensor', '')     : utils.sensor_query
@@ -576,6 +578,7 @@
      , ('purchase_type',       'View', 1,               ('',''))
      , ('qsl',                 'View', 1,               ('',''))
      , ('qso',                 'View', 1,               ('',''))
+     , ('room',                'View', 1,               ('',''))
      , ('reference',           'View', 1,               ('',''))
      , ('sap_cc',              'View', 1,               ('',''))
      , ('sensor',              'View', 1,               ('',''))

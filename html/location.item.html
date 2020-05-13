@@ -46,6 +46,11 @@
     </tr>
     <tr>
      <th tal:content="structure python:utils.fieldname
+         (classname, 'room_prefix')"/>
+     <td tal:content="structure python:context.room_prefix.field ()"/>
+    </tr>
+    <tr>
+     <th tal:content="structure python:utils.fieldname
          (classname, 'domain_part')"/>
      <td tal:content="structure python:context.domain_part.field ()"/>
     </tr>

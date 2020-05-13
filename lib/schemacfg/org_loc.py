@@ -87,6 +87,7 @@ def init \
             self.update_properties \
                 ( address               = String    ()
                 , domain_part           = String    ()
+                , room_prefix           = String    ()
                 )
             Loc_Ancestor.__init__ (self, db, classname, ** properties)
         # end def __init__
@@ -145,6 +146,7 @@ def init \
             self.update_properties \
                 ( name                = String    ()
                 , location            = Link      ("location")
+                , description         = String    ()
                 )
             self.__super.__init__ (db, classname, ** properties)
             self.setkey (''"name")
@@ -197,5 +199,14 @@ def security (db, ** kw) :
 
     # HR should be able to create new users:
     db.security.addPermissionToRole ("HR", "Create", "user")
+
+    # Retire/Restore permission for room
+    for perm in 'Retire', 'Restore' :
+	p = db.security.addPermission \
+            ( name        = perm
+            , klass       = 'room'
+            )
+	for role in ("HR", "Office", "Facility") :
+	    db.security.addPermissionToRole (role, p)
 
 # end def security

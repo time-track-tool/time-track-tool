@@ -4317,3 +4317,6 @@ msgstr "Job key"
 msgid "timestamp"
 msgstr "Timestamp"
 
+msgid "room_prefix"
+msgstr "Room prefix"
+

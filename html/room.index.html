@@ -9,24 +9,20 @@
   "batch request/batch;
    pdict python: utils.properties_dict (db, context);
    l python:
-    ( ('id',               {})
-    , ('name',             {})
-    , ('country',          {})
-    , ('address',          {})
-    , ( 'valid_from',      dict (get_cssclass = lambda x: 'nobreak'))
-    , ( 'valid_to',        dict (get_cssclass = lambda x: 'nobreak'))
-    , ('weekly_hours_fte', {})
-    , ('room_prefix',      {})
-    , ('domain_part',      {})
-    , ('creation',         {})
-    , ('creator',          {})
-    , ('activity',         {})
-    , ('actor',            {})
+    ( ('id',                              {})
+    , ('name',                            {})
+    , ('location',    dict (multiselect = 1))
+    , ('description',                     {})
+    , ('creation',                        {})
+    , ('creator',                         {})
+    , ('activity',                        {})
+    , ('actor',                           {})
     );
    props python:
-        [ utils.ExtProperty (utils, pdict [p [0]], ** p [1])
-          for p in l if p [0] in pdict
-        ]
+       [utils.ExtProperty (utils, pdict [k [0]], ** (k [1])) for k in l
+        if k [0] in pdict and
+           utils.search_allowed (db, request, 'room', k [0])
+       ];
    "
   tal:condition="context/is_view_ok">
 
