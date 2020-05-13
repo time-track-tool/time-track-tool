@@ -870,8 +870,12 @@ class LDAP_Roundup_Sync (object) :
                 if method :
                     p = {}
                     if k == 'room' :
+                        now = Date ('.')
                         dyn = user_dynamic.get_user_dynamic \
-                            (self.db, user.id, Date ('.'))
+                            (self.db, user.id, now)
+                        if not dyn :
+                            dyn = user_dynamic.find_user_dynamic \
+                                (self.db, user.id, now, direction = '-')
                         if dyn and dyn.org_location :
                             olo = self.db.org_location.getnode \
                                 (dyn.org_location)
