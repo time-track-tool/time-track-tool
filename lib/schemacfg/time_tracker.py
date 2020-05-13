@@ -870,7 +870,7 @@ def security (db, ** kw) :
     def own_user_functional_role (db, userid, itemid) :
         """User may view their own user functional role
         """
-        if int (itemid) < 0 : # allow creation
+        if int (itemid) < 0 :
             return True
         ownerid = db.user_functional_role.get (itemid, 'user')
         return userid == ownerid
