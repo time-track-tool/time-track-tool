@@ -79,6 +79,8 @@ Role "doc_admin":
  User is allowed to edit product_type (Edit for "product_type" only)
  User is allowed to edit reference (Edit for "reference" only)
 Role "facility":
+  (Restore for "room" only)
+  (Retire for "room" only)
  User is allowed to create room (Create for "room" only)
  User is allowed to edit room (Edit for "room" only)
 Role "functional-role":
@@ -90,6 +92,8 @@ Role "functional-role":
  User is allowed to edit user_functional_role (Edit for "user_functional_role" only)
 Role "hr":
   (Edit for "overtime_period": ('name', 'order') only)
+  (Restore for "room" only)
+  (Retire for "room" only)
  User is allowed Edit on (Edit for "daily_record": ('required_overtime', 'weekend_allowed') only)
  User is allowed Edit on (Edit for "daily_record": ('status', 'time_record') only)
  User is allowed Edit on (Edit for "time_project": ('approval_hr', 'approval_required', 'is_extern', 'is_public_holiday', 'is_special_leave', 'is_vacation', 'no_overtime', 'no_overtime_day', 'only_hours', 'overtime_reduction') only)
@@ -236,6 +240,8 @@ Role "nosy":
  User may get nosy messages for it_project (Nosy for "it_project" only)
  User may get nosy messages for support (Nosy for "support" only)
 Role "office":
+  (Restore for "room" only)
+  (Retire for "room" only)
  User is allowed Edit on (Edit for "user": ('title', 'room', 'position') only)
  User is allowed to create absence (Create for "absence" only)
  User is allowed to create absence_type (Create for "absence_type" only)
@@ -338,7 +344,7 @@ Role "user":
  User is allowed Edit on support if support is non-confidential or user is on nosy list (Edit for "support": ('analysis_end', 'analysis_result', 'analysis_start', 'bcc', 'business_unit', 'category', 'cc', 'cc_emails', 'classification', 'closed', 'confidential', 'customer', 'emails', 'execution', 'external_ref', 'files', 'goods_received', 'goods_sent', 'lot', 'messages', 'nosy', 'number_effected', 'numeric_effort', 'prio', 'prodcat', 'product', 'related_issues', 'related_support', 'release', 'responsible', 'return_type', 'sap_ref', 'send_to_customer', 'serial_number', 'set_first_reply', 'status', 'superseder', 'title', 'type', 'warranty') only)
  User is allowed View on (View for "user": ('activity', 'actor', 'address', 'alternate_addresses', 'clearance_by', 'creation', 'creator', 'firstname', 'id', 'job_description', 'lastname', 'lunch_duration', 'lunch_start', 'nickname', 'pictures', 'position', 'queries', 'realname', 'room', 'sex', 'status', 'subst_active', 'subst_until', 'substitute', 'supervisor', 'timezone', 'title', 'username') only)
  User is allowed View on (View for "user": ('activity', 'actor', 'address', 'alternate_addresses', 'clearance_by', 'creation', 'creator', 'firstname', 'id', 'job_description', 'lastname', 'lunch_duration', 'lunch_start', 'nickname', 'pictures', 'position', 'queries', 'realname', 'room', 'sex', 'status', 'subst_active', 'substitute', 'supervisor', 'timezone', 'title', 'tt_lines', 'username') only)
- User is allowed View on (View for "user": ('entry_date', 'planning_role', 'timetracking_by', 'vie_user_text') only)
+ User is allowed View on (View for "user": ('department_temp', 'planning_role', 'timetracking_by', 'vie_user_text') only)
  User is allowed View on (View for "user_dynamic": ('department', 'org_location') only)
  User is allowed View on file if file is linked from an item with View permission (View for "file" only)
  User is allowed View on issue if issue is non-confidential or user is on nosy list (View for "issue" only)
@@ -435,7 +441,7 @@ Role "user":
  User is allowed to create support (Create for "support" only)
  User is allowed to create time_record (Create for "time_record" only)
  User is allowed to create time_wp (Create for "time_wp" only)
- User is allowed to edit (some of) their own user details (Edit for "user": ('lunch_duration', 'lunch_start', 'password', 'queries', 'realname', 'room', 'subst_active', 'substitute', 'timezone', 'title', 'tt_lines') only)
+ User is allowed to edit (some of) their own user details (Edit for "user": ('entry_date', 'lunch_duration', 'lunch_start', 'password', 'queries', 'realname', 'room', 'subst_active', 'substitute', 'timezone', 'title', 'tt_lines') only)
  User is allowed to edit category if he is responsible for it (Edit for "category": ('nosy', 'default_part_of') only)
  User is allowed to edit doc (Edit for "doc" only)
  User is allowed to edit ext_tracker_state (Edit for "ext_tracker_state" only)

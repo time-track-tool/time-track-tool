@@ -399,8 +399,10 @@ properties = \
         , 'country'
         , 'domain_part'
         , 'name'
+        , 'room_prefix'
         , 'valid_from'
         , 'valid_to'
+        , 'weekly_hours_fte'
         ]
       )
     , ( 'mailgroup'
@@ -542,7 +544,8 @@ properties = \
         ]
       )
     , ( 'room'
-      , [ 'location'
+      , [ 'description'
+        , 'location'
         , 'name'
         ]
       )
@@ -815,6 +818,7 @@ properties = \
       , [ 'address'
         , 'alternate_addresses'
         , 'clearance_by'
+        , 'department_temp'
         , 'entry_date'
         , 'firstname'
         , 'job_description'
@@ -856,6 +860,7 @@ properties = \
         , 'daily_worktime'
         , 'department'
         , 'durations_allowed'
+        , 'exemption'
         , 'hours_fri'
         , 'hours_mon'
         , 'hours_sat'
@@ -867,6 +872,7 @@ properties = \
         , 'org_location'
         , 'overtime_period'
         , 'sap_cc'
+        , 'short_term_work_hours'
         , 'supp_per_period'
         , 'supp_weekly_hours'
         , 'travel_full'
