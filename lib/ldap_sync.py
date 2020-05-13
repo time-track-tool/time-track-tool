@@ -402,7 +402,7 @@ class LDAP_Roundup_Sync (object) :
             Needed for easy check if an LDAP attribute exists as a
             roundup class. We need the roundup class in a closure.
         """
-        def look (luser, txt) :
+        def look (luser, txt, **dynamic_params) :
             try :
                 key = luser [txt][0]
             except KeyError :
@@ -415,7 +415,11 @@ class LDAP_Roundup_Sync (object) :
                 if self.verbose :
                     print "Update roundup: new %s: %s" % (cls.classname, key)
                 if self.update_roundup :
-                    d = params or {}
+                    d = {}
+                    if params :
+                        d.update (params)
+                    if dynamic_params :
+                        d.update (dynamic_params)
                     d [insert_attr_name] = key
                     return cls.create (** d)
             return None
@@ -864,10 +868,18 @@ class LDAP_Roundup_Sync (object) :
             for k in self.attr_map ['user'] :
                 lk, x, method, em = self.attr_map ['user'][k]
                 if method :
-                    v = method (luser, lk)
+                    p = {}
+                    if k == 'room' :
+                        dyn = user_dynamic.get_user_dynamic \
+                            (self.db, user.id, Date ('.'))
+                        if dyn and dyn.org_location :
+                            olo = self.db.org_location.getnode \
+                                (dyn.org_location)
+                            loc = olo.location
+                            p ['location'] = loc
+                    v = method (luser, lk, **p)
                     if v or em :
                         d [k] = v
-
             if self.contact_types :
                 self.sync_contacts_from_ldap (luser, user, d)
             new_status_id = self.members [luser.dn.lower ()]
