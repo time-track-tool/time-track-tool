@@ -27,7 +27,7 @@
 
 try :
     # fail at runtime if these are used
-    from email          import Encoders
+    from email          import encoders
     from email.utils    import getaddresses
     from email.parser   import Parser
     from email.mime.nonmultipart import MIMENonMultipart
@@ -103,7 +103,8 @@ def send_non_roundup_mail (db, cls, issueid, msgid, sendto, cc = [], bcc = []) :
                 type = 'application/octet-stream'
             main, sub = type.split ('/')
             part = MIMENonMultipart (main, sub)
-            part.set_payload (file.content)
+            part.set_payload (file.binary_content)
+            encoders.encode_base64 (part)
         cd = 'Content-Disposition'
         part [cd] = 'attachment;\n filename="%s"' % file.name
         message.attach (part)
