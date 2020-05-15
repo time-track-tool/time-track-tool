@@ -228,9 +228,12 @@
           ('user', 'scale_seniority')"/>
       <td tal:content="structure context/scale_seniority/field"/>
      </tr>
-     <tal:block
-      tal:condition="python:
-          context.id and 'user_functional_role' in db._db.classes">
+     <tal:block tal:condition="python:
+          (   context.id
+          and 'user_functional_role' in db._db.classes
+          and context.planning_role
+          and utils.visible_planning_role (db, context)
+          )">
       <tr tal:condition="python:context.planning_role">
        <th i18n:translate="">Functional Roles</th>
        <td colspan="3">
@@ -249,7 +252,7 @@
               ( utils, fr.functional_role
               , item = fr
               ).formatlink ()"/>
-          <td tal:content="python: '%2.2f%%' % (float (fr.ratio) * 100.)"/>
+          <td tal:content="python: '%2.0f%%' % (float (fr.ratio) * 100.)"/>
          </tr>
         </table>
        </td>
