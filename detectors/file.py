@@ -42,7 +42,7 @@ def check_size (db, cl, nodeid, new_values) :
         return
     if new_values ['content'] is None :
         return
-    length = len (new_values ['content'])
+    length = len (new_values ['content'] or '')
     if length > limit.limit :
         raise Reject, _ \
             ("Maximum file size %(limit)s exceeded: %(length)s") % locals ()
