@@ -1,6 +1,5 @@
 #! /usr/bin/python
-# -*- coding: iso-8859-1 -*-
-# Copyright (C) 2017 Dr. Ralf Schlatterbeck Open Source Consulting.
+# Copyright (C) 2017-20 Dr. Ralf Schlatterbeck Open Source Consulting.
 # Reichergasse 131, A-3411 Weidling.
 # Web: http://www.runtux.com Email: office@runtux.com
 # All rights reserved
@@ -179,4 +178,6 @@ def security (db, ** kw) :
 
     db.security.addPermissionToRole ('Readonly-User', 'Web Access')
     db.security.addPermissionToRole ('Readonly-User', 'Email Access')
+    db.security.addPermissionToRole ('Readonly-User', 'Rest Access')
+    db.security.addPermissionToRole ('Readonly-User', 'Xmlrpc Access')
 # end def security
