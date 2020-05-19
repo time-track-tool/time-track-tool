@@ -34,23 +34,9 @@ def valid_user_stati_filter (db) :
     return ','.join (valid_user_stati (db))
 # end def valid_user_stati_filter
 
-def visible_planning_role (db, context) :
-    hdb = db
-    db = db._db
-    user = db.user.getnode (context.id)
-    prs  = user.planning_role
-    if not prs :
-        return False
-    for prid in prs :
-        if not hdb.user_functional_role.getItem (prid).is_view_ok () :
-            return False
-    return True
-# end def visible_planning_role
-
 def init (instance) :
     reg = instance.registerUtil
     reg ('valid_user_stati',             valid_user_stati)
     reg ('valid_user_stati_filter',      valid_user_stati_filter)
-    reg ('visible_planning_role',        visible_planning_role)
 # end def init
 

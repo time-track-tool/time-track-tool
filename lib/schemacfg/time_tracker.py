@@ -1,5 +1,4 @@
-# -*- coding: iso-8859-1 -*-
-# Copyright (C) 2006-14 Dr. Ralf Schlatterbeck Open Source Consulting.
+# Copyright (C) 2006-20 Dr. Ralf Schlatterbeck Open Source Consulting.
 # Reichergasse 131, A-3411 Weidling.
 # Web: http://www.runtux.com Email: office@runtux.com
 # All rights reserved
@@ -785,11 +784,15 @@ def security (db, ** kw) :
           )
         , ( "user",         "View", ["User"]
           , ( "timetracking_by", "vie_user_text"
-            , "planning_role", "department_temp"
+            , "department_temp"
             )
           )
         , ( "user",         "Edit", ["Functional-Role"]
           , ( "scale_seniority",
+            )
+          )
+        , ( "user",         "View", ["Functional-Role"]
+          , ( "planning_role",
             )
           )
         , ( "user_dynamic", "View", ["User"]
@@ -799,6 +802,8 @@ def security (db, ** kw) :
 
     schemadef.register_roles             (db, roles)
     schemadef.register_class_permissions (db, classes, prop_perms)
+    schemadef.own_user_detail_permission \
+        (db, 'User', 'View', 'planning_role', 'entry_date')
 
     # Allow retire/restore for Functional-Role
     for perm in 'Retire', 'Restore' :
@@ -1438,5 +1443,4 @@ def security (db, ** kw) :
         , description = fixdoc (own_user_functional_role.__doc__)
         )
     db.security.addPermissionToRole ('User', p)
-
 # end def security

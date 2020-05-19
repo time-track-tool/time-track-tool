@@ -232,7 +232,7 @@
           (   context.id
           and 'user_functional_role' in db._db.classes
           and context.planning_role
-          and utils.visible_planning_role (db, context)
+          and context.planning_role.is_view_ok ()
           )">
       <tr tal:condition="python:context.planning_role">
        <th i18n:translate="">Functional Roles</th>
