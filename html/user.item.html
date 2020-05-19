@@ -246,7 +246,10 @@
           <th tal:content="structure python:utils.fieldname
               ('functional_role', 'ratio')"/>
          </tr>
-         <tr tal:repeat="fr context/planning_role">
+         <tr tal:repeat="fr python: list(sorted
+             ( context.planning_role
+             , key = lambda x: (-float(x.ratio or 0.0), x.functional_role.rank)
+             ))">
           <td tal:content="fr/functional_role/name_group"/>
           <td tal:content="structure python:utils.ExtProperty
               ( utils, fr.functional_role
