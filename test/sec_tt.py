@@ -110,7 +110,7 @@ Role "functional-role":
   (Restore for "user_functional_role" only)
   (Retire for "user_functional_role" only)
  User is allowed Edit on (Edit for "user": ('scale_seniority',) only)
- User is allowed View on (View for "user": ('planning_role',) only)
+ User is allowed View on (View for "user": ('planning_role', 'scale_seniority') only)
  User is allowed to access user_functional_role (View for "user_functional_role" only)
  User is allowed to create user_functional_role (Create for "user_functional_role" only)
  User is allowed to edit user_functional_role (Edit for "user_functional_role" only)

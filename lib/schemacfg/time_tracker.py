@@ -792,7 +792,7 @@ def security (db, ** kw) :
             )
           )
         , ( "user",         "View", ["Functional-Role"]
-          , ( "planning_role",
+          , ( "planning_role", "scale_seniority"
             )
           )
         , ( "user_dynamic", "View", ["User"]
