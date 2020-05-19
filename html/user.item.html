@@ -3,7 +3,7 @@
  <title metal:fill-slot="head_title">
   <tal:block i18n:translate="" tal:condition="context/id"
    tal:define="_update python:utils.sync_from_ldap and
-       utils.sync_from_ldap (db._db, str (context.username))">
+       utils.sync_from_ldap (context, db, str (context.username))">
    User
    <span tal:replace="string:${context/id}: ${context/username}"/>
   </tal:block>
