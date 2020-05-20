@@ -874,7 +874,10 @@
      </span>
 
      <!-- logout -->
-     <span class="classblock">
+     <span class="classblock" tal:condition="python:
+         (   request.user.username != 'anonymous'
+         and not db._client.env.get('REMOTE_USER', None)
+         )">
       <a tal:condition="python:request.user.username!='anonymous'"
          tal:attributes="href python:request.indexargs_href
          ('', {'@action':'logout'})">Logout</a>
