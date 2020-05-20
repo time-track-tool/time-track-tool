@@ -38,7 +38,7 @@ def check_room (db, cl, nodeid, new_values) :
             l_id = cl.get (nodeid, 'location')
         location = db.location.getnode (l_id)
         pfx = location.room_prefix
-        if pfx and not name.startswith (pfx) :
+        if pfx and not new_values ['name'].startswith (pfx) :
             raise Reject \
                 (_ ('Room name must start with prefix "%(pfx)s"') % locals ())
 # end def check_room
