@@ -173,6 +173,10 @@ properties = \
         , 'type'
         ]
       )
+    , ( 'org_group'
+      , [ 'name'
+        ]
+      )
     , ( 'org_location'
       , [ 'do_leave_process'
         , 'group_external'
@@ -195,6 +199,7 @@ properties = \
         , 'may_purchase'
         , 'messages'
         , 'name'
+        , 'org_group'
         , 'valid_from'
         , 'valid_to'
         ]

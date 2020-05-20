@@ -454,6 +454,7 @@ Role "user":
  User is allowed to access location (View for "location" only)
  User is allowed to access mailgroup (View for "mailgroup" only)
  User is allowed to access msg_keyword (View for "msg_keyword" only)
+ User is allowed to access org_group (View for "org_group" only)
  User is allowed to access org_location (View for "org_location" only)
  User is allowed to access organisation (View for "organisation" only)
  User is allowed to access overtime_period (View for "overtime_period" only)

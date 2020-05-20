@@ -23,6 +23,7 @@
         )
     , utils.ExtProperty (utils, pdict ['may_purchase'])
     , utils.ExtProperty (utils, pdict ['mail_domain'])
+    , utils.ExtProperty (utils, pdict ['org_group'], multiselect = True)
     );
    "
   tal:condition="context/is_view_ok">

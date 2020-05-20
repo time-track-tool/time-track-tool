@@ -4320,3 +4320,6 @@ msgstr "Timestamp"
 msgid "room_prefix"
 msgstr "Room prefix"
 
+msgid "org_group"
+msgstr "Organisation group"
+

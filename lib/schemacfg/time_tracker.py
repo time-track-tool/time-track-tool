@@ -47,7 +47,6 @@ def init \
     , Boolean
     , Number
     , Department_Class
-    , Organisation_Class
     , Time_Project_Status_Class
     , SAP_CC_Class
     , ** kw
@@ -573,7 +572,26 @@ def init \
     # Some classes defined elsewhere which are required (and possibly
     # extended in several other include files)
     Department_Class   (db, ''"department")
+
+    class Organisation_Class (kw ['Organisation_Class']) :
+        """ Add some attributes needed for time tracker
+        """
+        def __init__ (self, db, classname, ** properties) :
+            ancestor = kw ['Organisation_Class']
+            self.update_properties \
+                ( org_group                  = Link      ("org_group")
+                )
+            ancestor.__init__ (self, db, classname, ** properties)
+        # end def __init__
+    # end class Organisation_Class
+    export.update (dict (Organisation_Class = Organisation_Class))
     Organisation_Class (db, ''"organisation")
+
+    org_group = Class \
+        ( db, ''"org_group"
+        , name                  = String    ()
+        )
+    org_group.setkey ("name")
 
     return export
 # end def init
@@ -750,6 +768,10 @@ def security (db, ** kw) :
         , ( "org_location"
           , ["Organisation"]
           , ["Organisation"]
+          )
+        , ( "org_group"
+          , ["User"]
+          , []
           )
         ]
 

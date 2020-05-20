@@ -49,6 +49,11 @@
          (classname, 'mail_domain')"/>
      <td tal:content="structure python:context.mail_domain.field ()"/>
     </tr>
+    <tr>
+     <th tal:content="structure python:utils.fieldname
+         (classname, 'org_group')"/>
+     <td tal:content="structure python:context.org_group.menu ()"/>
+    </tr>
    </tal:block>
   </tal:block>
  </tal:block>

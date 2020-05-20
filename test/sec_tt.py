@@ -278,6 +278,7 @@ Role "user":
  User is allowed to access job_log (View for "job_log" only)
  User is allowed to access leave_status (View for "leave_status" only)
  User is allowed to access location (View for "location" only)
+ User is allowed to access org_group (View for "org_group" only)
  User is allowed to access org_location (View for "org_location" only)
  User is allowed to access organisation (View for "organisation" only)
  User is allowed to access overtime_period (View for "overtime_period" only)
