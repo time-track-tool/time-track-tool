@@ -341,7 +341,7 @@ def check_user_dynamic (db, cl, nodeid, new_values) :
                 (cl, nodeid, user, val_from, val_to, allow_same = True)
         val_from = new_values ['valid_from']
         val_to   = new_values ['valid_to']
-    if not vac_fix and not flexi_fix :
+    if not vac_fix and not flexi_fix and not exemption :
         check_overtime_parameters (db, cl, nodeid, new_values)
         check_vacation (db, cl, nodeid, 'vacation_yearly', new_values)
         if not freeze.frozen (db, user, old_from) :
@@ -355,7 +355,8 @@ def check_user_dynamic (db, cl, nodeid, new_values) :
                 else :
                     use_to = old_to
             user_dynamic.invalidate_tr_duration (db, user, use_to, None)
-    check_weekly_hours (db, cl, nodeid, new_values)
+    if not exemption :
+        check_weekly_hours (db, cl, nodeid, new_values)
 # end def check_user_dynamic
 
 def set_otp_if_all_in (db, cl, nodeid, new_values) :
