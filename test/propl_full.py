@@ -374,6 +374,7 @@ properties = \
       )
     , ( 'location'
       , [ 'address'
+        , 'city'
         , 'country'
         , 'domain_part'
         , 'name'

@@ -84,6 +84,7 @@ def init \
             self.update_properties \
                 ( name                  = String    ()
                 , country               = String    ()
+                , city                  = String    ()
                 , valid_from            = Date      ()
                 , valid_to              = Date      ()
                 )

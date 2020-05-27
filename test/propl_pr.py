@@ -34,7 +34,8 @@ properties = \
         ]
       )
     , ( 'location'
-      , [ 'country'
+      , [ 'city'
+        , 'country'
         , 'name'
         , 'sync_id'
         , 'valid_from'
