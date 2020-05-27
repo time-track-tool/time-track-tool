@@ -293,10 +293,7 @@ class LDAP_Roundup_Sync (object) :
             attr_u ['room'] = \
                 ( 'physicalDeliveryOfficeName'
                 , get_name
-                , self.cls_lookup
-                    ( self.db.room
-                    , 'name'
-                    )
+                , self.cls_lookup (self.db.room, 'name')
                 , False
                 )
         if 'substitute' in props and 'substitute' not in dontsync :
@@ -865,20 +862,7 @@ class LDAP_Roundup_Sync (object) :
             for k in self.attr_map ['user'] :
                 lk, x, method, em = self.attr_map ['user'][k]
                 if method :
-                    p = {}
-                    if k == 'room' :
-                        now = Date ('.')
-                        dyn = user_dynamic.get_user_dynamic \
-                            (self.db, user.id, now)
-                        if not dyn :
-                            dyn = user_dynamic.find_user_dynamic \
-                                (self.db, user.id, now, direction = '-')
-                        if dyn and dyn.org_location :
-                            olo = self.db.org_location.getnode \
-                                (dyn.org_location)
-                            loc = olo.location
-                            p ['location'] = loc
-                    v = method (luser, lk, **p)
+                    v = method (luser, lk)
                     if v or em :
                         d [k] = v
             if self.contact_types :
