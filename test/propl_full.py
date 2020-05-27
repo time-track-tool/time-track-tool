@@ -843,7 +843,6 @@ properties = \
         , 'timetracking_by'
         , 'timezone'
         , 'timing_info'
-        , 'title'
         , 'tt_lines'
         , 'username'
         , 'vie_user_text'

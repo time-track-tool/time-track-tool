@@ -310,13 +310,6 @@ class LDAP_Roundup_Sync (object) :
                 , self.get_roundup_uid_from_dn_attr
                 , False
                 )
-        if 'title' in props and 'title' not in dontsync :
-            attr_u ['title'] = \
-                ( 'carLicense'
-                , 1
-                , lambda x, y : x.get (y, [None])[0]
-                , False
-                )
         if 'guid' in props and 'guid' not in dontsync :
             attr_u ['guid'] = \
                 ( 'objectGUID'

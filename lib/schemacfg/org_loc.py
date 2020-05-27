@@ -117,7 +117,6 @@ def init \
                 , lastname               = String    ()
                 , subst_active           = Boolean   ()
                 , room                   = Link      ("room")
-                , title                  = String    ()
                 , position               = Link      ("position")
                 , job_description        = String    ()
                 , pictures               = Multilink ("file")
