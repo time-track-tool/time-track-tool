@@ -293,7 +293,7 @@ class LDAP_Roundup_Sync (object) :
             attr_u ['room'] = \
                 ( 'physicalDeliveryOfficeName'
                 , get_name
-                , self.cls_lookup (self.db.room, 'name')
+                , self.cls_lookup (self.db.room)
                 , False
                 )
         if 'substitute' in props and 'substitute' not in dontsync :
