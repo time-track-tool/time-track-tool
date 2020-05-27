@@ -64,12 +64,6 @@ def get_name (user, attr) :
     return cl.get (user [attr], 'name')
 # end def get_name
 
-def get_position (user, attr) :
-    """ Get position name from roundup user class """
-    assert (attr == 'position')
-    return user.cl.db.position.get (user.position, 'position')
-# end def get_position
-
 def tohex (s) :
     return ''.join ('%02X' % ord (k) for k in s)
 # end def tohex
@@ -275,11 +269,14 @@ class LDAP_Roundup_Sync (object) :
                 , self.ldap_picture
                 , False
                 )
-        if 'position' in props and 'position' not in dontsync :
-            attr_u ['position'] = \
+        if 'position_text' in props and 'position_text' not in dontsync :
+            # position used to be a link to position, it's now only a
+            # string field. We sync that field *to* ldap but not
+            # *from* ldap.
+            attr_u ['position_text'] = \
                 ( 'title'
-                , get_position
-                , self.cls_lookup (self.db.position, 'position')
+                , 1
+                , None
                 , False
                 )
         if 'realname' in props and 'realname' not in dontsync :
