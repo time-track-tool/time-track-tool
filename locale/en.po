@@ -4276,7 +4276,7 @@ msgid "entry_date"
 msgstr "Entry date"
 
 msgid "position_text"
-msgstr "Position (Text)"
+msgstr "Position"
 
 msgid "ratio"
 msgstr "Ratio"

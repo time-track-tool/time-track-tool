@@ -206,9 +206,10 @@
       <th tal:content="structure python:utils.fieldname('user', 'room')"/>
       <td tal:content="structure context/room/menu"/>
      </tr>
-     <tr tal:condition="python:'position' in bclass.properties">
-      <th tal:content="structure python:utils.fieldname('user', 'position')"/>
-      <td tal:content="structure context/position/menu"/>
+     <tr tal:condition="python:'position_text' in bclass.properties">
+      <th tal:content="structure python:utils.fieldname
+          ('user', 'position_text')"/>
+      <td tal:content="structure context/position_text/field"/>
      </tr>
      <tr tal:condition="python:
        'entry_date' in bclass.properties and context.entry_date.is_view_ok ()">
