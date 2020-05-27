@@ -210,11 +210,6 @@
       <th tal:content="structure python:utils.fieldname('user', 'position')"/>
       <td tal:content="structure context/position/menu"/>
      </tr>
-     <tr tal:condition="python:'department_temp' in bclass.properties">
-      <th tal:content="structure python:utils.fieldname
-          ('user', 'department_temp')"/>
-      <td tal:content="structure context/department_temp/field"/>
-     </tr>
      <tr tal:condition="python:
        'entry_date' in bclass.properties and context.entry_date.is_view_ok ()">
       <th tal:content="structure python:utils.fieldname
@@ -332,13 +327,6 @@
       </td>
       <td tal:content="context/clearance_by/plain"
        tal:condition="not:context/clearance_by/is_edit_ok"/>
-     </tr>
-     <tr tal:condition="python:
-         'vie_user_text' in bclass.properties
-         and context.vie_user_text.is_view_ok ()">
-      <th tal:content="structure python:utils.fieldname
-          ('user', 'vie_user_text')"/>
-      <td tal:content="structure context/vie_user_text/field"/>
      </tr>
      <tr tal:condition="python:'job_description' in bclass.properties">
       <th tal:content="structure
