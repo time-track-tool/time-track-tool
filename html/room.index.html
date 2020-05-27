@@ -11,7 +11,12 @@
    l python:
     ( ('id',                              {})
     , ('name',                            {})
-    , ('location',    dict (multiselect = 1))
+    , ('location'
+      , dict
+        ( multiselect = 1
+        , filter      = utils.valid_item (now)
+        )
+      )
     , ('description',                     {})
     , ('creation',                        {})
     , ('creator',                         {})

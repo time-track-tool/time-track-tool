@@ -62,7 +62,9 @@
      <tr>
       <th tal:content="structure python:utils.fieldname
           (classname, 'location')"/>
-      <td tal:content="structure python:context.location.menu ()"/>
+      <td tal:content="structure python:context.location.menu
+          (**utils.valid_item (now))"/>
+
      </tr>
      <tr>
       <th tal:content="structure python:utils.fieldname
