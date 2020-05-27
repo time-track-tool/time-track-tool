@@ -46,8 +46,14 @@ def check_room (db, cl, nodeid, new_values) :
 def check_retire_room (db, cl, nodeid, new_values) :
     """ Check if the room is in use
         Do not allow retire if any user has a link to this room.
+        Note that we're searching only for users that have a status !=
+        obsolete.
     """
-    users = db.user.filter (None, dict (room = nodeid))
+    stati = []
+    for sid in db.user_status.getnodeids () :
+        if db.user_status.get (sid, 'name') != 'obsolete' :
+            stati.append (sid)
+    users  = db.user.filter (None, dict (room = nodeid, status = stati))
     if users :
         room = cl.get (nodeid, 'name')
         raise Reject (_ ('Room "%(room)s" is in use') % locals ())

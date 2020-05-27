@@ -394,6 +394,23 @@ def default_reduced_activity_list (db, cl, nodeid, new_values) :
         new_values ['reduced_activity_list'] = Date ('2020-04-01')
 # end def default_reduced_activity_list
 
+def check_room_on_restore (db, cl, nodeid, new_values) :
+    """ If a user is restored (status set from obsolete to something
+        other than obsolete) and has a retired room, set the room to
+        None
+    """
+    if 'status' not in new_values :
+        return
+    user = cl.getnode (nodeid)
+    ostatus  = user.status
+    obsolete = db.user_status.lookup ('obsolete')
+    if ostatus != obsolete or new_values ['status'] == obsolete :
+        return
+    room = new_values.get ('room', user.room)
+    if room and db.room.is_retired (room) :
+        new_values ['room'] = None
+# end def check_room_on_restore
+
 def init (db) :
     global _
     _   = get_translation \
@@ -408,6 +425,7 @@ def init (db) :
     db.user.audit ("retire", check_retire)
     db.user.audit ("set",    obsolete_action)
     db.user.audit ("set",    check_pictures)
+    db.user.audit ("set",    check_room_on_restore)
     # ldap sync only on set not create (!)
     if ldap_sync and ldap_sync.check_ldap_config (db) :
         db.user.react ("set", sync_to_ldap, priority = 200)
