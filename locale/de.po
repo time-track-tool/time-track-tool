@@ -1708,9 +1708,6 @@ msgstr ""
 msgid "%(cc)s responsible/deputy"
 msgstr ""
 
-msgid "position"
-msgstr "Position"
-
 msgid "sex"
 msgstr ""
 

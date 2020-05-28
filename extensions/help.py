@@ -1460,8 +1460,6 @@ _helptext          = \
       ]
     , ""'position_text'               :
       [""'''%(Property)s in the group''']
-    , ""'position'                    :
-      [""'''%(Property)s in the group''']
     , ""'postalcode'                  :
       [""'''Postal code for this %(Classname)s ''']
     , ""'pr_approval_config++pr_ext_resource' :

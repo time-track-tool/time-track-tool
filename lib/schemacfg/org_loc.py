@@ -117,7 +117,6 @@ def init \
                 , lastname               = String    ()
                 , subst_active           = Boolean   ()
                 , room                   = Link      ("room")
-                , position               = Link      ("position")
                 , job_description        = String    ()
                 , pictures               = Multilink ("file")
                 , lunch_start            = String    ()
@@ -129,13 +128,6 @@ def init \
         # end def __init__
     # end class User_Class
     export.update (dict (User_Class = User_Class))
-
-    position = Class \
-        ( db
-        , ''"position"
-        , position              = String    ()
-        )
-    position.setkey ("position")
 
     class Room_Class (Ext_Class) :
         """ Create room class with default attributes, may be
@@ -183,7 +175,6 @@ def security (db, ** kw) :
         , ("location",     ["User"],  ["HR"])
         , ("organisation", ["User"],  ["HR", "Controlling"])
         , ("org_location", ["User"],  ["HR"])
-        , ("position",     ["User"],  ["HR"])
         , ("room",         ["User"],  ["HR", "Office", "Facility"])
         , ("sex",          ["User"],  [])
     #   , ("user", See below -- individual fields)

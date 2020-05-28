@@ -456,10 +456,6 @@ properties = \
         , 'weekly'
         ]
       )
-    , ( 'position'
-      , [ 'position'
-        ]
-      )
     , ( 'prodcat'
       , [ 'level'
         , 'name'
@@ -826,7 +822,6 @@ properties = \
         , 'password'
         , 'pictures'
         , 'planning_role'
-        , 'position'
         , 'position_text'
         , 'queries'
         , 'realname'

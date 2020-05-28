@@ -111,7 +111,6 @@ def security (db, ** kw) :
         , 'lunch_start'
         , 'nickname'
         , 'pictures'
-        , 'position'
         , 'position_text'
         , 'room'
         , 'sex'
@@ -127,7 +126,7 @@ def security (db, ** kw) :
         ['clearance_by', 'roles', 'reduced_activity_list']
     user_props_gtt = user_props + \
         ['username', 'sync_foreign_key', 'department_temp']
-    user_props_office = ['contacts', 'position', 'room']
+    user_props_office = ['contacts', 'position_text', 'room']
     user_props_facility = ['room']
     role_perms = \
         [ ("Dom-User-Edit-GTT",      user_props_gtt)

@@ -85,13 +85,13 @@ prop_perms = \
     , ( "user", "Edit", ["HR"]
       , ( "clearance_by", "timetracking_by", "firstname"
         , "job_description", "lastname", "lunch_duration", "lunch_start"
-        , "pictures", "position", "realname"
+        , "pictures", "position_text", "realname"
         , "room", "sex", "status", "subst_active", "substitute", "supervisor"
         , "title", "roles", "tt_lines"
         )
       )
     , ( "user", "Edit", ["Office"]
-      , ( "title", "room", "position"
+      , ( "title", "room", "position_text"
         )
       )
     , ( "user", "Edit", ["IT"]
@@ -104,7 +104,7 @@ prop_perms = \
         , "clearance_by", "creation", "creator"
         , "firstname", "job_description", "lastname"
         , "id", "lunch_duration", "lunch_start", "nickname"
-        , "pictures", "position", "queries", "realname", "room", "sex"
+        , "pictures", "position_text", "queries", "realname", "room", "sex"
         , "status", "subst_active", "substitute", "supervisor", "timezone"
         , "title", "username", "tt_lines"
         )

@@ -99,7 +99,7 @@ prop_perms = \
         , "clearance_by", "creation", "creator"
         , "firstname", "job_description", "lastname"
         , "id", "lunch_duration", "lunch_start", "nickname"
-        , "pictures", "position", "queries", "realname", "room", "sex"
+        , "pictures", "position_text", "queries", "realname", "room", "sex"
         , "status", "subst_active", "substitute", "supervisor", "timezone"
         , "title", "username", "tt_lines", "ad_domain"
         )

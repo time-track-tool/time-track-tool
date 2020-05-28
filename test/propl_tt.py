@@ -220,10 +220,6 @@ properties = \
         , 'weekly'
         ]
       )
-    , ( 'position'
-      , [ 'position'
-        ]
-      )
     , ( 'product_family'
       , [ 'description'
         , 'name'
@@ -455,7 +451,6 @@ properties = \
         , 'password'
         , 'pictures'
         , 'planning_role'
-        , 'position'
         , 'position_text'
         , 'queries'
         , 'realname'

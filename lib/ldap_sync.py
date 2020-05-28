@@ -270,9 +270,7 @@ class LDAP_Roundup_Sync (object) :
                 , False
                 )
         if 'position_text' in props and 'position_text' not in dontsync :
-            # position used to be a link to position, it's now only a
-            # string field. We sync that field *to* ldap but not
-            # *from* ldap.
+            # We sync that field *to* ldap but not *from* ldap.
             attr_u ['position_text'] = \
                 ( 'title'
                 , 1
