@@ -463,6 +463,13 @@ class _Test_Case_Summary (_Test_Case) :
             , roles        = roles
             )
         user_dynamic.user_create_magic (self.db, self.user0, self.olo, self.dep)
+        self.db.user_dynamic.create \
+            ( user            = self.user0
+            , valid_from      = date.Date ('.')
+            , org_location    = self.olo
+            , department      = self.dep
+            , vacation_yearly = 25
+            )
         cts  = self.db.user.get (self.user0, 'contacts')
         cmin = 0xFFFF
         mail = self.db.uc_type.lookup ('Email')
@@ -480,6 +487,13 @@ class _Test_Case_Summary (_Test_Case) :
             , lastname     = 'User1'
             )
         user_dynamic.user_create_magic (self.db, self.user1, self.olo, self.dep)
+        self.db.user_dynamic.create \
+            ( user            = self.user1
+            , valid_from      = date.Date ('.')
+            , org_location    = self.olo
+            , department      = self.dep
+            , vacation_yearly = 25
+            )
         cts  = self.db.user.get (self.user1, 'contacts')
         cmin = 0xFFFF
         mail = self.db.uc_type.lookup ('Email')
@@ -503,6 +517,13 @@ class _Test_Case_Summary (_Test_Case) :
             , supervisor   = self.user1
             )
         user_dynamic.user_create_magic (self.db, self.user2, self.olo, self.dep)
+        self.db.user_dynamic.create \
+            ( user            = self.user2
+            , valid_from      = date.Date ('.')
+            , org_location    = self.olo
+            , department      = self.dep
+            , vacation_yearly = 25
+            )
         # create initial dyn_user record for each user
         # others will follow during tests
         ud = self.db.user_dynamic.filter (None, dict (user = self.user1))
@@ -867,6 +888,13 @@ class Test_Case_Timetracker (_Test_Case_Summary, unittest.TestCase) :
             )
         user_dynamic.user_create_magic \
             (self.db, self.user11, self.olo, self.dep)
+        self.db.user_dynamic.create \
+            ( user            = self.user11
+            , valid_from      = date.Date ('.')
+            , org_location    = self.olo
+            , department      = self.dep
+            , vacation_yearly = 25
+            )
         # create initial dyn_user record for user
         ud = self.db.user_dynamic.filter (None, dict (user = self.user11))
         self.assertEqual (len (ud), 1)
@@ -3201,6 +3229,13 @@ class Test_Case_Timetracker (_Test_Case_Summary, unittest.TestCase) :
             )
         user_dynamic.user_create_magic \
             (self.db, self.user16, self.olo, self.dep)
+        self.db.user_dynamic.create \
+            ( user            = self.user16
+            , valid_from      = date.Date ('.')
+            , org_location    = self.olo
+            , department      = self.dep
+            , vacation_yearly = 25
+            )
         ud = self.db.user_dynamic.filter (None, dict (user = self.user16))
         self.assertEqual (len (ud), 1)
         self.db.user_dynamic.retire (ud [0])
@@ -3537,6 +3572,13 @@ class Test_Case_Fulltracker (_Test_Case_Summary, unittest.TestCase) :
             , lastname     = 'User3'
             )
         user_dynamic.user_create_magic (self.db, self.user3, self.olo, self.dep)
+        self.db.user_dynamic.create \
+            ( user            = self.user3
+            , valid_from      = date.Date ('.')
+            , org_location    = self.olo
+            , department      = self.dep
+            , vacation_yearly = 25
+            )
         # create initial dyn_user record for user
         ud = self.db.user_dynamic.filter (None, dict (user = self.user3))
         self.assertEqual (len (ud), 1)
@@ -3569,6 +3611,13 @@ class Test_Case_Fulltracker (_Test_Case_Summary, unittest.TestCase) :
             , lastname     = 'User4'
             )
         user_dynamic.user_create_magic (self.db, self.user4, self.olo, self.dep)
+        self.db.user_dynamic.create \
+            ( user            = self.user4
+            , valid_from      = date.Date ('.')
+            , org_location    = self.olo
+            , department      = self.dep
+            , vacation_yearly = 25
+            )
         # create initial dyn_user record for user
         ud = self.db.user_dynamic.filter (None, dict (user = self.user4))
         self.assertEqual (len (ud), 1)
@@ -3606,6 +3655,13 @@ class Test_Case_Fulltracker (_Test_Case_Summary, unittest.TestCase) :
             , lastname     = 'User5'
             )
         user_dynamic.user_create_magic (self.db, self.user5, self.olo, self.dep)
+        self.db.user_dynamic.create \
+            ( user            = self.user5
+            , valid_from      = date.Date ('.')
+            , org_location    = self.olo
+            , department      = self.dep
+            , vacation_yearly = 25
+            )
         # public holidays
         vienna = self.db.location.lookup ('Vienna')
         hd = \
@@ -3702,6 +3758,13 @@ class Test_Case_Fulltracker (_Test_Case_Summary, unittest.TestCase) :
             , lastname     = 'User6'
             )
         user_dynamic.user_create_magic (self.db, self.user6, self.olo, self.dep)
+        self.db.user_dynamic.create \
+            ( user            = self.user6
+            , valid_from      = date.Date ('.')
+            , org_location    = self.olo
+            , department      = self.dep
+            , vacation_yearly = 25
+            )
         # create initial dyn_user record for user
         ud = self.db.user_dynamic.filter (None, dict (user = self.user6))
         self.assertEqual (len (ud), 1)
@@ -3739,6 +3802,13 @@ class Test_Case_Fulltracker (_Test_Case_Summary, unittest.TestCase) :
             , lastname     = 'User7'
             )
         user_dynamic.user_create_magic (self.db, self.user7, self.olo, self.dep)
+        self.db.user_dynamic.create \
+            ( user            = self.user7
+            , valid_from      = date.Date ('.')
+            , org_location    = self.olo
+            , department      = self.dep
+            , vacation_yearly = 25
+            )
         # create initial dyn_user record for user
         ud = self.db.user_dynamic.filter (None, dict (user = self.user7))
         self.assertEqual (len (ud), 1)
@@ -3777,6 +3847,13 @@ class Test_Case_Fulltracker (_Test_Case_Summary, unittest.TestCase) :
             , lastname     = 'User8'
             )
         user_dynamic.user_create_magic (self.db, self.user8, self.olo, self.dep)
+        self.db.user_dynamic.create \
+            ( user            = self.user8
+            , valid_from      = date.Date ('.')
+            , org_location    = self.olo
+            , department      = self.dep
+            , vacation_yearly = 25
+            )
         # create initial dyn_user record for user
         ud = self.db.user_dynamic.filter (None, dict (user = self.user8))
         self.assertEqual (len (ud), 1)
@@ -3812,6 +3889,13 @@ class Test_Case_Fulltracker (_Test_Case_Summary, unittest.TestCase) :
             , lastname     = 'User9'
             )
         user_dynamic.user_create_magic (self.db, self.user9, self.olo, self.dep)
+        self.db.user_dynamic.create \
+            ( user            = self.user9
+            , valid_from      = date.Date ('.')
+            , org_location    = self.olo
+            , department      = self.dep
+            , vacation_yearly = 25
+            )
         # create initial dyn_user record for user
         ud = self.db.user_dynamic.filter (None, dict (user = self.user9))
         self.assertEqual (len (ud), 1)
@@ -3846,6 +3930,13 @@ class Test_Case_Fulltracker (_Test_Case_Summary, unittest.TestCase) :
             )
         user_dynamic.user_create_magic \
             (self.db, self.user10, self.olo, self.dep)
+        self.db.user_dynamic.create \
+            ( user            = self.user10
+            , valid_from      = date.Date ('.')
+            , org_location    = self.olo
+            , department      = self.dep
+            , vacation_yearly = 25
+            )
         # create initial dyn_user record for user
         ud = self.db.user_dynamic.filter (None, dict (user = self.user10))
         self.assertEqual (len (ud), 1)

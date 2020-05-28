@@ -1006,10 +1006,11 @@ def check_email (db, contacts, email, t_email) :
 
 def user_create_magic (db, uid, olo, dep) :
     """ Perform magic on new user creation
-        If both, department and org_location are given, we create a
-        dynamic user record. If at least the org_location is given, we
-        look up the mail domain and create email addresses if the user
-        doesn't have any contacts yet.
+        We used to create a dynamic user record here, this is no longer
+        done.
+        If at least the org_location is given, we look up the mail
+        domain and create email addresses if the user doesn't have any
+        contacts yet.
         We also set nickname and lunch duration/lunch_start values if
         those are not yet set for the user.
         And of course we do all this only for timetracking users.
@@ -1022,20 +1023,6 @@ def user_create_magic (db, uid, olo, dep) :
     org_location = None
     if olo :
         org_location = db.org_location.getnode (olo)
-    # if we create a new dynamic user record we will use current date
-    # +1 year as valid_from. Otherwise the user would be active and
-    # valid already after the first LDAP sync which is probably before
-    # the start of the contract. HR is editing this date to the correct
-    # start date afterwards.
-    if 'user_dynamic' in db.classes and uid > 2 and olo and dep :
-        db.user_dynamic.create \
-            ( user            = uid
-            , valid_from      = Date ('+1y')
-            , org_location    = olo
-            , department      = dep
-            , vacation_yearly = 25
-            )
-
     _ = get_translation \
         (db.config.TRACKER_LANGUAGE, db.config.TRACKER_HOME).gettext
 
