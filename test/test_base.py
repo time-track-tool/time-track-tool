@@ -816,30 +816,16 @@ class Test_Case_Timetracker (_Test_Case_Summary, unittest.TestCase) :
         ]
     transprop_perms = transprop_time
 
-    def test_domain_user_edit (self) :
-        self.log.debug ('test_domain_user_edit')
-        self.setup_db ()
-        self.db.user.set (self.user1, roles = 'User,Nosy,Dom-User-Edit-GTT')
-        ad_domain = 'some.test.domain'
-        roles     = 'User,Nosy'
-        valid     = self.db.user_status.lookup ('valid')
-        obsolete  = self.db.user_status.lookup ('obsolete')
-        self.db.domain_permission.create \
-            ( ad_domain       = ad_domain
-            , users           = [self.user1]
-            , default_roles   = roles
-            , timetracking_by = self.user2
-            , clearance_by    = '1'
-            , status          = valid
-            )
-        self.db.commit ()
-        self.db.close ()
-        self.db = self.tracker.open (self.username1)
+    def check_user_perms (self, ad_domain) :
+        roles    = 'User,Nosy'
+        valid    = self.db.user_status.lookup ('valid')
+        obsolete = self.db.user_status.lookup ('obsolete')
         # Now create a user
         u = self.db.user.create \
-            ( username = 'testuser'
-            , firstname    = 'Testuser'
-            , lastname     = 'Usertestuser'
+            ( username  = 'testuser'
+            , firstname = 'Testuser'
+            , lastname  = 'Usertestuser'
+            , ad_domain = ad_domain
             )
         u_domain = 'testuser@' + ad_domain
         self.assertEqual (self.db.user.get (u, 'username'), u_domain)
@@ -872,11 +858,44 @@ class Test_Case_Timetracker (_Test_Case_Summary, unittest.TestCase) :
         id = self.db.user_dynamic.create \
             ( org_location    = self.olo
             , department      = self.dep
-            , vacation_yearly = 25
+            , vacation_yearly = 23
             , user            = u
             , valid_from      = date.Date ('.')
             )
-        self.assertEqual (self.db.user_dynamic.get (id, 'vacation_yearly'), 25)
+        self.assertEqual (self.db.user_dynamic.get (id, 'vacation_yearly'), 23)
+    # end def check_user_perms
+
+    def test_domain_user_edit (self) :
+        self.log.debug ('test_domain_user_edit')
+        self.setup_db ()
+        self.db.user.set (self.user1, roles = 'User,Nosy,Dom-User-Edit-GTT')
+        ad_domain = 'some.test.domain'
+        roles     = 'User,Nosy'
+        valid     = self.db.user_status.lookup ('valid')
+        obsolete  = self.db.user_status.lookup ('obsolete')
+        dpid = self.db.domain_permission.create \
+            ( ad_domain       = ad_domain
+            , users           = [self.user1]
+            , default_roles   = roles
+            , timetracking_by = self.user2
+            , clearance_by    = '1'
+            , status          = valid
+            )
+        self.db.commit ()
+        self.db.close ()
+        self.db = self.tracker.open (self.username1)
+        self.check_user_perms (ad_domain)
+        # Do *not* commit
+        self.db.rollback ()
+        self.db.close ()
+        self.db = self.tracker.open ('admin')
+        # Change permission to role-based and retry the whole test.
+        self.db.domain_permission.set \
+            (dpid, users = [], role_enabled = 'Dom-User-Edit-GTT')
+        self.db.commit ()
+        self.db.close ()
+        self.db = self.tracker.open (self.username1)
+        self.check_user_perms (ad_domain)
     # end def test_domain_user_edit
 
     def setup_user11 (self) :

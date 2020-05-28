@@ -4302,8 +4302,8 @@ msgstr "Weekly hours FTE"
 msgid "exemption"
 msgstr "Exemption"
 
-msgid "short_term_work_hours"
-msgstr "Short-term work hours"
+msgid "short_time_work_hours"
+msgstr "Short-time work hours"
 
 msgid "job_log"
 msgstr "Job log"

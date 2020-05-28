@@ -30,6 +30,7 @@
 #
 
 from schemacfg import schemadef
+from domain_perm import check_domain_permission
 
 def init \
     ( db
@@ -82,6 +83,7 @@ def init \
         , timetracking_by = Link      ("user")
         , clearance_by    = Link      ("user")
         , status          = Link      ("user_status")
+        , role_enabled    = String    ()
         )
     domain_permission.setkey ('ad_domain')
 
@@ -167,12 +169,7 @@ def security (db, ** kw) :
             """
             dyn   = db.user_dynamic.getnode (itemid)
             user  = db.user.getnode (dyn.user)
-            dpids = db.domain_permission.filter (None, dict (users = userid))
-            for dpid in dpids :
-                dp = db.domain_permission.getnode (dpid)
-                if dp.ad_domain == user.ad_domain :
-                    return True
-            return False
+            return check_domain_permission (db, userid, user.ad_domain)
         # end def user_dynamic_dom
 
         for role in ("Dom-User-Edit-GTT", "Dom-User-Edit-HR") :
@@ -190,15 +187,8 @@ def security (db, ** kw) :
         """ Users may view/edit user records for ad_domain for which they
             are in the domain_permission for the user.
         """
-        dpids = db.domain_permission.filter (None, dict (users = userid))
-        if not dpids :
-            return False
         u = db.user.getnode (itemid)
-        for dpid in dpids :
-            dp = db.domain_permission.getnode (dpid)
-            if dp.ad_domain == u.ad_domain :
-                return True
-        return False
+        return check_domain_permission (db, userid, u.ad_domain)
     # end def domain_access_user
 
     for role, props in role_perms :
@@ -216,16 +206,9 @@ def security (db, ** kw) :
         """ Users may view user_dynamic records for ad_domain for which
             they are in the domain_permission for the user
         """
-        dpids = db.domain_permission.filter (None, dict (users = userid))
-        if not dpids :
-            return False
         ud = db.user_dynamic.getnode (itemid)
         u  = db.user.getnode (ud.user)
-        for dpid in dpids :
-            dp = db.domain_permission.getnode (dpid)
-            if dp.ad_domain == u.ad_domain :
-                return True
-        return False
+        return check_domain_permission (db, userid, u.ad_domain)
     # end def domain_view_user_dynamic
 
     p = db.security.addPermission \

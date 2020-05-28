@@ -371,7 +371,7 @@ def init \
         , max_flexitime         = Number    ()
         , vac_aliq              = Link      ("vac_aliq",     do_journal = "no")
         , exemption             = Boolean   ()
-        , short_term_work_hours = Number    ()
+        , short_time_work_hours = Number    ()
         )
 
     leave_status = Class \

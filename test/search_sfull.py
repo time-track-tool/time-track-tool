@@ -2084,7 +2084,7 @@ properties = \
         , ( 'sap_cc'
           , ["admin", "controlling", "hr"]
           )
-        , ( 'short_term_work_hours'
+        , ( 'short_time_work_hours'
           , ["admin", "hr", "hr-org-location"]
           )
         , ( 'supp_per_period'

@@ -23,6 +23,7 @@
 from roundup.cgi.TranslationService import get_translation
 from roundup.date                   import Date
 from roundup.exceptions             import Reject
+from domain_perm                    import check_domain_permission
 
 import common
 import rup_utils
@@ -295,27 +296,15 @@ def domain_user_edit (db, cl, nodeid, new_values) :
     if not _domain_user_role_check (db) :
         return
     uid = db.getuid ()
-    # Find entries in domain_permission
-    dpids = db.domain_permission.filter (None, dict (users = uid))
-    if not dpids :
-        raise Reject (_ ("No permission to edit/create users with any domain"))
     ad_domain = new_values.get ('ad_domain', None)
     if not ad_domain and nodeid :
         ad_domain = cl.get (nodeid, 'ad_domain')
-    if ad_domain or nodeid :
-        for d in dpids :
-            dp = db.domain_permission.getnode (d)
-            if dp.ad_domain == ad_domain :
-                break
-        else :
-            raise Reject \
-                (_ ('No permission for user with AD-Domain: "%s"' % ad_domain))
-    else :
-        if len (dpids) == 1 :
-            dp = db.domain_permission.getnode (dpids [0])
-            ad_domain = dp.ad_domain
-        else :
-            raise Reject (_ ("AD-Domain must be specified"))
+    if not ad_domain :
+        raise Reject (_ ("AD-Domain must be specified"))
+    dp = check_domain_permission (db, uid, ad_domain)
+    if not dp :
+        raise Reject \
+            (_ ('No permission for user with AD-Domain: "%s"' % ad_domain))
     perm = db.security.hasPermission
     # Force this to valid value
     if not nodeid or ad_domain in new_values :
@@ -348,22 +337,14 @@ def domain_user_check (db, cl, nodeid, new_values) :
     """
     if not _domain_user_role_check (db) :
         return
-    # Find entries in domain_permission
-    dpids = db.domain_permission.filter (None, dict (users = db.getuid ()))
-    if not dpids :
-        raise Reject (_ ("No permission to edit/create users with any domain"))
     uid = new_values.get ('user', None)
     if nodeid and not uid :
         uid = cl.get (nodeid, 'user')
     # Allow creation of empty user
     if not uid :
         return
-    ad_domain =  db.user.get (uid, 'ad_domain')
-    for d in dpids :
-        dp = db.domain_permission.getnode (d)
-        if dp.ad_domain == ad_domain :
-            break
-    else :
+    ad_domain = db.user.get (uid, 'ad_domain')
+    if not check_domain_permission (db, db.getuid (), ad_domain) :
         raise Reject \
             (_ ('No permission for user with AD-Domain: "%s"' % ad_domain))
 # end def domain_user_check
@@ -412,6 +393,23 @@ def check_room_on_restore (db, cl, nodeid, new_values) :
         new_values ['room'] = None
 # end def check_room_on_restore
 
+def check_dp_role (db, cl, nodeid, new_values) :
+    """ We ensure that the given role is lowercase: The lookup will be
+        performed using exact string match later, so the domain needs to
+        be in a defined case. For all role-fields we check the role names
+        given are valid.
+    """
+    if 'role_enabled' in new_values :
+        common.check_roles (db, cl, nodeid, new_values, rname = 'role_enabled')
+        if ',' in new_values ['role_enabled'] :
+            r_en = _ ('role_enabled')
+            raise Reject \
+                (_ ("Only a single role is allowed for %(r_en)s") % locals ())
+        new_values ['role_enabled'] = new_values ['role_enabled'].lower ()
+    if 'default_roles' in new_values :
+        common.check_roles (db, cl, nodeid, new_values, rname = 'default_roles')
+# end def check_dp_role
+
 def init (db) :
     global _
     _   = get_translation \
@@ -441,6 +439,8 @@ def init (db) :
         db.user.audit ("set",    domain_user_edit)
         db.user.audit ("create", fix_domain_username)
         db.user.audit ("set",    fix_domain_username)
+        db.domain_permission.audit ("set",    check_dp_role)
+        db.domain_permission.audit ("create", check_dp_role)
     if 'user_dynamic' in db.classes :
         db.user_dynamic.audit ("create", domain_user_check)
         db.user_dynamic.audit ("set",    domain_user_check)

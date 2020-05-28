@@ -872,7 +872,7 @@ properties = \
         , 'org_location'
         , 'overtime_period'
         , 'sap_cc'
-        , 'short_term_work_hours'
+        , 'short_time_work_hours'
         , 'supp_per_period'
         , 'supp_weekly_hours'
         , 'travel_full'

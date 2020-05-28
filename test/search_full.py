@@ -423,6 +423,9 @@ properties = \
         , ( 'default_roles'
           , [ 'admin', 'it' ]
           )
+        , ( 'role_enabled'
+          , [ 'admin', 'it' ]
+          )
         , ( 'status'
           , [ 'admin', 'it' ]
           )
@@ -2078,7 +2081,7 @@ properties = \
           , ["admin", "controlling", "dom-user-edit-gtt",
           "dom-user-edit-hr", "hr"]
           )
-        , ( 'short_term_work_hours'
+        , ( 'short_time_work_hours'
           , ["admin", "dom-user-edit-gtt", "dom-user-edit-hr", "hr", "hr-org-location"]
           )
         , ( 'supp_per_period'

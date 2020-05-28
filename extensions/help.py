@@ -1880,9 +1880,9 @@ _helptext          = \
       [ ""'''Shelf life in months''' ]
     , ""'shipping_address'            :
       [""'''Data for %(Property)s''']
-    , ""'short_term_work_hours'       :
+    , ""'short_time_work_hours'       :
       [ ""'''Weekly hours reported in FTE reporting if this person is
-             working short term
+             working short time
           '''
       ]
     , ""'show_all_users'              :

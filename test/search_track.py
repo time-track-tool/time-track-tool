@@ -180,6 +180,9 @@ properties = \
         , ( 'default_roles'
           , [ 'admin', 'it' ]
           )
+        , ( 'role_enabled'
+          , [ 'admin', 'it' ]
+          )
         , ( 'status'
           , [ 'admin', 'it' ]
           )
