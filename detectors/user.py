@@ -399,14 +399,10 @@ def check_dp_role (db, cl, nodeid, new_values) :
         be in a defined case. For all role-fields we check the role names
         given are valid.
     """
-    if 'role_enabled' in new_values :
-        common.check_roles (db, cl, nodeid, new_values, rname = 'role_enabled')
-        if ',' in new_values ['role_enabled'] :
-            r_en = _ ('role_enabled')
-            raise Reject \
-                (_ ("Only a single role is allowed for %(r_en)s") % locals ())
-        new_values ['role_enabled'] = new_values ['role_enabled'].lower ()
-    if 'default_roles' in new_values :
+    if new_values.get ('roles_enabled', None) :
+        common.check_roles (db, cl, nodeid, new_values, rname = 'roles_enabled')
+        new_values ['roles_enabled'] = new_values ['roles_enabled'].lower ()
+    if new_values.get ('default_roles', None) :
         common.check_roles (db, cl, nodeid, new_values, rname = 'default_roles')
 # end def check_dp_role
 

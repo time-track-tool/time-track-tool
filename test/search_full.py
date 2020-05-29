@@ -423,7 +423,7 @@ properties = \
         , ( 'default_roles'
           , [ 'admin', 'it' ]
           )
-        , ( 'role_enabled'
+        , ( 'roles_enabled'
           , [ 'admin', 'it' ]
           )
         , ( 'status'

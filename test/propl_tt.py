@@ -110,7 +110,7 @@ properties = \
       , [ 'ad_domain'
         , 'clearance_by'
         , 'default_roles'
-        , 'role_enabled'
+        , 'roles_enabled'
         , 'status'
         , 'timetracking_by'
         , 'users'

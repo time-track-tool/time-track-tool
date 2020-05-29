@@ -83,7 +83,7 @@ def init \
         , timetracking_by = Link      ("user")
         , clearance_by    = Link      ("user")
         , status          = Link      ("user_status")
-        , role_enabled    = String    ()
+        , roles_enabled   = String    ()
         )
     domain_permission.setkey ('ad_domain')
 

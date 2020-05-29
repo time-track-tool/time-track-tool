@@ -30,17 +30,18 @@ def check_domain_permission (db, uid, ad_domain) :
         several.
     """
     user    = db.user.getnode (uid)
-    roles   = common.role_list (user.roles)
+    roles   = set (common.role_list (user.roles))
     dpids   = db.domain_permission.filter (None, dict (users = uid))
-    for role in roles :
-        dpids_r = db.domain_permission.filter \
-            (None, {}, exact_match_spec = dict (role_enabled = role))
-        dpids.extend (dpids_r)
-    for dpid in dpids :
+    for dpid in db.domain_permission.getnodeids (retired = False) :
         dp = db.domain_permission.getnode (dpid)
-        if dp.ad_domain == ad_domain :
+        if dp.ad_domain != ad_domain :
+            continue
+        if uid in dp.users :
             return dp
-    return False
+        rl = set (common.role_list (dp.roles_enabled))
+        if roles & rl :
+            return dp
+    return None
 # end def check_domain_permission
 
 ### __END__

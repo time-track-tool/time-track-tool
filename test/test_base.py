@@ -891,7 +891,7 @@ class Test_Case_Timetracker (_Test_Case_Summary, unittest.TestCase) :
         self.db = self.tracker.open ('admin')
         # Change permission to role-based and retry the whole test.
         self.db.domain_permission.set \
-            (dpid, users = [], role_enabled = 'Dom-User-Edit-GTT')
+            (dpid, users = [], roles_enabled = 'Dom-User-Edit-GTT')
         self.db.commit ()
         self.db.close ()
         self.db = self.tracker.open (self.username1)
