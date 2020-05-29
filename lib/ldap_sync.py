@@ -3,6 +3,7 @@
 import sys
 import ldap
 import user_dynamic
+import common
 
 from copy                import copy
 from traceback           import print_exc
@@ -1218,7 +1219,13 @@ class LdapLoginAction (LoginAction, autosuper) :
             pass
         # sync the user
         self.client.error_message = []
-        if self.try_ldap () :
+        if common.user_has_role (self.db, self.client.userid, 'admin') :
+            if not user :
+                raise exceptions.LoginError (self._ ('Invalid login'))
+            if user.status == invalid :
+                raise exceptions.LoginError (self._ ('Invalid login'))
+            self.client.userid = user.id
+        elif self.try_ldap () :
             self.ldsync.sync_user_from_ldap (username)
             try :
                 user = self.db.user.lookup  (username)
