@@ -188,6 +188,7 @@ Role "it":
  User is allowed Edit on (Edit for "user": ('ad_domain', 'nickname', 'password', 'pictures', 'roles', 'timetracking_by', 'timezone', 'username') only)
  User is allowed Edit on file if file is linked from an item with Edit permission (Edit for "file" only)
  User is allowed Edit on msg if msg is linked from an item with Edit permission (Edit for "msg" only)
+ User is allowed View on (View for "user": ('ad_domain', 'nickname', 'password', 'pictures', 'roles', 'timetracking_by', 'timezone', 'username') only)
  User is allowed View on file if file is linked from an item with View permission (View for "file" only)
  User is allowed to access domain_permission (View for "domain_permission" only)
  User is allowed to create domain_permission (Create for "domain_permission" only)

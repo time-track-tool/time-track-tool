@@ -84,6 +84,11 @@ prop_perms = \
         , "timetracking_by", "username", "ad_domain"
         )
       )
+    , ( "user", "View", ["IT"]
+      , ( "nickname", "pictures", "password", "roles", "timezone"
+        , "timetracking_by", "username", "ad_domain"
+        )
+      )
     , ( "user", "View", ["Controlling"], ("roles",))
     , ( "user", "View", ["User"]
       , ( "activity", "actor", "address", "alternate_addresses"
