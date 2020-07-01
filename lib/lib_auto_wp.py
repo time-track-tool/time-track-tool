@@ -37,6 +37,8 @@ def check_auto_wp (db, auto_wp_id, userid) :
         do_auto_wp set is available for this user.
     """
     user   = db.user.getnode (userid)
+    snam   = str (user.username).split ('@') [0]
+    desc   = "Automatic wp for user %s" % snam
     # Very early default should we not find any freeze records
     start  = Date ('1970-01-01')
     freeze = freeze_date (db, userid)
@@ -107,8 +109,11 @@ def check_auto_wp (db, auto_wp_id, userid) :
         # before that.
         while wp and wp.time_start < start and dyn_start > start :
             if wp.time_end > start :
-                n = '%s -%s' % (user.username, start.pretty (ymd))
-                db.time_wp.set (wp.id, time_end = start, name = n)
+                n = '%s -%s' % (snam, start.pretty (ymd))
+                d = dict (time_end = start, name = n)
+                if wp.description != desc :
+                    d ['description'] = desc
+                db.time_wp.set (wp.id, **d)
             try :
                 wp = wps.pop (0)
             except IndexError :
@@ -130,14 +135,20 @@ def check_auto_wp (db, auto_wp_id, userid) :
                 if not trs :
                     db.time_wp.retire (wp.id)
                 else :
-                    n = '%s -%s' % (user.username, wp.time_start.pretty (ymd))
-                    db.time_wp.set (wp.id, time_end = wp.time_start, name = n)
+                    n = '%s -%s' % (snam, wp.time_start.pretty (ymd))
+                    d = dict (time_end = wp.time_start, name = n)
+                    if wp.description != desc :
+                        d ['description'] = desc
+                    db.time_wp.set (wp.id, **d)
                 try :
                     wp = wps.pop (0)
                 except IndexError :
                     wp = None
             else :
-                db.time_wp.set (wp.id, time_start = dyn_start)
+                d = dict (time_start = dyn_start)
+                if wp.description != desc :
+                    d ['description'] = desc
+                db.time_wp.set (wp.id, **d)
                 break
 
         # We now either have a wp with correct start date or none
@@ -154,34 +165,38 @@ def check_auto_wp (db, auto_wp_id, userid) :
                     break
                 assert not wps [0].time_end or wp.time_end <= wps [0].time_end
                 if wp.time_end != wps [0].time_start :
-                    n = '%s -%s' % \
-                        (user.username, wps [0].time_start.pretty (ymd))
-                    db.time_wp.set \
-                        (wp.id, time_end = wps [0].time_start, name = n)
+                    n = '%s -%s' % (snam, wps [0].time_start.pretty (ymd))
+                    d = dict (time_end = wps [0].time_start, name = n)
+                    if wp.description != desc :
+                        d ['description'] = desc
+                    db.time_wp.set (wp.id, ** d)
                 wp = wps.pop (0)
             if end_time :
                 if wp.time_end != end_time :
-                    n = '%s -%s' % (user.username, end_time.pretty (ymd))
-                    db.time_wp.set (wp.id, time_end = end_time, name = n)
+                    n = '%s -%s' % (snam, end_time.pretty (ymd))
+                    d = dict (time_end = end_time, name = n)
+                    if wp.description != desc :
+                        d ['description'] = desc
+                    db.time_wp.set (wp.id, **d)
             else :
                 if wp.time_end :
-                    db.time_wp.set \
-                        (wp.id, time_end = None, name = user.username)
+                    d = dict (time_end = None, name = snam)
+                    if wp.description != desc :
+                        d ['description'] = desc
+                    db.time_wp.set (wp.id, **d)
             try :
                 wp = wps.pop (0)
             except IndexError :
                 wp = None
         else :
             # If we have no wp, create one
-            desc = "Automatic wp for user %s" % user.username
             d = dict \
                 ( auto_wp           = auto_wp_id
                 , project           = auto_wp.time_project
                 , durations_allowed = auto_wp.durations_allowed
-                , travel            = auto_wp.travel
                 , bookers           = [userid]
                 , description       = desc
-                , name              = user.username
+                , name              = snam
                 , time_start        = max (start, dyn_start)
                 , is_public         = False
                 , planned_effort    = 0
@@ -189,10 +204,7 @@ def check_auto_wp (db, auto_wp_id, userid) :
                 )
             if end_time :
                 d ['time_end'] = end_time
-                d ['name']     = \
-                    '%s -%s' % (user.username, end_time.pretty (ymd))
-            if auto_wp.time_wp_summary_no :
-                d ['time_wp_summary_no'] = auto_wp.time_wp_summary_no
+                d ['name']     = '%s -%s' % (snam, end_time.pretty (ymd))
             wpid = db.time_wp.create (**d)
         od  = dyn
         dyn = next_user_dynamic (db, dyn, use_ct = True)
@@ -213,8 +225,11 @@ def check_auto_wp (db, auto_wp_id, userid) :
             if not trs :
                 db.time_wp.retire (wp.id)
             else :
-                n = '%s -%s' % (user.username, wp.time_start.pretty (ymd))
-                db.time_wp.set (wp.id, time_end = wp.time_start, name = n)
+                n = '%s -%s' % (snam, wp.time_start.pretty (ymd))
+                d = dict (time_end = wp.time_start, name = n)
+                if wp.description != desc :
+                    d ['description'] = desc
+                db.time_wp.set (wp.id, **d)
         wps = []
         wp  = None
 # end def check_auto_wp

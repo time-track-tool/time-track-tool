@@ -12,7 +12,6 @@
     , utils.ExtProperty (utils, pdict ['name'])
     , utils.ExtProperty (utils, pdict ['org_location'],  multiselect = 1)
     , utils.ExtProperty (utils, pdict ['contract_type'], multiselect = 1)
-    , utils.ExtProperty (utils, pdict ['time_wp_summary_no'], multiselect = 1)
     , utils.ExtProperty
         ( utils, pdict ['time_project']
         , filter = { 'status.active' : True }
@@ -20,7 +19,6 @@
     , utils.ExtProperty (utils, pdict ['is_valid'])
     , utils.ExtProperty (utils, pdict ['duration'],      searchable = 0)
     , utils.ExtProperty (utils, pdict ['durations_allowed'])
-    , utils.ExtProperty (utils, pdict ['travel'])
     );
   "
   tal:condition="context/is_view_ok">

@@ -329,8 +329,6 @@ def init \
         , duration              = Interval  ()
         , is_valid              = Boolean   ()
         , durations_allowed     = Boolean   ()
-        , travel                = Boolean   ()
-        , time_wp_summary_no    = Link      ("time_wp_summary_no")
         )
     auto_wp.setkey ("name")
 

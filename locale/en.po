@@ -2772,6 +2772,9 @@ msgstr "Work package"
 msgid "duration"
 msgstr "Duration"
 
+msgid "auto_wp++duration"
+msgstr "Duration"
+
 msgid "start_generated"
 msgstr ""
 

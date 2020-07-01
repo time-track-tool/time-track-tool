@@ -355,6 +355,12 @@ _helptext          = \
       [""'''Author of this %(Classname)s''']
     , ""'authors'                     :
       [""'''Authors of the artefact of this %(Classname)s''']
+    , ""'auto_wp++duration'           :
+      [""'''%(Property)s in days of the auto workpackage: The time is
+            measured from the start of the first dynamic user record of
+            the user for whom an automatic workpackage is created.
+         '''
+      ]
     , ""'aux_username'                :
       [""'''Additional username used in subsidiaries or similar''']
     , ""'balance'                     :

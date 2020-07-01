@@ -200,7 +200,6 @@ def wp_check_auto_wp (db, cl, nodeid, new_values) :
         , 'contract_type'
         , 'org_location'
         , 'project'
-        , 'travel'
         , 'is_public'
         )
     if nodeid :
@@ -215,7 +214,6 @@ def wp_check_auto_wp (db, cl, nodeid, new_values) :
             ( _, cl, nodeid, new_values
             , 'bookers'
             , 'auto_wp'
-            , 'travel'
             , 'time_project'
             , 'durations_allowed'
             )
@@ -229,7 +227,8 @@ def wp_check_auto_wp (db, cl, nodeid, new_values) :
     if not start :
         assert nodeid
         start = cl.get (nodeid, 'time_start')
-    if not end and nodeid :
+    # Cannot check for empty end here, we could set the end to empty!
+    if 'time_end' not in new_values and nodeid :
         end = cl.get (nodeid, 'time_end')
     assert len (bookers) == 1
     booker = bookers [0]
@@ -238,7 +237,7 @@ def wp_check_auto_wp (db, cl, nodeid, new_values) :
     if freeze :
         if start < freeze and 'time_start' in new_values :
             raise Reject (_ ("No change of auto wp before freeze date"))
-        if end and end in new_values and end < freeze :
+        if end and 'time_end' in new_values and end < freeze :
             raise Reject (_ ("No change of auto wp before freeze date"))
     # Get dyn user for start
     dyn = user_dynamic.get_user_dynamic (db, booker, start)

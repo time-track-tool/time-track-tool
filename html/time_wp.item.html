@@ -11,9 +11,9 @@
   </tal:block>
  </title>
  <tal:block metal:fill-slot="create_or_query">
-   <tal:block 
+   <tal:block
     metal:use-macro="templates/page/macros/create_or_query_new_tracker_item" />
- </tal:block> 
+ </tal:block>
 
  <tal:block metal:fill-slot="content">
   <tal:block metal:use-macro="templates/page/macros/formatted_class">
@@ -44,7 +44,7 @@
       <tal:block tal:replace="structure context/cost_center/plain"/>
      </td>
      <td tal:condition="context/id" tal:content="structure python:
-        utils.ExtProperty 
+        utils.ExtProperty
           ( utils
           , context.cost_center.name
           , item=context.cost_center
@@ -64,10 +64,19 @@
             )"/>
      </td>
      <td tal:condition="context/id" tal:content="structure python:
-        utils.ExtProperty 
+        utils.ExtProperty
           ( utils
           , context.project.name
           , item=context.project
+          ).formatlink()"/>
+    </tr>
+    <tr tal:condition="python: context.id and context.auto_wp">
+     <th tal:content="structure python:utils.fieldname (classname, 'auto_wp')"/>
+     <td tal:content="structure python:
+        utils.ExtProperty
+          ( utils
+          , context.auto_wp.name
+          , item=context.auto_wp
           ).formatlink()"/>
     </tr>
     <tr>

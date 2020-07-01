@@ -891,7 +891,6 @@ def auto_wp_check (db, cl, nodeid, new_values) :
         , 'org_location'
         , 'time_project'
         , 'durations_allowed'
-        , 'travel'
         )
     if nodeid :
         for p in props :
@@ -908,8 +907,6 @@ def auto_wp_check (db, cl, nodeid, new_values) :
             new_values ['durations_allowed'] = False
         if 'is_valid' not in new_values :
             new_values ['is_valid'] = False
-        if 'travel' not in new_values :
-            new_values ['travel'] = False
 # end def auto_wp_check
 
 def auto_wp_modify (db, cl, nodeid, old_values) :
