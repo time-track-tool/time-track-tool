@@ -997,7 +997,7 @@ dynuser_copyfields = \
      ]
 
 def is_tt_user_status (db, status) :
-    """ Get all stati with 'timetracking_allowed' set it property exists
+    """ Get all stati with 'timetracking_allowed' set if property exists
         Otherwise simply use 'valid' status
     """
     s = None
