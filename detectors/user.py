@@ -103,7 +103,7 @@ def common_user_checks (db, cl, nodeid, new_values) :
 # end def common_user_checks
 
 def is_valid_user_status (db, new_values) :
-    """ Get all stati with 'timetracking_allowed' set it property exists
+    """ Get all stati with 'timetracking_allowed' set if property exists
         Otherwise simply use 'valid' status
         If no user_status class exists, always return True
     """
