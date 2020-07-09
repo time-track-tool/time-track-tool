@@ -1198,10 +1198,21 @@ _helptext          = \
     , ""'last_uid'                    :
       [""'''Last used uid in this %(Classname)s''']
     , ""'lastname'                    : [lastname]
+    , ""'ldap_group'                  :
+      [""'''Active directory/LDAP group which users must have to get this
+            %(Classname)s.
+         '''
+      ]
+    , ""'ldap_prio'                   :
+      [""'''If a user is in several LDAP groups these are matched in
+            %(Property)s order. The first match (with the lowest
+            %(Property)s) wins.
+         '''
+      ]
     , ""'letter'                      :
       [""'''Download of letter -- usually this will open the letter in
-           OpenOffice
-        '''
+            OpenOffice
+         '''
       ]
     , ""'letters'                     :
       [""'''List of letters for this %(Classname)s''']
@@ -2296,6 +2307,14 @@ _helptext          = \
           '''
       ]
     , ""'user_dynamic++durations_allowed' : [durations]
+    , ""'user_status++roles'          :
+      [ ""'''Roles which a new user automatically gets, do not leave
+             empty, users with empty roles will be marked obsolete.
+             If you need to specify roles without any rights use the
+             anonymous role.
+             Enter a comma,separated,list
+          '''
+      ]
     , ""'user++address'               :
       [""'''Primary email address for this user''']
     , ""'user++status'                : [status]

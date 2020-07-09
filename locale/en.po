@@ -3432,8 +3432,11 @@ msgstr "Timezone"
 msgid "ldap_group"
 msgstr "LDAP group"
 
+msgid "ldap_prio"
+msgstr "LDAP priority"
+
 msgid "timetracking_allowed"
-msgstr ""
+msgstr "timetracking allowed"
 
 msgid "is_nosy"
 msgstr "is nosy"
@@ -4433,3 +4436,6 @@ msgstr "Approval by"
 
 msgid "approvals.status"
 msgstr "Approval status"
+
+msgid "user_status++roles"
+msgstr "Roles"

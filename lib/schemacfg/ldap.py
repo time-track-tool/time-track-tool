@@ -37,6 +37,7 @@ def init \
     , String
     , Link
     , Multilink
+    , Number
     , Ext_Class
     , Class
     , ** kw
@@ -51,6 +52,7 @@ def init \
             self.update_properties \
                 ( ldap_group             = String    ()
                 , roles                  = String    ()
+                , ldap_prio              = Number    ()
                 )
             User_Status_Ancestor.__init__ (self, db, classname, ** properties)
         # end def __init__
