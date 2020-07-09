@@ -1,35 +1,71 @@
 #!/usr/bin/python
-# -*- coding: iso-8859-1 -*-
+from __future__ import print_function
 import sys
-import ldap
+import logging
+import ldap3
 import user_dynamic
 import common
 
 from copy                import copy
-from traceback           import print_exc
-from ldap.cidict         import cidict
-from ldap.controls       import SimplePagedResultsControl
-from ldap.filter         import escape_filter_chars
+from ldap3.utils.conv    import escape_bytes
 from rsclib.autosuper    import autosuper
+from rsclib.execute      import Log
 from roundup.date        import Date
 from roundup.cgi.actions import LoginAction
 from roundup.cgi         import exceptions
 from roundup.exceptions  import Reject
 
-class LDAP_Search_Result (cidict, autosuper) :
-    """ Wraps an LDAP search result.
-        Noteworthy detail: We use an ldap.cidict for keeping the
-        attributes, this is a case-insensitive dictionary variant.
-    """
-    def __init__ (self, vals) :
-        assert (vals [0])
-        self.dn = vals [0]
-        dn = ldap.dn.str2dn (self.dn.lower ())
-        self.ou = dict.fromkeys (k [0][1] for k in dn if k [0][0] == 'ou')
-        self.__super.__init__ (vals [1])
+LDAPCursorError = ldap3.core.exceptions.LDAPCursorError
+
+class LDAP_Group (object) :
+
+    def __init__ (self, ldcon, base_dn, name, prio) :
+        self.name    = name
+        self.prio    = prio
+        self.ldcon   = ldcon
+        self.base_dn = base_dn
+        self.users   = set ()
+        self.groups  = set ()
+        f = '(&(sAMAccountName=%s)(objectclass=group))' % name
+        ldcon.search (base_dn, f)
+        if not len (ldcon.entries) :
+            raise KeyError (groupname)
+        assert len (ldcon.entries) == 1
+        self.add_group (ldcon.entries [0].entry_dn)
     # end def __init__
 
+    def add_group (self, dn) :
+        new = []
+        f = '(objectclass=group)'
+        self.ldcon.search \
+            (dn, f, attributes = ['member'], search_scope = ldap3.BASE)
+        assert len (self.ldcon.entries) == 1
+        for m in self.ldcon.entries [0].member :
+            n = m.lower ()
+            if 'ou=users' in n :
+                self.users.add (m)
+            elif 'ou=groups' in n :
+                if m not in self.groups :
+                    new.append (m)
+        for n in new :
+            if n not in self.groups :
+                self.groups.add (n)
+                self.add_group (n)
+    # end def add_group
+
+# end class LDAP_Group
+
+class LDAP_Search_Result (object) :
+    """ Wraps an LDAP search result.
+    """
     ou_obsolete = ('obsolete', 'z_test')
+
+    def __init__ (self, val) :
+        self.val = val
+        self.dn  = val.entry_dn
+        dn = ldap3.utils.dn.parse_dn (self.dn.lower ())
+        self.ou  = dict.fromkeys (k [0][1] for k in dn if k [0][0] == 'ou')
+    # end def __init__
 
     @property
     def is_obsolete (self) :
@@ -39,16 +75,36 @@ class LDAP_Search_Result (cidict, autosuper) :
         return False
     # end def is_obsolete
 
+    def get (self, name, default = None) :
+        try :
+            return self.val [name]
+        except (KeyError, LDAPCursorError) :
+            return default
+    # end def get
+
+    def __getitem__ (self, name) :
+        try :
+            return self.val [name]
+        except LDAPCursorError as err :
+            raise KeyError (str (err))
+    # end def __getitem__
+
     def __getattr__ (self, name) :
-        if not name.startswith ('__') :
-            try :
-                result = self [name]
-                setattr (self, name, result)
-                return result
-            except KeyError, cause :
-                raise AttributeError, cause
-        raise AttributeError, name
+        try :
+            return getattr (self.val, name)
+        except LDAPCursorError as err :
+            raise AttributeError (str (err))
     # end def __getattr__
+
+    def __contains__ (self, name) :
+        try :
+            x = self.val [name]
+            return True
+        except LDAPCursorError as err :
+            pass
+        return False
+    # end def __contains__
+
 # end class LDAP_Search_Result
 
 def get_picture (user, attr) :
@@ -93,16 +149,7 @@ def set_guid (node, attribute) :
     return fromhex (s)
 # end def set_guid
 
-class BackslashInUsername(Exception):
-    def __init__(self, expression, message=None):
-        if message is None:
-            # set default message
-            message = "Backslash in username '%s' not allowed." % expression
-        super(BackslashInUsername, self).__init__(expression, message)
-        self.expression = expression
-        self.message = message
-
-class LDAP_Roundup_Sync (object) :
+class LDAP_Roundup_Sync (Log) :
     """ Sync users from LDAP to Roundup """
 
     page_size     = 50
@@ -119,6 +166,15 @@ class LDAP_Roundup_Sync (object) :
         self.update_roundup = update_roundup
         self.ad_domain      = self.cfg.LDAP_AD_DOMAINS.split (',')
         self.objectclass    = getattr (self.cfg, 'LDAP_OBJECTCLASS', 'person')
+        self.base_dn        = self.cfg.LDAP_BASE_DN
+        self.__super.__init__ ()
+
+        if self.verbose :
+            formatter = logging.Formatter ('%(message)s')
+            handler = logging.StreamHandler (sys.stderr)
+            handler.setLevel (logging.DEBUG)
+            handler.setFormatter (formatter)
+            self.log.addHandler (handler)
 
         for k in 'update_ldap', 'update_roundup' :
             if getattr (self, k) is None :
@@ -131,30 +187,34 @@ class LDAP_Roundup_Sync (object) :
                 if update.lower () in ('yes', 'true') :
                     setattr (self, k, True)
 
-        self.ldcon = ldap.initialize (self.cfg.LDAP_URI)
-        self.ldcon.set_option (ldap.OPT_REFERRALS, 0)
-        # try getting a secure connection, may want to force this later
-        try :
-            pass
-            #self.ldcon.start_tls_s ()
-        except ldap.LDAPError, cause :
-            pass
-        try :
-            self.ldcon.simple_bind_s \
-                (self.cfg.LDAP_BIND_DN, self.cfg.LDAP_PASSWORD)
-        except ldap.LDAPError, cause :
-            raise
-            #print >> sys.stderr,"LDAP bind failed: %s" % cause.args [0]['desc']
+        self.server = ldap3.Server (self.cfg.LDAP_URI, get_info = ldap3.ALL)
+        # auto_range:
+        # https://docs.microsoft.com/en-us/previous-versions/windows/desktop/ldap/searching-using-range-retrieval
+        self.ldcon  = ldap3.Connection \
+            ( self.server
+            , self.cfg.LDAP_BIND_DN
+            , self.cfg.LDAP_PASSWORD
+            , auto_range = True # auto range tag handling RFC 3866
+            )
+        # start_tls won't work without a previous open, may be a
+        # microsoft specific feature -- the ldap3 docs say otherwise
+        self.ldcon.open      ()
+        self.ldcon.start_tls ()
+        self.ldcon.bind      ()
+
         self.valid_stati     = []
         self.status_obsolete = db.user_status.lookup ('obsolete')
         self.status_sync     = [self.status_obsolete]
+        self.ldap_stati      = {}
         self.ldap_groups     = {}
         for id in db.user_status.filter (None, {}, sort = ('+', 'id')) :
             st = db.user_status.getnode (id)
             if st.ldap_group :
                 self.status_sync.append (id)
                 self.valid_stati.append (id)
-                self.ldap_groups [id] = st
+                self.ldap_stati  [id] = st
+                self.ldap_groups [id] = LDAP_Group \
+                    (self.ldcon, self.base_dn, st.ldap_group, st.ldap_prio)
         self.contact_types = {}
         if 'uc_type' in self.db.classes :
             self.contact_types = dict \
@@ -162,10 +222,10 @@ class LDAP_Roundup_Sync (object) :
                  for id in self.db.uc_type.list ()
                 )
         self.compute_attr_map  ()
-        self.get_roundup_group ()
     # end def __init__
 
     def bind_as_user (self, username, password) :
+        FIXME
         luser = self.get_ldap_user_by_username (username)
         if not luser :
             return None
@@ -173,7 +233,7 @@ class LDAP_Roundup_Sync (object) :
             self.ldcon.bind_s (luser.dn, password)
             return True
         except ldap.LDAPError, e :
-            print >> sys.stderr, e
+            print (e, file = sys.stderr)
             pass
         return None
     # end def bind_as_user
@@ -246,21 +306,21 @@ class LDAP_Roundup_Sync (object) :
             attr_u ['nickname'] = \
                 ( 'initials'
                 , lambda x, y : x [y].upper ()
-                , lambda x, y : x.get (y, [''])[0].lower ()
+                , lambda x, y : str (x.get (y, '')).lower ()
                 , True
                 )
         if 'ad_domain' in props and 'ad_domain' not in dontsync :
             attr_u ['ad_domain'] = \
                 ( 'UserPrincipalName'
                 , 0
-                , lambda x, y : x [y][0].split ('@', 1)[1]
+                , lambda x, y : str (x [y]).split ('@', 1)[1]
                 , False
                 )
         if 'username' in props and 'username' not in dontsync :
             attr_u ['username'] = \
                 ( 'UserPrincipalName'
                 , 0
-                , lambda x, y : x.get (y, [None])[0]
+                , lambda x, y : str (x.get (y))
                 , False
                 )
         if 'pictures' in props and 'pictures' not in dontsync :
@@ -398,8 +458,8 @@ class LDAP_Roundup_Sync (object) :
             except KeyError :
                 pass
             if insert_attr_name :
-                if self.verbose :
-                    print "Update roundup: new %s: %s" % (cls.classname, key)
+                self.log.info \
+                    ("Update roundup: new %s: %s" % (cls.classname, key))
                 if self.update_roundup :
                     d = {}
                     if params :
@@ -412,6 +472,19 @@ class LDAP_Roundup_Sync (object) :
         # end def look
         return look
     # end def cls_lookup
+
+    def member_status_id (self, dn) :
+        """ Check if the given dn (which must be a person dn) is a
+            member of one of our ldap_groups, return the id of the
+            user_status that defines this group. We return the matching
+            group with the lowest ldap_prio in the user status.
+        """
+        srt = lambda gid: self.ldap_groups [gid].prio
+        for gid in sorted (self.ldap_groups, key = srt) :
+            g = self.ldap_groups [gid]
+            if dn in g.users :
+                return gid
+    # end def member_status_id
 
     def set_roundup_email_address (self, luser, txt) :
         """ Look up email of ldap user and do email processing in case
@@ -446,9 +519,10 @@ class LDAP_Roundup_Sync (object) :
         if mail in aa :
             del aa [mail]
         if aa != oldaa :
-            if self.verbose :
-                print "Update roundup: %s alternate_addresses = %s" \
-                    % (user.username, ','.join (aa.iterkeys ()))
+            self.log.info \
+                ( "Update roundup: %s alternate_addresses = %s" \
+                % (user.username, ','.join (aa.iterkeys ()))
+                )
             if self.update_roundup :
                 self.db.user.set \
                     (uid, alternate_addresses = '\n'.join (aa.iterkeys ()))
@@ -464,64 +538,11 @@ class LDAP_Roundup_Sync (object) :
         for r in self.paged_search_iter (q, ['UserPrincipalName']) :
             if 'UserPrincipalName' not in r :
                 continue
+            # Do not return any users with wrong group
+            if not self.member_status_id (r.dn) :
+                continue
             yield (r.userprincipalname [0])
     # end def get_all_ldap_usernames
-
-    def get_roundup_group (self) :
-        """ Get list of members of self.ldap_groups into self.members
-            The value stored under the member is the group (the
-            user_status.id).
-            Implementation note: We sort by the key of self.ldap_groups,
-            this is by numeric user_status id. This means later
-            user_status will overwrite earlier user_status if a user is
-            in several groups. This usually means he will get the lower
-            credentials as the first group in self.ldap_groups is the
-            normal user group.
-            Retrieval uses a range retrieval with 1000 items for each
-            request. Microsoft AD has a limit around 1500-5000 entries
-            in a multivalues attribute (member in this case):
-            https://docs.microsoft.com/en-us/previous-versions/windows/desktop/ldap/searching-using-range-retrieval
-        """
-        self.members = {}
-        for us_id, ustatus in sorted (self.ldap_groups.iteritems ()) :
-            gname = ustatus.ldap_group
-            f  = '(&(sAMAccountName=%s)(objectclass=group))' % gname
-            n  = 0
-            sz = 1000
-            r  = 1000
-            while r >= 1000 :
-                a = ['member;range=%s-%s' % (n, n + sz - 1)]
-                l = self.ldcon.search_s \
-                    (self.cfg.LDAP_BASE_DN, ldap.SCOPE_SUBTREE, f, a)
-                results = []
-                for r in l :
-                    if not r [0] : continue
-                    r = LDAP_Search_Result (r)
-                    results.append (r)
-                assert (len (results) == 1)
-                r = results [0]
-                assert len (r) == 1 # only the member range attribute
-                k = r.keys () [0]
-                assert k.startswith ('member')
-                member = r [k]
-                rng    = k.split (';', 1) [1]
-                assert rng.startswith ('range=')
-                rng    = rng [6:].split ('-')
-                assert int (rng [0]) == n
-                # The last range retrieved may contain '*' as right bound
-                if rng [1] == '*' :
-                    r = len (member)
-                else :
-                    r = int (rng [1]) - n + 1
-                assert r > 0
-                assert r <= sz
-                assert r == len (member)
-                n += r
-                names = dict.fromkeys ((m.lower () for m in member), us_id)
-                self.members.update (names)
-                if rng [1] == '*' :
-                    break
-    # end def get_roundup_group
 
     def get_username_attribute_dn (self, node, attribute) :
         """ Get dn of a user Link-attribute of a node """
@@ -536,14 +557,10 @@ class LDAP_Roundup_Sync (object) :
     # end def get_username_attribute_dn
 
     def _get_ldap_user (self, result) :
-        res = []
-        for r in result :
-            if r [0] :
-                res.append (LDAP_Search_Result (r))
-        assert (len (res) <= 1)
-        if res :
-            return res [0]
-        return None
+        if len (result) == 0 :
+            return None
+        assert len (result) == 1
+        return LDAP_Search_Result (result [0])
     # end def _get_ldap_user
 
     def get_ldap_user_by_username (self, username) :
@@ -552,40 +569,37 @@ class LDAP_Roundup_Sync (object) :
             version by checking if username contains '@'.
         """
         if '@' in username :
-            result = self.ldcon.search_s \
-                ( self.cfg.LDAP_BASE_DN
-                , ldap.SCOPE_SUBTREE
+            self.ldcon.search \
+                ( self.base_dn
                 , ( '(&(UserPrincipalName=%s)(objectclass=%s))'
                   % (username, self.objectclass)
                   )
-                , None
+                , attributes = ldap3.ALL_ATTRIBUTES
                 )
         else :
-            result = self.ldcon.search_s \
-                ( self.cfg.LDAP_BASE_DN
-                , ldap.SCOPE_SUBTREE
+            self.ldcon.search \
+                ( self.base_dn
                 , ( '(&(uid=%s)(objectclass=%s))'
                   % (username, self.objectclass)
                   )
-                , None
+                , attributes = ldap3.ALL_ATTRIBUTES
                 )
-        return self._get_ldap_user (result)
+        return self._get_ldap_user (self.ldcon.entries)
     # end def get_ldap_user_by_username
 
     def get_ldap_user_by_guid (self, guid) :
-        g = escape_filter_chars (guid, escape_mode = 1)
-        result = self.ldcon.search_s \
-            ( self.cfg.LDAP_BASE_DN
-            , ldap.SCOPE_SUBTREE
+        g = escape_bytes (guid)
+        self.ldcon.search \
+            ( self.base_dn
             , '(&(objectGUID=%s)(objectclass=%s))' % (g, self.objectclass)
-            , None
+            , attributes = ldap3.ALL_ATTRIBUTES
             )
-        return self._get_ldap_user (result)
+        return self._get_ldap_user (self.ldcon.entries)
     # end def get_ldap_user_by_guid
 
     def get_roundup_uid_from_dn_attr (self, luser, attr) :
         try :
-            v = luser [attr][0]
+            v = str (luser [attr])
         except KeyError :
             return None
         lsup = self.get_ldap_user_by_dn (v)
@@ -603,8 +617,10 @@ class LDAP_Roundup_Sync (object) :
     # end def get_roundup_uid_from_dn_attr
 
     def get_ldap_user_by_dn (self, dn) :
-        result = self.ldcon.search_s (dn, ldap.SCOPE_BASE)
-        return self._get_ldap_user (result)
+        f = '(objectclass=*)'
+        d = dict (search_scope = ldap3.BASE, attributes = ldap3.ALL_ATTRIBUTES)
+        self.ldcon.search (dn, f, **d)
+        return self._get_ldap_user (self.ldcon.entries)
     # end def get_ldap_user_by_dn
 
     def is_obsolete (self, luser) :
@@ -612,16 +628,13 @@ class LDAP_Roundup_Sync (object) :
             the group has no roles which means the user should be
             deleted.
         """
-        ldn = luser.dn.lower ()
-        return \
-            (  ldn not in self.members
-            or not self.ldap_groups [self.members [ldn]].roles
-            )
+        stid = self.member_status_id (luser.dn)
+        return (not stid or not self.ldap_stati [stid].roles)
     # end def is_obsolete
 
     def ldap_picture (self, luser, attr) :
         try :
-            lpic = luser [attr][0]
+            lpic = luser [attr].raw_values [0]
         except KeyError :
             return None
         uid = None
@@ -659,65 +672,13 @@ class LDAP_Roundup_Sync (object) :
     # end def ldap_picture
 
     def paged_search_iter (self, filter, attrs = None) :
-        # Test for version 2.3 API
-        try :
-            lc = SimplePagedResultsControl \
-                (ldap.LDAP_CONTROL_PAGE_OID, True, (self.page_size, ''))
-            api_version = 3
-        except AttributeError :
-            # New version 2.4 API
-            lc = SimplePagedResultsControl \
-                (True, size = self.page_size, cookie = '')
-            sc = \
-                { SimplePagedResultsControl.controlType :
-                    SimplePagedResultsControl
-                }
-            api_version = 4
-        res = self.ldcon.search_ext \
-            ( self.cfg.LDAP_BASE_DN
-            , ldap.SCOPE_SUBTREE
-            , filter
-            , attrlist    = attrs
-            , serverctrls = [lc]
-            )
-        while True :
-            params = (res,)
-            if api_version == 3 :
-                rtype, rdata, rmsgid, serverctrls = self.ldcon.result3 (res)
-                pctrls = \
-                    [c for c in serverctrls
-                       if c.controlType == ldap.LDAP_CONTROL_PAGE_OID
-                    ]
-            else :
-                rtype, rdata, rmsgid, serverctrls = self.ldcon.result3 \
-                    (res, resp_ctrl_classes = sc)
-                pctrls = \
-                    [c for c in serverctrls
-                       if c.controlType == SimplePagedResultsControl.controlType
-                    ]
-            for r in rdata :
-                if not r [0] :
-                    continue
-                r = LDAP_Search_Result (r)
-                yield r
-            if pctrls :
-                if api_version == 3 :
-                    x, cookie = pctrls [0].controlValue
-                    lc.controlValue = (self.page_size, cookie)
-                else :
-                    cookie = pctrls [0].cookie
-                    lc.cookie = cookie
-                if not cookie :
-                    break
-                res =  self.ldcon.search_ext \
-                    ( self.cfg.LDAP_BASE_DN
-                    , ldap.SCOPE_SUBTREE
-                    , filter
-                    , attrs
-                    , serverctrls = [lc]
-                    )
-            else :
-                break
+        ps  = self.ldcon.extend.standard.paged_search
+        d   = dict (paged_size = self.page_size, generator = True)
+        if attrs :
+            d ['attributes'] = attrs
+        res = ps (self.base_dn, filter, **d)
+        for r in res :
+            yield (LDAP_Search_Result (r))
     # end def paged_search_iter
 
     def sync_contacts_from_ldap (self, luser, user, udict) :
@@ -740,7 +701,8 @@ class LDAP_Roundup_Sync (object) :
             tid = self.db.uc_type.lookup (type)
             order = 1
             for ld in lds :
-                if ld not in luser : continue
+                if ld not in luser :
+                    continue
                 for ldit in luser [ld] :
                     key = (type, ldit)
                     if key in oldmap :
@@ -752,7 +714,10 @@ class LDAP_Roundup_Sync (object) :
                         del oldmap [key]
                         found [key] = 1
                     elif key in found :
-                        print >> sys.stderr, "Duplicate: %s" % ':'.join (key)
+                        self.log.error \
+                            ( "Duplicate: %s" % ':'.join (key)
+                            , file = sys.stderr
+                            )
                         continue
                     elif self.update_roundup :
                         d = dict \
@@ -803,15 +768,11 @@ class LDAP_Roundup_Sync (object) :
     # end def domain_user_check
 
     def sync_user_from_ldap (self, username, update = None) :
-        # Backslash in username will create all sorts of confusion in
-        # generated LDAP queries, so raise an error here we can't deal
-        # with it anyway:
-        if '\\' in username :
-            raise BackslashInUsername (username)
+        assert '\\' not in username
 
         luser = self.get_ldap_user_by_username (username)
         if luser :
-            guid = luser.objectGUID [0]
+            guid = luser.objectGUID.raw_values [0]
         if update is not None :
             self.update_roundup = update
         uid = None
@@ -846,8 +807,7 @@ class LDAP_Roundup_Sync (object) :
         changed = False
         if not luser or self.is_obsolete (luser) :
             if user.status != self.status_obsolete :
-                if self.verbose :
-                    print >> sys.stderr, "Obsolete: %s" % username
+                self.log.info ("Obsolete: %s" % username, file = sys.stderr)
                 if self.update_roundup :
                     self.db.user.set (uid, status = self.status_obsolete)
                 changed = True
@@ -861,7 +821,7 @@ class LDAP_Roundup_Sync (object) :
                         d [k] = v
             if self.contact_types :
                 self.sync_contacts_from_ldap (luser, user, d)
-            new_status_id = self.members [luser.dn.lower ()]
+            new_status_id = self.member_status_id (luser.dn)
             assert (new_status_id)
             new_status = self.db.user_status.getnode (new_status_id)
             roles = new_status.roles
@@ -869,6 +829,7 @@ class LDAP_Roundup_Sync (object) :
                 roles = self.db.config.NEW_WEB_USER_ROLES
             if user :
                 assert (user.status in self.status_sync)
+                # dict changes during iteration, use items here
                 for k, v in d.items () :
                     if user [k] == v :
                         del d [k]
@@ -879,8 +840,7 @@ class LDAP_Roundup_Sync (object) :
                     d ['roles']  = roles
                     d ['status'] = new_status_id
                 if d :
-                    if self.verbose :
-                        print "Update roundup: %s" % username, d
+                    self.log.info ("Update roundup: %s" % username, d)
                     if self.update_roundup :
                         self.db.user.set (uid, ** d)
                         changed = True
@@ -890,8 +850,7 @@ class LDAP_Roundup_Sync (object) :
                 d ['status'] = new_status_id
                 if 'username' not in d :
                     d ['username'] = username
-                if self.verbose :
-                    print "Create roundup user: %s" % username, d
+                self.log.info ("Create roundup user: %s" % username, d)
                 if self.update_roundup :
                     uid = self.db.user.create (** d)
                     changed = True
@@ -910,12 +869,11 @@ class LDAP_Roundup_Sync (object) :
                                 dep = self.db.department.lookup (dep)
                             except KeyError :
                                 dep = None
-                        if self.verbose :
-                            print \
-                                ( "Dynamic user create magic: %s, "
-                                  "org_location: %s, department: %s"
-                                % (username, olo, dep)
-                                )
+                        self.log.info \
+                            ( "Dynamic user create magic: %s, "
+                              "org_location: %s, department: %s"
+                            % (username, olo, dep)
+                            )
                         user_dynamic.user_create_magic (self.db, uid, olo, dep)
         if changed and self.update_roundup :
             self.db.commit ()
@@ -947,41 +905,44 @@ class LDAP_Roundup_Sync (object) :
                 ins = cs [0]
                 if not s and ct.lower () not in self.single_ldap_attributes :
                     ins = cs
-                if self.verbose :
-                    print "%s: Inserting: %s (%s)" % (user.username, p, ins)
-                modlist.append ((ldap.MOD_ADD, p, ins))
+                self.log.info \
+                    ("%s: Inserting: %s (%s)" % (user.username, p, ins))
+                modlist.append ((ldap3.MODIFY_ADD, p, ins))
             elif len (luser [p]) != 1 :
-                print "%s: invalid length: %s" % (user.username, p)
+                self.log.error ("%s: invalid length: %s" % (user.username, p))
             else :
                 ldattr = luser [p][0]
                 ins = cs [0]
                 if not s and ct.lower () not in self.single_ldap_attributes :
                     ins = cs
                 if ldattr != ins and [ldattr] != ins :
-                    if self.verbose :
-                        print "%s:  Updating: %s/%s %s/%s" % \
-                            (user.username, ct, p, ins, ldattr)
-                    modlist.append ((ldap.MOD_REPLACE, p, ins))
+                    self.log.info \
+                        ( "%s:  Updating: %s/%s %s/%s"
+                        % (user.username, ct, p, ins, ldattr)
+                        )
+                    modlist.append ((ldap3.MODIFY_REPLACE, p, ins))
             if s :
                 if s not in luser :
                     if cs [1:] :
-                        if self.verbose :
-                            print "%s: Inserting: %s (%s)" \
-                                % (user.username, s, cs [1:])
-                        modlist.append ((ldap.MOD_ADD, s, cs [1:]))
+                        self.log.info \
+                            ( "%s: Inserting: %s (%s)" \
+                            % (user.username, s, cs [1:])
+                            )
+                        modlist.append ((ldap3.MODIFY_ADD, s, cs [1:]))
                 else :
                     if luser [s] != cs [1:] :
-                        if self.verbose :
-                            print "%s:  Updating: %s/%s %s/%s" % \
-                                (user.username, ct, s, cs [1:], ldattr)
-                        modlist.append ((ldap.MOD_REPLACE, s, cs [1:]))
+                        self.log.info \
+                            ( "%s:  Updating: %s/%s %s/%s"
+                            % (user.username, ct, s, cs [1:], ldattr)
+                            )
+                        modlist.append ((ldap3.MODIFY_REPLACE, s, cs [1:]))
         for ct, fields in self.attr_map ['user_contact'].iteritems () :
             if ct not in contacts :
                 for f in fields :
                     if f in luser :
-                        if self.verbose :
-                            print "%s:  Deleting: %s" % (user.username, f)
-                        modlist.append ((ldap.MOD_REPLACE, f, []))
+                        self.log.info \
+                            ("%s:  Deleting: %s" % (user.username, f))
+                        modlist.append ((ldap3.MODIFY_REPLACE, f, []))
     # end def sync_contacts_to_ldap
 
     def sync_user_to_ldap (self, username, update = None) :
@@ -994,27 +955,24 @@ class LDAP_Roundup_Sync (object) :
         # Do nothing if empty domain and we would require one and we
         # don't update anyway
         if not check :
-            if self.verbose :
-                print "Not syncing user with empty domain: %s" % user.username
+            self.log.info \
+                ("Not syncing user with empty domain: %s" % user.username)
             return
         uid  = self.db.user.lookup (username)
         user = self.db.user.getnode (uid)
         assert (user.status in self.status_sync)
         luser = self.get_ldap_user_by_username (user.username)
         if not luser :
-            if self.verbose :
-                print "LDAP user not found:", user.username
+            self.log.info ("LDAP user not found:", user.username)
             # Might want to create user in LDAP
             return
         if user.status == self.status_obsolete :
             if not self.is_obsolete (luser) :
-                if self.verbose :
-                    print "Roundup user obsolete:", user.username
+                self.log.info ("Roundup user obsolete:", user.username)
                 # Might want to move user in LDAP Tree
             return
         if self.is_obsolete (luser) :
-            if self.verbose :
-                print "Obsolete LDAP user: %s" % user.username
+            self.log.info ("Obsolete LDAP user: %s" % user.username)
             return
         umap = self.attr_map ['user']
         modlist = []
@@ -1026,20 +984,23 @@ class LDAP_Roundup_Sync (object) :
             if rk == 'pictures' :
                 prupattr = '<suppressed>'
                 if len (rupattr) > 102400 :
-                    print "%s: Picture too large: %s" \
+                    self.log.error \
+                        ( "%s: Picture too large: %s" \
                         % (user.username, len (rupattr))
+                        )
                     continue
             if rk == 'guid' :
                 prupattr = repr (rupattr)
             if lk not in luser :
                 if user [rk] :
-                    if self.verbose :
-                        print "%s: Inserting: %s (%s)" \
-                            % (user.username, lk, prupattr)
+                    self.log.info \
+                        ( "%s: Inserting: %s (%s)" \
+                        % (user.username, lk, prupattr)
+                        )
                     assert (change)
-                    modlist.append ((ldap.MOD_ADD, lk, rupattr))
+                    modlist.append ((ldap3.MODIFY_ADD, lk, rupattr))
             elif len (luser [lk]) != 1 :
-                print "%s: invalid length: %s" % (user.username, lk)
+                self.log.error ("%s: invalid length: %s" % (user.username, lk))
             else :
                 ldattr = pldattr = luser [lk][0]
                 if rk == 'pictures' :
@@ -1048,16 +1009,18 @@ class LDAP_Roundup_Sync (object) :
                     pldattr = repr (ldattr)
                 if ldattr != rupattr :
                     if not change :
-                        if self.verbose > 1 :
-                            print "%s:  attribute differs: %s/%s >%s/%s<" % \
-                                (user.username, rk, lk, prupattr, pldattr)
+                        self.log.info \
+                            ( "%s:  attribute differs: %s/%s >%s/%s<"
+                            % (user.username, rk, lk, prupattr, pldattr)
+                            )
                     else :
-                        if self.verbose :
-                            print "%s:  Updating: %s/%s >%s/%s<" % \
-                                (user.username, rk, lk, prupattr, pldattr)
-                        op = ldap.MOD_REPLACE
+                        self.log.info \
+                            ( "%s:  Updating: %s/%s >%s/%s<"
+                            % (user.username, rk, lk, prupattr, pldattr)
+                            )
+                        op = ldap3.MODIFY_REPLACE
                         if rupattr is None :
-                            op = ldap.MOD_DELETE
+                            op = ldap3.MODIFY_DELETE
                         modlist.append ((op, lk, rupattr))
         if 'user_dynamic' in self.attr_map :
             udmap = self.attr_map ['user_dynamic']
@@ -1070,26 +1033,32 @@ class LDAP_Roundup_Sync (object) :
                             ldattr = luser [lk][0]
                         chg = method (user, udprop, prop, lk, ldattr)
                         if chg :
-                            if self.verbose :
-                                print "%s:  Updating: %s.%s/%s >%s/%s<" % \
-                                    ( user.username
-                                    , udprop
-                                    , prop
-                                    , lk
-                                    , chg [2]
-                                    , ldattr
-                                    )
+                            self.log.info \
+                                ( "%s:  Updating: %s.%s/%s >%s/%s<"
+                                % ( user.username
+                                  , udprop
+                                  , prop
+                                  , lk
+                                  , chg [2]
+                                  , ldattr
+                                  )
+                                )
                             modlist.append (chg)
         if self.contact_types :
             self.sync_contacts_to_ldap (user, luser, modlist)
-        #print "Modlist:"
-        #for k in modlist :
-        #    print k
         if modlist and self.update_ldap :
-            self.ldcon.modify_s (luser.dn, modlist)
+            # Make a dictionary from modlist as required by ldap3
+            moddict = {}
+            for op, lk, attr in modlist :
+                if attr not in modlist :
+                    modlist [attr] = []
+                moddict [attr].append ((op, lk))
+            self.ldcon.modify (luser.dn, moddict)
         elif modlist :
-            print "No LDAP updates performed for user: '" + user.username + \
-                "' with attributes: ", modlist
+            self.log.info \
+                ( 'No LDAP updates performed for user: "%s" with attributes: %s'
+                % (user.username, modlist)
+                )
     # end def sync_user_to_ldap
 
     def set_user_dynamic_prop (self, user, udprop, linkprop, lk, ldattr) :
@@ -1098,8 +1067,8 @@ class LDAP_Roundup_Sync (object) :
             department, org_location), the linkprop (property of the
             given class), the LDAP attribute key lk and the ldap
             attribute value ldattr.
-            Return a triple (ldap.<action>, lk, rupattr)
-            where action is one of MOD_ADD, MOD_REPLACE, MOD_DELETE
+            Return a triple (ldap3.<action>, lk, rupattr)
+            where action is one of MODIFY_ADD, MODIFY_REPLACE, MODIFY_DELETE
             or None if nothing to sync
         """
         dyn = user_dynamic.get_user_dynamic (self.db, user.id, Date ('.'))
@@ -1112,14 +1081,14 @@ class LDAP_Roundup_Sync (object) :
                 node      = self.db.getclass (classname).getnode (dynprop)
                 if node [linkprop] != ldattr :
                     if not ldattr :
-                        return (ldap.MOD_ADD, lk, node [linkprop])
+                        return (ldap3.MODIFY_ADD, lk, node [linkprop])
                     else :
-                        return (ldap.MOD_REPLACE, lk, node [linkprop])
+                        return (ldap3.MODIFY_REPLACE, lk, node [linkprop])
         if is_empty and ldattr != '' :
             if ldattr is None :
                 return None
             else :
-                return (ldap.MOD_DELETE, lk, None)
+                return (ldap3.MODIFY_DELETE, lk, None)
         return None
     # end def set_user_dynamic_prop
 
@@ -1141,11 +1110,12 @@ class LDAP_Roundup_Sync (object) :
                     continue
             try :
                 self.sync_user_from_ldap (username)
-            except BackslashInUsername as e :
-                print >> sys.stderr, "Skip user %s. " % username + e. message
             except (Exception, Reject) :
-                print >> sys.stderr, "Error synchronizing user %s" % username
-                print_exc ()
+                self.log.error \
+                    ( "Error synchronizing user %s" % username
+                    , file = sys.stderr
+                    )
+                self.log_exception ()
         u_rup = [usrcls.get (i, 'username') for i in usrcls.getnodeids ()]
         users = []
         for u in u_rup :
@@ -1164,8 +1134,11 @@ class LDAP_Roundup_Sync (object) :
             try :
                 self.sync_user_from_ldap (username)
             except (Exception, Reject) :
-                print >> sys.stderr, "Error synchronizing user %s" % username
-                print_exc ()
+                self.log.error \
+                    ( "Error synchronizing user %s" % username
+                    , file = sys.stderr
+                    )
+                self.log_exception ()
     # end def sync_all_users_from_ldap
 
     def sync_all_users_to_ldap (self, update = None) :
