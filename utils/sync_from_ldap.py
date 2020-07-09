@@ -52,8 +52,6 @@ def main () :
 
     timestamp_start = datetime.datetime.now()
     users = 'all' if not args.users else ','.join(args.users)
-    print("%s: Start to sync users '%s' from LDAP" % (
-        timestamp_start.strftime("%Y-%m-%d %H:%M:%S"), users))
 
     # This raises InvalidOptionError whenever no ldap sync is
     # configured at all. But the next InvalidOptionError would be
@@ -66,16 +64,25 @@ def main () :
         db.config.ext.LDAP_UPDATE_LDAP = 'yes'
 
     lds = LDAP_Roundup_Sync (db, verbose = args.verbose)
-    if args.users :
-        for username in args.users :
-            lds.sync_user_from_ldap (username, update = args.update)
-    else :
-        lds.sync_all_users_from_ldap (update = args.update)
+    lds.log.info \
+        ( "%s: Start to sync users '%s' from LDAP"
+        % (timestamp_start.strftime("%Y-%m-%d %H:%M:%S"), users)
+        )
+    try :
+        if args.users :
+            for username in args.users :
+                lds.sync_user_from_ldap (username, update = args.update)
+        else :
+            lds.sync_all_users_from_ldap (update = args.update)
+    except Exception :
+        lds.log_exception ()
 
     timestamp_end = datetime.datetime.now()
     duration = (timestamp_end - timestamp_start)
-    print("%s: User sync finished after %s" % (
-        timestamp_end.strftime("%Y-%m-%d %H:%M:%S"), duration))
+    lds.log.info \
+        ( "%s: User sync finished after %s"
+        % (timestamp_end.strftime("%Y-%m-%d %H:%M:%S"), duration)
+        )
 # end def main
 
 if __name__ == '__main__' :
