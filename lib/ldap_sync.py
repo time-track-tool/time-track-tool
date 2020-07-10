@@ -19,6 +19,13 @@ LDAPCursorError = ldap3.core.exceptions.LDAPCursorError
 LDAPKeyError    = ldap3.core.exceptions.LDAPKeyError
 
 class LDAP_Group (object) :
+    """ Get all users and all member-groups of a given group.
+        Microsoft has defined a magic OID 1.2.840.113556.1.4.1941 that
+        allows recursive group membership search. We're using this to
+        find all groups (objectclass=group) and all persons
+        (objectclass=person) in the given group.
+        https://docs.microsoft.com/en-us/windows/win32/adsi/search-filter-syntax
+    """
 
     def __init__ (self, ldcon, base_dn, name, prio) :
         self.name    = name
@@ -36,22 +43,13 @@ class LDAP_Group (object) :
     # end def __init__
 
     def add_group (self, dn) :
-        new = []
-        f = '(objectclass=group)'
-        self.ldcon.search \
-            (dn, f, attributes = ['member'], search_scope = ldap3.BASE)
-        assert len (self.ldcon.entries) == 1
-        for m in self.ldcon.entries [0].member :
-            n = m.lower ()
-            if 'ou=users' in n :
-                self.users.add (m)
-            elif 'ou=groups' in n :
-                if m not in self.groups :
-                    new.append (m)
-        for n in new :
-            if n not in self.groups :
-                self.groups.add (n)
-                self.add_group (n)
+        t = '(&(memberOf:1.2.840.113556.1.4.1941:=%s)(objectclass=%s))'
+        self.groups.add (dn)
+        for s, n in (self.users, 'person'), (self.groups, 'group') :
+            f = t % (dn, n)
+            self.ldcon.search (self.base_dn, f)
+            for e in self.ldcon.entries :
+                s.add (e.entry_dn)
     # end def add_group
 
 # end class LDAP_Group
