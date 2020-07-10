@@ -649,24 +649,30 @@ class LDAP_Roundup_Sync (Log) :
             for n, p in enumerate \
                 (sorted (pics, reverse = True, key = lambda x : x.activity)) :
                 if p.content == lpic :
-                    if n :
+                    if n and self.update_roundup :
                         # refresh name to put it in front
                         self.db.file.set (p.id, name = str (Date ('.')))
                     break
             else :
+                if self.update_roundup :
+                    f = self.db.file.create \
+                        ( name    = str (Date ('.'))
+                        , content = lpic
+                        , type    = 'image/jpeg'
+                        )
+                else :
+                    f = '999999999'
+                upicids.append (f)
+            return upicids
+        else :
+            if self.update_roundup :
                 f = self.db.file.create \
                     ( name    = str (Date ('.'))
                     , content = lpic
                     , type    = 'image/jpeg'
                     )
-                upicids.append (f)
-            return upicids
-        else :
-            f = self.db.file.create \
-                ( name    = str (Date ('.'))
-                , content = lpic
-                , type    = 'image/jpeg'
-                )
+            else :
+                f = '999999999'
             return [f]
     # end def ldap_picture
 
@@ -713,10 +719,7 @@ class LDAP_Roundup_Sync (Log) :
                         del oldmap [key]
                         found [key] = 1
                     elif key in found :
-                        self.log.error \
-                            ( "Duplicate: %s" % ':'.join (key)
-                            , file = sys.stderr
-                            )
+                        self.log.error ("Duplicate: %s" % ':'.join (key))
                         continue
                     elif self.update_roundup :
                         d = dict \
@@ -806,7 +809,7 @@ class LDAP_Roundup_Sync (Log) :
         changed = False
         if not luser or self.is_obsolete (luser) :
             if user.status != self.status_obsolete :
-                self.log.info ("Obsolete: %s" % username, file = sys.stderr)
+                self.log.info ("Obsolete: %s" % username)
                 if self.update_roundup :
                     self.db.user.set (uid, status = self.status_obsolete)
                 changed = True
@@ -1110,10 +1113,7 @@ class LDAP_Roundup_Sync (Log) :
             try :
                 self.sync_user_from_ldap (username)
             except (Exception, Reject) :
-                self.log.error \
-                    ( "Error synchronizing user %s" % username
-                    , file = sys.stderr
-                    )
+                self.log.error ("Error synchronizing user %s" % username)
                 self.log_exception ()
         u_rup = [usrcls.get (i, 'username') for i in usrcls.getnodeids ()]
         users = []
@@ -1133,10 +1133,7 @@ class LDAP_Roundup_Sync (Log) :
             try :
                 self.sync_user_from_ldap (username)
             except (Exception, Reject) :
-                self.log.error \
-                    ( "Error synchronizing user %s" % username
-                    , file = sys.stderr
-                    )
+                self.log.error ("Error synchronizing user %s" % username)
                 self.log_exception ()
     # end def sync_all_users_from_ldap
 
