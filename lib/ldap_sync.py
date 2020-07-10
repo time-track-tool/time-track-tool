@@ -16,6 +16,7 @@ from roundup.cgi         import exceptions
 from roundup.exceptions  import Reject
 
 LDAPCursorError = ldap3.core.exceptions.LDAPCursorError
+LDAPKeyError    = ldap3.core.exceptions.LDAPKeyError
 
 class LDAP_Group (object) :
 
@@ -78,21 +79,21 @@ class LDAP_Search_Result (object) :
     def get (self, name, default = None) :
         try :
             return self.val [name]
-        except (KeyError, LDAPCursorError) :
+        except (KeyError, LDAPCursorError, LDAPKeyError) :
             return default
     # end def get
 
     def __getitem__ (self, name) :
         try :
             return self.val [name]
-        except LDAPCursorError as err :
+        except (LDAPCursorError, LDAPKeyError) as err :
             raise KeyError (str (err))
     # end def __getitem__
 
     def __getattr__ (self, name) :
         try :
             return getattr (self.val, name)
-        except LDAPCursorError as err :
+        except (LDAPCursorError, LDAPKeyError) as err :
             raise AttributeError (str (err))
     # end def __getattr__
 
@@ -100,7 +101,7 @@ class LDAP_Search_Result (object) :
         try :
             x = self.val [name]
             return True
-        except LDAPCursorError as err :
+        except (LDAPCursorError, LDAPKeyError) as err :
             pass
         return False
     # end def __contains__
