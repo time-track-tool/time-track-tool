@@ -330,7 +330,7 @@ def init \
         , is_valid              = Boolean   ()
         , durations_allowed     = Boolean   ()
         )
-    auto_wp.setkey ("name")
+    auto_wp.setlabelprop ("name")
 
     overtime_period = Class \
         ( db
