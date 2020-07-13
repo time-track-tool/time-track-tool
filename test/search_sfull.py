@@ -102,12 +102,6 @@ properties = \
         , ( 'time_project'
           , ['admin', 'hr']
           )
-        , ( 'time_wp_summary_no'
-          , ['admin', 'hr']
-          )
-        , ( 'travel'
-          , ['admin', 'hr']
-          )
         ]
       )
     , ( 'business_unit'

@@ -446,8 +446,6 @@ class _Test_Case_Summary (_Test_Case) :
             , do_leave_process    = True
             , vac_aliq            = '1'
             )
-        self.twsn = self.db.time_wp_summary_no.create \
-            ( name = "TWSN1", order = 1)
         self.dep = self.db.department.create \
             ( name       = 'Software Development'
             , valid_from = date.Date ('2004-01-01')
@@ -749,7 +747,6 @@ class _Test_Case_Summary (_Test_Case) :
                 , responsible        = '1'
                 , bookers            = [self.user1, self.user2]
                 , cost_center        = self.cc
-                , time_wp_summary_no = self.twsn
                 )
             self.wps.append (wp)
         self.vacation_wp = self.db.time_wp.create \
@@ -3565,18 +3562,15 @@ class Test_Case_Timetracker (_Test_Case_Summary, unittest.TestCase) :
                 , name         = 'TEST %s' % tp.name
                 , org_location = self.olo
                 , time_project = id
-                , travel       = False
                 )
         # normal_tp with duration
         tp = self.db.time_project.getnode (self.normal_tp)
-        self.db.auto_wp.create \
+        auto_wp_onboarding = self.db.auto_wp.create \
             ( is_valid           = True
             , duration           = date.Interval ('3w')
             , name               = 'TEST %s' % tp.name
             , org_location       = self.olo
             , time_project       = self.normal_tp
-            , travel             = True
-            , time_wp_summary_no = self.twsn
             )
         d = self.db.user_dynamic.filter \
             (None, {}, sort = [('+', 'user'), ('+', 'valid_from')])
@@ -3622,7 +3616,7 @@ class Test_Case_Timetracker (_Test_Case_Summary, unittest.TestCase) :
             actual.append ((wp.auto_wp, wp.name, wp.time_start, wp.time_end))
         self.assertEqual (expected, actual)
 
-        self.db.user_dynamic.create \
+        id = self.db.user_dynamic.create \
             ( user              = self.user0
             , valid_from        = date.Date ('2013-02-22')
             , valid_to          = date.Date ('2013-02-27')
@@ -3641,6 +3635,7 @@ class Test_Case_Timetracker (_Test_Case_Summary, unittest.TestCase) :
             , overtime_period   = self.db.overtime_period.lookup ('week')
             , do_auto_wp        = True
             )
+        self.assertEqual (id, '5')
         wps = self.db.time_wp.filter \
             (None, dict (bookers = '3'), sort = ('+', 'auto_wp.id'))
         n  = '%s -%s' % (u, '2013-02-27')
@@ -3657,12 +3652,11 @@ class Test_Case_Timetracker (_Test_Case_Summary, unittest.TestCase) :
         self.assertEqual (expected, actual)
 
         tp = self.db.time_project.getnode (self.travel_tp)
-        trvl = self.db.auto_wp.create \
+        tv = self.db.auto_wp.create \
             ( is_valid     = True
             , name         = 'TEST %s' % tp.name
             , org_location = self.olo
             , time_project = self.travel_tp
-            , travel       = True
             )
         expected = \
             [ ('1',  n, date.Date ('2013-02-02'), date.Date ('2013-02-27'))
@@ -3678,7 +3672,7 @@ class Test_Case_Timetracker (_Test_Case_Summary, unittest.TestCase) :
             actual.append ((wp.auto_wp, wp.name, wp.time_start, wp.time_end))
         self.assertEqual (expected, actual)
 
-        self.db.auto_wp.set (trvl, is_valid = False)
+        self.db.auto_wp.set (tv, is_valid = False)
         expected = \
             [ ('1',  n, date.Date ('2013-02-02'), date.Date ('2013-02-27'))
             , ('2',  n, date.Date ('2013-02-02'), date.Date ('2013-02-27'))

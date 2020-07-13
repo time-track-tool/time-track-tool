@@ -26,8 +26,6 @@ properties = \
         , 'name'
         , 'org_location'
         , 'time_project'
-        , 'time_wp_summary_no'
-        , 'travel'
         ]
       )
     , ( 'contract_type'

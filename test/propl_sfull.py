@@ -48,8 +48,6 @@ properties = \
         , 'name'
         , 'org_location'
         , 'time_project'
-        , 'time_wp_summary_no'
-        , 'travel'
         ]
       )
     , ( 'business_unit'
