@@ -960,8 +960,8 @@ def init (db) :
     db.org_location.audit    ("set",    olo_check)
     db.user_dynamic.react    ("create", auto_wp_magic, priority = 200)
     db.user_dynamic.react    ("set",    auto_wp_magic, priority = 200)
-    db.auto_wp.audit         ("create", auto_wp_check)
-    db.auto_wp.audit         ("set",    auto_wp_check)
+    db.auto_wp.audit         ("create", auto_wp_check, priority = 90)
+    db.auto_wp.audit         ("set",    auto_wp_check, priority = 90)
     db.auto_wp.react         ("create", auto_wp_modify)
     db.auto_wp.react         ("set",    auto_wp_modify)
 # end def init

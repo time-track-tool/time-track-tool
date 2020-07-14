@@ -3704,9 +3704,9 @@ class Test_Case_Timetracker (_Test_Case_Summary, unittest.TestCase) :
 
         self.db.user_dynamic.set ('1', do_auto_wp = False)
         expected = \
-            [ ('1', n, date.Date ('2013-02-22'), date.Date ('2013-02-27'))
-            , ('2', n, date.Date ('2013-02-22'), date.Date ('2013-02-27'))
-            , ('3', n, date.Date ('2013-02-22'), date.Date ('2013-02-27'))
+            [ ('1',  n, date.Date ('2013-02-22'), date.Date ('2013-02-27'))
+            , ('2',  n, date.Date ('2013-02-22'), date.Date ('2013-02-27'))
+            , ('3', n2, date.Date ('2013-02-22'), date.Date ('2013-02-24'))
             ]
         actual = []
         wps = self.db.time_wp.filter \
@@ -3726,12 +3726,72 @@ class Test_Case_Timetracker (_Test_Case_Summary, unittest.TestCase) :
             actual.append ((wp.auto_wp, wp.name, wp.time_start, wp.time_end))
         self.assertEqual (expected, actual)
 
-        #print ('')
-        #for w in wps :
-        #    wp = self.db.time_wp.getnode (w)
-        #    st = wp.time_start.pretty (common.ymd)
-        #    en = wp.time_end.pretty (common.ymd)
-        #    print (w, wp.auto_wp, wp.bookers, st, en)
+        # Test the auto-wp case with a delimited auto-wp
+        # We have 2 dyn user records for user '4':
+        # id  uid from       to
+        # '2' '4' 2005-09-01 2005-10-01
+        # '4' '4' 2005-10-01 None
+        # We set only the dyn_user record '4' auto_wp = True
+        # This should not create a wp because
+        # 2005-09-01 + 3w = 2005-09-22
+        # Then we extend the auto_wp duration (by setting the auto_wp to
+        # false and creating a new one?) to 6w. This should now create
+        # an auto wp starting 2005-10-01 and ending 2005-10-13.
+
+        # Thaw
+        f = self.db.daily_record_freeze.filter (None, dict (user = '4'))
+        self.assertEqual (len (f), 1)
+        self.db.daily_record_freeze.set (f [0], frozen = False)
+
+        self.db.user_dynamic.set ('4', do_auto_wp = True)
+        n  = 'testuser1'
+        expected = \
+            [ ('1', n, date.Date ('2005-10-01'), None)
+            , ('2', n, date.Date ('2005-10-01'), None)
+            ]
+        actual = []
+        wps = self.db.time_wp.filter \
+            (None, dict (bookers = '4'), sort = ('+', 'auto_wp.id'))
+        for w in wps :
+            wp = self.db.time_wp.getnode (w)
+            if not wp.auto_wp :
+                continue
+            actual.append ((wp.auto_wp, wp.name, wp.time_start, wp.time_end))
+        self.assertEqual (expected, actual)
+
+        self.db.auto_wp.set \
+            (auto_wp_onboarding, duration = date.Interval ('6w'))
+
+        actual = []
+        n3 = 'testuser1 -2005-10-13'
+        expected.append \
+            (('3', n3, date.Date ('2005-10-01'), date.Date ('2005-10-13')))
+        wps = self.db.time_wp.filter \
+            (None, dict (bookers = '4'), sort = ('+', 'auto_wp.id'))
+        for w in wps :
+            wp = self.db.time_wp.getnode (w)
+            if not wp.auto_wp :
+                continue
+            actual.append ((wp.auto_wp, wp.name, wp.time_start, wp.time_end))
+        self.assertEqual (expected, actual)
+
+        self.db.auto_wp.set \
+            (auto_wp_onboarding, duration = date.Interval ('3w'))
+
+        actual = []
+        expected = \
+            [ ('1', n, date.Date ('2005-10-01'), None)
+            , ('2', n, date.Date ('2005-10-01'), None)
+            ]
+        wps = self.db.time_wp.filter \
+            (None, dict (bookers = '4'), sort = ('+', 'auto_wp.id'))
+        for w in wps :
+            wp = self.db.time_wp.getnode (w)
+            if not wp.auto_wp :
+                continue
+            actual.append ((wp.auto_wp, wp.name, wp.time_start, wp.time_end))
+        self.assertEqual (expected, actual)
+
     # end def test_auto_wp
 
 # end class Test_Case_Timetracker

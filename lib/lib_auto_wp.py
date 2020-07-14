@@ -17,14 +17,13 @@ def is_correct_dyn (dyn, org_location) :
 
 def auto_wp_duration_end (db, auto_wp, uid) :
     """ If this auto_wp has a duration, need to find when we started.
-        We start from the first dyn. user record that fulfills
-        is_correct_dyn
+        We start from the first dyn. user record: Note that we use the
+        very first record even if it's a different org_location or
+        doesn't have do_auto_wp set.
     """
     duration_end = None
     if auto_wp.duration :
         dyn = first_user_dynamic (db, uid)
-        while dyn and not is_correct_dyn (dyn, auto_wp.org_location) :
-            dyn = next_user_dynamic (db, dyn)
         if dyn :
             duration_end = dyn.valid_from + auto_wp.duration
     return duration_end
