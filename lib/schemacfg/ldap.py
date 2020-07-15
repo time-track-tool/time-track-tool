@@ -124,7 +124,7 @@ def security (db, ** kw) :
         , 'supervisor'
         , 'timezone'
         , 'tt_lines'
-        , 'vie_user_text'
+        , 'vie_user'
 	]
     user_props_hr  = user_props + \
         ['clearance_by', 'roles', 'reduced_activity_list']

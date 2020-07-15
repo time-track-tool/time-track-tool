@@ -3384,8 +3384,11 @@ msgstr "Want no messages"
 msgid "timing_info"
 msgstr ""
 
-msgid "vie_user_text"
+msgid "vie_user"
 msgstr "TTTech internal user"
+
+msgid "vie_user_ml"
+msgstr "TTTech internal user back-multi-link"
 
 msgid "nickname"
 msgstr "Nickname"
