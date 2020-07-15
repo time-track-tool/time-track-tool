@@ -106,20 +106,6 @@ class LDAP_Search_Result (object) :
 
 # end class LDAP_Search_Result
 
-def get_picture (user, attr) :
-    """ Get picture from roundup user class """
-    db   = user.cl.db
-    pics = [db.file.getnode (i) for i in user.pictures]
-    for p in sorted (pics, reverse = True, key = lambda x : x.activity) :
-        return p.content
-# end def get_picture
-
-def get_name (user, attr) :
-    """ Get name from roundup user class Link attr """
-    cl = user.cl.db.classes [attr]
-    return cl.get (user [attr], 'name')
-# end def get_name
-
 def tohex (s) :
     return ''.join ('%02X' % ord (k) for k in s)
 # end def tohex
@@ -135,18 +121,12 @@ def fromhex (s) :
 # end def fromhex
 
 def get_guid (luser, attr) :
-    r = luser.get (attr, [None]) [0]
-    if r is not None :
-        return tohex (r)
-    return r
+    assert attr == 'objectGUID'
+    guid = luser.objectGUID.raw_values [0]
+    if guid is not None :
+        return tohex (guid)
+    return None
 # end def get_guid
-
-def set_guid (node, attribute) :
-    s = node [attribute]
-    if not s :
-        return s
-    return fromhex (s)
-# end def set_guid
 
 class LDAP_Roundup_Sync (Log) :
     """ Sync users from LDAP to Roundup """
@@ -157,7 +137,7 @@ class LDAP_Roundup_Sync (Log) :
         (('email', 'telephonenumber'))
     
     def __init__ \
-        (self, db, update_roundup = None, update_ldap = None, verbose = 1) :
+        (self, db, update_roundup = None, update_ldap = None, verbose = 0) :
         self.db             = db
         self.cfg            = db.config.ext
         self.verbose        = verbose
@@ -168,6 +148,7 @@ class LDAP_Roundup_Sync (Log) :
         self.base_dn        = self.cfg.LDAP_BASE_DN
         self.__super.__init__ ()
 
+        # If verbose is set, add logging to stderr in addition to syslog
         if self.verbose :
             formatter = logging.Formatter ('%(message)s')
             handler = logging.StreamHandler (sys.stderr)
@@ -224,18 +205,43 @@ class LDAP_Roundup_Sync (Log) :
     # end def __init__
 
     def bind_as_user (self, username, password) :
-        FIXME
         luser = self.get_ldap_user_by_username (username)
         if not luser :
             return None
-        try :
-            self.ldcon.bind_s (luser.dn, password)
-            return True
-        except ldap.LDAPError, e :
-            print (e, file = sys.stderr)
-            pass
-        return None
+        if not self.ldcon.rebind (user = luser.dn, password = password) :
+            self.log.error ('Error binding as %s' % luser.dn)
+            return None
+        self.log.debug ('Successful bind by %s' % luser.dn)
+        return True
     # end def bind_as_user
+
+    def get_cn (self, user, attr) :
+        """ Get the common name of this user
+            Note that this defaults to realname but will add ' (External' if
+            the 'group_external' flag in org_location exists and is set.
+        """
+        assert attr == 'realname'
+        rn = user.realname
+        dyn = self.get_dynamic_user (user.id)
+        if dyn :
+            olo = self.db.org_location.getnode (dyn.org_location)
+            if olo.group_external :
+                rn = rn + ' (External)'
+        return rn
+    # end def get_cn
+
+    def get_name (self, user, attr) :
+        """ Get name from roundup user class Link attr """
+        cl = user.cl.db.classes [attr]
+        return cl.get (user [attr], 'name')
+    # end def get_name
+
+    def get_picture (self, user, attr) :
+        """ Get picture from roundup user class """
+        pics = [self.db.file.getnode (i) for i in user.pictures]
+        for p in sorted (pics, reverse = True, key = lambda x : x.activity) :
+            return p.content
+    # end def get_picture
 
     def get_realname (self, x, y) :
         fn = x.get ('givenname', [''])[0]
@@ -246,6 +252,25 @@ class LDAP_Roundup_Sync (Log) :
             return fn
         return ln
     # end def get_realname
+
+    def get_roundup_guid (self, node, attribute) :
+        s = node [attribute]
+        if not s :
+            return s
+        return fromhex (s)
+    # end def get_roundup_guid
+
+    def get_username_attribute_dn (self, node, attribute) :
+        """ Get dn of a user Link-attribute of a node """
+        s = node [attribute]
+        if not s :
+            return s
+        s = self.db.user.get (s, 'username')
+        r = self.get_ldap_user_by_username (s)
+        if r is None :
+            return None
+        return r.dn
+    # end def get_username_attribute_dn
 
     def compute_attr_map (self) :
         """ Map roundup attributes to ldap attributes
@@ -290,15 +315,24 @@ class LDAP_Roundup_Sync (Log) :
         if 'firstname' in props and 'firstname' not in dontsync :
             attr_u ['firstname'] = \
                 ( 'givenname'
-                , 0
+                , 1
                 , lambda x, y : x.get (y, [None])[0]
+                  if not self.update_ldap else None
                 , False
                 )
+            if self.update_ldap :
+                attr_u ['realname'] = \
+                    ( 'dn'
+                    , self.get_cn
+                    , None
+                    , False
+                    )
         if 'lastname' in props and 'lastname' not in dontsync :
             attr_u ['lastname'] = \
                 ( 'sn'
-                , 0
+                , 1
                 , lambda x, y : x.get (y, [None])[0]
+                  if not self.update_ldap else None
                 , False
                 )
         if 'nickname' in props and 'nickname' not in dontsync :
@@ -306,6 +340,7 @@ class LDAP_Roundup_Sync (Log) :
                 ( 'initials'
                 , lambda x, y : x [y].upper ()
                 , lambda x, y : str (x.get (y, '')).lower ()
+                  if not self.update_ldap else None
                 , True
                 )
         if 'ad_domain' in props and 'ad_domain' not in dontsync :
@@ -325,7 +360,7 @@ class LDAP_Roundup_Sync (Log) :
         if 'pictures' in props and 'pictures' not in dontsync :
             attr_u ['pictures'] = \
                 ( 'thumbnailPhoto'
-                , get_picture
+                , self.get_picture
                 , self.ldap_picture
                 , False
                 )
@@ -350,7 +385,7 @@ class LDAP_Roundup_Sync (Log) :
         if 'room' in props and 'room' not in dontsync :
             attr_u ['room'] = \
                 ( 'physicalDeliveryOfficeName'
-                , get_name
+                , self.get_name
                 , self.cls_lookup (self.db.room)
                 , False
                 )
@@ -359,6 +394,7 @@ class LDAP_Roundup_Sync (Log) :
                 ( 'secretary'
                 , self.get_username_attribute_dn
                 , self.get_roundup_uid_from_dn_attr
+                  if not self.update_ldap else None
                 , False
                 )
         if 'supervisor' in props and 'supervisor' not in dontsync :
@@ -366,12 +402,13 @@ class LDAP_Roundup_Sync (Log) :
                 ( 'manager'
                 , self.get_username_attribute_dn
                 , self.get_roundup_uid_from_dn_attr
+                  if not self.update_ldap else None
                 , False
                 )
         if 'guid' in props and 'guid' not in dontsync :
             attr_u ['guid'] = \
                 ( 'objectGUID'
-                , set_guid
+                , self.get_roundup_guid
                 , get_guid
                 , False
                 )
@@ -543,18 +580,6 @@ class LDAP_Roundup_Sync (Log) :
             yield (r.userprincipalname [0])
     # end def get_all_ldap_usernames
 
-    def get_username_attribute_dn (self, node, attribute) :
-        """ Get dn of a user Link-attribute of a node """
-        s = node [attribute]
-        if not s :
-            return s
-        s = self.db.user.get (s, 'username')
-        r = self.get_ldap_user_by_username (s)
-        if r is None :
-            return None
-        return r.dn
-    # end def get_username_attribute_dn
-
     def _get_ldap_user (self, result) :
         if len (result) == 0 :
             return None
@@ -621,6 +646,23 @@ class LDAP_Roundup_Sync (Log) :
         self.ldcon.search (dn, f, **d)
         return self._get_ldap_user (self.ldcon.entries)
     # end def get_ldap_user_by_dn
+
+    def get_dynamic_user (self, uid) :
+        """ Get user_dynamic record with the following properties
+            - If a record for *now* exists return this one
+            - otherwise return the latest record in the past
+            - If None exists in the past, try to find one in the future
+            - Return None if we didn't find any
+        """
+        # This already returns the latest record in the past if no
+        # current record exists:
+        now = Date ('.')
+        dyn = user_dynamic.get_user_dynamic (self.db, uid, now)
+        if dyn :
+            return dyn
+        # First record after 'now' or None
+        return user_dynamic.first_user_dynamic (self.db, uid, now)
+    # end def get_dynamic_user
 
     def is_obsolete (self, luser) :
         """ Either the user is not in one of the ldap groups anymore or
@@ -1023,7 +1065,15 @@ class LDAP_Roundup_Sync (Log) :
                         op = ldap3.MODIFY_REPLACE
                         if rupattr is None :
                             op = ldap3.MODIFY_DELETE
-                        modlist.append ((op, lk, rupattr))
+                        # Special case for common name, this needs a
+                        # modify_dn call
+                        if lk.lower () == 'cn' :
+                            if self.update_ldap :
+                                assert rupattr is not None
+                                self.ldcon.modify_dn \
+                                    (luser.dn, 'cn=%s' % rupattr)
+                        else :
+                            modlist.append ((op, lk, rupattr))
         if 'user_dynamic' in self.attr_map :
             udmap = self.attr_map ['user_dynamic']
             for udprop, plist in udmap.iteritems () :
@@ -1073,7 +1123,7 @@ class LDAP_Roundup_Sync (Log) :
             where action is one of MODIFY_ADD, MODIFY_REPLACE, MODIFY_DELETE
             or None if nothing to sync
         """
-        dyn = user_dynamic.get_user_dynamic (self.db, user.id, Date ('.'))
+        dyn = self.get_dynamic_user (user.id)
         is_empty = True
         if dyn :
             dynprop = dyn [udprop]
