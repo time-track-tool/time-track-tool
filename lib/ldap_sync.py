@@ -494,8 +494,11 @@ class LDAP_Roundup_Sync (Log) :
             except KeyError :
                 pass
             if insert_attr_name :
+                n = ''
+                if not self.update_roundup :
+                    n = ' (no action)'
                 self.log.info \
-                    ("Update roundup: new %s: %s" % (cls.classname, key))
+                    ("Update roundup: new %s: %s%s" % (cls.classname, key, n))
                 if self.update_roundup :
                     d = {}
                     if params :
@@ -555,9 +558,12 @@ class LDAP_Roundup_Sync (Log) :
         if mail in aa :
             del aa [mail]
         if aa != oldaa :
+            n = ''
+            if not self.update_roundup :
+                n = ' (no action)'
             self.log.info \
-                ( "Update roundup: %s alternate_addresses = %s" \
-                % (user.username, ','.join (aa.iterkeys ()))
+                ( "Update roundup: %s alternate_addresses = %s%s" \
+                % (user.username, ','.join (aa.iterkeys ()), n)
                 )
             if self.update_roundup :
                 self.db.user.set \
@@ -884,7 +890,10 @@ class LDAP_Roundup_Sync (Log) :
                     d ['roles']  = roles
                     d ['status'] = new_status_id
                 if d :
-                    self.log.info ("Update roundup: %s" % username, d)
+                    n = ''
+                    if not self.update_roundup :
+                        n = ' (no action)'
+                    self.log.info ("Update roundup: %s %s%s" % (username, d, n))
                     if self.update_roundup :
                         self.db.user.set (uid, ** d)
                         changed = True
