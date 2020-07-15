@@ -2351,11 +2351,9 @@ _helptext          = \
             in the same country, the local VAT is applicable.
          '''
       ]
-    , ""'vie_user_text'               :
+    , ""'vie_user'                    :
       [ ""'''Exclusively used for linking to the corresponding
-             @ds1.internal user, leave this field empty. Note that this
-             is now a text-field since most users are not in the
-             time-tracker.
+             @ds1.internal user, leave this field empty.
           '''
       ]
     , ""'view_roles'                  :

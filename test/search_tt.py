@@ -1170,7 +1170,10 @@ properties = \
         , ( 'username'
           , ['admin', 'cc-permission', 'controlling', 'doc_admin', 'dom-user-edit-facility', 'dom-user-edit-gtt', 'dom-user-edit-hr', 'dom-user-edit-office', 'facility', 'functional-role', 'hr', 'hr-leave-approval', 'hr-vacation', 'it', 'office', 'organisation', 'pgp', 'procurement', 'project', 'project_view', 'summary_view', 'time-report', 'user', 'user_view']
           )
-        , ( 'vie_user_text'
+        , ( 'vie_user'
+          , ['admin', 'cc-permission', 'controlling', 'doc_admin', 'dom-user-edit-facility', 'dom-user-edit-gtt', 'dom-user-edit-hr', 'dom-user-edit-office', 'facility', 'functional-role', 'hr', 'hr-leave-approval', 'hr-vacation', 'it', 'office', 'organisation', 'pgp', 'procurement', 'project', 'project_view', 'summary_view', 'time-report', 'user', 'user_view']
+          )
+        , ( 'vie_user_ml'
           , ['admin', 'cc-permission', 'controlling', 'doc_admin', 'dom-user-edit-facility', 'dom-user-edit-gtt', 'dom-user-edit-hr', 'dom-user-edit-office', 'facility', 'functional-role', 'hr', 'hr-leave-approval', 'hr-vacation', 'it', 'office', 'organisation', 'pgp', 'procurement', 'project', 'project_view', 'summary_view', 'time-report', 'user', 'user_view']
           )
         ]
@@ -1318,6 +1321,9 @@ properties = \
           , ['admin', 'cc-permission', 'controlling', 'doc_admin', 'dom-user-edit-facility', 'dom-user-edit-gtt', 'dom-user-edit-hr', 'dom-user-edit-office', 'facility', 'functional-role', 'hr', 'hr-leave-approval', 'hr-vacation', 'it', 'office', 'organisation', 'pgp', 'procurement', 'project', 'project_view', 'summary_view', 'time-report', 'user', 'user_view']
           )
         , ( 'ldap_group'
+          , ['admin', 'cc-permission', 'controlling', 'doc_admin', 'dom-user-edit-facility', 'dom-user-edit-gtt', 'dom-user-edit-hr', 'dom-user-edit-office', 'facility', 'functional-role', 'hr', 'hr-leave-approval', 'hr-vacation', 'it', 'office', 'organisation', 'pgp', 'procurement', 'project', 'project_view', 'summary_view', 'time-report', 'user', 'user_view']
+          )
+        , ( 'ldap_prio'
           , ['admin', 'cc-permission', 'controlling', 'doc_admin', 'dom-user-edit-facility', 'dom-user-edit-gtt', 'dom-user-edit-hr', 'dom-user-edit-office', 'facility', 'functional-role', 'hr', 'hr-leave-approval', 'hr-vacation', 'it', 'office', 'organisation', 'pgp', 'procurement', 'project', 'project_view', 'summary_view', 'time-report', 'user', 'user_view']
           )
         , ( 'name'
