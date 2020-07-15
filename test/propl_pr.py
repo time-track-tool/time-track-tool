@@ -359,6 +359,7 @@ properties = \
       , [ 'description'
         , 'is_nosy'
         , 'ldap_group'
+        , 'ldap_prio'
         , 'name'
         , 'roles'
         ]

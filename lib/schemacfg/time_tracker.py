@@ -540,7 +540,8 @@ def init \
                 , reduced_activity_list  = Date      ()
                 , entry_date             = Date      ()
                 , position_text          = String    ()
-                , vie_user_text          = String    ()
+                , vie_user               = Link
+                  ("user", rev_multilink = 'vie_user_ml')
                 , sync_foreign_key       = String    ()
                 , department_temp        = String    ()
                 )
@@ -843,8 +844,7 @@ def security (db, ** kw) :
           , ( "id", "sap_cc", "user", "valid_from", "valid_to")
           )
         , ( "user",         "View", ["User"]
-          , ( "timetracking_by", "vie_user_text"
-            , "department_temp"
+          , ( "timetracking_by", "vie_user", "vie_user_ml", "department_temp"
             )
           )
         , ( "user",         "Edit", ["Functional-Role"]

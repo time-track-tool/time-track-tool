@@ -861,7 +861,8 @@ properties = \
         , 'timing_info'
         , 'tt_lines'
         , 'username'
-        , 'vie_user_text'
+        , 'vie_user'
+        , 'vie_user_ml'
         ]
       )
     , ( 'user_contact'
@@ -919,6 +920,7 @@ properties = \
       , [ 'description'
         , 'is_nosy'
         , 'ldap_group'
+        , 'ldap_prio'
         , 'name'
         , 'roles'
         , 'timetracking_allowed'
