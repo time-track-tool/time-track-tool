@@ -16,6 +16,15 @@ def main () :
         , help    = "Users to update, default: all"
         )
     parser.add_argument \
+        ( "-2", "--two-way-sync"
+        , help    = "Turn on two-way sync: By default we will only write "
+                    "to LDAP if some user attribute change (and the -w "
+                    "option is specified). With this option we will "
+                    "alway write the current user setting to LDAP "
+                    "*after* syncing from LDAP"
+        , action  = 'store_true'
+        )
+    parser.add_argument \
         ( "-d", "--database-directory"
         , dest    = "database_directory"
         , help    = "Directory of the roundup installation"
@@ -35,11 +44,13 @@ def main () :
         )
     parser.add_argument \
         ( "-w", "--write-to-ldap"
-        , help    = "Turn on the config-item that tries to write to LDAP: "
-                    "By default a reactor would write local changes back "
+        , help    = "Do not turn off the config-item that tries to write "
+                    "to LDAP: "
+                    "If configured a reactor would write local changes back "
                     "to LDAP but this is disabled in this script. "
-                    "This option turns on this config-item so "
-                    "that the reactor does write to LDAP."
+                    "This option leaves the default so "
+                    "that the reactor does write to LDAP if configured "
+                    "in the config-file."
         , default = False
         , action  = 'store_true'
         )
@@ -58,10 +69,11 @@ def main () :
     # raised when instantiating LDAP_Roundup_Sync below anyway.
     # So we do not guard for this case (that LDAP sync is called
     # without a valid LDAP configuration)
-    # Disbale sync to LDAP (disable user reactor) by default
-    db.config.ext.LDAP_UPDATE_LDAP = 'no'
-    if args.write_to_ldap :
-        db.config.ext.LDAP_UPDATE_LDAP = 'yes'
+    # Disable sync to LDAP (disable user reactor) by default
+    # Note that we leave the default in the config file if write_to_ldap
+    # is False -- we never turn on the sync if it is not configured!
+    if not args.write_to_ldap :
+        db.config.ext.LDAP_UPDATE_LDAP = 'no'
 
     lds = LDAP_Roundup_Sync (db, verbose = args.verbose)
     lds.log.info \
@@ -72,8 +84,12 @@ def main () :
         if args.users :
             for username in args.users :
                 lds.sync_user_from_ldap (username, update = args.update)
+                if args.two_way_sync :
+                    lds.sync_user_to_ldap (username)
         else :
             lds.sync_all_users_from_ldap (update = args.update)
+            if args.two_way_sync :
+                lds.sync_all_users_to_ldap ()
     except Exception :
         lds.log_exception ()
 
