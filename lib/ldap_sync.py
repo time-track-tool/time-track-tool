@@ -62,7 +62,13 @@ class LDAP_Search_Result (object) :
 
     def __init__ (self, val) :
         self.val = val
-        self.dn  = val.entry_dn
+        try :
+            self.dn = val.entry_dn
+        except AttributeError :
+            # When iterating via paged_search we get something different, make
+            # it look the same
+            self.dn  = val ['dn']
+            self.val = val ['attributes']
         dn = ldap3.utils.dn.parse_dn (self.dn.lower ())
         self.ou  = dict.fromkeys (k [0][1] for k in dn if k [0][0] == 'ou')
     # end def __init__
@@ -75,9 +81,19 @@ class LDAP_Search_Result (object) :
         return False
     # end def is_obsolete
 
+    def raw_value (self, name) :
+        return self.val [name].raw_values [0]
+    # end def raw_value
+
+    def value (self, name) :
+        if isinstance (self.val [name], ldap3.abstract.attribute.Attribute) :
+            return self.val [name].value
+        return self.val [name]
+    # end def value
+
     def get (self, name, default = None) :
         try :
-            return self.val [name]
+            return self.value (name)
         except (KeyError, LDAPCursorError, LDAPKeyError) :
             return default
     # end def get
@@ -85,14 +101,14 @@ class LDAP_Search_Result (object) :
     def __getitem__ (self, name) :
         try :
             return self.val [name]
-        except (LDAPCursorError, LDAPKeyError) as err :
+        except (LDAPCursorError, LDAPKeyError, KeyError) as err :
             raise KeyError (str (err))
     # end def __getitem__
 
     def __getattr__ (self, name) :
         try :
-            return getattr (self.val, name)
-        except (LDAPCursorError, LDAPKeyError) as err :
+            return self.val [name]
+        except (LDAPCursorError, LDAPKeyError, KeyError) as err :
             raise AttributeError (str (err))
     # end def __getattr__
 
@@ -100,7 +116,7 @@ class LDAP_Search_Result (object) :
         try :
             x = self.val [name]
             return True
-        except (LDAPCursorError, LDAPKeyError) as err :
+        except (LDAPCursorError, LDAPKeyError, KeyError) as err :
             pass
         return False
     # end def __contains__
@@ -123,7 +139,7 @@ def fromhex (s) :
 
 def get_guid (luser, attr) :
     assert attr == 'objectGUID'
-    guid = luser.objectGUID.raw_values [0]
+    guid = luser.raw_value ('objectGUID')
     if guid is not None :
         return tohex (guid)
     return None
@@ -269,8 +285,8 @@ class LDAP_Roundup_Sync (Log) :
     # end def get_picture
 
     def get_realname (self, x, y) :
-        fn = x.get ('givenname', [''])[0]
-        ln = x.get ('sn', ['']) [0]
+        fn = x.get ('givenname', '')
+        ln = x.get ('sn', '')
         if fn and ln :
             return ' '.join ((fn, ln))
         elif fn :
@@ -334,7 +350,7 @@ class LDAP_Roundup_Sync (Log) :
             attr_u ['firstname'] = \
                 ( 'givenname'
                 , 1
-                , lambda x, y : x.get (y, [None])[0]
+                , lambda x, y : x.get (y, None)
                   if not self.update_ldap else None
                 , False
                 )
@@ -349,7 +365,7 @@ class LDAP_Roundup_Sync (Log) :
             attr_u ['lastname'] = \
                 ( 'sn'
                 , 1
-                , lambda x, y : x.get (y, [None])[0]
+                , lambda x, y : x.get (y, None)
                   if not self.update_ldap else None
                 , False
                 )
@@ -518,7 +534,7 @@ class LDAP_Roundup_Sync (Log) :
         """
         def look (luser, txt, **dynamic_params) :
             try :
-                key = luser [txt][0]
+                key = luser [txt]
             except KeyError :
                 return None
             try :
@@ -564,13 +580,13 @@ class LDAP_Roundup_Sync (Log) :
             retained.
         """
         try :
-            mail = luser [txt][0]
+            mail = luser [txt]
         except KeyError :
             return None
         uid = None
         for k in 'UserPrincipalName', 'uid' :
             try :
-                uid = self.db.user.lookup (luser[k][0])
+                uid = self.db.user.lookup (luser [k])
                 break
             except KeyError :
                 pass
@@ -615,7 +631,7 @@ class LDAP_Roundup_Sync (Log) :
             # Do not return any users with wrong group
             if not self.member_status_id (r.dn) :
                 continue
-            yield (r.userprincipalname [0])
+            yield (r.userprincipalname)
     # end def get_all_ldap_usernames
 
     def _get_ldap_user (self, result) :
@@ -672,7 +688,7 @@ class LDAP_Roundup_Sync (Log) :
         # uid to find the user in roundup.
         for k in 'UserPrincipalName', 'uid' :
             try :
-                return self.db.user.lookup (lsup [k][0])
+                return self.db.user.lookup (lsup [k])
             except KeyError :
                 pass
         return None
@@ -713,13 +729,13 @@ class LDAP_Roundup_Sync (Log) :
 
     def ldap_picture (self, luser, attr) :
         try :
-            lpic = luser [attr].raw_values [0]
+            lpic = luser.raw_value (attr)
         except KeyError :
             return None
         uid = None
         for k in 'UserPrincipalName', 'uid' :
             try :
-                uid = self.db.user.lookup (luser[k][0])
+                uid = self.db.user.lookup (luser [k])
                 break
             except KeyError :
                 pass
@@ -860,7 +876,7 @@ class LDAP_Roundup_Sync (Log) :
         self.log.debug \
             (datetime.now ().strftime ('%Y-%m-%d %H:%M:%S: User by username'))
         if luser :
-            guid = luser.objectGUID.raw_values [0]
+            guid = luser.raw_value ('objectGUID')
         if update is not None :
             self.update_roundup = update
         uid = None
@@ -904,9 +920,14 @@ class LDAP_Roundup_Sync (Log) :
         else :
             d = {}
             for k in self.attr_map ['user'] :
+                if k == 'room' :
+                     import pdb; pdb.set_trace ()
                 lk, x, method, em = self.attr_map ['user'][k]
                 if method :
                     v = method (luser, lk)
+                    # FIXME: This must change for python3
+                    if isinstance (v, unicode) :
+                        v = v.encode ('utf-8')
                     if v or em :
                         d [k] = v
             if self.contact_types :
@@ -939,6 +960,7 @@ class LDAP_Roundup_Sync (Log) :
                             ('%Y-%m-%d %H:%M:%S: Before roundup update')
                         )
                     if self.update_roundup :
+                        import pdb; pdb.set_trace ()
                         self.db.user.set (uid, ** d)
                         changed = True
                     self.log.debug \
@@ -967,13 +989,15 @@ class LDAP_Roundup_Sync (Log) :
                     if 'org_location' in self.db.classes :
                         olo = dep = None
                         if 'company' in luser :
-                            olo = luser ['company'][0]
+                            olo = luser ['company']
+                            olo = olo.encode ('utf-8')
                             try :
                                 olo = self.db.org_location.lookup (olo)
                             except KeyError :
                                 olo = None
                         if 'department' in luser :
-                            dep = luser ['department'][0]
+                            dep = luser ['department']
+                            dep = dep.encode ('utf-8')
                             try :
                                 dep = self.db.department.lookup (dep)
                             except KeyError :
@@ -1149,7 +1173,7 @@ class LDAP_Roundup_Sync (Log) :
                 self.log.error \
                     ("%s: invalid length: %s" % (r_user.username, lk))
             else :
-                ldattr = pldattr = luser [lk][0]
+                ldattr = pldattr = luser [lk]
                 if rk == 'pictures' :
                     pldattr = '<suppressed>'
                 if rk == 'guid' :
@@ -1193,7 +1217,7 @@ class LDAP_Roundup_Sync (Log) :
                         if lk not in luser :
                             ldattr = None
                         else :
-                            ldattr = luser [lk][0]
+                            ldattr = luser [lk]
                         chg = method (r_user, udprop, prop, lk, ldattr)
                         if chg :
                             self.log.info \
