@@ -157,6 +157,17 @@ class LDAP_Roundup_Sync (Log) :
             handler.setFormatter (formatter)
             self.log.addHandler (handler)
 
+        ou_allowed = getattr (self.cfg, 'LDAP_ALLOWED_OU_LIST', None)
+        if ou_allowed :
+            self.ou_allowed = dict.fromkeys \
+                (x.strip () for x in ou_allowed.split (','))
+        else :
+            self.ou_allowed = {}
+            self.log.error \
+                ('No allowed OU configured for vie_user, '
+                 'use allowed_ou_list in [ldap] section of ext config'
+                )
+
         self.log.debug (datetime.now ().strftime ('%Y-%m-%d %H:%M:%S: Init'))
         for k in 'update_ldap', 'update_roundup' :
             if getattr (self, k) is None :
@@ -236,6 +247,14 @@ class LDAP_Roundup_Sync (Log) :
         return rn
     # end def get_cn
 
+    def get_department (self, user, attr) :
+        if user.department_temp :
+            return user.department_temp
+        dyn = self.get_dynamic_user (user.id)
+        if dyn :
+            return self.db.department.get (dyn.department, 'name')
+    # end def get_department
+
     def get_name (self, user, attr) :
         """ Get name from roundup user class Link attr """
         cl = user.cl.db.classes [attr]
@@ -258,13 +277,6 @@ class LDAP_Roundup_Sync (Log) :
             return fn
         return ln
     # end def get_realname
-
-    def get_roundup_guid (self, node, attribute) :
-        s = node [attribute]
-        if not s :
-            return s
-        return fromhex (s)
-    # end def get_roundup_guid
 
     def get_username_attribute_dn (self, node, attribute) :
         """ Get dn of a user Link-attribute of a node """
@@ -301,10 +313,10 @@ class LDAP_Roundup_Sync (Log) :
             dontsync = {}
         attr_map = dict (user = dict ())
         attr_u   = attr_map ['user']
-        props    = self.db.user.properties
-        dynprops = {}
+        self.user_props = props = self.db.user.properties
+        self.dynprops = {}
         if 'user_dynamic' in self.db.classes :
-            dynprops = self.db.user_dynamic.properties
+            self.dynprops = self.db.user_dynamic.properties
         # 1st arg is the name in ldap
         # 2nd arg is 0 for no change, 1 for change or a method for
         #         conversion from roundup to ldap when syncing 
@@ -367,7 +379,7 @@ class LDAP_Roundup_Sync (Log) :
             attr_u ['pictures'] = \
                 ( 'thumbnailPhoto'
                 , self.get_picture
-                , self.ldap_picture
+                , None # was: self.ldap_picture
                 , False
                 )
         if 'position_text' in props and 'position_text' not in dontsync :
@@ -378,21 +390,21 @@ class LDAP_Roundup_Sync (Log) :
                 , None
                 , False
                 )
-        if 'realname' in props and 'realname' not in dontsync :
-            g = self.get_realname
-            if 'firstname' in props :
-                g = None
+        if  (   'realname' in props
+            and 'realname' not in dontsync
+            and 'firstname' not in props
+            ) :
             attr_u ['realname'] = \
                 ( 'cn'
                 , 0
-                , g
+                , self.get_realname
                 , False
                 )
         if 'room' in props and 'room' not in dontsync :
             attr_u ['room'] = \
                 ( 'physicalDeliveryOfficeName'
                 , self.get_name
-                , self.cls_lookup (self.db.room)
+                , None # was: self.cls_lookup (self.db.room)
                 , False
                 )
         if 'substitute' in props and 'substitute' not in dontsync :
@@ -414,8 +426,18 @@ class LDAP_Roundup_Sync (Log) :
         if 'guid' in props and 'guid' not in dontsync :
             attr_u ['guid'] = \
                 ( 'objectGUID'
-                , self.get_roundup_guid
+                , None
                 , get_guid
+                , False
+                )
+        if  (  ('department_temp' in props or 'department' in self.dynprops)
+            and 'department' not in dontsync
+            and 'department_temp' not in dontsync
+            ) :
+            attr_u ['department_temp'] = \
+                ( 'department'
+                , self.get_department
+                , None
                 , False
                 )
         # Items to be synced from current user_dynamic record.
@@ -423,18 +445,18 @@ class LDAP_Roundup_Sync (Log) :
         # Except for creation: If a new user is created and the
         # org_location and department properties exist in ldap we
         # perform the user_create_magic.
-        # The entries inside the sub-properties 'sap_cc', 'department',
+        # The entries inside the sub-properties 'sap_cc',
         # 'org_location' are as follows:
         # One entry for each transitive property to be synced to LDAP
         # 1st item is the property name of the linked item (in our
-        #     case from sap_cc, department, org_location)
+        #     case from sap_cc, org_location)
         # 2nd item is the LDAP property
         # 3rd item is the function to convert roundup->LDAP
         # 4th item is the function to convert LDAP->roundup
         #     this is currently unused, we don't sync to roundup
         attr_map ['user_dynamic'] = {}
         attr_dyn = attr_map ['user_dynamic']
-        if 'org_location' in dynprops and 'org_location' not in dontsync :
+        if 'org_location' in self.dynprops and 'org_location' not in dontsync :
             attr_dyn ['org_location'] = \
                 ( ( 'name'
                   ,  'company'
@@ -443,16 +465,7 @@ class LDAP_Roundup_Sync (Log) :
                   )
                 ,
                 )
-        if 'department' in dynprops and 'department' not in dontsync :
-            attr_dyn ['department'] = \
-                ( ( 'name'
-                  ,  'department'
-                  ,  self.set_user_dynamic_prop
-                  ,  None
-                  )
-                ,
-                )
-        if 'sap_cc' in dynprops :
+        if 'sap_cc' in self.dynprops :
             attr_dyn ['sap_cc'] = \
                 ( ( 'name'
                   , 'extensionAttribute3'
@@ -466,14 +479,27 @@ class LDAP_Roundup_Sync (Log) :
                   )
                 )
         if self.contact_types :
+            # On the right side we have a flag that tells us if users
+            # that have a vie_user set should be synced *to* LDAP.
+            # The second item is a list of attributes in LDAP, if there
+            # are two, the first one is a single-value attribute and the
+            # second is a multi-value attribute that takes additional
+            # values from roundup.
             attr_map ['user_contact'] = \
-                { 'Email'          : ('mail',)
-                , 'internal Phone' : ('otherTelephone',)
-                , 'external Phone' : ('telephoneNumber',)
-                , 'mobile Phone'   : ('mobile',          'otherMobile')
-                , 'Mobile short'   : ('pager',           'otherPager')
-        #       , 'external Phone' : ('telephoneNumber', 'otherTelephone')
-        #       , 'private Phone'  : ('homePhone',       'otherHomePhone')
+                { 'Email'          :
+                  [False, ('mail',)]
+                , 'internal Phone' :
+                  [True,  ('otherTelephone',)]
+                , 'external Phone' :
+                  [True,  ('telephoneNumber',)]
+                , 'mobile Phone'   :
+                  [False, ('mobile', 'otherMobile')]
+                , 'Mobile short'   :
+                  [False, ('pager',  'otherPager')]
+        #       , 'external Phone' :
+        #         [False, ('telephoneNumber', 'otherTelephone')]
+        #       , 'private Phone'  :
+        #         [False, ('homePhone', 'otherHomePhone')]
                 }
         else :
             attr_u ['address'] = \
@@ -756,7 +782,7 @@ class LDAP_Roundup_Sync (Log) :
         found = {}
         new_contacts = []
         for type in self.attr_map ['user_contact'] :
-            lds = self.attr_map ['user_contact'][type]
+            write_to_ldap, lds = self.attr_map ['user_contact'][type]
             tid = self.db.uc_type.lookup (type)
             order = 1
             for ld in lds :
@@ -974,10 +1000,18 @@ class LDAP_Roundup_Sync (Log) :
             if n not in contacts :
                 contacts [n] = []
             contacts [n].append (contact.contact)
-        for ct, cs in contacts.iteritems () :
+        for ct in contacts :
+            cs = contacts [ct]
             if ct not in self.attr_map ['user_contact'] :
                 continue
-            ldn = self.attr_map ['user_contact'][ct]
+            write_to_ldap, ldn = self.attr_map ['user_contact'][ct]
+            # Only write if allowed
+            if not write_to_ldap :
+                continue
+            # Only write if this user has a vie_user (which means it is
+            # an external user that may write attributes to ldap)
+            if write_to_ldap and not user.vie_user :
+                continue
             if len (ldn) != 2 :
                 assert (len (ldn) == 1)
                 p = ldn [0]
@@ -1043,7 +1077,6 @@ class LDAP_Roundup_Sync (Log) :
             return
         uid  = self.db.user.lookup (username)
         user = self.db.user.getnode (uid)
-        assert (user.status in self.status_sync)
         self.log.debug \
             (datetime.now ().strftime
                 ('%Y-%m-%d %H:%M:%S: Before user_by_username')
@@ -1057,6 +1090,28 @@ class LDAP_Roundup_Sync (Log) :
             self.log.info ("LDAP user not found:", user.username)
             # Might want to create user in LDAP
             return
+        r_user = user
+        if user.vie_user_ml :
+            for ou in luser.ou :
+                if ou in self.ou_allowed :
+                    break
+            else :
+                self.log.error \
+                    ('User has no allowed ou, not syncing: %s' % user.username)
+                return
+            if len (user.vie_user_ml > 1) :
+                self.log.error \
+                    ( "More than one user links to user %s: %s"
+                    % (user.username
+                      , ', '.join
+                        (self.db.user.get (u, 'username')
+                         for u in user.vie_user_ml)
+                      )
+                    )
+                return
+            assert len (user.vie_user_ml) == 1
+            r_user = self.db.user.getnode (user.vie_user_ml [0])
+        assert (user.status in self.status_sync)
         if user.status == self.status_obsolete :
             if not self.is_obsolete (luser) :
                 self.log.info ("Roundup user obsolete:", user.username)
@@ -1068,22 +1123,22 @@ class LDAP_Roundup_Sync (Log) :
         umap = self.attr_map ['user']
         modlist = []
         for rk, (lk, change, x, empty) in umap.iteritems () :
-            rupattr = user [rk]
+            rupattr = r_user [rk]
             if rupattr and callable (change) :
-                rupattr = change (user, rk)
+                rupattr = change (r_user, rk)
             prupattr = rupattr
             if rk == 'pictures' :
                 prupattr = '<suppressed>'
                 if len (rupattr) > 102400 :
                     self.log.error \
                         ( "%s: Picture too large: %s" \
-                        % (user.username, len (rupattr))
+                        % (r_user.username, len (rupattr))
                         )
                     continue
             if rk == 'guid' :
                 prupattr = repr (rupattr)
             if lk not in luser :
-                if user [rk] :
+                if r_user [rk] :
                     self.log.info \
                         ( "%s: Inserting: %s (%s)" \
                         % (user.username, lk, prupattr)
@@ -1091,7 +1146,8 @@ class LDAP_Roundup_Sync (Log) :
                     assert (change)
                     modlist.append ((ldap3.MODIFY_ADD, lk, rupattr))
             elif len (luser [lk]) != 1 :
-                self.log.error ("%s: invalid length: %s" % (user.username, lk))
+                self.log.error \
+                    ("%s: invalid length: %s" % (r_user.username, lk))
             else :
                 ldattr = pldattr = luser [lk][0]
                 if rk == 'pictures' :
@@ -1138,7 +1194,7 @@ class LDAP_Roundup_Sync (Log) :
                             ldattr = None
                         else :
                             ldattr = luser [lk][0]
-                        chg = method (user, udprop, prop, lk, ldattr)
+                        chg = method (r_user, udprop, prop, lk, ldattr)
                         if chg :
                             self.log.info \
                                 ( "%s:  Updating: %s.%s/%s >%s/%s<"
@@ -1152,7 +1208,7 @@ class LDAP_Roundup_Sync (Log) :
                                 )
                             modlist.append (chg)
         if self.contact_types :
-            self.sync_contacts_to_ldap (user, luser, modlist)
+            self.sync_contacts_to_ldap (r_user, luser, modlist)
         if modlist and self.update_ldap :
             # Make a dictionary from modlist as required by ldap3
             moddict = {}
@@ -1175,7 +1231,7 @@ class LDAP_Roundup_Sync (Log) :
     def set_user_dynamic_prop (self, user, udprop, linkprop, lk, ldattr) :
         """ Sync transitive dynamic user properties to ldap
             Gets the user to sync, the linkclass, one of (sap_cc,
-            department, org_location), the linkprop (property of the
+            org_location), the linkprop (property of the
             given class), the LDAP attribute key lk and the ldap
             attribute value ldattr.
             Return a triple (ldap3.<action>, lk, rupattr)
