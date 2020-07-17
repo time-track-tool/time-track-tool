@@ -173,15 +173,15 @@ class LDAP_Roundup_Sync (Log) :
             handler.setFormatter (formatter)
             self.log.addHandler (handler)
 
-        ou_allowed = getattr (self.cfg, 'LDAP_ALLOWED_OU_LIST', None)
-        if ou_allowed :
-            self.ou_allowed = dict.fromkeys \
-                (x.strip ().lower () for x in ou_allowed.split (','))
-        else :
-            self.ou_allowed = {}
+        self.dn_allowed = {}
+        dn_allowed = getattr (self.cfg, 'LDAP_ALLOWED_DN_SUFFIX', None)
+        if dn_allowed :
+            for k in dn_allowed.split (':') :
+                self.dn_allowed [k.lower ()] = True
+        if not self.dn_allowed :
             self.log.error \
-                ('No allowed OU configured for vie_user, '
-                 'use allowed_ou_list in [ldap] section of ext config'
+                ('No allowed DN suffix configured for vie_user, '
+                 'use allowed_dn_suffix in [ldap] section of ext config'
                 )
 
         self.log.debug (datetime.now ().strftime ('%Y-%m-%d %H:%M:%S: Init'))
@@ -1141,12 +1141,12 @@ class LDAP_Roundup_Sync (Log) :
             return
         r_user = user
         if user.vie_user_ml :
-            for ou in luser.ou :
-                if ou in self.ou_allowed :
+            for dn in self.dn_allowed :
+                if luser.dn.lower ().endswith (dn) :
                     break
             else :
                 self.log.error \
-                    ('User has no allowed ou, not syncing: %s' % luser.dn)
+                    ('User has no allowed dn, not syncing: %s' % luser.dn)
                 return
             if len (user.vie_user_ml) > 1 :
                 self.log.error \

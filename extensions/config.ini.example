@@ -6,6 +6,7 @@ base_dn  = OU=company,DC=ds1,DC=internal
 update_ldap    = False
 update_roundup = True
 ad_domains     = ds1.internal
+allowed_dn_suffix = OU=SOME-OU,DC=example,DC=com:OU=OTHER-OU,DC=example,DC=com
 
 [imap]
 #host = example.net
