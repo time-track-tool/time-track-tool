@@ -70,7 +70,7 @@ class LDAP_Search_Result (object) :
             self.dn  = val ['dn']
             self.val = val ['attributes']
         dn = ldap3.utils.dn.parse_dn (self.dn.lower ())
-        self.ou  = dict.fromkeys (k [0][1] for k in dn if k [0][0] == 'ou')
+        self.ou  = dict.fromkeys (k [1] for k in dn if k [0] == 'ou')
     # end def __init__
 
     @property
@@ -176,7 +176,7 @@ class LDAP_Roundup_Sync (Log) :
         ou_allowed = getattr (self.cfg, 'LDAP_ALLOWED_OU_LIST', None)
         if ou_allowed :
             self.ou_allowed = dict.fromkeys \
-                (x.strip () for x in ou_allowed.split (','))
+                (x.strip ().lower () for x in ou_allowed.split (','))
         else :
             self.ou_allowed = {}
             self.log.error \
@@ -281,7 +281,13 @@ class LDAP_Roundup_Sync (Log) :
         """ Get picture from roundup user class """
         pics = [self.db.file.getnode (i) for i in user.pictures]
         for p in sorted (pics, reverse = True, key = lambda x : x.activity) :
-            return p.content
+            if len (p.content) > 102400 :
+                self.log.error \
+                    ( "%s: Picture too large: %s" \
+                    % (user.username, len (p.content))
+                    )
+                continue
+            return ldap3.utils.conv.escape_bytes (p.content)
     # end def get_picture
 
     def get_realname (self, x, y) :
@@ -299,7 +305,10 @@ class LDAP_Roundup_Sync (Log) :
         s = node [attribute]
         if not s :
             return s
-        s = self.db.user.get (s, 'username')
+        n = self.db.user.getnode (s)
+        if n.vie_user :
+            n = self.db.user.getnode (n.vie_user)
+        s = n.username
         r = self.get_ldap_user_by_username (s)
         if r is None :
             return None
@@ -334,54 +343,63 @@ class LDAP_Roundup_Sync (Log) :
         if 'user_dynamic' in self.db.classes :
             self.dynprops = self.db.user_dynamic.properties
         # 1st arg is the name in ldap
-        # 2nd arg is 0 for no change, 1 for change or a method for
+        # 2nd arg is 0 for no change to ldap, 1 for change or a method for
         #         conversion from roundup to ldap when syncing 
         # 3rd arg is an conversion function from ldap to roundup or None
         #         if not syncing to roundup
         # 4th arg indicates if updates coming from ldap may be
-        # empty, currently used only for nickname (aka initials in ldap)
+        #          empty, currently used only for nickname (aka initials in
+        #          ldap)
+        # 5th arg tells us if the parameter in roundup comes from a linked
+        #          vie_user_ml (True) or from the original user (False)
         attr_u ['id'] = \
             ( 'employeenumber'
             , 1
             , None
+            , False
             , False
             )
         if 'firstname' in props and 'firstname' not in dontsync :
             attr_u ['firstname'] = \
                 ( 'givenname'
                 , 1
-                , lambda x, y : x.get (y, None)
+                , (lambda x, y : x.get (y, None))
                   if not self.update_ldap else None
                 , False
+                , True
                 )
             if self.update_ldap :
                 attr_u ['realname'] = \
-                    ( 'dn'
+                    ( 'cn'
                     , self.get_cn
                     , None
                     , False
+                    , True
                     )
         if 'lastname' in props and 'lastname' not in dontsync :
             attr_u ['lastname'] = \
                 ( 'sn'
                 , 1
-                , lambda x, y : x.get (y, None)
+                , (lambda x, y : x.get (y, None))
                   if not self.update_ldap else None
                 , False
+                , True
                 )
         if 'nickname' in props and 'nickname' not in dontsync :
             attr_u ['nickname'] = \
                 ( 'initials'
-                , lambda x, y : x [y].upper ()
-                , lambda x, y : str (x.get (y, '')).lower ()
+                , lambda x, y : (x [y] or '').upper ()
+                , (lambda x, y : str (x.get (y, '')).lower ())
                   if not self.update_ldap else None
                 , True
+                , False
                 )
         if 'ad_domain' in props and 'ad_domain' not in dontsync :
             attr_u ['ad_domain'] = \
                 ( 'UserPrincipalName'
                 , 0
                 , lambda x, y : str (x [y]).split ('@', 1)[1]
+                , False
                 , False
                 )
         if 'username' in props and 'username' not in dontsync :
@@ -390,6 +408,7 @@ class LDAP_Roundup_Sync (Log) :
                 , 0
                 , lambda x, y : str (x.get (y))
                 , False
+                , False
                 )
         if 'pictures' in props and 'pictures' not in dontsync :
             attr_u ['pictures'] = \
@@ -397,6 +416,7 @@ class LDAP_Roundup_Sync (Log) :
                 , self.get_picture
                 , None # was: self.ldap_picture
                 , False
+                , True
                 )
         if 'position_text' in props and 'position_text' not in dontsync :
             # We sync that field *to* ldap but not *from* ldap.
@@ -405,6 +425,7 @@ class LDAP_Roundup_Sync (Log) :
                 , 1
                 , None
                 , False
+                , True
                 )
         if  (   'realname' in props
             and 'realname' not in dontsync
@@ -415,6 +436,7 @@ class LDAP_Roundup_Sync (Log) :
                 , 0
                 , self.get_realname
                 , False
+                , False
                 )
         if 'room' in props and 'room' not in dontsync :
             attr_u ['room'] = \
@@ -422,28 +444,32 @@ class LDAP_Roundup_Sync (Log) :
                 , self.get_name
                 , None # was: self.cls_lookup (self.db.room)
                 , False
+                , True
                 )
         if 'substitute' in props and 'substitute' not in dontsync :
             attr_u ['substitute'] = \
                 ( 'secretary'
                 , self.get_username_attribute_dn
-                , self.get_roundup_uid_from_dn_attr
+                , (self.get_roundup_uid_from_dn_attr)
                   if not self.update_ldap else None
                 , False
+                , True
                 )
         if 'supervisor' in props and 'supervisor' not in dontsync :
             attr_u ['supervisor'] = \
                 ( 'manager'
                 , self.get_username_attribute_dn
-                , self.get_roundup_uid_from_dn_attr
+                , (self.get_roundup_uid_from_dn_attr)
                   if not self.update_ldap else None
                 , False
+                , True
                 )
         if 'guid' in props and 'guid' not in dontsync :
             attr_u ['guid'] = \
                 ( 'objectGUID'
                 , None
                 , get_guid
+                , False
                 , False
                 )
         if  (  ('department_temp' in props or 'department' in self.dynprops)
@@ -455,6 +481,7 @@ class LDAP_Roundup_Sync (Log) :
                 , self.get_department
                 , None
                 , False
+                , True
                 )
         # Items to be synced from current user_dynamic record.
         # Currently this is one-way, only from roundup to ldap.
@@ -920,9 +947,7 @@ class LDAP_Roundup_Sync (Log) :
         else :
             d = {}
             for k in self.attr_map ['user'] :
-                if k == 'room' :
-                     import pdb; pdb.set_trace ()
-                lk, x, method, em = self.attr_map ['user'][k]
+                lk, x, method, em, use_ruser = self.attr_map ['user'][k]
                 if method :
                     v = method (luser, lk)
                     # FIXME: This must change for python3
@@ -960,7 +985,6 @@ class LDAP_Roundup_Sync (Log) :
                             ('%Y-%m-%d %H:%M:%S: Before roundup update')
                         )
                     if self.update_roundup :
-                        import pdb; pdb.set_trace ()
                         self.db.user.set (uid, ** d)
                         changed = True
                     self.log.debug \
@@ -1077,7 +1101,8 @@ class LDAP_Roundup_Sync (Log) :
                             % (user.username, ct, s, cs [1:], ldattr)
                             )
                         modlist.append ((ldap3.MODIFY_REPLACE, s, cs [1:]))
-        for ct, fields in self.attr_map ['user_contact'].iteritems () :
+        for ct in self.attr_map ['user_contact'] :
+            fields = self.attr_map ['user_contact'][ct]
             if ct not in contacts :
                 for f in fields :
                     if f in luser :
@@ -1121,9 +1146,9 @@ class LDAP_Roundup_Sync (Log) :
                     break
             else :
                 self.log.error \
-                    ('User has no allowed ou, not syncing: %s' % user.username)
+                    ('User has no allowed ou, not syncing: %s' % luser.dn)
                 return
-            if len (user.vie_user_ml > 1) :
+            if len (user.vie_user_ml) > 1 :
                 self.log.error \
                     ( "More than one user links to user %s: %s"
                     % (user.username
@@ -1146,23 +1171,20 @@ class LDAP_Roundup_Sync (Log) :
             return
         umap = self.attr_map ['user']
         modlist = []
-        for rk, (lk, change, x, empty) in umap.iteritems () :
-            rupattr = r_user [rk]
+        for rk in sorted (umap) :
+            lk, change, from_ldap, empty, use_ruser = umap [rk]
+            curuser = r_user if use_ruser else user
+            rupattr = curuser [rk]
             if rupattr and callable (change) :
-                rupattr = change (r_user, rk)
+                rupattr = change (curuser, rk)
             prupattr = rupattr
             if rk == 'pictures' :
                 prupattr = '<suppressed>'
-                if len (rupattr) > 102400 :
-                    self.log.error \
-                        ( "%s: Picture too large: %s" \
-                        % (r_user.username, len (rupattr))
-                        )
-                    continue
-            if rk == 'guid' :
-                prupattr = repr (rupattr)
+            # FIXME: No longer necessary in python3
+            if isinstance (rupattr, str) :
+                rupattr = rupattr.decode ('utf-8')
             if lk not in luser :
-                if r_user [rk] :
+                if curuser [rk] :
                     self.log.info \
                         ( "%s: Inserting: %s (%s)" \
                         % (user.username, lk, prupattr)
@@ -1171,7 +1193,7 @@ class LDAP_Roundup_Sync (Log) :
                     modlist.append ((ldap3.MODIFY_ADD, lk, rupattr))
             elif len (luser [lk]) != 1 :
                 self.log.error \
-                    ("%s: invalid length: %s" % (r_user.username, lk))
+                    ("%s: invalid length: %s" % (curuser.username, lk))
             else :
                 ldattr = pldattr = luser [lk]
                 if rk == 'pictures' :
@@ -1179,12 +1201,7 @@ class LDAP_Roundup_Sync (Log) :
                 if rk == 'guid' :
                     pldattr = repr (ldattr)
                 if ldattr != rupattr :
-                    if not change :
-                        self.log.info \
-                            ( "%s:  attribute differs: %s/%s >%s/%s<"
-                            % (user.username, rk, lk, prupattr, pldattr)
-                            )
-                    else :
+                    if change :
                         self.log.info \
                             ( "%s:  Updating: %s/%s >%s/%s<"
                             % (user.username, rk, lk, prupattr, pldattr)
@@ -1207,11 +1224,29 @@ class LDAP_Roundup_Sync (Log) :
                                     (datetime.now ().strftime
                                         ('%Y-%m-%d %H:%M:%S: After modify_dn')
                                     )
+                                if self.ldcon.last_error :
+                                    self.log.error \
+                                        ( 'Error on modify_dn for %s: %s'
+                                        % (luser.dn, self.ldcon.last_error)
+                                        )
+                                self.log.debug \
+                                    ('Result: %s' % self.ldcon.result)
                         else :
                             modlist.append ((op, lk, rupattr))
+                    else : # no change
+                        # For comparison we need to convert *from* ldap
+                        # Only log a warning if this is *not* correct
+                        if from_ldap :
+                            pldattr = from_ldap (luser, lk)
+                        if pldattr != prupattr :
+                            self.log.debug \
+                                ( "%s: attribute differs: %s/%s >%s/%s<"
+                                % (user.username, rk, lk, prupattr, pldattr)
+                                )
         if 'user_dynamic' in self.attr_map :
             udmap = self.attr_map ['user_dynamic']
-            for udprop, plist in udmap.iteritems () :
+            for udprop in udmap :
+                plist = udmap [udprop]
                 for prop, lk, method, x in plist :
                     if callable (method) :
                         if lk not in luser :
@@ -1237,19 +1272,33 @@ class LDAP_Roundup_Sync (Log) :
             # Make a dictionary from modlist as required by ldap3
             moddict = {}
             for op, lk, attr in modlist :
-                if attr not in modlist :
-                    modlist [attr] = []
-                moddict [attr].append ((op, lk))
+                if lk not in moddict :
+                    moddict [lk] = []
+                if attr is None :
+                    attr = []
+                if not isinstance (attr, list) :
+                    attr = [attr]
+                moddict [lk].append ((op, attr))
+            logdict = dict (moddict)
+            if 'thumbnailPhoto' in logdict :
+                logdict ['thumbnailPhoto'] = '<suppressed>'
+            self.log.debug ('modifying DN: %s' % luser.dn)
+            self.log.debug ('Mod-Dict: %s' % str (logdict))
             self.log.debug \
                 (datetime.now ().strftime ('%Y-%m-%d %H:%M:%S: Before modify'))
             self.ldcon.modify (luser.dn, moddict)
             self.log.debug \
                 (datetime.now ().strftime ('%Y-%m-%d %H:%M:%S: After modify'))
+            self.log.debug ('Result: %s' % self.ldcon.result)
+            if self.ldcon.last_error :
+                self.log.error \
+                    ( 'Error on modify of user %s: %s'
+                    % (luser.dn, self.ldcon.last_error)
+                    )
         elif modlist :
             self.log.info \
-                ( 'No LDAP updates performed for user: "%s" with attributes: %s'
-                % (user.username, modlist)
-                )
+                ('No LDAP updates performed for user: "%s"' % user.username)
+            self.log.debug ('Attributes not written: %s' % modlist)
     # end def sync_user_to_ldap
 
     def set_user_dynamic_prop (self, user, udprop, linkprop, lk, ldattr) :
@@ -1270,6 +1319,10 @@ class LDAP_Roundup_Sync (Log) :
                 classname = self.db.user_dynamic.properties [udprop].classname
                 is_empty  = False
                 node      = self.db.getclass (classname).getnode (dynprop)
+                val       = node [linkprop]
+                # FIXME: Not needed in python3
+                if isinstance (val, str) :
+                    val = val.decode ('utf-8')
                 if node [linkprop] != ldattr :
                     if not ldattr :
                         return (ldap3.MODIFY_ADD, lk, node [linkprop])
