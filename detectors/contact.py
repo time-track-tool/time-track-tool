@@ -38,8 +38,13 @@ def fix_user_contacts (db, cl, nodeid, old_values) :
     fix_contacts (db, cl, nodeid, old_values, cls = 'user_contact')
 # end def fix_user_contacts
 
+def get_email_types (db) :
+    return db.uc_type.filter \
+        (None, dict (is_email = True), sort = ('+', 'order'))
+# end def get_email_types
+
 def create_email_contacts (db, cl, nodeid, new_values) :
-    email_type = db.uc_type.lookup ('Email')
+    email_type = get_email_types (db) [0]
     ctct = new_values.get ('contacts', [])
     if 'address' in new_values :
         x = db.user_contact.create \
@@ -67,7 +72,7 @@ def create_email_contacts (db, cl, nodeid, new_values) :
 def fix_emails (db, cl, nodeid, new_values) :
     if 'contacts' not in new_values :
         return
-    email_type = db.uc_type.lookup ('Email')
+    email_type = get_email_types (db) [0]
     emails = []
     for c in new_values ['contacts'] :
         if db.user_contact.get (c, 'contact_type') == email_type :
@@ -100,8 +105,7 @@ def check_contact (db, cl, nodeid, new_values) :
         ct = new_values.get ('contact_type')
         if not ct :
             ct = cl.get (nodeid, 'contact_type')
-        name = tc.get (ct, 'name')
-        if name == 'Email' :
+        if tc.get (ct, 'is_email') :
             new_values ['contact'] = new_values ['contact'].lower ()
 # end def check_contact
 
@@ -168,9 +172,9 @@ def changed_contact (db, cl, nodeid, old_values) :
         and old_values ['order']        == contact.order
         ) :
         return
-    email = db.uc_type.lookup ('Email')
-    if  (   contact.contact_type != email
-        and old_values.get ('contact_type') != email
+    email_types = get_email_types (db)
+    if  (   contact.contact_type not in email_types
+        and old_values.get ('contact_type') not in email_types
         ):
         return
     common.update_emails (db, contact.user)
@@ -181,11 +185,6 @@ def new_user_contact (db, cl, nodeid, new_values) :
         ct = db.uc_type.getnode (new_values ['contact_type'])
         new_values ['visible'] = ct.visible
 # end def new_user_contact
-
-def check_email (db, cl, nodeid, new_values) :
-    if 'name' in new_values and cl.get (nodeid, 'name') == 'Email' :
-        raise reject, _ ("Name Email must not be changed")
-# end def check_email
 
 def _get_persclass (db) :
     persclass = None
@@ -231,6 +230,4 @@ def init (db) :
         db.user_contact.react ("set",     changed_contact)
         db.user_contact.react ("set",     relink_contact)
         db.user_contact.react ("restore", relink_contact)
-    if 'uc_type' in db.classes :
-        db.uc_type.audit ("set", check_email)
 # end def init

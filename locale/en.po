@@ -4424,3 +4424,6 @@ msgstr "Product group category"
 
 msgid "user_status++roles"
 msgstr "Roles"
+
+msgid "is_email"
+msgstr "is Email"
