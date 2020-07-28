@@ -863,18 +863,18 @@ class LDAP_Roundup_Sync (Log) :
                         changed = True
                     order += 1
         # special case of emails: we don't have "other" attributes
-        # so roundup potentially has more emails which should be
-        # preserved
-        email = self.db.uc_type.lookup ('Email')
-        order = 2
-        for k, n in sorted (oldmap.items (), key = lambda x : x [1].order) :
-            if n.contact_type == email :
-                if n.order != order and self.update_roundup :
-                    self.db.user_contact.set (n.id, order = order)
-                    changed = True
-                order += 1
-                new_contacts.append (n.id)
-                del oldmap [k]
+        # so roundup potentially has more emails. We do not preserve
+        # emails in roundup more than the one in LDAP.
+        #email = self.db.uc_type.lookup ('Email')
+        #order = 2
+        #for k, n in sorted (oldmap.items (), key = lambda x : x [1].order) :
+        #    if n.contact_type == email :
+        #        if n.order != order and self.update_roundup :
+        #            self.db.user_contact.set (n.id, order = order)
+        #            changed = True
+        #        order += 1
+        #        new_contacts.append (n.id)
+        #        del oldmap [k]
         if self.update_roundup :
             for n in oldmap.itervalues () :
                 self.db.user_contact.retire (n.id)
