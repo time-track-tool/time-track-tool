@@ -4388,3 +4388,6 @@ msgstr "Permission for"
 
 msgid "user_status++roles"
 msgstr "Roles"
+
+msgid "is_email"
+msgstr "is Email"
