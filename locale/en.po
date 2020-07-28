@@ -4442,3 +4442,6 @@ msgstr "Approval status"
 
 msgid "user_status++roles"
 msgstr "Roles"
+
+msgid "is_email"
+msgstr "is Email"
