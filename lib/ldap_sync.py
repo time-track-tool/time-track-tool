@@ -250,8 +250,8 @@ class LDAP_Roundup_Sync (Log) :
 
     def get_cn (self, user, attr) :
         """ Get the common name of this user
-            Note that this defaults to realname but will add ' (External' if
-            the 'group_external' flag in org_location exists and is set.
+            Note that this defaults to realname but will add ' (External)'
+            if the 'group_external' flag in org_location exists and is set.
         """
         assert attr == 'realname'
         rn = user.realname
@@ -369,6 +369,11 @@ class LDAP_Roundup_Sync (Log) :
                 , True
                 )
             if self.update_ldap :
+                # Note that cn is a special case: First of all the CN is
+                # part of the DN and we need to call modify_dn instead of
+                # a simple modify call. In addition we also need to
+                # modify the displayname. See code that checks for update
+                # of CN.
                 attr_u ['realname'] = \
                     ( 'cn'
                     , self.get_cn
@@ -1209,11 +1214,14 @@ class LDAP_Roundup_Sync (Log) :
                         op = ldap3.MODIFY_REPLACE
                         if rupattr is None :
                             op = ldap3.MODIFY_DELETE
-                        # Special case for common name, this needs a
-                        # modify_dn call
+                        # Special case for common name (CN), this needs a
+                        # modify_dn call and we also need to modify the
+                        # displayname
                         if lk.lower () == 'cn' :
                             if self.update_ldap :
                                 assert rupattr is not None
+                                # displayname needs to be set, too
+                                modlist.append ((op, 'displayname', rupattr))
                                 self.log.debug \
                                     ("Modify RDN %s->%s" % (luser.dn, rupattr))
                                 self.log.debug \
