@@ -287,7 +287,7 @@ class LDAP_Roundup_Sync (Log) :
                     % (user.username, len (p.content))
                     )
                 continue
-            return ldap3.utils.conv.escape_bytes (p.content)
+            return p.content
     # end def get_picture
 
     def get_realname (self, x, y) :
@@ -1179,12 +1179,12 @@ class LDAP_Roundup_Sync (Log) :
                 rupattr = change (curuser, rk)
             prupattr = rupattr
             if rk == 'pictures' :
-                prupattr = '<suppressed>'
+                prupattr = '<suppressed: %s>' % len (rupattr)
             # FIXME: No longer necessary in python3
-            if isinstance (rupattr, str) :
+            elif isinstance (rupattr, str) :
                 rupattr = rupattr.decode ('utf-8')
             if lk not in luser :
-                if curuser [rk] :
+                if rupattr :
                     self.log.info \
                         ( "%s: Inserting: %s (%s)" \
                         % (user.username, lk, prupattr)
@@ -1215,6 +1215,8 @@ class LDAP_Roundup_Sync (Log) :
                             if self.update_ldap :
                                 assert rupattr is not None
                                 self.log.debug \
+                                    ("Modify RDN %s->%s" % (luser.dn, rupattr))
+                                self.log.debug \
                                     (datetime.now ().strftime
                                         ('%Y-%m-%d %H:%M:%S: Before modify_dn')
                                     )
@@ -1225,10 +1227,24 @@ class LDAP_Roundup_Sync (Log) :
                                         ('%Y-%m-%d %H:%M:%S: After modify_dn')
                                     )
                                 if self.ldcon.last_error :
+                                    # Note: We try to continue if mod of
+                                    # DN fails, maybe a permission
+                                    # problem and other updates to same
+                                    # user go through.
                                     self.log.error \
-                                        ( 'Error on modify_dn for %s: %s'
-                                        % (luser.dn, self.ldcon.last_error)
+                                        ( 'Error on modify_dn (set to %s) '
+                                        'for %s: %s'
+                                        % ( rupattr
+                                          , luser.dn
+                                          , self.ldcon.last_error
+                                          )
                                         )
+                                else :
+                                    # Need to set DN so the future
+                                    # updates use the correct DN
+                                    rdn, rest = luser.dn.split (',', 1)
+                                    nrdn = '='.join (('CN', rupattr))
+                                    luser.dn = ','.join ((nrdn, rest))
                                 self.log.debug \
                                     ('Result: %s' % self.ldcon.result)
                         else :
