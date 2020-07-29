@@ -1283,6 +1283,7 @@ class LDAP_Roundup_Sync (Log) :
                 self.log.debug \
                     ("Set vie_user: %s: %s" % (user.username, dd))
                 self.db.user.set (user.id, **dd)
+                self.db.commit ()
         for rk in sorted (umap) :
             lk, change, from_ldap, empty, use_ruser, crall, ul = umap [rk]
             curuser = r_user if use_ruser else user
