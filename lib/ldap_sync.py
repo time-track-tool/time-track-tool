@@ -346,14 +346,17 @@ class LDAP_Roundup_Sync (Log) :
         # 3rd arg is an conversion function from ldap to roundup or None
         #         if not syncing to roundup
         # 4th arg indicates if updates coming from ldap may be
-        #          empty, currently used only for nickname (aka initials in
-        #          ldap)
+        #         empty, currently used only for nickname (aka initials in
+        #         ldap)
         # 5th arg tells us if the parameter in roundup comes from a linked
-        #          vie_user_ml (True) or from the original user (False)
+        #         vie_user_ml (True) or from the original user (False)
+        # 6th arg tells us if we do the update ldap->roundup in all cases
+        #         (True) or only on creation (False), see 3rd arg.
         attr_u ['id'] = \
             ( 'employeenumber'
             , 1
             , None
+            , False
             , False
             , False
             )
@@ -361,10 +364,10 @@ class LDAP_Roundup_Sync (Log) :
             attr_u ['firstname'] = \
                 ( 'givenname'
                 , 1
-                , (lambda x, y : x.get (y, None))
-                  if not self.update_ldap else None
+                , lambda x, y : x.get (y, None)
                 , False
                 , True
+                , not self.update_ldap
                 )
             if self.update_ldap :
                 # Note that cn is a special case: First of all the CN is
@@ -378,24 +381,25 @@ class LDAP_Roundup_Sync (Log) :
                     , None
                     , False
                     , True
+                    , False
                     )
         if 'lastname' in props and 'lastname' not in dontsync :
             attr_u ['lastname'] = \
                 ( 'sn'
                 , 1
-                , (lambda x, y : x.get (y, None))
-                  if not self.update_ldap else None
+                , lambda x, y : x.get (y, None)
                 , False
                 , True
+                , not self.update_ldap
                 )
         if 'nickname' in props and 'nickname' not in dontsync :
             attr_u ['nickname'] = \
                 ( 'initials'
                 , lambda x, y : (x [y] or '').upper ()
-                , (lambda x, y : str (x.get (y, '')).lower ())
-                  if not self.update_ldap else None
+                , lambda x, y : str (x.get (y, '')).lower ()
                 , True
                 , False
+                , not self.update_ldap
                 )
         if 'ad_domain' in props and 'ad_domain' not in dontsync :
             attr_u ['ad_domain'] = \
@@ -404,6 +408,7 @@ class LDAP_Roundup_Sync (Log) :
                 , lambda x, y : str (x [y]).split ('@', 1)[1]
                 , False
                 , False
+                , True
                 )
         if 'username' in props and 'username' not in dontsync :
             attr_u ['username'] = \
@@ -412,6 +417,7 @@ class LDAP_Roundup_Sync (Log) :
                 , lambda x, y : str (x.get (y))
                 , False
                 , False
+                , True
                 )
         if 'pictures' in props and 'pictures' not in dontsync :
             attr_u ['pictures'] = \
@@ -420,6 +426,7 @@ class LDAP_Roundup_Sync (Log) :
                 , None # was: self.ldap_picture
                 , False
                 , True
+                , False
                 )
         if 'position_text' in props and 'position_text' not in dontsync :
             # We sync that field *to* ldap but not *from* ldap.
@@ -429,6 +436,7 @@ class LDAP_Roundup_Sync (Log) :
                 , None
                 , False
                 , True
+                , False
                 )
         if  (   'realname' in props
             and 'realname' not in dontsync
@@ -440,6 +448,7 @@ class LDAP_Roundup_Sync (Log) :
                 , self.get_realname
                 , False
                 , False
+                , True
                 )
         if 'room' in props and 'room' not in dontsync :
             attr_u ['room'] = \
@@ -448,30 +457,32 @@ class LDAP_Roundup_Sync (Log) :
                 , None # was: self.cls_lookup (self.db.room)
                 , False
                 , True
+                , False
                 )
         if 'substitute' in props and 'substitute' not in dontsync :
             attr_u ['substitute'] = \
                 ( 'secretary'
                 , self.get_username_attribute_dn
                 , (self.get_roundup_uid_from_dn_attr)
-                  if not self.update_ldap else None
                 , False
                 , True
+                , not self.update_ldap
                 )
         if 'supervisor' in props and 'supervisor' not in dontsync :
             attr_u ['supervisor'] = \
                 ( 'manager'
                 , self.get_username_attribute_dn
                 , (self.get_roundup_uid_from_dn_attr)
-                  if not self.update_ldap else None
                 , False
                 , True
+                , not self.update_ldap
                 )
         if 'guid' in props and 'guid' not in dontsync :
             attr_u ['guid'] = \
                 ( 'objectGUID'
                 , None
                 , get_guid
+                , False
                 , False
                 , False
                 )
@@ -485,6 +496,7 @@ class LDAP_Roundup_Sync (Log) :
                 , None
                 , False
                 , True
+                , False
                 )
         # Items to be synced from current user_dynamic record.
         # Currently this is one-way, only from roundup to ldap.
@@ -554,6 +566,8 @@ class LDAP_Roundup_Sync (Log) :
                 , 0
                 , self.set_roundup_email_address
                 , False
+                , False
+                , True
                 )
         self.attr_map = attr_map
     # end def compute_attr_map
@@ -835,7 +849,7 @@ class LDAP_Roundup_Sync (Log) :
         for type in self.attr_map ['user_contact'] :
             write_to_ldap, keep, lds = self.attr_map ['user_contact'][type]
             # Do not update local user with remote contact data
-            if user.vie_user_ml and write_to_ldap :
+            if not user or (user.vie_user_ml and write_to_ldap) :
                 continue
             tid = self.db.uc_type.lookup (type)
             order = 1
@@ -995,15 +1009,19 @@ class LDAP_Roundup_Sync (Log) :
                 changed = True
         else :
             d = {}
+            c = {}
             for k in self.attr_map ['user'] :
-                lk, x, method, em, use_ruser = self.attr_map ['user'][k]
+                lk, x, method, em, use_ruser, cronly = self.attr_map ['user'][k]
                 if method :
                     v = method (luser, lk)
                     # FIXME: This must change for python3
                     if isinstance (v, unicode) :
                         v = v.encode ('utf-8')
                     if v or em :
-                        d [k] = v
+                        if cronly :
+                            c [k] = v
+                        else :
+                            d [k] = v
             if self.contact_types :
                 self.sync_contacts_from_ldap (luser, user, d)
             new_status_id = self.member_status_id (luser.dn)
@@ -1041,12 +1059,15 @@ class LDAP_Roundup_Sync (Log) :
                             ('%Y-%m-%d %H:%M:%S: After roundup update')
                         )
             else :
+                d.update (c)
                 assert (d)
+                assert 'lastname'  in d
+                assert 'firstname' in d
                 d ['roles']  = roles
                 d ['status'] = new_status_id
                 if 'username' not in d :
                     d ['username'] = username
-                self.log.info ("Create roundup user: %s" % username, d)
+                self.log.info ("Create roundup user: %s: %s" % (username, d))
                 if self.update_roundup :
                     self.log.debug \
                         (datetime.now ().strftime
@@ -1062,14 +1083,14 @@ class LDAP_Roundup_Sync (Log) :
                     if 'org_location' in self.db.classes :
                         olo = dep = None
                         if 'company' in luser :
-                            olo = luser ['company']
+                            olo = luser ['company'].value
                             olo = olo.encode ('utf-8')
                             try :
                                 olo = self.db.org_location.lookup (olo)
                             except KeyError :
                                 olo = None
                         if 'department' in luser :
-                            dep = luser ['department']
+                            dep = luser ['department'].value
                             dep = dep.encode ('utf-8')
                             try :
                                 dep = self.db.department.lookup (dep)
@@ -1117,7 +1138,7 @@ class LDAP_Roundup_Sync (Log) :
                 p, s = ldn
             if p not in luser :
                 ins = cs [0]
-                if not s and not self.is_single_value (ct) :
+                if not s and not self.is_single_value (p) :
                     ins = cs
                 self.log.info \
                     ("%s: Inserting: %s (%s)" % (user.username, p, ins))
@@ -1125,7 +1146,7 @@ class LDAP_Roundup_Sync (Log) :
             else :
                 ldattr = luser [p][0]
                 ins    = cs [0]
-                if self.is_single_value (ct) and len (luser [p]) != 1 :
+                if self.is_single_value (p) and len (luser [p]) != 1 :
                     self.log.error \
                         ("%s: invalid length: %s" % (user.username, p))
                 if not s and not self.is_single_value (ct) :
@@ -1133,8 +1154,8 @@ class LDAP_Roundup_Sync (Log) :
                     ins    = cs
                 if ldattr != ins and [ldattr] != ins :
                     self.log.info \
-                        ( "%s:  Updating: %s/%s %s/%s"
-                        % (user.username, ct, p, ins, ldattr)
+                        ( "%s:  Updating: %s -> %s [%s -> %s]"
+                        % (user.username, ct, p, ldattr, ins)
                         )
                     modlist.append ((ldap3.MODIFY_REPLACE, p, ins))
             if s :
@@ -1148,8 +1169,8 @@ class LDAP_Roundup_Sync (Log) :
                 else :
                     if luser [s] != cs [1:] :
                         self.log.info \
-                            ( "%s:  Updating: %s/%s %s/%s"
-                            % (user.username, ct, s, cs [1:], ldattr)
+                            ( "%s:  Updating: %s -> %s [%s -> %s]"
+                            % (user.username, ct, s, ldattr, cs [1:])
                             )
                         modlist.append ((ldap3.MODIFY_REPLACE, s, cs [1:]))
         for ct in self.attr_map ['user_contact'] :
@@ -1223,7 +1244,7 @@ class LDAP_Roundup_Sync (Log) :
         umap = self.attr_map ['user']
         modlist = []
         for rk in sorted (umap) :
-            lk, change, from_ldap, empty, use_ruser = umap [rk]
+            lk, change, from_ldap, empty, use_ruser, cronly = umap [rk]
             curuser = r_user if use_ruser else user
             rupattr = curuser [rk]
             if rupattr and callable (change) :
@@ -1254,8 +1275,8 @@ class LDAP_Roundup_Sync (Log) :
                 if ldattr != rupattr :
                     if change :
                         self.log.info \
-                            ( "%s:  Updating: %s/%s >%s/%s<"
-                            % (user.username, rk, lk, prupattr, pldattr)
+                            ( "%s:  Updating: %s -> %s [%s -> %s]"
+                            % (user.username, rk, lk, pldattr, prupattr)
                             )
                         op = ldap3.MODIFY_REPLACE
                         if rupattr is None :
@@ -1326,13 +1347,13 @@ class LDAP_Roundup_Sync (Log) :
                         chg = method (r_user, udprop, prop, lk, ldattr)
                         if chg :
                             self.log.info \
-                                ( "%s:  Updating: %s.%s/%s >%s/%s<"
+                                ( "%s:  Updating: %s.%s -> %s [%s -> %s]"
                                 % ( user.username
                                   , udprop
                                   , prop
                                   , lk
-                                  , chg [2]
                                   , ldattr
+                                  , chg [2]
                                   )
                                 )
                             modlist.append (chg)

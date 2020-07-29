@@ -123,9 +123,6 @@ def new_user (db, cl, nodeid, new_values) :
             valid = db.user_status.filter (None, dict (name = 'valid')) [0]
         if 'status' not in new_values :
             new_values ['status'] = valid
-        if not is_valid_user_status (db, new_values) :
-            return
-        status = new_values ['status']
     common.require_attributes \
         ( _
         , cl
