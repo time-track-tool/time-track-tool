@@ -150,9 +150,6 @@ class LDAP_Roundup_Sync (Log) :
 
     page_size     = 50
 
-    single_ldap_attributes = dict.fromkeys \
-        (('email', 'telephonenumber'))
-    
     def __init__ \
         (self, db, update_roundup = None, update_ldap = None, verbose = 0) :
         self.db             = db
@@ -213,6 +210,7 @@ class LDAP_Roundup_Sync (Log) :
         self.log.debug (datetime.now ().strftime ('%Y-%m-%d %H:%M:%S: TLS'))
         self.ldcon.bind      ()
         self.log.debug (datetime.now ().strftime ('%Y-%m-%d %H:%M:%S: Bind'))
+        self.schema = self.server.schema
 
         self.valid_stati     = []
         self.status_obsolete = db.user_status.lookup ('obsolete')
@@ -529,25 +527,26 @@ class LDAP_Roundup_Sync (Log) :
         if self.contact_types :
             # On the right side we have a flag that tells us if users
             # that have a vie_user set should be synced *to* LDAP.
-            # The second item is a list of attributes in LDAP, if there
+            # Then a flag that tells us if we keep attributes that are
+            # not in LDAP, this is only done if there are only
+            # single-valued attributes in LDAP, it's a config error if
+            # the flag is set and the following list contains
+            # multi-valued attributes.
+            # The third item is a list of attributes in LDAP, if there
             # are two, the first one is a single-value attribute and the
             # second is a multi-value attribute that takes additional
             # values from roundup.
             attr_map ['user_contact'] = \
                 { 'Email'          :
-                  [False, ('mail',)]
+                  [False, False, ('mail',)]
                 , 'internal Phone' :
-                  [True,  ('otherTelephone',)]
+                  [True,  False, ('otherTelephone',)]
                 , 'external Phone' :
-                  [True,  ('telephoneNumber',)]
+                  [True,  False, ('telephoneNumber',)]
                 , 'mobile Phone'   :
-                  [False, ('mobile', 'otherMobile')]
+                  [False, False, ('mobile', 'otherMobile')]
                 , 'Mobile short'   :
-                  [False, ('pager',  'otherPager')]
-        #       , 'external Phone' :
-        #         [False, ('telephoneNumber', 'otherTelephone')]
-        #       , 'private Phone'  :
-        #         [False, ('homePhone', 'otherHomePhone')]
+                  [False, False, ('pager',  'otherPager')]
                 }
         else :
             attr_u ['address'] = \
@@ -591,6 +590,10 @@ class LDAP_Roundup_Sync (Log) :
         # end def look
         return look
     # end def cls_lookup
+
+    def is_single_value (self, ldap_attr_name) :
+        return self.schema.attribute_types [ldap_attr_name].single_value
+    # end def is_single_value
 
     def member_status_id (self, dn) :
         """ Check if the given dn (which must be a person dn) is a
@@ -830,12 +833,21 @@ class LDAP_Roundup_Sync (Log) :
         found = {}
         new_contacts = []
         for type in self.attr_map ['user_contact'] :
-            write_to_ldap, lds = self.attr_map ['user_contact'][type]
+            write_to_ldap, keep, lds = self.attr_map ['user_contact'][type]
+            # Do not update local user with remote contact data
+            if user.vie_user_ml and write_to_ldap :
+                continue
             tid = self.db.uc_type.lookup (type)
             order = 1
-            for ld in lds :
+            for k, ld in enumerate (lds) :
                 if ld not in luser :
                     continue
+                if self.is_single_value (ld) :
+                    if k == len (lds) - 1  and len (lds) > 1 :
+                        self.log.warn \
+                            ('Single-valued attribute is last: %s' % ld)
+                elif k < len (lds) - 1 :
+                    self.log.warn ('Multi-valued attribute is not last: %s' % ld)
                 for ldit in luser [ld] :
                     key = (type, ldit)
                     if key in oldmap :
@@ -862,19 +874,51 @@ class LDAP_Roundup_Sync (Log) :
                         new_contacts.append (id)
                         changed = True
                     order += 1
-        # special case of emails: we don't have "other" attributes
-        # so roundup potentially has more emails. We do not preserve
-        # emails in roundup more than the one in LDAP.
-        #email = self.db.uc_type.lookup ('Email')
-        #order = 2
-        #for k, n in sorted (oldmap.items (), key = lambda x : x [1].order) :
-        #    if n.contact_type == email :
-        #        if n.order != order and self.update_roundup :
-        #            self.db.user_contact.set (n.id, order = order)
-        #            changed = True
-        #        order += 1
-        #        new_contacts.append (n.id)
-        #        del oldmap [k]
+        # This used to be a special hard-coded behaviour for emails so
+        # that emails not found in LDAP were kept in roundup. This is due
+        # to the fact that Active directory has only *one* single-valued
+        # attribute for emails.
+        order_by_ct = {}
+        for k, n in sorted (oldmap.items (), key = lambda x : x [1].order) :
+            # Get the contact_type name and look up the ldap attrs
+            # Only if keep is set *and* all the attributes are
+            # single-valued do we continue
+            ctname = ctypes [n.contact_type]
+            # Do not touch non-synced user_contact types
+            if ctname not in self.attr_map ['user_contact'] :
+                new_contacts.append (n.id)
+                del oldmap [k]
+                continue
+            write_to_ldap, keep, lds = self.attr_map ['user_contact'][ctname]
+            if user.vie_user_ml and write_to_ldap :
+                continue
+            if not keep :
+                continue
+            is_single = True
+            for ld in lds :
+                if not self.is_single_value (ld) :
+                    # This is a config error. Seems LDAP has changed an
+                    # attribute to multi-valued or programmer error.
+                    self.log.warn \
+                        ("User contact sync %s with keep set has multi-valued "
+                         "attribute %s"
+                        % (ctname, ld)
+                        )
+                    # Correct config to avoid multiple warnings
+                    self.attr_map ['user_contact'][ctname][1] = False
+                    is_single = False
+                    break
+            if not is_single :
+                continue
+            if n.contact_type not in order_by_ct :
+                order_by_ct [n.contact_type] = 2
+            if n.order != order_by_ct [n.contact_type] and self.update_roundup :
+                order = order_by_ct [n.contact_type]
+                self.db.user_contact.set (n.id, order = order)
+                changed = True
+            order_by_ct [n.contact_type] += 1
+            new_contacts.append (n.id)
+            del oldmap [k]
         if self.update_roundup :
             for n in oldmap.itervalues () :
                 self.db.user_contact.retire (n.id)
@@ -1057,7 +1101,7 @@ class LDAP_Roundup_Sync (Log) :
             cs = contacts [ct]
             if ct not in self.attr_map ['user_contact'] :
                 continue
-            write_to_ldap, ldn = self.attr_map ['user_contact'][ct]
+            write_to_ldap, keep, ldn = self.attr_map ['user_contact'][ct]
             # Only write if allowed
             if not write_to_ldap :
                 continue
@@ -1073,18 +1117,20 @@ class LDAP_Roundup_Sync (Log) :
                 p, s = ldn
             if p not in luser :
                 ins = cs [0]
-                if not s and ct.lower () not in self.single_ldap_attributes :
+                if not s and not self.is_single_value (ct) :
                     ins = cs
                 self.log.info \
                     ("%s: Inserting: %s (%s)" % (user.username, p, ins))
                 modlist.append ((ldap3.MODIFY_ADD, p, ins))
-            elif len (luser [p]) != 1 :
-                self.log.error ("%s: invalid length: %s" % (user.username, p))
             else :
                 ldattr = luser [p][0]
-                ins = cs [0]
-                if not s and ct.lower () not in self.single_ldap_attributes :
-                    ins = cs
+                ins    = cs [0]
+                if self.is_single_value (ct) and len (luser [p]) != 1 :
+                    self.log.error \
+                        ("%s: invalid length: %s" % (user.username, p))
+                if not s and not self.is_single_value (ct) :
+                    ldattr = luser [p]
+                    ins    = cs
                 if ldattr != ins and [ldattr] != ins :
                     self.log.info \
                         ( "%s:  Updating: %s/%s %s/%s"
