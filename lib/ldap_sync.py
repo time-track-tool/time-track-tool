@@ -437,7 +437,7 @@ class LDAP_Roundup_Sync (Log) :
                 , False
                 , True
                 , False
-                , False
+                , True
                 )
         if 'position_text' in props and 'position_text' not in dontsync :
             # We sync that field *to* ldap but not *from* ldap.
@@ -448,7 +448,7 @@ class LDAP_Roundup_Sync (Log) :
                 , False
                 , True
                 , False
-                , False
+                , True
                 )
         if  (   'realname' in props
             and 'realname' not in dontsync
@@ -467,11 +467,11 @@ class LDAP_Roundup_Sync (Log) :
             attr_u ['room'] = \
                 ( 'physicalDeliveryOfficeName'
                 , self.get_name
-                , None # was: self.cls_lookup (self.db.room)
+                , self.cls_lookup (self.db.room)
                 , False
                 , True
-                , False
-                , False
+                , not self.update_ldap
+                , True
                 )
         if 'substitute' in props and 'substitute' not in dontsync :
             attr_u ['substitute'] = \
@@ -481,7 +481,7 @@ class LDAP_Roundup_Sync (Log) :
                 , False
                 , True
                 , not self.update_ldap
-                , False
+                , True
                 )
         if 'supervisor' in props and 'supervisor' not in dontsync :
             attr_u ['supervisor'] = \
@@ -491,7 +491,7 @@ class LDAP_Roundup_Sync (Log) :
                 , False
                 , True
                 , not self.update_ldap
-                , False
+                , True
                 )
         if 'guid' in props and 'guid' not in dontsync :
             attr_u ['guid'] = \
@@ -1268,18 +1268,21 @@ class LDAP_Roundup_Sync (Log) :
         if user.id != r_user.id :
             if self.get_dynamic_user (user.id) :
                 self.log.error \
-                    ( "User %s has a vie_user_ml link and a dynamic user record"
+                    ( "ERROR: User %s has a vie_user_ml link "
+                      "and a dynamic user record"
                     % user.username
                     )
-                dd = {}
-                if user.firstname != r_user.firstname :
-                    dd ['firstname'] = r_user.firstname
-                if user.lastname != r_user.lastname :
-                    dd ['lastname'] = r_user.lastname
-                if dd :
-                    self.log.debug \
-                        ("Set vie_user: %s: %s" % (user.username, dd))
-                    db.user.set (user.id, **dd)
+            dd = {}
+            if user.firstname != r_user.firstname :
+                dd ['firstname'] = r_user.firstname
+            if user.lastname != r_user.lastname :
+                dd ['lastname'] = r_user.lastname
+            if user.pictures != r_user.pictures :
+                dd ['pictures'] = r_user.pictures
+            if dd :
+                self.log.debug \
+                    ("Set vie_user: %s: %s" % (user.username, dd))
+                self.db.user.set (user.id, **dd)
         for rk in sorted (umap) :
             lk, change, from_ldap, empty, use_ruser, crall, ul = umap [rk]
             curuser = r_user if use_ruser else user
@@ -1451,11 +1454,11 @@ class LDAP_Roundup_Sync (Log) :
                 # FIXME: Not needed in python3
                 if isinstance (val, str) :
                     val = val.decode ('utf-8')
-                if node [linkprop] != ldattr :
+                if val != ldattr :
                     if not ldattr :
-                        return (ldap3.MODIFY_ADD, lk, node [linkprop])
+                        return (ldap3.MODIFY_ADD, lk, val)
                     else :
-                        return (ldap3.MODIFY_REPLACE, lk, node [linkprop])
+                        return (ldap3.MODIFY_REPLACE, lk, val)
         if is_empty and ldattr != '' :
             if ldattr is None :
                 return None
