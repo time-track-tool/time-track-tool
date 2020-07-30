@@ -1,0 +1,42 @@
+#!/usr/bin/python
+
+# Lift data for new ldap sync
+
+from __future__ import print_function
+import sys
+import os
+from roundup           import instance
+
+dir     = os.getcwd ()
+tracker = instance.open (dir)
+db      = tracker.open ('admin')
+
+changed = False
+va = db.user_status.getnode ('1')
+assert va.name == 'valid-ad'
+if not va.ldap_prio :
+    db.user_status.set ('1', ldap_prio = 1)
+    print ("user_status.set ('1', ldap_prio = 1)")
+    changed = True
+sa = db.user_status.getnode ('6')
+assert sa.name == 'system-ad'
+if not sa.ldap_prio :
+    db.user_status.set ('6', ldap_prio = 2)
+    print ("user_status.set ('6', ldap_prio = 2)")
+    changed = True
+vap = db.user_status.getnode ('8')
+assert vap.name == 'valid-ad-nopermission'
+d = {}
+if not vap.ldap_prio :
+    d ['ldap_prio'] = 10
+if not vap.ldap_group :
+    d ['ldap_group'] = 's_or_ad-personal-user'
+
+if d :
+    db.user_status.set ('8', **d)
+    print ("user_status.set ('8', **%s)" % str (d))
+    changed = True
+
+if changed :
+    db.commit ()
+
