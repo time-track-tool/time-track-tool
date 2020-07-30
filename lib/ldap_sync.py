@@ -252,7 +252,17 @@ class LDAP_Roundup_Sync (Log) :
             if the 'group_external' flag in org_location exists and is set.
         """
         assert attr == 'realname'
-        rn = user.realname
+        # Don't asume we have a realname. Some users don't.
+        rn = ''
+        if user.firstname and user.lastname :
+            rn = ' '.join ((user.firstname, user.lastname))
+        elif user.firstname :
+            rn = user.firstname
+        elif user.lastname :
+            rn = user.lastname
+        else :
+            rn = user.realname
+        assert (rn)
         dyn = self.get_dynamic_user (user.id)
         if dyn :
             olo = self.db.org_location.getnode (dyn.org_location)
