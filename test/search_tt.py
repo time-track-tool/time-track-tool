@@ -39,7 +39,10 @@ properties = \
         ]
       )
     , ( 'auto_wp'
-      , [ ( 'contract_type'
+      , [ ( 'all_in'
+          , ['admin', 'hr']
+          )
+        , ( 'contract_type'
           , ['admin', 'hr']
           )
         , ( 'duration'

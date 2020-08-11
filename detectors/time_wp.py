@@ -232,7 +232,6 @@ def wp_check_auto_wp (db, cl, nodeid, new_values) :
         end = cl.get (nodeid, 'time_end')
     assert len (bookers) == 1
     booker = bookers [0]
-    olo    = auto_wp.org_location
     freeze = freeze_date (db, booker)
     if freeze :
         if start < freeze and 'time_start' in new_values :
@@ -245,7 +244,7 @@ def wp_check_auto_wp (db, cl, nodeid, new_values) :
         raise Reject (_ ("Invalid change of start/end: no dyn. user"))
     if not dyn :
         return
-    if not lib_auto_wp.is_correct_dyn (dyn, olo) :
+    if not lib_auto_wp.is_correct_dyn (dyn, auto_wp) :
         raise Reject \
             (_ ("Invalid change of start: Invalid dyn. user"))
     # loop backwards through dyns
@@ -255,7 +254,7 @@ def wp_check_auto_wp (db, cl, nodeid, new_values) :
         while prev.valid_from > start :
             p = user_dynamic.prev_user_dynamic (db, prev)
             if  (  p.valid_to != prev.valid_from
-                or not lib_auto_wp.is_correct_dyn (p, olo)
+                or not lib_auto_wp.is_correct_dyn (p, auto_wp)
                 ) :
                 raise Reject ("Invalid change of start: Invalid dyn. user")
             prev = p
@@ -269,7 +268,7 @@ def wp_check_auto_wp (db, cl, nodeid, new_values) :
             if not wps :
                 raise Reject (_ ("Invalid change of start: No prev. WP"))
             wp = db.time_wp.getnode (wps [0])
-            if wp.valid_to != start :
+            if wp.time_end != start :
                 raise Reject (_ ("Invalid change of start: Invalid prev. WP"))
     # loop forward through dyns
     if 'time_end' in new_values :
@@ -282,7 +281,7 @@ def wp_check_auto_wp (db, cl, nodeid, new_values) :
                 break
             n  = user_dynamic.next_user_dynamic (db, next)
             if  (  n.valid_from != next.valid_to
-                or not lib_auto_wp.is_correct_dyn (n, olo)
+                or not lib_auto_wp.is_correct_dyn (n, auto_wp)
                 ) :
                 raise Reject ("Invalid change of end: Invalid dyn. user")
             next = n
@@ -295,7 +294,7 @@ def wp_check_auto_wp (db, cl, nodeid, new_values) :
             if not wps :
                 raise Reject (_ ("Invalid change of end: No next WP"))
             wp = db.time_wp.getnode (wps [0])
-            if wp.valid_from != end :
+            if wp.time_start != end :
                 raise Reject (_ ("Invalid change of end: Invalid next WP"))
 # end def wp_check_auto_wp
 

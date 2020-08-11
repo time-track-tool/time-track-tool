@@ -19,7 +19,8 @@ properties = \
         ]
       )
     , ( 'auto_wp'
-      , [ 'contract_type'
+      , [ 'all_in'
+        , 'contract_type'
         , 'duration'
         , 'durations_allowed'
         , 'is_valid'

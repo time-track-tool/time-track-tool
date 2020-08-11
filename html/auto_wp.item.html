@@ -60,6 +60,10 @@
       <td tal:content="structure python:context.durations_allowed.field ()"/>
      </tr>
      <tr>
+      <th tal:content="structure python:utils.fieldname (classname, 'all_in')"/>
+      <td tal:content="structure python:context.all_in.field ()"/>
+     </tr>
+     <tr>
       <th tal:content="structure python:utils.fieldname
               (classname, 'is_valid')"/>
       <td tal:content="structure python:context.is_valid.field ()"/>

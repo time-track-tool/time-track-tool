@@ -309,6 +309,8 @@ _helptext          = \
       [""'''Other aliases this %(Classname)s maps to''']
     , ""'alias_to_user'               :
       [""'''List of users this %(Classname)s maps to''']
+    , ""'auto_wp++all_in'             :
+      [""'''If selected, create Automatic Workpackages also for all-in users''']
     , ""'all_in'                      :
       [""'''If selected, the user has an all-inclusive work time contract''']
     , ""'alarm++val'                  :

@@ -2667,6 +2667,9 @@ msgstr "Project type"
 msgid "all_in"
 msgstr "All in"
 
+msgid "auto_wp++all_in"
+msgstr "All in"
+
 msgid "show_empty"
 msgstr "show empty"
 

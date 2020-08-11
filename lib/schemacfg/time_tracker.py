@@ -329,6 +329,7 @@ def init \
         , duration              = Interval  ()
         , is_valid              = Boolean   ()
         , durations_allowed     = Boolean   ()
+        , all_in                = Boolean   ()
         )
     auto_wp.setlabelprop ("name")
 

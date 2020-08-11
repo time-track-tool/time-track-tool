@@ -875,6 +875,7 @@ def auto_wp_magic (db, cl, nodeid, old_values) :
         , 'org_location'
         , 'valid_from'
         , 'valid_to'
+        , 'all_in'
         )
     dyn = cl.getnode (nodeid)
     # Only check if do_auto_wp is set and some of the relevant
@@ -929,6 +930,8 @@ def auto_wp_check (db, cl, nodeid, new_values) :
             new_values ['durations_allowed'] = False
         if 'is_valid' not in new_values :
             new_values ['is_valid'] = False
+        if 'all_in' not in new_values :
+            new_values ['all_in'] = True
 # end def auto_wp_check
 
 def auto_wp_modify (db, cl, nodeid, old_values) :

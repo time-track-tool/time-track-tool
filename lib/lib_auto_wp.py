@@ -6,11 +6,15 @@ from roundup.date import Date
 from freeze       import freeze_date
 from common       import pretty_range, ymd
 
-def is_correct_dyn (dyn, org_location) :
+def is_correct_dyn (dyn, auto_wp) :
     """ Check that the given dynamic user record matches this
         org_location and has do_auto_wp turned on.
     """
-    if dyn.org_location != org_location :
+    if dyn.org_location != auto_wp.org_location :
+        return False
+    if dyn.contract_type != auto_wp.contract_type :
+        return False
+    if not auto_wp.all_in and dyn.all_in :
         return False
     return dyn.do_auto_wp
 # end def is_correct_dyn
@@ -56,7 +60,7 @@ def check_auto_wp (db, auto_wp_id, userid) :
     if not auto_wp.is_valid :
         dyn = None
     # Find first dyn with do_auto_wp and org_location properly set
-    while dyn and not is_correct_dyn (dyn, auto_wp.org_location) :
+    while dyn and not is_correct_dyn (dyn, auto_wp) :
         dyn = next_user_dynamic (db, dyn, use_ct = True)
     # Find all wps auto-created from this auto_wp after start.
     # Note that all auto wps have a start time. Only the very first wp
@@ -91,7 +95,7 @@ def check_auto_wp (db, auto_wp_id, userid) :
         while dyn and dyn.valid_to :
             n = next_user_dynamic (db, dyn, use_ct = True)
             if  (   n
-                and is_correct_dyn (n, auto_wp.org_location)
+                and is_correct_dyn (n, auto_wp)
                 and n.valid_from == dyn.valid_to
                 ) :
                 dyn = n
@@ -207,7 +211,7 @@ def check_auto_wp (db, auto_wp_id, userid) :
             wpid = db.time_wp.create (**d)
         od  = dyn
         dyn = next_user_dynamic (db, dyn, use_ct = True)
-        while dyn and not is_correct_dyn (dyn, auto_wp.org_location) :
+        while dyn and not is_correct_dyn (dyn, auto_wp) :
             dyn = next_user_dynamic (db, dyn, use_ct = True)
         if not dyn :
             if not end_time :

@@ -446,6 +446,15 @@ class _Test_Case_Summary (_Test_Case) :
             , do_leave_process    = True
             , vac_aliq            = '1'
             )
+        self.olo2 = self.db.org_location.create \
+            ( name                = 'Another Org, Vienna'
+            , location            = self.loc
+            , organisation        = self.org
+            , vacation_legal_year = False
+            , vacation_yearly     = 25
+            , do_leave_process    = True
+            , vac_aliq            = '1'
+            )
         self.dep = self.db.department.create \
             ( name       = 'Software Development'
             , valid_from = date.Date ('2004-01-01')
@@ -3703,6 +3712,71 @@ class Test_Case_Timetracker (_Test_Case_Summary, unittest.TestCase) :
         self.assertEqual (expected, actual)
 
         self.db.user_dynamic.set ('1', do_auto_wp = False)
+        expected = \
+            [ ('1',  n, date.Date ('2013-02-22'), date.Date ('2013-02-27'))
+            , ('2',  n, date.Date ('2013-02-22'), date.Date ('2013-02-27'))
+            , ('3', n2, date.Date ('2013-02-22'), date.Date ('2013-02-24'))
+            ]
+        actual = []
+        wps = self.db.time_wp.filter \
+            (None, dict (bookers = '3'), sort = ('+', 'auto_wp.id'))
+        for w in wps :
+            wp = self.db.time_wp.getnode (w)
+            actual.append ((wp.auto_wp, wp.name, wp.time_start, wp.time_end))
+        self.assertEqual (expected, actual)
+
+        # No change if we set all_in on the dyn user
+        self.assertEqual (self.db.user_dynamic.get ('5', 'all_in'), False)
+        self.db.user_dynamic.set ('5', all_in = True, max_flexitime = 5)
+        actual = []
+        wps = self.db.time_wp.filter \
+            (None, dict (bookers = '3'), sort = ('+', 'auto_wp.id'))
+        for w in wps :
+            wp = self.db.time_wp.getnode (w)
+            actual.append ((wp.auto_wp, wp.name, wp.time_start, wp.time_end))
+        self.assertEqual (expected, actual)
+
+        # But now if we set all_in = False on the auto_wp:
+        self.db.auto_wp.set ('1', all_in = False)
+        expected = \
+            [ ('2',  n, date.Date ('2013-02-22'), date.Date ('2013-02-27'))
+            , ('3', n2, date.Date ('2013-02-22'), date.Date ('2013-02-24'))
+            ]
+        actual = []
+        wps = self.db.time_wp.filter \
+            (None, dict (bookers = '3'), sort = ('+', 'auto_wp.id'))
+        for w in wps :
+            wp = self.db.time_wp.getnode (w)
+            actual.append ((wp.auto_wp, wp.name, wp.time_start, wp.time_end))
+        self.assertEqual (expected, actual)
+
+        # And set all_in = False in the dyn user:
+        self.db.user_dynamic.set ('5', all_in = False)
+        expected = \
+            [ ('1',  n, date.Date ('2013-02-22'), date.Date ('2013-02-27'))
+            , ('2',  n, date.Date ('2013-02-22'), date.Date ('2013-02-27'))
+            , ('3', n2, date.Date ('2013-02-22'), date.Date ('2013-02-24'))
+            ]
+        actual = []
+        wps = self.db.time_wp.filter \
+            (None, dict (bookers = '3'), sort = ('+', 'auto_wp.id'))
+        for w in wps :
+            wp = self.db.time_wp.getnode (w)
+            actual.append ((wp.auto_wp, wp.name, wp.time_start, wp.time_end))
+        self.assertEqual (expected, actual)
+
+        # Change org_location
+        self.db.user_dynamic.set ('5', org_location = self.olo2)
+        expected = []
+        actual = []
+        wps = self.db.time_wp.filter \
+            (None, dict (bookers = '3'), sort = ('+', 'auto_wp.id'))
+        for w in wps :
+            wp = self.db.time_wp.getnode (w)
+            actual.append ((wp.auto_wp, wp.name, wp.time_start, wp.time_end))
+        self.assertEqual (expected, actual)
+
+        self.db.user_dynamic.set ('5', org_location = self.olo)
         expected = \
             [ ('1',  n, date.Date ('2013-02-22'), date.Date ('2013-02-27'))
             , ('2',  n, date.Date ('2013-02-22'), date.Date ('2013-02-27'))
