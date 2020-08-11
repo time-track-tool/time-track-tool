@@ -838,18 +838,30 @@ def find_time_records (db, cl, nodeid, new_values) :
                 db.time_record.retire (id)
 # end def find_time_records
 
-def auto_wp_loop (db, dyn) :
+def _auto_wp_loop (db, d, uid) :
+    auto_wp = db.auto_wp.filter (None, d)
+    for aid in auto_wp :
+        lib_auto_wp.check_auto_wp (db, aid, uid)
+# end _auto_wp_loop
+
+def auto_wp_loop (db, dyn, old_olo = None, old_ct = None) :
     """ Find auto_wps for this setting and call updater
     """
-    ct  = dyn.contract_type or '-1'
+    # First handle *old* auto_wps (close wps)
+    if old_olo or old_ct :
+        d = dict \
+            ( contract_type = old_ct or dyn.contract_type or '-1'
+            , is_valid      = True
+            , org_location  = old_olo or dyn.org_location
+            )
+        _auto_wp_loop (db, d, dyn.user)
+    # Then handle new ones
     d   = dict \
-        ( contract_type = ct
+        ( contract_type = dyn.contract_type or '-1'
         , is_valid      = True
         , org_location  = dyn.org_location
         )
-    auto_wp = db.auto_wp.filter (None, d)
-    for aid in auto_wp :
-        lib_auto_wp.check_auto_wp (db, aid, dyn.user)
+    _auto_wp_loop (db, d, dyn.user)
 # end def auto_wp_loop
 
 def auto_wp_magic (db, cl, nodeid, old_values) :
@@ -868,6 +880,16 @@ def auto_wp_magic (db, cl, nodeid, old_values) :
     # Only check if do_auto_wp is set and some of the relevant
     # attributes changed *or* the do_auto_wp attribute changed
     if old_values :
+        if 'contract_type' in old_values or 'org_location' in old_values :
+            # Handle *old* values which change the used auto_wp first
+            if  (  dyn.org_location  != old_values ['org_location']
+                or dyn.contract_type != old_values ['contract_type']
+                ) :
+                auto_wp_loop \
+                    ( db, dyn
+                    , old_olo = old_values ['org_location']
+                    , old_ct  = old_values ['contract_type'] or '-1'
+                    )
         if dyn.do_auto_wp :
             for p in props :
                 if p in old_values and getattr (dyn, p) != old_values [p] :
