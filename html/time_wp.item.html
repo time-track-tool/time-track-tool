@@ -71,13 +71,17 @@
           ).formatlink()"/>
     </tr>
     <tr tal:condition="python: context.id and context.auto_wp">
-     <th tal:content="structure python:utils.fieldname (classname, 'auto_wp')"/>
-     <td tal:content="structure python:
-        utils.ExtProperty
-          ( utils
-          , context.auto_wp.name
-          , item=context.auto_wp
-          ).formatlink()"/>
+     <th tal:content="structure python:
+         utils.fieldname (classname, 'auto_wp')"/>
+     <td>
+      <span tal:content="structure python:
+         utils.ExtProperty
+           ( utils
+           , context.auto_wp.name
+           , item=context.auto_wp
+           ).formatlink()"/>
+      <span tal:content="python: '(auto_wp' + context.auto_wp.id + ')'"/>
+     </td>
     </tr>
     <tr>
      <th tal:content="structure python:utils.fieldname (classname, 'wp_no')"/>
