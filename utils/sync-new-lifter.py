@@ -37,6 +37,14 @@ if d :
     print ("user_status.set ('8', **%s)" % str (d))
     changed = True
 
+
+id = db.uc_type.lookup ('Email')
+email = db.uc_type.getnode (id)
+if email.is_email is None :
+    print ("Setting is_email flag for uc_type%s 'Email'" % id)
+    db.uc_type.set (id, is_email = True)
+    changed = True
+
 if changed :
     db.commit ()
 
