@@ -9,12 +9,14 @@ dir     = os.getcwd ()
 
 sys.path.insert (1, os.path.join (dir, 'lib'))
 import common
+import user_dynamic
 
 tracker = instance.open (dir)
 db      = tracker.open ('admin')
 
 # Date when changes will be effective
 due_date = '2020-09-01'
+dd       = date.Date (due_date)
 
 # Dict of (org_location, contract_type) with list of TCs
 # We need this for finding users and for adding end-date to WPs
@@ -134,7 +136,6 @@ for olo, ct in tc_dict :
     # Note that the contract type is '-1' for 'normal' users, so the
     # query will find dynamic user records with empty contract type for
     # those.
-    dd = date.Date (due_date)
     e  = common.pretty_range (date.Date (due_date) + common.day) + ',-'
     d  = dict \
         ( org_location  = olo
@@ -250,6 +251,46 @@ for olo, ct in tc_dict :
         sys.stdout.flush ()
         # Commit new dyn. user record for each user
         db.commit()
+
+# Loop over all obsolete users, find WPs where a user is the only one
+# allowed booking and set these WPs to the end-date of the last dyn.
+# user record for that user
+obs = db.user_status.lookup ('obsolete')
+for uid in db.user.filter (None, dict (status = obs)) :
+    dyn  = user_dynamic.last_user_dynamic (db, uid)
+    if not dyn :
+        print ("Obsolete user%s has no dynamic user data" % uid)
+        continue
+    if dyn.valid_to is None :
+        print ("Obsolete user%s has a valid dynamic user record!" % uid)
+        continue
+    user = db.user.getnode (uid)
+    snam = user.username.split ('@', 1) [0]
+    # Find WPs where this user is on the bookers list and which has no
+    # end-date set. Note that we do not attempt to set the end-date to
+    # the correct valid_to of the dynamic user if there already is an
+    # end-date -- this would change the end-date of some project WPs
+    # too.
+    wps = db.time_wp.filter (None, dict (bookers  = uid, time_end = '-'))
+    for wpid in wps :
+        wp = db.time_wp.getnode (wpid)
+        if len (wp.bookers) > 1 :
+            continue
+        tc = db.time_project.getnode (wp.project)
+        t  = 'Auto-closed because last admitted user is obsolete'
+        d  = dict (time_end = dyn.valid_to, description = t)
+        # Do not allow that wp.name is username, we need that
+        # name for the auto-generated WPs, should one of these obsolete
+        # users be resurrected this will make problems
+        if wp.name == snam :
+            d ['name'] = wp.name + ' obsolete'
+        print \
+            ( "Set time_wp%s (%s.%s): %s"
+            % (wp.id, tc.name, wp.name, d)
+            )
+        db.time_wp.set (wp.id, **d)
+    # Commit all WPs for this user
+    db.commit()
 
 # Just to be safe; should already be committed at this point
 db.commit()
