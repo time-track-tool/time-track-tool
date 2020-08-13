@@ -123,6 +123,8 @@ with open (sys.argv [1], 'r') as f :
         db.auto_wp.create (** d)
         print ("Created: %s" % str (d))
         sys.stdout.flush ()
+# Commit after creating Auto-WPs
+db.commit()
 
 # Now loop over all olo/ct -> tc combinations
 for olo, ct in tc_dict :
@@ -191,12 +193,16 @@ for olo, ct in tc_dict :
                         % (wp.id, tc.name, wp.name, d)
                         )
                     db.time_wp.set (wp.id, **d)
+        # Commit changes to old WPs
+        db.commit()
 
         # Now add dyn user with do_auto_wp flag
         # If the dyn starts on due_date we modify the record in-place
         if dyn.valid_from == dd :
-            print ("Setting user_dynamic%s do_auto_wp" % dyn.id)
-            db.user_dynamic.set (dyn.id, do_auto_wp = True)
+            # Only set flag if not already set
+            if not dyn.do_auto_wp :
+                print ("Setting user_dynamic%s do_auto_wp" % dyn.id)
+                db.user_dynamic.set (dyn.id, do_auto_wp = True)
         else :
             vy = dyn.vacation_yearly
             if not vy :
@@ -242,5 +248,8 @@ for olo, ct in tc_dict :
             dynid = db.user_dynamic.create (**d)
             dyn = db.user_dynamic.getnode (dynid)
         sys.stdout.flush ()
+        # Commit new dyn. user record for each user
+        db.commit()
 
+# Just to be safe; should already be committed at this point
 db.commit()
