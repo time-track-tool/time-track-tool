@@ -375,6 +375,25 @@ def check_department_len (db, cl, nodeid, new_values) :
             (_, new_values ['department_temp'], 'department_temp', 64)
 # end def check_department_len
 
+def vie_backlink_check (db, cl, nodeid, new_values) :
+    if 'vie_user_bl_override' not in new_values :
+        return
+    # Not allowed on creation!
+    if not nodeid and new_values ['vie_user_bl_override'] :
+        raise Reject \
+            (_ ("Not allowed on creation: %s") % _ ('vie_user_bl_override'))
+    if not nodeid :
+        return
+    allowed_ids = cl.get (nodeid, 'vie_user_ml')
+    allowed_ids.append (nodeid)
+    blo = new_values ['vie_user_bl_override']
+    if blo and blo not in allowed_ids :
+        raise Reject \
+            (_ ('"%s" must match own ID or one in "%s"')
+            % (_ ('vie_user_bl_override'), _ ('vie_user_ml'))
+            )
+# end def vie_backlink_check
+
 def init (db) :
     global _
     _   = get_translation \
@@ -412,3 +431,6 @@ def init (db) :
     if 'department_temp' in db.user.properties :
         db.user.audit ("create", check_department_len)
         db.user.audit ("set",    check_department_len)
+    if 'vie_user_bl_override' in db.user.properties :
+        db.user.audit ("create", vie_backlink_check)
+        db.user.audit ("set",    vie_backlink_check)
