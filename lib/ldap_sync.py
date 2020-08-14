@@ -1454,14 +1454,24 @@ class LDAP_Roundup_Sync (Log) :
             or None if nothing to sync
         """
         dyn = self.get_dynamic_user (user.id)
+        now = Date ('.')
         is_empty = True
         if dyn :
+            is_current = \
+                (   dyn.valid_from <= now
+                and not dyn.valid_to or dyn.valid_to > now
+                )
             dynprop = dyn [udprop]
             if dynprop :
                 classname = self.db.user_dynamic.properties [udprop].classname
                 is_empty  = False
                 node      = self.db.getclass (classname).getnode (dynprop)
                 val       = node [linkprop]
+                # Special case: Add '*' in fron of organisation if dyn
+                # user record is not current.
+                if udprop == 'org_location' and linkprop == 'name' :
+                    if not is_current :
+                        val = '*' + val
                 # FIXME: Not needed in python3
                 if isinstance (val, str) :
                     val = val.decode ('utf-8')
