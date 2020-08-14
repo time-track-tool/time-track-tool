@@ -1242,16 +1242,26 @@ class LDAP_Roundup_Sync (Log) :
             self.log.info ("LDAP user not found:", user.username)
             # Might want to create user in LDAP
             return
+        for dn in self.dn_allowed :
+            if luser.dn.lower ().endswith (dn) :
+                break
+        else :
+            self.log.error \
+                ('User has no allowed dn, not syncing: %s' % luser.dn)
+            return
         r_user = user
         if user.vie_user_ml :
-            for dn in self.dn_allowed :
-                if luser.dn.lower ().endswith (dn) :
-                    break
-            else :
-                self.log.error \
-                    ('User has no allowed dn, not syncing: %s' % luser.dn)
-                return
-            if len (user.vie_user_ml) > 1 :
+            if user.vie_user_bl_override :
+                allowed = user.vie_user_ml
+                allowed.append (user.id)
+                if user.vie_user_bl_override not in allowed :
+                    self.log.error \
+                        ( "User %s: invalid user in backlink override: %s"
+                        % (user.username, user.vie_user_bl_override)
+                        )
+                    return
+                r_user = self.db.user.getnode (user.vie_user_bl_override)
+            elif len (user.vie_user_ml) > 1 :
                 self.log.error \
                     ( "More than one user links to user %s: %s"
                     % (user.username
@@ -1261,8 +1271,9 @@ class LDAP_Roundup_Sync (Log) :
                       )
                     )
                 return
-            assert len (user.vie_user_ml) == 1
-            r_user = self.db.user.getnode (user.vie_user_ml [0])
+            else :
+                assert len (user.vie_user_ml) == 1
+                r_user = self.db.user.getnode (user.vie_user_ml [0])
         assert (user.status in self.status_sync)
         if user.status == self.status_obsolete :
             if not self.is_obsolete (luser) :
