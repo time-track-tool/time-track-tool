@@ -171,14 +171,19 @@ class LDAP_Roundup_Sync (Log) :
             self.log.addHandler (handler)
 
         self.dn_allowed = {}
-        dn_allowed = getattr (self.cfg, 'LDAP_ALLOWED_DN_SUFFIX', None)
+        varname = 'allowed_dn_suffix_by_domain'
+        dn_allowed = getattr (self.cfg, 'LDAP_' + varname.upper (), None)
         if dn_allowed :
-            for k in dn_allowed.split (':') :
-                self.dn_allowed [k.lower ()] = True
+            for kv in dn_allowed.split (';') :
+                k, v = kv.split (':')
+                k = k.lower ()
+                if k not in self.dn_allowed :
+                    self.dn_allowed [k] = {}
+                self.dn_allowed [k][v] = True
         if not self.dn_allowed :
             self.log.error \
                 ('No allowed DN suffix configured for vie_user, '
-                 'use allowed_dn_suffix in [ldap] section of ext config'
+                 'use "%s" in [ldap] section of ext config' % varname
                 )
 
         self.log.debug (datetime.now ().strftime ('%Y-%m-%d %H:%M:%S: Init'))
@@ -1242,13 +1247,6 @@ class LDAP_Roundup_Sync (Log) :
             self.log.info ("LDAP user not found:", user.username)
             # Might want to create user in LDAP
             return
-        for dn in self.dn_allowed :
-            if luser.dn.lower ().endswith (dn) :
-                break
-        else :
-            self.log.error \
-                ('User has no allowed dn, not syncing: %s' % luser.dn)
-            return
         r_user = user
         if user.vie_user_ml :
             if user.vie_user_bl_override :
@@ -1274,6 +1272,14 @@ class LDAP_Roundup_Sync (Log) :
             else :
                 assert len (user.vie_user_ml) == 1
                 r_user = self.db.user.getnode (user.vie_user_ml [0])
+            dom = r_user.ad_domain
+            for dn in self.dn_allowed.get (dom, {}) :
+                if luser.dn.lower ().endswith (dn) :
+                    break
+            else :
+                self.log.error \
+                    ('User has no allowed dn, not syncing: %s' % luser.dn)
+                return
         assert (user.status in self.status_sync)
         if user.status == self.status_obsolete :
             if not self.is_obsolete (luser) :
