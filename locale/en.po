@@ -3385,10 +3385,10 @@ msgid "timing_info"
 msgstr ""
 
 msgid "vie_user"
-msgstr "TTTech internal user"
+msgstr "Internal user"
 
 msgid "vie_user_ml"
-msgstr "TTTech internal user back-multi-link"
+msgstr "Internal user back-multi-link"
 
 msgid "nickname"
 msgstr "Nickname"
