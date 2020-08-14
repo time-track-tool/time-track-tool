@@ -38,7 +38,7 @@ class LDAP_Group (object) :
         f = '(&(sAMAccountName=%s)(objectclass=group))' % name
         ldcon.search (base_dn, f)
         if not len (ldcon.entries) :
-            raise KeyError (groupname)
+            raise KeyError (name)
         assert len (ldcon.entries) == 1
         self.add_group (ldcon.entries [0].entry_dn)
     # end def __init__
