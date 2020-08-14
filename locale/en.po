@@ -3390,6 +3390,9 @@ msgstr "Internal user"
 msgid "vie_user_ml"
 msgstr "Internal user back-multi-link"
 
+msgid "vie_user_bl_override"
+msgstr "Internal user backlink override"
+
 msgid "nickname"
 msgstr "Nickname"
 

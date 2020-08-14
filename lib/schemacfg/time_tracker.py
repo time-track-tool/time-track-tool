@@ -542,6 +542,7 @@ def init \
                 , position_text          = String    ()
                 , vie_user               = Link
                   ("user", rev_multilink = 'vie_user_ml')
+                , vie_user_bl_override   = Link      ("user")
                 , sync_foreign_key       = String    ()
                 , department_temp        = String    ()
                 )
