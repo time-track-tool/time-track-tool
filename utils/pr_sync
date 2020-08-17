@@ -108,7 +108,7 @@ class PR_Sync (Requester) :
         if user ['username'] in ('admin', 'anonymous') :
             return True
         if not self.uvalid :
-            r = self.get ('user_status?name=valid-ad')
+            r = self.get ('user_status?name:=valid-ad')
             assert len (r ['data']['collection']) == 1
             self.uvalid = r ['data']['collection'][0]['id']
         return user ['status']['id'] == self.uvalid
