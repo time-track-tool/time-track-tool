@@ -45,6 +45,13 @@ if email.is_email is None :
     db.uc_type.set (id, is_email = True)
     changed = True
 
+for ctid in db.contract_type.getnodeids (retired = False) :
+    ct = db.contract_type.getnode (ctid)
+    if ct.group_external is None :
+        db.contract_type.set (ctid, group_external = False)
+        print ("Setting contract_type%s group_external = False" % ctid)
+        change = True
+
 if changed :
     db.commit ()
 

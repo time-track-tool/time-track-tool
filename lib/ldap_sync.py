@@ -254,7 +254,7 @@ class LDAP_Roundup_Sync (Log) :
     def get_cn (self, user, attr) :
         """ Get the common name of this user
             Note that this defaults to realname but will add ' (External)'
-            if the 'group_external' flag in org_location exists and is set.
+            if the 'group_external' flag in contract_type exists and is set.
         """
         assert attr == 'realname'
         # Don't asume we have a realname. Some users don't.
@@ -269,9 +269,9 @@ class LDAP_Roundup_Sync (Log) :
             rn = user.realname
         assert (rn)
         dyn = self.get_dynamic_user (user.id)
-        if dyn :
-            olo = self.db.org_location.getnode (dyn.org_location)
-            if olo.group_external :
+        if dyn and dyn.contract_type :
+            ct = self.db.contract_type.getnode (dyn.contract_type)
+            if ct.group_external :
                 rn = rn + ' (External)'
         return rn
     # end def get_cn

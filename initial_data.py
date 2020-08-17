@@ -285,24 +285,28 @@ if 'uc_type' in db.classes :
         , order        = 1
         , url_template = 'mailto:%(contact)s'
         , visible      = True
+        , is_email     = True
         )
     db.uc_type.create \
         ( name         = 'internal Phone'
         , description  = 'Internal Phone number'
         , order        = 2
         , visible      = True
+        , is_email     = False
         )
     db.uc_type.create \
         ( name         = 'mobile Phone'
         , description  = 'Mobile Phone number'
         , order        = 3
         , visible      = True
+        , is_email     = False
         )
     db.uc_type.create \
         ( name         = 'private Phone'
         , description  = 'Private Phone number'
         , order        = 4
         , visible      = False
+        , is_email     = False
         )
 
 # users
@@ -321,11 +325,14 @@ db.user.create \
     , roles    = "Anonymous"
     )
 if 'it_issue' in db.classes :
-    db.user.create \
+    d = dict \
         ( username = "helpdesk"
         , address  = db.config.ADMIN_EMAIL
         , status   = db.user_status.lookup ('system')
         )
+    if 'firstname' in db.user.properties :
+        d ['firstname'] = d ['lastname'] = 'helpdesk'
+    db.user.create (** d)
     if hasattr (db, 'sql') :
         db.sql ('create index _it_issue_status_idx on _it_issue (_status);')
         db.sql ('create index _it_issue_it_prio_idx on _it_issue (_it_prio);')

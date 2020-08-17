@@ -923,7 +923,8 @@ _helptext          = \
     , ""'gid'                         :
       [""'''Numeric group ID''']
     , ""'group_external'                         :
-      [""'''Mark yes, if this company isn't a member of our corporate
+      [""'''Mark yes, if this %(Classname)s is used for persons not a
+            member of this corporate
             group. A corporate group is a collection of parent and
             subsidiary corporations that function as a single economic
             entity through a common source of control.

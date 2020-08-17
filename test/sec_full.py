@@ -415,7 +415,7 @@ Role "user":
  User is allowed View on (View for "user": ('activity', 'actor', 'ad_domain', 'address', 'alternate_addresses', 'clearance_by', 'creation', 'creator', 'firstname', 'id', 'job_description', 'lastname', 'lunch_duration', 'lunch_start', 'nickname', 'pictures', 'position_text', 'queries', 'realname', 'room', 'sex', 'status', 'subst_active', 'substitute', 'supervisor', 'timezone', 'title', 'tt_lines', 'username') only)
  User is allowed View on (View for "user": ('activity', 'actor', 'address', 'alternate_addresses', 'creation', 'creator', 'id', 'queries', 'realname', 'status', 'timezone', 'username') only)
  User is allowed View on (View for "user": ('contacts',) only)
- User is allowed View on (View for "user": ('department_temp', 'timetracking_by', 'vie_user', 'vie_user_ml') only)
+ User is allowed View on (View for "user": ('department_temp', 'timetracking_by', 'vie_user', 'vie_user_bl_override', 'vie_user_ml') only)
  User is allowed View on (View for "user_dynamic": ('department', 'org_location') only)
  User is allowed View on file if file is linked from an item with View permission (View for "file" only)
  User is allowed View on issue if issue is non-confidential or user is on nosy list (View for "issue" only)

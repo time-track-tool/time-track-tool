@@ -264,7 +264,7 @@ Role "user":
  User is allowed Edit on file if file is linked from an item with Edit permission (Edit for "file" only)
  User is allowed View on (View for "user": ('activity', 'actor', 'ad_domain', 'address', 'alternate_addresses', 'clearance_by', 'creation', 'creator', 'firstname', 'job_description', 'lastname', 'id', 'lunch_duration', 'lunch_start', 'nickname', 'pictures', 'position_text', 'queries', 'realname', 'room', 'sex', 'status', 'subst_active', 'substitute', 'supervisor', 'timezone', 'title', 'username', 'tt_lines') only)
  User is allowed View on (View for "user": ('contacts',) only)
- User is allowed View on (View for "user": ('department_temp', 'timetracking_by', 'vie_user', 'vie_user_ml') only)
+ User is allowed View on (View for "user": ('department_temp', 'timetracking_by', 'vie_user', 'vie_user_bl_override', 'vie_user_ml') only)
  User is allowed View on (View for "user_dynamic": ('department', 'org_location') only)
  User is allowed View on file if file is linked from an item with View permission (View for "file" only)
  User is allowed View on msg if msg is linked from an item with View permission (View for "msg" only)
