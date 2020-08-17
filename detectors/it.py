@@ -278,6 +278,13 @@ def stay_closed (db, cl, nodeid, new_values) :
                     )
 # end def stay_closed
 
+def no_creation (db, cl, nodeid, new_values) :
+    """ No creation of new it_issue if a certain config item is set
+    """
+    if getattr (db.config.ext, 'MISC_PREVENT_IT_ISSUE_CREATION', False) :
+        raise Reject (_ ("Creation of new it_issue not allowed"))
+# end def no_creation
+
 def init (db) :
     if 'it_issue' not in db.classes :
         return
@@ -298,4 +305,5 @@ def init (db) :
     db.it_issue.audit ("create", check_title_regex, priority = 80)
     db.it_issue.audit ("set",    reopen_on_message)
     db.it_issue.audit ("set",    stay_closed, priority = 150)
+    db.it_issue.audit ("create", no_creation)
 # end def init
