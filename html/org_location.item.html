@@ -65,11 +65,6 @@
      <th tal:content="structure python:utils.fieldname (classname, 'phone')"/>
      <td tal:content="structure python:context.phone.field ()"/>
     </tr>
-    <tr tal:condition="python:'group_external' in bclass.properties">
-     <th tal:content="structure python:utils.fieldname
-         (classname, 'group_external')"/>
-     <td tal:content="structure python:context.group_external.field ()"/>
-    </tr>
     <tr tal:condition="python:'sap_lifnr' in bclass.properties">
      <th tal:content="structure python:utils.fieldname
          (classname, 'sap_lifnr')"/>
