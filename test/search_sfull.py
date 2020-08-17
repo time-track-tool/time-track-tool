@@ -181,6 +181,9 @@ properties = \
       , [ ( 'description'
           , ['admin', 'controlling', 'hr', 'hr-leave-approval', 'hr-vacation']
           )
+        , ( 'group_external'
+          , ['admin', 'controlling', 'hr', 'hr-leave-approval', 'hr-vacation']
+          )
         , ( 'name'
           , ['admin', 'controlling', 'hr', 'hr-leave-approval', 'hr-vacation']
           )
@@ -1070,9 +1073,6 @@ properties = \
           , ['admin', 'cc-permission', 'contact', 'controlling', 'doc_admin', 'facility', 'functional-role', 'hr', 'hr-leave-approval', 'hr-vacation', 'issue_admin', 'it', 'itview', 'msgedit', 'msgsync', 'office', 'organisation', 'procurement', 'project', 'project_view', 'sec-incident-nosy', 'sec-incident-responsible', 'summary_view', 'supportadmin', 'time-report', 'type', 'user']
           )
         , ( 'do_leave_process'
-          , ['admin', 'cc-permission', 'contact', 'controlling', 'doc_admin', 'facility', 'functional-role', 'hr', 'hr-leave-approval', 'hr-vacation', 'issue_admin', 'it', 'itview', 'msgedit', 'msgsync', 'office', 'organisation', 'procurement', 'project', 'project_view', 'sec-incident-nosy', 'sec-incident-responsible', 'summary_view', 'supportadmin', 'time-report', 'type', 'user']
-          )
-        , ( 'group_external'
           , ['admin', 'cc-permission', 'contact', 'controlling', 'doc_admin', 'facility', 'functional-role', 'hr', 'hr-leave-approval', 'hr-vacation', 'issue_admin', 'it', 'itview', 'msgedit', 'msgsync', 'office', 'organisation', 'procurement', 'project', 'project_view', 'sec-incident-nosy', 'sec-incident-responsible', 'summary_view', 'supportadmin', 'time-report', 'type', 'user']
           )
         , ( 'location'
@@ -2070,6 +2070,9 @@ properties = \
           , ['admin', 'cc-permission', 'contact', 'controlling', 'doc_admin', 'facility', 'functional-role', 'hr', 'hr-leave-approval', 'hr-vacation', 'issue_admin', 'it', 'itview', 'msgedit', 'msgsync', 'office', 'organisation', 'procurement', 'project', 'project_view', 'sec-incident-nosy', 'sec-incident-responsible', 'summary_view', 'supportadmin', 'time-report', 'type', 'user']
           )
         , ( 'vie_user'
+          , ['admin', 'cc-permission', 'contact', 'controlling', 'doc_admin', 'facility', 'functional-role', 'hr', 'hr-leave-approval', 'hr-vacation', 'issue_admin', 'it', 'itview', 'msgedit', 'msgsync', 'office', 'organisation', 'procurement', 'project', 'project_view', 'sec-incident-nosy', 'sec-incident-responsible', 'summary_view', 'supportadmin', 'time-report', 'type', 'user']
+          )
+        , ( 'vie_user_bl_override'
           , ['admin', 'cc-permission', 'contact', 'controlling', 'doc_admin', 'facility', 'functional-role', 'hr', 'hr-leave-approval', 'hr-vacation', 'issue_admin', 'it', 'itview', 'msgedit', 'msgsync', 'office', 'organisation', 'procurement', 'project', 'project_view', 'sec-incident-nosy', 'sec-incident-responsible', 'summary_view', 'supportadmin', 'time-report', 'type', 'user']
           )
         , ( 'vie_user_ml'
