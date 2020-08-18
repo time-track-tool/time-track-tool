@@ -913,7 +913,6 @@ def auto_wp_check (db, cl, nodeid, new_values) :
         ( 'contract_type'
         , 'org_location'
         , 'time_project'
-        , 'durations_allowed'
         )
     if nodeid :
         for p in props :
@@ -955,6 +954,31 @@ def auto_wp_modify (db, cl, nodeid, old_values) :
         lib_auto_wp.check_auto_wp (db, nodeid, u)
 # end def auto_wp_modify
 
+def auto_wp_change_da (db, cl, nodeid, old_values) :
+    """ Fix all not-completely-frozen WP when durations_allowed changes
+    """
+    dao = old_values.get ('durations_allowed', None)
+    dan = cl.get (nodeid, 'durations_allowed')
+    # Only do something if durations_allowed changed
+    if dao == dan :
+        return
+    wps = db.time_wp.filter \
+        (None, dict (auto_wp = nodeid), sort = ('+', 'bookers'))
+    uid = None
+    fdt = None
+    for wpid in wps :
+        wp = db.time_wp.getnode (wpid)
+        if wp.durations_allowed == dan :
+            continue
+        assert len (wp.bookers) == 1
+        if uid != wp.bookers [0] :
+            uid = wp.bookers [0]
+            fdt = freeze.freeze_date (db, uid)
+        if wp.time_end and wp.time_end < fdt :
+            continue
+        db.time_wp.set (wpid, durations_allowed = dan)
+# end def auto_wp_change_da
+
 def init (db) :
     if 'user_dynamic' not in db.classes :
         return
@@ -989,6 +1013,7 @@ def init (db) :
     db.auto_wp.audit         ("set",    auto_wp_check, priority = 90)
     db.auto_wp.react         ("create", auto_wp_modify)
     db.auto_wp.react         ("set",    auto_wp_modify)
+    db.auto_wp.react         ("set",    auto_wp_change_da, priority = 90)
 # end def init
 
 ### __END__ user_dynamic

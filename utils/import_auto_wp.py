@@ -29,7 +29,9 @@ non_closed_wp = set ()
 with open (sys.argv [1], 'r') as f :
     dr = DictReader (f, delimiter = ';')
     for rec in dr :
-        #print (rec)
+        if rec ['Import'].strip () != 'yes' :
+            print ("Not importing: %s" % rec ['Name'])
+            continue
         oloid = rec ['Org.-Loc. Nummer'].strip ()
         try :
             x = int (oloid)
@@ -83,7 +85,7 @@ with open (sys.argv [1], 'r') as f :
         dur = rec ['Duration'].strip ().strip ('+')
         if not dur :
             dur = None
-        da = rec ['Durations allowed'].strip == 'yes'
+        da = rec ['Durations allowed'].strip () == 'yes'
         # Get all Auto-WP with the given set of parameters
         d = dict \
             ( time_project  = tcid
@@ -106,13 +108,11 @@ with open (sys.argv [1], 'r') as f :
                     % (ai.duration, dur)
                     )
             if ai.durations_allowed != da :
-                print \
-                    ( "Warning: durations allowed: %s not matching in DB: %s"
-                    % (ai.durations_allowed, da)
-                    )
+                print ("Setting durations_allowed for auto_wp%s" % ai.id)
+                db.auto_wp.set (ai.id, durations_allowed = da)
             continue
         d = dict \
-            ( name = rec ['Name']
+            ( name              = rec ['Name']
             , time_project      = tcid
             , org_location      = oloid
             , duration          = dur

@@ -193,10 +193,10 @@ def wp_check_auto_wp (db, cl, nodeid, new_values) :
                 raise Reject \
                     (_ ("Property %s may not change") % _ ('auto_wp'))
             return
+    # These are not allowed to change
     props = \
         ( 'auto_wp'
         , 'bookers'
-        , 'durations_allowed'
         , 'contract_type'
         , 'org_location'
         , 'project'
