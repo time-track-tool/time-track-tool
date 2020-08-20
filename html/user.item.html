@@ -338,6 +338,15 @@
         </tal:block>
        </td>
       </tr>
+      <tr tal:condition="context/vie_user_ml">
+       <th tal:content="structure python:utils.fieldname
+           ('user', 'vie_user_ml')"/>
+       <td>
+        <a tal:repeat="ml python: context.vie_user_ml"
+              tal:content="ml/username"
+              tal:attributes="href python: 'user%s' % ml.id"/>
+       </td>
+      </tr>
       <tr tal:condition="context/vie_user_ml"
           tal:define="blu python: context.vie_user_ml._value + [context.id]">
        <th tal:content="structure python:utils.fieldname
