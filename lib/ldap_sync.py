@@ -1314,7 +1314,7 @@ class LDAP_Roundup_Sync (Log) :
             lk, change, from_ldap, empty, use_ruser, crall, ul = umap [rk]
             curuser = r_user if use_ruser else user
             rupattr = curuser [rk]
-            if rupattr and callable (change) :
+            if rk and callable (change) :
                 rupattr = change (curuser, rk)
             prupattr = rupattr
             if rk == 'pictures' :
