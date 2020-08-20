@@ -175,8 +175,7 @@ class LDAP_Roundup_Sync (Log) :
         dn_allowed = getattr (self.cfg, 'LDAP_' + varname.upper (), None)
         if dn_allowed :
             for kv in dn_allowed.split (';') :
-                k, v = kv.split (':')
-                k = k.lower ()
+                k, v = (x.lower () for x in kv.split (':', 1))
                 if k not in self.dn_allowed :
                     self.dn_allowed [k] = {}
                 self.dn_allowed [k][v] = True
