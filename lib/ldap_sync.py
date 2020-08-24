@@ -1190,11 +1190,18 @@ class LDAP_Roundup_Sync (Log) :
                     ldattr = luser [p]
                     ins    = cs
                 if ldattr != ins and [ldattr] != ins :
-                    self.log.info \
-                        ( "%s:  Updating: %s -> %s [%s -> %s]"
-                        % (user.username, ct, p, ldattr, ins)
-                        )
-                    modlist.append ((ldap3.MODIFY_REPLACE, p, ins))
+                    if not ins :
+                        self.log.info \
+                            ( "%s:  Deleting: %s -> %s [%s -> %s]"
+                            % (user.username, ct, p, ldattr, ins)
+                            )
+                        modlist.append ((ldap3.MODIFY_DELETE, p, None))
+                    else :
+                        self.log.info \
+                            ( "%s:  Updating: %s -> %s [%s -> %s]"
+                            % (user.username, ct, p, ldattr, ins)
+                            )
+                        modlist.append ((ldap3.MODIFY_REPLACE, p, ins))
             if s :
                 if s not in luser :
                     if cs [1:] :
@@ -1319,11 +1326,12 @@ class LDAP_Roundup_Sync (Log) :
             if rk and callable (change) :
                 rupattr = change (curuser, rk)
             prupattr = rupattr
-            if rk == 'pictures' :
-                prupattr = '<suppressed: %s>' % len (rupattr)
-            # FIXME: No longer necessary in python3
-            elif isinstance (rupattr, str) :
-                rupattr = rupattr.decode ('utf-8')
+            if rupattr is not None :
+                if rk == 'pictures' :
+                    prupattr = '<suppressed: %s>' % len (rupattr)
+                # FIXME: No longer necessary in python3
+                elif isinstance (rupattr, str) :
+                    rupattr = rupattr.decode ('utf-8')
             if lk not in luser :
                 if rupattr :
                     self.log.info \
