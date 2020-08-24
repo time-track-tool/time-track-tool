@@ -154,8 +154,9 @@ def check_auto_wp (db, auto_wp_id, userid) :
                 db.time_wp.set (wp.id, **d)
                 break
 
-        # We now either have a wp with correct start date or none
-        if wp :
+        # We now either have a wp with correct start date or
+        # with a start date > dyn.valid_to or none
+        if wp and (not dyn.valid_to or wp.time_start < dyn.valid_to) :
             # We may have not a single wp but a set of 'fragments'
             # before the end-date of the dyn user record (or an open
             # end)
@@ -205,6 +206,8 @@ def check_auto_wp (db, auto_wp_id, userid) :
                 , planned_effort    = 0
                 , responsible       = tp.responsible
                 )
+            # If the dyn is time-limited we have to name the wp
+            # appropriately and limit the end-time of the wp.
             if end_time :
                 d ['time_end'] = end_time
                 d ['name']     = '%s -%s' % (snam, end_time.pretty (ymd))
