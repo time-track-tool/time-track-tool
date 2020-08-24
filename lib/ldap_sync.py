@@ -285,6 +285,8 @@ class LDAP_Roundup_Sync (Log) :
 
     def get_name (self, user, attr) :
         """ Get name from roundup user class Link attr """
+        if user [attr] is None :
+            return None
         cl = user.cl.db.classes [attr]
         return cl.get (user [attr], 'name')
     # end def get_name
