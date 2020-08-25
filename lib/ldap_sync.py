@@ -994,8 +994,7 @@ class LDAP_Roundup_Sync (Log) :
 
     def sync_user_from_ldap (self, username, update = None) :
         assert '\\' not in username
-
-        self.log.debug ('Start sync from LDAP')
+        self.log.info ("Sync user '%s' from LDAP" % username)
         luser = self.get_ldap_user_by_username (username)
         self.log.debug ('User by username')
         if luser :
@@ -1542,6 +1541,7 @@ class LDAP_Roundup_Sync (Log) :
                 dom = username.split ('@', 1) [1]
                 if dom not in self.ad_domain :
                     continue
+            self.log.info ("Sync user '%s' to LDAP" % username )
             self.sync_user_to_ldap (username)
     # end def sync_all_users_to_ldap
 # end LDAP_Roundup_Sync
