@@ -185,7 +185,7 @@ class LDAP_Roundup_Sync (Log) :
                  'use "%s" in [ldap] section of ext config' % varname
                 )
 
-        self.log.debug (datetime.now ().strftime ('%Y-%m-%d %H:%M:%S: Init'))
+        self.log.debug ('Init')
         for k in 'update_ldap', 'update_roundup' :
             if getattr (self, k) is None :
                 # try finding out via config, default to True
@@ -197,8 +197,9 @@ class LDAP_Roundup_Sync (Log) :
                 if update.lower () in ('yes', 'true') :
                     setattr (self, k, True)
 
+        self.log.info ('Connect to LDAP: %s' % self.cfg.LDAP_URI )
         self.server = ldap3.Server (self.cfg.LDAP_URI, get_info = ldap3.ALL)
-        self.log.debug (datetime.now ().strftime ('%Y-%m-%d %H:%M:%S: Server'))
+        self.log.debug ('Server')
         # auto_range:
         # https://docs.microsoft.com/en-us/previous-versions/windows/desktop/ldap/searching-using-range-retrieval
         self.ldcon  = ldap3.Connection \
@@ -211,9 +212,9 @@ class LDAP_Roundup_Sync (Log) :
         # microsoft specific feature -- the ldap3 docs say otherwise
         self.ldcon.open      ()
         self.ldcon.start_tls ()
-        self.log.debug (datetime.now ().strftime ('%Y-%m-%d %H:%M:%S: TLS'))
+        self.log.debug ('TLS')
         self.ldcon.bind      ()
-        self.log.debug (datetime.now ().strftime ('%Y-%m-%d %H:%M:%S: Bind'))
+        self.log.debug ('Bind')
         self.schema = self.server.schema
 
         self.valid_stati     = []
@@ -229,7 +230,7 @@ class LDAP_Roundup_Sync (Log) :
                 self.ldap_stati  [id] = st
                 self.ldap_groups [id] = LDAP_Group \
                     (self.ldcon, self.base_dn, st.ldap_group, st.ldap_prio)
-        self.log.debug (datetime.now ().strftime ('%Y-%m-%d %H:%M:%S: Groups'))
+        self.log.debug ('Groups')
         self.contact_types = {}
         if 'uc_type' in self.db.classes :
             self.contact_types = dict \
@@ -994,13 +995,9 @@ class LDAP_Roundup_Sync (Log) :
     def sync_user_from_ldap (self, username, update = None) :
         assert '\\' not in username
 
-        self.log.debug \
-            (datetime.now ().strftime
-                ('%Y-%m-%d %H:%M:%S: Start sync from LDAP')
-            )
+        self.log.debug ('Start sync from LDAP')
         luser = self.get_ldap_user_by_username (username)
-        self.log.debug \
-            (datetime.now ().strftime ('%Y-%m-%d %H:%M:%S: User by username'))
+        self.log.debug ('User by username')
         if luser :
             guid = luser.raw_value ('objectGUID')
         if update is not None :
@@ -1024,8 +1021,7 @@ class LDAP_Roundup_Sync (Log) :
         user  = uid and self.db.user.getnode (uid)
         if user and not luser and user.guid :
             luser = self.get_ldap_user_by_guid (fromhex (user.guid))
-            self.log.debug \
-                (datetime.now ().strftime ('%Y-%m-%d %H:%M:%S: User by guid'))
+            self.log.debug ('User by guid')
         # don't modify system users:
         reserved = ('admin', 'anonymous')
         if  (  username in reserved
@@ -1084,17 +1080,11 @@ class LDAP_Roundup_Sync (Log) :
                     if not self.update_roundup :
                         n = ' (no action)'
                     self.log.info ("Update roundup: %s %s%s" % (username, d, n))
-                    self.log.debug \
-                        (datetime.now ().strftime
-                            ('%Y-%m-%d %H:%M:%S: Before roundup update')
-                        )
+                    self.log.debug ('Before roundup update')
                     if self.update_roundup :
                         self.db.user.set (uid, ** d)
                         changed = True
-                    self.log.debug \
-                        (datetime.now ().strftime
-                            ('%Y-%m-%d %H:%M:%S: After roundup update')
-                        )
+                    self.log.debug ('After roundup update')
             else :
                 d.update (c)
                 assert (d)
@@ -1106,15 +1096,9 @@ class LDAP_Roundup_Sync (Log) :
                     d ['username'] = username
                 self.log.info ("Create roundup user: %s: %s" % (username, d))
                 if self.update_roundup :
-                    self.log.debug \
-                        (datetime.now ().strftime
-                            ('%Y-%m-%d %H:%M:%S: Before roundup create')
-                        )
+                    self.log.debug ('Before roundup create')
                     uid = self.db.user.create (** d)
-                    self.log.debug \
-                        (datetime.now ().strftime
-                            ('%Y-%m-%d %H:%M:%S: After roundup create')
-                        )
+                    self.log.debug ('After roundup create')
                     changed = True
                     # Perform user creation magic for new user
                     if 'org_location' in self.db.classes :
@@ -1242,15 +1226,9 @@ class LDAP_Roundup_Sync (Log) :
             return
         uid  = self.db.user.lookup (username)
         user = self.db.user.getnode (uid)
-        self.log.debug \
-            (datetime.now ().strftime
-                ('%Y-%m-%d %H:%M:%S: Before user_by_username')
-            )
+        self.log.debug ('Before user_by_username')
         luser = self.get_ldap_user_by_username (user.username)
-        self.log.debug \
-            (datetime.now ().strftime
-                ('%Y-%m-%d %H:%M:%S: After user_by_username')
-            )
+        self.log.debug ('After user_by_username')
         if not luser :
             self.log.info ("LDAP user not found:", user.username)
             # Might want to create user in LDAP
@@ -1368,16 +1346,10 @@ class LDAP_Roundup_Sync (Log) :
                                 modlist.append ((op, 'displayname', rupattr))
                                 self.log.debug \
                                     ("Modify RDN %s->%s" % (luser.dn, rupattr))
-                                self.log.debug \
-                                    (datetime.now ().strftime
-                                        ('%Y-%m-%d %H:%M:%S: Before modify_dn')
-                                    )
+                                self.log.debug ('Before modify_dn')
                                 self.ldcon.modify_dn \
                                     (luser.dn, 'cn=%s' % rupattr)
-                                self.log.debug \
-                                    (datetime.now ().strftime
-                                        ('%Y-%m-%d %H:%M:%S: After modify_dn')
-                                    )
+                                self.log.debug ('After modify_dn')
                                 if self.ldcon.last_error :
                                     # Note: We try to continue if mod of
                                     # DN fails, maybe a permission
@@ -1452,11 +1424,9 @@ class LDAP_Roundup_Sync (Log) :
                 logdict ['thumbnailPhoto'] = '<suppressed>'
             self.log.debug ('modifying Properties for DN: %s' % luser.dn)
             self.log.debug ('Mod-Dict: %s' % str (logdict))
-            self.log.debug \
-                (datetime.now ().strftime ('%Y-%m-%d %H:%M:%S: Before modify'))
+            self.log.debug ('Before modify')
             self.ldcon.modify (luser.dn, moddict)
-            self.log.debug \
-                (datetime.now ().strftime ('%Y-%m-%d %H:%M:%S: After modify'))
+            self.log.debug ('After modify')
             self.log.debug ('Result: %s' % self.ldcon.result)
             if self.ldcon.last_error :
                 self.log.error \

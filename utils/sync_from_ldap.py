@@ -76,10 +76,7 @@ def main () :
         db.config.ext.LDAP_UPDATE_LDAP = 'no'
 
     lds = LDAP_Roundup_Sync (db, verbose = args.verbose)
-    lds.log.info \
-        ( "%s: Start to sync users '%s' from LDAP"
-        % (timestamp_start.strftime("%Y-%m-%d %H:%M:%S"), users)
-        )
+    lds.log.info ("Start to sync users '%s' from LDAP" % users)
     try :
         if args.users :
             for username in args.users :
@@ -95,10 +92,7 @@ def main () :
 
     timestamp_end = datetime.datetime.now()
     duration = (timestamp_end - timestamp_start)
-    lds.log.info \
-        ( "%s: User sync finished after %s"
-        % (timestamp_end.strftime("%Y-%m-%d %H:%M:%S"), duration)
-        )
+    lds.log.info ("User sync finished after %s" % duration)
 # end def main
 
 if __name__ == '__main__' :
