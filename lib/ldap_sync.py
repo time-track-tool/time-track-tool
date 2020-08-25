@@ -164,7 +164,7 @@ class LDAP_Roundup_Sync (Log) :
 
         # If verbose is set, add logging to stderr in addition to syslog
         if self.verbose :
-            formatter = logging.Formatter ('%(message)s')
+            formatter = logging.Formatter ('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
             handler = logging.StreamHandler (sys.stderr)
             handler.setLevel (logging.DEBUG)
             handler.setFormatter (formatter)
