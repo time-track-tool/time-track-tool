@@ -364,7 +364,7 @@ class LDAP_Roundup_Sync (Log) :
         #         if not syncing to roundup
         # 4th arg indicates if updates coming from ldap may be
         #         empty, currently used only for nickname (aka initials in
-        #         ldap)
+        #         ldap) and room
         # 5th arg tells us if the parameter in roundup comes from a linked
         #         vie_user_ml (True) or from the original user (False)
         # 6th arg tells us if we do the update ldap->roundup in all cases
@@ -485,7 +485,7 @@ class LDAP_Roundup_Sync (Log) :
                 ( 'physicalDeliveryOfficeName'
                 , self.get_name
                 , self.cls_lookup (self.db.room)
-                , False
+                , True
                 , True
                 , not self.update_ldap
                 , True
