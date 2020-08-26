@@ -159,7 +159,7 @@ for olo, ct in tc_dict :
                 ( bookers    = dyn.user
                 , project    = tcid
                 , auto_wp    = '-1' # must be empty!
-                , time_start = ';' + due_date
+                , time_start = ';' + due_date + ',-'
                 , time_end   = e
                 )
             wps = db.time_wp.filter (None, d)
