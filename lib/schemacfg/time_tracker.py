@@ -615,6 +615,7 @@ def security (db, ** kw) :
         , ("Time-Report",       "External time reports")
         , ("Functional-Role",   "Editing of functional role related items")
         , ("Organisation",      "Editing of organisation-related items")
+        , ("Sub-Login",         "Allow to login as another user")
         ]
 
     #     classname

@@ -1219,7 +1219,9 @@ class LdapLoginAction (LoginAction, autosuper) :
             pass
         # sync the user
         self.client.error_message = []
-        if common.user_has_role (self.db, self.client.userid, 'admin') :
+        if  ( common.user_has_role
+                (self.db, self.client.userid, 'admin', 'sub-login')
+            ) :
             if not user :
                 raise exceptions.LoginError (self._ ('Invalid login'))
             if user.status == invalid :

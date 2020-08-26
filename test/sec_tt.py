@@ -243,6 +243,7 @@ Role "project_view":
  User is allowed to access time_report (View for "time_report" only)
  User is allowed to access time_wp (View for "time_wp" only)
 Role "staff-report":
+Role "sub-login":
 Role "summary_view":
 Role "time-report":
  User is allowed to access time_report (View for "time_report" only)

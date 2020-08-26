@@ -816,6 +816,14 @@
              str(request.user.username).split ('@', 1)[0]"></a>
      </span>
 
+     <!-- switch user -> only when user has appropriate roles -->
+     <span class="classblock" tal:condition="python: utils.user_has_role
+           (db._db, db._db.getuid (), 'admin', 'sub-login')">
+      <a i18n:translate="" tal:attributes="href string:user?@template=subuser">
+       Switch User
+      </a>
+     </span>
+
      <!-- logout -->
      <span class="classblock" tal:condition="python:
          (   request.user.username != 'anonymous'
@@ -888,7 +896,8 @@
        <td><input size="15" name="__login_name"></td>
       </tr>
       <tal:block tal:condition="python:
-           not utils.user_has_role (db._db, db._db.getuid (), 'admin')">
+           not utils.user_has_role
+               (db._db, db._db.getuid (), 'admin', 'sub-login')">
        <tr>
         <th i18n:translate="">Password:</th>
         <td><input size="15" type="password" name="__login_password"></td>
@@ -905,7 +914,8 @@
       </tr>
       <tal:block tal:condition="python:
         (    request.user.hasPermission ('Register', 'user')
-         and not utils.user_has_role (db._db, db._db.getuid (), 'admin')
+         and not utils.user_has_role
+             (db._db, db._db.getuid (), 'admin', 'sub-login')
         )">
        <tr>
         <td colspan="2" align="center">
