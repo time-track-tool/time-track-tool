@@ -363,6 +363,7 @@ Role "sec-incident-responsible":
  User is allowed to access it_issue (View for "it_issue" only)
  User is allowed to access it_project (View for "it_project" only)
 Role "staff-report":
+Role "sub-login":
 Role "summary_view":
 Role "supportadmin":
  User is allowed to access analysis_result (View for "analysis_result" only)

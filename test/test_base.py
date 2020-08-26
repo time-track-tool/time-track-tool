@@ -172,6 +172,7 @@ class _Test_Case () :
         , 'staff-report'
         , 'subcontract'
         , 'subcontract-org'
+        , 'sub-login'
         , 'summary_view'
         , 'supportadmin'
         , 'time-report'
@@ -385,6 +386,7 @@ class _Test_Case () :
             ,  'nosy'
             ,  'readonly-user'
             ,  'staff-report'
+            ,  'sub-login'
             ,  'user'
             ))
         self.users = {'admin' : '1', 'anonymous' : '2'}
@@ -796,8 +798,8 @@ class Test_Case_Support_Timetracker (_Test_Case, unittest.TestCase) :
         , 'msgedit', 'msgsync', 'nosy', 'office', 'organisation'
         , 'procurement', 'project'
         , 'project_view', 'sec-incident-nosy'
-        , 'sec-incident-responsible', 'staff-report', 'summary_view'
-        , 'supportadmin', 'time-report', 'type', 'user'
+        , 'sec-incident-responsible', 'staff-report', 'sub-login'
+        , 'summary_view' , 'supportadmin', 'time-report', 'type', 'user'
         ]
     transprop_perms = transprop_sfull
 # end class Test_Case_Support_Timetracker
@@ -811,8 +813,8 @@ class Test_Case_Timetracker (_Test_Case_Summary, unittest.TestCase) :
         , 'dom-user-edit-office', 'facility', 'functional-role', 'hr'
         , 'hr-leave-approval', 'hr-org-location', 'hr-vacation', 'it', 'nosy'
         , 'office', 'organisation', 'pgp', 'procurement', 'project'
-        , 'project_view'
-        , 'staff-report', 'summary_view', 'time-report', 'user', 'user_view'
+        , 'project_view', 'staff-report', 'sub-login', 'summary_view'
+        , 'time-report', 'user', 'user_view'
         ]
     transprop_perms = transprop_time
 
@@ -3578,8 +3580,8 @@ class Test_Case_Fulltracker (_Test_Case_Summary, unittest.TestCase) :
         , 'msgedit', 'msgsync', 'nosy', 'office', 'organisation'
         , 'pgp', 'procurement', 'project', 'project_view'
         , 'sec-incident-nosy', 'sec-incident-responsible'
-        , 'staff-report', 'summary_view', 'supportadmin', 'time-report'
-        , 'user', 'user_view'
+        , 'staff-report', 'sub-login', 'summary_view', 'supportadmin'
+        , 'time-report', 'user', 'user_view'
         ]
     transprop_perms = transprop_full
 

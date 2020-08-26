@@ -651,63 +651,8 @@
   <table class="body" align="center" valign="middle"
    tal:condition="not:is_user">
    <tr>
-<!-- login -->
     <td>
-<form method="POST" name="login_form" tal:attributes="action request/base">
-     <table class="form">
-      <tr>
-       <td colspan="2" align="center">
-        <span i18n:translate="">Welcome:</span>
-        <br>
-        <tal:block tal:replace="config/TRACKER_NAME"/>
-        <br>
-        <font size="-2">
-         <span i18n:translate="">
-         Note: You definitely need <b>Cookies</b> and <b>JavaScript</b> enabled.
-         </span>
-        </font>
-       </td>
-      </tr>
-      <tr>
-       <th i18n:translate="">Login:</th>
-       <td><input size="15" name="__login_name"></td>
-      </tr>
-      <tr>
-       <th i18n:translate="">Password:</th>
-       <td><input size="15" type="password" name="__login_password"></td>
-      </tr>
-      <tr>
-       <th i18n:translate="">Remember me?:</th>
-       <td><input type="checkbox" name="remember" id="remember"></td>
-      </tr>
-      <tr>
-       <td colspan="2" align="center">
-        <input type="submit" name="@action" value="Login">
-       </td>
-      </tr>
-      <tr tal:condition="python:request.user.hasPermission
-           ('Register', 'user')">
-       <td colspan="2" align="center">
-	<a href="user?@template=register"
-           tal:condition="python:request.user.hasPermission
-           ('Register', 'user')" i18n:translate="">Register</a>
-       </td>
-      </tr>
-      <tr tal:condition="python:request.user.hasPermission
-           ('Register', 'user')">
-       <td colspan="2" align="center">
-	<a href="user?@template=forgotten" i18n:translate="">
-          Lost&nbsp;your&nbsp;login?</a>
-       </td>
-      </tr>
-     </table>
-     <script language="javascript">
-     <!--
-       document.login_form.__login_name.focus ();
-       document.login_form.__login_name.select ();
-     -->
-     </script>
-</form>
+     <tal:block metal:use-macro="templates/page/macros/login-form"></tal:block>
     </td>
    </tr>
   </table>
@@ -871,6 +816,14 @@
              str(request.user.username).split ('@', 1)[0]"></a>
      </span>
 
+     <!-- switch user -> only when user has appropriate roles -->
+     <span class="classblock" tal:condition="python: utils.user_has_role
+           (db._db, db._db.getuid (), 'admin', 'sub-login')">
+      <a i18n:translate="" tal:attributes="href string:user?@template=subuser">
+       Switch User
+      </a>
+     </span>
+
      <!-- logout -->
      <span class="classblock" tal:condition="python:
          (   request.user.username != 'anonymous'
@@ -919,6 +872,74 @@
 </html>
 </tal:block>
 
+
+<!-- Macro for login form -->
+<tal:block metal:define-macro="login-form">
+<!-- login -->
+  <form method="POST" name="login_form" tal:attributes="action request/base">
+     <table class="form">
+      <tr>
+       <td colspan="2" align="center">
+        <span i18n:translate="">Welcome:</span>
+        <br>
+        <tal:block tal:replace="config/TRACKER_NAME"/>
+        <br>
+        <font size="-2">
+         <span i18n:translate="">
+         Note: You definitely need <b>Cookies</b> and <b>JavaScript</b> enabled.
+         </span>
+        </font>
+       </td>
+      </tr>
+      <tr>
+       <th i18n:translate="">Login:</th>
+       <td><input size="15" name="__login_name"></td>
+      </tr>
+      <tal:block tal:condition="python:
+           not utils.user_has_role
+               (db._db, db._db.getuid (), 'admin', 'sub-login')">
+       <tr>
+        <th i18n:translate="">Password:</th>
+        <td><input size="15" type="password" name="__login_password"></td>
+       </tr>
+       <tr>
+        <th i18n:translate="">Remember me?:</th>
+        <td><input type="checkbox" name="remember" id="remember"></td>
+       </tr>
+      </tal:block>
+      <tr>
+       <td colspan="2" align="center">
+        <input type="submit" name="@action" value="Login">
+       </td>
+      </tr>
+      <tal:block tal:condition="python:
+        (    request.user.hasPermission ('Register', 'user')
+         and not utils.user_has_role
+             (db._db, db._db.getuid (), 'admin', 'sub-login')
+        )">
+       <tr>
+        <td colspan="2" align="center">
+         <a href="user?@template=register"
+            tal:condition="python:request.user.hasPermission
+            ('Register', 'user')" i18n:translate="">Register</a>
+        </td>
+       </tr>
+       <tr>
+        <td colspan="2" align="center">
+         <a href="user?@template=forgotten" i18n:translate="">
+           Lost&nbsp;your&nbsp;login?</a>
+        </td>
+       </tr>
+      </tal:block>
+     </table>
+     <script language="javascript">
+     <!--
+       document.login_form.__login_name.focus ();
+       document.login_form.__login_name.select ();
+     -->
+     </script>
+  </form>
+</tal:block>
 
 <!-- Macro to display selector for new item in menu -->
 <td metal:define-macro="create_new" class="sidebar" nowrap>
