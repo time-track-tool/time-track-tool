@@ -260,10 +260,12 @@ for uid in db.user.filter (None, dict (status = obs)) :
     dyn  = user_dynamic.last_user_dynamic (db, uid)
     if not dyn :
         print ("Obsolete user%s has no dynamic user data" % uid)
-        continue
-    if dyn.valid_to is None :
+    if dyn and dyn.valid_to is None :
         print ("Obsolete user%s has a valid dynamic user record!" % uid)
         continue
+    vt   = date.Date ('2000-01-01')
+    if dyn :
+        vt = dyn.valid_to
     user = db.user.getnode (uid)
     snam = user.username.split ('@', 1) [0]
     # Find WPs where this user is on the bookers list and which has no
@@ -278,7 +280,7 @@ for uid in db.user.filter (None, dict (status = obs)) :
             continue
         tc = db.time_project.getnode (wp.project)
         t  = 'Auto-closed because last admitted user is obsolete'
-        d  = dict (time_end = dyn.valid_to, description = t)
+        d  = dict (time_end = vt, description = t)
         # Do not allow that wp.name is username, we need that
         # name for the auto-generated WPs, should one of these obsolete
         # users be resurrected this will make problems
