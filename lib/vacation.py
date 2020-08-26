@@ -640,12 +640,15 @@ def consolidated_vacation \
     return vac
 # end def consolidated_vacation
 
-def valid_wps (db, filter = {}, user = None, date = None, srt = None) :
+def valid_wps \
+    (db, filter = {}, user = None, date = None, srt = None, future = False) :
     srt  = srt or [('+', 'id')]
     wps  = {}
     date = date or Date ('.')
     dt   = (date + common.day).pretty (common.ymd)
-    d    = dict (time_start = ';%s' % date.pretty (common.ymd))
+    d    = {}
+    if not future :
+        d ['time_start'] = ';%s' % date.pretty (common.ymd)
     # Only select WPs that are not exclusively managed by external tool
     d ['is_extern']         = False
     d ['project.is_extern'] = False
@@ -682,7 +685,7 @@ def valid_leave_wps (db, user = None, date = None, srt = None, thawed = None) :
         elif freeze :
             date = freeze
     d = {'project.approval_required' : True}
-    return valid_wps (db, d, user, date, srt)
+    return valid_wps (db, d, user, date, srt, future = True)
 # end def valid_leave_wps
 
 def valid_leave_projects (db) :
