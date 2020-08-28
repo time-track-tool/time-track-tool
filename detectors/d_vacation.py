@@ -212,6 +212,8 @@ def check_submission (db, cl, nodeid, new_values) :
                     ok = True
                 if old_status == 'submitted' and new_status == 'open' :
                     ok = True
+                if old_status == 'submitted' and new_status == 'cancelled' :
+                    ok = True
                 if old_status == 'open' and new_status == 'cancelled' :
                     ok = True
             elif not ok :
