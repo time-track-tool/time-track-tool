@@ -208,7 +208,9 @@ def check_submission (db, cl, nodeid, new_values) :
             ok = False
             tp = db.time_project.getnode \
                 (db.time_wp.get (old.time_wp, 'project'))
-            if not ok and uid == user :
+            if  (    not ok
+                and (uid == user or common.user_has_role (db, uid, 'Admin'))
+                ) :
                 if old_status == 'open' and new_status == 'submitted' :
                     ok = True
                 if  (   old_status == 'accepted'

@@ -294,5 +294,47 @@ for uid in db.user.filter (None, dict (status = obs)) :
     # Commit all WPs for this user
     db.commit()
 
+# Get all Leave requests that are in state 'submitted', do nothing if
+# the wp already is an auto-generated wp. Otherwise check if the leave
+# overlaps with the due date, if yes issue warning. If no and the leave
+# is completele *after* due date *and* we have exactly one auto-wp with
+# the same tc we change the wp.
+sub    = db.leave_status.lookup ('submitted')
+opn    = db.leave_status.lookup ('open')
+leaves = db.leave_submission.filter \
+    (None, dict (last_day = due_date + ';', status = sub))
+for lid in leaves :
+    leave = db.leave_submission.getnode (lid)
+    wp    = db.time_wp.getnode (leave.time_wp)
+    tc    = db.time_project.getnode (wp.project)
+    if wp.auto_wp :
+        continue
+    # Get auto-wp with same tc for this user
+    wps = db.time_wp.filter \
+        ( None, dict
+            ( bookers    = leave.user
+            , project    = wp.project
+            , time_start = due_date
+            )
+        )
+    assert len (wps) <= 1
+    # User has no auto_wp, do nothing
+    if not wps :
+        continue
+    autowp = db.time_wp.getnode (wps [0])
+    assert autowp.auto_wp
+    if leave.first_day < dd :
+        print \
+            ( "leave_submission%s for user%s starts before %s"
+            % (lid, leave.user, due_date)
+            )
+        continue
+    print \
+        ( "Setting leave_submission%s for user%s to time_wp%s (%s.%s)"
+        % (lid, leave.user, autowp.id, tc.name, autowp.name)
+        )
+    db.leave_submission.set (lid, status = opn)
+    db.leave_submission.set (lid, time_wp = autowp.id, status = sub)
+
 # Just to be safe; should already be committed at this point
 db.commit()
