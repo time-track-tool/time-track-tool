@@ -824,7 +824,8 @@
 
      <!-- switch user -> only when user has appropriate roles -->
      <span class="classblock" tal:condition="python: utils.user_has_role
-           (db._db, db._db.getuid (), 'admin', 'sub-login')">
+           (db._db, db._db.getuid (), 'admin', 'sub-login') and
+           utils.check_ldap_config (db._db)">
       <a i18n:translate="" tal:attributes="href string:user?@template=subuser">
        Switch User
       </a>
