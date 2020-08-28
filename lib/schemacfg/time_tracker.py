@@ -414,8 +414,8 @@ def init \
         , user                  = Link      ("user")
         , first_day             = Date      (offset = 0)
         , last_day              = Date      (offset = 0)
-        , status                = Link      ("leave_status")
-        , time_wp               = Link      ("time_wp")
+        , status                = Link      ("leave_status", do_journal = 'no')
+        , time_wp               = Link      ("time_wp",      do_journal = 'no')
         , comment               = String    ()
         , comment_cancel        = String    ()
         , approval_hr           = Boolean   () # only for queries
