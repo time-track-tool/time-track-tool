@@ -23,12 +23,12 @@ try :
     # end def sync_from_ldap_util
 
     def init (instance) :
+        instance.registerUtil   ('check_ldap_config', check_ldap_config)
 	if not check_ldap_config (instance) :
 	    instance.registerUtil ('sync_from_ldap', None)
 	    return
         instance.registerAction ('login',             LdapLoginAction)
         instance.registerUtil   ('LDAP_Roundup_Sync', LDAP_Roundup_Sync)
-        instance.registerUtil   ('check_ldap_config', check_ldap_config)
         instance.registerUtil   ('sync_from_ldap',    sync_from_ldap_util)
     # end def init
 except ImportError :

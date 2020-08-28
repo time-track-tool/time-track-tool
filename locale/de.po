@@ -2776,6 +2776,9 @@ msgstr ""
 msgid "duration"
 msgstr "Dauer"
 
+msgid "auto_wp++duration"
+msgstr "Dauer"
+
 msgid "start_generated"
 msgstr ""
 

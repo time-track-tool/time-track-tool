@@ -2667,6 +2667,9 @@ msgstr "Project type"
 msgid "all_in"
 msgstr "All in"
 
+msgid "auto_wp++all_in"
+msgstr "All in"
+
 msgid "show_empty"
 msgstr "show empty"
 
@@ -2770,6 +2773,9 @@ msgid "wp"
 msgstr "Work package"
 
 msgid "duration"
+msgstr "Duration"
+
+msgid "auto_wp++duration"
 msgstr "Duration"
 
 msgid "start_generated"
@@ -4320,3 +4326,8 @@ msgstr "Room prefix"
 msgid "org_group"
 msgstr "Organisation group"
 
+msgid "auto_wp"
+msgstr "Automatic Workpackage"
+
+msgid "do_auto_wp"
+msgstr "Auto WP"

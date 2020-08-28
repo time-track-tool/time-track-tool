@@ -309,6 +309,8 @@ _helptext          = \
       [""'''Other aliases this %(Classname)s maps to''']
     , ""'alias_to_user'               :
       [""'''List of users this %(Classname)s maps to''']
+    , ""'auto_wp++all_in'             :
+      [""'''If selected, create Automatic Workpackages also for all-in users''']
     , ""'all_in'                      :
       [""'''If selected, the user has an all-inclusive work time contract''']
     , ""'alarm++val'                  :
@@ -355,6 +357,12 @@ _helptext          = \
       [""'''Author of this %(Classname)s''']
     , ""'authors'                     :
       [""'''Authors of the artefact of this %(Classname)s''']
+    , ""'auto_wp++duration'           :
+      [""'''%(Property)s in days of the auto workpackage: The time is
+            measured from the start of the first dynamic user record of
+            the user for whom an automatic workpackage is created.
+         '''
+      ]
     , ""'aux_username'                :
       [""'''Additional username used in subsidiaries or similar''']
     , ""'balance'                     :

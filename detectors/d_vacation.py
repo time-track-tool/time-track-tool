@@ -176,7 +176,12 @@ def check_submission (db, cl, nodeid, new_values) :
     time_wp   = new_values.get ('time_wp',   cl.get (nodeid, 'time_wp'))
     comment   = new_values.get ('comment',   cl.get (nodeid, 'comment'))
     check_range (db, nodeid, user, first_day, last_day)
-    check_wp    (db, time_wp, user, first_day, last_day, comment)
+    # Allow cancel even when wp is not valid
+    if  (  old_status == new_status
+        or old_status not in ('open', 'submitted')
+        or new_status not in ('open', 'cancelled')
+        ) :
+        check_wp    (db, time_wp, user, first_day, last_day, comment)
     if old_status in ('open', 'submitted') :
         vacation.create_daily_recs (db, user, first_day, last_day)
     if 'first_day' in new_values or 'last_day' in new_values :
@@ -203,7 +208,9 @@ def check_submission (db, cl, nodeid, new_values) :
             ok = False
             tp = db.time_project.getnode \
                 (db.time_wp.get (old.time_wp, 'project'))
-            if not ok and uid == user :
+            if  (    not ok
+                and (uid == user or common.user_has_role (db, uid, 'Admin'))
+                ) :
                 if old_status == 'open' and new_status == 'submitted' :
                     ok = True
                 if  (   old_status == 'accepted'
@@ -211,6 +218,8 @@ def check_submission (db, cl, nodeid, new_values) :
                     ) :
                     ok = True
                 if old_status == 'submitted' and new_status == 'open' :
+                    ok = True
+                if old_status == 'submitted' and new_status == 'cancelled' :
                     ok = True
                 if old_status == 'open' and new_status == 'cancelled' :
                     ok = True

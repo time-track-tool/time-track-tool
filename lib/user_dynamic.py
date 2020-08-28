@@ -115,10 +115,24 @@ def last_user_dynamic (db, user, date = None) :
 # end def last_user_dynamic
 
 def find_user_dynamic (db, user, date, direction = '+', ct = -1) :
+    """ Search for the next user dynamic record in the given direction
+        for this user and date. If ct (contract_type) is given, we find
+        only dynamic user records with that contract type. Note that the
+        contract_type 'None' is special, it searches for the default ct
+        which is empty. This is handled specially in the roundup API, it
+        uses the *string* '-1' for the id which indicates searching for
+        an empty Link or Multilink. That's why a don't-care
+        contract_type is encoded with -1 here (something other than
+        None).
+    """
     date = common.next_search_date (date, direction)
     d    = dict (user = user, valid_from = date)
     if ct != -1 :
-        d.update (contract_type = ct)
+        if ct is None :
+            # '-1' is special, it searches for empty ct
+            d.update (contract_type = '-1')
+        else :
+            d.update (contract_type = ct)
     ids = db.user_dynamic.filter (None, d, group = (direction, 'valid_from'))
     if ids :
         return db.user_dynamic.getnode (ids [0])
@@ -979,6 +993,7 @@ dynuser_copyfields = \
      , 'vac_aliq'
      , 'max_flexitime'
      , 'valid_to'
+     , 'do_auto_wp'
      ]
 
 def is_tt_user_status (db, status) :

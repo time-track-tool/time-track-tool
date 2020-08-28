@@ -596,6 +596,14 @@ table.files {
   width: 100%;
 }
 
+table.files tr {
+    visibility: visible;
+}
+
+table.files tr.hidden {
+    visibility: collapse;
+}
+
 table.files td.content {
   background-color: #efefef;;
   border-bottom: 1px solid #afafaf;

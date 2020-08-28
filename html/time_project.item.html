@@ -1,4 +1,16 @@
 <tal:block metal:use-macro="templates/page/macros/icing">
+ <tal:block metal:fill-slot="add-js">
+  <script>
+   function chg_expired() {
+       $('tr[state=expired]').toggleClass ('hidden');
+       if ($('input[x=h]').attr('value') == 'Hide expired') {
+           $('input[x=h]').attr('value', 'Show expired');
+       } else {
+           $('input[x=h]').attr('value', 'Hide expired');
+       }
+   }
+ </script>
+ </tal:block>
  <title metal:fill-slot="head_title">
   <tal:block tal:condition="context/id" i18n:translate="">
    <span tal:replace="string:${Classname}: ${context/id}"
@@ -226,7 +238,9 @@
        context.is_view_ok () and 'time_wp' in db._db.classes">
    <tal:block
     tal:define="wps python:db.time_wp.filter
-    (None, {'project' : context.id})">
+    ( None, {'project' : context.id}
+    , sort=[('+', 'time_start'), ('+', 'name')]
+    )">
     <table class="files">
      <tr tal:define=
       "uid  python:db._db.getuid ()
@@ -240,10 +254,12 @@
             and context.status.active
             )
       ">
-      <th tal:attributes="colspan python:3-cond" class="header"
-       i18n:translate="">
+      <th colspan="2" class="header" i18n:translate="">
        Current Work Package(s)
       </th>
+      <td tal:attributes="colspan python:3-cond" class="header">
+       <input x="h" value="Hide expired" onclick="chg_expired()" type="button">
+      </td>
       <td class="header" tal:condition="cond">
        <a i18n:translate="" tal:attributes="href python:
        'time_wp?:template=item&' + '&'.join
@@ -259,17 +275,29 @@
       </td>
      </tr>
      <tr>
-      <th tal:content="structure python:utils.fieldname ('time_wp', 'name')"/>
-      <th tal:content="structure python:utils.fieldname ('time_wp', 'wp_no')"/>
+      <th tal:content="structure python:utils.fieldname
+          ('time_wp', 'name')"/>
+      <th tal:content="structure python:utils.fieldname
+          ('time_wp', 'time_start')"/>
+      <th tal:content="structure python:utils.fieldname
+          ('time_wp', 'time_end')"/>
+      <th tal:content="structure python:utils.fieldname
+          ('time_wp', 'wp_no')"/>
       <th tal:content="structure python:utils.fieldname
        ('time_wp', 'description')"/>
      </tr>
-     <tr tal:repeat="wp wps">
-      <td tal:content="structure python:utils.ExtProperty
-       (utils, wp.name, item = wp).formatlink ()"/>
-      <td tal:content="wp/wp_no"/>
-      <td tal:content="wp/description"/>
-     </tr>
+     <tal:block tal:repeat="wp wps">
+      <tr tal:attributes="state python:
+          ['expired', 'current']
+          [not wp.time_end or wp.time_end >= utils.now()]">
+       <td tal:content="structure python:utils.ExtProperty
+        (utils, wp.name, item = wp).formatlink ()"/>
+       <td tal:content="python:wp.time_start.pretty(utils.ymd)"/>
+       <td tal:content="python:wp.time_end.pretty(utils.ymd)"/>
+       <td tal:content="wp/wp_no"/>
+       <td tal:content="wp/description"/>
+      </tr>
+     </tal:block>
     </table>
    </tal:block>
   </tal:block>

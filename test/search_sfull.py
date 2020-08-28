@@ -80,6 +80,33 @@ properties = \
           )
         ]
       )
+    , ( 'auto_wp'
+      , [ ( 'all_in'
+          , ['admin', 'hr']
+          )
+        , ( 'contract_type'
+          , ['admin', 'hr']
+          )
+        , ( 'duration'
+          , ['admin', 'hr']
+          )
+        , ( 'durations_allowed'
+          , ['admin', 'hr']
+          )
+        , ( 'is_valid'
+          , ['admin', 'hr']
+          )
+        , ( 'name'
+          , ['admin', 'hr']
+          )
+        , ( 'org_location'
+          , ['admin', 'hr']
+          )
+        , ( 'time_project'
+          , ['admin', 'hr']
+          )
+        ]
+      )
     , ( 'business_unit'
       , [ ( 'name'
           , ['admin', 'contact', 'controlling', 'doc_admin', 'facility', 'functional-role', 'hr', 'hr-leave-approval', 'hr-vacation', 'issue_admin', 'it', 'itview', 'msgedit', 'msgsync', 'office', 'organisation', 'procurement', 'project', 'project_view', 'sec-incident-nosy', 'sec-incident-responsible', 'summary_view', 'supportadmin', 'time-report', 'type', 'user']
@@ -1024,7 +1051,10 @@ properties = \
         ]
       )
     , ( 'org_location'
-      , [ ( 'do_leave_process'
+      , [ ( 'do_auto_wp'
+          , ['admin', 'contact', 'controlling', 'doc_admin', 'facility', 'functional-role', 'hr', 'hr-leave-approval', 'hr-vacation', 'issue_admin', 'it', 'itview', 'msgedit', 'msgsync', 'office', 'organisation', 'procurement', 'project', 'project_view', 'sec-incident-nosy', 'sec-incident-responsible', 'summary_view', 'supportadmin', 'time-report', 'type', 'user']
+          )
+        , ( 'do_leave_process'
           , ['admin', 'contact', 'controlling', 'doc_admin', 'facility', 'functional-role', 'hr', 'hr-leave-approval', 'hr-vacation', 'issue_admin', 'it', 'itview', 'msgedit', 'msgsync', 'office', 'organisation', 'procurement', 'project', 'project_view', 'sec-incident-nosy', 'sec-incident-responsible', 'summary_view', 'supportadmin', 'time-report', 'type', 'user']
           )
         , ( 'group_external'
@@ -1832,7 +1862,10 @@ properties = \
         ]
       )
     , ( 'time_wp'
-      , [ ( 'bookers'
+      , [ ( 'auto_wp'
+          , ['admin', 'hr']
+          )
+        , ( 'bookers'
           , ['admin', 'contact', 'controlling', 'doc_admin', 'facility', 'functional-role', 'hr', 'hr-leave-approval', 'hr-vacation', 'issue_admin', 'it', 'itview', 'msgedit', 'msgsync', 'office', 'organisation', 'procurement', 'project', 'project_view', 'sec-incident-nosy', 'sec-incident-responsible', 'summary_view', 'supportadmin', 'time-report', 'type', 'user']
           )
         , ( 'cost_center'
@@ -2044,6 +2077,9 @@ properties = \
           )
         , ( 'department'
           , ['admin', 'contact', 'controlling', 'doc_admin', 'facility', 'functional-role', 'hr', 'hr-leave-approval', 'hr-vacation', 'issue_admin', 'it', 'itview', 'msgedit', 'msgsync', 'office', 'organisation', 'procurement', 'project', 'project_view', 'sec-incident-nosy', 'sec-incident-responsible', 'summary_view', 'supportadmin', 'time-report', 'type', 'user']
+          )
+        , ( 'do_auto_wp'
+          , ["admin", "hr", "hr-org-location"]
           )
         , ( 'durations_allowed'
           , ["admin", "hr", "hr-org-location"]

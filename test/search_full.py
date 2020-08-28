@@ -56,6 +56,33 @@ properties = \
           )
         ]
       )
+    , ( 'auto_wp'
+      , [ ( 'all_in'
+          , ['admin', 'hr']
+          )
+        , ( 'contract_type'
+          , ['admin', 'hr']
+          )
+        , ( 'duration'
+          , ['admin', 'hr']
+          )
+        , ( 'durations_allowed'
+          , ['admin', 'hr']
+          )
+        , ( 'is_valid'
+          , ['admin', 'hr']
+          )
+        , ( 'name'
+          , ['admin', 'hr']
+          )
+        , ( 'org_location'
+          , ['admin', 'hr']
+          )
+        , ( 'time_project'
+          , ['admin', 'hr']
+          )
+        ]
+      )
     , ( 'business_unit'
       , [ ( 'name'
           , ['admin', 'contact', 'controlling', 'doc_admin', 'dom-user-edit-facility', 'dom-user-edit-gtt', 'dom-user-edit-hr', 'dom-user-edit-office', 'facility', 'functional-role', 'hr', 'hr-leave-approval', 'hr-vacation', 'issue_admin', 'it', 'itview', 'msgedit', 'msgsync', 'office', 'organisation', 'pgp', 'procurement', 'project', 'project_view', 'sec-incident-nosy', 'sec-incident-responsible', 'summary_view', 'supportadmin', 'time-report', 'user', 'user_view']
@@ -966,7 +993,10 @@ properties = \
         ]
       )
     , ( 'org_location'
-      , [ ( 'do_leave_process'
+      , [ ( 'do_auto_wp'
+          , ['admin', 'contact', 'controlling', 'doc_admin', 'dom-user-edit-facility', 'dom-user-edit-gtt', 'dom-user-edit-hr', 'dom-user-edit-office', 'facility', 'functional-role', 'hr', 'hr-leave-approval', 'hr-vacation', 'issue_admin', 'it', 'itview', 'msgedit', 'msgsync', 'office', 'organisation', 'pgp', 'procurement', 'project', 'project_view', 'sec-incident-nosy', 'sec-incident-responsible', 'summary_view', 'supportadmin', 'time-report', 'user', 'user_view']
+          )
+        , ( 'do_leave_process'
           , ['admin', 'contact', 'controlling', 'doc_admin', 'dom-user-edit-facility', 'dom-user-edit-gtt', 'dom-user-edit-hr', 'dom-user-edit-office', 'facility', 'functional-role', 'hr', 'hr-leave-approval', 'hr-vacation', 'issue_admin', 'it', 'itview', 'msgedit', 'msgsync', 'office', 'organisation', 'pgp', 'procurement', 'project', 'project_view', 'sec-incident-nosy', 'sec-incident-responsible', 'summary_view', 'supportadmin', 'time-report', 'user', 'user_view']
           )
         , ( 'group_external'
@@ -1774,7 +1804,10 @@ properties = \
         ]
       )
     , ( 'time_wp'
-      , [ ( 'bookers'
+      , [ ( 'auto_wp'
+          , ['admin', 'hr']
+          )
+        , ( 'bookers'
           , ['admin', 'contact', 'controlling', 'doc_admin', 'dom-user-edit-facility', 'dom-user-edit-gtt', 'dom-user-edit-hr', 'dom-user-edit-office', 'facility', 'functional-role', 'hr', 'hr-leave-approval', 'hr-vacation', 'issue_admin', 'it', 'itview', 'msgedit', 'msgsync', 'office', 'organisation', 'pgp', 'procurement', 'project', 'project_view', 'sec-incident-nosy', 'sec-incident-responsible', 'summary_view', 'supportadmin', 'time-report', 'user', 'user_view']
           )
         , ( 'cost_center'
@@ -2040,6 +2073,9 @@ properties = \
           )
         , ( 'department'
           , ['admin', 'contact', 'controlling', 'doc_admin', 'dom-user-edit-facility', 'dom-user-edit-gtt', 'dom-user-edit-hr', 'dom-user-edit-office', 'facility', 'functional-role', 'hr', 'hr-leave-approval', 'hr-vacation', 'issue_admin', 'it', 'itview', 'msgedit', 'msgsync', 'office', 'organisation', 'pgp', 'procurement', 'project', 'project_view', 'sec-incident-nosy', 'sec-incident-responsible', 'summary_view', 'supportadmin', 'time-report', 'user', 'user_view']
+          )
+        , ( 'do_auto_wp'
+          , ["admin", "dom-user-edit-gtt", "dom-user-edit-hr", "hr", "hr-org-location"]
           )
         , ( 'durations_allowed'
           , ["admin", "dom-user-edit-gtt", "dom-user-edit-hr", "hr", "hr-org-location"]

@@ -32,6 +32,7 @@
 from math import ceil
 
 from roundup.date import Date, Interval
+from freeze       import freeze_date
 import common
 import user_dynamic
 
@@ -639,12 +640,15 @@ def consolidated_vacation \
     return vac
 # end def consolidated_vacation
 
-def valid_wps (db, filter = {}, user = None, date = None, srt = None) :
+def valid_wps \
+    (db, filter = {}, user = None, date = None, srt = None, future = False) :
     srt  = srt or [('+', 'id')]
     wps  = {}
     date = date or Date ('.')
     dt   = (date + common.day).pretty (common.ymd)
-    d    = dict (time_start = ';%s' % date.pretty (common.ymd))
+    d    = {}
+    if not future :
+        d ['time_start'] = ';%s' % date.pretty (common.ymd)
     # Only select WPs that are not exclusively managed by external tool
     d ['is_extern']         = False
     d ['project.is_extern'] = False
@@ -669,9 +673,19 @@ def valid_wps (db, filter = {}, user = None, date = None, srt = None) :
     return db.time_wp.filter (wp, {}, sort = srt)
 # end def valid_wps
 
-def valid_leave_wps (db, user = None, date = None, srt = None) :
+def valid_leave_wps (db, user = None, date = None, srt = None, thawed = None) :
+    """ If thawed is given, find only WPs with an end-time > freeze date
+        If thawed *and* a date is given we use the *later* date
+        Note that for thawed to work a user must be given
+    """
+    if thawed and user :
+        freeze = freeze_date (db, user)
+        if freeze and date :
+            date = max (freeze, date)
+        elif freeze :
+            date = freeze
     d = {'project.approval_required' : True}
-    return valid_wps (db, d, user, date, srt)
+    return valid_wps (db, d, user, date, srt, future = True)
 # end def valid_leave_wps
 
 def valid_leave_projects (db) :
