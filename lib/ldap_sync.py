@@ -222,6 +222,8 @@ class LDAP_Roundup_Sync (Log) :
         self.status_sync     = [self.status_obsolete]
         self.ldap_stati      = {}
         self.ldap_groups     = {}
+        # read ldap groups from user_status in Roundup to specify which
+        # LDAP groups to look for
         for id in db.user_status.filter (None, {}, sort = ('+', 'id')) :
             st = db.user_status.getnode (id)
             if st.ldap_group :
@@ -232,12 +234,13 @@ class LDAP_Roundup_Sync (Log) :
                     (self.ldcon, self.base_dn, st.ldap_group, st.ldap_prio)
         self.log.debug ('Groups')
         self.contact_types = {}
+        # uc_type = user_contact_type
         if 'uc_type' in self.db.classes :
             self.contact_types = dict \
                 ((id, self.db.uc_type.get (id, 'name'))
                  for id in self.db.uc_type.list ()
                 )
-        self.compute_attr_map  ()
+        self.compute_attr_map ()
     # end def __init__
 
     def bind_as_user (self, username, password) :
@@ -269,6 +272,8 @@ class LDAP_Roundup_Sync (Log) :
             rn = user.realname
         assert (rn)
         dyn = self.get_dynamic_user (user.id)
+        # check for group external flag in contract type and mark external
+        # users in CN attribute with additional suffix
         if dyn and dyn.contract_type :
             ct = self.db.contract_type.getnode (dyn.contract_type)
             if ct.group_external :
