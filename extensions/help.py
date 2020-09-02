@@ -2072,9 +2072,9 @@ _helptext          = \
     , ""'support++type'               :
       [""'Type of %(Classname)s']
     , ""'sync_foreign_key'            :
-      [""'''Sync-key for synchronizing with external database, leave
-            empty if unsure.
-         '''
+      [ ""'''Sync-key for synchronizing with external database, leave
+             empty if unsure.
+          '''
       ]
     , ""'sync_with_ldap'              :
       [ ""'''Enabled if this %(Classname)s should be synched with ldap --
