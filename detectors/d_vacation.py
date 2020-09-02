@@ -145,6 +145,18 @@ def check_dyn_user_params (db, user, first_day, last_day) :
         d += common.day
 # end def check_dyn_user_params
 
+# These are allowed *without* a check of a valid WP because they allow
+# to leave an impossible state when a WP is changed *after* someone
+# submitted a leave request.
+allowed_stati = dict.fromkeys \
+    (( ('open',             'cancelled')
+    ,  ('submitted',        'cancelled')
+    ,  ('submitted',        'open')
+    ,  ('accepted',         'cancel requested')
+    ,  ('submitted',        'declined')
+    ,  ('cancel requested', 'cancelled')
+    ))
+
 def check_submission (db, cl, nodeid, new_values) :
     """ Check that changes to a leave submission are ok.
         We basically allow changes of first_day, last_day, and time_wp
@@ -176,10 +188,10 @@ def check_submission (db, cl, nodeid, new_values) :
     time_wp   = new_values.get ('time_wp',   cl.get (nodeid, 'time_wp'))
     comment   = new_values.get ('comment',   cl.get (nodeid, 'comment'))
     check_range (db, nodeid, user, first_day, last_day)
-    # Allow cancel even when wp is not valid
+    # Allow several transitions even if WP is not valid
+    # See allowed_stati above for allowed transitions.
     if  (  old_status == new_status
-        or old_status not in ('open', 'submitted')
-        or new_status not in ('open', 'cancelled')
+        or (old_status, new_status) not in allowed_stati
         ) :
         check_wp    (db, time_wp, user, first_day, last_day, comment)
     if old_status in ('open', 'submitted') :
