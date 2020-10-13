@@ -420,7 +420,8 @@ def init (db) :
     db.user.audit ("retire", check_retire)
     db.user.audit ("set",    obsolete_action)
     db.user.audit ("set",    check_pictures)
-    db.user.audit ("set",    check_room_on_restore)
+    if 'room' in db.user.properties :
+        db.user.audit ("set",    check_room_on_restore)
     # ldap sync only on set not create (!)
     if ldap_sync and ldap_sync.check_ldap_config (db) :
         db.user.react ("set", sync_to_ldap, priority = 200)
