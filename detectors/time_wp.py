@@ -106,10 +106,19 @@ def new_time_wp (db, cl, nodeid, new_values) :
     prid = new_values ['project']
     uid  = db.getuid ()
     prj  = db.time_project.getnode (prid)
+    is_auto_wp = False
+    if 'auto_wp' in new_values :
+        ap = db.auto_wp.getnode (new_values ['auto_wp'])
+        if ap.time_project != new_values ['project'] :
+            raise Reject (_ ("Auto-WP %s doesn't match") % _ ('time_project'))
+        # If user may edit dyn. user we allow auto creation of wp
+        if db.security.hasPermission ('Edit', db.getuid (), 'user_dynamic') :
+            is_auto_wp = True
     if  (  uid != prj.responsible
         and uid != prj.deputy
         and not common.user_has_role (db, uid, 'Project')
         and uid != '1'
+        and not is_auto_wp
         ) :
         raise Reject, ("You may only create WPs for your own projects")
     act  = db.time_project_status.get (prj.status, 'active')

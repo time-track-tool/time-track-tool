@@ -79,7 +79,7 @@ def check_auto_wp (db, auto_wp_id, userid) :
     if wp1 :
         wp = db.time_wp.getnode (wp1 [0])
         is_same = wps and wps [0].id == wp.id
-        if not is_same and not wp.end_time or wp.end_time > start :
+        if not is_same and not wp.time_end or wp.time_end > start :
             wps.insert (0, wp)
     # Now we have the first relevant dyn user record and a list of WPs
     # The list of WPs might be empty

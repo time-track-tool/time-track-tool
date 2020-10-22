@@ -3562,7 +3562,12 @@ class Test_Case_Timetracker (_Test_Case_Summary, unittest.TestCase) :
 
     def test_auto_wp (self) :
         self.setup_db ()
+        roles = 'User,Nosy,HR'
+        self.db.user.set (self.user0, roles = roles)
         self.db.commit ()
+        # Log in as user0 after having set roles *without* project
+        self.db.close ()
+        self.db = self.tracker.open (self.username0)
         # Now we have 3 users.
         for id in (self.holiday_tp, self.vacation_tp) :
             tp = self.db.time_project.getnode (id)
