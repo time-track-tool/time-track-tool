@@ -242,11 +242,6 @@ def wp_check_auto_wp (db, cl, nodeid, new_values) :
     assert len (bookers) == 1
     booker = bookers [0]
     freeze = freeze_date (db, booker)
-    if freeze :
-        if start < freeze and 'time_start' in new_values :
-            raise Reject (_ ("No change of auto wp before freeze date"))
-        if end and 'time_end' in new_values and end < freeze :
-            raise Reject (_ ("No change of auto wp before freeze date"))
     # Get dyn user for start
     dyn = user_dynamic.get_user_dynamic (db, booker, start)
     if not dyn and start != end :

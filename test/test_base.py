@@ -3595,6 +3595,7 @@ class Test_Case_Timetracker (_Test_Case_Summary, unittest.TestCase) :
         # '4' '4' 2005-10-01 None
         # '3' '5' 2008-11-03
 
+        self.assertEqual (self.user0, '3')
         u = self.username0
         n = '%s -%s' % (u, '2013-02-23')
         self.db.user_dynamic.set ('1', do_auto_wp = True)
@@ -3629,6 +3630,13 @@ class Test_Case_Timetracker (_Test_Case_Summary, unittest.TestCase) :
             wp = self.db.time_wp.getnode (w)
             actual.append ((wp.auto_wp, wp.name, wp.time_start, wp.time_end))
         self.assertEqual (expected, actual)
+
+        # Freeze the thing on 2013-02-21
+        newfreeze = self.db.daily_record_freeze.create \
+            ( user           = self.user0
+            , frozen         = True
+            , date           = date.Date ('2013-02-21')
+            )
 
         id = self.db.user_dynamic.create \
             ( user              = self.user0
@@ -3699,6 +3707,9 @@ class Test_Case_Timetracker (_Test_Case_Summary, unittest.TestCase) :
             wp = self.db.time_wp.getnode (w)
             actual.append ((wp.auto_wp, wp.name, wp.time_start, wp.time_end))
         self.assertEqual (expected, actual)
+
+        # Thaw
+        self.db.daily_record_freeze.set (newfreeze, frozen = False)
 
         self.db.user_dynamic.set ('1', valid_from = date.Date ('2013-02-03'))
         # Note that the limited record also changes the end date!

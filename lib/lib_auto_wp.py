@@ -45,8 +45,6 @@ def check_auto_wp (db, auto_wp_id, userid) :
     # Very early default should we not find any freeze records
     start  = Date ('1970-01-01')
     freeze = freeze_date (db, userid)
-    if freeze :
-        start = freeze
     auto_wp = db.auto_wp.getnode (auto_wp_id)
     duration_end = auto_wp_duration_end (db, auto_wp, userid)
     # Nothing todo if this ended all before freeze
