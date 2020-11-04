@@ -935,13 +935,13 @@
             ('Register', 'user')" i18n:translate="">Register</a>
         </td>
        </tr>
-       <tr tal:condition="python:request.user.hasPermission ('Password-Reset')">
-        <td colspan="2" align="center">
-         <a href="user?@template=forgotten" i18n:translate="">
-           Lost&nbsp;your&nbsp;login?</a>
-        </td>
-       </tr>
       </tal:block>
+      <tr tal:condition="python:request.user.hasPermission ('Password-Reset')">
+       <td colspan="2" align="center">
+        <a href="user?@template=forgotten" i18n:translate="">
+          Lost&nbsp;your&nbsp;login?</a>
+       </td>
+      </tr>
      </table>
      <script language="javascript">
      <!--
