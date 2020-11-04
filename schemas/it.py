@@ -82,9 +82,15 @@ schemadef.register_class_permissions (db, classes, prop_perms)
 schemadef.allow_user_details \
     (db, 'User', 'Edit', 'address', 'alternate_addresses')
 
-# oh, g'wan, let anonymous access the web interface too
-# NOT really !!!
+# Let anonymous users access the web interface. Note that almost all
+# trackers will need this Permission. The only situation where it's not
+# required is in a tracker that uses an HTTP Basic Authenticated front-end.
 db.security.addPermissionToRole('Anonymous', 'Web Access')
+db.security.addPermission \
+    ( name='Password-Reset'
+    , description='User is allowed to request a password reset'
+    )
+db.security.addPermissionToRole('Anonymous', 'Password-Reset')
 
 # allow search of users for IT
 p = db.security.addPermission \

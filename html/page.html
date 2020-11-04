@@ -872,6 +872,10 @@
   <tal:block tal:condition="is_user">
    <span class="content" metal:define-slot="content"></span>
   </tal:block>
+  <tal:block tal:condition="python:request.user.hasPermission
+             ('Password-Reset')">
+   <span class="content" metal:define-slot="password-reset"/>
+  </tal:block>
 
 <!-- debug output -->
  <pre tal:condition="request/form/debug | nothing" tal:content="request"></pre>
@@ -931,7 +935,7 @@
             ('Register', 'user')" i18n:translate="">Register</a>
         </td>
        </tr>
-       <tr>
+       <tr tal:condition="python:request.user.hasPermission ('Password-Reset')">
         <td colspan="2" align="center">
          <a href="user?@template=forgotten" i18n:translate="">
            Lost&nbsp;your&nbsp;login?</a>
