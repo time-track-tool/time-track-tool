@@ -13,6 +13,7 @@ Role "admin":
  User may use the email interface (Email Access)
  User may view everything (View)
 Role "anonymous":
+ User is allowed to request a password reset (Password-Reset)
  User may access the web interface (Web Access)
 Role "it":
   (Search for "user" only)

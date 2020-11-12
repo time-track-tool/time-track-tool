@@ -27,6 +27,7 @@ Role "adr_readonly":
  User is allowed to edit (some of) their own user details (Edit for "user": ('address', 'alternate_addresses', 'csv_delimiter', 'hide_message_files', 'password', 'queries', 'realname', 'timezone') only)
  User may access the web interface (Web Access)
 Role "anonymous":
+ User is allowed to request a password reset (Password-Reset)
  User may access the web interface (Web Access)
 Role "contact":
  User is allowed to access address (View for "address" only)
