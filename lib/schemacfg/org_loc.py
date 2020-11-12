@@ -57,8 +57,6 @@ def init \
             self.update_properties \
                 ( mail_domain           = String    ()
                 , messages              = Multilink ("msg")
-                , valid_from            = Date      ()
-                , valid_to              = Date      ()
                 )
             Org_Ancestor.__init__ (self, db, classname, ** properties)
         # end def __init__

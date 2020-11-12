@@ -70,6 +70,8 @@ properties = \
         , 'may_purchase'
         , 'name'
         , 'sync_id'
+        , 'valid_from'
+        , 'valid_to'
         ]
       )
     , ( 'part_of_budget'
