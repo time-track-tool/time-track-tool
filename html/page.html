@@ -251,8 +251,9 @@
                           '@sort=-qso_end&@pagesize=20&@startwith=0'
    , ('room', '')       : '@columns=name,location,description&'
                           '@sort=name&@pagesize=50&@startwith=0'
-   , ('sap_cc', '')     : '@columns=deputy,id,name,organisation,responsible,'
-                          'valid&@filter=valid&valid=True'
+   , ('sap_cc', '')     : '@columns=deputy,description,id,name,organisation,'
+                          'responsible,valid&@filter=valid&valid=True&'
+                          '@pagesize=500&@startwith=0'
    , ('sensor', '')     : utils.sensor_query
    , ('summary_report', 'staff')
                         : '@startwith=0&@pagesize=50&'
