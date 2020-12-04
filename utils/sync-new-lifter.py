@@ -30,7 +30,7 @@ d = {}
 if not vap.ldap_prio :
     d ['ldap_prio'] = 10
 if not vap.ldap_group or vap.ldap_group == 's_or_ad-personal-user' :
-    d ['ldap_group'] = 's_or_ad-natural-users'
+    d ['ldap_group'] = 's_or_ad-natural-user'
 
 if d :
     db.user_status.set ('8', **d)
