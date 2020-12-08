@@ -8,38 +8,29 @@
  <tal:block tal:define=
   "batch request/batch;
    pdict python: utils.properties_dict (db, context);
-   props python:
-    ( utils.ExtProperty (utils, pdict ['id'])
-    , utils.ExtProperty (utils, pdict ['name'])
-    , utils.ExtProperty
-        ( utils, pdict ['organisation']
-        , multiselect = 1
-        , filter      = utils.valid_item (now)
-        )
-    , utils.ExtProperty
-        ( utils, pdict ['location']
-        , multiselect = 1
-        , filter      = utils.valid_item (now)
-        )
-    , utils.ExtProperty
-        ( utils, pdict ['valid_from']
-        , get_cssclass = lambda x: 'nobreak'
-        )
-    , utils.ExtProperty
-        ( utils, pdict ['valid_to']
-        , get_cssclass = lambda x: 'nobreak'
-        )
-    , utils.ExtProperty (utils, pdict ['do_leave_process'])
-    , utils.ExtProperty (utils, pdict ['vacation_yearly'])
-    , utils.ExtProperty (utils, pdict ['vacation_legal_year'])
-    , utils.ExtProperty
-        ( utils, pdict ['vac_aliq']
-        , multiselect = 1
-        )
-    , utils.ExtProperty (utils, pdict ['phone'])
-    , utils.ExtProperty (utils, pdict ['group_external'])
-    , utils.ExtProperty (utils, pdict ['sap_lifnr'])
+   prp python:
+    ( ('id',                  {})
+    , ('name',                {})
+    , ( 'organisation'
+      , dict (multiselect = 1, filter = utils.valid_item (now))
+      )
+    , ( 'location'
+      , dict (multiselect = 1, filter = utils.valid_item (now))
+      )
+    , ('valid_from',          dict (get_cssclass = lambda x: 'nobreak'))
+    , ('valid_to',            dict (get_cssclass = lambda x: 'nobreak'))
+    , ('do_leave_process',    {})
+    , ('vacation_yearly',     {})
+    , ('vacation_legal_year', {})
+    , ('vac_aliq',            dict (multiselect = 1))
+    , ('phone',               {})
+    , ('group_external',      {})
+    , ('sap_lifnr',           {})
     );
+   props python:
+       [ utils.ExtProperty (utils, pdict [p [0]], ** p [1])
+         for p in prp if p [0] in pdict
+       ]
    "
   tal:condition="context/is_view_ok">
 
