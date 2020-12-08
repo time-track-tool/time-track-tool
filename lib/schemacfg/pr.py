@@ -53,6 +53,51 @@ def init \
     , ** kw
     ) :
     export = {}
+
+    # Infosec data structures
+    infosec_level = Class \
+        ( db, ''"infosec_level"
+        , name                  = String    ()
+        , order                 = Number    ()
+        )
+    infosec_level.setkey ('name')
+
+    security_req_group = Class \
+        ( db, ''"security_req_group"
+        , name                  = String    ()
+        )
+    security_req_group.setkey ('name')
+
+    product_group = Class \
+        ( db, ''"product_group"
+        , name                  = String    ()
+        , security_req_group    = Link      ('security_req_group')
+        , infosec_level         = Link      ('infosec_level')
+        )
+    product_group.setkey ('name')
+
+    supplier_risk_category = Class \
+        ( db, ''"supplier_risk_category"
+        , name                  = String    ()
+        , order                 = Number    ()
+        )
+    supplier_risk_category.setkey ('name')
+
+    purchase_risk_type = Class \
+        ( db, ''"purchase_risk_type"
+        , name                  = String    ()
+        , order                 = Number    ()
+        )
+    purchase_risk_type.setkey ('name')
+
+    purchase_security_risk = Class \
+        ( db, ''"purchase_security_risk"
+        , supplier_risk_category = Link      ('supplier_risk_category')
+        , infosec_level          = Link      ('infosec_level')
+        , purchase_risk_type     = Link      ('purchase_risk_type')
+        )
+
+    # PR-Tracker data
     p_o_b = Class \
         ( db, ''"part_of_budget"
         , name                  = String    ()
@@ -60,13 +105,6 @@ def init \
         , description           = String    ()
         )
     p_o_b.setkey ('name')
-
-    infosec_level = Class \
-        ( db, ''"infosec_level"
-        , name                  = String    ()
-        , order                 = Number    ()
-        )
-    infosec_level.setkey ('name')
 
     pr_currency = Class \
         ( db, ''"pr_currency"

@@ -1248,7 +1248,330 @@ if 'continent' in db.classes :
     db.continent.create (code = 'OC', name = 'Oceania')
     db.continent.create (code = 'SA', name = 'South America')
 if 'infosec_level' in db.classes :
-    db.infosec_level.create (name = 'Normal',    order = 10)
-    db.infosec_level.create (name = 'High',      order = 20)
-    db.infosec_level.create (name = 'Very High', order = 30)
-    db.infosec_level.create (name = 'Special',   order = 40)
+    il = db.infosec_level
+    il_pub = il.create (name = 'Public',                          order =  5)
+    il_nrm = il.create (name = 'Normal/Internal',                 order = 10)
+    il_hi  = il.create (name = 'Confidential/High',               order = 20)
+    il_vhi = il.create (name = 'Strictly Confidential/Very High', order = 30)
+    #il_sp  = il.create (name = 'Special',                         order = 40)
+if 'security_req_group' in db.classes :
+    srg = db.security_req_group
+    srg_cons = srg.create (name = 'Consulting')
+    srg_cots = srg.create (name = 'COTS Software')
+    srg_hw   = srg.create (name = 'Hardware')
+    srg_swd  = srg.create (name = 'Software development')
+    srg_op   = srg.create (name = 'Operation & Operation Support')
+    srg_clo  = srg.create (name = 'Cloud based services')
+if 'product_group' in db.classes :
+    db.product_group.create \
+        ( name               = 'Phone & Internet'
+        , security_req_group = srg_op
+        , infosec_level      = il_vhi
+        )
+    db.product_group.create \
+        ( name               = 'Advertisement'
+        , security_req_group = srg_cons
+        , infosec_level      = il_nrm
+        )
+    db.product_group.create \
+        ( name               = 'Services reg. Marketing'
+        , security_req_group = srg_cons
+        , infosec_level      = il_nrm
+        )
+    db.product_group.create \
+        ( name               = 'Maintenance'
+        , security_req_group = srg_op
+        , infosec_level      = il_hi
+        )
+    db.product_group.create \
+        ( name               = 'Calibration for measuring instruments'
+        , security_req_group = srg_cons
+        , infosec_level      = il_hi
+        )
+    db.product_group.create \
+        ( name               = 'Employee leasing'
+        , security_req_group = srg_cons
+        , infosec_level      = il_hi
+        )
+    db.product_group.create \
+        ( name               = 'Security'
+        , security_req_group = srg_cons
+        , infosec_level      = il_vhi
+        )
+    db.product_group.create \
+        ( name               = 'Transport'
+        , security_req_group = srg_cons
+        , infosec_level      = il_hi
+        )
+    db.product_group.create \
+        ( name               = 'Software development'
+        , security_req_group = srg_swd
+        , infosec_level      = il_vhi
+        )
+    db.product_group.create \
+        ( name               = 'Hardware development'
+        , security_req_group = srg_swd
+        , infosec_level      = il_vhi
+        )
+    db.product_group.create \
+        ( name               = 'Technical Services (general)'
+        , security_req_group = srg_cons
+        , infosec_level      = il_nrm
+        )
+    db.product_group.create \
+        ( name               = 'Repair Services'
+        , security_req_group = srg_cons
+        , infosec_level      = il_nrm
+        )
+    db.product_group.create \
+        ( name               = '(Environment) Test Services'
+        , security_req_group = srg_cons
+        , infosec_level      = il_hi
+        )
+    db.product_group.create \
+        ( name               = 'Industrialization'
+        , security_req_group = srg_op
+        , infosec_level      = il_vhi
+        )
+    db.product_group.create \
+        ( name               = 'IT Services general (Cloud)'
+        , security_req_group = srg_clo
+        , infosec_level      = il_hi
+        )
+    db.product_group.create \
+        ( name               = 'IT Support'
+        , security_req_group = srg_op
+        , infosec_level      = il_hi
+        )
+    db.product_group.create \
+        ( name               = 'Trainings'
+        , security_req_group = srg_cons
+        , infosec_level      = il_nrm
+        )
+    db.product_group.create \
+        ( name               = 'Lawyers etc.'
+        , security_req_group = srg_cons
+        , infosec_level      = il_hi
+        )
+    db.product_group.create \
+        ( name               = 'Tax, financial advice'
+        , security_req_group = srg_cons
+        , infosec_level      = il_vhi
+        )
+    db.product_group.create \
+        ( name               = 'Consulting general'
+        , security_req_group = srg_cons
+        , infosec_level      = il_nrm
+        )
+    db.product_group.create \
+        ( name               = 'Audit'
+        , security_req_group = srg_cons
+        , infosec_level      = il_hi
+        )
+    db.product_group.create \
+        ( name               = 'Bank and Insurance'
+        , security_req_group = srg_cons
+        , infosec_level      = il_hi
+        )
+    db.product_group.create \
+        ( name               = 'Waste'
+        , security_req_group = srg_cons
+        , infosec_level      = il_nrm
+        )
+    db.product_group.create \
+        ( name               = 'Energy (Electricity, gas, water, …)'
+        , security_req_group = srg_op
+        , infosec_level      = il_vhi
+        )
+    db.product_group.create \
+        ( name               = 'Cleaning Services'
+        , security_req_group = srg_cons
+        , infosec_level      = il_hi
+        )
+    db.product_group.create \
+        ( name               = 'EMS Samples/Prototypes'
+        , security_req_group = srg_op
+        , infosec_level      = il_vhi
+        )
+    db.product_group.create \
+        ( name               = 'EMS Serial Production'
+        , security_req_group = srg_op
+        , infosec_level      = il_vhi
+        )
+    db.product_group.create \
+        ( name               = 'EMS NRE'
+        , security_req_group = srg_op
+        , infosec_level      = il_vhi
+        )
+    db.product_group.create \
+        ( name               = 'Prototypes general'
+        , security_req_group = srg_op
+        , infosec_level      = il_vhi
+        )
+    db.product_group.create \
+        ( name               = 'Displays'
+        , security_req_group = srg_cots
+        , infosec_level      = il_hi
+        )
+    db.product_group.create \
+        ( name               = 'ECUs 3rd Party / Stock'
+        , security_req_group = srg_cots
+        , infosec_level      = il_hi
+        )
+    db.product_group.create \
+        ( name               = 'Chips'
+        , security_req_group = srg_cots
+        , infosec_level      = il_hi
+        )
+    db.product_group.create \
+        ( name               = 'Hardware (COTS) 3rd Party'
+        , security_req_group = srg_cots
+        , infosec_level      = il_hi
+        )
+    db.product_group.create \
+        ( name               = 'Marketing Products (gifts, giveaways)'
+        , security_req_group = srg_cots
+        , infosec_level      = il_hi
+        )
+    db.product_group.create \
+        ( name               = 'Tools (Testing, measuring,…)'
+        , security_req_group = srg_cots
+        , infosec_level      = il_hi
+        )
+    db.product_group.create \
+        ( name               = 'Software buy'
+        , security_req_group = srg_cots
+        , infosec_level      = il_nrm
+        )
+    db.product_group.create \
+        ( name               = 'Software rent, subscription'
+        , security_req_group = srg_cots
+        , infosec_level      = il_nrm
+        )
+    db.product_group.create \
+        ( name               = 'Hardware buy'
+        , security_req_group = srg_cots
+        , infosec_level      = il_hi
+        )
+    db.product_group.create \
+        ( name               = 'Hardware rent'
+        , security_req_group = srg_cots
+        , infosec_level      = il_hi
+        )
+if 'supplier_risk_category' in db.classes :
+    src_low = db.supplier_risk_category.create (name = 'Low',       order = 10)
+    src_med = db.supplier_risk_category.create (name = 'Medium',    order = 20)
+    src_hi  = db.supplier_risk_category.create (name = 'High',      order = 30)
+    src_vhi = db.supplier_risk_category.create (name = 'Very High', order = 40)
+if 'purchase_risk_type' in db.classes :
+    prt = db.purchase_risk_type
+    prt_low = prt.create (name = 'Low',             order = 10)
+    prt_med = prt.create (name = 'Medium',          order = 20)
+    prt_hi  = prt.create (name = 'High',            order = 30)
+    prt_vhi = prt.create (name = 'Very High',       order = 40)
+    prt_dnp = prt.create (name = 'Do not purchase', order = 50)
+if 'purchase_security_risk' in db.classes :
+    # First bunch without a supplier_risk_category:
+    # Supplier not in LAS or not evaluated
+    db.purchase_security_risk.create \
+        ( infosec_level      = il_pub
+        , purchase_risk_type = prt_med
+        )
+    db.purchase_security_risk.create \
+        ( infosec_level      = il_nrm
+        , purchase_risk_type = prt_hi
+        )
+    db.purchase_security_risk.create \
+        ( infosec_level      = il_hi
+        , purchase_risk_type = prt_vhi
+        )
+    db.purchase_security_risk.create \
+        ( infosec_level      = il_vhi
+        , purchase_risk_type = prt_dnp
+        )
+    # Then entries for each supplier_risk_category:
+    # Low:
+    db.purchase_security_risk.create \
+        ( supplier_risk_category = src_low
+        , infosec_level          = il_pub
+        , purchase_risk_type     = prt_low
+        )
+    db.purchase_security_risk.create \
+        ( supplier_risk_category = src_low
+        , infosec_level          = il_nrm
+        , purchase_risk_type     = prt_low
+        )
+    db.purchase_security_risk.create \
+        ( supplier_risk_category = src_low
+        , infosec_level          = il_hi
+        , purchase_risk_type     = prt_low
+        )
+    db.purchase_security_risk.create \
+        ( supplier_risk_category = src_low
+        , infosec_level          = il_vhi
+        , purchase_risk_type     = prt_med
+        )
+    # Medium:
+    db.purchase_security_risk.create \
+        ( supplier_risk_category = src_med
+        , infosec_level          = il_pub
+        , purchase_risk_type     = prt_low
+        )
+    db.purchase_security_risk.create \
+        ( supplier_risk_category = src_med
+        , infosec_level          = il_nrm
+        , purchase_risk_type     = prt_med
+        )
+    db.purchase_security_risk.create \
+        ( supplier_risk_category = src_med
+        , infosec_level          = il_hi
+        , purchase_risk_type     = prt_hi
+        )
+    db.purchase_security_risk.create \
+        ( supplier_risk_category = src_med
+        , infosec_level          = il_vhi
+        , purchase_risk_type     = prt_vhi
+        )
+    # High:
+    db.purchase_security_risk.create \
+        ( supplier_risk_category = src_hi
+        , infosec_level          = il_pub
+        , purchase_risk_type     = prt_med
+        )
+    db.purchase_security_risk.create \
+        ( supplier_risk_category = src_hi
+        , infosec_level          = il_nrm
+        , purchase_risk_type     = prt_hi
+        )
+    db.purchase_security_risk.create \
+        ( supplier_risk_category = src_hi
+        , infosec_level          = il_hi
+        , purchase_risk_type     = prt_vhi
+        )
+    db.purchase_security_risk.create \
+        ( supplier_risk_category = src_hi
+        , infosec_level          = il_vhi
+        , purchase_risk_type     = prt_dnp
+        )
+    # Very High:
+    db.purchase_security_risk.create \
+        ( supplier_risk_category = src_vhi
+        , infosec_level          = il_pub
+        , purchase_risk_type     = prt_hi
+        )
+    db.purchase_security_risk.create \
+        ( supplier_risk_category = src_vhi
+        , infosec_level          = il_nrm
+        , purchase_risk_type     = prt_dnp
+        )
+    db.purchase_security_risk.create \
+        ( supplier_risk_category = src_vhi
+        , infosec_level          = il_hi
+        , purchase_risk_type     = prt_dnp
+        )
+    db.purchase_security_risk.create \
+        ( supplier_risk_category = src_vhi
+        , infosec_level          = il_vhi
+        , purchase_risk_type     = prt_dnp
+        )
+
