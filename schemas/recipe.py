@@ -41,6 +41,7 @@ schemas = \
     )
 
 importer = schemadef.Importer (globals (), schemas)
+importer.update_security ()
 
 # Let anonymous users access the web interface. Note that almost all
 # trackers will need this Permission. The only situation where it's not

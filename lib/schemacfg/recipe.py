@@ -47,13 +47,9 @@ def init (db, Link, Multilink, Number, String, Class, ** kw) :
 # end def init
 
 def security (db, ** kw) :
-    roles = \
-        [ ("User", "Normal user of the system")
-        ]
     classes = \
         [ ("substance",                    ["User"], ["User"])
         , ("ingredient_used_by_substance", ["User"], ["User"])
         ]
-    schemadef.register_roles (db, roles)
     schemadef.register_class_permissions (db, classes, [])
 # end def security
