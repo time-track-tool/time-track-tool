@@ -973,6 +973,10 @@ _helptext          = \
             information security requirements.
          '''
       ]
+    , ""'ingredient'                  :
+      [""'''%(Property)s of a recipe.''' ]
+    , ""'ingredient.name'             :
+      [""'''Name of ingredient of a recipe.''' ]
     , ""'inherit_ext'                 :
       [""'''If this flag is set, and an issue is a container, it inerits
             external user permissions from the next higher-level
@@ -1966,6 +1970,10 @@ _helptext          = \
              "Substitute" for delegating time record approval.
           '''
       ]
+    , ""'substance'                   :
+      [""'''%(Property)s described by a recipe.''' ]
+    , ""'substance.name'              :
+      [""'''Name of substance described by a recipe.''' ]
     , ""'supplier'                    : [supplier]
     , ""'summary'                     :
       [""'''Short summary of this message (usually first line)''']
