@@ -124,7 +124,7 @@ def button_submit_to (db, user, date) :
                 document.edit_daily_record.submit ();
             }
             ">
-        ''' % (_ ("Submit to %(nickname)s" % locals ()), date)
+        ''' % (_ ("Submit to supervisor"), date)
 # end def button_submit_to
 
 def button_action (date, action, value) :
