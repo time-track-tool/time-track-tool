@@ -826,7 +826,7 @@ msgid "new %(adr_to)s from %(adr_frm)s"
 msgstr "Neue %(adr_to)s aus %(adr_frm)s"
 
 #, python-format
-msgid "Submit to supervisor"
+msgid "Submit"
 msgstr ""
 
 msgid "supervisor"

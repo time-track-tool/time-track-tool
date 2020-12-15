@@ -87,7 +87,7 @@ def approve_leave_submissions_hr (db, context, request) :
 
 class Leave_Buttons (object) :
     user_buttons = dict \
-        (( ('open',             ( ('submitted',        ""'Submit to supervisor')
+        (( ('open',             ( ('submitted',        ""'Submit')
                                 , ('cancelled',        ""'Cancel')
                                 )
            )                   
