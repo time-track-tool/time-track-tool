@@ -87,7 +87,7 @@ def approve_leave_submissions_hr (db, context, request) :
 
 class Leave_Buttons (object) :
     user_buttons = dict \
-        (( ('open',             ( ('submitted',        ""'Submit to %(sunick)s')
+        (( ('open',             ( ('submitted',        ""'Submit')
                                 , ('cancelled',        ""'Cancel')
                                 )
            )                   
@@ -405,8 +405,7 @@ class Leave_Display (object) :
             ret.append (' <tr>')
             ret.append ('  <td class="name">%s</td>' % user.lastname)
             ret.append ('  <td class="name">%s</td>' % user.firstname)
-            ret.append ('  <td class="name">%s</td>'
-                       % (user.nickname and user.nickname.upper () or ''))
+            ret.append ('  <td class="name">%s</td>' % user.username)
             loc = None
             dyn = user_dynamic.get_user_dynamic (db, u, self.now)
             if dyn and dyn.org_location :
@@ -453,7 +452,10 @@ class Leave_Display (object) :
     def header_line (self) :
         ret = []
         ret.append (' <tr>')
-        ret.append ('  <th/><th/><th/>')
+        ret.append ('  <th class="name">Last name</th>'
+                    '  <th class="name">First Name</th>'
+                    '  <th class="name">Username</th>'
+                    )
         d = self.fdd
         while d <= self.ldd :
             ret.append ('  <th>%s</th>' % d.day)

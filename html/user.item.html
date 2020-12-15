@@ -48,11 +48,6 @@
      <td tal:content="structure context/lastname/field"/>
     </tr>
     <tr tal:condition="python:
-        'nickname' in bclass.properties and context.nickname.is_view_ok ()">
-     <th tal:content="structure python:utils.fieldname('user', 'nickname')"/>
-     <td tal:content="structure context/nickname/field"/>
-    </tr>
-    <tr tal:condition="python:
         'aux_username' in bclass.properties
         and context.aux_username.is_view_ok ()">
      <th tal:content="structure python:utils.fieldname

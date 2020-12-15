@@ -50,16 +50,6 @@
            , item = context.user
            ).formatlink ()"/>
        </tal:block>
-       (<span tal:condition="python: 'nickname' in db._db.user.properties"
-              tal:content="structure python:utils.ExtProperty
-           ( utils, context.user.nickname
-           , item = context.user
-           ).formatlink ()"/><span
-              tal:condition="python: 'nickname' not in db._db.user.properties"
-              tal:content="structure python:utils.ExtProperty
-           ( utils, context.user.username
-           , item = context.user
-           ).formatlink ()"/>)
        <input tal:condition="not:context/id" type="hidden" name="user"
            tal:attributes="value python: context.user.id"/>
        <script>

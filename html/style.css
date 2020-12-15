@@ -852,6 +852,8 @@ table.timesheet th {
 table.timesheet th.name {
         text-align: left;
         font-weight: 700;
+        padding-left: 5pt;
+        padding-right: 5pt;
 }
 table.timesheet td {
         background: white;
