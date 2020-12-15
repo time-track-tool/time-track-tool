@@ -189,7 +189,7 @@ def main () :
         , ('med', 'internal',              'med')
         , ('med', 'normal',                'med')
         , ('med', 'confidential',          'hi')
-        , ('low', 'high',                  'hi')
+        , ('med', 'high',                  'hi')
         , ('med', 'strictly confidential', 'vhi')
         , ('med', 'very high',             'vhi')
         # High:
@@ -213,13 +213,14 @@ def main () :
     for src, il, prt in psr_table :
         d  = dict \
             ( infosec_level      = il_ids  [il]
-            , purchase_risk_type = prt_ids [prt]
             )
         dd = dict (d)
+        d ['purchase_risk_type'] = prt_ids [prt]
         if src is None :
             dd ['supplier_risk_category'] = '-1'
         else :
             dd ['supplier_risk_category'] = src_ids [src]
+            d  ['supplier_risk_category'] = src_ids [src]
         ids = db.purchase_security_risk.filter (None, dd)
         if ids :
             assert len (ids) == 1
