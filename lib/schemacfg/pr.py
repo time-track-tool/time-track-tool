@@ -59,12 +59,14 @@ def init \
         ( db, ''"infosec_level"
         , name                  = String    ()
         , order                 = Number    ()
+        , is_consulting         = Boolean   ()
         )
     infosec_level.setkey ('name')
 
     security_req_group = Class \
         ( db, ''"security_req_group"
         , name                  = String    ()
+        , is_consulting         = Boolean   ()
         )
     security_req_group.setkey ('name')
 
@@ -73,6 +75,7 @@ def init \
         , name                  = String    ()
         , security_req_group    = Link      ('security_req_group')
         , infosec_level         = Link      ('infosec_level')
+        , sap_ref               = String    ()
         )
     product_group.setkey ('name')
 
@@ -95,6 +98,14 @@ def init \
         , supplier_risk_category = Link      ('supplier_risk_category')
         , infosec_level          = Link      ('infosec_level')
         , purchase_risk_type     = Link      ('purchase_risk_type')
+        )
+
+    pr_supplier_risk = Class \
+        ( db, ''"pr_supplier_risk"
+        , supplier               = Link      ("pr_supplier")
+        , organisation           = Link      ("organisation")
+        , security_req_group     = Link      ("security_req_group")
+        , supplier_risk_category = Link      ("supplier_risk_category")
         )
 
     # PR-Tracker data
