@@ -4379,3 +4379,21 @@ msgstr "Productivity Permission"
 
 msgid "permission_for"
 msgstr "Permission for"
+
+msgid "security_req_group"
+msgstr "Security requirements group"
+
+msgid "supplier_risk_category"
+msgstr "Supplier risk category"
+
+msgid "purchase_risk_type"
+msgstr "Purchase risk type"
+
+msgid "purchase_security_risk"
+msgstr "Purchase security risk"
+
+msgid "pr_supplier_risk"
+msgstr "Supplier risk"
+
+msgid "is_consulting"
+msgstr "is consulting"

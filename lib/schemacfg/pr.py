@@ -437,6 +437,11 @@ def security (db, ** kw) :
         , ("pr_offer_item",      ["PR-View"],           [])
         , ("internal_order",     ["User"],              [])
         , ("pr_ext_resource",    ["User"],              [])
+        , ("security_req_group", ["User"],              ["Procurement-Admin"])
+        , ("product_group",      ["User"],              ["Procurement-Admin"])
+        , ("supplier_risk_category", ["User"],          [])
+        , ("purchase_risk_type", ["User"],              [])
+        , ("pr_supplier_risk",   ["User"],              ["Procurement-Admin"])
         ]
 
     prop_perms = \
