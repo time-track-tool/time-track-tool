@@ -4,6 +4,7 @@ from __future__ import print_function
 import os
 import re
 import requests
+from requests.packages.urllib3.exceptions import InsecureRequestWarning
 
 from csv      import DictReader
 from roundup  import instance
@@ -25,6 +26,9 @@ class Importer (object) :
         tracker   = instance.open (args.dir)
         self.db   = tracker.open (args.user)
         self.f_in = None
+        self.chk  = not self.args.no_check_certificate
+        if not self.chk :
+            requests.packages.urllib3.disable_warnings(InsecureRequestWarning)
     # end def __init__
 
     def get_latest_export_url (self) :
@@ -36,7 +40,7 @@ class Importer (object) :
             pattern. We sort these by name (the date format above is
             sortable) and return the latest and greatest.
         """
-        page = requests.get (self.url).text
+        page = requests.get (self.url, verify = self.chk).text
         soup = BeautifulSoup (page, 'html.parser')
         res  = []
         for a in soup.find_all ('a') :
@@ -98,7 +102,7 @@ class Importer (object) :
         else :
             fn  = self.get_latest_export_url ()
             url = '/'.join ((self.url, fn))
-            gr  = requests.get (url)
+            gr  = requests.get (url, verify = self.chk)
             self.f_in = gr.iter_lines ()
     # end def open
 
@@ -154,6 +158,11 @@ def main () :
         , dest    = 'dir'
         , help    = 'Tracker instance directory default: "%(default)s"'
         , default = '.'
+        )
+    cmd.add_argument \
+        ( '-C', '--no-check-certificate'
+        , help    = 'Do not check issuer certificate for https url'
+        , action  = 'store_true'
         )
     cmd.add_argument \
         ( '-D', '--delimiter'
