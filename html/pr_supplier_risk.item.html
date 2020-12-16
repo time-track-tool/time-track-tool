@@ -1,0 +1,53 @@
+<tal:block metal:use-macro="templates/page/macros/icing">
+ <title metal:fill-slot="head_title">
+  <tal:block tal:condition="context/id" i18n:translate="">
+   <span tal:replace="string:${Classname}: ${context/id}"
+    i18n:name="classname_id"/>
+   created by
+   <span tal:replace="context/creator" i18n:name="creator"/>
+  </tal:block>
+  <tal:block tal:condition="not:context/id" i18n:translate="">New
+   <span tal:replace="Classname" i18n:name="Classname" />
+  </tal:block>
+ </title>
+  <tal:block metal:fill-slot="create_or_query">
+    <tal:block
+     metal:use-macro="templates/page/macros/create_or_query_new_tracker_item" />
+  </tal:block>
+
+ <tal:block metal:fill-slot="content">
+  <tal:block tal:define=
+    " use_labelprop       python:0
+    ; has_resp            python:0
+    ; required_attributes
+        string:supplier,organisation,security_req_group,supplier_risk_category
+    ">
+   <tal:block metal:use-macro="templates/page/macros/formatted_class">
+    <tal:block metal:fill-slot="formatted_class_content">
+     <tr>
+      <th class="required" tal:content="structure python:utils.fieldname
+          (classname, 'supplier')"/>
+      <td tal:content="structure python:context.supplier.menu ()" />
+     </tr>
+     <tr>
+      <th class="required" tal:content="structure python:utils.fieldname
+          (classname, 'organisation')"/>
+      <td tal:content="structure python:context.organisation.menu ()" />
+     </tr>
+     <tr>
+      <th class="required" tal:content="structure python:utils.fieldname
+          (classname, 'security_req_group')"/>
+      <td tal:content="structure python:context.security_req_group.menu ()" />
+     </tr>
+     <tr>
+      <th class="required" tal:content="structure python:utils.fieldname
+          (classname, 'supplier_risk_category')"/>
+      <td tal:content="structure python:
+          context.supplier_risk_category.menu ()" />
+     </tr>
+    </tal:block>
+   </tal:block>
+  </tal:block>
+ </tal:block>
+
+</tal:block>

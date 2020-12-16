@@ -883,6 +883,57 @@ def check_supplier_rating (db, cl, nodeid, new_values) :
         )
 # end def check_supplier_rating
 
+def check_supplier_risk (db, cl, nodeid, new_values) :
+    """ Check risk entries of supplier: each combination
+        organisation+security_req_group may occur only once
+    """
+    common.require_attributes \
+        ( _, cl, nodeid, new_values
+        , 'organisation'
+        , 'supplier'
+        , 'security_req_group'
+        , 'supplier_risk_category'
+        )
+    org = new_values.get ('organisation')
+    sup = new_values.get ('supplier')
+    srg = new_values.get ('security_req_group')
+    if not org :
+        org = cl.get (nodeid, 'organisation')
+    if not sup :
+        sup = cl.get (nodeid, 'supplier')
+    if not srg :
+        srg = cl.get (nodeid, 'security_req_group')
+    common.check_unique \
+        ( _, cl, nodeid
+        , supplier           = sup
+        , organisation       = org
+        , security_req_group = srg
+        )
+# end def check_supplier_risk
+
+def check_psr (db, cl, nodeid, new_values) :
+    """ Check purchase_security_risk entries: each combination
+        infosec_level+supplier_risk_category may occur only once
+    """
+    common.require_attributes \
+        ( _, cl, nodeid, new_values
+        , 'infosec_level'
+        , 'purchase_risk_type'
+        , 'supplier_risk_category'
+        )
+    il  = new_values.get ('infosec_level')
+    src = new_values.get ('supplier_risk_category')
+    if not il :
+        il  = cl.get (nodeid, 'infosec_level')
+    if not src :
+        src = cl.get (nodeid, 'supplier_risk_category')
+    common.check_unique \
+        ( _, cl, nodeid
+        , infosec_level          = il
+        , supplier_risk_category = src
+        )
+# end def check_psr
+
 def check_no_change (db, cl, nodeid, new_values) :
     if new_values and new_values.keys () != ['name'] :
         classname = cl.classname
@@ -1009,7 +1060,12 @@ def init (db) :
     db.pr_currency.audit        ("set",    check_currency)
     db.pr_approval_order.audit  ("create", pao_check_roles)
     db.pr_approval_order.audit  ("set",    pao_check_roles)
+    db.pr_supplier_rating.audit ("create", check_supplier_rating)
     db.pr_supplier_rating.audit ("set",    check_supplier_rating)
     db.pr_supplier.audit        ("create", namelen)
     db.pr_supplier.audit        ("set",    namelen)
+    db.pr_supplier_risk.audit   ("create", check_supplier_risk)
+    db.pr_supplier_risk.audit   ("set",    check_supplier_risk)
+    db.purchase_security_risk.audit ("create", check_psr)
+    db.purchase_security_risk.audit ("set",    check_psr)
 # end def init

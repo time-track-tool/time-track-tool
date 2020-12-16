@@ -1,0 +1,38 @@
+<tal:block metal:use-macro="templates/page/macros/icing">
+<tal:block metal:fill-slot="create_or_query">
+ <tal:block 
+  metal:use-macro="templates/page/macros/create_or_query_new_tracker_item" />
+</tal:block>
+
+<tal:block metal:fill-slot="content">
+ <tal:block tal:define=
+  "batch request/batch;
+   pdict python: utils.properties_dict (db, context);
+   vst python: utils.valid_user_stati (db);
+   props python:
+    ( utils.ExtProperty (utils, pdict ['id'])
+    , utils.ExtProperty (utils, pdict ['supplier'],           multiselect = 1)
+    , utils.ExtProperty (utils, pdict ['organisation'],       multiselect = 1)
+    , utils.ExtProperty (utils, pdict ['security_req_group'], multiselect = 1)
+    , utils.ExtProperty (utils, pdict ['supplier_risk_category'], multiselect=1)
+    , utils.ExtProperty
+        ( utils, pdict ['actor']
+        , help_props  = ['realname']
+        , filter = dict (status = vst)
+        )
+    , utils.ExtProperty (utils, pdict ['creation'])
+    , utils.ExtProperty
+        ( utils, pdict ['creator']
+        , help_props  = ['realname']
+        , filter = dict (status = vst)
+        )
+    , utils.ExtProperty (utils, pdict ['activity'])
+    );
+   "
+  tal:condition="context/is_view_ok">
+
+  <tal:block metal:use-macro="templates/page/macros/search_results"/>
+  <tal:block metal:use-macro="templates/page/macros/simple_search_form"/>
+ </tal:block>
+</tal:block>
+</tal:block>
