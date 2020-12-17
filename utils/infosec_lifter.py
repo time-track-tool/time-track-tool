@@ -1,7 +1,8 @@
 #!/usr/bin/python
 
+import sys
 from argparse import ArgumentParser
-from roundup  import instance
+from roundup  import instance, date
 from csv      import DictReader
 
 class CSV_Iter :
@@ -33,11 +34,45 @@ def pg_iter (fn) :
             yield rec
 # end def pg_iter
 
+def las_iter (lasfile) :
+    with open (lasfile, 'r') as f :
+        for line in f :
+            if line.startswith (';;;Type of Supplier') :
+                break
+        las = DictReader (f, delimiter = ';')
+        for rec in las :
+            yield rec
+# end def las_iter
+
+def insert_supplier_risk (db, sup, org, srcs) :
+    for srg in srcs :
+        src = srcs [srg]
+        d   = dict \
+            (supplier = sup, organisation = org, security_req_group = srg)
+        srs = db.pr_supplier_risk.filter (None, d)
+        assert len (srs) <= 1
+        if len (srs) :
+            sr = db.pr_supplier_risk.getnode (srs [0])
+            if sr.supplier_risk_category != src :
+                db.pr_supplier_risk.set (sr.id, supplier_risk_category = src)
+        else :
+            db.pr_supplier_risk.create \
+                ( supplier               = sup
+                , organisation           = org
+                , security_req_group     = srg
+                , supplier_risk_category = src
+                )
+# end def insert_supplier_risk
+
 def main () :
     cmd = ArgumentParser ()
     cmd.add_argument \
         ( 'productgroups'
         , help = 'Product group matrix, SAP numbers'
+        )
+    cmd.add_argument \
+        ( 'las'
+        , help = 'LAS with supplier risk'
         )
     cmd.add_argument \
         ( str ('-d'), str ('--directory')
@@ -48,6 +83,9 @@ def main () :
     args    = cmd.parse_args ()
     tracker = instance.open (args.dir)
     db      = tracker.open ('admin')
+
+    sys.path.insert (1, args.dir)
+    from common import pretty_range
 
     il = db.infosec_level
     il_ids = {}
@@ -91,19 +129,27 @@ def main () :
         [ ('Consulting',        'Consulting',                    True)
         , ('Consulting_small',  'Consulting_small',              True)
         , ('COTS',              'COTS',                          False)
-        , ('Operation',         'Operation & Operation Support', False)
+        , ('Operation',         'Operation & Operation support', False)
         , ('SW-Dev',            'Software development',          False)
 #       , ('hw',                'Hardware',                      False)
         , ('Operation / cloud', 'Cloud based services',          False)
         ]
     srg = db.security_req_group
     srg_ids = {}
+    srg_by_name = {}
     for var, name, is_consulting in srg_table :
         try :
             v = srg.lookup (name)
         except KeyError :
             v = srg.create (name = name, is_consulting = is_consulting)
         srg_ids [var] = v
+        srg_by_name [name] = v
+    # Lifting of broken LAS csv:
+    srg_by_name ['COTS Software'] = srg_by_name ['COTS']
+    del srg_by_name ['COTS']
+    srg_by_name ['Cloud bases services (*AAS)'] = srg_by_name \
+        ['Cloud based services']
+    del srg_by_name ['Cloud based services']
 
     for rec in pg_iter (args.productgroups) :
         srg = rec ['ISEC-Requirements group'].strip ()
@@ -136,6 +182,7 @@ def main () :
             db.product_group.create (** d)
 
     src_ids = {}
+    src_by_name = {}
     src_table = \
         [ ('low', 'Low',       10)
         , ('med', 'Medium',    20)
@@ -148,6 +195,7 @@ def main () :
         except KeyError :
             id = db.supplier_risk_category.create (name = name, order = order)
         src_ids [var] = id
+        src_by_name [name] = id
 
     prt = db.purchase_risk_type
     prt_ids = {}
@@ -227,6 +275,34 @@ def main () :
             id = ids [0]
         else :
             id = db.purchase_security_risk.create (**d)
+    for lasrec in las_iter (args.las) :
+        if not lasrec ['Consulting_small'] :
+            continue
+        entity = lasrec ['Entity'].strip ()
+        sname  = lasrec ['Name of Supplier']
+        try :
+            sup = db.pr_supplier.lookup (sname)
+        except KeyError :
+            print ("Supplier not found: %s" % sname)
+            continue
+        srcs   = {}
+        for k in srg_by_name :
+            srgid = srg_by_name [k]
+            srcs [srgid] = src_by_name [lasrec [k].strip ()]
+        if entity :
+            try :
+                org = db.organisation.lookup (entity)
+            except KeyError :
+                print ("Organisation not found: %s" % entity)
+                continue
+            insert_supplier_risk (db, sup, org, srcs)
+        else :
+            # iter over valid orgs
+            d = dict (may_purchase = True)
+            d ['valid_from'] = ';.,-'
+            d ['valid_to']   = '.;,-'
+            for org in db.organisation.filter (None, d) :
+                insert_supplier_risk (db, sup, org, srcs)
     db.commit ()
 # end def main
 
