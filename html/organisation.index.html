@@ -8,23 +8,21 @@
  <tal:block tal:define=
   "batch request/batch;
    pdict python: utils.properties_dict (db, context);
-   props python:
-    ( utils.ExtProperty (utils, pdict ['id'])
-    , utils.ExtProperty (utils, pdict ['name'])
-    , utils.ExtProperty (utils, pdict ['company_code'])
-    , utils.ExtProperty (utils, pdict ['description'])
-    , utils.ExtProperty
-        ( utils, pdict ['valid_from']
-        , get_cssclass = lambda x: 'nobreak'
-        )
-    , utils.ExtProperty
-        ( utils, pdict ['valid_to']
-        , get_cssclass = lambda x: 'nobreak'
-        )
-    , utils.ExtProperty (utils, pdict ['may_purchase'])
-    , utils.ExtProperty (utils, pdict ['mail_domain'])
-    , utils.ExtProperty (utils, pdict ['org_group'], multiselect = True)
+   prp python:
+    ( ('id',           {})
+    , ('name',         {})
+    , ('company_code', {})
+    , ('description',  {})
+    , ('valid_from',   dict (get_cssclass = lambda x: 'nobreak'))
+    , ('valid_to',     dict (get_cssclass = lambda x: 'nobreak'))
+    , ('may_purchase', {})
+    , ('mail_domain',  {})
+    , ('org_group',    dict (multiselect = True))
     );
+   props python:
+       [ utils.ExtProperty (utils, pdict [p [0]], ** p [1])
+         for p in prp if p [0] in pdict
+       ]
    "
   tal:condition="context/is_view_ok">
 

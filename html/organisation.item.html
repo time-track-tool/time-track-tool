@@ -44,12 +44,12 @@
          (classname, 'may_purchase')"/>
      <td tal:content="structure python:context.may_purchase.field ()"/>
     </tr>
-    <tr>
+    <tr tal:condition="python:'mail_domain' in bclass.properties">
      <th tal:content="structure python:utils.fieldname
          (classname, 'mail_domain')"/>
      <td tal:content="structure python:context.mail_domain.field ()"/>
     </tr>
-    <tr>
+    <tr tal:condition="python:'org_group' in bclass.properties">
      <th tal:content="structure python:utils.fieldname
          (classname, 'org_group')"/>
      <td tal:content="structure python:context.org_group.menu ()"/>
