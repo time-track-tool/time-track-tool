@@ -322,8 +322,6 @@ def init \
                 , special_approval      = Multilink ("user", do_journal = 'no')
                 , pr_ext_resource       = Link      ("pr_ext_resource")
                 , issue_ids             = String    ()
-                , infosec_project       = Boolean   ()
-                , infosec_pt            = Boolean   ()
                 , infosec_level         = Link      ( "infosec_level"
                                                     , do_journal = 'no'
                                                     )

@@ -3090,9 +3090,6 @@ msgstr "Terms & conditions"
 msgid "order_number"
 msgstr ""
 
-msgid "infosec_pt"
-msgstr "InfoSec Purchase Type"
-
 msgid "safety_critical"
 msgstr "Safety critical"
 
@@ -3107,9 +3104,6 @@ msgstr "SAP Reference"
 
 msgid "termination_date"
 msgstr "Termination date"
-
-msgid "infosec_project"
-msgstr "InfoSec Project"
 
 msgid "continuous_obligation"
 msgstr "Continuous obligation"
