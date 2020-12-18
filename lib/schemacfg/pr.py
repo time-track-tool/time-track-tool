@@ -197,6 +197,8 @@ def init \
         , time_project          = Link      ("time_project")
         , purchase_type         = Link      ("purchase_type")
         , is_asset              = Boolean   ()
+        , product_group         = Link      ("product_group", do_journal = 'no')
+        , infosec_level         = Link      ("infosec_level", do_journal = 'no')
         )
 
     pr_status = Class \
@@ -323,6 +325,9 @@ def init \
                 , pr_ext_resource       = Link      ("pr_ext_resource")
                 , issue_ids             = String    ()
                 , infosec_level         = Link      ( "infosec_level"
+                                                    , do_journal = 'no'
+                                                    )
+                , purchase_risk_type    = Link      ( "purchase_risk_type"
                                                     , do_journal = 'no'
                                                     )
                 , date_approved         = Date      ()

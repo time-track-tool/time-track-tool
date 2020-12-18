@@ -286,7 +286,10 @@
      <tr>
       <th tal:content="structure python:utils.fieldname
           (classname, 'infosec_level')"/>
-      <td tal:content="structure python:context.infosec_level.menu ()"/>
+      <td tal:content="structure python:context.infosec_level.plain ()"/>
+      <th tal:content="structure python:utils.fieldname
+          (classname, 'purchase_risk_type')"/>
+      <td tal:content="structure python: context.purchase_risk_type.plain ()"/>
      </tr>
      <tr>
       <th colspan="4">
@@ -357,11 +360,23 @@
              tal:content="structure python:utils.fieldname
              ('pr_offer_item', 'purchase_type')"/>
         </tr>
+        <tr>
+         <th/>
+         <th style="text-align:left"
+             tal:content="structure python:utils.fieldname
+             ('pr_offer_item', 'product_group')"/>
+         <th style="text-align:left"
+             tal:content="structure python:utils.fieldname
+             ('pr_offer_item', 'infosec_level')"/>
+         <th style="text-align:left"
+             tal:content="structure python:utils.fieldname
+             (context, 'purchase_security_risk')"/>
+        </tr>
         <tal:block tal:repeat="i python:sorted
             (context.offer_items, key = lambda x : x.index)">
          <tbody>
           <tr>
-           <td rowspan="3"
+           <td rowspan="4"
             tal:content="structure python:i.index.field (size=3)"/>
            <td rowspan="2">
             <textarea wrap="soft" cols="30" rows="3"
@@ -434,6 +449,14 @@
            <td/>
            <td/>
           </tr>
+          <tr>
+           <td tal:content="structure python:i.product_group.menu ()"/>
+           <td tal:content="structure python:i.infosec_level.menu ()"/>
+           <td tal:content="structure python:utils.risk_type (db, i)"/>
+           <td/>
+           <td/>
+           <td/>
+          </tr>
          </tbody>
         </tal:block>
         <tal:block
@@ -500,6 +523,16 @@
            <td tal:content="structure python:utils.new_property
                (context, db, 'pr_offer_item', -idx, 'purchase_type').menu
                   (valid = True)"/>
+           <td/>
+           <td/>
+           <td/>
+          </tr>
+          <tr>
+           <td tal:content="structure python:utils.new_property
+             (context, db, 'pr_offer_item', -idx, 'product_group').menu ()"/>
+           <td tal:content="structure python:utils.new_property
+             (context, db, 'pr_offer_item', -idx, 'infosec_level').menu ()"/>
+           <td/>
            <td/>
            <td/>
            <td/>

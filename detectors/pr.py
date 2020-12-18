@@ -113,8 +113,10 @@ def reopen (db, cl, nodeid, new_values) :
     if ost == rej and 'status' not in new_values :
         new_values ['status'] = opn
     if ost == rej and new_values ['status'] == opn :
-        new_values ['date_ordered']  = None
-        new_values ['date_approved'] = None
+        new_values ['date_ordered']       = None
+        new_values ['date_approved']      = None
+        new_values ['infosec_level']      = None
+        new_values ['purchase_risk_type'] = None
 # end def reopen
 
 def check_io (db, cl, nodeid, new_values) :
@@ -618,6 +620,32 @@ def fix_nosy (db, cl, nodeid, new_values) :
         new_values ['nosy'] = nosy.keys ()
 # end def fix_nosy
 
+def set_infosec (db, cl, nodeid, new_values) :
+    """ When going from open->approving, set the infosec attributes on
+        the PR
+    """
+    apr = db.pr_status.lookup ('approving')
+    opn = db.pr_status.lookup ('open')
+    ost = cl.get (nodeid, 'status')
+    nst = new_values.get ('status', ost)
+    if ost != opn or nst != apr :
+        return
+    mrt = prlib.max_risk_type (db, nodeid)
+    new_values ['purchase_risk_type'] = mrt.id
+    if mrt.order > 40 :
+        raise Reject (_ ('Risk is too high: "%s"') % mrt.name)
+    ois = new_values.get ('offer_items', cl.get (nodeid, 'offer_items'))
+    ilm = None
+    for oid in ois :
+        oi = db.pr_offer_item.getnode (oid)
+        if oi.infosec_level :
+            il = db.infosec_level.getnode (oi.infosec_level)
+            if ilm is None or il.order > ilm.order :
+                ilm = il
+    if ilm is not None :
+        new_values ['infosec_level'] = ilm.id
+# end def set_infosec
+
 def update_pr (db, pr, ap, nosy, txt, ** kw) :
     uor = ''
     if ap :
@@ -718,7 +746,7 @@ def new_pr_offer_item (db, cl, nodeid, new_values) :
 
 def check_pr_offer_item (db, cl, nodeid, new_values) :
     common.require_attributes \
-        (_, cl, nodeid, new_values, 'units', 'price_per_unit')
+        (_, cl, nodeid, new_values, 'units', 'price_per_unit', 'product_group')
     units = new_values.get ('units', None)
     price = new_values.get ('price_per_unit', None)
     oi    = None
@@ -734,6 +762,21 @@ def check_pr_offer_item (db, cl, nodeid, new_values) :
         raise Reject ("Units must not be <= 0")
     if price <= 0 :
         raise Reject ("Price must not be <= 0")
+    pgid = new_values.get ('product_group')
+    if not pgid and nodeid :
+        pgid = cl.get (nodeid, 'product_group')
+    if pgid :
+        pg = db.product_group.getnode (pgid)
+    else :
+        pg = None
+    if 'infosec_level' in new_values :
+        if new_values ['infosec_level'] is None and pg :
+            new_values ['infosec_level'] = pg.infosec_level
+    elif 'product_group' in new_values :
+        new_values ['infosec_level'] = pg.infosec_level
+    ilid = new_values.get ('infosec_level')
+    if nodeid and not ilid :
+        ilid = cl.get (nodeid, 'infosec_level')
 # end def check_pr_offer_item
 
 def fix_pr_offer_item (db, cl, nodeid, new_values) :
@@ -986,6 +1029,7 @@ def init (db) :
     db.purchase_request.react   ("create", create_pr_approval)
     db.purchase_request.audit   ("set",    check_io)
     db.purchase_request.audit   ("set",    fix_nosy,        priority = 200)
+    db.purchase_request.audit   ("set",    set_infosec,     priority = 250)
     db.purchase_request.audit   ("create", check_issue_nums)
     db.purchase_request.audit   ("set",    check_issue_nums)
     db.pr_approval.audit        ("create", new_pr_approval)
