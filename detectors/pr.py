@@ -962,13 +962,12 @@ def check_psr (db, cl, nodeid, new_values) :
         ( _, cl, nodeid, new_values
         , 'infosec_level'
         , 'purchase_risk_type'
-        , 'supplier_risk_category'
         )
     il  = new_values.get ('infosec_level')
     src = new_values.get ('supplier_risk_category')
     if not il :
         il  = cl.get (nodeid, 'infosec_level')
-    if not src :
+    if not src and nodeid :
         src = cl.get (nodeid, 'supplier_risk_category')
     common.check_unique \
         ( _, cl, nodeid
