@@ -148,6 +148,64 @@ def check_input_len (db, cl, nodeid, new_values) :
         raise Reject (_ ("Supplier too long (max 55)"))
 # end def check_input_len
 
+def get_pr_from_offer_item (db, nodeid) :
+    ids = db.purchase_request.filter (None, dict (offer_items = nodeid))
+    # Happens on retire or unlink
+    if len (ids) < 1 :
+        return None
+    assert len (ids) == 1
+    id  = ids [0]
+    pr  = db.purchase_request.getnode (id)
+    return pr
+# end def get_pr_from_offer_item
+
+def check_payment_type (db, cl, nodeid, new_values) :
+    """ When payment type changes:
+        - Do nothing if not is state approving (state open is handled
+          elsewhere)
+        - Do not allow if in state >= approved
+        - If already approving, check if we need to add new approval
+    """
+    if 'payment_type' not in new_values :
+        return
+    # Don't allow that it is empty
+    common.require_attributes \
+        (_, cl, nodeid, new_values, 'payment_type')
+    pr  = get_pr_from_offer_item (db, nodeid)
+    if not pr :
+        return
+    # Allow change for open and approving
+    opn = db.pr_status.lookup ('open')
+    ap  = db.pr_status.lookup ('approving')
+    if pr.status not in (opn, ap) :
+        raise Reject (_ ("Change of payment type not allowed"))
+    if pr.status == opn :
+        return
+    pt = db.payment_type.getnode (new_values ['payment_type'])
+    # If we're already in status approving and there is no approval yet
+    # for payment type and the new payment type needs approval we need
+    # to add an approval
+    if not pt.need_approval :
+        return
+    cur = db.pr_currency.getnode (pr.pr_currency)
+    s = prlib.pr_offer_item_sum (db, pr.id)
+    s = s * 1.0 / cur.exchange_rate
+    prc_ids = db.pr_approval_config.filter (None, dict (valid = True))
+    for prcid in prc_ids :
+        prc = db.pr_approval_config.getnode (prcid)
+        if  (   prc.payment_type_amount is not None
+            and s > prc.payment_type_amount
+            ) :
+            # Search this role in approvals
+            aps = db.pr_approval.filter (None, dict (purchase_request = pr.id))
+            for apid in aps :
+                ap = db.pr_approval.getnode (apid)
+                if ap.role_id == prc.role :
+                    break
+            else :
+                prlib.add_approval_with_role (db, True, pr.id, prc.role)
+# end def check_payment_type
+
 def namelen (db, cl, nodeid, new_values) :
     """ Check that name field doesn't become too long
     """
@@ -842,13 +900,9 @@ def check_pr_update (db, cl, nodeid, old_values) :
     """
     rej = db.pr_status.lookup ('rejected')
     opn = db.pr_status.lookup ('open')
-    ids = db.purchase_request.filter (None, dict (offer_items = nodeid))
-    # Happens on retire or unlink
-    if len (ids) < 1 :
+    pr  = get_pr_from_offer_item (db, nodeid)
+    if not pr :
         return
-    assert len (ids) == 1
-    id  = ids [0]
-    pr  = db.purchase_request.getnode (id)
     if pr.status == rej :
         db.purchase_request.set (id, status = opn)
 # end def check_pr_update
@@ -1049,6 +1103,7 @@ def init (db) :
     db.pr_offer_item.react      ("set",    check_agent_change)
     db.pr_offer_item.audit      ("create", check_input_len, priority = 150)
     db.pr_offer_item.audit      ("set",    check_input_len, priority = 150)
+    db.pr_offer_item.audit      ("set",    check_payment_type)
     db.pr_currency.audit        ("create", check_currency)
     db.pr_currency.audit        ("set",    check_currency)
     db.pr_approval_order.audit  ("create", pao_check_roles)
