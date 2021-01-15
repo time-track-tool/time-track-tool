@@ -3009,6 +3009,15 @@ msgstr "External resources"
 msgid "infosec_amount"
 msgstr "Amount for InfoSec approval"
 
+msgid "payment_type"
+msgstr "Payment type"
+
+msgid "payment_type_amount"
+msgstr "Amount for payment type approval"
+
+msgid "need_approval"
+msgstr "Needs approval"
+
 msgid "pr_approval_order"
 msgstr "Approval order"
 

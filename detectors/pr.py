@@ -284,6 +284,7 @@ def change_pr (db, cl, nodeid, new_values) :
                     , 'units'
                     , 'description'
                     , 'vat'
+                    , 'payment_type'
                     )
                 oitem = db.pr_offer_item.getnode (oi)
                 if oitem.sap_cc and oitem.time_project :
@@ -745,6 +746,8 @@ def new_pr_offer_item (db, cl, nodeid, new_values) :
         new_values ['units'] = 1
     if 'vat' not in new_values :
         new_values ['vat'] = 0
+    if 'payment_type' not in new_values :
+        new_values ['payment_type'] = '1'
 # end def new_pr_offer_item
 
 def check_pr_offer_item (db, cl, nodeid, new_values) :

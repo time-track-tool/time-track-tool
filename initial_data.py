@@ -1575,3 +1575,6 @@ if 'purchase_security_risk' in db.classes :
         , purchase_risk_type     = prt_dnp
         )
 
+if 'payment_type' in db.classes :
+    db.payment_type.create (name = 'Invoice',     order = 10)
+    db.payment_type.create (name = 'Credit Card', order = 20)

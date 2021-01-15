@@ -117,6 +117,14 @@ def init \
         )
     p_o_b.setkey ('name')
 
+    payment_type = Class \
+        ( db, ''"payment_type"
+        , name                  = String    ()
+        , order                 = Number    ()
+        , need_approval         = Boolean   ()
+        )
+    payment_type.setkey ('name')
+
     pr_currency = Class \
         ( db, ''"pr_currency"
         , name                  = String    ()
@@ -163,6 +171,7 @@ def init \
         , pr_ext_resource       = Link      ("pr_ext_resource")
         , purchase_type         = Multilink ("purchase_type")
         , infosec_amount        = Number    ()
+        , payment_type_amount   = Number    ()
         )
 
     pr_approval_order = Class \
@@ -199,6 +208,7 @@ def init \
         , is_asset              = Boolean   ()
         , product_group         = Link      ("product_group", do_journal = 'no')
         , infosec_level         = Link      ("infosec_level", do_journal = 'no')
+        , payment_type          = Link      ("payment_type",  do_journal = 'no')
         )
 
     pr_status = Class \
@@ -444,6 +454,7 @@ def security (db, ** kw) :
         , ("supplier_risk_category", ["User"],          [])
         , ("purchase_risk_type", ["User"],              [])
         , ("pr_supplier_risk",   ["User"],              ["Procurement-Admin"])
+        , ("payment_type",       ["User"],              [])
         ]
 
     prop_perms = \
@@ -512,7 +523,7 @@ def security (db, ** kw) :
 
     fixdoc = schemadef.security_doc_from_docstring
 
-    def view_role_pr (db, userid, itemid) :
+    def pr_pt_role (db, userid, itemid) :
         """ Users are allowed if they have one of the view roles
             of the purchase type or one of the (forced) approval roles.
         """
@@ -529,21 +540,21 @@ def security (db, ** kw) :
             if prlib.has_pr_role (db, userid, r) :
                 return True
         return False
-    # end def view_role_pr
+    # end def pr_pt_role
 
     p = db.security.addPermission \
         ( name = 'View'
         , klass = 'purchase_request'
-        , check = view_role_pr
-        , description = fixdoc (view_role_pr.__doc__)
+        , check = pr_pt_role
+        , description = fixdoc (pr_pt_role.__doc__)
         )
     db.security.addPermissionToRole ('User', p)
 
     p = db.security.addPermission \
         ( name = 'Edit'
         , klass = 'purchase_request'
-        , check = view_role_pr
-        , description = fixdoc (view_role_pr.__doc__)
+        , check = pr_pt_role
+        , description = fixdoc (pr_pt_role.__doc__)
         , properties =
             ( 'sap_reference', 'terms_conditions', 'frame_purchase'
             , 'frame_purchase_end', 'nosy', 'messages', 'purchasing_agents'
@@ -552,31 +563,36 @@ def security (db, ** kw) :
         )
     db.security.addPermissionToRole ('User', p)
 
-    def view_role_offer_item (db, userid, itemid) :
+    def pt_role_offer_item (db, userid, itemid) :
         """ Users are allowed to view if they have one of the view roles
             of the purchase type
         """
         pr  = get_pr_from_offer_item (db, itemid)
         if pr is None :
             return False
-        return view_role_pr (db, userid, pr.id)
-    # end def view_role_offer_item
+        return pr_pt_role (db, userid, pr.id)
+    # end def pt_role_offer_item
 
     p = db.security.addPermission \
         ( name = 'View'
         , klass = 'pr_offer_item'
-        , check = view_role_offer_item
-        , description = fixdoc (view_role_offer_item.__doc__)
+        , check = pt_role_offer_item
+        , description = fixdoc (pt_role_offer_item.__doc__)
         )
     db.security.addPermissionToRole ('User', p)
 
     p = db.security.addPermission \
         ( name = 'Edit'
         , klass = 'pr_offer_item'
-        , check = view_role_offer_item
-        , description = fixdoc (view_role_offer_item.__doc__)
+        , check = pt_role_offer_item
+        , description = fixdoc (pt_role_offer_item.__doc__)
         , properties =
-            ( 'add_to_las', 'supplier', 'pr_supplier', 'is_asset')
+            ( 'add_to_las'
+            , 'supplier'
+            , 'pr_supplier'
+            , 'is_asset'
+            , 'payment_type'
+            )
         )
     db.security.addPermissionToRole ('User', p)
 
@@ -588,7 +604,7 @@ def security (db, ** kw) :
         pr = db.purchase_request.getnode (sp.purchase_request)
         if pr is None :
             return False
-        return view_role_pr (db, userid, pr.id)
+        return pr_pt_role (db, userid, pr.id)
     # end def view_role_approval
 
     p = db.security.addPermission \
@@ -729,7 +745,7 @@ def security (db, ** kw) :
             return False
         if own_pr (db, userid, itemid) :
             return True
-        if view_role_pr (db, userid, itemid) :
+        if pr_pt_role (db, userid, itemid) :
             return True
         return False
     # end def edit_pr_justification
@@ -1028,7 +1044,7 @@ def security (db, ** kw) :
         """ User with view role is allowed editing if status
             is 'approved' or 'ordered'
         """
-        if not view_role_pr (db, userid, itemid) :
+        if not pr_pt_role (db, userid, itemid) :
             return False
         pr = db.purchase_request.getnode (itemid)
         stati = []
@@ -1126,7 +1142,7 @@ def security (db, ** kw) :
             return False
         if own_pr (db, userid, itemid) :
             return True
-        if view_role_pr (db, userid, itemid) :
+        if pr_pt_role (db, userid, itemid) :
             return True
         return False
     # end def view_pr_risks

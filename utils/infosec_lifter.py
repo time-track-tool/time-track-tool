@@ -258,6 +258,11 @@ def main () :
         , ('vhi', 'very high',             'dnp')
         ]
 
+    payment_types = \
+        [ ('Invoice',     10, False)
+        , ('Credit Card', 20, True)
+        ]
+
     for src, il, prt in psr_table :
         d  = dict \
             ( infosec_level      = il_ids  [il]
@@ -303,6 +308,15 @@ def main () :
             d ['valid_to']   = '.;,-'
             for org in db.organisation.filter (None, d) :
                 insert_supplier_risk (db, sup, org, srcs)
+    for name, order, need in payment_types :
+        try :
+            pt = db.payment_type.lookup (name)
+            pt = db.payment_type.getnode (pt)
+            if need != pt.need_approval :
+                db.payment_type.set (pt.id, need_approval = need)
+        except KeyError :
+            pt = db.payment_type.create \
+                (name = name, order = order, need_approval = need)
     db.commit ()
 # end def main
 

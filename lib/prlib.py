@@ -190,6 +190,16 @@ def infosec_level_lowered (db, prid) :
     return False
 # end def infosec_level_lowered
 
+def need_payment_type_approval (db, pr) :
+    for id in pr.offer_items :
+        item  = db.pr_offer_item.getnode (id)
+        if item.payment_type :
+            pt = db.payment_type.getnode (item.payment_type)
+            if pt.need_approval :
+                return True
+    return False
+# end def need_payment_type_approval
+
 def compute_approvals (db, pr, do_create) :
     """ Compute approvals for current PR settings
         do_create specifies if the approvals are created or just a
@@ -280,6 +290,10 @@ def compute_approvals (db, pr, do_create) :
                        or max_risk.order >= 30
                        or infosec_level_lowered (db, pr.id)
                        )
+                   )
+                or (   prc.payment_type_amount is not None
+                   and s > prc.payment_type_amount
+                   and need_payment_type_approval (db, pr)
                    )
                 ) :
                 apr_by_role [prc.role] = add_approval_with_role \
