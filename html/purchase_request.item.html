@@ -371,6 +371,9 @@
          <th style="text-align:left"
              tal:content="structure python:utils.fieldname
              (context, 'purchase_security_risk')"/>
+         <th style="text-align:left"
+             tal:content="structure python:utils.fieldname
+             (context, 'payment_type')"/>
         </tr>
         <tal:block tal:repeat="i python:sorted
             (context.offer_items, key = lambda x : x.index)">
@@ -453,8 +456,8 @@
            <td tal:content="structure python:i.product_group.menu ()"/>
            <td tal:content="structure python:i.infosec_level.menu ()"/>
            <td tal:content="structure python:utils.risk_type (db, i)"/>
-           <td/>
-           <td/>
+           <td tal:content="structure python:i.payment_type.menu ()"
+               colspan="2" />
            <td/>
           </tr>
          </tbody>
@@ -533,8 +536,8 @@
            <td tal:content="structure python:utils.new_property
              (context, db, 'pr_offer_item', -idx, 'infosec_level').menu ()"/>
            <td/>
-           <td/>
-           <td/>
+           <td colspan="2" tal:content="structure python:utils.new_property
+             (context, db, 'pr_offer_item', -idx, 'payment_type').menu ()"/>
            <td/>
           </tr>
          </tbody>
