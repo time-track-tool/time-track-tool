@@ -631,6 +631,9 @@ def set_infosec (db, cl, nodeid, new_values) :
     if ost != opn or nst != apr :
         return
     mrt = prlib.max_risk_type (db, nodeid)
+    # Can happen if none of the product groups has a security level
+    if not mrt :
+        return
     new_values ['purchase_risk_type'] = mrt.id
     if mrt.order > 40 :
         raise Reject (_ ('Risk is too high: "%s"') % mrt.name)
