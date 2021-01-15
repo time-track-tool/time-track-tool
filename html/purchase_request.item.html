@@ -466,7 +466,7 @@
          tal:repeat="idx python:range(1,offer_list_length + 1)">
          <tbody>
           <tr>
-           <td rowspan="3" tal:content="structure python:utils.new_property
+           <td rowspan="4" tal:content="structure python:utils.new_property
                (context, db, 'pr_offer_item', -idx, 'index').field (size=3)"/>
            <td rowspan="2">
             <textarea wrap="soft" cols="30" rows="3"
