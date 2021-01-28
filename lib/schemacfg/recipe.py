@@ -35,11 +35,9 @@ def init (db, Link, Multilink, Number, String, Class, ** kw) :
         ( db, ''"ingredient_used_by_substance"
         , substance             = Link      ('substance'
                                             , rev_multilink  = 'ingredients'
-                                            , try_id_parsing = 'no'
                                             )
         , ingredient            = Link      ('substance'
                                             , rev_multilink  = 'part_of'
-                                            , try_id_parsing = 'no'
                                             )
         , quantity              = Number    ()
         )
