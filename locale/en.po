@@ -4331,3 +4331,25 @@ msgstr "Automatic Workpackage"
 
 msgid "do_auto_wp"
 msgstr "Auto WP"
+
+msgid "substance"
+msgstr "Substance"
+
+msgid "substance.name"
+msgstr "Substance name"
+
+msgid "ingredient"
+msgstr "Ingredient"
+
+msgid "ingredient.name"
+msgstr "Ingredient name"
+
+msgid "ingredient_used_by_substance"
+msgstr "Ingredient used by Substance"
+
+msgid "identifier"
+msgstr "Identifier"
+
+msgid "quantity"
+msgstr "Quantity"
+

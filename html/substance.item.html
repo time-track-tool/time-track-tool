@@ -1,0 +1,71 @@
+<tal:block metal:use-macro="templates/page/macros/icing">
+ <title metal:fill-slot="head_title">
+  <tal:block tal:condition="context/id" i18n:translate="">
+   <span tal:replace="string:${Classname}: ${context/id}"
+    i18n:name="classname_id"/>
+   created by
+   <span tal:replace="context/creator" i18n:name="creator"/>
+  </tal:block>
+  <tal:block tal:condition="not:context/id" i18n:translate="">New
+   <span tal:replace="Classname" i18n:name="Classname" />
+  </tal:block>
+ </title>
+ <tal:block metal:fill-slot="create_or_query">
+    <tal:block 
+     metal:use-macro="templates/page/macros/create_or_query_new_tracker_item" />
+ </tal:block> 
+
+ <tal:block metal:fill-slot="content">
+  <tal:block tal:define="use_labelprop python:True">
+   <tal:block metal:use-macro="templates/page/macros/formatted_class">
+    <tal:block metal:fill-slot="formatted_class_content">
+     <tr>
+      <th tal:content="structure python:utils.fieldname
+          (classname, 'name')"/>
+      <td tal:content="structure python:context.name.field ()"/>
+     </tr>
+    </tal:block>
+   </tal:block>
+   <tal:block tal:condition="python:
+     context.is_view_ok () and context.id and context.ingredients">
+    <table class="files">
+     <tr tal:define="cond python: not not context.id">
+      <th colspan="3" class="header" i18n:translate="">Ingredients</th>
+      <td class="header" tal:condition="cond">
+       <a i18n:translate="" tal:attributes="href python:
+        'ingredient_used_by_substance?:template=item&' + '&'.join
+         ([ '%s=%s' % (i [0], utils.urlquote (str (i [1]))) for i in
+           [ ('substance', context.identifier)
+           ]
+          ]
+         )">new ingredient</a>
+      </td>
+     </tr>
+     <tr>
+      <th tal:content="structure python:utils.fieldname
+         ('substance', 'id')"/>
+      <th style="text-align:right" tal:content="structure python:utils.fieldname
+         (context.ingredients, 'quantity')"/>
+      <th tal:content="structure python:utils.fieldname
+         ('substance', 'identifier')"/>
+      <th tal:content="structure python:utils.fieldname
+         ('substance', 'name')"/>
+     </tr>
+     <tr tal:repeat="ing python:context.ingredients">
+      <td>
+       <a tal:content="python: ing.id"
+          tal:attributes="href python:
+             'ingredient_used_by_substance%s' % ing.id"/>
+      </td>
+      <td style="text-align:right" tal:content="python: '%.4f' % ing.quantity"/>
+      <td tal:content="structure python:utils.ExtProperty
+         (utils, ing.ingredient.identifier, item=ing.ingredient)
+         .formatlink ()"/>
+      <td tal:content="structure python:utils.ExtProperty
+         (utils, ing.ingredient.name, item=ing.ingredient).formatlink ()"/>
+     </tr>
+    </table>
+   </tal:block>
+  </tal:block>
+ </tal:block>
+</tal:block>
