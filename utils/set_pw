@@ -1,0 +1,18 @@
+#!/usr/bin/python2
+
+import os
+import sys
+from roundup import instance
+from roundup import password
+dir     = os.getcwd ()
+tracker = instance.open (dir)
+db      = tracker.open ('admin')
+
+pw      = password.Password (sys.argv [1])
+
+for u in db.user.getnodeids (retired = False) :
+    user = db.user.getnode (u)
+    if not user.password :
+        db.user.set (u, password = pw)
+db.commit ()
+

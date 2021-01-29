@@ -185,8 +185,9 @@ def obsolete_action (db, cl, nodeid, new_values) :
     obsolete = db.user_status.lookup ('obsolete')
     status   = new_values.get ('status', cl.get (nodeid, 'status'))
     if status == obsolete :
+        if 'nickname' in cl.properties :
+            new_values ['nickname'] = ''
         new_values ['roles'] = ''
-        new_values ['nickname'] = ''
 # end def obsolete_action
 
 def sync_to_ldap (db, cl, nodeid, old_values) :
