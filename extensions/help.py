@@ -972,6 +972,10 @@ _helptext          = \
       [""'''%(Property)s of a recipe.''' ]
     , ""'ingredient.name'             :
       [""'''Name of ingredient of a recipe.''' ]
+    , ""'infosec_level'               :
+      [""'''Information security level
+         '''
+      ]
     , ""'inherit_ext'                 :
       [""'''If this flag is set, and an issue is a container, it inerits
             external user permissions from the next higher-level
@@ -1341,6 +1345,10 @@ _helptext          = \
       ]
     , ""'offer_items'                 :
       [""'''%(Property)s on this %(Classname)s, one per line
+         '''
+      ]
+    , ""'offer_items.infosec_level'   :
+      [""'''Information security level
          '''
       ]
     , ""'offer_number'                :
