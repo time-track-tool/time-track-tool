@@ -1262,7 +1262,7 @@ if 'security_req_group' in db.classes :
     srg_swd  = srg.create (name = 'Software development')
     srg_op   = srg.create (name = 'Operation & Operation Support')
     srg_clo  = srg.create (name = 'Cloud based services')
-if 'product_group' in db.classes :
+if 'product_group' in db.classes and 'security_req_group' in db.classes :
     db.product_group.create \
         ( name               = 'Phone & Internet'
         , security_req_group = srg_op

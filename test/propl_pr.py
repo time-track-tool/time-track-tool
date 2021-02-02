@@ -24,7 +24,8 @@ properties = \
         ]
       )
     , ( 'infosec_level'
-      , [ 'name'
+      , [ 'is_consulting'
+        , 'name'
         , 'order'
         ]
       )
@@ -80,6 +81,12 @@ properties = \
         , 'order'
         ]
       )
+    , ( 'payment_type'
+      , [ 'name'
+        , 'need_approval'
+        , 'order'
+        ]
+      )
     , ( 'pr_approval'
       , [ 'by'
         , 'date'
@@ -100,6 +107,7 @@ properties = \
         , 'if_not_in_las'
         , 'infosec_amount'
         , 'organisations'
+        , 'payment_type_amount'
         , 'pr_ext_resource'
         , 'purchase_type'
         , 'role'
@@ -136,11 +144,14 @@ properties = \
       , [ 'add_to_las'
         , 'description'
         , 'index'
+        , 'infosec_level'
         , 'is_asset'
         , 'offer_number'
+        , 'payment_type'
         , 'pr_currency'
         , 'pr_supplier'
         , 'price_per_unit'
+        , 'product_group'
         , 'purchase_type'
         , 'sap_cc'
         , 'supplier'
@@ -173,6 +184,20 @@ properties = \
         , 'supplier'
         ]
       )
+    , ( 'pr_supplier_risk'
+      , [ 'organisation'
+        , 'security_req_group'
+        , 'supplier'
+        , 'supplier_risk_category'
+        ]
+      )
+    , ( 'product_group'
+      , [ 'infosec_level'
+        , 'name'
+        , 'sap_ref'
+        , 'security_req_group'
+        ]
+      )
     , ( 'purchase_request'
       , [ 'continuous_obligation'
         , 'contract_term'
@@ -184,8 +209,6 @@ properties = \
         , 'frame_purchase'
         , 'frame_purchase_end'
         , 'infosec_level'
-        , 'infosec_project'
-        , 'infosec_pt'
         , 'intended_duration'
         , 'internal_order'
         , 'issue_ids'
@@ -198,6 +221,7 @@ properties = \
         , 'pr_ext_resource'
         , 'pr_justification'
         , 'pr_risks'
+        , 'purchase_risk_type'
         , 'purchase_type'
         , 'purchasing_agents'
         , 'renegotiations'
@@ -216,11 +240,21 @@ properties = \
         , 'total_cost'
         ]
       )
+    , ( 'purchase_risk_type'
+      , [ 'name'
+        , 'order'
+        ]
+      )
+    , ( 'purchase_security_risk'
+      , [ 'infosec_level'
+        , 'purchase_risk_type'
+        , 'supplier_risk_category'
+        ]
+      )
     , ( 'purchase_type'
       , [ 'confidential'
         , 'description'
         , 'forced_roles'
-        , 'infosec_req'
         , 'name'
         , 'nosy'
         , 'order'
@@ -251,6 +285,16 @@ properties = \
         , 'responsible'
         , 'sync_id'
         , 'valid'
+        ]
+      )
+    , ( 'security_req_group'
+      , [ 'is_consulting'
+        , 'name'
+        ]
+      )
+    , ( 'supplier_risk_category'
+      , [ 'name'
+        , 'order'
         ]
       )
     , ( 'terms_conditions'

@@ -455,6 +455,7 @@ def security (db, ** kw) :
         , ("purchase_risk_type", ["User"],              [])
         , ("pr_supplier_risk",   ["User"],              ["Procurement-Admin"])
         , ("payment_type",       ["User"],              [])
+        , ("purchase_security_risk", ["User"],          [])
         ]
 
     prop_perms = \
