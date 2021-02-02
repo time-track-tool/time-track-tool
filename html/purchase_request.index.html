@@ -98,6 +98,27 @@
         , searchname  = 'offer_items.pr_supplier'
         , multiselect = True
         )
+    , utils.ExtProperty
+        ( utils, pdict ['offer_items']
+        , searchable  = True
+        , sortable    = False
+        , searchname  = 'offer_items.payment_type'
+        , multiselect = True
+        )
+    , utils.ExtProperty
+        ( utils, pdict ['offer_items']
+        , searchable  = True
+        , sortable    = False
+        , searchname  = 'offer_items.infosec_level'
+        , multiselect = True
+        )
+    , utils.ExtProperty
+        ( utils, pdict ['offer_items']
+        , searchable  = True
+        , sortable    = False
+        , searchname  = 'offer_items.product_group'
+        , multiselect = True
+        )
     );
    "
   tal:condition="context/is_view_ok">
