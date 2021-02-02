@@ -592,10 +592,16 @@
               <span tal:condition="i/deputy"
                     tal:content="python:'/ '+i.deputy.plain ()"/>
           </td>
-          <td tal:content="python:i.description.plain ()"/>
-          <input type="hidden" value="msg-1"
-             tal:condition="i/status/is_edit_ok"
-             tal:attributes="name python: 'pr_approval%s@link@msg' % i.id" />
+          <td>
+           <span tal:content="python:i.description.plain ()"/>
+           <input type="hidden" value="msg-1"
+              tal:condition="i/status/is_edit_ok"
+              tal:attributes="name python: 'pr_approval%s@link@msg' % i.id" />
+           <input type="hidden" tal:condition="i/status/is_edit_ok"
+              tal:attributes="
+                name  python:'pr_approval%s@link@purchase_request' % i.id;
+                value python:'purchase_request%s' % context.id"/>
+          </td>
          </tr>
         </tal:block>
        </table>

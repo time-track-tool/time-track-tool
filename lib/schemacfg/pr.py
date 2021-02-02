@@ -468,6 +468,12 @@ def security (db, ** kw) :
         , ( "user", "Edit", ["Procurement-Admin"]
           , ("want_no_messages",)
           )
+        # Allow anybody to edit purchase_request but do not allow change
+        # (in reactor): This is used for ordering actions in the web
+        # interface via links (!)
+        , ( "pr_approval", "Edit", ["User"]
+          , ("purchase_request",)
+          )
         , ( "purchase_request", "Edit", ["Procurement", "Procurement-Admin"]
           , ("renew_until",)
           )

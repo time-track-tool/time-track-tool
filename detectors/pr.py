@@ -630,6 +630,21 @@ def change_pr_approval (db, cl, nodeid, new_values) :
         del new_values ['msg']
 # end def change_pr_approval
 
+def set_approval_pr (db, cl, nodeid, new_values) :
+    """ Do not allow change of PR, but we *need* to allow this input in
+        the web-interface for ordering actions.
+    """
+    common.require_attributes \
+        (_, cl, nodeid, new_values, 'purchase_request')
+
+    if 'purchase_request' not in new_values :
+        return
+    npr = new_values ['purchase_request']
+    opr = cl.get (nodeid, 'purchase_request')
+    if npr != opr :
+        raise Reject (_ ("Purchase request cannot be changed"))
+# end def set_approval_pr
+
 def nosy_for_approval (db, app, add = False) :
     nosy = {}
     if app.user :
@@ -1093,6 +1108,7 @@ def init (db) :
     db.purchase_request.audit   ("set",    check_issue_nums)
     db.pr_approval.audit        ("create", new_pr_approval)
     db.pr_approval.audit        ("set",    change_pr_approval)
+    db.pr_approval.audit        ("set",    set_approval_pr)
     db.pr_approval.react        ("set",    approved_pr_approval)
     db.pr_offer_item.audit      ("create", new_pr_offer_item)
     db.pr_offer_item.audit      ("create", check_pr_offer_item, priority = 110)
