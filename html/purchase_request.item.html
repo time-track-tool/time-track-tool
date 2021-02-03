@@ -239,13 +239,16 @@
           (classname, 'date_approved')"/>
       <td tal:content="structure python:context.date_approved.plain ()"/>
       <th tal:content="structure python:utils.fieldname
-          (classname, 'date_ordered')"/>
-      <td tal:content="structure python:context.date_ordered.plain ()"/>
+          (classname, 'payment_type')"/>
+      <td tal:content="structure python:context.payment_type.menu ()"/>
      </tr>
      <tr>
       <th tal:content="structure python:utils.fieldname
           (classname, 'renew_until')"/>
       <td tal:content="structure python:context.renew_until.field ()"/>
+      <th tal:content="structure python:utils.fieldname
+          (classname, 'date_ordered')"/>
+      <td tal:content="structure python:context.date_ordered.plain ()"/>
      </tr>
      <tr>
       <th tal:content="structure python:utils.fieldname
@@ -597,6 +600,9 @@
            <input type="hidden" value="msg-1"
               tal:condition="i/status/is_edit_ok"
               tal:attributes="name python: 'pr_approval%s@link@msg' % i.id" />
+           <input type="hidden" tal:condition="i/status/is_edit_ok"
+              value="." tal:attributes="
+                name  python: 'pr_approval%s@date' % i.id"/>
            <input type="hidden" tal:condition="i/status/is_edit_ok"
               tal:attributes="
                 name  python:'pr_approval%s@link@purchase_request' % i.id;

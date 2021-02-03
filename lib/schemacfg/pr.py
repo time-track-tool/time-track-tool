@@ -343,6 +343,9 @@ def init \
                 , date_approved         = Date      ()
                 , date_ordered          = Date      ()
                 , renew_until           = Date      ()
+                , payment_type          = Link      ( "payment_type"
+                                                    , do_journal = 'no'
+                                                    )
                 )
             self.__super.__init__ (db, classname, ** properties)
         # end def __init__
@@ -472,7 +475,7 @@ def security (db, ** kw) :
         # (in reactor): This is used for ordering actions in the web
         # interface via links (!)
         , ( "pr_approval", "Edit", ["User"]
-          , ("purchase_request",)
+          , ("purchase_request", "date")
           )
         , ( "purchase_request", "Edit", ["Procurement", "Procurement-Admin"]
           , ("renew_until",)
@@ -565,7 +568,7 @@ def security (db, ** kw) :
         , properties =
             ( 'sap_reference', 'terms_conditions', 'frame_purchase'
             , 'frame_purchase_end', 'nosy', 'messages', 'purchasing_agents'
-            , 'internal_order', 'special_approval'
+            , 'internal_order', 'special_approval', 'payment_type'
             )
         )
     db.security.addPermissionToRole ('User', p)

@@ -39,6 +39,8 @@ def new_pr (db, cl, nodeid, new_values) :
     if 'requester' not in new_values :
         new_values ['requester'] = db.getuid ()
     new_values ['status'] = db.pr_status.lookup ('open')
+    if 'payment_type' not in new_values :
+        new_values ['payment_type'] = '1'
 # end def new_pr
 
 def check_tp_rq (db, cl, nodeid, new_values) :
@@ -159,34 +161,7 @@ def get_pr_from_offer_item (db, nodeid) :
     return pr
 # end def get_pr_from_offer_item
 
-def check_payment_type (db, cl, nodeid, new_values) :
-    """ When payment type changes:
-        - Do nothing if not is state approving (state open is handled
-          elsewhere)
-        - Do not allow if in state >= approved
-        - If already approving, check if we need to add new approval
-    """
-    if 'payment_type' not in new_values :
-        return
-    # Don't allow that it is empty
-    common.require_attributes \
-        (_, cl, nodeid, new_values, 'payment_type')
-    pr  = get_pr_from_offer_item (db, nodeid)
-    if not pr :
-        return
-    # Allow change for open and approving
-    opn = db.pr_status.lookup ('open')
-    ap  = db.pr_status.lookup ('approving')
-    if pr.status not in (opn, ap) :
-        raise Reject (_ ("Change of payment type not allowed"))
-    if pr.status == opn :
-        return
-    pt = db.payment_type.getnode (new_values ['payment_type'])
-    # If we're already in status approving and there is no approval yet
-    # for payment type and the new payment type needs approval we need
-    # to add an approval
-    if not pt.need_approval :
-        return
+def update_payment_approval (db, pr) :
     cur = db.pr_currency.getnode (pr.pr_currency)
     s = prlib.pr_offer_item_sum (db, pr.id)
     s = s * 1.0 / cur.exchange_rate
@@ -204,7 +179,55 @@ def check_payment_type (db, cl, nodeid, new_values) :
                     break
             else :
                 prlib.add_approval_with_role (db, True, pr.id, prc.role)
+                break
+# end def update_payment_approval
+
+def check_payment_type (db, cl, nodeid, new_values) :
+    """ When payment type changes:
+        - Do nothing if not is state approving (state open is handled
+          elsewhere)
+        - Do not allow if in state >= approved
+        - If already approving, check if we need to add new approval
+    """
+    if 'payment_type' not in new_values :
+        return
+    pr  = get_pr_from_offer_item (db, nodeid)
+    if not pr :
+        return
+    ptdefault = pr.payment_type or '1'
+    # Allow change for open and approving
+    opn = db.pr_status.lookup ('open')
+    ap  = db.pr_status.lookup ('approving')
+    if pr.status not in (opn, ap) :
+        raise Reject (_ ("Change of payment type not allowed"))
+    if pr.status == opn :
+        return
+    ptid = new_values.get ('payment_type', ptdefault)
+    pt = db.payment_type.getnode (new_values ['payment_type'])
+    # If we're already in status approving and there is no approval yet
+    # for payment type and the new payment type needs approval we need
+    # to add an approval
+    if not pt.need_approval :
+        return
+    update_payment_approval (db, pr)
 # end def check_payment_type
+
+def pr_check_payment_type (db, cl, nodeid, new_values) :
+    if 'payment_type' not in new_values :
+        return
+    pr  = cl.getnode (nodeid)
+    # Allow change for open and approving
+    opn = db.pr_status.lookup ('open')
+    ap  = db.pr_status.lookup ('approving')
+    if pr.status not in (opn, ap) :
+        raise Reject (_ ("Change of payment type not allowed"))
+    if pr.status == opn :
+        return
+    need = prlib.need_payment_type_approval \
+        (db, pr, new_values ['payment_type'])
+    if need :
+        update_payment_approval (db, pr)
+# end def pr_check_payment_type
 
 def namelen (db, cl, nodeid, new_values) :
     """ Check that name field doesn't become too long
@@ -342,7 +365,6 @@ def change_pr (db, cl, nodeid, new_values) :
                     , 'units'
                     , 'description'
                     , 'vat'
-                    , 'payment_type'
                     )
                 oitem = db.pr_offer_item.getnode (oi)
                 if oitem.sap_cc and oitem.time_project :
@@ -637,6 +659,8 @@ def set_approval_pr (db, cl, nodeid, new_values) :
     common.require_attributes \
         (_, cl, nodeid, new_values, 'purchase_request')
 
+    if 'date' in new_values and 'status' not in new_values :
+        del new_values ['date']
     if 'purchase_request' not in new_values :
         return
     npr = new_values ['purchase_request']
@@ -1106,9 +1130,10 @@ def init (db) :
     db.purchase_request.audit   ("set",    set_infosec,     priority = 250)
     db.purchase_request.audit   ("create", check_issue_nums)
     db.purchase_request.audit   ("set",    check_issue_nums)
+    db.purchase_request.audit   ("set",    pr_check_payment_type)
     db.pr_approval.audit        ("create", new_pr_approval)
     db.pr_approval.audit        ("set",    change_pr_approval)
-    db.pr_approval.audit        ("set",    set_approval_pr)
+    db.pr_approval.audit        ("set",    set_approval_pr, priority = 90)
     db.pr_approval.react        ("set",    approved_pr_approval)
     db.pr_offer_item.audit      ("create", new_pr_offer_item)
     db.pr_offer_item.audit      ("create", check_pr_offer_item, priority = 110)

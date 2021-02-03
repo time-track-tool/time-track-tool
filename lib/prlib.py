@@ -190,11 +190,13 @@ def infosec_level_lowered (db, prid) :
     return False
 # end def infosec_level_lowered
 
-def need_payment_type_approval (db, pr) :
+def need_payment_type_approval (db, pr, new = None) :
+    pt_default = new or pr.payment_type or '1'
     for id in pr.offer_items :
         item  = db.pr_offer_item.getnode (id)
-        if item.payment_type :
-            pt = db.payment_type.getnode (item.payment_type)
+        ptid  = item.payment_type or pt_default
+        if ptid :
+            pt = db.payment_type.getnode (ptid)
             if pt.need_approval :
                 return True
     return False
