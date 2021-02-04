@@ -209,6 +209,10 @@ def init \
         , product_group         = Link      ("product_group", do_journal = 'no')
         , infosec_level         = Link      ("infosec_level", do_journal = 'no')
         , payment_type          = Link      ("payment_type",  do_journal = 'no')
+        , internal_order        = Link      ( "internal_order"
+                                            , try_id_parsing = 'no'
+                                            , do_journal     = 'no'
+                                            )
         )
 
     pr_status = Class \
@@ -602,6 +606,7 @@ def security (db, ** kw) :
             , 'pr_supplier'
             , 'is_asset'
             , 'payment_type'
+            , 'internal_order'
             )
         )
     db.security.addPermissionToRole ('User', p)

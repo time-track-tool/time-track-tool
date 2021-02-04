@@ -36,6 +36,13 @@
         ( utils, pdict ['internal_order']
         , help_props = ('name', )
         )
+    , utils.ExtProperty
+        ( utils, pdict ['offer_items']
+        , searchable  = True
+        , sortable    = False
+        , searchname  = 'offer_items.internal_order'
+        , help_props  = ('name', )
+        )
     , utils.ExtProperty (utils, pdict ['purchase_type'],      multiselect = 1)
     , utils.ExtProperty (utils, pdict ['infosec_level'],      multiselect = 1)
     , utils.ExtProperty (utils, pdict ['purchase_risk_type'], multiselect = 1)

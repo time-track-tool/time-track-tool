@@ -2964,6 +2964,9 @@ msgstr "InfoSec Security Level"
 msgid "offer_items.infosec_level"
 msgstr "Offer Item Security Level"
 
+msgid "offer_items.internal_order"
+msgstr "Offer Item Internal order"
+
 msgid "pr_currency"
 msgstr "Currency"
 

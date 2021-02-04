@@ -1351,6 +1351,10 @@ _helptext          = \
       [""'''Information security level
          '''
       ]
+    , ""'offer_items.internal_order'   :
+      [""'''Internal order on offer item level
+         '''
+      ]
     , ""'offer_number'                :
       [ ""'''Optional field for supplier offer number
           '''

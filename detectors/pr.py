@@ -121,7 +121,7 @@ def reopen (db, cl, nodeid, new_values) :
         new_values ['purchase_risk_type'] = None
 # end def reopen
 
-def check_io (db, cl, nodeid, new_values) :
+def check_io_pr (db, cl, nodeid, new_values) :
     """ Check that internal_order isn't specified together with time
         category, but only if the PR isn't in status open (not yet
         submitted with sign&send).
@@ -141,7 +141,28 @@ def check_io (db, cl, nodeid, new_values) :
                     , io = _ ('internal_order')
                     )
                 )
-# end def check_io
+# end def check_io_pr
+
+def check_io_oi (db, cl, nodeid, new_values) :
+    pr  = get_pr_from_offer_item (db, nodeid)
+    if not pr :
+        return
+    if pr.status == db.pr_status.lookup ('open') :
+        return
+    if 'internal_order' not in new_values and 'time_project' not in new_values :
+        return
+    io = new_values.get ('internal_order', cl.get (nodeid, 'internal_order'))
+    tc = new_values.get ('time_project', cl.get (nodeid, 'time_project'))
+    if (tc or pr.time_project) and (io or pr.internal_order) :
+        raise Reject \
+            (_ ("Specify %(cc)s not %(tp)s with %(io)s")
+            % dict
+                ( tp = _ ('time_project')
+                , cc = _ ('sap_cc')
+                , io = _ ('internal_order')
+                )
+            )
+# end def check_io_oi
 
 def check_input_len (db, cl, nodeid, new_values) :
     """ Check that some fields don't become too long
@@ -372,7 +393,7 @@ def change_pr (db, cl, nodeid, new_values) :
                         (_ ("Either specify %(tp)s or %(cc)s, not both")
                         % dict (tp = _ ('time_project'), cc = _ ('sap_cc'))
                         )
-                if oitem.time_project and io :
+                if (tc or oitem.time_project) and (io or oitem.internal_order) :
                     raise Reject \
                         (_ ("Specify %(cc)s not %(tp)s with %(io)s")
                         % dict
@@ -1125,7 +1146,7 @@ def init (db) :
     db.purchase_request.audit   ("set",    approvalchange)
     db.purchase_request.react   ("set",    changed_pr)
     db.purchase_request.react   ("create", create_pr_approval)
-    db.purchase_request.audit   ("set",    check_io)
+    db.purchase_request.audit   ("set",    check_io_pr)
     db.purchase_request.audit   ("set",    fix_nosy,        priority = 200)
     db.purchase_request.audit   ("set",    set_infosec,     priority = 250)
     db.purchase_request.audit   ("create", check_issue_nums)
@@ -1145,6 +1166,7 @@ def init (db) :
     db.pr_offer_item.audit      ("create", check_input_len, priority = 150)
     db.pr_offer_item.audit      ("set",    check_input_len, priority = 150)
     db.pr_offer_item.audit      ("set",    check_payment_type)
+    db.pr_offer_item.audit      ("set",    check_io_oi)
     db.pr_currency.audit        ("create", check_currency)
     db.pr_currency.audit        ("set",    check_currency)
     db.pr_approval_order.audit  ("create", pao_check_roles)

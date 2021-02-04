@@ -362,6 +362,9 @@
          <th style="text-align:left"
              tal:content="structure python:utils.fieldname
              ('pr_offer_item', 'purchase_type')"/>
+         <th style="text-align:left"
+             tal:content="structure python:utils.fieldname
+             ('pr_offer_item', 'internal_order')"/>
         </tr>
         <tr>
          <th/>
@@ -451,7 +454,18 @@
            <td tal:content="structure python:i.sap_cc.menu (** tc_filt)"/>
            <td tal:content="structure python:i.purchase_type.menu
                (valid = True)"/>
-           <td/>
+           <td>
+            <span tal:content="structure python:i.internal_order.field ()"/>
+            <span tal:condition="i/internal_order/is_edit_ok"
+                  tal:content="structure python:db.internal_order.classhelp
+                       ( 'order_number,name'
+                       , property='pr_offer_item%s@internal_order' % i.id
+                       , inputtype='radio'
+                       , width='800'
+                       , pagesize=1000
+                       , filter='valid=True'
+                       )"/>
+           </td>
            <td/>
            <td/>
           </tr>
@@ -529,6 +543,19 @@
            <td tal:content="structure python:utils.new_property
                (context, db, 'pr_offer_item', -idx, 'purchase_type').menu
                   (valid = True)"/>
+           <td>
+            <span tal:content="structure python:utils.new_property
+                (context, db, 'pr_offer_item', -idx, 'internal_order')
+                .field () "/>
+            <span tal:content="structure python:db.internal_order.classhelp
+                       ( 'order_number,name'
+                       , property='pr_offer_item-%s@internal_order' % idx
+                       , inputtype='radio'
+                       , width='800'
+                       , pagesize=1000
+                       , filter='valid=True'
+                       )"/>
+           </td>
            <td/>
            <td/>
            <td/>
