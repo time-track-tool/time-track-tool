@@ -864,8 +864,6 @@ def new_pr_offer_item (db, cl, nodeid, new_values) :
         new_values ['units'] = 1
     if 'vat' not in new_values :
         new_values ['vat'] = 0
-    if 'payment_type' not in new_values :
-        new_values ['payment_type'] = '1'
 # end def new_pr_offer_item
 
 def check_pr_offer_item (db, cl, nodeid, new_values) :
