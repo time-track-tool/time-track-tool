@@ -956,3 +956,10 @@ div.formdiv {
 input.rbutton {
   visibility: hidden;
 }
+
+span.nobreak {
+  white-space: nowrap;
+  hyphens: none;
+  -webkit-hyphens: none;
+  -ms-hyphens: none;
+}

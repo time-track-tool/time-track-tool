@@ -102,16 +102,19 @@
       <th tal:content="structure python:utils.fieldname
           (classname, 'internal_order')"/>
       <td>
-       <span tal:content="structure python:context.internal_order.field ()"/>
-       <span tal:condition="context/internal_order/is_edit_ok"
-             tal:content="structure python:db.internal_order.classhelp
-                  ( 'order_number,name'
-                  , property='internal_order'
-                  , inputtype='radio'
-                  , width='800'
-                  , pagesize=1000
-                  , filter='valid=True'
-                  )"/>
+       <span class="nobreak">
+        <span tal:content="structure python:
+              context.internal_order.field (size=4)"/>
+        <span tal:condition="context/internal_order/is_edit_ok"
+              tal:content="structure python:db.internal_order.classhelp
+                   ( 'order_number,name'
+                   , property='internal_order'
+                   , inputtype='radio'
+                   , width='800'
+                   , pagesize=1000
+                   , filter='valid=True'
+                   )"/>
+       </span>
       </td>
       <th tal:content="structure python:utils.fieldname
           (classname, 'sap_reference')"/>
@@ -455,16 +458,19 @@
            <td tal:content="structure python:i.purchase_type.menu
                (valid = True)"/>
            <td>
-            <span tal:content="structure python:i.internal_order.field ()"/>
-            <span tal:condition="i/internal_order/is_edit_ok"
-                  tal:content="structure python:db.internal_order.classhelp
-                       ( 'order_number,name'
-                       , property='pr_offer_item%s@internal_order' % i.id
-                       , inputtype='radio'
-                       , width='800'
-                       , pagesize=1000
-                       , filter='valid=True'
-                       )"/>
+            <span class="nobreak">
+             <span tal:content="structure python:
+                   i.internal_order.field (size=4)"/>
+             <span tal:condition="i/internal_order/is_edit_ok"
+                   tal:content="structure python:db.internal_order.classhelp
+                        ( 'order_number,name'
+                        , property='pr_offer_item%s@internal_order' % i.id
+                        , inputtype='radio'
+                        , width='800'
+                        , pagesize=1000
+                        , filter='valid=True'
+                        )"/>
+            </span>
            </td>
            <td/>
            <td/>
@@ -544,17 +550,19 @@
                (context, db, 'pr_offer_item', -idx, 'purchase_type').menu
                   (valid = True)"/>
            <td>
-            <span tal:content="structure python:utils.new_property
-                (context, db, 'pr_offer_item', -idx, 'internal_order')
-                .field () "/>
-            <span tal:content="structure python:db.internal_order.classhelp
-                       ( 'order_number,name'
-                       , property='pr_offer_item-%s@internal_order' % idx
-                       , inputtype='radio'
-                       , width='800'
-                       , pagesize=1000
-                       , filter='valid=True'
-                       )"/>
+            <span class="nobreak">
+             <span tal:content="structure python:utils.new_property
+                 (context, db, 'pr_offer_item', -idx, 'internal_order')
+                 .field (size=4) "/>
+             <span tal:content="structure python:db.internal_order.classhelp
+                        ( 'order_number,name'
+                        , property='pr_offer_item-%s@internal_order' % idx
+                        , inputtype='radio'
+                        , width='800'
+                        , pagesize=1000
+                        , filter='valid=True'
+                        )"/>
+            </span>
            </td>
            <td/>
            <td/>
