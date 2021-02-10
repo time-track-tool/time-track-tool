@@ -309,6 +309,10 @@ table.form td.optional {
   font-style: italic;
 }
 
+table.form td.emphasized {
+  font-weight: bold;
+}
+
 table.form td.html {
   color: #777;
 }

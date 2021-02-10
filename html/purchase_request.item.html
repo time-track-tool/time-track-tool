@@ -478,7 +478,8 @@
           <tr>
            <td tal:content="structure python:i.product_group.menu ()"/>
            <td tal:content="structure python:i.infosec_level.menu ()"/>
-           <td tal:content="structure python:utils.risk_type (db, i)"/>
+           <td class="emphasized"
+               tal:content="structure python:utils.risk_type (db, i)"/>
            <td tal:content="structure python:i.payment_type.menu ()"
                colspan="2" />
            <td/>
