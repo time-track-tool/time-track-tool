@@ -1371,7 +1371,7 @@ def copy_url (context, attributes = None) :
         atrs = \
             ( 'index', 'supplier', 'description', 'offer_number'
             , 'units', 'price_per_unit', 'vat', 'sap_cc', 'time_project'
-            , 'purchase_type'
+            , 'purchase_type', 'product_group'
             )
         n = -1
         for n, ofr in enumerate (context ['offer_items']) :
