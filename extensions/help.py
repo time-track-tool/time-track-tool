@@ -1618,6 +1618,10 @@ _helptext          = \
              </p>
           '''
       ]
+    , ""'purchase_request++infosec_level'               :
+      [""'''Maximum Information security level of all offer items
+         '''
+      ]
     , ""'purchase_request++msg'              :
       [ ""'''During creation the message field may be used for
              additional information and remarks useful or required by
