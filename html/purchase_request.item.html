@@ -622,7 +622,9 @@
                 (None, dict (purchase_request = context.id))">
          <tr tal:repeat="i python:sorted (app, key = lambda x : x.order)">
           <td tal:content="structure python:i.status.menu ()"/>
-          <td tal:content="python:i.date.pretty (utils.ymd)"/>
+          <td tal:condition="python: not isinstance (i.date._value, type (''))"
+              tal:content="python:i.date.pretty (utils.ymd)"/>
+          <td tal:condition="python: isinstance (i.date._value, type (''))"/>
           <td tal:content="python:i.role.plain ()"/>
           <td tal:condition="python:i.status.plain () == 'approved'"
               tal:content="structure python:i.by.plain ()"/>
