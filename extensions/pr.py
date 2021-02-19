@@ -188,6 +188,14 @@ def risk_type (db, offer_item) :
     return ''
 # end def risk_type
 
+def orig_infosec_level (offer_item) :
+    db = offer_item._db
+    oi = db.pr_offer_item.getnode (offer_item.id)
+    pg = db.product_group.getnode (oi.product_group)
+    il = db.infosec_level.getnode (pg.infosec_level)
+    return il.name
+# end def orig_infosec_level
+
 def init (instance) :
     act = instance.registerAction
     act ('pr_sign', Sign_Purchase_Request)
@@ -202,4 +210,5 @@ def init (instance) :
     reg ('pr_justification',             pr_justification)
     reg ('pr_type_valid_agents',         pr_type_valid_agents)
     reg ('risk_type',                    risk_type)
+    reg ('orig_infosec_level',           orig_infosec_level)
 # end def init

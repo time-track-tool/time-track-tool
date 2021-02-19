@@ -313,6 +313,14 @@ table.form td.emphasized {
   font-weight: bold;
 }
 
+table.form td.warn {
+  color: red;
+}
+
+table.form td span.warn {
+  color: red;
+}
+
 table.form td.html {
   color: #777;
 }
@@ -966,4 +974,21 @@ span.nobreak {
   hyphens: none;
   -webkit-hyphens: none;
   -ms-hyphens: none;
+}
+/* Tooltip text */
+.tooltip .tooltiptext {
+  visibility: hidden;
+  width: 120px;
+  background-color: yellow;
+  color: #000;
+  text-align: center;
+  padding: 5px 0;
+  border-radius: 6px;
+  position: absolute;
+  z-index: 1;
+}
+
+/* Show the tooltip text when you mouse over the tooltip container */
+.tooltip:hover .tooltiptext {
+  visibility: visible;
 }

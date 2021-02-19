@@ -476,8 +476,23 @@
            <td/>
           </tr>
           <tr>
-           <td tal:content="structure python:i.product_group.menu ()"/>
-           <td tal:content="structure python:i.infosec_level.menu ()"/>
+           <td class="tooltip">
+            <span tal:content="structure python:i.product_group.menu ()"/>
+            <span class="tooltiptext"
+                  tal:condition="python:not i.product_group.is_edit_ok ()"
+                  tal:content="python:'SAP: ' + str (i.product_group.sap_ref)"/>
+           </td>
+           <td class="tooltip">
+            <span tal:content="structure python:i.infosec_level.menu ()"
+                  tal:attributes="class python:
+                      ['', 'warn']
+                      [i.infosec_level != utils.orig_infosec_level (i)]"/>
+            <span class="tooltiptext"
+                  tal:condition="python:
+                      not i.product_group.is_edit_ok ()
+                      and utils.orig_infosec_level (i)"
+                  tal:content="python:utils.orig_infosec_level (i)"/>
+           </td>
            <td class="emphasized"
                tal:content="structure python:utils.risk_type (db, i)"/>
            <td tal:content="structure python:i.payment_type.menu ()"
