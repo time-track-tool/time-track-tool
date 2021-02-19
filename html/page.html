@@ -253,6 +253,9 @@
    , ('qso', '')        : '@columns=call,band,qso_start,qso_end,rst_rcvd,'
                           'mode,owner&'
                           '@sort=-qso_end&@pagesize=20&@startwith=0'
+   , ('rc_product', '') : '@columns=id,number,rc_product_type,'
+                          'rc_application,rc_substrate&'
+                          '@sort=number&@pagesize=20&@startwith=0'
    , ('room', '')       : '@columns=name,location,description&'
                           '@sort=name&@pagesize=50&@startwith=0'
    , ('sap_cc', '')     : '@columns=deputy,description,id,name,organisation,'
@@ -468,6 +471,10 @@
      , ('qsl_type',            'Edit',   '?@template=item', 1)
      , ('qso',                 'Edit',   '?@template=item', 1)
      , ('query',               'Edit',   '?@template=item', 1)
+     , ('rc_product_type',     'Edit',   '?@template=item', 1)
+     , ('rc_application',      'Edit',   '?@template=item', 1)
+     , ('rc_substrate',        'Edit',   '?@template=item', 1)
+     , ('rc_product',          'Edit',   '?@template=item', 1)
      , ('reference',           'Edit',   '?@template=item', 1)
      , ('reporting_group',     'Edit',   '?@template=item', 1)
      , ('room',                'Edit',   '?@template=item', 1)
@@ -590,6 +597,7 @@
      , ('purchase_type',       'View', 1,               ('',''))
      , ('qsl',                 'View', 1,               ('',''))
      , ('qso',                 'View', 1,               ('',''))
+     , ('rc_product',          'View', 1,               ('',''))
      , ('room',                'View', 1,               ('',''))
      , ('reference',           'View', 1,               ('',''))
      , ('sap_cc',              'View', 1,               ('',''))

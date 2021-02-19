@@ -4353,3 +4353,14 @@ msgstr "Identifier"
 msgid "quantity"
 msgstr "Quantity"
 
+msgid "rc_product"
+msgstr "Product"
+
+msgid "rc_product_type"
+msgstr "Product type"
+
+msgid "rc_application"
+msgstr "Application"
+
+msgid "rc_substrate"
+msgstr "Substrate"
