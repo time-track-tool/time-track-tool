@@ -1338,8 +1338,9 @@ class LDAP_Roundup_Sync (Log) :
                             % (user.username, rk, lk, pldattr, prupattr)
                             )
                         op = ldap3.MODIFY_REPLACE
-                        if rupattr is None :
+                        if rupattr is None or rupattr == '':
                             op = ldap3.MODIFY_DELETE
+                            rupattr = None
                         # Special case for common name (CN), this needs a
                         # modify_dn call and we also need to modify the
                         # displayname
