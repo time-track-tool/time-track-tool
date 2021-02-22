@@ -4364,3 +4364,9 @@ msgstr "Application"
 
 msgid "rc_substrate"
 msgstr "Substrate"
+
+msgid "rc_suitability"
+msgstr "Suitability"
+
+msgid "rc_brand"
+msgstr "Brand"

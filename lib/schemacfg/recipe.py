@@ -63,12 +63,28 @@ def init (db, Link, Multilink, Number, String, Class, ** kw) :
         )
     rc_substrate.setkey ("name")
 
+    rc_suitability = Class \
+        ( db, ''"rc_suitability"
+        , name             = String    ()
+        , description      = String    ()
+        )
+    rc_suitability.setkey ("name")
+
+    rc_brand = Class \
+        ( db, ''"rc_brand"
+        , name             = String    ()
+        , description      = String    ()
+        )
+    rc_brand.setkey ("name")
+
     rc_product = Class \
         ( db, ''"rc_product"
         , number           = String    ()
         , rc_product_type  = Link      ("rc_product_type", do_journal = 'no')
         , rc_application   = Link      ("rc_application",  do_journal = 'no')
         , rc_substrate     = Link      ("rc_substrate",    do_journal = 'no')
+        , rc_suitability   = Link      ("rc_suitability",  do_journal = 'no')
+        , rc_brand         = Link      ("rc_brand",        do_journal = 'no')
         , substance        = Link      ("substance")
         )
     rc_product.setkey ("number")
@@ -82,6 +98,8 @@ def security (db, ** kw) :
         , ("rc_product_type",              ["User"], ["User"])
         , ("rc_application",               ["User"], ["User"])
         , ("rc_substrate",                 ["User"], ["User"])
+        , ("rc_suitability",               ["User"], ["User"])
+        , ("rc_brand",                     ["User"], ["User"])
         , ("rc_product",                   ["User"], [])
         ]
     schemadef.register_class_permissions (db, classes, [])
