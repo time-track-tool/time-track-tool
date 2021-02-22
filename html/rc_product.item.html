@@ -52,11 +52,17 @@
       <th tal:content="structure python:utils.fieldname
           (classname, 'substance')"/>
       <td>
-       <span tal:content="structure python:context.substance.field ()"/>
-       <span tal:content="structure python:db.substance.classhelp
+       <span tal:condition="python: context.is_edit_ok ()"
+             tal:content="structure python:context.substance.field ()"/>
+       <span tal:condition="python: context.is_edit_ok ()"
+             tal:content="structure python:db.substance.classhelp
              ('identifier,name', property='substance', inputtype='radio'
              , width='600', pagesize=5000
              )"/>
+       <span tal:condition="python: context.id">
+        <a tal:attributes="href python: 'substance' + context.substance.id"
+           tal:content="python: context.substance.identifier"/>
+       </span>
       </td>
      </tr>
      <tr tal:condition="python: context.id">
