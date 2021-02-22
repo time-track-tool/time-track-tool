@@ -60,6 +60,11 @@
      </tr>
      <tr>
       <th tal:content="structure python:utils.fieldname
+          (classname, 'rc_capability')"/>
+      <td tal:content="structure python:context.rc_capability.menu (height=6)"/>
+     </tr>
+     <tr>
+      <th tal:content="structure python:utils.fieldname
           (classname, 'substance')"/>
       <td>
        <span tal:condition="python: context.is_edit_ok ()"

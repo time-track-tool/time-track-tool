@@ -4370,3 +4370,6 @@ msgstr "Suitability"
 
 msgid "rc_brand"
 msgstr "Brand"
+
+msgid "rc_capability"
+msgstr "Capability"
