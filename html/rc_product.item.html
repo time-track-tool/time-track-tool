@@ -35,6 +35,11 @@
      </tr>
      <tr>
       <th tal:content="structure python:utils.fieldname
+          (classname, 'rc_brand')"/>
+      <td tal:content="structure python:context.rc_brand.menu ()"/>
+     </tr>
+     <tr>
+      <th tal:content="structure python:utils.fieldname
           (classname, 'rc_product_type')"/>
       <td tal:content="structure python:context.rc_product_type.menu ()"/>
      </tr>
@@ -50,6 +55,16 @@
      </tr>
      <tr>
       <th tal:content="structure python:utils.fieldname
+          (classname, 'rc_suitability')"/>
+      <td tal:content="structure python:context.rc_suitability.menu ()"/>
+     </tr>
+     <tr>
+      <th tal:content="structure python:utils.fieldname
+          (classname, 'rc_capability')"/>
+      <td tal:content="structure python:context.rc_capability.menu (height=6)"/>
+     </tr>
+     <tr>
+      <th tal:content="structure python:utils.fieldname
           (classname, 'substance')"/>
       <td>
        <span tal:condition="python: context.is_edit_ok ()"
@@ -59,7 +74,7 @@
              ('identifier,name', property='substance', inputtype='radio'
              , width='600', pagesize=5000
              )"/>
-       <span tal:condition="python: context.id">
+       <span tal:condition="python: context.id and context.substance">
         <a tal:attributes="href python: 'substance' + context.substance.id"
            tal:content="python: context.substance.identifier"/>
        </span>
@@ -68,11 +83,18 @@
      <tr tal:condition="python: context.id">
       <th>Product number</th>
       <td tal:content="python:
-          ( context.rc_product_type.name.plain ()
+          ( context.rc_brand.name.plain ()
+          + ' '
+          + context.rc_product_type.name.plain ()
+          + ' '
+          + context.rc_application.name.plain ()
           + '-'
           + context.number.plain ()
           + '-'
-          + context.rc_application.name.plain ()
+          + context.rc_substrate.name.plain ()
+          + ['', ' '][bool (context.rc_suitability)]
+          + ['', context.rc_suitability.name.plain ()]
+            [bool (context.rc_suitability)]
           )"/>
      </tr>
     </tal:block>
