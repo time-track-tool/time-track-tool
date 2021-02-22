@@ -1,4 +1,4 @@
-# Copyright (C) 2020 Dr. Ralf Schlatterbeck Open Source Consulting.
+# Copyright (C) 2020-21 Dr. Ralf Schlatterbeck Open Source Consulting.
 # Reichergasse 131, A-3411 Weidling.
 # Web: http://www.runtux.com Email: office@runtux.com
 # All rights reserved
@@ -33,14 +33,45 @@ def init (db, Link, Multilink, Number, String, Class, ** kw) :
 
     ingredient_used_by_substance = Class \
         ( db, ''"ingredient_used_by_substance"
-        , substance             = Link      ('substance'
-                                            , rev_multilink  = 'ingredients'
-                                            )
-        , ingredient            = Link      ('substance'
-                                            , rev_multilink  = 'part_of'
-                                            )
-        , quantity              = Number    ()
+        , substance        = Link      ('substance'
+                                       , rev_multilink = 'ingredients'
+                                       )
+        , ingredient       = Link      ('substance'
+                                       , rev_multilink = 'part_of'
+                                       )
+        , quantity         = Number    ()
         )
+
+    rc_product_type = Class \
+        ( db, ''"rc_product_type"
+        , name             = String    ()
+        , description      = String    ()
+        )
+    rc_product_type.setkey ("name")
+
+    rc_application = Class \
+        ( db, ''"rc_application"
+        , name             = String    ()
+        , description      = String    ()
+        )
+    rc_application.setkey ("name")
+
+    rc_substrate = Class \
+        ( db, ''"rc_substrate"
+        , name             = String    ()
+        , description      = String    ()
+        )
+    rc_substrate.setkey ("name")
+
+    rc_product = Class \
+        ( db, ''"rc_product"
+        , number           = String    ()
+        , rc_product_type  = Link      ("rc_product_type", do_journal = 'no')
+        , rc_application   = Link      ("rc_application",  do_journal = 'no')
+        , rc_substrate     = Link      ("rc_substrate",    do_journal = 'no')
+        , substance        = Link      ("substance")
+        )
+    rc_product.setkey ("number")
 
 # end def init
 
@@ -48,6 +79,12 @@ def security (db, ** kw) :
     classes = \
         [ ("substance",                    ["User"], ["User"])
         , ("ingredient_used_by_substance", ["User"], ["User"])
+        , ("rc_product_type",              ["User"], ["User"])
+        , ("rc_application",               ["User"], ["User"])
+        , ("rc_substrate",                 ["User"], ["User"])
+        , ("rc_product",                   ["User"], [])
         ]
     schemadef.register_class_permissions (db, classes, [])
+    # Allow creation but not modification
+    db.security.addPermissionToRole ('User', 'Create', 'rc_product')
 # end def security
