@@ -192,6 +192,8 @@ def orig_infosec_level (offer_item) :
     db = offer_item._db
     oi = db.pr_offer_item.getnode (offer_item.id)
     pg = db.product_group.getnode (oi.product_group)
+    if not pg.infosec_level :
+        return ''
     il = db.infosec_level.getnode (pg.infosec_level)
     return il.name
 # end def orig_infosec_level

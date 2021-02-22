@@ -486,7 +486,7 @@
             <span tal:content="structure python:i.infosec_level.menu ()"
                   tal:attributes="class python:
                       ['', 'warn']
-                      [i.infosec_level != utils.orig_infosec_level (i)]"/>
+                      [i.infosec_level.name != utils.orig_infosec_level (i)]"/>
             <span class="tooltiptext"
                   tal:condition="python:
                       not i.product_group.is_edit_ok ()
