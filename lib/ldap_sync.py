@@ -530,6 +530,8 @@ class LDAP_Roundup_Sync (object) :
             return s
         s = self.db.user.get (s, 'username')
         r = self.get_ldap_user_by_username (s)
+        if r is None :
+            return None
         return r.dn
     # end def get_username_attribute_dn
 
