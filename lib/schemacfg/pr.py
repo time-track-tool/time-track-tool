@@ -950,6 +950,11 @@ def security (db, ** kw) :
             they are the owner/deputy or have appropriate role.
             In addition this is allowed if they have a delegated
             approval or are an active substitute.
+            We also allow pr.status to be 'rejected': This cannot change
+            the outcome (once approved or rejected the pr.status cannot
+            change) but allows for race condition when someone has
+            several approvals in a single mask and one of that approvals
+            changed the PR to rejected before the others were processed.
         """
         if not itemid or itemid < 1 :
             return False
@@ -958,12 +963,13 @@ def security (db, ** kw) :
         und          = db.pr_approval_status.lookup ('undecided')
         st_open      = db.pr_status.lookup ('open')
         st_approving = db.pr_status.lookup ('approving')
+        st_reject    = db.pr_status.lookup ('rejected')
         if  (   ap.status == und
             and (  userid in common.approval_by (db, ap.user)
                 or userid in common.approval_by (db, ap.deputy)
                 or (ap.role_id and prlib.has_pr_role (db, userid, ap.role_id))
                 )
-            and pr.status in (st_open, st_approving)
+            and pr.status in (st_open, st_approving, st_reject)
             ) :
             return True
         return False
