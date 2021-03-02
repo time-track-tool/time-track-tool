@@ -32,5 +32,8 @@ try :
         instance.registerUtil   ('sync_from_ldap',    sync_from_ldap_util)
     # end def init
 except ImportError :
+    def check_ldap_config (*args, **kw) :
+        return False
     def init (instance) :
-        instance.registerUtil ('sync_from_ldap', None)
+        instance.registerUtil ('sync_from_ldap',    None)
+        instance.registerUtil ('check_ldap_config', check_ldap_config)
