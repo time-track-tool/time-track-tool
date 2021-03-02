@@ -166,7 +166,10 @@ class LDAP_Roundup_Sync (Log) :
         if self.verbose :
             formatter = logging.Formatter ('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
             handler = logging.StreamHandler (sys.stderr)
-            handler.setLevel (logging.INFO)
+            level   = logging.INFO
+            if self.verbose > 1 :
+                level = logging.DEBUG
+            handler.setLevel (level)
             handler.setFormatter (formatter)
             self.log.addHandler (handler)
 
@@ -211,8 +214,11 @@ class LDAP_Roundup_Sync (Log) :
         # start_tls won't work without a previous open, may be a
         # microsoft specific feature -- the ldap3 docs say otherwise
         self.ldcon.open      ()
-        self.ldcon.start_tls ()
-        self.log.debug ('TLS')
+        # Double negation because we want the default to be *with* starttls
+        no_starttls = getattr (self.db.config.ext, 'LDAP_NO_STARTTLS', False)
+        if not no_starttls :
+            self.ldcon.start_tls ()
+        self.log.debug ('TLS: %s' % (not no_starttls))
         self.ldcon.bind      ()
         self.log.debug ('Bind')
         self.schema = self.server.schema
