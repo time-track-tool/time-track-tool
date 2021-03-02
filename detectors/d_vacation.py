@@ -580,10 +580,19 @@ def check_correction (db, cl, nodeid, new_values) :
             raise Reject (_ ("Frozen"))
     # Check that vacation parameters exist in dyn. user records
     dyn = user_dynamic.get_user_dynamic (db, user, date)
+    username = db.user.get (user, 'username')
+    # Check for initial creation of user/dynamic user record where
+    # the creation of a vacation correction is triggered
+    if not dyn :
+        dyn = user_dynamic.first_user_dynamic (db, user)
     if not dyn or dyn.valid_to and dyn.valid_to < date :
-        username = db.user.get (user, 'username')
         raise Reject \
             (_ ('No current dyn. user record for "%(username)s"') % locals ())
+    # Check that no vacation correction is created in a year before the
+    # first dynamic user record
+    if dyn.valid_from.year > date.year :
+        raise Reject \
+            (_ ('Dyn. user record starts too late for "%(username)s"') % locals ())
     while dyn and (not dyn.valid_to or dyn.valid_to > date) :
         if  (  dyn.vacation_yearly is None
             or not dyn.vacation_month
