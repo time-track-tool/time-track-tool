@@ -77,6 +77,8 @@ def main () :
 
     lds = LDAP_Roundup_Sync (db, verbose = args.verbose)
     lds.log.info ("Start to sync users '%s' from LDAP" % users)
+    if not args.two_way_sync :
+        lds.log.info ("Update LDAP (two-way-sync) is deactivated")
     try :
         if args.users :
             for username in args.users :
