@@ -362,6 +362,8 @@ class LDAP_Roundup_Sync (Log) :
             dontsync = dict.fromkeys (dontsync.split (','))
         else :
             dontsync = {}
+        self.log.info ("Exclude the follwing Roundup attributes from sync: %s" \
+            % dontsync.keys())
         attr_map = dict (user = dict ())
         attr_u   = attr_map ['user']
         self.user_props = props = self.db.user.properties
@@ -636,9 +638,9 @@ class LDAP_Roundup_Sync (Log) :
             if insert_attr_name :
                 n = ''
                 if not self.update_roundup :
-                    n = ' (no action)'
+                    n = ' (deactivated)'
                 self.log.info \
-                    ("Update roundup: new %s: %s%s" % (cls.classname, key, n))
+                    ("Update Roundup%s: new %s: %s%s" % (n, cls.classname, key))
                 if self.update_roundup :
                     d = {}
                     if params :
@@ -704,10 +706,10 @@ class LDAP_Roundup_Sync (Log) :
         if aa != oldaa :
             n = ''
             if not self.update_roundup :
-                n = ' (no action)'
+                n = ' (deactivated)'
             self.log.info \
-                ( "Update roundup: %s alternate_addresses = %s%s" \
-                % (user.username, ','.join (aa.iterkeys ()), n)
+                ( "Update Roundup%s: %s alternate_addresses = %s" \
+                % (n, user.username, ','.join (aa.iterkeys ()))
                 )
             if self.update_roundup :
                 self.db.user.set \
@@ -1085,16 +1087,19 @@ class LDAP_Roundup_Sync (Log) :
                     # set these to default settings for this status
                     d ['roles']  = roles
                     d ['status'] = new_status_id
+                n = ''
+                if not self.update_roundup :
+                    n = ' (deactivated)'
                 if d :
-                    n = ''
-                    if not self.update_roundup :
-                        n = ' (no action)'
-                    self.log.info ("Update roundup: %s %s%s" % (username, d, n))
-                    self.log.debug ('Before roundup update')
+                    self.log.info ("Update Roundup%s: %s %s" % (n, username, d))
+                    self.log.debug ('Before Roundup update')
                     if self.update_roundup :
                         self.db.user.set (uid, ** d)
                         changed = True
-                    self.log.debug ('After roundup update')
+                    self.log.debug ('After Roundup update')
+                else:
+                    self.log.info (\
+                        "Update Roundup%s: %s: No Changes" % (n, username))
             else :
                 d.update (c)
                 assert (d)
@@ -1104,11 +1109,11 @@ class LDAP_Roundup_Sync (Log) :
                 d ['status'] = new_status_id
                 if 'username' not in d :
                     d ['username'] = username
-                self.log.info ("Create roundup user: %s: %s" % (username, d))
+                self.log.info ("Create Roundup user: %s: %s" % (username, d))
                 if self.update_roundup :
-                    self.log.debug ('Before roundup create')
+                    self.log.debug ('Before Roundup create')
                     uid = self.db.user.create (** d)
-                    self.log.debug ('After roundup create')
+                    self.log.debug ('After Roundup create')
                     changed = True
                     # Perform user creation magic for new user
                     if 'org_location' in self.db.classes :
@@ -1172,7 +1177,7 @@ class LDAP_Roundup_Sync (Log) :
                 if not s and not self.is_single_value (p) :
                     ins = cs
                 self.log.info \
-                    ("%s: Inserting: %s (%s)" % (user.username, p, ins))
+                    ("%s: Add insertion: %s (%s)" % (user.username, p, ins))
                 modlist.append ((ldap3.MODIFY_ADD, p, ins))
             else :
                 ldattr = luser [p][0]
@@ -1186,13 +1191,13 @@ class LDAP_Roundup_Sync (Log) :
                 if ldattr != ins and [ldattr] != ins :
                     if not ins :
                         self.log.info \
-                            ( "%s:  Deleting: %s -> %s [%s -> %s]"
+                            ( "%s: Add deletion: %s -> %s [%s -> %s]"
                             % (user.username, ct, p, ldattr, ins)
                             )
                         modlist.append ((ldap3.MODIFY_DELETE, p, None))
                     else :
                         self.log.info \
-                            ( "%s:  Updating: %s -> %s [%s -> %s]"
+                            ( "%s: Add update: %s -> %s [%s -> %s]"
                             % (user.username, ct, p, ldattr, ins)
                             )
                         modlist.append ((ldap3.MODIFY_REPLACE, p, ins))
@@ -1200,14 +1205,14 @@ class LDAP_Roundup_Sync (Log) :
                 if s not in luser :
                     if cs [1:] :
                         self.log.info \
-                            ( "%s: Inserting: %s (%s)" \
+                            ( "%s: Add insertion: %s (%s)" \
                             % (user.username, s, cs [1:])
                             )
                         modlist.append ((ldap3.MODIFY_ADD, s, cs [1:]))
                 else :
                     if luser [s] != cs [1:] :
                         self.log.info \
-                            ( "%s:  Updating: %s -> %s [%s -> %s]"
+                            ( "%s: Add update: %s -> %s [%s -> %s]"
                             % (user.username, ct, s, ldattr, cs [1:])
                             )
                         modlist.append ((ldap3.MODIFY_REPLACE, s, cs [1:]))
@@ -1217,11 +1222,12 @@ class LDAP_Roundup_Sync (Log) :
                 for f in fields :
                     if f in luser :
                         self.log.info \
-                            ("%s:  Deleting: %s" % (user.username, f))
+                            ("%s: Add deletion: %s" % (user.username, f))
                         modlist.append ((ldap3.MODIFY_REPLACE, f, []))
     # end def sync_contacts_to_ldap
 
     def sync_user_to_ldap (self, username, update = None) :
+        self.log.info ("Sync user '%s' to LDAP" % username )
         if update is not None :
             self.update_ldap = update
         allow_empty = False
@@ -1323,7 +1329,7 @@ class LDAP_Roundup_Sync (Log) :
             if lk not in luser :
                 if rupattr :
                     self.log.info \
-                        ( "%s: Inserting: %s (%s)" \
+                        ( "%s: Add insertion: %s (%s)" \
                         % (user.username, lk, prupattr)
                         )
                     assert (change)
@@ -1340,7 +1346,7 @@ class LDAP_Roundup_Sync (Log) :
                 if ldattr != rupattr :
                     if change :
                         self.log.info \
-                            ( "%s:  Updating: %s -> %s [%s -> %s]"
+                            ( "%s: Add update: %s -> %s [%s -> %s]"
                             % (user.username, rk, lk, pldattr, prupattr)
                             )
                         op = ldap3.MODIFY_REPLACE
@@ -1407,7 +1413,7 @@ class LDAP_Roundup_Sync (Log) :
                         chg = method (r_user, udprop, prop, lk, ldattr)
                         if chg :
                             self.log.info \
-                                ( "%s:  Updating: %s.%s -> %s [%s -> %s]"
+                                ( "%s: Updating: %s.%s -> %s [%s -> %s]"
                                 % ( user.username
                                   , udprop
                                   , prop
@@ -1418,7 +1424,16 @@ class LDAP_Roundup_Sync (Log) :
                                 )
                             modlist.append (chg)
         if self.contact_types :
+            self.log.debug (\
+                "Prepare changes for contacts: %s %s" % (user.username, self.contact_types))
             self.sync_contacts_to_ldap (r_user, luser, modlist)
+        self.log.debug ('Modlist before updates: %s' % modlist)
+        n = ''
+        if not self.update_ldap :
+            n = ' (deactivated)'
+            self.log.info ('Update LDAP%s: %s %s' % (n, user.username, modlist))
+        if not modlist :
+            self.log.info ('Update LDAP%s: %s: No changes' % (n, user.username))
         if modlist and self.update_ldap :
             # Make a dictionary from modlist as required by ldap3
             moddict = {}
@@ -1436,6 +1451,7 @@ class LDAP_Roundup_Sync (Log) :
             self.log.debug ('modifying Properties for DN: %s' % luser.dn)
             self.log.debug ('Mod-Dict: %s' % str (logdict))
             self.log.debug ('Before modify')
+            self.log.info ('Update LDAP: %s %s' % (user.username, moddict))
             self.ldcon.modify (luser.dn, moddict)
             self.log.debug ('After modify')
             self.log.debug ('Result: %s' % self.ldcon.result)
@@ -1444,10 +1460,6 @@ class LDAP_Roundup_Sync (Log) :
                     ( 'Error on modify of user %s: %s'
                     % (luser.dn, self.ldcon.last_error)
                     )
-        elif modlist :
-            self.log.info \
-                ('No LDAP updates performed for user: "%s"' % user.username)
-            self.log.debug ('Attributes not written: %s' % modlist)
     # end def sync_user_to_ldap
 
     def set_user_dynamic_prop (self, user, udprop, linkprop, lk, ldattr) :
@@ -1553,7 +1565,6 @@ class LDAP_Roundup_Sync (Log) :
                 dom = username.split ('@', 1) [1]
                 if dom not in self.ad_domain :
                     continue
-            self.log.info ("Sync user '%s' to LDAP" % username )
             self.sync_user_to_ldap (username)
     # end def sync_all_users_to_ldap
 # end LDAP_Roundup_Sync
