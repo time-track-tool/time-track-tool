@@ -868,7 +868,9 @@ def new_pr_offer_item (db, cl, nodeid, new_values) :
 
 def check_pr_offer_item (db, cl, nodeid, new_values) :
     common.require_attributes \
-        (_, cl, nodeid, new_values, 'units', 'price_per_unit', 'product_group')
+        ( _, cl, nodeid, new_values, 'units'
+        , 'price_per_unit', 'product_group', 'supplier'
+        )
     units = new_values.get ('units', None)
     price = new_values.get ('price_per_unit', None)
     oi    = None
