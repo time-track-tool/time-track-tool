@@ -75,10 +75,22 @@ def main () :
         , help = 'LAS with supplier risk'
         )
     cmd.add_argument \
-        ( str ('-d'), str ('--directory')
+        ( '-d', '--directory'
         , dest    = 'dir'
         , help    = 'Tracker instance directory, default=%(default)s'
         , default = '.'
+        )
+    cmd.add_argument \
+        ( '-o', '--orgmap'
+        , help    = 'Mapping of organisations in LAS to tracker'
+        , default = 'orglist'
+        )
+    cmd.add_argument \
+        ( '-n', '--no_update'
+        , dest    = 'update'
+        , help    = 'Do not update tracker'
+        , default = True
+        , action  = 'store_false'
         )
     args    = cmd.parse_args ()
     tracker = instance.open (args.dir)
@@ -87,11 +99,17 @@ def main () :
     sys.path.insert (1, args.dir)
     from common import pretty_range
 
+    orgmap = {}
+    with open (args.orgmap) as f :
+        dr = DictReader (f, delimiter = ';')
+        for rec in dr :
+            orgmap [rec ['name_las']] = rec ['names_prtracker'].split ('+')
+
     il = db.infosec_level
     il_ids = {}
     il_table = \
         [ ('Public',                10, True)
-        , ('Internal',              20, True)
+        #, ('Internal',              20, True)
         , ('Normal',                30, False)
         , ('Confidential',          40, True)
         , ('High',                  50, False)
@@ -124,6 +142,7 @@ def main () :
         else :
             id = il.create (name = name, order = order, is_consulting = cons)
         il_ids [var] = id
+    il_ids ['normal / internal'] = il_ids ['normal']
 
     srg_table = \
         [ ('Consulting',        'Consulting',                    True)
@@ -133,6 +152,8 @@ def main () :
         , ('SW-Dev',            'Software development',          False)
 #       , ('hw',                'Hardware',                      False)
         , ('Operation / cloud', 'Cloud based services',          False)
+        , ('General',           'General',                       False)
+        , ('General_small',     'General_small',                 False)
         ]
     srg = db.security_req_group
     srg_ids = {}
@@ -155,14 +176,16 @@ def main () :
         srg = rec ['ISEC-Requirements group'].strip ()
         if not srg :
             continue
-        if srg == 'n.a.' or srg == 'n.a' :
+        if srg == 'n.a.' or srg == 'n.a' or srg == 'TBD' :
             srg = None
         else :
-            if srg == 'n.a. / COTS' :
-                srg = 'COTS'
+            if srg.startswith ('n.a. /') :
+                srg = srg [6:].strip ()
             srg = srg_ids [srg]
         name = rec ['English'].strip ()
         il = rec ['default protection level'].strip ()
+        if il.startswith ('n.a. /') :
+            il = il [6:].strip ()
         if not il or il == 'n.a.' :
             il = None
         else :
@@ -218,7 +241,7 @@ def main () :
     # Then entries for each supplier_risk_category
     psr_table = \
         [ (None,  'public',                'med')
-        , (None,  'internal',              'hi')
+        #, (None,  'internal',              'hi')
         , (None,  'normal',                'hi')
         , (None,  'confidential',          'vhi')
         , (None,  'high',                  'vhi')
@@ -226,7 +249,7 @@ def main () :
         , (None,  'very high',             'dnp')
         # Low:
         , ('low', 'public',                'low')
-        , ('low', 'internal',              'low')
+        #, ('low', 'internal',              'low')
         , ('low', 'normal',                'low')
         , ('low', 'confidential',          'low')
         , ('low', 'high',                  'low')
@@ -234,7 +257,7 @@ def main () :
         , ('low', 'very high',             'med')
         # Medium:
         , ('med', 'public',                'low')
-        , ('med', 'internal',              'med')
+        #, ('med', 'internal',              'med')
         , ('med', 'normal',                'med')
         , ('med', 'confidential',          'hi')
         , ('med', 'high',                  'hi')
@@ -242,7 +265,7 @@ def main () :
         , ('med', 'very high',             'vhi')
         # High:
         , ('hi',  'public',                'med')
-        , ('hi',  'internal',              'hi')
+        #, ('hi',  'internal',              'hi')
         , ('hi',  'normal',                'hi')
         , ('hi',  'confidential',          'vhi')
         , ('hi',  'high',                  'vhi')
@@ -250,7 +273,7 @@ def main () :
         , ('hi',  'very high',             'dnp')
         # Very High:
         , ('vhi', 'public',                'hi')
-        , ('vhi', 'internal',              'dnp')
+        #, ('vhi', 'internal',              'dnp')
         , ('vhi', 'normal',                'dnp')
         , ('vhi', 'confidential',          'dnp')
         , ('vhi', 'high',                  'dnp')
@@ -284,6 +307,7 @@ def main () :
         if not lasrec ['Consulting_small'] :
             continue
         entity = lasrec ['Entity'].strip ()
+        entity = orgmap.get (entity, [entity])
         sname  = lasrec ['Name of Supplier']
         try :
             sup = db.pr_supplier.lookup (sname)
@@ -293,21 +317,26 @@ def main () :
         srcs   = {}
         for k in srg_by_name :
             srgid = srg_by_name [k]
-            srcs [srgid] = src_by_name [lasrec [k].strip ()]
-        if entity :
-            try :
-                org = db.organisation.lookup (entity)
-            except KeyError :
-                print ("Organisation not found: %s" % entity)
-                continue
-            insert_supplier_risk (db, sup, org, srcs)
-        else :
-            # iter over valid orgs
-            d = dict (may_purchase = True)
-            d ['valid_from'] = ';.,-'
-            d ['valid_to']   = '.;,-'
-            for org in db.organisation.filter (None, d) :
+            if k in lasrec :
+                srcs [srgid] = src_by_name [lasrec [k].strip ()]
+            elif not k.startswith ('General') :
+                raise ValueError ('Invalid LAS Entry: %s' % k)
+        for e in entity :
+            if e :
+                try :
+                    org = db.organisation.lookup (e)
+                except KeyError :
+                    print ("Organisation not found: %s" % e)
+                    continue
                 insert_supplier_risk (db, sup, org, srcs)
+            else :
+                # iter over valid orgs
+                d = dict (may_purchase = True)
+                d ['valid_from'] = ';.,-'
+                d ['valid_to']   = '.;,-'
+                for org in db.organisation.filter (None, d) :
+                    insert_supplier_risk (db, sup, org, srcs)
+                break
     for name, order, need in payment_types :
         try :
             pt = db.payment_type.lookup (name)
@@ -317,7 +346,8 @@ def main () :
         except KeyError :
             pt = db.payment_type.create \
                 (name = name, order = order, need_approval = need)
-    db.commit ()
+    if args.update :
+        db.commit ()
 # end def main
 
 
