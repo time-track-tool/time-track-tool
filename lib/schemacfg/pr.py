@@ -78,6 +78,7 @@ def init \
         , sap_ref               = String    ()
         )
     product_group.setkey ('name')
+    product_group.setorderprop ('sap_ref')
 
     supplier_risk_category = Class \
         ( db, ''"supplier_risk_category"

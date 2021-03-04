@@ -477,7 +477,8 @@
           </tr>
           <tr>
            <td class="tooltip">
-            <span tal:content="structure python:i.product_group.menu ()"/>
+            <span tal:content="structure python:i.product_group.menu
+                  (additional = ['sap_ref'])"/>
             <span class="tooltiptext"
                   tal:condition="python:not i.product_group.is_edit_ok ()"
                   tal:content="python:'SAP: ' + str (i.product_group.sap_ref)"/>
@@ -586,7 +587,8 @@
           </tr>
           <tr>
            <td tal:content="structure python:utils.new_property
-             (context, db, 'pr_offer_item', -idx, 'product_group').menu ()"/>
+             (context, db, 'pr_offer_item', -idx, 'product_group').menu
+             (additional = ['sap_ref'])"/>
            <td tal:content="structure python:utils.new_property
              (context, db, 'pr_offer_item', -idx, 'infosec_level').menu ()"/>
            <td/>
