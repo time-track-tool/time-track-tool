@@ -191,6 +191,8 @@ def risk_type (db, offer_item) :
 def orig_infosec_level (offer_item) :
     db = offer_item._db
     oi = db.pr_offer_item.getnode (offer_item.id)
+    if not oi.product_group :
+        return ''
     pg = db.product_group.getnode (oi.product_group)
     if not pg.infosec_level :
         return ''
