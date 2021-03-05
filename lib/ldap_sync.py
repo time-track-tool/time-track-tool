@@ -470,6 +470,18 @@ class LDAP_Roundup_Sync (Log) :
         return r.dn
     # end def get_username_attribute_dn
 
+    def allow_sync_user (self, roundup_attribute, ldap_attribute = None) :
+        if  (   roundup_attribute not in self.user_props
+            and roundup_attribute not in self.dynprops
+            ) :
+            return False
+        if roundup_attribute in self.dontsync_rup :
+            return False
+        if ldap_attribute is not None and ldap_attribute in self.dontsync_ldap :
+            return False
+        return True
+    # end def allow_sync_user
+
     def compute_attr_map (self) :
         """ Map roundup attributes to ldap attributes
             for 'user' we have a dict indexed by user attribute and
@@ -486,15 +498,28 @@ class LDAP_Roundup_Sync (Log) :
             storing the primary ldap attribute and an optional secondary
             attribute of type list.
         """
-        dontsync = getattr (self.cfg, 'LDAP_DO_NOT_SYNC', '')
-        if dontsync :
-            dontsync = dict.fromkeys (dontsync.split (','))
+        name = 'LDAP_DO_NOT_SYNC_ROUNDUP_PROPERTIES'
+        dontsync_rup = getattr (self.cfg, name, '')
+        if dontsync_rup :
+            dontsync_rup = dict.fromkeys (dontsync_rup.split (','))
         else :
-            dontsync = {}
+            dontsync_rup = {}
         self.log.info \
             ( "Exclude the following Roundup attributes from sync: %s"
-            % dontsync.keys()
+            % dontsync_rup.keys ()
             )
+        self.dontsync_rup = dontsync_rup
+        name = 'LDAP_DO_NOT_SYNC_LDAP_PROPERTIES'
+        dontsync_ldap = getattr (self.cfg, name, '')
+        if dontsync_ldap :
+            dontsync_ldap = dict.fromkeys (dontsync_ldap.split (','))
+        else :
+            dontsync_ldap = {}
+        self.log.info \
+            ( "Exclude the following LDAP attributes from sync: %s"
+            % dontsync_ldap.keys ()
+            )
+        self.dontsync_ldap = dontsync_ldap
         attr_map = dict (user = dict ())
         attr_u   = attr_map ['user']
         self.user_props = props = self.db.user.properties
@@ -510,42 +535,51 @@ class LDAP_Roundup_Sync (Log) :
             , creation_only  = True
             , write_vie_user = False
             )
-        if 'firstname' in props and 'firstname' not in dontsync :
+        if 'firstname' in props :
             attr_u ['firstname'] = User_Sync_Config_Entry \
                 ( name = 'givenname'
                 , do_change      = 1
                 , to_roundup     = lambda x, y : x.get (y, None)
                 , empty_allowed  = False
                 , from_vie_user  = True
-                , creation_only  = self.update_ldap
+                , creation_only  =
+                    (  self.update_ldap
+                    or not self.allow_sync_user ('firstname', 'givenname')
+                    )
                 , write_vie_user = False # Done directly
                 )
-            if self.update_ldap :
-                # Note that cn is a special case: First of all the CN is
-                # part of the DN and we need to call modify_dn instead of
-                # a simple modify call. In addition we also need to
-                # modify the displayname. See code that checks for update
-                # of CN.
-                attr_u ['realname'] = User_Sync_Config_Entry \
-                    ( name           = 'cn'
-                    , do_change      = self.get_cn
-                    , to_roundup     = None
-                    , empty_allowed  = False
-                    , from_vie_user  = True
-                    , creation_only  = True
-                    , write_vie_user = False
-                    )
-        if 'lastname' in props and 'lastname' not in dontsync :
+        if self.update_ldap and self.allow_sync_user ('realname', 'cn') :
+            # Note that cn is a special case: First of all the CN is
+            # part of the DN and we need to call modify_dn instead of
+            # a simple modify call. In addition we also need to
+            # modify the displayname. See code that checks for update
+            # of CN. But it seems the displayname is not changed if we
+            # explicitly write it (and there is no error message either)
+            # so it may well be that the displayname is magic and
+            # follows the cn setting.
+            attr_u ['realname'] = User_Sync_Config_Entry \
+                ( name           = 'cn'
+                , do_change      = self.get_cn
+                , to_roundup     = None
+                , empty_allowed  = False
+                , from_vie_user  = True
+                , creation_only  = True
+                , write_vie_user = False
+                )
+        if 'lastname' in props :
             attr_u ['lastname'] = User_Sync_Config_Entry \
                 ( name           = 'sn'
                 , do_change      = 1
                 , to_roundup     = lambda x, y : x.get (y, None)
                 , empty_allowed  = False
                 , from_vie_user  = True
-                , creation_only  = self.update_ldap
+                , creation_only  =
+                    (  self.update_ldap
+                    or not self.allow_sync_user ('lastname', 'sn')
+                    )
                 , write_vie_user = False # Done directly
                 )
-        if 'nickname' in props and 'nickname' not in dontsync :
+        if self.allow_sync_user ('nickname', 'initials') :
             attr_u ['nickname'] = User_Sync_Config_Entry \
                 ( name           = 'initials'
                 , do_change      = lambda x, y : (x [y] or '').upper ()
@@ -555,7 +589,7 @@ class LDAP_Roundup_Sync (Log) :
                 , creation_only  = self.update_ldap
                 , write_vie_user = False
                 )
-        if 'ad_domain' in props and 'ad_domain' not in dontsync :
+        if self.allow_sync_user ('ad_domain', 'UserPrincipalName') :
             attr_u ['ad_domain'] = User_Sync_Config_Entry \
                 ( name           = 'UserPrincipalName'
                 , do_change      = 0
@@ -565,17 +599,18 @@ class LDAP_Roundup_Sync (Log) :
                 , creation_only  = False
                 , write_vie_user = False
                 )
-        if 'username' in props and 'username' not in dontsync :
+        if 'username' in props :
             attr_u ['username'] = User_Sync_Config_Entry \
                 ( name           = 'UserPrincipalName'
                 , do_change      = 0
                 , to_roundup     = lambda x, y : str (x.get (y))
                 , empty_allowed  = False
                 , from_vie_user  = False
-                , creation_only  = False
+                , creation_only  =
+                    not self.allow_sync_user ('username', 'UserPrincipalName')
                 , write_vie_user = False
                 )
-        if 'pictures' in props and 'pictures' not in dontsync :
+        if self.allow_sync_user ('pictures', 'thumbnailPhoto') :
             attr_u ['pictures'] = User_Sync_Config_Entry \
                 ( name           = 'thumbnailPhoto'
                 , do_change      = self.get_picture
@@ -585,7 +620,7 @@ class LDAP_Roundup_Sync (Log) :
                 , creation_only  = True
                 , write_vie_user = True
                 )
-        if 'position_text' in props and 'position_text' not in dontsync :
+        if self.allow_sync_user ('position_text', 'title') :
             # We sync that field *to* ldap but not *from* ldap.
             attr_u ['position_text'] = User_Sync_Config_Entry \
                 ( name           = 'title'
@@ -596,10 +631,7 @@ class LDAP_Roundup_Sync (Log) :
                 , creation_only  = True
                 , write_vie_user = True
                 )
-        if  (   'realname' in props
-            and 'realname' not in dontsync
-            and 'firstname' not in props
-            ) :
+        if self.allow_sync_user ('realname', 'cn') and 'firstname' not in props:
             attr_u ['realname'] = User_Sync_Config_Entry \
                 ( name           = 'cn'
                 , do_change      = 0
@@ -609,7 +641,7 @@ class LDAP_Roundup_Sync (Log) :
                 , creation_only  = False
                 , write_vie_user = False
                 )
-        if 'room' in props and 'room' not in dontsync :
+        if self.allow_sync_user ('room', 'physicalDeliveryOfficeName') :
             attr_u ['room'] = User_Sync_Config_Entry \
                 ( name           = 'physicalDeliveryOfficeName'
                 , do_change      = self.get_name
@@ -619,7 +651,7 @@ class LDAP_Roundup_Sync (Log) :
                 , creation_only  = self.update_ldap
                 , write_vie_user = True
                 )
-        if 'substitute' in props and 'substitute' not in dontsync :
+        if self.allow_sync_user ('substitute', 'secretary') :
             attr_u ['substitute'] = User_Sync_Config_Entry \
                 ( name           = 'secretary'
                 , do_change      = self.get_username_attribute_dn
@@ -629,7 +661,7 @@ class LDAP_Roundup_Sync (Log) :
                 , creation_only  = self.update_ldap
                 , write_vie_user = True
                 )
-        if 'supervisor' in props and 'supervisor' not in dontsync :
+        if self.allow_sync_user ('supervisor', 'manager') :
             attr_u ['supervisor'] = User_Sync_Config_Entry \
                 ( name           = 'manager'
                 , do_change      = self.get_username_attribute_dn
@@ -639,7 +671,9 @@ class LDAP_Roundup_Sync (Log) :
                 , creation_only  = self.update_ldap
                 , write_vie_user = True
                 )
-        if 'guid' in props and 'guid' not in dontsync :
+        # This should probably never be excluded as the guid is the key
+        # to syncing users
+        if self.allow_sync_user ('guid', 'objectGUID') :
             attr_u ['guid'] = User_Sync_Config_Entry \
                 ( name           = 'objectGUID'
                 , do_change      = None
@@ -649,9 +683,8 @@ class LDAP_Roundup_Sync (Log) :
                 , creation_only  = True
                 , write_vie_user = False
                 )
-        if  (  ('department_temp' in props or 'department' in self.dynprops)
-            and 'department' not in dontsync
-            and 'department_temp' not in dontsync
+        if  (   self.allow_sync_user ('department_temp', 'department')
+            and self.allow_sync_user ('department', 'department')
             ) :
             attr_u ['department_temp'] = User_Sync_Config_Entry \
                 ( name           = 'department'
@@ -664,7 +697,7 @@ class LDAP_Roundup_Sync (Log) :
                 )
         attr_map ['user_dynamic'] = {}
         attr_dyn = attr_map ['user_dynamic']
-        if 'org_location' in self.dynprops and 'org_location' not in dontsync :
+        if self.allow_sync_user ('org_location', 'company') :
             attr_dyn ['org_location'] = \
                 ( Userdynamic_Sync_Config_Entry
                     ( name         = 'name'
@@ -674,7 +707,9 @@ class LDAP_Roundup_Sync (Log) :
                     )
                 ,
                 )
-        if 'sap_cc' in self.dynprops :
+        if  (   self.allow_sync_user ('sap_cc', 'extensionAttribute3')
+            and self.allow_sync_user ('sap_cc', 'extensionAttribute4')
+            ) :
             attr_dyn ['sap_cc'] = \
                 ( Userdynamic_Sync_Config_Entry
                     ( name         = 'name'
