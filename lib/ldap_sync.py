@@ -373,6 +373,11 @@ class LDAP_Roundup_Sync (Log) :
         self.compute_attr_map ()
     # end def __init__
 
+    def debug (self, prio, *args, **kw) :
+        if self.verbose >= prio :
+            self.log.debug (*args, **kw)
+    # end debug
+
     def bind_as_user (self, username, password) :
         luser = self.get_ldap_user_by_username (username)
         if not luser :
@@ -982,12 +987,12 @@ class LDAP_Roundup_Sync (Log) :
             (((ctypes [n.contact_type], n.contact), n)
              for n in oct.itervalues ()
             )
-        self.log.debug ('old contacts: %s' % oldmap.keys ())
+        self.debug (3, 'old contacts: %s' % oldmap.keys ())
         found = {}
         new_contacts = []
         for typ in self.attr_map ['user_contact'] :
             synccfg = self.attr_map ['user_contact'][typ]
-            self.log.debug ('user_contact config "%s": %s' % (typ, synccfg))
+            self.debug (3, 'user_contact config "%s": %s' % (typ, synccfg))
             # Uncomment if we do not update local user with remote contact data
             #if not user or (user.vie_user_ml and synccfg.sync_vie_user) :
             #    continue
@@ -1005,7 +1010,7 @@ class LDAP_Roundup_Sync (Log) :
                     self.log.warn \
                         ('Multi-valued attribute is not last: %s' % ld)
                 for ldit in luser [ld] :
-                    self.log.debug ("contacts LDAP %s: %s" % (ld, ldit))
+                    self.debug (3, "contacts LDAP %s: %s" % (ld, ldit))
                     key = (typ, ldit)
                     if key in oldmap :
                         n = oldmap [key]
@@ -1015,7 +1020,7 @@ class LDAP_Roundup_Sync (Log) :
                             changed = True
                         del oldmap [key]
                         found [key] = 1
-                        self.log.debug ('contacts LDAP found: %s' % (key,))
+                        self.debug (3, 'contacts LDAP found: %s' % (key,))
                     elif key in found :
                         self.log.error ("Duplicate: %s" % ':'.join (key))
                         continue
@@ -1044,17 +1049,17 @@ class LDAP_Roundup_Sync (Log) :
             ctname = ctypes [n.contact_type]
             # Do not touch non-synced user_contact types
             if ctname not in self.attr_map ['user_contact'] :
-                self.log.debug ('LDAP oldmap %s: add new' % str (k))
+                self.debug (3, 'LDAP oldmap %s: add new' % str (k))
                 new_contacts.append (n.id)
                 del oldmap [k]
                 continue
             synccfg = self.attr_map ['user_contact'][ctname]
-            self.log.debug ('user_contact config "%s": %s' % (ctname, synccfg))
+            self.debug (3, 'user_contact config "%s": %s' % (ctname, synccfg))
             if user.vie_user_ml and synccfg.sync_vie_user :
-                self.log.debug ('LDAP oldmap %s: not vie_user' % str (k))
+                self.debug (3, 'LDAP oldmap %s: not vie_user' % str (k))
                 continue
             if not synccfg.keep_attribute :
-                self.log.debug ('LDAP oldmap %s: not keep' % str (k))
+                self.debug (3, 'LDAP oldmap %s: not keep' % str (k))
                 continue
             is_single = True
             for ld in synccfg.attributes :
@@ -1071,7 +1076,7 @@ class LDAP_Roundup_Sync (Log) :
                     is_single = False
                     break
             if not is_single :
-                self.log.debug ('LDAP oldmap %s: not single' % str (k))
+                self.debug (3, 'LDAP oldmap %s: not single' % str (k))
                 continue
             if n.contact_type not in order_by_ct :
                 order_by_ct [n.contact_type] = 2
@@ -1108,7 +1113,7 @@ class LDAP_Roundup_Sync (Log) :
         assert '\\' not in username
         self.log.info ("Sync user '%s' from LDAP" % username)
         luser = self.get_ldap_user_by_username (username)
-        self.log.debug ('User by username')
+        self.debug (3, 'User by username')
         if luser :
             guid = luser.raw_value ('objectGUID')
         if update is not None :
@@ -1132,7 +1137,7 @@ class LDAP_Roundup_Sync (Log) :
         user  = uid and self.db.user.getnode (uid)
         if user and not luser and user.guid :
             luser = self.get_ldap_user_by_guid (fromhex (user.guid))
-            self.log.debug ('User by guid')
+            self.debug (3, 'User by guid')
         # don't modify system users:
         reserved = ('admin', 'anonymous')
         if  (  username in reserved
@@ -1167,8 +1172,11 @@ class LDAP_Roundup_Sync (Log) :
                             c [k] = v
                         else :
                             d [k] = v
-            self.log.debug \
-                ('c: %s d: %s, contact_type: %s' % (c, d, self.contact_types))
+            self.debug \
+                ( 3
+                , 'c: %s d: %s, contact_type: %s'
+                % (c, d, self.contact_types)
+                )
             if self.contact_types :
                 self.sync_contacts_from_ldap (luser, user, d)
             new_status_id = self.member_status_id (luser.dn)
@@ -1194,11 +1202,11 @@ class LDAP_Roundup_Sync (Log) :
                     n = ' (deactivated)'
                 if d :
                     self.log.info ("Update Roundup%s: %s %s" % (n, username, d))
-                    self.log.debug ('Before Roundup update')
+                    self.debug (3, 'Before Roundup update')
                     if self.update_roundup :
                         self.db.user.set (uid, ** d)
                         changed = True
-                    self.log.debug ('After Roundup update')
+                    self.debug (3, 'After Roundup update')
                 else:
                     self.log.info (\
                         "Update Roundup%s: %s: No Changes" % (n, username))
@@ -1213,9 +1221,9 @@ class LDAP_Roundup_Sync (Log) :
                     d ['username'] = username
                 self.log.info ("Create Roundup user: %s: %s" % (username, d))
                 if self.update_roundup :
-                    self.log.debug ('Before Roundup create')
+                    self.debug (3, 'Before Roundup create')
                     uid = self.db.user.create (** d)
-                    self.log.debug ('After Roundup create')
+                    self.debug (3, 'After Roundup create')
                     changed = True
                     # Perform user creation magic for new user
                     if 'org_location' in self.db.classes :
@@ -1339,14 +1347,13 @@ class LDAP_Roundup_Sync (Log) :
         # Do nothing if empty domain and we would require one and we
         # don't update anyway
         if not check :
-            self.log.info \
-                ("Not syncing user with empty domain: %s" % user.username)
+            self.log.info ("Not syncing user with empty domain: %s" % username)
             return
         uid  = self.db.user.lookup (username)
         user = self.db.user.getnode (uid)
-        self.log.debug ('Before user_by_username')
+        self.debug (3, 'Before user_by_username')
         luser = self.get_ldap_user_by_username (user.username)
-        self.log.debug ('After user_by_username')
+        self.debug (3, 'After user_by_username')
         if not luser :
             self.log.info ("LDAP user not found:", user.username)
             # Might want to create user in LDAP
@@ -1467,12 +1474,14 @@ class LDAP_Roundup_Sync (Log) :
                                 assert rupattr is not None
                                 # displayname needs to be set, too
                                 modlist.append ((op, 'displayname', rupattr))
-                                self.log.debug \
-                                    ("Modify RDN %s->%s" % (luser.dn, rupattr))
-                                self.log.debug ('Before modify_dn')
+                                self.debug \
+                                    (3, "Modify RDN %s->%s"
+                                    % (luser.dn, rupattr)
+                                    )
+                                self.debug (3, 'Before modify_dn')
                                 self.ldcon.modify_dn \
                                     (luser.dn, 'cn=%s' % rupattr)
-                                self.log.debug ('After modify_dn')
+                                self.debug (3, 'After modify_dn')
                                 if self.ldcon.last_error :
                                     # Note: We try to continue if mod of
                                     # DN fails, maybe a permission
@@ -1492,8 +1501,8 @@ class LDAP_Roundup_Sync (Log) :
                                     rdn, rest = luser.dn.split (',', 1)
                                     nrdn = '='.join (('CN', rupattr))
                                     luser.dn = ','.join ((nrdn, rest))
-                                self.log.debug \
-                                    ('Result: %s' % self.ldcon.result)
+                                self.debug \
+                                    (3, 'Result: %s' % self.ldcon.result)
                         else :
                             modlist.append ((op, synccfg.name, rupattr))
                     else : # no synccfg.do_change
@@ -1537,10 +1546,13 @@ class LDAP_Roundup_Sync (Log) :
                                 )
                             modlist.append (chg)
         if self.contact_types :
-            self.log.debug (\
-                "Prepare changes for contacts: %s %s" % (user.username, self.contact_types))
+            self.debug \
+                ( 3
+                , "Prepare changes for contacts: %s %s"
+                % (user.username, self.contact_types)
+                )
             self.sync_contacts_to_ldap (r_user, luser, modlist)
-        self.log.debug ('Modlist before updates: %s' % modlist)
+        self.debug (3, 'Modlist before updates: %s' % modlist)
         n = ''
         if not self.update_ldap :
             n = ' (deactivated)'
@@ -1561,13 +1573,13 @@ class LDAP_Roundup_Sync (Log) :
             logdict = dict (moddict)
             if 'thumbnailPhoto' in logdict :
                 logdict ['thumbnailPhoto'] = '<suppressed>'
-            self.log.debug ('modifying Properties for DN: %s' % luser.dn)
-            self.log.debug ('Mod-Dict: %s' % str (logdict))
-            self.log.debug ('Before modify')
+            self.debug (3, 'modifying Properties for DN: %s' % luser.dn)
+            self.debug (3, 'Mod-Dict: %s' % str (logdict))
+            self.debug (3, 'Before modify')
             self.log.info ('Update LDAP: %s %s' % (user.username, moddict))
             self.ldcon.modify (luser.dn, moddict)
-            self.log.debug ('After modify')
-            self.log.debug ('Result: %s' % self.ldcon.result)
+            self.debug (3, 'After modify')
+            self.debug (3, 'Result: %s' % self.ldcon.result)
             if self.ldcon.last_error :
                 self.log.error \
                     ( 'Error on modify of user %s: %s'
