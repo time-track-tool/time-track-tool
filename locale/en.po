@@ -2959,13 +2959,13 @@ msgid "part_of_budget"
 msgstr "Part of budget"
 
 msgid "infosec_level"
-msgstr "InfoSec Security Level"
+msgstr "Protection Level"
 
 msgid "purchase_request++infosec_level"
-msgstr "InfoSec Security Level"
+msgstr "Protection Level"
 
 msgid "offer_items.infosec_level"
-msgstr "Offer Item Security Level"
+msgstr "Offer Item Protection Level"
 
 msgid "offer_items.internal_order"
 msgstr "Offer Item Internal order"
