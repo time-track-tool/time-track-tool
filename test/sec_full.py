@@ -14,6 +14,9 @@ Role "admin":
  User may view everything (View)
 Role "anonymous":
  User may access the web interface (Web Access)
+Role "cc-permission":
+ User is allowed to create cost_center_permission_group (Create for "cost_center_permission_group" only)
+ User is allowed to edit cost_center_permission_group (Edit for "cost_center_permission_group" only)
 Role "contact":
  User is allowed to create contact (Create for "contact" only)
  User is allowed to edit contact (Edit for "contact" only)
@@ -431,6 +434,7 @@ Role "user":
  User is allowed to access contact_type (View for "contact_type" only)
  User is allowed to access cost_center (View for "cost_center" only)
  User is allowed to access cost_center_group (View for "cost_center_group" only)
+ User is allowed to access cost_center_permission_group (View for "cost_center_permission_group" only)
  User is allowed to access cost_center_status (View for "cost_center_status" only)
  User is allowed to access customer (View for "customer" only)
  User is allowed to access customer_agreement (View for "customer_agreement" only)

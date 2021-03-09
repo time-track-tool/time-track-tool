@@ -102,6 +102,13 @@ properties = \
         , 'responsible'
         ]
       )
+    , ( 'cost_center_permission_group'
+      , [ 'cost_center'
+        , 'description'
+        , 'name'
+        , 'permission_for'
+        ]
+      )
     , ( 'cost_center_status'
       , [ 'active'
         , 'description'

@@ -14,6 +14,9 @@ Role "admin":
  User may view everything (View)
 Role "anonymous":
  User may access the web interface (Web Access)
+Role "cc-permission":
+ User is allowed to create cost_center_permission_group (Create for "cost_center_permission_group" only)
+ User is allowed to edit cost_center_permission_group (Edit for "cost_center_permission_group" only)
 Role "controlling":
  User is allowed Edit on (Edit for "daily_record": ('status', 'time_record') only)
  User is allowed Edit on (Edit for "time_wp": ('project',) only)
@@ -270,6 +273,7 @@ Role "user":
  User is allowed to access artefact (View for "artefact" only)
  User is allowed to access cost_center (View for "cost_center" only)
  User is allowed to access cost_center_group (View for "cost_center_group" only)
+ User is allowed to access cost_center_permission_group (View for "cost_center_permission_group" only)
  User is allowed to access cost_center_status (View for "cost_center_status" only)
  User is allowed to access daily record if he is owner or supervisor or timetracking-by user (Edit for "daily_record": ('status', 'time_record') only)
  User is allowed to access daily record if he is owner or supervisor or timetracking-by user (View for "daily_record" only)

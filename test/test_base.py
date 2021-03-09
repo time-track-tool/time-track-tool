@@ -123,6 +123,7 @@ class _Test_Case () :
         , 'adr_readonly'
         , 'anonymous'
         , 'board'
+        , 'cc-permission'
         , 'contact'
         , 'controlling'
         , 'discount'
@@ -404,6 +405,8 @@ class _Test_Case () :
                 ( username = u
                 , roles    = ','.join (roles)
                 )
+            if 'firstname' in self.db.user.properties :
+                params ['firstname'] = params ['lastname'] = u
             try :
                 status = self.db.user_status.lookup ('system')
                 params ['status'] = status
@@ -800,8 +803,8 @@ class _Test_Case_Summary (_Test_Case) :
 class Test_Case_Support_Timetracker (_Test_Case, unittest.TestCase) :
     schemaname = 'sfull'
     roles = \
-        [ 'admin', 'adr_readonly', 'anonymous', 'contact', 'controlling'
-        , 'doc_admin', 'facility', 'functional-role', 'hr'
+        [ 'admin', 'adr_readonly', 'anonymous', 'cc-permission', 'contact'
+        , 'controlling' , 'doc_admin', 'facility', 'functional-role', 'hr'
         , 'hr-leave-approval', 'hr-org-location'
         , 'hr-vacation', 'issue_admin', 'it', 'itview'
         , 'msgedit', 'msgsync', 'nosy', 'office', 'organisation'
@@ -817,7 +820,7 @@ class Test_Case_Timetracker (_Test_Case_Summary, unittest.TestCase) :
     schemaname = 'time'
     schemafile = 'time_ldap'
     roles = \
-        [ 'admin', 'anonymous', 'controlling', 'doc_admin'
+        [ 'admin', 'anonymous', 'cc-permission', 'controlling', 'doc_admin'
         , 'dom-user-edit-facility', 'dom-user-edit-gtt', 'dom-user-edit-hr'
         , 'dom-user-edit-office', 'facility', 'functional-role', 'hr'
         , 'hr-leave-approval', 'hr-org-location', 'hr-vacation', 'it', 'nosy'
@@ -3562,12 +3565,7 @@ class Test_Case_Timetracker (_Test_Case_Summary, unittest.TestCase) :
 
     def test_auto_wp (self) :
         self.setup_db ()
-        roles = 'User,Nosy,HR'
-        self.db.user.set (self.user0, roles = roles)
         self.db.commit ()
-        # Log in as user0 after having set roles *without* project
-        self.db.close ()
-        self.db = self.tracker.open (self.username0)
         # Now we have 3 users.
         for id in (self.holiday_tp, self.vacation_tp) :
             tp = self.db.time_project.getnode (id)
@@ -3595,7 +3593,6 @@ class Test_Case_Timetracker (_Test_Case_Summary, unittest.TestCase) :
         # '4' '4' 2005-10-01 None
         # '3' '5' 2008-11-03
 
-        self.assertEqual (self.user0, '3')
         u = self.username0
         n = '%s -%s' % (u, '2013-02-23')
         self.db.user_dynamic.set ('1', do_auto_wp = True)
@@ -3630,13 +3627,6 @@ class Test_Case_Timetracker (_Test_Case_Summary, unittest.TestCase) :
             wp = self.db.time_wp.getnode (w)
             actual.append ((wp.auto_wp, wp.name, wp.time_start, wp.time_end))
         self.assertEqual (expected, actual)
-
-        # Freeze the thing on 2013-02-21
-        newfreeze = self.db.daily_record_freeze.create \
-            ( user           = self.user0
-            , frozen         = True
-            , date           = date.Date ('2013-02-21')
-            )
 
         id = self.db.user_dynamic.create \
             ( user              = self.user0
@@ -3707,9 +3697,6 @@ class Test_Case_Timetracker (_Test_Case_Summary, unittest.TestCase) :
             wp = self.db.time_wp.getnode (w)
             actual.append ((wp.auto_wp, wp.name, wp.time_start, wp.time_end))
         self.assertEqual (expected, actual)
-
-        # Thaw
-        self.db.daily_record_freeze.set (newfreeze, frozen = False)
 
         self.db.user_dynamic.set ('1', valid_from = date.Date ('2013-02-03'))
         # Note that the limited record also changes the end date!
@@ -3904,8 +3891,8 @@ class Test_Case_Tracker (_Test_Case, unittest.TestCase) :
 class Test_Case_Fulltracker (_Test_Case_Summary, unittest.TestCase) :
     schemaname = 'full'
     roles = \
-        [ 'admin', 'anonymous', 'contact', 'controlling', 'doc_admin'
-        , 'dom-user-edit-facility', 'dom-user-edit-gtt'
+        [ 'admin', 'anonymous', 'cc-permission', 'contact', 'controlling'
+        , 'doc_admin', 'dom-user-edit-facility', 'dom-user-edit-gtt'
         , 'dom-user-edit-hr', 'dom-user-edit-office'
         , 'external', 'facility', 'functional-role', 'hr'
         , 'hr-leave-approval', 'hr-org-location'
@@ -5443,11 +5430,14 @@ class Test_Case_Fulltracker (_Test_Case_Summary, unittest.TestCase) :
     def test_maturity_index (self) :
         self.log.debug ('test_maturity_index')
         self.db = self.tracker.open ('admin')
-        user = self.db.user.create \
+        d = dict \
             ( username = 'user'
             , status = self.db.user_status.lookup ('system')
             , roles = 'User,Nosy'
             )
+        if 'firstname' in self.db.user.properties :
+            d ['firstname'] = d ['lastname'] = 'm.i.user'
+        user = self.db.user.create (** d)
         pending = self.db.category.lookup ('pending')
         self.db.category.set (pending, responsible = user)
         self.db.commit ()

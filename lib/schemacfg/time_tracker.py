@@ -73,6 +73,16 @@ def init \
         )
     cost_center_group.setkey ("name")
 
+    cost_center_permission_group = Class \
+        ( db
+        , ''"cost_center_permission_group"
+        , name                  = String    ()
+        , description           = String    ()
+        , permission_for        = Multilink ("user", do_journal = 'no')
+        , cost_center           = Multilink ("cost_center")
+        )
+    cost_center_permission_group.setkey ("name")
+
     cost_center_status = Class \
         ( db
         , ''"cost_center_status"
@@ -634,6 +644,7 @@ def security (db, ** kw) :
         , ("Functional-Role",   "Editing of functional role related items")
         , ("Organisation",      "Editing of organisation-related items")
         , ("Sub-Login",         "Allow to login as another user")
+        , ("CC-Permission",     "Allow editing cost center permission")
         ]
 
     #     classname
@@ -663,6 +674,10 @@ def security (db, ** kw) :
         , ( "cost_center_group"
           , ["User"]
           , ["Controlling"]
+          )
+        , ( "cost_center_permission_group"
+          , ["User"]
+          , ["CC-Permission"]
           )
         , ( "cost_center_status"
           , ["User"]

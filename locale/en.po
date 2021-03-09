@@ -4373,3 +4373,9 @@ msgstr "Brand"
 
 msgid "rc_capability"
 msgstr "Capability"
+
+msgid "cost_center_permission_group"
+msgstr "Productivity Permission"
+
+msgid "permission_for"
+msgstr "Permission for"
