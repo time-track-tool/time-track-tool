@@ -111,7 +111,10 @@ def update_feature_status (db, cl, nodeid, new_values) :
 # end def update_feature_status
 
 def check_prop_len (_, s, propname = 'name', limit = 25) :
-    if len (s) > limit :
+    string_len = 0
+    if s:
+        string_len = len(s)
+    if string_len > limit:
         pn = _ (propname)
         raise Reject, \
             _ ('%(pn)s "%(s)s" too long (> %(limit)s characters)') % locals ()
