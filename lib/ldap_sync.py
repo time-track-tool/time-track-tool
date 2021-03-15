@@ -371,7 +371,7 @@ class LDAP_Roundup_Sync (Log) :
 
         self.log.info ('Connect to LDAP: %s' % self.cfg.LDAP_URI )
         self.server = ldap3.Server (self.cfg.LDAP_URI, get_info = ldap3.ALL)
-        self.log.debug ('Server')
+        self.debug (4, 'Server')
         # auto_range:
         # https://docs.microsoft.com/en-us/previous-versions/windows/desktop/ldap/searching-using-range-retrieval
         self.ldcon  = ldap3.Connection \
@@ -389,7 +389,7 @@ class LDAP_Roundup_Sync (Log) :
             self.ldcon.start_tls ()
         self.log.debug ('TLS: %s' % (not no_starttls))
         self.ldcon.bind      ()
-        self.log.debug ('Bind')
+        self.debug (4, 'Bind')
         self.schema = self.server.schema
 
         self.valid_stati     = []
