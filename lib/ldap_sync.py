@@ -339,6 +339,8 @@ class LDAP_Roundup_Sync (Log) :
             handler.setFormatter (formatter)
             self.log.addHandler (handler)
 
+        self.log.info ("User sync started")
+        self.log.info ("Read sync config")
         self.dn_allowed = {}
         varname = 'allowed_dn_suffix_by_domain'
         dn_allowed = getattr (self.cfg, 'LDAP_' + varname.upper (), None)
