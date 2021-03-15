@@ -1603,9 +1603,11 @@ class LDAP_Roundup_Sync (Log) :
                                     # displayname needs to be set, too
                                     modlist.append \
                                         ((op, 'displayname', rupattr))
-                                    self.debug \
-                                        (3, "Modify RDN %s->%s"
-                                        % (luser.dn, rupattr)
+                                    self.log.info \
+                                        ( "%s: Add update: %s -> %s [%s -> %s]"
+                                        % ( user.username, rk, 'displayname'
+                                          ,luser.displayname, rupattr
+                                          )
                                         )
                                     self.debug (3, 'Before modify_dn')
                                     self.ldcon.modify_dn \
