@@ -330,7 +330,7 @@ class LDAP_Roundup_Sync (Log) :
         # If verbose is set, add logging to stderr in addition to syslog
         if self.verbose :
             formatter = logging.Formatter \
-                ('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+                ('%(asctime)s - %(name)s - %(funcName)20s() - %(levelname)s - %(message)s')
             handler = logging.StreamHandler (sys.stderr)
             level   = logging.INFO
             if self.verbose > 1 :
