@@ -402,12 +402,13 @@ class LDAP_Roundup_Sync (Log) :
         for id in db.user_status.filter (None, {}, sort = ('+', 'id')) :
             st = db.user_status.getnode (id)
             if st.ldap_group :
+                self.log.info ("Add group '%s' for user lookup"
+                    % st.ldap_group)
                 self.status_sync.append (id)
                 self.valid_stati.append (id)
                 self.ldap_stati  [id] = st
                 self.ldap_groups [id] = LDAP_Group \
                     (self.ldcon, self.base_dn, st.ldap_group, st.ldap_prio)
-        self.log.debug ('Groups')
         self.contact_types = {}
         # uc_type = user_contact_type
         if 'uc_type' in self.db.classes :
