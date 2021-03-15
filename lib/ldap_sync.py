@@ -1694,6 +1694,8 @@ class LDAP_Roundup_Sync (Log) :
         if not self.update_ldap :
             n = ' (deactivated)'
             # Can produce *huge* output if a picture is updated!
+            self.log.info ('Update LDAP%s: %s There are changes but sync is'
+                'deactivated' % (n, user.username))
             self.debug (4, 'Update LDAP%s: %s %s' % (n, user.username, modlist))
         if not modlist :
             self.log.info ('Update LDAP%s: %s: No changes' % (n, user.username))
@@ -1715,6 +1717,8 @@ class LDAP_Roundup_Sync (Log) :
             self.debug (3, 'Mod-Dict: %s' % str (logdict))
             self.debug (3, 'Before modify')
             # Can produce *huge* output if a picture is updated!
+            self.log.info ("Update LDAP: Apply collected modifications to %s"
+                % user.username)
             self.debug (4, 'Update LDAP: %s %s' % (user.username, moddict))
             self.ldcon.modify (luser.dn, moddict)
             self.debug (3, 'After modify')
