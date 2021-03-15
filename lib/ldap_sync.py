@@ -886,6 +886,8 @@ class LDAP_Roundup_Sync (Log) :
         for gid in sorted (self.ldap_groups, key = srt) :
             g = self.ldap_groups [gid]
             if dn in g.users :
+                self.debug (3, "Sync user %s due to LDAP group %s"
+                    % (dn, g.name))
                 return gid
     # end def member_status_id
 
