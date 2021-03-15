@@ -1609,10 +1609,15 @@ class LDAP_Roundup_Sync (Log) :
                                           ,luser.displayname, rupattr
                                           )
                                         )
-                                    self.debug (3, 'Before modify_dn')
+                                    self.log.info \
+                                        ("Update LDAP: %s 'MODIFY_DN' "
+                                         "(RDN part of DN) "
+                                         "['cn=%s' -> 'cn=%s']"
+                                        % (user.username, ldattr, rupattr))
+                                    self.debug (4, 'Before modify_dn')
                                     self.ldcon.modify_dn \
                                         (luser.dn, 'cn=%s' % rupattr)
-                                    self.debug (3, 'After modify_dn')
+                                    self.debug (4, 'After modify_dn')
                                     if self.ldcon.last_error :
                                         # Note: We try to continue if mod of
                                         # DN fails, maybe a permission
