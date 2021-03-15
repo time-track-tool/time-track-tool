@@ -76,16 +76,17 @@ def main () :
         db.config.ext.LDAP_UPDATE_LDAP = 'no'
 
     lds = LDAP_Roundup_Sync (db, verbose = args.verbose)
-    lds.log.info ("Start to sync users '%s' from LDAP" % users)
     if not args.two_way_sync :
         lds.log.info ("Update LDAP (two-way-sync) is deactivated")
     try :
         if args.users :
+            lds.log.info ("Start to sync users '%s' from LDAP" % users)
             for username in args.users :
                 lds.sync_user_from_ldap (username, update = args.update)
                 if args.two_way_sync :
                     lds.sync_user_to_ldap (username)
         else :
+            lds.log.info ("Start to sync all users from LDAP")
             lds.sync_all_users_from_ldap (update = args.update)
             if args.two_way_sync :
                 lds.sync_all_users_to_ldap ()
