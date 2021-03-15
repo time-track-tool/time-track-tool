@@ -356,7 +356,7 @@ class LDAP_Roundup_Sync (Log) :
                  'use "%s" in [ldap] section of ext config' % varname
                 )
 
-        self.log.debug ('Init')
+        self.debug (4, 'Read sync direction config')
         for k in 'update_ldap', 'update_roundup' :
             if getattr (self, k) is None :
                 # try finding out via config, default to True
@@ -367,6 +367,7 @@ class LDAP_Roundup_Sync (Log) :
                 setattr (self, k, False)
                 if update.lower () in ('yes', 'true') :
                     setattr (self, k, True)
+            self.log.debug ("%s: %s" % (k, getattr (self, k)))
 
         self.log.info ('Connect to LDAP: %s' % self.cfg.LDAP_URI )
         self.server = ldap3.Server (self.cfg.LDAP_URI, get_info = ldap3.ALL)
