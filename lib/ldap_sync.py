@@ -605,11 +605,12 @@ class LDAP_Roundup_Sync (Log) :
                     )
                 )
         if self.update_ldap and self.allow_sync_user ('realname', 'cn') :
-            # Note that cn is a special case: First of all the CN is
-            # part of the DN and we need to call modify_dn instead of
+            # Note that cn is a special case: First of all the CN (i.e. RDN)
+            # is part of the DN and we need to call modify_dn instead of
             # a simple modify call. In addition we also need to
             # modify the displayname. See code that checks for update
-            # of CN. But it seems the displayname is not changed if we
+            # of CN -> sync_user_to_ldap()
+            # But it seems the displayname is not changed if we
             # explicitly write it (and there is no error message either)
             # so it may well be that the displayname is magic and
             # follows the cn setting.
