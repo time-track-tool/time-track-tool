@@ -1504,4 +1504,12 @@ def security (db, ** kw) :
         , description = fixdoc (own_user_functional_role.__doc__)
         )
     db.security.addPermissionToRole ('User', p)
+
+    # Allow retire/restore for cost_center_permission_group
+    for perm in 'Retire', 'Restore' :
+        p = db.security.addPermission \
+            ( name        = perm
+            , klass       = 'cost_center_permission_group'
+            )
+        db.security.addPermissionToRole ('CC-Permission', p)
 # end def security
