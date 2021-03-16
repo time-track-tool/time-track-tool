@@ -1,128 +1,165 @@
 <tal:block metal:use-macro="templates/page/macros/icing">
-<tal:block metal:fill-slot="create_or_query">
- <tal:block 
-  metal:use-macro="templates/page/macros/create_or_query_new_tracker_item" />
-</tal:block>
-
-<td class="content" metal:fill-slot="content">
-<b tal:condition="python:0" tal:content="context/designator"></b>
-
-<tal:block
- tal:define=
-  " excpt     python:
-              ( 'creator', 'creation'
-              , 'actor',   'activity'
-              , 'content', 'messages', 'files'
-              )
-  ; labelprop python: klass._klass.labelprop ()
-  ; keyprop   python: klass._klass.getkey ()
-  ; linkprops python: (labelprop, 'id')
-  ; props     python:[i for i in utils.sorted_properties (db, context)
-                      if i._name not in excpt
-                     ]
-  ; items     python:klass.list()
-  ; n         python:len (props) + 1
-  ">
-<table class="otherinfo"
- tal:condition="items"
->
- <tr>
-  <tal:block tal:repeat="prop props">
-   <th tal:content="structure python:utils.fieldname (classname, prop._name)"/>
-  </tal:block>
- </tr>
- <tr tal:repeat="item items">
-  <tal:block tal:repeat="prop props">
-   <tal:block tal:condition="python:prop._name in linkprops">
-    <td tal:condition="python:request.user.hasPermission('Edit', classname)">
-     <a tal:attributes="href string:${classname}${item/id}"
-        tal:content="python:item [prop._name]">keyword here</a>
-    </td>
-    <td tal:condition="python:not(request.user.hasPermission('Edit', classname))">
-     <b tal:content="python:item [prop._name]">keyword here</b>
-    </td>
-   </tal:block>
-   <tal:block tal:condition="python:prop._name not in linkprops">
-    <td tal:content="structure python:utils.ExtProperty
-        (utils, prop, item = item).as_listentry ()"/>
-   </tal:block>
-  </tal:block>
- </tr>
- <tr tal:condition="python:
-        request.user.hasPermission('View', classname)
-     or request.user.hasPermission('Edit', classname)">
-  <td tal:attributes="colspan n" style="border-top: 1px solid gray">
-   <p i18n:translate=""
-      tal:condition="python:request.user.hasPermission('Edit', classname)">
-      To edit <span tal:replace="Classname" i18n:name="Classname" />
-      click on the field under
-      &quot;<span tal:replace="python:i18n.gettext (labelprop)"
-            i18n:name="labelprop" />&quot;.
-   </p>
-   <a tal:attributes="href python:request.indexargs_url
-      (classname, {'@action':'export_csv_names'})" i18n:translate="">
-      Download as CSV
-   </a>
-  </td>
- </tr>
-</table>
-<p></p>
-
-<form method="POST" onSubmit="return submit_once()"
-      enctype="multipart/form-data" tal:attributes="action context/designator"
-      tal:condition="context/is_edit_ok" name="itemSynopsis">
-
-<input type="hidden" name="@template" value="item">
-
-<table class="form">
-
- <tr tal:condition="keyprop">
-  <th class="required"
-   tal:content="structure python:utils.fieldname (classname, keyprop)"/>
-  <td tal:content="structure python:context [keyprop].field ()"/>
- </tr>
- <tal:block tal:repeat="prop props">
-  <tr tal:condition="python:
-      prop._name not in ('id','date','author') and prop._name != keyprop">
-   <th tal:content="structure python:utils.fieldname (classname, prop._name)"/>
-   <td tal:content="structure python:utils.ExtProperty
-       (utils, prop, item = context).menu_or_field ()"/>
-  </tr>
+ <tal:block metal:fill-slot="add-js">
+  <script type="text/javascript">
+   $(document).ready (function () {
+    var rbut = $('#rbutton');
+    rbut.css ('left',  $('#retire-button-space').position ().left);
+    rbut.css ('top',   $('#new-button').position ().top);
+    rbut.css ('position',   'absolute');
+    rbut.css ('visibility', 'visible');
+   });
+  </script>
  </tal:block>
- <tr metal:use-macro="templates/page/macros/message_box" />
- <tr tal:condition="has_files">
-   <th tal:content="structure python:utils.fieldname (classname, 'files')" />
-   <td colspan="3">
-    <tal:block metal:use-macro="templates/page/macros/formatted_class_files"/>
-   </td>
- </tr>
+ <tal:block metal:fill-slot="create_or_query">
+  <tal:block
+   metal:use-macro="templates/page/macros/create_or_query_new_tracker_item" />
+ </tal:block>
 
- <tr>
-  <td>&nbsp;
-  </td>
-  <td colspan=3>
-   <span tal:content="structure context/submit" tal:condition="context/is_edit_ok" />
-   <input type="button"
-     tal:condition="python:context.id and context.is_view_ok()"
-     tal:attributes=
-      "onClick string:javascript:help_window('${context/designator}?@template=history','600','300')"
-     value="History" i18n:attributes="value">
-   <input type="button"
-     tal:condition="python:context.id and context.is_view_ok()"
-     tal:attributes=
-      "onClick string:javascript:document.location = '${classname}?@template=item';"
-     value="New item" i18n:attributes="value">
-  </td>
- </tr>
-</table>
+ <div class="content" metal:fill-slot="content">
+  <b tal:condition="python:0" tal:content="context/designator"></b>
 
-</form>
+  <tal:block
+   tal:define=
+    " excpt     python:
+                ( 'creator', 'creation'
+                , 'actor',   'activity'
+                , 'content', 'messages', 'files'
+                )
+    ; labelprop python: klass._klass.labelprop ()
+    ; keyprop   python: klass._klass.getkey ()
+    ; linkprops python: (labelprop, 'id')
+    ; props     python:[i for i in utils.sorted_properties (db, context)
+                        if i._name not in excpt
+                       ]
+    ; items     python: klass.list ()
+    ; n         python: len (props) + 1
+    ">
+  <table class="otherinfo" tal:condition="items">
+   <tr>
+    <tal:block tal:repeat="prop props">
+     <th tal:content="structure python:
+         utils.fieldname (classname, prop._name)"/>
+    </tal:block>
+   </tr>
+   <tr tal:repeat="item items">
+    <tal:block tal:repeat="prop props">
+     <tal:block tal:condition="python:prop._name in linkprops">
+      <td tal:condition="python:request.user.hasPermission ('Edit', classname)">
+       <a tal:attributes="href string:${classname}${item/id}"
+          tal:content="python:item [prop._name]">keyword here</a>
+      </td>
+      <td tal:condition="python:
+          not (request.user.hasPermission ('Edit', classname))">
+       <b tal:content="python:item [prop._name]">keyword here</b>
+      </td>
+     </tal:block>
+     <tal:block tal:condition="python:prop._name not in linkprops">
+      <td tal:content="structure python:utils.ExtProperty
+          (utils, prop, item = item).as_listentry ()"/>
+     </tal:block>
+    </tal:block>
+   </tr>
+   <tr tal:condition="python:
+          request.user.hasPermission ('View', classname)
+       or request.user.hasPermission ('Edit', classname)">
+    <td tal:attributes="colspan n" style="border-top: 1px solid gray">
+     <p i18n:translate=""
+        tal:condition="python:request.user.hasPermission ('Edit', classname)">
+        To edit <span tal:replace="Classname" i18n:name="Classname" />
+        click on the field under
+        &quot;<span tal:replace="python:i18n.gettext (labelprop)"
+              i18n:name="labelprop" />&quot;.
+     </p>
+     <a tal:attributes="href python:request.indexargs_url
+        (classname, {'@action':'export_csv_names'})" i18n:translate="">
+        Download as CSV
+     </a>
+    </td>
+   </tr>
+  </table>
+  <p></p>
 
- <table metal:use-macro="templates/page/macros/note_required" />
- <table metal:use-macro="templates/page/macros/message_display" />
+  <form method="POST" onSubmit="return submit_once ()"
+        enctype="multipart/form-data" tal:attributes="action context/designator"
+        tal:condition="context/is_edit_ok" name="itemSynopsis">
+
+  <input type="hidden" name="@template" value="item">
+
+  <table class="form">
+
+   <tr tal:condition="keyprop">
+    <th class="required"
+     tal:content="structure python:utils.fieldname (classname, keyprop)"/>
+    <td tal:content="structure python:context [keyprop].field ()"/>
+   </tr>
+   <tal:block tal:repeat="prop props">
+    <tr tal:condition="python:
+        prop._name not in ('id','date','author') and prop._name != keyprop">
+     <th tal:content="structure python:utils.fieldname
+         (classname, prop._name)"/>
+     <td tal:content="structure python:utils.ExtProperty
+         (utils, prop, item = context).menu_or_field ()"/>
+    </tr>
+   </tal:block>
+   <tr metal:use-macro="templates/page/macros/message_box" />
+   <tr tal:condition="has_files">
+     <th tal:content="structure python:utils.fieldname (classname, 'files')" />
+     <td colspan="3">
+      <tal:block metal:use-macro="templates/page/macros/formatted_class_files"/>
+     </td>
+   </tr>
+
+   <tr>
+    <td>&nbsp;
+    </td>
+    <td colspan=3>
+     <span tal:content="structure context/submit"
+           tal:condition="context/is_edit_ok" />
+     <input type="button"
+       tal:condition="python:context.id and context.is_view_ok ()"
+       tal:attributes=
+        "onClick string:javascript:help_window
+	    ('${context/designator}?@template=history','600','300')"
+       value="History" i18n:attributes="value">
+     <input type="button" id="new-button"
+       tal:condition="python:context.id and context.is_view_ok ()"
+       tal:attributes="onClick string:javascript:
+            document.location = '${classname}?@template=item';"
+       value="New item" i18n:attributes="value">
+     <span id="retire-button-space">&nbsp;</span>
+    </td>
+   </tr>
+  </table>
+  </form>
+
+   <tal:block tal:condition="context/id">
+     <div tal:condition="python:
+          not context.is_retired () and context.is_retire_ok ()">
+      <div>
+       <form method="POST" style="padding:0"
+          tal:attributes="action string:${context/designator}">
+        <input type="hidden" name="@action" value="retire">
+        <input type="submit" value="Retire" class="rbutton" id="rbutton">
+       </form>
+      </div>
+     </div>
+     <div tal:condition="python:
+          context.is_retired () and context.is_restore_ok ()">
+      <div>
+       <form method="POST" style="padding:0"
+          tal:attributes="action string:${context/designator}">
+        <input type="hidden" name="@action" value="restore">
+        <input type="submit" value="Restore" class="rbutton" id="rbutton">
+       </form>
+      </div>
+     </div>
+   </tal:block>
+
+   <table metal:use-macro="templates/page/macros/note_required" />
+   <table metal:use-macro="templates/page/macros/message_display" />
 
 
-</tal:block>
-</td>
+  </tal:block>
+ </div>
 
 </tal:block>
