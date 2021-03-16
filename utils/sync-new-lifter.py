@@ -50,7 +50,11 @@ for ctid in db.contract_type.getnodeids (retired = False) :
     if ct.group_external is None :
         db.contract_type.set (ctid, group_external = False)
         print ("Setting contract_type%s group_external = False" % ctid)
-        change = True
+        changed = True
+    if ct.name == 'External' and not ct.group_external :
+        db.contract_type.set (ctid, group_external = True)
+        print ("Setting contract_type%s group_external = True" % ctid)
+        changed = True
 
 if changed :
     db.commit ()
