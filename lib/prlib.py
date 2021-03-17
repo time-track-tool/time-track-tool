@@ -121,7 +121,7 @@ def _app_cfgs (db, pr, ids) :
     return acs
 # end def _app_cfgs
 
-def risk_type (db, offer_item_id) :
+def risk_type (db, offer_item_id, pr_supplier = None) :
     oi  = db.pr_offer_item.getnode (offer_item_id)
     pg  = db.product_group.getnode (oi.product_group)
     prs = db.purchase_request.filter (None, dict (offer_items = offer_item_id))
@@ -130,10 +130,12 @@ def risk_type (db, offer_item_id) :
 
     if not oi.infosec_level or not pr.organisation :
         return None
-    if oi.pr_supplier :
+    if pr_supplier is None :
+        pr_supplier = oi.pr_supplier
+    if pr_supplier :
         sr = db.pr_supplier_risk.filter \
             ( None, dict
-                ( supplier           = oi.pr_supplier
+                ( supplier           = pr_supplier
                 , organisation       = pr.organisation
                 , security_req_group = pg.security_req_group
                 )

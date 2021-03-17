@@ -164,6 +164,70 @@ def check_io_oi (db, cl, nodeid, new_values) :
             )
 # end def check_io_oi
 
+def check_supplier_change (db, cl, nodeid, new_values) :
+    """ Allow change of supplier unconditionally if not yet approving
+        Later we check that the maximum risk type will not change.
+        We compute the maximum risk type over all offer items.
+        Then we compute the risk type that would result from the change.
+        If this is below the computed maximum risk type we allow the
+        change.
+    """
+    pr  = get_pr_from_offer_item (db, nodeid)
+    if not pr :
+        return
+    if pr.status == db.pr_status.lookup ('open') :
+        return
+    # Compute the new risk-type and check if it's allowed
+    # Return immediately if no risk
+    nrt = prlib.risk_type (db, nodeid, new_values.get ('pr_supplier'))
+    if not nrt :
+        return
+    nrt = db.purchase_risk_type.getnode (nrt)
+    if nrt.name == 'Do not purchase' :
+        raise Reject ( _ ('Purchasing risk would be "%s"') % nrt.name)
+
+    # Search for an infosec approval, if we find one and it is not yet
+    # approved we allow all supplier changes.
+    ap_approved = db.pr_approval_status.lookup ('approved')
+    infosec_roles = []
+    cur  = db.pr_currency.getnode (pr.pr_currency)
+    cost = pr.total_cost * 1.0 / cur.exchange_rate
+    prc_ids = db.pr_approval_config.filter (None, dict (valid = True))
+    for prcid in prc_ids :
+        prc = db.pr_approval_config.getnode (prcid)
+        if prc.infosec_amount is None :
+            continue
+        # Only if we expect an approval due to costs
+        if cost >= prc.infosec_amount :
+            infosec_roles.append (prc.role)
+    if not infosec_roles :
+        return
+
+    # Loop over approvals and check if we find an unapproved infosec
+    # approval
+    aps = db.pr_approval.filter (None, dict (purchase_request = pr.id))
+    for apid in aps :
+        ap = db.pr_approval.getnode (apid)
+        if ap.role_id in infosec_roles :
+            # If we find an infosec approval which is still unapproved
+            # we do not need to check further
+            if ap.status != ap_approved :
+                return
+    # We either found only approved infosec approvals or none.
+    # In both cases we need to check.
+    # If no approval was found, a change in purchasing risk might
+    # require an approval. We're currently not prepared to add one.
+
+    mrt = prlib.max_risk_type (db, pr.id)
+    if nrt.order > mrt.order :
+        raise Reject \
+            ( _ ('Supplier change would increase purchasing risk '
+                 'from "%s" to "%s"'
+                )
+            % (mrt.name, nrt.name)
+            )
+# end def check_supplier_change
+
 def check_input_len (db, cl, nodeid, new_values) :
     """ Check that some fields don't become too long
     """
@@ -205,7 +269,7 @@ def update_payment_approval (db, pr) :
 
 def check_payment_type (db, cl, nodeid, new_values) :
     """ When payment type changes:
-        - Do nothing if not is state approving (state open is handled
+        - Do nothing if not in state approving (state open is handled
           elsewhere)
         - Do not allow if in state >= approved
         - If already approving, check if we need to add new approval
@@ -943,6 +1007,10 @@ def fix_pr_offer_item (db, cl, nodeid, new_values) :
 # end def fix_pr_offer_item
 
 def check_supplier (db, cl, nodeid, new_values) :
+    """ Set pr_supplier to correct value if supplier (text-input field)
+        is changed. Note that this must come *before* the method
+        check_supplier_change, therefore we have prio 90.
+    """
     if 'supplier' in new_values :
         prsup = None
         try :
@@ -1159,8 +1227,9 @@ def init (db) :
     db.pr_offer_item.audit      ("create", new_pr_offer_item)
     db.pr_offer_item.audit      ("create", check_pr_offer_item, priority = 110)
     db.pr_offer_item.audit      ("set",    check_pr_offer_item, priority = 110)
-    db.pr_offer_item.audit      ("create", check_supplier)
-    db.pr_offer_item.audit      ("set",    check_supplier)
+    db.pr_offer_item.audit      ("create", check_supplier, priority = 90)
+    db.pr_offer_item.audit      ("set",    check_supplier, priority = 90)
+    db.pr_offer_item.audit      ("set",    check_supplier_change)
     db.pr_offer_item.react      ("set",    check_pr_update)
     db.pr_offer_item.react      ("set",    check_agent_change)
     db.pr_offer_item.audit      ("create", check_input_len, priority = 150)
