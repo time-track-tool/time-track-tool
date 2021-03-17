@@ -1625,10 +1625,11 @@ class LDAP_Roundup_Sync (Log) :
                                         # user go through.
                                         self.log.error \
                                             ( 'Error on modify_dn (set to %s) '
-                                            'for %s: %s'
+                                            'for %s: %s %s'
                                             % ( rupattr
                                               , luser.dn
-                                              , self.ldcon.last_error
+                                              , self.ldcon.result['description']
+                                              , self.ldcon.result['message']
                                               )
                                             )
                                     else :
@@ -1725,8 +1726,9 @@ class LDAP_Roundup_Sync (Log) :
             self.debug (3, 'Result: %s' % self.ldcon.result)
             if self.ldcon.last_error :
                 self.log.error \
-                    ( 'Error on modify of user %s: %s'
-                    % (luser.dn, self.ldcon.last_error)
+                    ( 'Error on modify of user %s: %s %s'
+                    % (luser.dn, self.ldcon.result['description'],
+                       self.ldcon.result['message'])
                     )
     # end def sync_user_to_ldap
 
