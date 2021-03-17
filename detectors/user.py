@@ -370,12 +370,6 @@ def check_dp_role (db, cl, nodeid, new_values) :
         common.check_roles (db, cl, nodeid, new_values, rname = 'default_roles')
 # end def check_dp_role
 
-def check_department_len (db, cl, nodeid, new_values) :
-    if 'department_temp' in new_values :
-        common.check_prop_len \
-            (_, new_values ['department_temp'], 'department_temp', 64)
-# end def check_department_len
-
 def vie_backlink_check (db, cl, nodeid, new_values) :
     if 'vie_user_bl_override' not in new_values :
         return
@@ -429,9 +423,6 @@ def init (db) :
         db.user_contact.audit ("set",    domain_user_check)
     if 'reduced_activity_list' in db.user.properties :
         db.user.audit ("create", default_reduced_activity_list)
-    if 'department_temp' in db.user.properties :
-        db.user.audit ("create", check_department_len)
-        db.user.audit ("set",    check_department_len)
     if 'vie_user_bl_override' in db.user.properties :
         db.user.audit ("create", vie_backlink_check)
         db.user.audit ("set",    vie_backlink_check)
