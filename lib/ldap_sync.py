@@ -462,12 +462,23 @@ class LDAP_Roundup_Sync (Log) :
         return rn
     # end def get_cn
 
+    def truncate_department (self, department):
+        AD_MAX_LENGTH_DEPARTMENT = 64
+        if department and len (department) > AD_MAX_LENGTH_DEPARTMENT :
+            department_trunc = department [0:AD_MAX_LENGTH_DEPARTMENT]
+            self.log.warning ("Cutting of department string to %s"
+                " chars to fit AD: '%s' -> '%s'" %
+                (AD_MAX_LENGTH_DEPARTMENT, department, department_trunc))
+            department = department_trunc
+        return department
+
     def get_department (self, user, attr) :
         if user.department_temp :
-            return user.department_temp
+            return self.truncate_department (user.department_temp)
         dyn = self.get_dynamic_user (user.id)
         if dyn :
-            return self.db.department.get (dyn.department, 'name')
+            dyn_d = self.db.department.get (dyn.department, 'name')
+            return self.truncate_department (dyn_d)
     # end def get_department
 
     def get_name (self, user, attr) :
