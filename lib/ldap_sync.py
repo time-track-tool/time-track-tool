@@ -1490,7 +1490,12 @@ class LDAP_Roundup_Sync (Log) :
         if not check :
             self.log.info ("Not syncing user with empty domain: %s" % username)
             return
-        uid  = self.db.user.lookup (username)
+        try :
+            uid  = self.db.user.lookup (username)
+        except KeyError :
+            self.log.debug ("Skip user %s as not existing in Roundup"
+                % username)
+            return
         user = self.db.user.getnode (uid)
         self.debug (3, 'Before user_by_username')
         luser = self.get_ldap_user_by_username (user.username)
