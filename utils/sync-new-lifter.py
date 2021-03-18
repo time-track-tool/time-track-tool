@@ -1,5 +1,4 @@
 #!/usr/bin/python
-
 # Lift data for new ldap sync
 
 from __future__ import print_function
@@ -11,6 +10,7 @@ dir     = os.getcwd ()
 tracker = instance.open (dir)
 db      = tracker.open ('admin')
 
+# Adapt user status settings
 changed = False
 va = db.user_status.getnode ('1')
 assert va.name == 'valid-ad'
@@ -29,14 +29,14 @@ assert vap.name == 'valid-ad-nopermission'
 d = {}
 if not vap.ldap_prio :
     d ['ldap_prio'] = 10
-if not vap.ldap_group or vap.ldap_group == 's_or_ad-personal-user' :
+if not vap.ldap_group or vap.ldap_group != 's_or_ad-natural-user' :
     d ['ldap_group'] = 's_or_ad-natural-user'
-
+if not vap.roles :
+    d ['roles'] = "Anonymous"
 if d :
     db.user_status.set ('8', **d)
     print ("user_status.set ('8', **%s)" % str (d))
     changed = True
-
 
 id = db.uc_type.lookup ('Email')
 email = db.uc_type.getnode (id)
@@ -58,4 +58,3 @@ for ctid in db.contract_type.getnodeids (retired = False) :
 
 if changed :
     db.commit ()
-
