@@ -1281,9 +1281,12 @@ class LDAP_Roundup_Sync (Log) :
         if  (  username in reserved
             or user and user.status not in self.status_sync
             ) :
+            self.debug (4, "Skip user %s as this is a reserved username "
+                " in Roundup" % username)
             return
         if not user and (not luser or self.is_obsolete (luser)) :
-            # nothing to do
+            self.log.info \
+                ("Not syncing %s: Not in LDAP or obsolete" % username)
             return
         self.domain_user_check (username, allow_empty = True)
         changed = False
