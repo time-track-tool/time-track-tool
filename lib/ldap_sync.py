@@ -1506,7 +1506,13 @@ class LDAP_Roundup_Sync (Log) :
             return
         r_user = user
         if user.vie_user_ml :
+            self.debug \
+                (4, "User %s has a linked user(s): %s"
+                % (user.username, user.vie_user_ml))
             if user.vie_user_bl_override :
+                self.debug \
+                    (4, "User %s has a override user set: %s"
+                    % (user.username, user.vie_user_bl_override))
                 allowed = user.vie_user_ml
                 allowed.append (user.id)
                 if user.vie_user_bl_override not in allowed :
