@@ -1535,6 +1535,7 @@ class LDAP_Roundup_Sync (Log) :
             else :
                 assert len (user.vie_user_ml) == 1
                 r_user = self.db.user.getnode (user.vie_user_ml [0])
+            # verify if the linked user is allowed to link to this user
             dom = r_user.ad_domain
             for dn in self.dn_allowed.get (dom, {}) :
                 if luser.dn.lower ().endswith (dn) :
