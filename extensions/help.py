@@ -2380,6 +2380,19 @@ _helptext          = \
              @ds1.internal user, leave this field empty.
           '''
       ]
+    , ""'vie_user_ml'                 :
+      [ ""'''Used to show the user backlink if the field %%(user.vie_user)s
+             is set. Filled automatically.
+          '''
+      ]
+    , ""'vie_user_bl_override'        :
+      [ ""'''Can be used to override an existing %%(user.vie_user_ml)s.
+             If set to emtpy, the linked user is synced.
+             If set to the user itself, the linked user is ignored.
+             If there are multiple %%(vie_user_ml)ss,
+             a single one can be selected.
+          '''
+      ]
     , ""'view_roles'                  :
       [ ""'''Roles that may view purchase requests of this %(Classname)s
              enter a comma,separated,list
