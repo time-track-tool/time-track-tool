@@ -1534,9 +1534,16 @@ class LDAP_Roundup_Sync (Log) :
                 if luser.dn.lower ().endswith (dn) :
                     break
             else :
-                self.log.error \
-                    ('User has no allowed dn, not syncing: %s' % luser.dn)
-                return
+                if r_user.username == user.username :
+                    self.debug \
+                        ( 3, "Field vie_user_bl_override is referring "
+                         "to the user %s itself. Continue sync."
+                         % r_user.username)
+                else:
+                    self.log.error \
+                        ('User %s has no allowed dn (%s), not syncing: %s'
+                        % (luser.name, dom, luser.dn))
+                    return
         assert (user.status in self.status_sync)
         if user.status == self.status_obsolete :
             if not self.is_obsolete (luser) :
