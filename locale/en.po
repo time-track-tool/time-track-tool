@@ -3373,7 +3373,7 @@ msgid "vie_user"
 msgstr "Internal user"
 
 msgid "vie_user_ml"
-msgstr "Internal user back-multi-link"
+msgstr "Internal user backlink"
 
 msgid "vie_user_bl_override"
 msgstr "Internal user backlink override"
