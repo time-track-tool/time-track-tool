@@ -23,7 +23,7 @@ class CSV_Iter :
 def pg_iter (fn) :
     with open (fn, 'r') as f :
         for line in f :
-            if not line.startswith (';SAP') :
+            if not line.startswith ('SAP') :
                 continue
             break
         it = CSV_Iter (f, line)
@@ -185,7 +185,7 @@ def main () :
             il = None
         else :
             il = il_ids [il]
-        sap_ref = rec ['SAP neu'].strip ()
+        sap_ref = rec ['SAP Ref'].strip ()
         try :
             db.product_group.lookup (name)
         except KeyError :
