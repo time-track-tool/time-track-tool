@@ -1885,6 +1885,25 @@ def check_ldap_config (db) :
     return uri
 # end def check_ldap_config
 
+def config_read_boolean (config, attribute_name) :
+    """
+    Read string from config item and convert to boolean.
+    Input is case insensitive and supports:
+        'true', 'yes' -> True
+        'false', 'no' -> False
+    """
+    raw_value = getattr (config, attribute_name)
+    if raw_value.lower () in ('yes', 'true') :
+        value = True
+    elif raw_value.lower () in ('no', 'false') :
+        value = False
+    else:
+        raise ValueError \
+            ("Cannot convert input string '%s' to boolean"
+             " for config item '%s'" % (raw_value, attribute_name))
+    return value
+# end def config_read_boolean
+
 class LdapLoginAction (LoginAction, autosuper) :
     def try_ldap (self) :
         uri = check_ldap_config (self.db)
