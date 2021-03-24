@@ -10,6 +10,7 @@ no_starttls    = False
 allowed_dn_suffix = OU=SOME-OU,DC=example,DC=com:OU=OTHER-OU,DC=example,DC=com
 do_not_sync_roundup_properties = nickname
 do_not_sync_ldap_properties = cn
+user_html_template_update_roundup = False
 
 [imap]
 #host = example.net
