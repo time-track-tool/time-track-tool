@@ -82,7 +82,7 @@ def main () :
         )
     cmd.add_argument \
         ( '-o', '--orgmap'
-        , help    = 'Mapping of organisations in LAS to tracker'
+        , help    = 'Mapping of organisations in LAS to tracker, default=%(default)s'
         , default = 'orglist'
         )
     cmd.add_argument \
@@ -147,13 +147,10 @@ def main () :
     srg_table = \
         [ ('Consulting',        'Consulting',                    True)
         , ('Consulting_small',  'Consulting_small',              True)
-        , ('COTS',              'COTS',                          False)
+        , ('COTS',              'COTS (hardware or software)',   False)
         , ('Operation',         'Operation & Operation support', False)
         , ('SW-Dev',            'Software development',          False)
-#       , ('hw',                'Hardware',                      False)
         , ('Operation / cloud', 'Cloud based services',          False)
-        , ('General',           'General',                       False)
-        , ('General_small',     'General_small',                 False)
         ]
     srg = db.security_req_group
     srg_ids = {}
@@ -166,8 +163,6 @@ def main () :
         srg_ids [var] = v
         srg_by_name [name] = v
     # Lifting of broken LAS csv:
-    srg_by_name ['COTS Software'] = srg_by_name ['COTS']
-    del srg_by_name ['COTS']
     srg_by_name ['Cloud bases services (*AAS)'] = srg_by_name \
         ['Cloud based services']
     del srg_by_name ['Cloud based services']
@@ -319,7 +314,7 @@ def main () :
             srgid = srg_by_name [k]
             if k in lasrec :
                 srcs [srgid] = src_by_name [lasrec [k].strip ()]
-            elif not k.startswith ('General') :
+            else :
                 raise ValueError ('Invalid LAS Entry: %s' % k)
         for e in entity :
             if e :
@@ -330,6 +325,7 @@ def main () :
                     continue
                 insert_supplier_risk (db, sup, org, srcs)
             else :
+                print ("Warning: Empty Entity")
                 # iter over valid orgs
                 d = dict (may_purchase = True)
                 d ['valid_from'] = ';.,-'
