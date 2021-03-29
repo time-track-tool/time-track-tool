@@ -15,6 +15,8 @@ Role "admin":
 Role "anonymous":
  User may access the web interface (Web Access)
 Role "cc-permission":
+  (Restore for "cost_center_permission_group" only)
+  (Retire for "cost_center_permission_group" only)
  User is allowed to create cost_center_permission_group (Create for "cost_center_permission_group" only)
  User is allowed to edit cost_center_permission_group (Edit for "cost_center_permission_group" only)
 Role "controlling":
