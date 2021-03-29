@@ -341,6 +341,21 @@ properties = \
           )
         ]
       )
+    , ( 'pg_category'
+      , [ ( 'name'
+          , [ 'admin', 'board', 'controlling', 'dom-user-edit-facility', 'dom-user-edit-gtt', 'dom-user-edit-hr', 'dom-user-edit-office', 'finance', 'hr', 'hr-approval', 'it', 'it-approval'
+            , 'measurement-approval', 'pgp', 'pr-view', 'procure-approval', 'procurement', 'procurement-admin', 'project', 'project_view', 'quality'
+            , 'subcontract', 'subcontract-org', 'training-approval', 'user', 'user_view'
+            ]
+          )
+        , ( 'sap_ref'
+          , [ 'admin', 'board', 'controlling', 'dom-user-edit-facility', 'dom-user-edit-gtt', 'dom-user-edit-hr', 'dom-user-edit-office', 'finance', 'hr', 'hr-approval', 'it', 'it-approval'
+            , 'measurement-approval', 'pgp', 'pr-view', 'procure-approval', 'procurement', 'procurement-admin', 'project', 'project_view', 'quality'
+            , 'subcontract', 'subcontract-org', 'training-approval', 'user', 'user_view'
+            ]
+          )
+        ]
+      )
     , ( 'pr_approval'
       , [ ( 'by'
           , [ 'admin', 'board', 'controlling', 'dom-user-edit-facility', 'dom-user-edit-gtt', 'dom-user-edit-hr', 'dom-user-edit-office', 'finance', 'hr', 'hr-approval', 'it', 'it-approval'
@@ -550,6 +565,12 @@ properties = \
             , 'subcontract', 'subcontract-org', 'training-approval', 'user', 'user_view'
             ]
           )
+        , ( 'internal_order'
+          , [ 'admin', 'board', 'controlling', 'dom-user-edit-facility', 'dom-user-edit-gtt', 'dom-user-edit-hr', 'dom-user-edit-office', 'finance', 'hr', 'hr-approval', 'it', 'it-approval'
+            , 'measurement-approval', 'pgp', 'pr-view', 'procure-approval', 'procurement', 'procurement-admin', 'project', 'project_view', 'quality'
+            , 'subcontract', 'subcontract-org', 'training-approval', 'user', 'user_view'
+            ]
+          )
         , ( 'is_asset'
           , [ 'admin', 'board', 'controlling', 'dom-user-edit-facility', 'dom-user-edit-gtt', 'dom-user-edit-hr', 'dom-user-edit-office', 'finance', 'hr', 'hr-approval', 'it', 'it-approval'
             , 'measurement-approval', 'pgp', 'pr-view', 'procure-approval', 'procurement', 'procurement-admin', 'project', 'project_view', 'quality'
@@ -754,6 +775,12 @@ properties = \
             , 'subcontract', 'subcontract-org', 'training-approval', 'user', 'user_view'
             ]
           )
+        , ( 'pg_category'
+          , [ 'admin', 'board', 'controlling', 'dom-user-edit-facility', 'dom-user-edit-gtt', 'dom-user-edit-hr', 'dom-user-edit-office', 'finance', 'hr', 'hr-approval', 'it', 'it-approval'
+            , 'measurement-approval', 'pgp', 'pr-view', 'procure-approval', 'procurement', 'procurement-admin', 'project', 'project_view', 'quality'
+            , 'subcontract', 'subcontract-org', 'training-approval', 'user', 'user_view'
+            ]
+          )
         , ( 'sap_ref'
           , [ 'admin', 'board', 'controlling', 'dom-user-edit-facility', 'dom-user-edit-gtt', 'dom-user-edit-hr', 'dom-user-edit-office', 'finance', 'hr', 'hr-approval', 'it', 'it-approval'
             , 'measurement-approval', 'pgp', 'pr-view', 'procure-approval', 'procurement', 'procurement-admin', 'project', 'project_view', 'quality'
@@ -872,6 +899,12 @@ properties = \
             ]
           )
         , ( 'part_of_budget'
+          , [ 'admin', 'board', 'controlling', 'dom-user-edit-facility', 'dom-user-edit-gtt', 'dom-user-edit-hr', 'dom-user-edit-office', 'finance', 'hr', 'hr-approval', 'it', 'it-approval'
+            , 'measurement-approval', 'pgp', 'pr-view', 'procure-approval', 'procurement', 'procurement-admin', 'project', 'project_view', 'quality'
+            , 'subcontract', 'subcontract-org', 'training-approval', 'user', 'user_view'
+            ]
+          )
+        , ( 'payment_type'
           , [ 'admin', 'board', 'controlling', 'dom-user-edit-facility', 'dom-user-edit-gtt', 'dom-user-edit-hr', 'dom-user-edit-office', 'finance', 'hr', 'hr-approval', 'it', 'it-approval'
             , 'measurement-approval', 'pgp', 'pr-view', 'procure-approval', 'procurement', 'procurement-admin', 'project', 'project_view', 'quality'
             , 'subcontract', 'subcontract-org', 'training-approval', 'user', 'user_view'

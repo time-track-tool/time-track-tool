@@ -1263,200 +1263,279 @@ if 'security_req_group' in db.classes :
     srg_op   = srg.create (name = 'Operation & Operation Support')
     srg_clo  = srg.create (name = 'Cloud based services')
 if 'product_group' in db.classes and 'security_req_group' in db.classes :
+    pgcat = db.pg_category.create (name = 'PGCAT', sap_ref = '4711')
     db.product_group.create \
         ( name               = 'Phone & Internet'
         , security_req_group = srg_op
         , infosec_level      = il_vhi
+        , sap_ref            = '4711'
+        , pg_category        = pgcat
         )
     db.product_group.create \
         ( name               = 'Advertisement'
         , security_req_group = srg_cons
         , infosec_level      = il_nrm
+        , sap_ref            = '4711'
+        , pg_category        = pgcat
         )
     db.product_group.create \
         ( name               = 'Services reg. Marketing'
         , security_req_group = srg_cons
         , infosec_level      = il_nrm
+        , sap_ref            = '4711'
+        , pg_category        = pgcat
         )
     db.product_group.create \
         ( name               = 'Maintenance'
         , security_req_group = srg_op
         , infosec_level      = il_hi
+        , sap_ref            = '4711'
+        , pg_category        = pgcat
         )
     db.product_group.create \
         ( name               = 'Calibration for measuring instruments'
         , security_req_group = srg_cons
         , infosec_level      = il_hi
+        , sap_ref            = '4711'
+        , pg_category        = pgcat
         )
     db.product_group.create \
         ( name               = 'Employee leasing'
         , security_req_group = srg_cons
         , infosec_level      = il_hi
+        , sap_ref            = '4711'
+        , pg_category        = pgcat
         )
     db.product_group.create \
         ( name               = 'Security'
         , security_req_group = srg_cons
         , infosec_level      = il_vhi
+        , sap_ref            = '4711'
+        , pg_category        = pgcat
         )
     db.product_group.create \
         ( name               = 'Transport'
         , security_req_group = srg_cons
         , infosec_level      = il_hi
+        , sap_ref            = '4711'
+        , pg_category        = pgcat
         )
     db.product_group.create \
         ( name               = 'Software development'
         , security_req_group = srg_swd
         , infosec_level      = il_vhi
+        , sap_ref            = '4711'
+        , pg_category        = pgcat
         )
     db.product_group.create \
         ( name               = 'Hardware development'
         , security_req_group = srg_swd
         , infosec_level      = il_vhi
+        , sap_ref            = '4711'
+        , pg_category        = pgcat
         )
     db.product_group.create \
         ( name               = 'Technical Services (general)'
         , security_req_group = srg_cons
         , infosec_level      = il_nrm
+        , sap_ref            = '4711'
+        , pg_category        = pgcat
         )
     db.product_group.create \
         ( name               = 'Repair Services'
         , security_req_group = srg_cons
         , infosec_level      = il_nrm
+        , sap_ref            = '4711'
+        , pg_category        = pgcat
         )
     db.product_group.create \
         ( name               = '(Environment) Test Services'
         , security_req_group = srg_cons
         , infosec_level      = il_hi
+        , sap_ref            = '4711'
+        , pg_category        = pgcat
         )
     db.product_group.create \
         ( name               = 'Industrialization'
         , security_req_group = srg_op
         , infosec_level      = il_vhi
+        , sap_ref            = '4711'
+        , pg_category        = pgcat
         )
     db.product_group.create \
         ( name               = 'IT Services general (Cloud)'
         , security_req_group = srg_clo
         , infosec_level      = il_hi
+        , sap_ref            = '4711'
+        , pg_category        = pgcat
         )
     db.product_group.create \
         ( name               = 'IT Support'
         , security_req_group = srg_op
         , infosec_level      = il_hi
+        , sap_ref            = '4711'
+        , pg_category        = pgcat
         )
     db.product_group.create \
         ( name               = 'Trainings'
         , security_req_group = srg_cons
         , infosec_level      = il_nrm
+        , sap_ref            = '4711'
+        , pg_category        = pgcat
         )
     db.product_group.create \
         ( name               = 'Lawyers etc.'
         , security_req_group = srg_cons
         , infosec_level      = il_hi
+        , sap_ref            = '4711'
+        , pg_category        = pgcat
         )
     db.product_group.create \
         ( name               = 'Tax, financial advice'
         , security_req_group = srg_cons
         , infosec_level      = il_vhi
+        , sap_ref            = '4711'
+        , pg_category        = pgcat
         )
     db.product_group.create \
         ( name               = 'Consulting general'
         , security_req_group = srg_cons
         , infosec_level      = il_nrm
+        , sap_ref            = '4711'
+        , pg_category        = pgcat
         )
     db.product_group.create \
         ( name               = 'Audit'
         , security_req_group = srg_cons
         , infosec_level      = il_hi
+        , sap_ref            = '4711'
+        , pg_category        = pgcat
         )
     db.product_group.create \
         ( name               = 'Bank and Insurance'
         , security_req_group = srg_cons
         , infosec_level      = il_hi
+        , sap_ref            = '4711'
+        , pg_category        = pgcat
         )
     db.product_group.create \
         ( name               = 'Waste'
         , security_req_group = srg_cons
         , infosec_level      = il_nrm
+        , sap_ref            = '4711'
+        , pg_category        = pgcat
         )
     db.product_group.create \
         ( name               = 'Energy (Electricity, gas, water, …)'
         , security_req_group = srg_op
         , infosec_level      = il_vhi
+        , sap_ref            = '4711'
+        , pg_category        = pgcat
         )
     db.product_group.create \
         ( name               = 'Cleaning Services'
         , security_req_group = srg_cons
         , infosec_level      = il_hi
+        , sap_ref            = '4711'
+        , pg_category        = pgcat
         )
     db.product_group.create \
         ( name               = 'EMS Samples/Prototypes'
         , security_req_group = srg_op
         , infosec_level      = il_vhi
+        , sap_ref            = '4711'
+        , pg_category        = pgcat
         )
     db.product_group.create \
         ( name               = 'EMS Serial Production'
         , security_req_group = srg_op
         , infosec_level      = il_vhi
+        , sap_ref            = '4711'
+        , pg_category        = pgcat
         )
     db.product_group.create \
         ( name               = 'EMS NRE'
         , security_req_group = srg_op
         , infosec_level      = il_vhi
+        , sap_ref            = '4711'
+        , pg_category        = pgcat
         )
     db.product_group.create \
         ( name               = 'Prototypes general'
         , security_req_group = srg_op
         , infosec_level      = il_vhi
+        , sap_ref            = '4711'
+        , pg_category        = pgcat
         )
     db.product_group.create \
         ( name               = 'Displays'
         , security_req_group = srg_cots
         , infosec_level      = il_hi
+        , sap_ref            = '4711'
+        , pg_category        = pgcat
         )
     db.product_group.create \
         ( name               = 'ECUs 3rd Party / Stock'
         , security_req_group = srg_cots
         , infosec_level      = il_hi
+        , sap_ref            = '4711'
+        , pg_category        = pgcat
         )
     db.product_group.create \
         ( name               = 'Chips'
         , security_req_group = srg_cots
         , infosec_level      = il_hi
+        , sap_ref            = '4711'
+        , pg_category        = pgcat
         )
     db.product_group.create \
         ( name               = 'Hardware (COTS) 3rd Party'
         , security_req_group = srg_cots
         , infosec_level      = il_hi
+        , sap_ref            = '4711'
+        , pg_category        = pgcat
         )
     db.product_group.create \
         ( name               = 'Marketing Products (gifts, giveaways)'
         , security_req_group = srg_cots
         , infosec_level      = il_hi
+        , sap_ref            = '4711'
+        , pg_category        = pgcat
         )
     db.product_group.create \
         ( name               = 'Tools (Testing, measuring,…)'
         , security_req_group = srg_cots
         , infosec_level      = il_hi
+        , sap_ref            = '4711'
+        , pg_category        = pgcat
         )
     db.product_group.create \
         ( name               = 'Software buy'
         , security_req_group = srg_cots
         , infosec_level      = il_nrm
+        , sap_ref            = '4711'
+        , pg_category        = pgcat
         )
     db.product_group.create \
         ( name               = 'Software rent, subscription'
         , security_req_group = srg_cots
         , infosec_level      = il_nrm
+        , sap_ref            = '4711'
+        , pg_category        = pgcat
         )
     db.product_group.create \
         ( name               = 'Hardware buy'
         , security_req_group = srg_cots
         , infosec_level      = il_hi
+        , sap_ref            = '4711'
+        , pg_category        = pgcat
         )
     db.product_group.create \
         ( name               = 'Hardware rent'
         , security_req_group = srg_cots
         , infosec_level      = il_hi
+        , sap_ref            = '4711'
+        , pg_category        = pgcat
         )
 if 'supplier_risk_category' in db.classes :
     src_low = db.supplier_risk_category.create (name = 'Low',       order = 10)

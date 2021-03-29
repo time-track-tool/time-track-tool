@@ -87,6 +87,11 @@ properties = \
         , 'order'
         ]
       )
+    , ( 'pg_category'
+      , [ 'name'
+        , 'sap_ref'
+        ]
+      )
     , ( 'pr_approval'
       , [ 'by'
         , 'date'
@@ -145,6 +150,7 @@ properties = \
         , 'description'
         , 'index'
         , 'infosec_level'
+        , 'internal_order'
         , 'is_asset'
         , 'offer_number'
         , 'payment_type'
@@ -194,6 +200,7 @@ properties = \
     , ( 'product_group'
       , [ 'infosec_level'
         , 'name'
+        , 'pg_category'
         , 'sap_ref'
         , 'security_req_group'
         ]
@@ -217,6 +224,7 @@ properties = \
         , 'offer_items'
         , 'organisation'
         , 'part_of_budget'
+        , 'payment_type'
         , 'pr_currency'
         , 'pr_ext_resource'
         , 'pr_justification'
