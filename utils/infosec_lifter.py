@@ -167,8 +167,16 @@ def main () :
         ['Cloud based services']
     del srg_by_name ['Cloud based services']
 
+    curpg = None
     for rec in pg_iter (args.productgroups) :
-        srg = rec ['ISEC-Requirements group'].strip ()
+        srg     = rec ['ISEC-Requirements group'].strip ()
+        sap_ref = rec ['SAP Ref'].strip ()
+        name    = rec ['English'].strip ()
+        if not srg and sap_ref.startswith ('Z') :
+            try :
+                curpg = db.pg_category.lookup (name)
+            except KeyError :
+                curpg = db.pg_category.create (name = name, sap_ref = sap_ref)
         if not srg :
             continue
         if srg == 'n.a.' or srg == 'n.a' or srg == 'TBD' :
@@ -177,7 +185,6 @@ def main () :
             if srg.startswith ('n.a. /') :
                 srg = srg [6:].strip ()
             srg = srg_ids [srg]
-        name = rec ['English'].strip ()
         il = rec ['default protection level'].strip ()
         if il.startswith ('n.a. /') :
             il = il [6:].strip ()
@@ -185,13 +192,16 @@ def main () :
             il = None
         else :
             il = il_ids [il]
-        sap_ref = rec ['SAP Ref'].strip ()
         try :
-            db.product_group.lookup (name)
+            id = db.product_group.lookup (name)
+            pg = db.product_group.getnode (id)
+            if not pg.pg_category :
+                db.product_group.set (id, pg_category = curpg)
         except KeyError :
             d = dict \
                 ( name               = name
                 , sap_ref            = sap_ref
+                , pg_category        = curpg
                 )
             if il is not None :
                 d ['infosec_level'] = il

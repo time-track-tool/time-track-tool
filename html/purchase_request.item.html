@@ -476,9 +476,25 @@
            <td/>
           </tr>
           <tr>
-           <td class="tooltip">
-            <span tal:content="structure python:i.product_group.menu
-                  (additional = ['sap_ref'])"/>
+           <td class="tooltip" tal:define="
+                ep python:utils.ExtProperty
+                  ( utils
+                  , i.product_group
+                  , item = i
+                  , help_groupby = 'pg_category'
+                  , do_classhelp = True
+                  , editable     = True
+                  , fieldwidth   = 25
+                  )">
+            <span tal:content="structure python: ep.as_listentry ()"/>
+            <span tal:content="structure python:db.product_group.classhelp
+             ( 'name,sap_ref'
+             , property  = ep.prop._formname
+             , inputtype = 'radio'
+             , width     = '800'
+             , pagesize  = '1500'
+             , group     = 'pg_category'
+             )"/>
             <span class="tooltiptext"
                   tal:condition="python:not i.product_group.is_edit_ok ()"
                   tal:content="python:'SAP: ' + str (i.product_group.sap_ref)"/>
@@ -586,9 +602,19 @@
            <td/>
           </tr>
           <tr>
-           <td tal:content="structure python:utils.new_property
-             (context, db, 'pr_offer_item', -idx, 'product_group').menu
-             (additional = ['sap_ref'])"/>
+           <td>
+            <span tal:content="structure python:utils.new_property
+             (context, db, 'pr_offer_item', -idx, 'product_group').field
+             (size = 25)"/>
+            <span tal:content="structure python:db.product_group.classhelp
+             ( 'name,sap_ref'
+             , property = 'pr_offer_item-%s@product_group' % idx
+             , inputtype = 'radio'
+             , width = '800'
+             , pagesize = 1500
+             , group = 'pg_category'
+             )"/>
+           </td>
            <td tal:content="structure python:utils.new_property
              (context, db, 'pr_offer_item', -idx, 'infosec_level').menu ()"/>
            <td/>

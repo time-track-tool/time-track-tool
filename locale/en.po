@@ -4409,3 +4409,6 @@ msgstr "Supplier risk"
 
 msgid "is_consulting"
 msgstr "is consulting"
+
+msgid "pg_category"
+msgstr "Product group category"

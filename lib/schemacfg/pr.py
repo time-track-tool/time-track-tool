@@ -70,12 +70,21 @@ def init \
         )
     security_req_group.setkey ('name')
 
+    pg_category = Class \
+        ( db, ''"pg_category"
+        , name                  = String    ()
+        , sap_ref               = String    ()
+        )
+    pg_category.setkey ('name')
+    pg_category.setorderprop ('sap_ref')
+
     product_group = Class \
         ( db, ''"product_group"
         , name                  = String    ()
         , security_req_group    = Link      ('security_req_group')
         , infosec_level         = Link      ('infosec_level')
         , sap_ref               = String    ()
+        , pg_category           = Link      ('pg_category')
         )
     product_group.setkey ('name')
     product_group.setorderprop ('sap_ref')
@@ -459,6 +468,7 @@ def security (db, ** kw) :
         , ("pr_ext_resource",    ["User"],              [])
         , ("security_req_group", ["User"],              ["Procurement-Admin"])
         , ("product_group",      ["User"],              ["Procurement-Admin"])
+        , ("pg_category",        ["User"],              ["Procurement-Admin"])
         , ("supplier_risk_category", ["User"],          [])
         , ("purchase_risk_type", ["User"],              [])
         , ("pr_supplier_risk",   ["User"],              ["Procurement-Admin"])

@@ -1191,6 +1191,15 @@ def check_issue_nums (db, cl, nodeid, new_values) :
             raise Reject (_ ("Invalid Issue-Number: %s") % id)
 # end def check_issue_nums
 
+def check_pg (db, cl, nodeid, new_values) :
+    common.require_attributes \
+        (_, cl, nodeid, new_values, 'sap_ref', 'pg_category')
+# end def check_pg
+
+def check_pgc (db, cl, nodeid, new_values) :
+    common.require_attributes (_, cl, nodeid, new_values, 'sap_ref')
+# end def check_pgc
+
 def init (db) :
     global _
     _   = get_translation \
@@ -1248,4 +1257,8 @@ def init (db) :
     db.pr_supplier_risk.audit   ("set",    check_supplier_risk)
     db.purchase_security_risk.audit ("create", check_psr)
     db.purchase_security_risk.audit ("set",    check_psr)
+    db.product_group.audit      ("create", check_pg)
+    db.product_group.audit      ("set",    check_pg)
+    db.pg_category.audit        ("create", check_pgc)
+    db.pg_category.audit        ("set",    check_pgc)
 # end def init
