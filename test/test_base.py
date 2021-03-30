@@ -38,8 +38,52 @@ from email.parser import Parser
 from mailbox      import mbox
 from base64       import b64decode
 
+from roundup               import backends, configuration
 from roundup.exceptions    import Reject
-from roundup.configuration import Option
+from roundup.test          import memorydb
+
+Option = configuration.Option
+
+# Inject memorydb
+backends.memorydb = memorydb
+# Monkey-patch list_backends
+l = backends.list_backends ()
+l.append ('memorydb')
+def list_backends () :
+    return l
+backends.list_backends = list_backends
+configuration.list_backends = list_backends
+
+# Methods for determining database existence
+memorydb.db_exists = lambda x : True
+def nuke (x = None) :
+    memorydb.Database.p = {}
+memorydb.db_nuke = nuke
+
+# Monkey-patch Database
+# Some trackers inject sql for generating indices or unique constraints
+def sql (self, s, *args) :
+    t = ('alter table', 'create index')
+    for x in t :
+        if s.lower ().startswith (t) :
+            break
+    else :
+        assert False, "Unfakeable sql encountered"
+memorydb.Database.sql = sql
+def close (self) :
+    self.__class__.p = {}
+    self.__class__.p ['items']    = self.items
+    self.__class__.p ['ids']      = self.ids
+    self.__class__.p ['journals'] = self.journals
+memorydb.Database.close = close
+ini_orig = memorydb.Database.__init__
+def ini (self, *args, **kw) :
+    ini_orig (self, *args, **kw)
+    if hasattr (self.__class__, 'p') :
+        self.items    = self.__class__.p.get ('items', {})
+        self.ids      = self.__class__.p.get ('ids', {})
+        self.journals = self.__class__.p.get ('journals', {})
+memorydb.Database.__init__ = ini
 
 from propl_abo     import properties as properties_abo
 from propl_adr     import properties as properties_adr
@@ -110,12 +154,13 @@ def header_decode (h) :
     return header_regex.sub ('', h)
 # end def header_decode
 
-class _Test_Case () :
+class _Test_Base :
     count = 0
     db = None
     roles = ['admin']
     schemafile = None
     maxDiff = None
+    backend = 'memorydb'
     allroles = dict.fromkeys \
         (('abo'
         , 'abo+invoice'
@@ -183,15 +228,15 @@ class _Test_Case () :
         , 'user_view'
         ))
 
-
-    def setup_tracker (self, backend = 'postgresql') :
+    def setup_tracker (self, backend = None) :
         """ Install and initialize tracker in dirname, return tracker instance.
             If directory exists, it is wiped out before the operation.
         """
         self.__class__.count += 1
         self.schemafile = self.schemafile or self.schemaname
         self.dirname = '_test_init_%s' % self.count
-        self.backend = 'postgresql'
+        if backend :
+            self.backend = backend
         self.config  = config = configuration.CoreConfig ()
         config.DATABASE       = 'db'
         config.RDBMS_NAME     = "rounduptestttt"
@@ -251,7 +296,9 @@ class _Test_Case () :
         if os.path.exists (self.dirname) :
             shutil.rmtree (self.dirname)
     # end def tearDown
+# end class _Test_Base
 
+class _Test_Case (_Test_Base) :
     def test_0_roles (self) :
         self.log.debug ('test_0_roles')
         self.db = self.tracker.open ('admin')
@@ -417,10 +464,9 @@ class _Test_Case () :
             except ValueError :
                 self.users [u] = self.db.user.lookup (u)
     # end def create_test_users
-
 # end class _Test_Case
 
-class _Test_Case_Summary (_Test_Case) :
+class _Test_Base_Summary :
     def setup_db (self) :
         self.db = self.tracker.open ('admin')
         self.db.overtime_period.create \
@@ -796,9 +842,10 @@ class _Test_Case_Summary (_Test_Case) :
         self.db.commit ()
         self.log.debug ("End of setup")
     # end def setup_db
+# end class _Test_Base_Summary
 
-# end class _Test_Case_Summary
-
+class _Test_Case_Summary (_Test_Base_Summary, _Test_Case) :
+    pass
 
 class Test_Case_Support_Timetracker (_Test_Case, unittest.TestCase) :
     schemaname = 'sfull'
@@ -996,7 +1043,7 @@ class Test_Case_Timetracker (_Test_Case_Summary, unittest.TestCase) :
         summary.init (self.tracker)
         fs = { 'sap_cc'       : [sap_cc]
              , 'date'         : '2013-06-01;2013-06-30'
-             , 'summary_type' : [2, 4]
+             , 'summary_type' : ['2', '4']
              }
         cols = \
             [ 'time_wp'
@@ -1162,7 +1209,7 @@ class Test_Case_Timetracker (_Test_Case_Summary, unittest.TestCase) :
         summary.init (self.tracker)
         fs = { 'user'         : [self.user11]
              , 'date'         : '2013-06-01;2013-06-30'
-             , 'summary_type' : [2, 4]
+             , 'summary_type' : ['2', '4']
              }
         cols = \
             [ 'product_family'
@@ -1389,7 +1436,7 @@ class Test_Case_Timetracker (_Test_Case_Summary, unittest.TestCase) :
             ( fs
             , { 'date': '2013-06-01;2013-06-30'
               , 'reporting_group': '2'
-              , 'summary_type': [2, 4]
+              , 'summary_type': ['2', '4']
               }
             )
         sr = summary.Summary_Report \
@@ -1434,7 +1481,7 @@ class Test_Case_Timetracker (_Test_Case_Summary, unittest.TestCase) :
             ( fs
             , { 'date': '2013-06-01;2013-06-30'
               , 'product_family': '1'
-              , 'summary_type': [2, 4]
+              , 'summary_type': ['2', '4']
               }
             )
         sr = summary.Summary_Report \
@@ -1465,7 +1512,7 @@ class Test_Case_Timetracker (_Test_Case_Summary, unittest.TestCase) :
             ( fs
             , { 'date': '2013-06-01;2013-06-30'
               , 'project_type': '4'
-              , 'summary_type': [2, 4]
+              , 'summary_type': ['2', '4']
               }
             )
         sr = summary.Summary_Report \
@@ -1605,7 +1652,7 @@ class Test_Case_Timetracker (_Test_Case_Summary, unittest.TestCase) :
         summary.init (self.tracker)
         fs = { 'user'         : [self.user12]
              , 'date'         : '2013-01-01;2013-12-31'
-             , 'summary_type' : [4]
+             , 'summary_type' : ['4']
              }
         class r : filterspec = fs
         sr = summary.Staff_Report \
@@ -1680,7 +1727,7 @@ class Test_Case_Timetracker (_Test_Case_Summary, unittest.TestCase) :
         self.assertEqual (lines  [0] [9], 'additional submitted')
         self.assertEqual (lines  [1] [0], 'testuser13')
         self.assertEqual (lines  [1] [1], '2014-12-31')
-        self.assertEqual (lines  [1] [2], '25.00')
+        self.assertEqual (float (lines  [1] [2]), 25.00)
         self.assertEqual (lines  [1] [3], '25.00')
         self.assertEqual (lines  [1] [4], '7.27')
         self.assertEqual (lines  [1] [5], '32.27')
@@ -1690,7 +1737,7 @@ class Test_Case_Timetracker (_Test_Case_Summary, unittest.TestCase) :
         self.assertEqual (lines  [1] [9], '0.00')
         self.assertEqual (lines  [2] [0], 'testuser13')
         self.assertEqual (lines  [2] [1], '2015-12-31')
-        self.assertEqual (lines  [2] [2], '25.00')
+        self.assertEqual (float (lines  [2] [2]), 25.00)
         self.assertEqual (lines  [2] [3], '25.00')
         self.assertEqual (lines  [2] [4], '9.27')
         self.assertEqual (lines  [2] [5], '34.27')
@@ -1758,7 +1805,7 @@ class Test_Case_Timetracker (_Test_Case_Summary, unittest.TestCase) :
         self.assertEqual (lines  [0] [8], 'remaining vacation')
         self.assertEqual (lines  [1] [0], 'testuser15')
         self.assertEqual (lines  [1] [1], '2018-12-31')
-        self.assertEqual (lines  [1] [2], '30.00')
+        self.assertEqual (float (lines  [1] [2]), 30.00)
         self.assertEqual (lines  [1] [3], '15.00')
         self.assertEqual (lines  [1] [4], '0.00')
         self.assertEqual (lines  [1] [5], '15.00')
@@ -1767,7 +1814,7 @@ class Test_Case_Timetracker (_Test_Case_Summary, unittest.TestCase) :
         self.assertEqual (lines  [1] [8], '15.00')
         self.assertEqual (lines  [2] [0], 'testuser16')
         self.assertEqual (lines  [2] [1], '2018-12-31')
-        self.assertEqual (lines  [2] [2], '30.00')
+        self.assertEqual (float (lines  [2] [2]), 30.00)
         self.assertEqual (lines  [2] [3], '15.00')
         self.assertEqual (lines  [2] [4], '0.00')
         self.assertEqual (lines  [2] [5], '15.00')
@@ -1776,7 +1823,7 @@ class Test_Case_Timetracker (_Test_Case_Summary, unittest.TestCase) :
         self.assertEqual (lines  [2] [8], '15.00')
         self.assertEqual (lines  [3] [0], 'testuser17')
         self.assertEqual (lines  [3] [1], '2018-12-31')
-        self.assertEqual (lines  [3] [2], '30.00')
+        self.assertEqual (float (lines  [3] [2]), 30.00)
         self.assertEqual (lines  [3] [3], '30.00')
         self.assertEqual (lines  [3] [4], '0.00')
         self.assertEqual (lines  [3] [5], '30.00')
@@ -1785,7 +1832,7 @@ class Test_Case_Timetracker (_Test_Case_Summary, unittest.TestCase) :
         self.assertEqual (lines  [3] [8], '30.00')
         self.assertEqual (lines  [4] [0], 'testuser18')
         self.assertEqual (lines  [4] [1], '2018-12-31')
-        self.assertEqual (lines  [4] [2], '30.00')
+        self.assertEqual (float (lines  [4] [2]), 30.00)
         self.assertEqual (lines  [4] [3], '12.50')
         self.assertEqual (lines  [4] [4], '0.00')
         self.assertEqual (lines  [4] [5], '12.50')
@@ -1794,7 +1841,7 @@ class Test_Case_Timetracker (_Test_Case_Summary, unittest.TestCase) :
         self.assertEqual (lines  [4] [8], '12.50')
         self.assertEqual (lines  [5] [0], 'testuser19')
         self.assertEqual (lines  [5] [1], '2018-12-31')
-        self.assertEqual (lines  [5] [2], '30.00')
+        self.assertEqual (float (lines  [5] [2]), 30.00)
         self.assertEqual (lines  [5] [3], '17.50')
         self.assertEqual (lines  [5] [4], '0.00')
         self.assertEqual (lines  [5] [5], '17.50')
@@ -1821,7 +1868,7 @@ class Test_Case_Timetracker (_Test_Case_Summary, unittest.TestCase) :
         self.assertEqual (lines  [0] [8], 'remaining vacation')
         self.assertEqual (lines  [1] [0], 'testuser17')
         self.assertEqual (lines  [1] [1], '2019-12-31')
-        self.assertEqual (lines  [1] [2], '30.00')
+        self.assertEqual (float (lines  [1] [2]), 30.00)
         self.assertEqual (lines  [1] [3], '30.00')
         self.assertEqual (lines  [1] [4], '30.00')
         self.assertEqual (lines  [1] [5], '60.00')
@@ -1830,7 +1877,7 @@ class Test_Case_Timetracker (_Test_Case_Summary, unittest.TestCase) :
         self.assertEqual (lines  [1] [8], '60.00')
         self.assertEqual (lines  [2] [0], 'testuser18')
         self.assertEqual (lines  [2] [1], '2019-12-31')
-        self.assertEqual (lines  [2] [2], '30.00')
+        self.assertEqual (float (lines  [2] [2]), 30.00)
         self.assertEqual (lines  [2] [3], '2.50')
         self.assertEqual (lines  [2] [4], '12.50')
         self.assertEqual (lines  [2] [5], '15.00')
@@ -1839,7 +1886,7 @@ class Test_Case_Timetracker (_Test_Case_Summary, unittest.TestCase) :
         self.assertEqual (lines  [2] [8], '15.00')
         self.assertEqual (lines  [3] [0], 'testuser19')
         self.assertEqual (lines  [3] [1], '2019-12-31')
-        self.assertEqual (lines  [3] [2], '30.00')
+        self.assertEqual (float (lines  [3] [2]), 30.00)
         self.assertEqual (lines  [3] [3], '30.00')
         self.assertEqual (lines  [3] [4], '17.50')
         self.assertEqual (lines  [3] [5], '47.50')
@@ -1867,7 +1914,7 @@ class Test_Case_Timetracker (_Test_Case_Summary, unittest.TestCase) :
         self.assertEqual (lines  [0] [8], 'remaining vacation')
         self.assertEqual (lines  [1] [0], 'testuser17')
         self.assertEqual (lines  [1] [1], '2019-02-03')
-        self.assertEqual (lines  [1] [2], '30.00')
+        self.assertEqual (float (lines  [1] [2]), 30.00)
         self.assertEqual (lines  [1] [3], '2.50')
         self.assertEqual (lines  [1] [4], '30.00')
         self.assertEqual (lines  [1] [5], '32.50')
@@ -1876,7 +1923,7 @@ class Test_Case_Timetracker (_Test_Case_Summary, unittest.TestCase) :
         self.assertEqual (lines  [1] [8], '32.50')
         self.assertEqual (lines  [2] [0], 'testuser18')
         self.assertEqual (lines  [2] [1], '2019-02-03')
-        self.assertEqual (lines  [2] [2], '30.00')
+        self.assertEqual (float (lines  [2] [2]), 30.00)
         self.assertEqual (lines  [2] [3], '2.50')
         self.assertEqual (lines  [2] [4], '12.50')
         self.assertEqual (lines  [2] [5], '15.00')
@@ -1885,7 +1932,7 @@ class Test_Case_Timetracker (_Test_Case_Summary, unittest.TestCase) :
         self.assertEqual (lines  [2] [8], '15.00')
         self.assertEqual (lines  [3] [0], 'testuser19')
         self.assertEqual (lines  [3] [1], '2019-02-03')
-        self.assertEqual (lines  [3] [2], '30.00')
+        self.assertEqual (float (lines  [3] [2]), 30.00)
         self.assertEqual (lines  [3] [3], '5.00')
         self.assertEqual (lines  [3] [4], '17.50')
         self.assertEqual (lines  [3] [5], '22.50')
@@ -2091,7 +2138,7 @@ class Test_Case_Timetracker (_Test_Case_Summary, unittest.TestCase) :
         self.assertEqual (lines  [0] [9], 'additional submitted')
         self.assertEqual (lines  [1] [0], 'testuser14')
         self.assertEqual (lines  [1] [1], '2015-12-31')
-        self.assertEqual (lines  [1] [2], '25.00')
+        self.assertEqual (float (lines  [1] [2]), 25.00)
         self.assertEqual (lines  [1] [3], '10.34')
         self.assertEqual (lines  [1] [4], '6.03')
         self.assertEqual (lines  [1] [5], '16.37')
@@ -2119,7 +2166,7 @@ class Test_Case_Timetracker (_Test_Case_Summary, unittest.TestCase) :
         self.assertEqual (lines  [0] [9], 'additional submitted')
         self.assertEqual (lines  [1] [0], 'testuser14')
         self.assertEqual (lines  [1] [1], '2015-12-31')
-        self.assertEqual (lines  [1] [2], '25.00')
+        self.assertEqual (float (lines  [1] [2]), 25.00)
         self.assertEqual (lines  [1] [3], '11.00')
         self.assertEqual (lines  [1] [4], '7.00')
         self.assertEqual (lines  [1] [5], '17.00')
@@ -4352,363 +4399,6 @@ class Test_Case_Fulltracker (_Test_Case_Summary, unittest.TestCase) :
             )
     # end def test_rename_status
 
-    def test_user1 (self) :
-        self.log.debug ('test_user1')
-        self.setup_db ()
-        self.db.close ()
-        self.db = self.tracker.open (self.username1)
-        user1_time.import_data_1 (self.db, self.user1)
-        self.db.close ()
-        self.db = self.tracker.open ('admin')
-        self.db.overtime_correction.create \
-            ( user    = self.user1
-            , value   = 910.0
-            , comment = 'Auf null stellen, da keine Eintraege'
-            , date    = date.Date ('2008-09-07')
-            )
-        dr = self.db.daily_record.filter \
-            (None, dict (user = self.user1, date = '2006-01-23')) [0]
-        dr = self.db.daily_record.getnode (dr)
-        user_dynamic.update_tr_duration (self.db, dr)
-        self.assertEqual (dr.tr_duration_ok, 0)
-        self.db.user_dynamic.create \
-            ( user              = self.user1
-            , valid_from        = date.Date ('2006-01-01')
-            , booking_allowed   = True
-            , vacation_yearly   = 25
-            , all_in            = True
-            , hours_mon         = 7.75
-            , hours_tue         = 7.75
-            , hours_wed         = 7.75
-            , hours_thu         = 7.75
-            , hours_fri         = 7.5
-            , daily_worktime    = 0.0
-            , org_location      = self.olo
-            , department        = self.dep
-            , max_flexitime     = 5
-            )
-        self.db.clearCache ()
-        self.assertEqual (dr.tr_duration_ok, 0)
-        self.db.user_dynamic.create \
-            ( user              = self.user1
-            , valid_from        = date.Date ('2008-01-01')
-            , valid_to          = date.Date ('2008-09-11')
-            , booking_allowed   = True
-            , vacation_yearly   = 25
-            , all_in            = False
-            , hours_mon         = 5.0
-            , hours_tue         = 5.0
-            , hours_wed         = 5.0
-            , hours_thu         = 5.0
-            , hours_fri         = 5.0
-            , daily_worktime    = 0.0
-            , supp_weekly_hours = 25.
-            , org_location      = self.olo
-            , department        = self.dep
-            , overtime_period   = self.db.overtime_period.lookup ('week')
-            )
-        self.db.user_dynamic.create \
-            ( user              = self.user1
-            , valid_from        = date.Date ('2009-01-04')
-            , booking_allowed   = True
-            , vacation_yearly   = 25
-            , all_in            = True
-            , hours_mon         = 2.0
-            , hours_tue         = 2.0
-            , hours_wed         = 2.0
-            , hours_thu         = 2.0
-            , hours_fri         = 2.0
-            , daily_worktime    = 0.0
-            , org_location      = self.olo
-            , department        = self.dep
-            , max_flexitime     = 5
-            )
-        self.db.user_dynamic.create \
-            ( user              = self.user1
-            , valid_from        = date.Date ('2010-01-01')
-            , booking_allowed   = True
-            , vacation_yearly   = 25
-            , all_in            = True
-            , hours_mon         = 2.0
-            , hours_tue         = 2.0
-            , hours_wed         = 2.0
-            , hours_thu         = 2.0
-            , hours_fri         = 2.0
-            , daily_worktime    = 0.0
-            , org_location      = self.olo
-            , department        = self.dep
-            , max_flexitime     = 5
-            )
-        self.db.commit ()
-        self.db.close  ()
-        self.db = self.tracker.open (self.username1)
-        fs = { 'user'         : [self.user1]
-             , 'date'         : '2008-09-01;2008-09-10'
-             , 'summary_type' : [2, 4]
-             }
-        class r : filterspec = fs
-        summary.init (self.tracker)
-        sr = summary.Staff_Report \
-            (self.db, r, templating.TemplatingUtils (None))
-        lines = [x.strip ().split (',') for x in sr.as_csv ().split ('\n')]
-        self.assertEqual (len (lines), 5)
-        self.assertEqual (lines [0] [0], 'User')
-        self.assertEqual (lines [0] [1], 'Time Period')
-        self.assertEqual (lines [0] [2], 'Balance Start')
-        self.assertEqual (lines [0] [3], 'Actual open')
-        self.assertEqual (lines [0] [4], 'Actual submitted')
-        self.assertEqual (lines [0] [5], 'Actual accepted')
-        self.assertEqual (lines [0] [6], 'Actual all')
-        self.assertEqual (lines [0] [7], 'required')
-        self.assertEqual (lines [0] [8], 'Supp. hours average')
-        self.assertEqual (lines [0] [9], 'Supplementary hours')
-        self.assertEqual (lines [0][10], 'Overtime correction')
-        self.assertEqual (lines [0][11], 'Balance End')
-        self.assertEqual (lines [0][12], 'Overtime period')
-        self.assertEqual (lines [1] [1], 'WW 36/2008')
-        self.assertEqual (lines [2] [1], 'WW 37/2008')
-        self.assertEqual (lines [3] [1], '2008-09-01;2008-09-10')
-        self.assertEqual (lines [1][11], '-23.50')
-        self.assertEqual (lines [2][11], '-38.50')
-        self.assertEqual (lines [3][11], '-38.50')
-        self.assertEqual (lines [3][10], '910.0')
-        fs = { 'user'         : [self.user1]
-             , 'date'         : '2009-12-21;2010-01-03'
-             , 'summary_type' : [2, 4]
-             }
-        class r : filterspec = fs
-        sr = summary.Staff_Report \
-            (self.db, r, templating.TemplatingUtils (None))
-        lines = [x.strip ().split (',') for x in sr.as_csv ().split ('\n')]
-        self.assertEqual (lines [1] [1], 'WW 52/2009')
-        self.assertEqual (lines [2] [1], 'WW 53/2009')
-        self.assertEqual (lines [3] [1], '2009-12-21;2010-01-03')
-        self.assertEqual (lines [1][11], '-38.50')
-        self.assertEqual (lines [2][11], '-38.50')
-        self.assertEqual (lines [3][11], '-38.50')
-
-        for d in ('2006-12-31', '2007-12-31') :
-            f = self.db.daily_record_freeze.create \
-                ( user           = self.user1
-                , frozen         = True
-                , date           = date.Date (d)
-                )
-            f = self.db.daily_record_freeze.getnode (f)
-            self.assertEqual (f.balance,        -38.5)
-            self.assertEqual (f.achieved_hours, 0.0)
-            self.assertEqual (f.validity_date,  date.Date (d))
-
-        f = self.db.daily_record_freeze.create \
-            ( user           = self.user1
-            , frozen         = True
-            , date           = date.Date ('2008-09-10')
-            )
-        f = self.db.daily_record_freeze.getnode (f)
-        self.assertEqual (f.balance,       -23.5)
-        self.assertEqual (f.achieved_hours,  0.0)
-        self.assertEqual (f.validity_date,  date.Date ('2008-09-07'))
-
-        dyn = user_dynamic.first_user_dynamic (self.db, self.user1)
-        self.assertEqual (dyn.valid_from, date.Date ('2005-09-01'))
-        op  = user_dynamic.overtime_periods \
-            (self.db, self.user1, dyn.valid_from, date.Date ('2009-12-31'))
-        self.assertEqual (len (op), 1)
-        self.assertEqual (op [0][0], date.Date ('2005-10-01'))
-        self.assertEqual (op [0][1], date.Date ('2008-09-10'))
-        self.assertEqual (op [0][2].name, 'week')
-        dyn = user_dynamic.next_user_dynamic (self.db, dyn)
-        self.assertEqual (dyn.valid_from, date.Date ('2005-10-01'))
-        dyn = user_dynamic.next_user_dynamic (self.db, dyn)
-        self.assertEqual (dyn.valid_from, date.Date ('2006-01-01'))
-        self.assertEqual (dyn.overtime_period, None)
-
-        bal = user_dynamic.compute_balance \
-            (self.db, self.user1, date.Date ('2009-12-31'), sharp_end = True)
-        self.assertEqual (bal, (-38.5, 0))
-        bal = user_dynamic.compute_balance \
-            (self.db, self.user1, date.Date ('2009-12-27'), sharp_end = True)
-        self.assertEqual (bal, (-38.5, 0))
-        bal = user_dynamic.compute_balance \
-            (self.db, self.user1, date.Date ('2010-01-03'), sharp_end = True)
-        self.assertEqual (bal, (-38.5, 0))
-
-        bal = user_dynamic.compute_balance \
-            (self.db, self.user1, date.Date ('2009-12-31'), not_after = True)
-        self.assertEqual (bal, (-38.5, 0))
-        bal = user_dynamic.compute_balance \
-            (self.db, self.user1, date.Date ('2009-12-27'), not_after = True)
-        self.assertEqual (bal, (-38.5, 0))
-        bal = user_dynamic.compute_balance \
-            (self.db, self.user1, date.Date ('2010-01-03'), not_after = True)
-        self.assertEqual (bal, (-38.5, 0))
-
-        sr = summary.Staff_Report \
-            (self.db, r, templating.TemplatingUtils (None))
-        lines = [x.strip ().split (',') for x in sr.as_csv ().split ('\n')]
-        self.assertEqual (lines [1] [1], 'WW 52/2009')
-        self.assertEqual (lines [2] [1], 'WW 53/2009')
-        self.assertEqual (lines [3] [1], '2009-12-21;2010-01-03')
-        self.assertEqual (lines [1][11], '-38.50')
-        self.assertEqual (lines [2][11], '-38.50')
-        self.assertEqual (lines [3][11], '-38.50')
-
-        f = self.db.daily_record_freeze.create \
-            ( user           = self.user1
-            , frozen         = True
-            , date           = date.Date ('2009-12-31')
-            )
-        f = self.db.daily_record_freeze.getnode (f)
-        self.assertEqual (f.balance,        -38.5)
-        self.assertEqual (f.achieved_hours,   0.0)
-        self.assertEqual (f.validity_date,  date.Date ('2009-12-31'))
-
-        self.db.daily_record_freeze.set (f.id, frozen = False)
-        self.assertEqual (f.balance, None)
-        self.db.daily_record_freeze.set (f.id, frozen = True)
-
-        self.db.clearCache ()
-        self.assertEqual (f.balance,      -38.5)
-        self.assertEqual (f.achieved_hours, 0.0)
-        self.assertEqual (f.validity_date,  date.Date ('2009-12-31'))
-
-        self.db.clearCache ()
-
-        sr = summary.Staff_Report \
-            (self.db, r, templating.TemplatingUtils (None))
-        lines = [x.strip ().split (',') for x in sr.as_csv ().split ('\n')]
-        self.assertEqual (lines [1] [1], 'WW 52/2009')
-        self.assertEqual (lines [2] [1], 'WW 53/2009')
-        self.assertEqual (lines [3] [1], '2009-12-21;2010-01-03')
-        self.assertEqual (lines [1][11], '-38.50')
-        self.assertEqual (lines [2][11], '-38.50')
-        self.assertEqual (lines [3][11], '-38.50')
-    # end def test_user1
-
-    def test_user2 (self) :
-        self.log.debug ('test_user2')
-        self.setup_db ()
-        self.db.close ()
-        self.db = self.tracker.open (self.username2)
-        user2_time.import_data_2 (self.db, self.user2)
-        self.db.close ()
-        self.db = self.tracker.open ('admin')
-        self.db.user_dynamic.create \
-            ( user              = self.user2
-            , valid_from        = date.Date ('2009-01-01')
-            , booking_allowed   = True
-            , vacation_yearly   = 25
-            , all_in            = False
-            , hours_mon         = 7.75
-            , hours_tue         = 7.75
-            , hours_wed         = 7.75
-            , hours_thu         = 7.75
-            , hours_fri         = 7.5
-            , supp_weekly_hours = 38.5
-            , additional_hours  = 38.5
-            , overtime_period   = self.db.overtime_period.lookup ('week')
-            , org_location      = self.olo
-            , department        = self.dep
-            )
-        f = self.db.daily_record_freeze.create \
-            ( user           = self.user2
-            , frozen         = True
-            , date           = date.Date ('2008-12-31')
-            )
-        f = self.db.daily_record_freeze.getnode (f)
-        self.assertEqual (f.balance,        0.0)
-        self.assertEqual (f.achieved_hours, 0.0)
-        self.assertEqual (f.validity_date,  date.Date ('2008-12-31'))
-        self.db.commit ()
-        self.db.close  ()
-        self.db = self.tracker.open (self.username2)
-        fs = { 'user'         : [self.user2]
-             , 'date'         : '2008-12-22;2009-01-04'
-             , 'summary_type' : [2, 4]
-             }
-        class r : filterspec = fs
-        summary.init (self.tracker)
-        ndr = self.db.daily_record.getnode ('51')
-        self.assertEqual (len (ndr.time_record), 2)
-        sr = summary.Staff_Report \
-            (self.db, r, templating.TemplatingUtils (None))
-        lines = [x.strip ().split (',') for x in sr.as_csv ().split ('\n')]
-        self.assertEqual (len (lines), 5)
-        self.assertEqual (lines [1] [1], 'WW 52/2008')
-        self.assertEqual (lines [2] [1], 'WW 1/2009')
-        self.assertEqual (lines [3] [1], '2008-12-22;2009-01-04')
-        self.assertEqual (lines [1][11], '0.00')
-        self.assertEqual (lines [2][11], '0.00')
-        self.assertEqual (lines [3][11], '0.00')
-
-        fs = { 'user'         : [self.user2]
-             , 'date'         : '2009-12-21;2010-01-03'
-             , 'summary_type' : [2, 4]
-             }
-        class r : filterspec = fs
-        sr = summary.Staff_Report \
-            (self.db, r, templating.TemplatingUtils (None))
-        lines = [x.strip ().split (',') for x in sr.as_csv ().split ('\n')]
-        self.assertEqual (len (lines), 5)
-        self.assertEqual (lines [1] [1], 'WW 52/2009')
-        self.assertEqual (lines [2] [1], 'WW 53/2009')
-        self.assertEqual (lines [3] [1], '2009-12-21;2010-01-03')
-        self.assertEqual (lines [1][11], '113.12')
-        self.assertEqual (lines [2][11], '113.12')
-        self.assertEqual (lines [3][11], '113.12')
-        f = self.db.daily_record_freeze.create \
-            ( user           = self.user2
-            , frozen         = True
-            , date           = date.Date ('2009-12-31')
-            )
-        f = self.db.daily_record_freeze.getnode (f)
-        self.assertEqual (f.balance,        113.125)
-        self.assertEqual (f.achieved_hours, 0.0)
-        self.assertEqual (f.validity_date,  date.Date ('2009-12-27'))
-        # test split of frozen dyn record and reset of tr_duration
-        dr1 = self.db.daily_record.filter \
-            (None, dict (user = self.user2, date = '2009-12-31')) [0]
-        dr1 = self.db.daily_record.getnode (dr1)
-        user_dynamic.update_tr_duration (self.db, dr1)
-        self.assertEqual (dr1.tr_duration_ok, 7.75)
-        dr2 = self.db.daily_record.filter \
-            (None, dict (user = self.user2, date = '2010-01-01')) [0]
-        dr2 = self.db.daily_record.getnode (dr2)
-        user_dynamic.update_tr_duration (self.db, dr2)
-        self.assertEqual (dr2.tr_duration_ok, 7.5)
-        # Get len of journal
-        l1_1 = len (self.db.getjournal ('daily_record', dr1.id))
-        l2_1 = len (self.db.getjournal ('daily_record', dr2.id))
-        self.db.user_dynamic.create \
-            ( user              = self.user2
-            , valid_from        = date.Date ('2010-01-01')
-            , booking_allowed   = True
-            , vacation_yearly   = 25
-            , all_in            = False
-            , hours_mon         = 7.75
-            , hours_tue         = 7.75
-            , hours_wed         = 7.75
-            , hours_thu         = 7.75
-            , hours_fri         = 7.5
-            , supp_weekly_hours = 38.5
-            , additional_hours  = 38.5
-            , overtime_period   = self.db.overtime_period.lookup ('week')
-            , org_location      = self.olo
-            , department        = self.dep
-            )
-        self.db.clearCache ()
-        self.assertEqual (dr1.tr_duration_ok, 7.75)
-        self.assertEqual (dr2.tr_duration_ok, 7.5)
-        # Get len of journal, tr_duration_ok should have been recomputed
-        l1_2 = len (self.db.getjournal ('daily_record', dr1.id))
-        l2_2 = len (self.db.getjournal ('daily_record', dr2.id))
-        # Rec dr1 was *not* updated
-        self.assertEqual (l1_1, l1_2)
-        # Rec dr2 *was* updated due to update of user_dynamic. Since
-        # the *old* user_dynamic record was changed *and* the new one
-        # was created we have more than two updates.
-        self.assertEqual (l2_2 - l2_1 >= 4, True)
-    # end def test_user2
-
     def test_user3 (self) :
         self.log.debug ('test_user3')
         self.setup_db ()
@@ -4721,7 +4411,7 @@ class Test_Case_Fulltracker (_Test_Case_Summary, unittest.TestCase) :
         summary.init (self.tracker)
         fs = { 'user'         : [self.user3]
              , 'date'         : '2010-01-01;2010-05-31'
-             , 'summary_type' : [2, 3, 4]
+             , 'summary_type' : ['2', '3', '4']
              }
         class r : filterspec = fs
         sr = summary.Staff_Report \
@@ -4775,7 +4465,7 @@ class Test_Case_Fulltracker (_Test_Case_Summary, unittest.TestCase) :
         summary.init (self.tracker)
         fs = { 'user'         : [self.user4]
              , 'date'         : '2012-01-01;2012-05-31'
-             , 'summary_type' : [2, 3, 4]
+             , 'summary_type' : ['2', '3', '4']
              }
         class r : filterspec = fs
         sr = summary.Staff_Report \
@@ -4889,7 +4579,7 @@ class Test_Case_Fulltracker (_Test_Case_Summary, unittest.TestCase) :
         summary.init (self.tracker)
         fs = { 'user'         : [self.user5]
              , 'date'         : '2012-01-01;2012-09-28'
-             , 'summary_type' : [2, 3, 4]
+             , 'summary_type' : ['2', '3', '4']
              }
         class r : filterspec = fs
         sr = summary.Staff_Report \
@@ -5025,7 +4715,7 @@ class Test_Case_Fulltracker (_Test_Case_Summary, unittest.TestCase) :
         summary.init (self.tracker)
         fs = { 'user'         : [self.user6]
              , 'date'         : '2012-09-01;2012-10-08'
-             , 'summary_type' : [2, 3, 4]
+             , 'summary_type' : ['2', '3', '4']
              }
         class r : filterspec = fs
         sr = summary.Staff_Report \
@@ -5058,7 +4748,7 @@ class Test_Case_Fulltracker (_Test_Case_Summary, unittest.TestCase) :
         summary.init (self.tracker)
         fs = { 'user'         : [self.user7]
              , 'date'         : '2012-11-15;2012-12-18'
-             , 'summary_type' : [2, 3, 4]
+             , 'summary_type' : ['2', '3', '4']
              }
         class r : filterspec = fs
         sr = summary.Staff_Report \
@@ -5094,7 +4784,7 @@ class Test_Case_Fulltracker (_Test_Case_Summary, unittest.TestCase) :
         summary.init (self.tracker)
         fs = { 'user'         : [self.user8]
              , 'date'         : '2013-01-01;2013-01-16'
-             , 'summary_type' : [2, 3, 4]
+             , 'summary_type' : ['2', '3', '4']
              }
         class r : filterspec = fs
         self.user8_staff_report (r, '-0.33', '2.32')
@@ -5180,7 +4870,7 @@ class Test_Case_Fulltracker (_Test_Case_Summary, unittest.TestCase) :
         summary.init (self.tracker)
         fs = { 'user'         : [self.user9]
              , 'date'         : '2013-01-01;2013-01-16'
-             , 'summary_type' : [2, 3, 4]
+             , 'summary_type' : ['2', '3', '4']
              }
         class r : filterspec = fs
         sr = summary.Staff_Report \
@@ -5218,7 +4908,7 @@ class Test_Case_Fulltracker (_Test_Case_Summary, unittest.TestCase) :
         summary.init (self.tracker)
         fs = { 'user'         : [self.user10]
              , 'date'         : '2012-12-01;2013-01-31'
-             , 'summary_type' : [2, 3, 4]
+             , 'summary_type' : ['2', '3', '4']
              }
         class r : filterspec = fs
         sr = summary.Staff_Report \
@@ -5238,7 +4928,7 @@ class Test_Case_Fulltracker (_Test_Case_Summary, unittest.TestCase) :
         self.assertEqual (lines [12] [1], 'January 2013')
         self.assertEqual (lines [13] [1], '2012-12-01;2013-01-31')
         self.assertEqual (lines [13][10], '-76.38')
-        self.assertEqual (lines  [1] [7], '0.00')
+        self.assertEqual (float (lines  [1] [7]), 0.00)
         self.assertEqual (lines [13] [7], '0.00')
         self.assertEqual (lines  [1] [8], '0')
         self.assertEqual (lines [13] [8], '0')
@@ -5248,104 +4938,6 @@ class Test_Case_Fulltracker (_Test_Case_Summary, unittest.TestCase) :
         self.assertEqual (lines [13] [2], '76.38')
         self.assertEqual (lines [13][11], '0.00')
     # end def test_user10
-
-    def concurrency (self, method) :
-        """ Ensure that no cached values from previous transaction are used.
-            It is no concurrency test (which would fail due to a
-            concurrent update) in the sense that we have two concurrent
-            transactions.
-        """
-        trid = '4'
-        self.setup_db ()
-        self.db.close ()
-        self.db = None
-        self.db = self.tracker.open (self.username1)
-        user1_time.import_data_1 (self.db, self.user1)
-        self.db.close ()
-        self.db  = None
-
-        self.db1 = self.tracker.open ('admin')
-        self.db2 = self.tracker.open ('admin')
-        self.db1.time_record.set (trid, duration = 7)
-        self.db1.time_record.set (trid, duration = 8)
-        drid = self.db1.time_record.get (trid, 'daily_record')
-        tr_d1 = self.db1.time_record.get  (trid, 'tr_duration')
-        dr_d1 = self.db1.daily_record.get (drid, 'tr_duration_ok')
-        self.log.debug ("db1.commit after time_record.set")
-        self.db1.commit ()
-
-        dr  = self.db2.daily_record.getnode (drid)
-        dud = dr.tr_duration_ok
-        tr  = self.db2.time_record.getnode (trid)
-        dut = tr.tr_duration
-        self.log.debug ("db2.commit - 1 after get")
-        self.db2.commit ()
-        user_dynamic.update_tr_duration (self.db2, dr)
-        self.log.debug ("db2.commit - 2 after update_tr_duration")
-        l2 = len (self.db2.getjournal ('daily_record', drid))
-        self.db2.commit ()
-
-        l1 = len (self.db1.getjournal ('daily_record', drid))
-        self.db1.commit ()
-
-        # Since the update happened immediately after transaction in d1,
-        # the update_tr_duration did nothing and we should not see a
-        # different count here.
-        self.assertEqual (l1, l2)
-
-        self.log.debug ("before method")
-        method (drid, trid)
-        self.log.debug ("after  method")
-        self.db1.commit ()
-
-        self.db1.clearCache ()
-
-        # Verify that the history has grown and that the last element in
-        # the history is value 'None' -- means that the tr_duration_ok
-        # was set to None by some auditor and was automagically
-        # recomputed by the reactor, resulting in the *previous* value
-        # (the one in the journal) to be None
-        j  = list \
-            ( sorted
-                ( self.db1.getjournal ('daily_record', drid)
-                , key = lambda x : x [1]
-                )
-            )
-        l3 = len (j)
-        self.assertEqual (l3 > l1, True)
-        self.assertEqual (j [-1][-1]['tr_duration_ok'], None)
-        self.assertEqual \
-            ( self.db1.daily_record.get (drid, 'tr_duration_ok') is not None
-            , True
-            )
-    # end def concurrency
-
-    def concurrency_create (self, drid, trid) :
-        self.db1.time_record.create (duration = 5, daily_record = drid)
-    # end def concurrency_set
-
-    def concurrency_retire (self, drid, trid) :
-        self.db1.time_record.set (trid, duration = None)
-    # end def concurrency_set
-
-    def concurrency_set (self, drid, trid) :
-        self.db1.time_record.set (trid, duration = 5)
-    # end def concurrency_set
-
-    def test_concurrency_create (self) :
-        self.log.debug ('test_concurrency_create')
-        self.concurrency (self.concurrency_create)
-    # end def test_concurrency_create
-
-    def test_concurrency_retire (self) :
-        self.log.debug ('test_concurrency_retire')
-        self.concurrency (self.concurrency_retire)
-    # end def test_concurrency_retire
-
-    def test_concurrency_set (self) :
-        self.log.debug ('test_concurrency_set')
-        self.concurrency (self.concurrency_set)
-    # end def test_concurrency_set
 
     def test_extproperty (self) :
         self.log.debug ('test_extproperty')
@@ -5372,7 +4964,7 @@ class Test_Case_Fulltracker (_Test_Case_Summary, unittest.TestCase) :
         cli.db       = self.db
         cli.language = None
         cli.userid   = self.db.getuid ()
-        hcit         = templating.HTMLItem (cli, 'time_record', 1)
+        hcit         = templating.HTMLItem (cli, 'time_record', '1')
         dr           = hcit.daily_record
         wp           = hcit.wp
         utils        = templating.TemplatingUtils (cli)
@@ -5576,6 +5168,467 @@ class Test_Case_Fulltracker (_Test_Case_Summary, unittest.TestCase) :
         self.assertEqual (l1, l2)
     # end def test_tr_duration
 # end class Test_Case_Fulltracker
+
+class Test_Case_Concurrency (_Test_Base, _Test_Base_Summary, unittest.TestCase) :
+    schemaname = 'full'
+    backend = 'postgresql'
+
+    def concurrency (self, method) :
+        """ Ensure that no cached values from previous transaction are used.
+            It is no concurrency test (which would fail due to a
+            concurrent update) in the sense that we have two concurrent
+            transactions.
+        """
+        trid = '4'
+        self.setup_db ()
+        self.db.close ()
+        self.db = None
+        self.db = self.tracker.open (self.username1)
+        user1_time.import_data_1 (self.db, self.user1)
+        self.db.close ()
+        self.db  = None
+
+        self.db1 = self.tracker.open ('admin')
+        self.db2 = self.tracker.open ('admin')
+        self.db1.time_record.set (trid, duration = 7)
+        self.db1.time_record.set (trid, duration = 8)
+        drid = self.db1.time_record.get (trid, 'daily_record')
+        tr_d1 = self.db1.time_record.get  (trid, 'tr_duration')
+        dr_d1 = self.db1.daily_record.get (drid, 'tr_duration_ok')
+        self.log.debug ("db1.commit after time_record.set")
+        self.db1.commit ()
+
+        dr  = self.db2.daily_record.getnode (drid)
+        dud = dr.tr_duration_ok
+        tr  = self.db2.time_record.getnode (trid)
+        dut = tr.tr_duration
+        self.log.debug ("db2.commit - 1 after get")
+        self.db2.commit ()
+        user_dynamic.update_tr_duration (self.db2, dr)
+        self.log.debug ("db2.commit - 2 after update_tr_duration")
+        l2 = len (self.db2.getjournal ('daily_record', drid))
+        self.db2.commit ()
+
+        l1 = len (self.db1.getjournal ('daily_record', drid))
+        self.db1.commit ()
+
+        # Since the update happened immediately after transaction in d1,
+        # the update_tr_duration did nothing and we should not see a
+        # different count here.
+        self.assertEqual (l1, l2)
+
+        self.log.debug ("before method")
+        method (drid, trid)
+        self.log.debug ("after  method")
+        self.db1.commit ()
+
+        self.db1.clearCache ()
+
+        # Verify that the history has grown and that the last element in
+        # the history is value 'None' -- means that the tr_duration_ok
+        # was set to None by some auditor and was automagically
+        # recomputed by the reactor, resulting in the *previous* value
+        # (the one in the journal) to be None
+        j  = list \
+            ( sorted
+                ( self.db1.getjournal ('daily_record', drid)
+                , key = lambda x : x [1]
+                )
+            )
+        l3 = len (j)
+        self.assertEqual (l3 > l1, True)
+        self.assertEqual (j [-1][-1]['tr_duration_ok'], None)
+        self.assertEqual \
+            ( self.db1.daily_record.get (drid, 'tr_duration_ok') is not None
+            , True
+            )
+    # end def concurrency
+
+    def concurrency_create (self, drid, trid) :
+        self.db1.time_record.create (duration = 5, daily_record = drid)
+    # end def concurrency_set
+
+    def concurrency_retire (self, drid, trid) :
+        self.db1.time_record.set (trid, duration = None)
+    # end def concurrency_set
+
+    def concurrency_set (self, drid, trid) :
+        self.db1.time_record.set (trid, duration = 5)
+    # end def concurrency_set
+
+    def test_concurrency_create (self) :
+        self.log.debug ('test_concurrency_create')
+        self.concurrency (self.concurrency_create)
+    # end def test_concurrency_create
+
+    def test_concurrency_retire (self) :
+        self.log.debug ('test_concurrency_retire')
+        self.concurrency (self.concurrency_retire)
+    # end def test_concurrency_retire
+
+    def test_concurrency_set (self) :
+        self.log.debug ('test_concurrency_set')
+        self.concurrency (self.concurrency_set)
+    # end def test_concurrency_set
+
+    def test_user1 (self) :
+        self.log.debug ('test_user1')
+        self.setup_db ()
+        self.db.close ()
+        self.db = self.tracker.open (self.username1)
+        user1_time.import_data_1 (self.db, self.user1)
+        self.db.close ()
+        self.db = self.tracker.open ('admin')
+        self.db.overtime_correction.create \
+            ( user    = self.user1
+            , value   = 910.0
+            , comment = 'Auf null stellen, da keine Eintraege'
+            , date    = date.Date ('2008-09-07')
+            )
+        dr = self.db.daily_record.filter \
+            (None, dict (user = self.user1, date = '2006-01-23')) [0]
+        dr = self.db.daily_record.getnode (dr)
+        user_dynamic.update_tr_duration (self.db, dr)
+        self.assertEqual (dr.tr_duration_ok, 0)
+        self.db.user_dynamic.create \
+            ( user              = self.user1
+            , valid_from        = date.Date ('2006-01-01')
+            , booking_allowed   = True
+            , vacation_yearly   = 25
+            , all_in            = True
+            , hours_mon         = 7.75
+            , hours_tue         = 7.75
+            , hours_wed         = 7.75
+            , hours_thu         = 7.75
+            , hours_fri         = 7.5
+            , daily_worktime    = 0.0
+            , org_location      = self.olo
+            , department        = self.dep
+            , max_flexitime     = 5
+            )
+        self.db.clearCache ()
+        self.assertEqual (dr.tr_duration_ok, 0)
+        self.db.user_dynamic.create \
+            ( user              = self.user1
+            , valid_from        = date.Date ('2008-01-01')
+            , valid_to          = date.Date ('2008-09-11')
+            , booking_allowed   = True
+            , vacation_yearly   = 25
+            , all_in            = False
+            , hours_mon         = 5.0
+            , hours_tue         = 5.0
+            , hours_wed         = 5.0
+            , hours_thu         = 5.0
+            , hours_fri         = 5.0
+            , daily_worktime    = 0.0
+            , supp_weekly_hours = 25.
+            , org_location      = self.olo
+            , department        = self.dep
+            , overtime_period   = self.db.overtime_period.lookup ('week')
+            )
+        self.db.user_dynamic.create \
+            ( user              = self.user1
+            , valid_from        = date.Date ('2009-01-04')
+            , booking_allowed   = True
+            , vacation_yearly   = 25
+            , all_in            = True
+            , hours_mon         = 2.0
+            , hours_tue         = 2.0
+            , hours_wed         = 2.0
+            , hours_thu         = 2.0
+            , hours_fri         = 2.0
+            , daily_worktime    = 0.0
+            , org_location      = self.olo
+            , department        = self.dep
+            , max_flexitime     = 5
+            )
+        self.db.user_dynamic.create \
+            ( user              = self.user1
+            , valid_from        = date.Date ('2010-01-01')
+            , booking_allowed   = True
+            , vacation_yearly   = 25
+            , all_in            = True
+            , hours_mon         = 2.0
+            , hours_tue         = 2.0
+            , hours_wed         = 2.0
+            , hours_thu         = 2.0
+            , hours_fri         = 2.0
+            , daily_worktime    = 0.0
+            , org_location      = self.olo
+            , department        = self.dep
+            , max_flexitime     = 5
+            )
+        self.db.commit ()
+        self.db.close  ()
+        self.db = self.tracker.open (self.username1)
+        fs = { 'user'         : [self.user1]
+             , 'date'         : '2008-09-01;2008-09-10'
+             , 'summary_type' : ['2', '4']
+             }
+        class r : filterspec = fs
+        summary.init (self.tracker)
+        sr = summary.Staff_Report \
+            (self.db, r, templating.TemplatingUtils (None))
+        lines = [x.strip ().split (',') for x in sr.as_csv ().split ('\n')]
+        self.assertEqual (len (lines), 5)
+        self.assertEqual (lines [0] [0], 'User')
+        self.assertEqual (lines [0] [1], 'Time Period')
+        self.assertEqual (lines [0] [2], 'Balance Start')
+        self.assertEqual (lines [0] [3], 'Actual open')
+        self.assertEqual (lines [0] [4], 'Actual submitted')
+        self.assertEqual (lines [0] [5], 'Actual accepted')
+        self.assertEqual (lines [0] [6], 'Actual all')
+        self.assertEqual (lines [0] [7], 'required')
+        self.assertEqual (lines [0] [8], 'Supp. hours average')
+        self.assertEqual (lines [0] [9], 'Supplementary hours')
+        self.assertEqual (lines [0][10], 'Overtime correction')
+        self.assertEqual (lines [0][11], 'Balance End')
+        self.assertEqual (lines [0][12], 'Overtime period')
+        self.assertEqual (lines [1] [1], 'WW 36/2008')
+        self.assertEqual (lines [2] [1], 'WW 37/2008')
+        self.assertEqual (lines [3] [1], '2008-09-01;2008-09-10')
+        self.assertEqual (lines [1][11], '-23.50')
+        self.assertEqual (lines [2][11], '-38.50')
+        self.assertEqual (lines [3][11], '-38.50')
+        self.assertEqual (lines [3][10], '910.0')
+        fs = { 'user'         : [self.user1]
+             , 'date'         : '2009-12-21;2010-01-03'
+             , 'summary_type' : ['2', '4']
+             }
+        class r : filterspec = fs
+        sr = summary.Staff_Report \
+            (self.db, r, templating.TemplatingUtils (None))
+        lines = [x.strip ().split (',') for x in sr.as_csv ().split ('\n')]
+        self.assertEqual (lines [1] [1], 'WW 52/2009')
+        self.assertEqual (lines [2] [1], 'WW 53/2009')
+        self.assertEqual (lines [3] [1], '2009-12-21;2010-01-03')
+        self.assertEqual (lines [1][11], '-38.50')
+        self.assertEqual (lines [2][11], '-38.50')
+        self.assertEqual (lines [3][11], '-38.50')
+
+        for d in ('2006-12-31', '2007-12-31') :
+            f = self.db.daily_record_freeze.create \
+                ( user           = self.user1
+                , frozen         = True
+                , date           = date.Date (d)
+                )
+            f = self.db.daily_record_freeze.getnode (f)
+            self.assertEqual (f.balance,        -38.5)
+            self.assertEqual (f.achieved_hours, 0.0)
+            self.assertEqual (f.validity_date,  date.Date (d))
+
+        f = self.db.daily_record_freeze.create \
+            ( user           = self.user1
+            , frozen         = True
+            , date           = date.Date ('2008-09-10')
+            )
+        f = self.db.daily_record_freeze.getnode (f)
+        self.assertEqual (f.balance,       -23.5)
+        self.assertEqual (f.achieved_hours,  0.0)
+        self.assertEqual (f.validity_date,  date.Date ('2008-09-07'))
+
+        dyn = user_dynamic.first_user_dynamic (self.db, self.user1)
+        self.assertEqual (dyn.valid_from, date.Date ('2005-09-01'))
+        op  = user_dynamic.overtime_periods \
+            (self.db, self.user1, dyn.valid_from, date.Date ('2009-12-31'))
+        self.assertEqual (len (op), 1)
+        self.assertEqual (op [0][0], date.Date ('2005-10-01'))
+        self.assertEqual (op [0][1], date.Date ('2008-09-10'))
+        self.assertEqual (op [0][2].name, 'week')
+        dyn = user_dynamic.next_user_dynamic (self.db, dyn)
+        self.assertEqual (dyn.valid_from, date.Date ('2005-10-01'))
+        dyn = user_dynamic.next_user_dynamic (self.db, dyn)
+        self.assertEqual (dyn.valid_from, date.Date ('2006-01-01'))
+        self.assertEqual (dyn.overtime_period, None)
+
+        bal = user_dynamic.compute_balance \
+            (self.db, self.user1, date.Date ('2009-12-31'), sharp_end = True)
+        self.assertEqual (bal, (-38.5, 0))
+        bal = user_dynamic.compute_balance \
+            (self.db, self.user1, date.Date ('2009-12-27'), sharp_end = True)
+        self.assertEqual (bal, (-38.5, 0))
+        bal = user_dynamic.compute_balance \
+            (self.db, self.user1, date.Date ('2010-01-03'), sharp_end = True)
+        self.assertEqual (bal, (-38.5, 0))
+
+        bal = user_dynamic.compute_balance \
+            (self.db, self.user1, date.Date ('2009-12-31'), not_after = True)
+        self.assertEqual (bal, (-38.5, 0))
+        bal = user_dynamic.compute_balance \
+            (self.db, self.user1, date.Date ('2009-12-27'), not_after = True)
+        self.assertEqual (bal, (-38.5, 0))
+        bal = user_dynamic.compute_balance \
+            (self.db, self.user1, date.Date ('2010-01-03'), not_after = True)
+        self.assertEqual (bal, (-38.5, 0))
+
+        sr = summary.Staff_Report \
+            (self.db, r, templating.TemplatingUtils (None))
+        lines = [x.strip ().split (',') for x in sr.as_csv ().split ('\n')]
+        self.assertEqual (lines [1] [1], 'WW 52/2009')
+        self.assertEqual (lines [2] [1], 'WW 53/2009')
+        self.assertEqual (lines [3] [1], '2009-12-21;2010-01-03')
+        self.assertEqual (lines [1][11], '-38.50')
+        self.assertEqual (lines [2][11], '-38.50')
+        self.assertEqual (lines [3][11], '-38.50')
+
+        f = self.db.daily_record_freeze.create \
+            ( user           = self.user1
+            , frozen         = True
+            , date           = date.Date ('2009-12-31')
+            )
+        f = self.db.daily_record_freeze.getnode (f)
+        self.assertEqual (f.balance,        -38.5)
+        self.assertEqual (f.achieved_hours,   0.0)
+        self.assertEqual (f.validity_date,  date.Date ('2009-12-31'))
+
+        self.db.daily_record_freeze.set (f.id, frozen = False)
+        self.assertEqual (f.balance, None)
+        self.db.daily_record_freeze.set (f.id, frozen = True)
+
+        self.db.clearCache ()
+        self.assertEqual (f.balance,      -38.5)
+        self.assertEqual (f.achieved_hours, 0.0)
+        self.assertEqual (f.validity_date,  date.Date ('2009-12-31'))
+
+        self.db.clearCache ()
+
+        sr = summary.Staff_Report \
+            (self.db, r, templating.TemplatingUtils (None))
+        lines = [x.strip ().split (',') for x in sr.as_csv ().split ('\n')]
+        self.assertEqual (lines [1] [1], 'WW 52/2009')
+        self.assertEqual (lines [2] [1], 'WW 53/2009')
+        self.assertEqual (lines [3] [1], '2009-12-21;2010-01-03')
+        self.assertEqual (lines [1][11], '-38.50')
+        self.assertEqual (lines [2][11], '-38.50')
+        self.assertEqual (lines [3][11], '-38.50')
+    # end def test_user1
+
+    def test_user2 (self) :
+        self.log.debug ('test_user2')
+        self.setup_db ()
+        self.db.close ()
+        self.db = self.tracker.open (self.username2)
+        user2_time.import_data_2 (self.db, self.user2)
+        self.db.close ()
+        self.db = self.tracker.open ('admin')
+        self.db.user_dynamic.create \
+            ( user              = self.user2
+            , valid_from        = date.Date ('2009-01-01')
+            , booking_allowed   = True
+            , vacation_yearly   = 25
+            , all_in            = False
+            , hours_mon         = 7.75
+            , hours_tue         = 7.75
+            , hours_wed         = 7.75
+            , hours_thu         = 7.75
+            , hours_fri         = 7.5
+            , supp_weekly_hours = 38.5
+            , additional_hours  = 38.5
+            , overtime_period   = self.db.overtime_period.lookup ('week')
+            , org_location      = self.olo
+            , department        = self.dep
+            )
+        f = self.db.daily_record_freeze.create \
+            ( user           = self.user2
+            , frozen         = True
+            , date           = date.Date ('2008-12-31')
+            )
+        f = self.db.daily_record_freeze.getnode (f)
+        self.assertEqual (f.balance,        0.0)
+        self.assertEqual (f.achieved_hours, 0.0)
+        self.assertEqual (f.validity_date,  date.Date ('2008-12-31'))
+        self.db.commit ()
+        self.db.close  ()
+        self.db = self.tracker.open (self.username2)
+        fs = { 'user'         : [self.user2]
+             , 'date'         : '2008-12-22;2009-01-04'
+             , 'summary_type' : ['2', '4']
+             }
+        class r : filterspec = fs
+        summary.init (self.tracker)
+        ndr = self.db.daily_record.getnode ('51')
+        self.assertEqual (len (ndr.time_record), 2)
+        sr = summary.Staff_Report \
+            (self.db, r, templating.TemplatingUtils (None))
+        lines = [x.strip ().split (',') for x in sr.as_csv ().split ('\n')]
+        self.assertEqual (len (lines), 5)
+        self.assertEqual (lines [1] [1], 'WW 52/2008')
+        self.assertEqual (lines [2] [1], 'WW 1/2009')
+        self.assertEqual (lines [3] [1], '2008-12-22;2009-01-04')
+        self.assertEqual (lines [1][11], '0.00')
+        self.assertEqual (lines [2][11], '0.00')
+        self.assertEqual (lines [3][11], '0.00')
+
+        fs = { 'user'         : [self.user2]
+             , 'date'         : '2009-12-21;2010-01-03'
+             , 'summary_type' : ['2', '4']
+             }
+        class r : filterspec = fs
+        sr = summary.Staff_Report \
+            (self.db, r, templating.TemplatingUtils (None))
+        lines = [x.strip ().split (',') for x in sr.as_csv ().split ('\n')]
+        self.assertEqual (len (lines), 5)
+        self.assertEqual (lines [1] [1], 'WW 52/2009')
+        self.assertEqual (lines [2] [1], 'WW 53/2009')
+        self.assertEqual (lines [3] [1], '2009-12-21;2010-01-03')
+        self.assertEqual (lines [1][11], '113.12')
+        self.assertEqual (lines [2][11], '113.12')
+        self.assertEqual (lines [3][11], '113.12')
+        f = self.db.daily_record_freeze.create \
+            ( user           = self.user2
+            , frozen         = True
+            , date           = date.Date ('2009-12-31')
+            )
+        f = self.db.daily_record_freeze.getnode (f)
+        self.assertEqual (f.balance,        113.125)
+        self.assertEqual (f.achieved_hours, 0.0)
+        self.assertEqual (f.validity_date,  date.Date ('2009-12-27'))
+        # test split of frozen dyn record and reset of tr_duration
+        dr1 = self.db.daily_record.filter \
+            (None, dict (user = self.user2, date = '2009-12-31')) [0]
+        dr1 = self.db.daily_record.getnode (dr1)
+        user_dynamic.update_tr_duration (self.db, dr1)
+        self.assertEqual (dr1.tr_duration_ok, 7.75)
+        dr2 = self.db.daily_record.filter \
+            (None, dict (user = self.user2, date = '2010-01-01')) [0]
+        dr2 = self.db.daily_record.getnode (dr2)
+        user_dynamic.update_tr_duration (self.db, dr2)
+        self.assertEqual (dr2.tr_duration_ok, 7.5)
+        # Get len of journal
+        l1_1 = len (self.db.getjournal ('daily_record', dr1.id))
+        l2_1 = len (self.db.getjournal ('daily_record', dr2.id))
+        self.db.user_dynamic.create \
+            ( user              = self.user2
+            , valid_from        = date.Date ('2010-01-01')
+            , booking_allowed   = True
+            , vacation_yearly   = 25
+            , all_in            = False
+            , hours_mon         = 7.75
+            , hours_tue         = 7.75
+            , hours_wed         = 7.75
+            , hours_thu         = 7.75
+            , hours_fri         = 7.5
+            , supp_weekly_hours = 38.5
+            , additional_hours  = 38.5
+            , overtime_period   = self.db.overtime_period.lookup ('week')
+            , org_location      = self.olo
+            , department        = self.dep
+            )
+        self.db.clearCache ()
+        self.assertEqual (dr1.tr_duration_ok, 7.75)
+        self.assertEqual (dr2.tr_duration_ok, 7.5)
+        # Get len of journal, tr_duration_ok should have been recomputed
+        l1_2 = len (self.db.getjournal ('daily_record', dr1.id))
+        l2_2 = len (self.db.getjournal ('daily_record', dr2.id))
+        # Rec dr1 was *not* updated
+        self.assertEqual (l1_1, l1_2)
+        # Rec dr2 *was* updated due to update of user_dynamic. Since
+        # the *old* user_dynamic record was changed *and* the new one
+        # was created we have more than two updates.
+        self.assertEqual (l2_2 - l2_1 >= 4, True)
+    # end def test_user2
+
+# end class Test_Case_Concurrency
 
 class Test_Case_Abo (_Test_Case, unittest.TestCase) :
     schemaname = 'abo'
