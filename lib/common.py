@@ -1282,6 +1282,7 @@ default_attributes = dict \
          ' purchase_type renegotiations requester safety_critical'
          ' sap_cc termination_date terms_conditions'
          ' time_project title pr_currency intended_duration'
+         ' pr_ext_resource'
         ).split ()
     )
 do_not_add_retired = dict.fromkeys \
@@ -1343,8 +1344,8 @@ def copy_url (context, attributes = None) :
 
             if a in do_not_add_not_in_range :
                 now = Date ('.')
-                vf = context [a].valid_from
-                vt = context [a].valid_to
+                vf = context [a].valid_from._value
+                vt = context [a].valid_to._value
                 if vf is not None and now < vf :
                     continue
                 if vt is not None and vt < now :
