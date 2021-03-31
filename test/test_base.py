@@ -38,27 +38,15 @@ from email.parser import Parser
 from mailbox      import mbox
 from base64       import b64decode
 
-from roundup               import backends, configuration
-from roundup.exceptions    import Reject
 from roundup.test          import memorydb
+from roundup               import backends
+# Inject memorydb
+backends.memorydb = memorydb
+from roundup               import configuration
+from roundup.exceptions    import Reject
 
 Option = configuration.Option
 
-# Inject memorydb
-backends.memorydb = memorydb
-# Monkey-patch list_backends
-l = backends.list_backends ()
-l.append ('memorydb')
-def list_backends () :
-    return l
-backends.list_backends = list_backends
-configuration.list_backends = list_backends
-
-# Methods for determining database existence
-memorydb.db_exists = lambda x : True
-def nuke (x = None) :
-    memorydb.Database.p = {}
-memorydb.db_nuke = nuke
 
 # Monkey-patch Database
 # Some trackers inject sql for generating indices or unique constraints
@@ -70,20 +58,6 @@ def sql (self, s, *args) :
     else :
         assert False, "Unfakeable sql encountered"
 memorydb.Database.sql = sql
-def close (self) :
-    self.__class__.p = {}
-    self.__class__.p ['items']    = self.items
-    self.__class__.p ['ids']      = self.ids
-    self.__class__.p ['journals'] = self.journals
-memorydb.Database.close = close
-ini_orig = memorydb.Database.__init__
-def ini (self, *args, **kw) :
-    ini_orig (self, *args, **kw)
-    if hasattr (self.__class__, 'p') :
-        self.items    = self.__class__.p.get ('items', {})
-        self.ids      = self.__class__.p.get ('ids', {})
-        self.journals = self.__class__.p.get ('journals', {})
-memorydb.Database.__init__ = ini
 
 from propl_abo     import properties as properties_abo
 from propl_adr     import properties as properties_adr
