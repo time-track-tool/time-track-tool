@@ -465,7 +465,7 @@ class _Test_Base_Summary :
             , location            = self.loc
             , organisation        = self.org
             , vacation_legal_year = False
-            , vacation_yearly     = 25
+            , vacation_yearly     = 25.0
             , do_leave_process    = True
             , vac_aliq            = '1'
             )
@@ -474,7 +474,7 @@ class _Test_Base_Summary :
             , location            = self.loc
             , organisation        = self.org
             , vacation_legal_year = False
-            , vacation_yearly     = 25
+            , vacation_yearly     = 25.0
             , do_leave_process    = True
             , vac_aliq            = '1'
             )
@@ -500,7 +500,7 @@ class _Test_Base_Summary :
             , valid_from      = date.Date ('.')
             , org_location    = self.olo
             , department      = self.dep
-            , vacation_yearly = 25
+            , vacation_yearly = 25.0
             )
         cts  = self.db.user.get (self.user0, 'contacts')
         cmin = 0xFFFF
@@ -524,7 +524,7 @@ class _Test_Base_Summary :
             , valid_from      = date.Date ('.')
             , org_location    = self.olo
             , department      = self.dep
-            , vacation_yearly = 25
+            , vacation_yearly = 25.0
             )
         cts  = self.db.user.get (self.user1, 'contacts')
         cmin = 0xFFFF
@@ -554,7 +554,7 @@ class _Test_Base_Summary :
             , valid_from      = date.Date ('.')
             , org_location    = self.olo
             , department      = self.dep
-            , vacation_yearly = 25
+            , vacation_yearly = 25.0
             )
         # create initial dyn_user record for each user
         # others will follow during tests
@@ -564,7 +564,7 @@ class _Test_Base_Summary :
             ( ud [0]
             , valid_from      = date.Date ('2005-09-01')
             , booking_allowed = False
-            , vacation_yearly = 25
+            , vacation_yearly = 25.0
             , all_in          = True
             , hours_mon       = 7.75
             , hours_tue       = 7.75
@@ -579,7 +579,7 @@ class _Test_Base_Summary :
             ( user              = self.user1
             , valid_from        = date.Date ('2005-10-01')
             , booking_allowed   = True
-            , vacation_yearly   = 25
+            , vacation_yearly   = 25.0
             , all_in            = False
             , hours_mon         = 7.75
             , hours_tue         = 7.75
@@ -602,7 +602,7 @@ class _Test_Base_Summary :
             ( ud [0]
             , valid_from       = date.Date ('2008-11-03')
             , booking_allowed  = True
-            , vacation_yearly  = 25
+            , vacation_yearly  = 25.0
             , all_in           = True
             , hours_mon        = 7.75
             , hours_tue        = 7.75
@@ -947,7 +947,7 @@ class Test_Case_Timetracker (_Test_Case_Summary, unittest.TestCase) :
             , valid_from      = date.Date ('.')
             , org_location    = self.olo
             , department      = self.dep
-            , vacation_yearly = 25
+            , vacation_yearly = 25.0
             )
         # create initial dyn_user record for user
         ud = self.db.user_dynamic.filter (None, dict (user = self.user11))
@@ -958,7 +958,7 @@ class Test_Case_Timetracker (_Test_Case_Summary, unittest.TestCase) :
             ( ud.id
             , valid_from        = date.Date ('2011-12-01')
             , booking_allowed   = True
-            , vacation_yearly   = 25
+            , vacation_yearly   = 25.0
             , all_in            = False
             , hours_mon         = 7.75
             , hours_tue         = 7.75
@@ -1104,7 +1104,7 @@ class Test_Case_Timetracker (_Test_Case_Summary, unittest.TestCase) :
             , department        = ud.department
             , valid_from        = date.Date ('2013-06-05')
             , booking_allowed   = True
-            , vacation_yearly   = 25
+            , vacation_yearly   = 25.0
             , all_in            = False
             , hours_mon         = 7.75
             , hours_tue         = 7.75
@@ -1122,7 +1122,7 @@ class Test_Case_Timetracker (_Test_Case_Summary, unittest.TestCase) :
             , department        = ud.department
             , valid_from        = date.Date ('2013-06-11')
             , booking_allowed   = True
-            , vacation_yearly   = 25
+            , vacation_yearly   = 25.0
             , all_in            = False
             , hours_mon         = 7.75
             , hours_tue         = 7.75
@@ -1701,7 +1701,7 @@ class Test_Case_Timetracker (_Test_Case_Summary, unittest.TestCase) :
         self.assertEqual (lines  [0] [9], 'additional submitted')
         self.assertEqual (lines  [1] [0], 'testuser13')
         self.assertEqual (lines  [1] [1], '2014-12-31')
-        self.assertEqual (float (lines  [1] [2]), 25.00)
+        self.assertEqual (lines  [1] [2], '25.00')
         self.assertEqual (lines  [1] [3], '25.00')
         self.assertEqual (lines  [1] [4], '7.27')
         self.assertEqual (lines  [1] [5], '32.27')
@@ -1711,7 +1711,7 @@ class Test_Case_Timetracker (_Test_Case_Summary, unittest.TestCase) :
         self.assertEqual (lines  [1] [9], '0.00')
         self.assertEqual (lines  [2] [0], 'testuser13')
         self.assertEqual (lines  [2] [1], '2015-12-31')
-        self.assertEqual (float (lines  [2] [2]), 25.00)
+        self.assertEqual (lines  [2] [2], '25.00')
         self.assertEqual (lines  [2] [3], '25.00')
         self.assertEqual (lines  [2] [4], '9.27')
         self.assertEqual (lines  [2] [5], '34.27')
@@ -1779,7 +1779,7 @@ class Test_Case_Timetracker (_Test_Case_Summary, unittest.TestCase) :
         self.assertEqual (lines  [0] [8], 'remaining vacation')
         self.assertEqual (lines  [1] [0], 'testuser15')
         self.assertEqual (lines  [1] [1], '2018-12-31')
-        self.assertEqual (float (lines  [1] [2]), 30.00)
+        self.assertEqual (lines  [1] [2], '30.00')
         self.assertEqual (lines  [1] [3], '15.00')
         self.assertEqual (lines  [1] [4], '0.00')
         self.assertEqual (lines  [1] [5], '15.00')
@@ -1788,7 +1788,7 @@ class Test_Case_Timetracker (_Test_Case_Summary, unittest.TestCase) :
         self.assertEqual (lines  [1] [8], '15.00')
         self.assertEqual (lines  [2] [0], 'testuser16')
         self.assertEqual (lines  [2] [1], '2018-12-31')
-        self.assertEqual (float (lines  [2] [2]), 30.00)
+        self.assertEqual (lines  [2] [2], '30.00')
         self.assertEqual (lines  [2] [3], '15.00')
         self.assertEqual (lines  [2] [4], '0.00')
         self.assertEqual (lines  [2] [5], '15.00')
@@ -1797,7 +1797,7 @@ class Test_Case_Timetracker (_Test_Case_Summary, unittest.TestCase) :
         self.assertEqual (lines  [2] [8], '15.00')
         self.assertEqual (lines  [3] [0], 'testuser17')
         self.assertEqual (lines  [3] [1], '2018-12-31')
-        self.assertEqual (float (lines  [3] [2]), 30.00)
+        self.assertEqual (lines  [3] [2], '30.00')
         self.assertEqual (lines  [3] [3], '30.00')
         self.assertEqual (lines  [3] [4], '0.00')
         self.assertEqual (lines  [3] [5], '30.00')
@@ -1806,7 +1806,7 @@ class Test_Case_Timetracker (_Test_Case_Summary, unittest.TestCase) :
         self.assertEqual (lines  [3] [8], '30.00')
         self.assertEqual (lines  [4] [0], 'testuser18')
         self.assertEqual (lines  [4] [1], '2018-12-31')
-        self.assertEqual (float (lines  [4] [2]), 30.00)
+        self.assertEqual (lines  [4] [2], '30.00')
         self.assertEqual (lines  [4] [3], '12.50')
         self.assertEqual (lines  [4] [4], '0.00')
         self.assertEqual (lines  [4] [5], '12.50')
@@ -1815,7 +1815,7 @@ class Test_Case_Timetracker (_Test_Case_Summary, unittest.TestCase) :
         self.assertEqual (lines  [4] [8], '12.50')
         self.assertEqual (lines  [5] [0], 'testuser19')
         self.assertEqual (lines  [5] [1], '2018-12-31')
-        self.assertEqual (float (lines  [5] [2]), 30.00)
+        self.assertEqual (lines  [5] [2], '30.00')
         self.assertEqual (lines  [5] [3], '17.50')
         self.assertEqual (lines  [5] [4], '0.00')
         self.assertEqual (lines  [5] [5], '17.50')
@@ -1842,7 +1842,7 @@ class Test_Case_Timetracker (_Test_Case_Summary, unittest.TestCase) :
         self.assertEqual (lines  [0] [8], 'remaining vacation')
         self.assertEqual (lines  [1] [0], 'testuser17')
         self.assertEqual (lines  [1] [1], '2019-12-31')
-        self.assertEqual (float (lines  [1] [2]), 30.00)
+        self.assertEqual (lines  [1] [2], '30.00')
         self.assertEqual (lines  [1] [3], '30.00')
         self.assertEqual (lines  [1] [4], '30.00')
         self.assertEqual (lines  [1] [5], '60.00')
@@ -1851,7 +1851,7 @@ class Test_Case_Timetracker (_Test_Case_Summary, unittest.TestCase) :
         self.assertEqual (lines  [1] [8], '60.00')
         self.assertEqual (lines  [2] [0], 'testuser18')
         self.assertEqual (lines  [2] [1], '2019-12-31')
-        self.assertEqual (float (lines  [2] [2]), 30.00)
+        self.assertEqual (lines  [2] [2], '30.00')
         self.assertEqual (lines  [2] [3], '2.50')
         self.assertEqual (lines  [2] [4], '12.50')
         self.assertEqual (lines  [2] [5], '15.00')
@@ -1860,7 +1860,7 @@ class Test_Case_Timetracker (_Test_Case_Summary, unittest.TestCase) :
         self.assertEqual (lines  [2] [8], '15.00')
         self.assertEqual (lines  [3] [0], 'testuser19')
         self.assertEqual (lines  [3] [1], '2019-12-31')
-        self.assertEqual (float (lines  [3] [2]), 30.00)
+        self.assertEqual (lines  [3] [2], '30.00')
         self.assertEqual (lines  [3] [3], '30.00')
         self.assertEqual (lines  [3] [4], '17.50')
         self.assertEqual (lines  [3] [5], '47.50')
@@ -1888,7 +1888,7 @@ class Test_Case_Timetracker (_Test_Case_Summary, unittest.TestCase) :
         self.assertEqual (lines  [0] [8], 'remaining vacation')
         self.assertEqual (lines  [1] [0], 'testuser17')
         self.assertEqual (lines  [1] [1], '2019-02-03')
-        self.assertEqual (float (lines  [1] [2]), 30.00)
+        self.assertEqual (lines  [1] [2], '30.00')
         self.assertEqual (lines  [1] [3], '2.50')
         self.assertEqual (lines  [1] [4], '30.00')
         self.assertEqual (lines  [1] [5], '32.50')
@@ -1897,7 +1897,7 @@ class Test_Case_Timetracker (_Test_Case_Summary, unittest.TestCase) :
         self.assertEqual (lines  [1] [8], '32.50')
         self.assertEqual (lines  [2] [0], 'testuser18')
         self.assertEqual (lines  [2] [1], '2019-02-03')
-        self.assertEqual (float (lines  [2] [2]), 30.00)
+        self.assertEqual (lines  [2] [2], '30.00')
         self.assertEqual (lines  [2] [3], '2.50')
         self.assertEqual (lines  [2] [4], '12.50')
         self.assertEqual (lines  [2] [5], '15.00')
@@ -1906,7 +1906,7 @@ class Test_Case_Timetracker (_Test_Case_Summary, unittest.TestCase) :
         self.assertEqual (lines  [2] [8], '15.00')
         self.assertEqual (lines  [3] [0], 'testuser19')
         self.assertEqual (lines  [3] [1], '2019-02-03')
-        self.assertEqual (float (lines  [3] [2]), 30.00)
+        self.assertEqual (lines  [3] [2], '30.00')
         self.assertEqual (lines  [3] [3], '5.00')
         self.assertEqual (lines  [3] [4], '17.50')
         self.assertEqual (lines  [3] [5], '22.50')
@@ -2112,7 +2112,7 @@ class Test_Case_Timetracker (_Test_Case_Summary, unittest.TestCase) :
         self.assertEqual (lines  [0] [9], 'additional submitted')
         self.assertEqual (lines  [1] [0], 'testuser14')
         self.assertEqual (lines  [1] [1], '2015-12-31')
-        self.assertEqual (float (lines  [1] [2]), 25.00)
+        self.assertEqual (lines  [1] [2], '25.00')
         self.assertEqual (lines  [1] [3], '10.34')
         self.assertEqual (lines  [1] [4], '6.03')
         self.assertEqual (lines  [1] [5], '16.37')
@@ -2140,7 +2140,7 @@ class Test_Case_Timetracker (_Test_Case_Summary, unittest.TestCase) :
         self.assertEqual (lines  [0] [9], 'additional submitted')
         self.assertEqual (lines  [1] [0], 'testuser14')
         self.assertEqual (lines  [1] [1], '2015-12-31')
-        self.assertEqual (float (lines  [1] [2]), 25.00)
+        self.assertEqual (lines  [1] [2], '25.00')
         self.assertEqual (lines  [1] [3], '11.00')
         self.assertEqual (lines  [1] [4], '7.00')
         self.assertEqual (lines  [1] [5], '17.00')
@@ -3288,7 +3288,7 @@ class Test_Case_Timetracker (_Test_Case_Summary, unittest.TestCase) :
             , valid_from      = date.Date ('.')
             , org_location    = self.olo
             , department      = self.dep
-            , vacation_yearly = 25
+            , vacation_yearly = 25.0
             )
         ud = self.db.user_dynamic.filter (None, dict (user = self.user16))
         self.assertEqual (len (ud), 1)
@@ -3654,7 +3654,7 @@ class Test_Case_Timetracker (_Test_Case_Summary, unittest.TestCase) :
             , valid_from        = date.Date ('2013-02-22')
             , valid_to          = date.Date ('2013-02-27')
             , booking_allowed   = True
-            , vacation_yearly   = 25
+            , vacation_yearly   = 25.0
             , all_in            = False
             , hours_mon         = 7.75
             , hours_tue         = 7.75
@@ -3939,7 +3939,7 @@ class Test_Case_Fulltracker (_Test_Case_Summary, unittest.TestCase) :
             , valid_from      = date.Date ('.')
             , org_location    = self.olo
             , department      = self.dep
-            , vacation_yearly = 25
+            , vacation_yearly = 25.0
             )
         # create initial dyn_user record for user
         ud = self.db.user_dynamic.filter (None, dict (user = self.user3))
@@ -3949,7 +3949,7 @@ class Test_Case_Fulltracker (_Test_Case_Summary, unittest.TestCase) :
             ( ud [0]
             , valid_from        = date.Date ('2010-01-01')
             , booking_allowed   = True
-            , vacation_yearly   = 25
+            , vacation_yearly   = 25.0
             , all_in            = False
             , hours_mon         = 7.75
             , hours_tue         = 7.75
@@ -3978,7 +3978,7 @@ class Test_Case_Fulltracker (_Test_Case_Summary, unittest.TestCase) :
             , valid_from      = date.Date ('.')
             , org_location    = self.olo
             , department      = self.dep
-            , vacation_yearly = 25
+            , vacation_yearly = 25.0
             )
         # create initial dyn_user record for user
         ud = self.db.user_dynamic.filter (None, dict (user = self.user4))
@@ -3995,7 +3995,7 @@ class Test_Case_Fulltracker (_Test_Case_Summary, unittest.TestCase) :
             ( ud [0]
             , valid_from        = date.Date ('2012-01-01')
             , booking_allowed   = True
-            , vacation_yearly   = 25
+            , vacation_yearly   = 25.0
             , all_in            = False
             , hours_mon         = 7.75
             , hours_tue         = 7.75
@@ -4022,7 +4022,7 @@ class Test_Case_Fulltracker (_Test_Case_Summary, unittest.TestCase) :
             , valid_from      = date.Date ('.')
             , org_location    = self.olo
             , department      = self.dep
-            , vacation_yearly = 25
+            , vacation_yearly = 25.0
             )
         # public holidays
         vienna = self.db.location.lookup ('Vienna')
@@ -4062,7 +4062,7 @@ class Test_Case_Fulltracker (_Test_Case_Summary, unittest.TestCase) :
             ( ud.id
             , valid_from        = date.Date ('2012-01-01')
             , booking_allowed   = True
-            , vacation_yearly   = 25
+            , vacation_yearly   = 25.0
             , all_in            = False
             , hours_mon         = 7.75
             , hours_tue         = 7.75
@@ -4080,7 +4080,7 @@ class Test_Case_Fulltracker (_Test_Case_Summary, unittest.TestCase) :
             , department        = ud.department
             , valid_from        = date.Date ('2012-03-15')
             , booking_allowed   = True
-            , vacation_yearly   = 25
+            , vacation_yearly   = 25.0
             , all_in            = False
             , hours_mon         = 7.75
             , hours_tue         = 7.75
@@ -4097,7 +4097,7 @@ class Test_Case_Fulltracker (_Test_Case_Summary, unittest.TestCase) :
             , department        = ud.department
             , valid_from        = date.Date ('2012-06-01')
             , booking_allowed   = True
-            , vacation_yearly   = 25
+            , vacation_yearly   = 25.0
             , all_in            = False
             , hours_mon         = 7.75
             , hours_tue         = 7.75
@@ -4125,7 +4125,7 @@ class Test_Case_Fulltracker (_Test_Case_Summary, unittest.TestCase) :
             , valid_from      = date.Date ('.')
             , org_location    = self.olo
             , department      = self.dep
-            , vacation_yearly = 25
+            , vacation_yearly = 25.0
             )
         # create initial dyn_user record for user
         ud = self.db.user_dynamic.filter (None, dict (user = self.user6))
@@ -4143,7 +4143,7 @@ class Test_Case_Fulltracker (_Test_Case_Summary, unittest.TestCase) :
             ( ud.id
             , valid_from        = date.Date ('2012-09-03')
             , booking_allowed   = True
-            , vacation_yearly   = 25
+            , vacation_yearly   = 25.0
             , all_in            = False
             , hours_mon         = 7.75
             , hours_tue         = 7.75
@@ -4169,7 +4169,7 @@ class Test_Case_Fulltracker (_Test_Case_Summary, unittest.TestCase) :
             , valid_from      = date.Date ('.')
             , org_location    = self.olo
             , department      = self.dep
-            , vacation_yearly = 25
+            , vacation_yearly = 25.0
             )
         # create initial dyn_user record for user
         ud = self.db.user_dynamic.filter (None, dict (user = self.user7))
@@ -4188,7 +4188,7 @@ class Test_Case_Fulltracker (_Test_Case_Summary, unittest.TestCase) :
             , valid_from        = date.Date ('2012-11-15')
             , valid_to          = date.Date ('2013-05-16')
             , booking_allowed   = True
-            , vacation_yearly   = 25
+            , vacation_yearly   = 25.0
             , all_in            = False
             , hours_mon         = 7.75
             , hours_tue         = 7.75
@@ -4214,7 +4214,7 @@ class Test_Case_Fulltracker (_Test_Case_Summary, unittest.TestCase) :
             , valid_from      = date.Date ('.')
             , org_location    = self.olo
             , department      = self.dep
-            , vacation_yearly = 25
+            , vacation_yearly = 25.0
             )
         # create initial dyn_user record for user
         ud = self.db.user_dynamic.filter (None, dict (user = self.user8))
@@ -4230,7 +4230,7 @@ class Test_Case_Fulltracker (_Test_Case_Summary, unittest.TestCase) :
             ( ud [0]
             , valid_from        = date.Date ('2012-12-31')
             , booking_allowed   = True
-            , vacation_yearly   = 25
+            , vacation_yearly   = 25.0
             , all_in            = False
             , hours_mon         = 7.75
             , hours_tue         = 7.75
@@ -4256,7 +4256,7 @@ class Test_Case_Fulltracker (_Test_Case_Summary, unittest.TestCase) :
             , valid_from      = date.Date ('.')
             , org_location    = self.olo
             , department      = self.dep
-            , vacation_yearly = 25
+            , vacation_yearly = 25.0
             )
         # create initial dyn_user record for user
         ud = self.db.user_dynamic.filter (None, dict (user = self.user9))
@@ -4265,7 +4265,7 @@ class Test_Case_Fulltracker (_Test_Case_Summary, unittest.TestCase) :
             ( ud [0]
             , valid_from        = date.Date ('2012-12-31')
             , booking_allowed   = True
-            , vacation_yearly   = 25
+            , vacation_yearly   = 25.0
             , hours_mon         = 7.75
             , hours_tue         = 7.75
             , hours_wed         = 7.75
@@ -4297,7 +4297,7 @@ class Test_Case_Fulltracker (_Test_Case_Summary, unittest.TestCase) :
             , valid_from      = date.Date ('.')
             , org_location    = self.olo
             , department      = self.dep
-            , vacation_yearly = 25
+            , vacation_yearly = 25.0
             )
         # create initial dyn_user record for user
         ud = self.db.user_dynamic.filter (None, dict (user = self.user10))
@@ -4308,7 +4308,7 @@ class Test_Case_Fulltracker (_Test_Case_Summary, unittest.TestCase) :
             ( ud.id
             , valid_from        = date.Date ('2011-12-01')
             , booking_allowed   = True
-            , vacation_yearly   = 25
+            , vacation_yearly   = 25.0
             , all_in            = False
             , hours_mon         = 7.75
             , hours_tue         = 7.75
@@ -4325,7 +4325,7 @@ class Test_Case_Fulltracker (_Test_Case_Summary, unittest.TestCase) :
             , department        = ud.department
             , valid_from        = date.Date ('2012-01-01')
             , booking_allowed   = True
-            , vacation_yearly   = 25
+            , vacation_yearly   = 25.0
             , hours_mon         = 7.75
             , hours_tue         = 7.75
             , hours_wed         = 7.75
@@ -4775,7 +4775,7 @@ class Test_Case_Fulltracker (_Test_Case_Summary, unittest.TestCase) :
             , valid_from        = date.Date ('2012-12-17')
             , valid_to          = date.Date ('2012-12-24')
             , booking_allowed   = True
-            , vacation_yearly   = 25
+            , vacation_yearly   = 25.0
             , all_in            = False
             , hours_mon         = 7.75
             , hours_tue         = 7.75
@@ -4891,6 +4891,7 @@ class Test_Case_Fulltracker (_Test_Case_Summary, unittest.TestCase) :
         self.assertEqual (len (lines), 14)
         self.assertEqual (lines  [0] [1], 'Time Period')
         self.assertEqual (lines  [0] [6], 'Actual all')
+        self.assertEqual (lines  [0] [7], 'required')
         self.assertEqual (lines  [0] [8], 'Supp. hours average')
         self.assertEqual (lines  [0] [9], 'Supplementary hours')
         self.assertEqual (lines  [0][10], 'Overtime correction')
@@ -4902,7 +4903,7 @@ class Test_Case_Fulltracker (_Test_Case_Summary, unittest.TestCase) :
         self.assertEqual (lines [12] [1], 'January 2013')
         self.assertEqual (lines [13] [1], '2012-12-01;2013-01-31')
         self.assertEqual (lines [13][10], '-76.38')
-        self.assertEqual (float (lines  [1] [7]), 0.00)
+        self.assertEqual (lines  [1] [7], '0.00')
         self.assertEqual (lines [13] [7], '0.00')
         self.assertEqual (lines  [1] [8], '0')
         self.assertEqual (lines [13] [8], '0')
@@ -5268,7 +5269,7 @@ class Test_Case_Concurrency (_Test_Base, _Test_Base_Summary, unittest.TestCase) 
             ( user              = self.user1
             , valid_from        = date.Date ('2006-01-01')
             , booking_allowed   = True
-            , vacation_yearly   = 25
+            , vacation_yearly   = 25.0
             , all_in            = True
             , hours_mon         = 7.75
             , hours_tue         = 7.75
@@ -5287,7 +5288,7 @@ class Test_Case_Concurrency (_Test_Base, _Test_Base_Summary, unittest.TestCase) 
             , valid_from        = date.Date ('2008-01-01')
             , valid_to          = date.Date ('2008-09-11')
             , booking_allowed   = True
-            , vacation_yearly   = 25
+            , vacation_yearly   = 25.0
             , all_in            = False
             , hours_mon         = 5.0
             , hours_tue         = 5.0
@@ -5304,7 +5305,7 @@ class Test_Case_Concurrency (_Test_Base, _Test_Base_Summary, unittest.TestCase) 
             ( user              = self.user1
             , valid_from        = date.Date ('2009-01-04')
             , booking_allowed   = True
-            , vacation_yearly   = 25
+            , vacation_yearly   = 25.0
             , all_in            = True
             , hours_mon         = 2.0
             , hours_tue         = 2.0
@@ -5320,7 +5321,7 @@ class Test_Case_Concurrency (_Test_Base, _Test_Base_Summary, unittest.TestCase) 
             ( user              = self.user1
             , valid_from        = date.Date ('2010-01-01')
             , booking_allowed   = True
-            , vacation_yearly   = 25
+            , vacation_yearly   = 25.0
             , all_in            = True
             , hours_mon         = 2.0
             , hours_tue         = 2.0
@@ -5489,7 +5490,7 @@ class Test_Case_Concurrency (_Test_Base, _Test_Base_Summary, unittest.TestCase) 
             ( user              = self.user2
             , valid_from        = date.Date ('2009-01-01')
             , booking_allowed   = True
-            , vacation_yearly   = 25
+            , vacation_yearly   = 25.0
             , all_in            = False
             , hours_mon         = 7.75
             , hours_tue         = 7.75
@@ -5575,7 +5576,7 @@ class Test_Case_Concurrency (_Test_Base, _Test_Base_Summary, unittest.TestCase) 
             ( user              = self.user2
             , valid_from        = date.Date ('2010-01-01')
             , booking_allowed   = True
-            , vacation_yearly   = 25
+            , vacation_yearly   = 25.0
             , all_in            = False
             , hours_mon         = 7.75
             , hours_tue         = 7.75

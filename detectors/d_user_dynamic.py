@@ -675,7 +675,7 @@ def vacation_check (db, cl, nodeid, new_values) :
         vy = cl.get (nodeid, 'vacation_yearly')
     vm = int (vm)
     vd = int (vd)
-    vy = int (vy)
+    vy = float (int (vy))
     if vm < 1 or vm > 12 :
         raise Reject (_ ("Wrong month: %(vm)s" % locals ()))
     if vd < 1 or vd > mlist [vm - 1] :
