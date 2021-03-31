@@ -179,7 +179,12 @@ def check_supplier_change (db, cl, nodeid, new_values) :
         return
     # Compute the new risk-type and check if it's allowed
     # Return immediately if no risk
-    nrt = prlib.risk_type (db, nodeid, new_values.get ('pr_supplier'))
+    supplier = new_values.get ('pr_supplier')
+    # So the appropriate risk is computed we need to specify an unknown
+    # supplier if None was found
+    if supplier is None :
+        supplier = '-1'
+    nrt = prlib.risk_type (db, nodeid, supplier)
     if not nrt :
         return
     nrt = db.purchase_risk_type.getnode (nrt)

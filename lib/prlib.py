@@ -122,6 +122,11 @@ def _app_cfgs (db, pr, ids) :
 # end def _app_cfgs
 
 def risk_type (db, offer_item_id, pr_supplier = None) :
+    """ Note that an *empty* pr_supplier (one that isn't in LAS) is
+        possible and will typically get a bad security rating.
+        If pr_supplier is specified explicitly, it should be set to '-1'
+        for explicitly searching for an empty supplier.
+    """
     oi  = db.pr_offer_item.getnode (offer_item_id)
     pg  = db.product_group.getnode (oi.product_group)
     prs = db.purchase_request.filter (None, dict (offer_items = offer_item_id))
@@ -161,9 +166,14 @@ def risk_type (db, offer_item_id, pr_supplier = None) :
 def max_risk_type (db, prid) :
     """ Loop over all offer items and compute maximum risk type.
         Sort order is the order property.
+        Note that if the pr already has a purchase_risk_type set, this
+        also gets into the maximum. So once set, the maximum will never
+        be smaller.
     """
     pr = db.purchase_request.getnode (prid)
     rtmax = None
+    if pr.purchase_risk_type :
+        rtmax = db.purchase_risk_type.getnode (pr.purchase_risk_type)
     for oi in pr.offer_items :
         rtid = risk_type (db, oi)
         if not rtid :
