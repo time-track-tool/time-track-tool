@@ -216,6 +216,7 @@ properties = \
         , 'frame_purchase'
         , 'frame_purchase_end'
         , 'infosec_level'
+        , 'infosec_project'
         , 'intended_duration'
         , 'internal_order'
         , 'issue_ids'

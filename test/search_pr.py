@@ -856,6 +856,12 @@ properties = \
             , 'subcontract', 'subcontract-org', 'training-approval', 'user', 'user_view'
             ]
           )
+        , ( 'infosec_project'
+          , [ 'admin', 'board', 'controlling', 'dom-user-edit-facility', 'dom-user-edit-gtt', 'dom-user-edit-hr', 'dom-user-edit-office', 'finance', 'hr', 'hr-approval', 'it', 'it-approval'
+            , 'measurement-approval', 'pgp', 'pr-view', 'procure-approval', 'procurement', 'procurement-admin', 'project', 'project_view', 'quality'
+            , 'subcontract', 'subcontract-org', 'training-approval', 'user', 'user_view'
+            ]
+          )
         , ( 'intended_duration'
           , [ 'admin', 'board', 'controlling', 'dom-user-edit-facility', 'dom-user-edit-gtt', 'dom-user-edit-hr', 'dom-user-edit-office', 'finance', 'hr', 'hr-approval', 'it', 'it-approval'
             , 'measurement-approval', 'pgp', 'pr-view', 'procure-approval', 'procurement', 'procurement-admin', 'project', 'project_view', 'quality'

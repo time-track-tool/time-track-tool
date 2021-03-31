@@ -3123,6 +3123,9 @@ msgstr "SAP Reference"
 msgid "termination_date"
 msgstr "Termination date"
 
+msgid "infosec_project"
+msgstr "InfoSec Project"
+
 msgid "continuous_obligation"
 msgstr "Continuous obligation"
 

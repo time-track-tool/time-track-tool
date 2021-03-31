@@ -348,6 +348,8 @@ def init \
                 , special_approval      = Multilink ("user", do_journal = 'no')
                 , pr_ext_resource       = Link      ("pr_ext_resource")
                 , issue_ids             = String    ()
+                # Currently not used, but keep it in the DB:
+                , infosec_project       = Boolean   ()
                 , infosec_level         = Link      ( "infosec_level"
                                                     , do_journal = 'no'
                                                     )
