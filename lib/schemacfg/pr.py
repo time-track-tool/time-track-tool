@@ -508,6 +508,13 @@ def security (db, ** kw) :
     schemadef.register_roles             (db, roles)
     schemadef.register_class_permissions (db, classes, prop_perms)
 
+    # Retire/Restore permission for pr_approval_order
+    for n in 'Retire', 'Restore' :
+        p = db.security.addPermission \
+            ( name        = n
+            , klass       = 'pr_approval_order'
+            )
+        db.security.addPermissionToRole ('Procurement-Admin', p)
     tp_properties = \
         ( 'name', 'description', 'responsible', 'deputy', 'organisation'
         , 'status', 'id'

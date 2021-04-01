@@ -73,6 +73,8 @@ Role "procurement":
  User is allowed to edit special risks if the PR has appropriate status (Edit for "purchase_request": ('pr_risks',) only)
  User is allowed to reject PR in state approving or approved (Edit for "purchase_request": ('messages', 'status') only)
 Role "procurement-admin":
+  (Restore for "pr_approval_order" only)
+  (Retire for "pr_approval_order" only)
   (Search for "user" only)
  User is allowed Edit on (Edit for "purchase_request": ('renew_until',) only)
  User is allowed Edit on (Edit for "user": ('clearance_by', 'password', 'roles', 'subst_until', 'substitute') only)
