@@ -228,6 +228,10 @@
    , ('pr_supplier_rating', '')
                         : '@columns=id,supplier,organisation,rating'
                           '&@sort=supplier&@pagesize=20&@startwith=0'
+   , ('pr_supplier_risk', '')
+                        : '@columns=id,supplier,organisation,'
+                          'security_req_group,supplier_risk_category'
+                          '&@sort=supplier&@pagesize=20&@startwith=0'
    , ('purchase_request', '')
                         : '@columns=id,title,purchase_type,time_project,'
                           'time_project.description,delivery_deadline,'
@@ -452,6 +456,7 @@
      , ('overtime_period',     'Edit',   '?@template=item', 1)
      , ('packaging_unit',      'Edit',   '?@template=item', 1)
      , ('person',              'Edit',   '?@template=item', 1)
+     , ('pg_category',         'Edit',   '?@template=item', 1)
      , ('pharma_ref',          'Edit',   '?@template=item', 1)
      , ('pr_currency',         'Edit',   '?@template=item', 1)
      , ('pr_approval_config',  'Edit',   '?@template=item', 1)
@@ -459,6 +464,7 @@
      , ('pr_rating_category',  'Edit',   '?@template=item', 1)
      , ('pr_supplier',         'Edit',   '?@template=item', 1)
      , ('pr_supplier_rating',  'Edit',   '?@template=item', 1)
+     , ('pr_supplier_risk',    'Edit',   '?@template=item', 1)
      , ('proceeds_group',      'Edit',   '?@template=item', 1)
      , ('product',             'Edit',   '?@template=item', 1)
      , ('product_family',      'Edit',   '?@template=item', 1)
@@ -467,6 +473,9 @@
      , ('project_type',        'Edit',   '?@template=item', 1)
      , ('public_holiday',      'Edit',   '?@template=item', 1)
      , ('purchase_request',    'Create', utils.pr_justification (), 1)
+     , ('purchase_risk_type',  'Edit',   '?@template=item', 1)
+     , ('purchase_security_risk',
+                               'Edit',   '?@template=item', 1)
      , ('purchase_type',       'Edit',   '?@template=item', 1)
      , ('qsl_status',          'Edit',   '?@template=item', 1)
      , ('qsl_type',            'Edit',   '?@template=item', 1)
@@ -485,6 +494,7 @@
      , ('safety_level',        'Edit',   '?@template=item', 1)
      , ('sales_conditions',    'Edit',   '?@template=item', 1)
      , ('sap_cc',              'Edit',   '?@template=item', 1)
+     , ('security_req_group',  'Edit',   '?@template=item', 1)
      , ('sensor',              'Create', '?@template=item', 1)
      , ('severity',            'Edit',   '?@template=item', 1)
      , ('shelf_life_code',     'Edit',   '?@template=item', 1)
@@ -495,6 +505,8 @@
      , ('sup_classification',  'Edit',   '?@template=item', 1)
      , ('sup_warranty',        'Edit',   '?@template=item', 1)
      , ('supplier_group',      'Edit',   '?@template=item', 1)
+     , ('supplier_risk_category',
+                               'Edit',   '?@template=item', 1)
      , ('supplier_status',     'Edit',   '?@template=item', 1)
      , ('support',             'Create', '?@template=item', 1)
      , ('sup_status',          'Edit',   '?@template=item', 1)
@@ -596,6 +608,7 @@
      , ('product',             'View', 1,               ('',''))
      , ('pr_supplier',         'View', 1,               ('',''))
      , ('pr_supplier_rating',  'View', 1,               ('',''))
+     , ('pr_supplier_risk',    'View', 1,               ('',''))
      , ('public_holiday',      'View', 1,               ('',''))
      , ('purchase_request',    'View', 1,               ('',''))
      , ('purchase_type',       'View', 1,               ('',''))

@@ -186,6 +186,7 @@ class ExtProperty :
             must both work.
         do_classhelp: usually determined automatically, may be used to
             turn off classhelp for searchable properties
+        help_groupby: Optional property by which classhelp is grouped
         filter: A dictionary of properties / values to filter on when
             displaying a menu (in a search mask) or help.
         force_link: make this property a link (e.g. in index view)
@@ -236,6 +237,7 @@ class ExtProperty :
         , help_props    = None
         , help_filter   = None
         , help_sort     = None
+        , help_groupby  = ''
         , bool_tristate = True
         , force_link    = False
         , translate     = False
@@ -278,6 +280,7 @@ class ExtProperty :
         self.help_props    = help_props or []
         self.help_filter   = help_filter
         self.help_sort     = help_sort
+        self.help_groupby  = help_groupby
         self.bool_tristate = bool_tristate
         self.propname      = displayprop
         self.leafprop      = prop._prop
@@ -585,6 +588,8 @@ class ExtProperty :
                                (self.db.user_status.filter
                                   (None, dict (is_nosy = True))
                                )
+                            , group = self.help_groupby
+                            , sort  = self.help_sort
                             )
                         ))
                 return self.menu ()

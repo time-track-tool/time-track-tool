@@ -39,6 +39,8 @@ def new_pr (db, cl, nodeid, new_values) :
     if 'requester' not in new_values :
         new_values ['requester'] = db.getuid ()
     new_values ['status'] = db.pr_status.lookup ('open')
+    if 'payment_type' not in new_values :
+        new_values ['payment_type'] = '1'
 # end def new_pr
 
 def check_tp_rq (db, cl, nodeid, new_values) :
@@ -113,11 +115,13 @@ def reopen (db, cl, nodeid, new_values) :
     if ost == rej and 'status' not in new_values :
         new_values ['status'] = opn
     if ost == rej and new_values ['status'] == opn :
-        new_values ['date_ordered']  = None
-        new_values ['date_approved'] = None
+        new_values ['date_ordered']       = None
+        new_values ['date_approved']      = None
+        new_values ['infosec_level']      = None
+        new_values ['purchase_risk_type'] = None
 # end def reopen
 
-def check_io (db, cl, nodeid, new_values) :
+def check_io_pr (db, cl, nodeid, new_values) :
     """ Check that internal_order isn't specified together with time
         category, but only if the PR isn't in status open (not yet
         submitted with sign&send).
@@ -137,7 +141,97 @@ def check_io (db, cl, nodeid, new_values) :
                     , io = _ ('internal_order')
                     )
                 )
-# end def check_io
+# end def check_io_pr
+
+def check_io_oi (db, cl, nodeid, new_values) :
+    pr  = get_pr_from_offer_item (db, nodeid)
+    if not pr :
+        return
+    if pr.status == db.pr_status.lookup ('open') :
+        return
+    if 'internal_order' not in new_values and 'time_project' not in new_values :
+        return
+    io = new_values.get ('internal_order', cl.get (nodeid, 'internal_order'))
+    tc = new_values.get ('time_project', cl.get (nodeid, 'time_project'))
+    if (tc or pr.time_project) and (io or pr.internal_order) :
+        raise Reject \
+            (_ ("Specify %(cc)s not %(tp)s with %(io)s")
+            % dict
+                ( tp = _ ('time_project')
+                , cc = _ ('sap_cc')
+                , io = _ ('internal_order')
+                )
+            )
+# end def check_io_oi
+
+def check_supplier_change (db, cl, nodeid, new_values) :
+    """ Allow change of supplier unconditionally if not yet approving
+        Later we check that the maximum risk type will not change.
+        We compute the maximum risk type over all offer items.
+        Then we compute the risk type that would result from the change.
+        If this is below the computed maximum risk type we allow the
+        change.
+    """
+    pr  = get_pr_from_offer_item (db, nodeid)
+    if not pr :
+        return
+    if pr.status == db.pr_status.lookup ('open') :
+        return
+    # Compute the new risk-type and check if it's allowed
+    # Return immediately if no risk
+    supplier = new_values.get ('pr_supplier')
+    # So the appropriate risk is computed we need to specify an unknown
+    # supplier if None was found
+    if supplier is None :
+        supplier = '-1'
+    nrt = prlib.risk_type (db, nodeid, supplier)
+    if not nrt :
+        return
+    nrt = db.purchase_risk_type.getnode (nrt)
+    if nrt.name == 'Do not purchase' :
+        raise Reject ( _ ('Purchasing risk would be "%s"') % nrt.name)
+
+    # Search for an infosec approval, if we find one and it is not yet
+    # approved we allow all supplier changes.
+    ap_approved = db.pr_approval_status.lookup ('approved')
+    infosec_roles = []
+    cur  = db.pr_currency.getnode (pr.pr_currency)
+    cost = pr.total_cost * 1.0 / cur.exchange_rate
+    prc_ids = db.pr_approval_config.filter (None, dict (valid = True))
+    for prcid in prc_ids :
+        prc = db.pr_approval_config.getnode (prcid)
+        if prc.infosec_amount is None :
+            continue
+        # Only if we expect an approval due to costs
+        if cost >= prc.infosec_amount :
+            infosec_roles.append (prc.role)
+    if not infosec_roles :
+        return
+
+    # Loop over approvals and check if we find an unapproved infosec
+    # approval
+    aps = db.pr_approval.filter (None, dict (purchase_request = pr.id))
+    for apid in aps :
+        ap = db.pr_approval.getnode (apid)
+        if ap.role_id in infosec_roles :
+            # If we find an infosec approval which is still unapproved
+            # we do not need to check further
+            if ap.status != ap_approved :
+                return
+    # We either found only approved infosec approvals or none.
+    # In both cases we need to check.
+    # If no approval was found, a change in purchasing risk might
+    # require an approval. We're currently not prepared to add one.
+
+    mrt = prlib.max_risk_type (db, pr.id)
+    if nrt.order > mrt.order :
+        raise Reject \
+            ( _ ('Supplier change would increase purchasing risk '
+                 'from "%s" to "%s"'
+                )
+            % (mrt.name, nrt.name)
+            )
+# end def check_supplier_change
 
 def check_input_len (db, cl, nodeid, new_values) :
     """ Check that some fields don't become too long
@@ -145,6 +239,85 @@ def check_input_len (db, cl, nodeid, new_values) :
     if len (new_values.get ('supplier', '') or '') > 55 :
         raise Reject (_ ("Supplier too long (max 55)"))
 # end def check_input_len
+
+def get_pr_from_offer_item (db, nodeid) :
+    ids = db.purchase_request.filter (None, dict (offer_items = nodeid))
+    # Happens on retire or unlink
+    if len (ids) < 1 :
+        return None
+    assert len (ids) == 1
+    id  = ids [0]
+    pr  = db.purchase_request.getnode (id)
+    return pr
+# end def get_pr_from_offer_item
+
+def update_payment_approval (db, pr) :
+    cur = db.pr_currency.getnode (pr.pr_currency)
+    s = prlib.pr_offer_item_sum (db, pr.id)
+    s = s * 1.0 / cur.exchange_rate
+    prc_ids = db.pr_approval_config.filter (None, dict (valid = True))
+    for prcid in prc_ids :
+        prc = db.pr_approval_config.getnode (prcid)
+        if  (   prc.payment_type_amount is not None
+            and s > prc.payment_type_amount
+            ) :
+            # Search this role in approvals
+            aps = db.pr_approval.filter (None, dict (purchase_request = pr.id))
+            for apid in aps :
+                ap = db.pr_approval.getnode (apid)
+                if ap.role_id == prc.role :
+                    break
+            else :
+                prlib.add_approval_with_role (db, True, pr.id, prc.role)
+                break
+# end def update_payment_approval
+
+def check_payment_type (db, cl, nodeid, new_values) :
+    """ When payment type changes:
+        - Do nothing if not in state approving (state open is handled
+          elsewhere)
+        - Do not allow if in state >= approved
+        - If already approving, check if we need to add new approval
+    """
+    if 'payment_type' not in new_values :
+        return
+    pr  = get_pr_from_offer_item (db, nodeid)
+    if not pr :
+        return
+    ptdefault = pr.payment_type or '1'
+    # Allow change for open and approving
+    opn = db.pr_status.lookup ('open')
+    ap  = db.pr_status.lookup ('approving')
+    if pr.status not in (opn, ap) :
+        raise Reject (_ ("Change of payment type not allowed"))
+    if pr.status == opn :
+        return
+    ptid = new_values.get ('payment_type', ptdefault)
+    pt = db.payment_type.getnode (new_values ['payment_type'])
+    # If we're already in status approving and there is no approval yet
+    # for payment type and the new payment type needs approval we need
+    # to add an approval
+    if not pt.need_approval :
+        return
+    update_payment_approval (db, pr)
+# end def check_payment_type
+
+def pr_check_payment_type (db, cl, nodeid, new_values) :
+    if 'payment_type' not in new_values :
+        return
+    pr  = cl.getnode (nodeid)
+    # Allow change for open and approving
+    opn = db.pr_status.lookup ('open')
+    ap  = db.pr_status.lookup ('approving')
+    if pr.status not in (opn, ap) :
+        raise Reject (_ ("Change of payment type not allowed"))
+    if pr.status == opn :
+        return
+    need = prlib.need_payment_type_approval \
+        (db, pr, new_values ['payment_type'])
+    if need :
+        update_payment_approval (db, pr)
+# end def pr_check_payment_type
 
 def namelen (db, cl, nodeid, new_values) :
     """ Check that name field doesn't become too long
@@ -289,7 +462,7 @@ def change_pr (db, cl, nodeid, new_values) :
                         (_ ("Either specify %(tp)s or %(cc)s, not both")
                         % dict (tp = _ ('time_project'), cc = _ ('sap_cc'))
                         )
-                if oitem.time_project and io :
+                if (tc or oitem.time_project) and (io or oitem.internal_order) :
                     raise Reject \
                         (_ ("Specify %(cc)s not %(tp)s with %(io)s")
                         % dict
@@ -569,6 +742,23 @@ def change_pr_approval (db, cl, nodeid, new_values) :
         del new_values ['msg']
 # end def change_pr_approval
 
+def set_approval_pr (db, cl, nodeid, new_values) :
+    """ Do not allow change of PR, but we *need* to allow this input in
+        the web-interface for ordering actions.
+    """
+    common.require_attributes \
+        (_, cl, nodeid, new_values, 'purchase_request')
+
+    if 'date' in new_values and 'status' not in new_values :
+        del new_values ['date']
+    if 'purchase_request' not in new_values :
+        return
+    npr = new_values ['purchase_request']
+    opr = cl.get (nodeid, 'purchase_request')
+    if npr != opr :
+        raise Reject (_ ("Purchase request cannot be changed"))
+# end def set_approval_pr
+
 def nosy_for_approval (db, app, add = False) :
     nosy = {}
     if app.user :
@@ -617,6 +807,35 @@ def fix_nosy (db, cl, nodeid, new_values) :
     if onosy != nosy :
         new_values ['nosy'] = nosy.keys ()
 # end def fix_nosy
+
+def set_infosec (db, cl, nodeid, new_values) :
+    """ When going from open->approving, set the infosec attributes on
+        the PR
+    """
+    apr = db.pr_status.lookup ('approving')
+    opn = db.pr_status.lookup ('open')
+    ost = cl.get (nodeid, 'status')
+    nst = new_values.get ('status', ost)
+    if ost != opn or nst != apr :
+        return
+    mrt = prlib.max_risk_type (db, nodeid)
+    # Can happen if none of the product groups has a security level
+    if not mrt :
+        return
+    new_values ['purchase_risk_type'] = mrt.id
+    if mrt.order > 40 :
+        raise Reject (_ ('Risk is too high: "%s"') % mrt.name)
+    ois = new_values.get ('offer_items', cl.get (nodeid, 'offer_items'))
+    ilm = None
+    for oid in ois :
+        oi = db.pr_offer_item.getnode (oid)
+        if oi.infosec_level :
+            il = db.infosec_level.getnode (oi.infosec_level)
+            if ilm is None or il.order > ilm.order :
+                ilm = il
+    if ilm is not None :
+        new_values ['infosec_level'] = ilm.id
+# end def set_infosec
 
 def update_pr (db, pr, ap, nosy, txt, ** kw) :
     uor = ''
@@ -718,7 +937,9 @@ def new_pr_offer_item (db, cl, nodeid, new_values) :
 
 def check_pr_offer_item (db, cl, nodeid, new_values) :
     common.require_attributes \
-        (_, cl, nodeid, new_values, 'units', 'price_per_unit')
+        ( _, cl, nodeid, new_values, 'units'
+        , 'price_per_unit', 'product_group', 'supplier'
+        )
     units = new_values.get ('units', None)
     price = new_values.get ('price_per_unit', None)
     oi    = None
@@ -734,6 +955,21 @@ def check_pr_offer_item (db, cl, nodeid, new_values) :
         raise Reject ("Units must not be <= 0")
     if price <= 0 :
         raise Reject ("Price must not be <= 0")
+    pgid = new_values.get ('product_group')
+    if not pgid and nodeid :
+        pgid = cl.get (nodeid, 'product_group')
+    if pgid :
+        pg = db.product_group.getnode (pgid)
+    else :
+        pg = None
+    if 'infosec_level' in new_values :
+        if new_values ['infosec_level'] is None and pg :
+            new_values ['infosec_level'] = pg.infosec_level
+    elif 'product_group' in new_values :
+        new_values ['infosec_level'] = pg.infosec_level
+    ilid = new_values.get ('infosec_level')
+    if nodeid and not ilid :
+        ilid = cl.get (nodeid, 'infosec_level')
 # end def check_pr_offer_item
 
 def fix_pr_offer_item (db, cl, nodeid, new_values) :
@@ -776,6 +1012,10 @@ def fix_pr_offer_item (db, cl, nodeid, new_values) :
 # end def fix_pr_offer_item
 
 def check_supplier (db, cl, nodeid, new_values) :
+    """ Set pr_supplier to correct value if supplier (text-input field)
+        is changed. Note that this must come *before* the method
+        check_supplier_change, therefore we have prio 90.
+    """
     if 'supplier' in new_values :
         prsup = None
         try :
@@ -793,13 +1033,9 @@ def check_pr_update (db, cl, nodeid, old_values) :
     """
     rej = db.pr_status.lookup ('rejected')
     opn = db.pr_status.lookup ('open')
-    ids = db.purchase_request.filter (None, dict (offer_items = nodeid))
-    # Happens on retire or unlink
-    if len (ids) < 1 :
+    pr  = get_pr_from_offer_item (db, nodeid)
+    if not pr :
         return
-    assert len (ids) == 1
-    id  = ids [0]
-    pr  = db.purchase_request.getnode (id)
     if pr.status == rej :
         db.purchase_request.set (id, status = opn)
 # end def check_pr_update
@@ -883,6 +1119,56 @@ def check_supplier_rating (db, cl, nodeid, new_values) :
         )
 # end def check_supplier_rating
 
+def check_supplier_risk (db, cl, nodeid, new_values) :
+    """ Check risk entries of supplier: each combination
+        organisation+security_req_group may occur only once
+    """
+    common.require_attributes \
+        ( _, cl, nodeid, new_values
+        , 'organisation'
+        , 'supplier'
+        , 'security_req_group'
+        , 'supplier_risk_category'
+        )
+    org = new_values.get ('organisation')
+    sup = new_values.get ('supplier')
+    srg = new_values.get ('security_req_group')
+    if not org :
+        org = cl.get (nodeid, 'organisation')
+    if not sup :
+        sup = cl.get (nodeid, 'supplier')
+    if not srg :
+        srg = cl.get (nodeid, 'security_req_group')
+    common.check_unique \
+        ( _, cl, nodeid
+        , supplier           = sup
+        , organisation       = org
+        , security_req_group = srg
+        )
+# end def check_supplier_risk
+
+def check_psr (db, cl, nodeid, new_values) :
+    """ Check purchase_security_risk entries: each combination
+        infosec_level+supplier_risk_category may occur only once
+    """
+    common.require_attributes \
+        ( _, cl, nodeid, new_values
+        , 'infosec_level'
+        , 'purchase_risk_type'
+        )
+    il  = new_values.get ('infosec_level')
+    src = new_values.get ('supplier_risk_category')
+    if not il :
+        il  = cl.get (nodeid, 'infosec_level')
+    if not src and nodeid :
+        src = cl.get (nodeid, 'supplier_risk_category')
+    common.check_unique \
+        ( _, cl, nodeid
+        , infosec_level          = il
+        , supplier_risk_category = src
+        )
+# end def check_psr
+
 def check_no_change (db, cl, nodeid, new_values) :
     if new_values and new_values.keys () != ['name'] :
         classname = cl.classname
@@ -910,59 +1196,14 @@ def check_issue_nums (db, cl, nodeid, new_values) :
             raise Reject (_ ("Invalid Issue-Number: %s") % id)
 # end def check_issue_nums
 
-def fix_infosec (db, cl, nodeid, new_values) :
-    """ Check infosec_project and infosec_pt parameters, set if
-        necessary. The infosec_pt parameter can be set by the user but
-        if one purchase_type is found to have infosec_req set the value
-        is set to True. Same for infosec_project except that the user
-        cannot edit it.
-    """
-    infosec_pt = None
-    if 'infosec_pt' in new_values :
-        infosec_pt = new_values ['infosec_pt']
-    elif nodeid :
-        infosec_pt = cl.get (nodeid, 'infosec_pt')
-    if infosec_pt is None :
-        new_values ['infosec_pt'] = False
-    new_values ['infosec_project'] = False
+def check_pg (db, cl, nodeid, new_values) :
+    common.require_attributes \
+        (_, cl, nodeid, new_values, 'sap_ref', 'pg_category')
+# end def check_pg
 
-    tp = pt = None
-    ois = []
-    if 'time_project' in new_values :
-        tp = new_values ['time_project']
-    elif nodeid :
-        tp = cl.get (nodeid, 'time_project')
-    if 'purchase_type' in new_values :
-        pt = new_values ['purchase_type']
-    elif nodeid :
-        pt = cl.get (nodeid, 'purchase_type')
-    if 'offer_items' in new_values :
-        ois = new_values ['offer_items']
-    elif nodeid :
-        ois = cl.get (nodeid, 'offer_items')
-    tps = []
-    pts = []
-    if tp :
-        tps.append (tp)
-    if pt :
-        pts.append (pt)
-    for oid in ois :
-        oi = db.pr_offer_item.getnode (oid)
-        if oi.time_project :
-            tps.append (oi.time_project)
-        if oi.purchase_type :
-            pts.append (oi.purchase_type)
-    for tpid in tps :
-        tp = db.time_project.getnode (tpid)
-        if tp.infosec_req :
-            #print tp.name
-            new_values ['infosec_project'] = True
-    for ptid in pts :
-        pt = db.purchase_type.getnode (ptid)
-        if pt.infosec_req :
-            #print pt.name
-            new_values ['infosec_pt'] = True
-# end def fix_infosec
+def check_pgc (db, cl, nodeid, new_values) :
+    common.require_attributes (_, cl, nodeid, new_values, 'sap_ref')
+# end def check_pgc
 
 def init (db) :
     global _
@@ -978,8 +1219,6 @@ def init (db) :
     db.purchase_request.audit   ("set",    check_tp_rq,     priority = 80)
     db.purchase_request.audit   ("set",    requester_chg,   priority = 70)
     db.purchase_request.audit   ("set",    reopen,          priority = 90)
-    db.purchase_request.audit   ("create", fix_infosec,     priority = 95)
-    db.purchase_request.audit   ("set",    fix_infosec,     priority = 95)
     db.purchase_request.audit   ("set",    change_pr)
     db.purchase_request.audit   ("set",    check_late_changes)
     db.purchase_request.audit   ("create", check_dd)
@@ -989,27 +1228,42 @@ def init (db) :
     db.purchase_request.audit   ("set",    approvalchange)
     db.purchase_request.react   ("set",    changed_pr)
     db.purchase_request.react   ("create", create_pr_approval)
-    db.purchase_request.audit   ("set",    check_io)
+    db.purchase_request.audit   ("set",    check_io_pr)
     db.purchase_request.audit   ("set",    fix_nosy,        priority = 200)
+    db.purchase_request.audit   ("set",    set_infosec,     priority = 250)
     db.purchase_request.audit   ("create", check_issue_nums)
     db.purchase_request.audit   ("set",    check_issue_nums)
+    db.purchase_request.audit   ("set",    pr_check_payment_type)
     db.pr_approval.audit        ("create", new_pr_approval)
     db.pr_approval.audit        ("set",    change_pr_approval)
+    db.pr_approval.audit        ("set",    set_approval_pr, priority = 90)
     db.pr_approval.react        ("set",    approved_pr_approval)
     db.pr_offer_item.audit      ("create", new_pr_offer_item)
     db.pr_offer_item.audit      ("create", check_pr_offer_item, priority = 110)
     db.pr_offer_item.audit      ("set",    check_pr_offer_item, priority = 110)
-    db.pr_offer_item.audit      ("create", check_supplier)
-    db.pr_offer_item.audit      ("set",    check_supplier)
+    db.pr_offer_item.audit      ("create", check_supplier, priority = 90)
+    db.pr_offer_item.audit      ("set",    check_supplier, priority = 90)
+    db.pr_offer_item.audit      ("set",    check_supplier_change)
     db.pr_offer_item.react      ("set",    check_pr_update)
     db.pr_offer_item.react      ("set",    check_agent_change)
     db.pr_offer_item.audit      ("create", check_input_len, priority = 150)
     db.pr_offer_item.audit      ("set",    check_input_len, priority = 150)
+    db.pr_offer_item.audit      ("set",    check_payment_type)
+    db.pr_offer_item.audit      ("set",    check_io_oi)
     db.pr_currency.audit        ("create", check_currency)
     db.pr_currency.audit        ("set",    check_currency)
     db.pr_approval_order.audit  ("create", pao_check_roles)
     db.pr_approval_order.audit  ("set",    pao_check_roles)
+    db.pr_supplier_rating.audit ("create", check_supplier_rating)
     db.pr_supplier_rating.audit ("set",    check_supplier_rating)
     db.pr_supplier.audit        ("create", namelen)
     db.pr_supplier.audit        ("set",    namelen)
+    db.pr_supplier_risk.audit   ("create", check_supplier_risk)
+    db.pr_supplier_risk.audit   ("set",    check_supplier_risk)
+    db.purchase_security_risk.audit ("create", check_psr)
+    db.purchase_security_risk.audit ("set",    check_psr)
+    db.product_group.audit      ("create", check_pg)
+    db.product_group.audit      ("set",    check_pg)
+    db.pg_category.audit        ("create", check_pgc)
+    db.pg_category.audit        ("set",    check_pgc)
 # end def init

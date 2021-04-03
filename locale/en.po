@@ -2959,7 +2959,16 @@ msgid "part_of_budget"
 msgstr "Part of budget"
 
 msgid "infosec_level"
-msgstr "InfoSec Security Level"
+msgstr "Protection Level"
+
+msgid "purchase_request++infosec_level"
+msgstr "Protection Level"
+
+msgid "offer_items.infosec_level"
+msgstr "Offer Item Protection Level"
+
+msgid "offer_items.internal_order"
+msgstr "Offer Item Internal order"
 
 msgid "pr_currency"
 msgstr "Currency"
@@ -3008,6 +3017,15 @@ msgstr "External resources"
 
 msgid "infosec_amount"
 msgstr "Amount for InfoSec approval"
+
+msgid "payment_type"
+msgstr "Payment type"
+
+msgid "payment_type_amount"
+msgstr "Amount for payment type approval"
+
+msgid "need_approval"
+msgstr "Needs approval"
 
 msgid "pr_approval_order"
 msgstr "Approval order"
@@ -3089,9 +3107,6 @@ msgstr "Terms & conditions"
 
 msgid "order_number"
 msgstr ""
-
-msgid "infosec_pt"
-msgstr "InfoSec Purchase Type"
 
 msgid "safety_critical"
 msgstr "Safety critical"
@@ -4379,3 +4394,24 @@ msgstr "Productivity Permission"
 
 msgid "permission_for"
 msgstr "Permission for"
+
+msgid "security_req_group"
+msgstr "Security requirements group"
+
+msgid "supplier_risk_category"
+msgstr "Supplier risk category"
+
+msgid "purchase_risk_type"
+msgstr "Purchase risk type"
+
+msgid "purchase_security_risk"
+msgstr "Purchase security risk"
+
+msgid "pr_supplier_risk"
+msgstr "Supplier risk"
+
+msgid "is_consulting"
+msgstr "is consulting"
+
+msgid "pg_category"
+msgstr "Product group category"

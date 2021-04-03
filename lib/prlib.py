@@ -121,6 +121,99 @@ def _app_cfgs (db, pr, ids) :
     return acs
 # end def _app_cfgs
 
+def risk_type (db, offer_item_id, pr_supplier = None) :
+    """ Note that an *empty* pr_supplier (one that isn't in LAS) is
+        possible and will typically get a bad security rating.
+        If pr_supplier is specified explicitly, it should be set to '-1'
+        for explicitly searching for an empty supplier.
+    """
+    oi  = db.pr_offer_item.getnode (offer_item_id)
+    pg  = db.product_group.getnode (oi.product_group)
+    prs = db.purchase_request.filter (None, dict (offer_items = offer_item_id))
+    assert len (prs) == 1
+    pr  = db.purchase_request.getnode (prs [0])
+
+    if not oi.infosec_level or not pr.organisation :
+        return None
+    if pr_supplier is None :
+        pr_supplier = oi.pr_supplier
+    if pr_supplier :
+        sr = db.pr_supplier_risk.filter \
+            ( None, dict
+                ( supplier           = pr_supplier
+                , organisation       = pr.organisation
+                , security_req_group = pg.security_req_group
+                )
+            )
+        assert len (sr) <= 1
+        if sr :
+            sr = db.pr_supplier_risk.getnode (sr [0])
+            risk_cat = sr.supplier_risk_category
+        else :
+            risk_cat = '-1'
+    else :
+        risk_cat = '-1'
+    risk = db.purchase_security_risk.filter \
+        ( None, dict
+            ( infosec_level          = oi.infosec_level
+            , supplier_risk_category = risk_cat
+            )
+        )
+    assert len (risk) == 1
+    return db.purchase_security_risk.get (risk [0], 'purchase_risk_type')
+# end def risk_type
+
+def max_risk_type (db, prid) :
+    """ Loop over all offer items and compute maximum risk type.
+        Sort order is the order property.
+        Note that if the pr already has a purchase_risk_type set, this
+        also gets into the maximum. So once set, the maximum will never
+        be smaller.
+    """
+    pr = db.purchase_request.getnode (prid)
+    rtmax = None
+    if pr.purchase_risk_type :
+        rtmax = db.purchase_risk_type.getnode (pr.purchase_risk_type)
+    for oi in pr.offer_items :
+        rtid = risk_type (db, oi)
+        if not rtid :
+            continue
+        rt = db.purchase_risk_type.getnode (rtid)
+        if rtmax is None or rtmax.order < rt.order :
+            rtmax = rt
+    return rtmax
+# end def max_risk_type
+
+def infosec_level_lowered (db, prid) :
+    """ Check if the user specified a lower infosec_level than would be
+        computed automagically
+    """
+    pr = db.purchase_request.getnode (prid)
+    for oid in pr.offer_items :
+        oi = db.pr_offer_item.getnode (oid)
+        pg = db.product_group.getnode (oi.product_group)
+        if pg.infosec_level :
+            if oi.infosec_level is None :
+                return True
+            pg_il = db.infosec_level.getnode (pg.infosec_level)
+            oi_il = db.infosec_level.getnode (oi.infosec_level)
+            if oi_il.order < pg_il.order :
+                return True
+    return False
+# end def infosec_level_lowered
+
+def need_payment_type_approval (db, pr, new = None) :
+    pt_default = new or pr.payment_type or '1'
+    for id in pr.offer_items :
+        item  = db.pr_offer_item.getnode (id)
+        ptid  = item.payment_type or pt_default
+        if ptid :
+            pt = db.payment_type.getnode (ptid)
+            if pt.need_approval :
+                return True
+    return False
+# end def need_payment_type_approval
+
 def compute_approvals (db, pr, do_create) :
     """ Compute approvals for current PR settings
         do_create specifies if the approvals are created or just a
@@ -185,7 +278,8 @@ def compute_approvals (db, pr, do_create) :
             )
         apr_by_r_d [(u, u)] = apr
 
-    prc_ids = db.pr_approval_config.filter (None, dict (valid = True))
+    max_risk = max_risk_type (db, pr.id)
+    prc_ids  = db.pr_approval_config.filter (None, dict (valid = True))
     if cur :
         s  = pr_offer_item_sum (db, pr.id)
         s  = s * 1.0 / cur.exchange_rate
@@ -205,7 +299,15 @@ def compute_approvals (db, pr, do_create) :
                 continue
             if  (      prc.amount         is not None and s > prc.amount
                 or (   prc.infosec_amount is not None and s > prc.infosec_amount
-                   and (pr.infosec_project or pr.infosec_pt)
+                   and max_risk
+                   and (  'High' in max_risk.name
+                       or max_risk.order >= 30
+                       or infosec_level_lowered (db, pr.id)
+                       )
+                   )
+                or (   prc.payment_type_amount is not None
+                   and s > prc.payment_type_amount
+                   and need_payment_type_approval (db, pr)
                    )
                 ) :
                 apr_by_role [prc.role] = add_approval_with_role \

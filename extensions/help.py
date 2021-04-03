@@ -956,11 +956,6 @@ _helptext          = \
             index numbers will be automatically set when saving the PR.
          '''
       ]
-    , ""'infosec_req'                 :
-      [""'''Set this flag if the %(Classname)s has special information
-            security requirements (TISAX).
-         '''
-      ]
     , ""'infosec_project'             :
       [""'''Automatically set if one of the Time Categories has special
             information security requirements (TISAX).
@@ -977,6 +972,10 @@ _helptext          = \
       [""'''%(Property)s of a recipe.''' ]
     , ""'ingredient.name'             :
       [""'''Name of ingredient of a recipe.''' ]
+    , ""'infosec_level'               :
+      [""'''Information security level
+         '''
+      ]
     , ""'inherit_ext'                 :
       [""'''If this flag is set, and an issue is a container, it inerits
             external user permissions from the next higher-level
@@ -1348,6 +1347,14 @@ _helptext          = \
       [""'''%(Property)s on this %(Classname)s, one per line
          '''
       ]
+    , ""'offer_items.infosec_level'   :
+      [""'''Information security level
+         '''
+      ]
+    , ""'offer_items.internal_order'   :
+      [""'''Internal order on offer item level
+         '''
+      ]
     , ""'offer_number'                :
       [ ""'''Optional field for supplier offer number
           '''
@@ -1610,6 +1617,10 @@ _helptext          = \
              Complete the respective annex and upload it to the PR issue.
              </p>
           '''
+      ]
+    , ""'purchase_request++infosec_level'               :
+      [""'''Maximum Information security level of all offer items
+         '''
       ]
     , ""'purchase_request++msg'              :
       [ ""'''During creation the message field may be used for
