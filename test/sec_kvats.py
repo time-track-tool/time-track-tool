@@ -79,6 +79,7 @@ Role "user":
  User is allowed to search for their own messages (Search for "msg" only)
  User is allowed to search for their queries (Search for "query" only)
  User is allowed to search issue (Search for "issue" only)
+ User is allowed to search user_status (Search for "user": ('status',) only)
  User is allowed to view their own files (View for "file" only)
  User is allowed to view their own messages (View for "msg" only)
  User may access the rest interface (Rest Access)

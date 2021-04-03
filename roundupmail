@@ -27,7 +27,7 @@ else :
         pass
 tracker  = sys.argv [1]
 server   = sys.argv [2]
-mailgw   = "roundup-mailgw %s '%s' imaps '%s'" % \
+mailgw   = "/usr/local/bin/roundup-mailgw %s '%s' imaps '%s'" % \
     (' '.join (options), tracker, server)
 
 # Note: There is still a race condition if you call this script almost

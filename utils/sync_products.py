@@ -58,24 +58,17 @@ def normalize_name (name) :
     >>> print (normalize_name ('GENERAL-PURPOSE-ECUS/HMIS'))
     GENERAL-PURPOSE-ECUS-HMIS
     >>> print (normalize_name (u'HY-eVision\xb2 7.0'))
-    VISION2
+    HY-EVISION\xb2-7.0
     >>> print (normalize_name ('HY-TTC 200'))
-    TTC-200
+    HY-TTC-200
     >>> print (normalize_name ('HY-TTC 50'))
-    TTC-50
+    HY-TTC-50
     """
     x = '-'.join (l for l in splitre.split (name.upper ()) if l)
     if x == 'OTHERS' :
         x = 'OTHER'
     if x == 'PROJECTS-OTHERS' :
         x = 'PROJECTS-OTHER'
-    if x.startswith ('HY-') :
-        if x == 'HY-TTC-50' :
-            x = 'TTC-50'
-        if x == 'HY-TTC-200' :
-            x = 'TTC-200'
-        if x == 'HY-EVISION\xb2-7.0' :
-            x = 'VISION2'
     try :
         x = str (int (x))
     except ValueError :
@@ -415,7 +408,11 @@ class Product_Sync (object) :
     # end def verbose
 
     def warn (self, text) :
-        print ('Warning: %s' % text)
+        """ For automating in cron we also show warnings only in verbose
+            mode.
+        """
+        if self.args.verbose :
+            print ('Warning: %s' % text)
     # end def warn
 
 # end class Product_Sync

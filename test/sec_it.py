@@ -13,6 +13,7 @@ Role "admin":
  User may use the email interface (Email Access)
  User may view everything (View)
 Role "anonymous":
+ User is allowed to request a password reset (Password-Reset)
  User may access the web interface (Web Access)
 Role "it":
   (Search for "user" only)
@@ -80,8 +81,7 @@ Role "user":
  User is allowed Edit on file if file is linked from an item with Edit permission (Edit for "file" only)
  User is allowed Edit on it_issue if it_issue is non-confidential or user is on nosy list (Edit for "it_issue": ('messages', 'files', 'nosy') only)
  User is allowed Edit on it_project if it_project is non-confidential or user is on nosy list (Edit for "it_project": ('messages', 'files', 'nosy') only)
- User is allowed View on (View for "user": ('activity', 'actor', 'address', 'alternate_addresses', 'clearance_by', 'creation', 'creator', 'firstname', 'id', 'job_description', 'lastname', 'lunch_duration', 'lunch_start', 'nickname', 'pictures', 'position', 'queries', 'realname', 'room', 'sex', 'status', 'subst_active', 'subst_until', 'substitute', 'supervisor', 'timezone', 'title', 'username') only)
- User is allowed View on (View for "user": ('activity', 'actor', 'address', 'alternate_addresses', 'clearance_by', 'creation', 'creator', 'firstname', 'id', 'job_description', 'lastname', 'lunch_duration', 'lunch_start', 'nickname', 'pictures', 'position', 'queries', 'realname', 'room', 'sex', 'status', 'subst_active', 'substitute', 'supervisor', 'timezone', 'title', 'username') only)
+ User is allowed View on (View for "user": ('activity', 'actor', 'address', 'alternate_addresses', 'creation', 'creator', 'id', 'queries', 'realname', 'status', 'timezone', 'username') only)
  User is allowed View on file if file is linked from an item with View permission (View for "file" only)
  User is allowed View on it_issue if it_issue is non-confidential or user is on nosy list (View for "it_issue" only)
  User is allowed View on it_project if it_project is non-confidential or user is on nosy list (View for "it_project" only)
@@ -110,6 +110,7 @@ Role "user":
  User is allowed to search for their queries (Search for "query" only)
  User is allowed to search it_issue (Search for "it_issue" only)
  User is allowed to search it_project (Search for "it_project" only)
+ User is allowed to search user_status (Search for "user": ('status',) only)
  User is allowed to view their own files (View for "file" only)
  User is allowed to view their own messages (View for "msg" only)
  User may access the rest interface (Rest Access)

@@ -309,6 +309,18 @@ table.form td.optional {
   font-style: italic;
 }
 
+table.form td.emphasized {
+  font-weight: bold;
+}
+
+table.form td.warn {
+  color: red;
+}
+
+table.form td span.warn {
+  color: red;
+}
+
 table.form td.html {
   color: #777;
 }
@@ -342,6 +354,17 @@ table.form tr.rule td {
 
 table.form a.header {
   color: #338;
+}
+
+table.inner-form {
+  border-spacing: 0px;
+  padding-top:    0px;
+  padding-left:   0px;
+}
+
+table.inner-form tr th {
+  vertical-align:top;
+  text-align: left;
 }
 
 /* style for lists */
@@ -583,6 +606,14 @@ table.files {
   border-spacing: 0;
   border-collapse: separate;
   width: 100%;
+}
+
+table.files tr {
+    visibility: visible;
+}
+
+table.files tr.hidden {
+    visibility: collapse;
 }
 
 table.files td.content {
@@ -833,6 +864,8 @@ table.timesheet th {
 table.timesheet th.name {
         text-align: left;
         font-weight: 700;
+        padding-left: 5pt;
+        padding-right: 5pt;
 }
 table.timesheet td {
         background: white;
@@ -926,4 +959,36 @@ a[href]:link.back-to-top {
 
 .select2-search--dropdown .select2-search__field {
 	padding: 1px !important;
+}
+
+div.formdiv {
+  position: relative;
+}
+
+input.rbutton {
+  visibility: hidden;
+}
+
+span.nobreak {
+  white-space: nowrap;
+  hyphens: none;
+  -webkit-hyphens: none;
+  -ms-hyphens: none;
+}
+/* Tooltip text */
+.tooltip .tooltiptext {
+  visibility: hidden;
+  width: 120px;
+  background-color: yellow;
+  color: #000;
+  text-align: center;
+  padding: 5px 0;
+  border-radius: 6px;
+  position: absolute;
+  z-index: 1;
+}
+
+/* Show the tooltip text when you mouse over the tooltip container */
+.tooltip:hover .tooltiptext {
+  visibility: visible;
 }

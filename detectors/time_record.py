@@ -671,6 +671,14 @@ def check_time_record (db, cl, nodeid, new_values) :
     dr       = db.daily_record.getnode (drec)
     date     = dr.date
     user     = dr.user
+    wpid     = new_values.get ('wp', cl.get (nodeid, 'wp'))
+    wp       = None
+    tp       = None
+    is_ph    = False
+    if (wpid) :
+        wp = db.time_wp.getnode (wpid)
+        tp = db.time_project.getnode (wp.project)
+        is_ph = tp.is_public_holiday
     if  (   frozen (db, user, date)
         and new_values.keys () != ['tr_duration']
         ) :
@@ -680,7 +688,7 @@ def check_time_record (db, cl, nodeid, new_values) :
     leave    = db.daily_record_status.lookup ('leave')
     allow    = False
     if dr.status == leave :
-        du = vacation.leave_duration (db, user, date)
+        du = vacation.leave_duration (db, user, date, is_ph)
         if  (   new_values.keys () == ['duration']
             and new_values ['duration'] == du
             and cl.get (nodeid, 'duration') != du

@@ -1,0 +1,104 @@
+<tal:block metal:use-macro="templates/page/macros/icing">
+ <title metal:fill-slot="head_title">
+  <tal:block tal:condition="context/id" i18n:translate="">
+   <span tal:replace="string:${Classname}: ${context/id}"
+    i18n:name="classname_id"/>
+   created by
+   <span tal:replace="context/creator" i18n:name="creator"/>
+  </tal:block>
+  <tal:block tal:condition="not:context/id" i18n:translate="">New
+   <span tal:replace="Classname" i18n:name="Classname" />
+  </tal:block>
+ </title>
+ <tal:block metal:fill-slot="create_or_query">
+    <tal:block 
+     metal:use-macro="templates/page/macros/create_or_query_new_tracker_item" />
+ </tal:block> 
+
+ <tal:block metal:fill-slot="content">
+  <tal:block tal:define="use_labelprop python:False">
+   <tal:block metal:use-macro="templates/page/macros/formatted_class">
+    <tal:block metal:fill-slot="formatted_class_content">
+     <tr>
+      <tal:block tal:condition="python: context.id">
+       <th tal:content="structure python:utils.fieldname
+           (classname, 'number')"/>
+       <td>
+        <span tal:content="structure python:context.number.plain ()"/>
+        <input name="number" type="hidden" tal:attributes=
+            "value python:context.number">
+       </td>
+      </tal:block>
+      <td tal:condition="python: not context.id">
+       <input name="number" type="hidden" value="-">
+      </td>
+     </tr>
+     <tr>
+      <th tal:content="structure python:utils.fieldname
+          (classname, 'rc_brand')"/>
+      <td tal:content="structure python:context.rc_brand.menu ()"/>
+     </tr>
+     <tr>
+      <th tal:content="structure python:utils.fieldname
+          (classname, 'rc_product_type')"/>
+      <td tal:content="structure python:context.rc_product_type.menu ()"/>
+     </tr>
+     <tr>
+      <th tal:content="structure python:utils.fieldname
+          (classname, 'rc_application')"/>
+      <td tal:content="structure python:context.rc_application.menu ()"/>
+     </tr>
+     <tr>
+      <th tal:content="structure python:utils.fieldname
+          (classname, 'rc_substrate')"/>
+      <td tal:content="structure python:context.rc_substrate.menu ()"/>
+     </tr>
+     <tr>
+      <th tal:content="structure python:utils.fieldname
+          (classname, 'rc_suitability')"/>
+      <td tal:content="structure python:context.rc_suitability.menu ()"/>
+     </tr>
+     <tr>
+      <th tal:content="structure python:utils.fieldname
+          (classname, 'rc_capability')"/>
+      <td tal:content="structure python:context.rc_capability.menu (height=6)"/>
+     </tr>
+     <tr>
+      <th tal:content="structure python:utils.fieldname
+          (classname, 'substance')"/>
+      <td>
+       <span tal:condition="python: context.is_edit_ok ()"
+             tal:content="structure python:context.substance.field ()"/>
+       <span tal:condition="python: context.is_edit_ok ()"
+             tal:content="structure python:db.substance.classhelp
+             ('identifier,name', property='substance', inputtype='radio'
+             , width='600', pagesize=5000
+             )"/>
+       <span tal:condition="python: context.id and context.substance">
+        <a tal:attributes="href python: 'substance' + context.substance.id"
+           tal:content="python: context.substance.identifier"/>
+       </span>
+      </td>
+     </tr>
+     <tr tal:condition="python: context.id">
+      <th>Product number</th>
+      <td tal:content="python:
+          ( context.rc_brand.name.plain ()
+          + ' '
+          + context.rc_product_type.name.plain ()
+          + ' '
+          + context.rc_application.name.plain ()
+          + '-'
+          + context.number.plain ()
+          + '-'
+          + context.rc_substrate.name.plain ()
+          + ['', ' '][bool (context.rc_suitability)]
+          + ['', context.rc_suitability.name.plain ()]
+            [bool (context.rc_suitability)]
+          )"/>
+     </tr>
+    </tal:block>
+   </tal:block>
+  </tal:block>
+ </tal:block>
+</tal:block>

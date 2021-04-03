@@ -169,6 +169,19 @@ def add_search_permission (db, klass, role, properties = None) :
     db.security.addPermissionToRole (role, p)
 # end add_search_permission
 
+def own_user_detail_permission (db, role, permission, *props) :
+    p = db.security.addPermission \
+        ( name        = permission
+        , klass       = 'user'
+        , check       = own_user_record
+        , description = \
+            "User is allowed to %s (some of) their own user details"
+            % permission.lower ()
+        , properties  = tuple (props)
+        )
+    db.security.addPermissionToRole(role, p)
+# end def own_user_detail_permission
+
 def allow_user_details (db, role, permission, *additional_props) :
     """ Allow editing some user details -- depending on the properties
         the user class has
@@ -189,23 +202,14 @@ def allow_user_details (db, role, permission, *additional_props) :
         , 'title'
         , 'tt_lines'
         ]
-    props = []
     allprops = dict.fromkeys (default_props)
     allprops.update (dict.fromkeys (additional_props))
     clsprops = db.user.getprops ()
-    for p in sorted (allprops.iterkeys ()) :
+    props = []
+    for p in sorted (allprops.keys ()) :
         if p in clsprops :
             props.append (p)
-    p = db.security.addPermission \
-        ( name        = permission
-        , klass       = 'user'
-        , check       = own_user_record
-        , description = \
-            "User is allowed to %s (some of) their own user details"
-            % permission.lower ()
-        , properties  = tuple (props)
-        )
-    db.security.addPermissionToRole(role, p)
+    own_user_detail_permission (db, role, permission, *props)
 # end def allow_user_details
 
 whitespace = re.compile ('(\s+)')

@@ -16,6 +16,12 @@
     , ('deputy',             dict (multiselect = 1))
     , ('deputy_get_mail',    {})
     , ('purchasing_agents',  dict (multiselect = 1))
+    , ( 'wps'
+      , dict (searchable = True, sortable = False)
+      )
+    , ( 'wps'
+      , dict (searchname = 'wps.bookers', searchable = True, sortable = False)
+      )
     , ( 'organisation'
       , dict
         ( multiselect = 1
@@ -58,7 +64,6 @@
     , ('work_location',      dict (multiselect = 1))
     , ('max_hours',          {})
     , ('nosy',               dict (multiselect = 1))
-    , ('infosec_req',        {})
     , ('op_project',         {})
     , ('no_overtime',        {})
     , ('no_overtime_day',    {})

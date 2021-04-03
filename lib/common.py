@@ -111,7 +111,10 @@ def update_feature_status (db, cl, nodeid, new_values) :
 # end def update_feature_status
 
 def check_prop_len (_, s, propname = 'name', limit = 25) :
-    if len (s) > limit :
+    string_len = 0
+    if s:
+        string_len = len(s)
+    if string_len > limit:
         pn = _ (propname)
         raise Reject, \
             _ ('%(pn)s "%(s)s" too long (> %(limit)s characters)') % locals ()
@@ -1279,8 +1282,32 @@ default_attributes = dict \
          ' purchase_type renegotiations requester safety_critical'
          ' sap_cc termination_date terms_conditions'
          ' time_project title pr_currency intended_duration'
+         ' pr_ext_resource'
         ).split ()
     )
+do_not_add_retired = dict.fromkeys \
+    (( 'department'
+     , 'infosec_level'
+     , 'internal_order'
+     , 'organisation'
+     , 'part_of_budget'
+     , 'pr_currency'
+     , 'purchase_type'
+     , 'requester'
+     , 'sap_cc'
+     , 'terms_conditions'
+     , 'time_project'
+    ))
+do_not_add_invalid = dict.fromkeys \
+    (( 'internal_order'
+     , 'purchase_type'
+     , 'sap_cc'
+    ))
+do_not_add_not_in_range = dict.fromkeys \
+    (( 'location'
+     , 'org_location'
+     , 'organisation'
+    ))
 
 def stresc (x) :
     return cgi.escape (str (x))
@@ -1296,15 +1323,33 @@ def copy_url (context, attributes = None) :
             if context [a] :
                 val = ','.join (p.id for p in context [a])
         elif isinstance (context [a], LinkHTMLProperty) :
+            retired = False
             if  (context [a].id and str (context [a].id).isdigit ()) :
                 try :
                     retired = context [a].is_retired ()
                 except TypeError :
                     retired = True
                 if retired :
+                    # Do not add some retired attributes
+                    if a in do_not_add_retired :
+                        continue
                     val = stresc (context [a])
                 else :
                     val = context [a].id
+            else :
+                if a in do_not_add_retired and context [a].is_retired () :
+                    continue
+            if a in do_not_add_invalid and not context [a].valid :
+                continue
+
+            if a in do_not_add_not_in_range :
+                now = Date ('.')
+                vf = context [a].valid_from._value
+                vt = context [a].valid_to._value
+                if vf is not None and now < vf :
+                    continue
+                if vt is not None and vt < now :
+                    continue
         else :
             val = stresc (context [a])
         url.append ('%s=%s' % (a, urlquote (val)))
@@ -1327,7 +1372,7 @@ def copy_url (context, attributes = None) :
         atrs = \
             ( 'index', 'supplier', 'description', 'offer_number'
             , 'units', 'price_per_unit', 'vat', 'sap_cc', 'time_project'
-            , 'purchase_type'
+            , 'purchase_type', 'product_group'
             )
         n = -1
         for n, ofr in enumerate (context ['offer_items']) :

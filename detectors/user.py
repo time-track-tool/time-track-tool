@@ -23,6 +23,7 @@
 from roundup.cgi.TranslationService import get_translation
 from roundup.date                   import Date
 from roundup.exceptions             import Reject
+from domain_perm                    import check_domain_permission
 
 import common
 import rup_utils
@@ -120,7 +121,10 @@ def new_user (db, cl, nodeid, new_values) :
         return
     # status set to a value different from valid: no checks
     if 'user_status' in db.classes :
-        valid = db.user_status.lookup ('valid')
+        try :
+            valid = db.user_status.lookup ('valid')
+        except KeyError :
+            valid = db.user_status.filter (None, dict (name = 'valid')) [0]
         if 'status' not in new_values :
             new_values ['status'] = valid
         if not is_valid_user_status (db, new_values) :
@@ -181,6 +185,8 @@ def obsolete_action (db, cl, nodeid, new_values) :
     obsolete = db.user_status.lookup ('obsolete')
     status   = new_values.get ('status', cl.get (nodeid, 'status'))
     if status == obsolete :
+        if 'nickname' in cl.properties :
+            new_values ['nickname'] = ''
         new_values ['roles'] = ''
 # end def obsolete_action
 
@@ -291,27 +297,15 @@ def domain_user_edit (db, cl, nodeid, new_values) :
     if not _domain_user_role_check (db) :
         return
     uid = db.getuid ()
-    # Find entries in domain_permission
-    dpids = db.domain_permission.filter (None, dict (users = uid))
-    if not dpids :
-        raise Reject (_ ("No permission to edit/create users with any domain"))
     ad_domain = new_values.get ('ad_domain', None)
     if not ad_domain and nodeid :
         ad_domain = cl.get (nodeid, 'ad_domain')
-    if ad_domain or nodeid :
-        for d in dpids :
-            dp = db.domain_permission.getnode (d)
-            if dp.ad_domain == ad_domain :
-                break
-        else :
-            raise Reject \
-                (_ ('No permission for user with AD-Domain: "%s"' % ad_domain))
-    else :
-        if len (dpids) == 1 :
-            dp = db.domain_permission.getnode (dpids [0])
-            ad_domain = dp.ad_domain
-        else :
-            raise Reject (_ ("AD-Domain must be specified"))
+    if not ad_domain :
+        raise Reject (_ ("AD-Domain must be specified"))
+    dp = check_domain_permission (db, uid, ad_domain)
+    if not dp :
+        raise Reject \
+            (_ ('No permission for user with AD-Domain: "%s"' % ad_domain))
     perm = db.security.hasPermission
     # Force this to valid value
     if not nodeid or ad_domain in new_values :
@@ -344,22 +338,14 @@ def domain_user_check (db, cl, nodeid, new_values) :
     """
     if not _domain_user_role_check (db) :
         return
-    # Find entries in domain_permission
-    dpids = db.domain_permission.filter (None, dict (users = db.getuid ()))
-    if not dpids :
-        raise Reject (_ ("No permission to edit/create users with any domain"))
     uid = new_values.get ('user', None)
     if nodeid and not uid :
         uid = cl.get (nodeid, 'user')
     # Allow creation of empty user
     if not uid :
         return
-    ad_domain =  db.user.get (uid, 'ad_domain')
-    for d in dpids :
-        dp = db.domain_permission.getnode (d)
-        if dp.ad_domain == ad_domain :
-            break
-    else :
+    ad_domain = db.user.get (uid, 'ad_domain')
+    if not check_domain_permission (db, db.getuid (), ad_domain) :
         raise Reject \
             (_ ('No permission for user with AD-Domain: "%s"' % ad_domain))
 # end def domain_user_check
@@ -391,6 +377,36 @@ def default_reduced_activity_list (db, cl, nodeid, new_values) :
         new_values ['reduced_activity_list'] = Date ('2020-04-01')
 # end def default_reduced_activity_list
 
+def check_room_on_restore (db, cl, nodeid, new_values) :
+    """ If a user is restored (status set from obsolete to something
+        other than obsolete) and has a retired room, set the room to
+        None
+    """
+    if 'status' not in new_values :
+        return
+    user = cl.getnode (nodeid)
+    ostatus  = user.status
+    obsolete = db.user_status.lookup ('obsolete')
+    if ostatus != obsolete or new_values ['status'] == obsolete :
+        return
+    room = new_values.get ('room', user.room)
+    if room and db.room.is_retired (room) :
+        new_values ['room'] = None
+# end def check_room_on_restore
+
+def check_dp_role (db, cl, nodeid, new_values) :
+    """ We ensure that the given role is lowercase: The lookup will be
+        performed using exact string match later, so the domain needs to
+        be in a defined case. For all role-fields we check the role names
+        given are valid.
+    """
+    if new_values.get ('roles_enabled', None) :
+        common.check_roles (db, cl, nodeid, new_values, rname = 'roles_enabled')
+        new_values ['roles_enabled'] = new_values ['roles_enabled'].lower ()
+    if new_values.get ('default_roles', None) :
+        common.check_roles (db, cl, nodeid, new_values, rname = 'default_roles')
+# end def check_dp_role
+
 def init (db) :
     global _
     _   = get_translation \
@@ -405,6 +421,8 @@ def init (db) :
     db.user.audit ("retire", check_retire)
     db.user.audit ("set",    obsolete_action)
     db.user.audit ("set",    check_pictures)
+    if 'room' in db.user.properties :
+        db.user.audit ("set",    check_room_on_restore)
     # ldap sync only on set not create (!)
     if ldap_sync and ldap_sync.check_ldap_config (db) :
         db.user.react ("set", sync_to_ldap, priority = 200)
@@ -419,6 +437,8 @@ def init (db) :
         db.user.audit ("set",    domain_user_edit)
         db.user.audit ("create", fix_domain_username)
         db.user.audit ("set",    fix_domain_username)
+        db.domain_permission.audit ("set",    check_dp_role)
+        db.domain_permission.audit ("create", check_dp_role)
     if 'user_dynamic' in db.classes :
         db.user_dynamic.audit ("create", domain_user_check)
         db.user_dynamic.audit ("set",    domain_user_check)

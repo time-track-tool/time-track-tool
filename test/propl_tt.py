@@ -18,6 +18,17 @@ properties = \
         , 'name'
         ]
       )
+    , ( 'auto_wp'
+      , [ 'all_in'
+        , 'contract_type'
+        , 'duration'
+        , 'durations_allowed'
+        , 'is_valid'
+        , 'name'
+        , 'org_location'
+        , 'time_project'
+        ]
+      )
     , ( 'contract_type'
       , [ 'description'
         , 'name'
@@ -36,6 +47,13 @@ properties = \
         , 'description'
         , 'name'
         , 'responsible'
+        ]
+      )
+    , ( 'cost_center_permission_group'
+      , [ 'cost_center'
+        , 'description'
+        , 'name'
+        , 'permission_for'
         ]
       )
     , ( 'cost_center_status'
@@ -110,6 +128,7 @@ properties = \
       , [ 'ad_domain'
         , 'clearance_by'
         , 'default_roles'
+        , 'roles_enabled'
         , 'status'
         , 'timetracking_by'
         , 'users'
@@ -119,6 +138,18 @@ properties = \
       , [ 'content'
         , 'name'
         , 'type'
+        ]
+      )
+    , ( 'functional_role'
+      , [ 'name'
+        , 'name_group'
+        , 'rank'
+        ]
+      )
+    , ( 'job_log'
+      , [ 'comment'
+        , 'job_key'
+        , 'timestamp'
         ]
       )
     , ( 'leave_status'
@@ -140,11 +171,14 @@ properties = \
       )
     , ( 'location'
       , [ 'address'
+        , 'city'
         , 'country'
         , 'domain_part'
         , 'name'
+        , 'room_prefix'
         , 'valid_from'
         , 'valid_to'
+        , 'weekly_hours_fte'
         ]
       )
     , ( 'msg'
@@ -159,8 +193,13 @@ properties = \
         , 'type'
         ]
       )
+    , ( 'org_group'
+      , [ 'name'
+        ]
+      )
     , ( 'org_location'
-      , [ 'do_leave_process'
+      , [ 'do_auto_wp'
+        , 'do_leave_process'
         , 'group_external'
         , 'location'
         , 'name'
@@ -181,6 +220,7 @@ properties = \
         , 'may_purchase'
         , 'messages'
         , 'name'
+        , 'org_group'
         , 'valid_from'
         , 'valid_to'
         ]
@@ -198,10 +238,6 @@ properties = \
         , 'order'
         , 'required_overtime'
         , 'weekly'
-        ]
-      )
-    , ( 'position'
-      , [ 'position'
         ]
       )
     , ( 'product_family'
@@ -249,7 +285,7 @@ properties = \
         ]
       )
     , ( 'room'
-      , [ 'contacts'
+      , [ 'description'
         , 'location'
         , 'name'
         ]
@@ -337,6 +373,7 @@ properties = \
         , 'responsible'
         , 'status'
         , 'work_location'
+        , 'wps'
         ]
       )
     , ( 'time_project_status'
@@ -368,7 +405,8 @@ properties = \
         ]
       )
     , ( 'time_wp'
-      , [ 'bookers'
+      , [ 'auto_wp'
+        , 'bookers'
         , 'cost_center'
         , 'description'
         , 'durations_allowed'
@@ -421,6 +459,8 @@ properties = \
         , 'clearance_by'
         , 'contacts'
         , 'csv_delimiter'
+        , 'department_temp'
+        , 'entry_date'
         , 'firstname'
         , 'guid'
         , 'hide_message_files'
@@ -431,26 +471,26 @@ properties = \
         , 'nickname'
         , 'password'
         , 'pictures'
-        , 'position'
+        , 'planning_role'
+        , 'position_text'
         , 'queries'
         , 'realname'
         , 'reduced_activity_list'
         , 'roles'
         , 'room'
-        , 'scale_role'
         , 'scale_seniority'
         , 'sex'
         , 'status'
         , 'subst_active'
         , 'substitute'
         , 'supervisor'
+        , 'sync_foreign_key'
         , 'timetracking_by'
         , 'timezone'
         , 'timing_info'
-        , 'title'
         , 'tt_lines'
         , 'username'
-        , 'vie_user'
+        , 'vie_user_text'
         ]
       )
     , ( 'user_contact'
@@ -458,7 +498,6 @@ properties = \
         , 'contact_type'
         , 'description'
         , 'order'
-        , 'room'
         , 'user'
         , 'visible'
         ]
@@ -470,7 +509,9 @@ properties = \
         , 'contract_type'
         , 'daily_worktime'
         , 'department'
+        , 'do_auto_wp'
         , 'durations_allowed'
+        , 'exemption'
         , 'hours_fri'
         , 'hours_mon'
         , 'hours_sat'
@@ -482,6 +523,7 @@ properties = \
         , 'org_location'
         , 'overtime_period'
         , 'sap_cc'
+        , 'short_time_work_hours'
         , 'supp_per_period'
         , 'supp_weekly_hours'
         , 'travel_full'
@@ -494,6 +536,12 @@ properties = \
         , 'valid_to'
         , 'weekend_allowed'
         , 'weekly_hours'
+        ]
+      )
+    , ( 'user_functional_role'
+      , [ 'functional_role'
+        , 'ratio'
+        , 'user'
         ]
       )
     , ( 'user_status'

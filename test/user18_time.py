@@ -64,7 +64,7 @@ def import_data_18 (db, user, dep, olo) :
         )
     vcorr = db.vacation_correction.create \
         ( user     = user
-        , date     = date.Date ('2014-01-01.00:00:00')
+        , date     = date.Date ('2018-01-01.00:00:00')
         , absolute = 1
         , days     = 7.765
         )

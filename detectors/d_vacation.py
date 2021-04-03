@@ -145,6 +145,18 @@ def check_dyn_user_params (db, user, first_day, last_day) :
         d += common.day
 # end def check_dyn_user_params
 
+# These are allowed *without* a check of a valid WP because they allow
+# to leave an impossible state when a WP is changed *after* someone
+# submitted a leave request.
+allowed_stati = dict.fromkeys \
+    (( ('open',             'cancelled')
+    ,  ('submitted',        'cancelled')
+    ,  ('submitted',        'open')
+    ,  ('accepted',         'cancel requested')
+    ,  ('submitted',        'declined')
+    ,  ('cancel requested', 'cancelled')
+    ))
+
 def check_submission (db, cl, nodeid, new_values) :
     """ Check that changes to a leave submission are ok.
         We basically allow changes of first_day, last_day, and time_wp
@@ -176,7 +188,12 @@ def check_submission (db, cl, nodeid, new_values) :
     time_wp   = new_values.get ('time_wp',   cl.get (nodeid, 'time_wp'))
     comment   = new_values.get ('comment',   cl.get (nodeid, 'comment'))
     check_range (db, nodeid, user, first_day, last_day)
-    check_wp    (db, time_wp, user, first_day, last_day, comment)
+    # Allow several transitions even if WP is not valid
+    # See allowed_stati above for allowed transitions.
+    if  (  old_status == new_status
+        or (old_status, new_status) not in allowed_stati
+        ) :
+        check_wp    (db, time_wp, user, first_day, last_day, comment)
     if old_status in ('open', 'submitted') :
         vacation.create_daily_recs (db, user, first_day, last_day)
     if 'first_day' in new_values or 'last_day' in new_values :
@@ -203,7 +220,9 @@ def check_submission (db, cl, nodeid, new_values) :
             ok = False
             tp = db.time_project.getnode \
                 (db.time_wp.get (old.time_wp, 'project'))
-            if not ok and uid == user :
+            if  (    not ok
+                and (uid == user or common.user_has_role (db, uid, 'Admin'))
+                ) :
                 if old_status == 'open' and new_status == 'submitted' :
                     ok = True
                 if  (   old_status == 'accepted'
@@ -211,6 +230,8 @@ def check_submission (db, cl, nodeid, new_values) :
                     ) :
                     ok = True
                 if old_status == 'submitted' and new_status == 'open' :
+                    ok = True
+                if old_status == 'submitted' and new_status == 'cancelled' :
                     ok = True
                 if old_status == 'open' and new_status == 'cancelled' :
                     ok = True
@@ -558,11 +579,20 @@ def check_correction (db, cl, nodeid, new_values) :
             ) :
             raise Reject (_ ("Frozen"))
     # Check that vacation parameters exist in dyn. user records
-    dyn = user_dynamic.act_or_latest_user_dynamic (db, user)
+    dyn = user_dynamic.get_user_dynamic (db, user, date)
+    username = db.user.get (user, 'username')
+    # Check for initial creation of user/dynamic user record where
+    # the creation of a vacation correction is triggered
+    if not dyn :
+        dyn = user_dynamic.first_user_dynamic (db, user)
     if not dyn or dyn.valid_to and dyn.valid_to < date :
-        username = db.user.get (user, 'username')
         raise Reject \
             (_ ('No current dyn. user record for "%(username)s"') % locals ())
+    # Check that no vacation correction is created in a year before the
+    # first dynamic user record
+    if dyn.valid_from.year > date.year :
+        raise Reject \
+            (_ ('Dyn. user record starts too late for "%(username)s"') % locals ())
     while dyn and (not dyn.valid_to or dyn.valid_to > date) :
         if  (  dyn.vacation_yearly is None
             or not dyn.vacation_month

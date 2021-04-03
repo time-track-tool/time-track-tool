@@ -52,6 +52,7 @@ schemas = \
     , 'user_contact'
     , 'time_project'
     , 'time_tracker'
+    , 'job_log'
     , 'ldap'
     , 'core'
     )
@@ -83,13 +84,18 @@ prop_perms = \
         , "timetracking_by", "username", "ad_domain"
         )
       )
+    , ( "user", "View", ["IT"]
+      , ( "nickname", "pictures", "password", "roles", "timezone"
+        , "timetracking_by", "username", "ad_domain"
+        )
+      )
     , ( "user", "View", ["Controlling"], ("roles",))
     , ( "user", "View", ["User"]
       , ( "activity", "actor", "address", "alternate_addresses"
         , "clearance_by", "creation", "creator"
         , "firstname", "job_description", "lastname"
         , "id", "lunch_duration", "lunch_start", "nickname"
-        , "pictures", "position", "queries", "realname", "room", "sex"
+        , "pictures", "position_text", "queries", "realname", "room", "sex"
         , "status", "subst_active", "substitute", "supervisor", "timezone"
         , "title", "username", "tt_lines", "ad_domain"
         )

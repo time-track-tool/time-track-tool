@@ -181,6 +181,7 @@ classdict = \
 
     , 'time_project' :
         [ 'organisation.id'
+        , 'wps.bookers'
         ]
 
     , 'time_record' :
@@ -188,5 +189,8 @@ classdict = \
         , 'daily_record.date'
         , 'daily_record.status'
         , 'wp.project'
+        ]
+    , 'user' :
+        [ 'planning_role.functional_role'
         ]
     }

@@ -47,7 +47,7 @@ Role "type":
  User is allowed to edit adr_type_cat (Edit for "adr_type_cat" only)
 Role "user":
  User is allowed Edit on file if file is linked from an item with Edit permission (Edit for "file" only)
- User is allowed View on (View for "user": ('activity', 'actor', 'address', 'alternate_addresses', 'clearance_by', 'creation', 'creator', 'firstname', 'id', 'job_description', 'lastname', 'lunch_duration', 'lunch_start', 'nickname', 'pictures', 'position', 'queries', 'realname', 'room', 'sex', 'status', 'subst_active', 'subst_until', 'substitute', 'supervisor', 'timezone', 'title', 'username') only)
+ User is allowed View on (View for "user": ('activity', 'actor', 'address', 'alternate_addresses', 'creation', 'creator', 'id', 'queries', 'realname', 'status', 'timezone', 'username') only)
  User is allowed View on file if file is linked from an item with View permission (View for "file" only)
  User is allowed View on msg if msg is linked from an item with View permission (View for "msg" only)
  User is allowed to access address (View for "address" only)
@@ -81,6 +81,7 @@ Role "user":
  User is allowed to search for their own files (Search for "file" only)
  User is allowed to search for their own messages (Search for "msg" only)
  User is allowed to search for their queries (Search for "query" only)
+ User is allowed to search user_status (Search for "user": ('status',) only)
  User is allowed to view their own files (View for "file" only)
  User is allowed to view their own messages (View for "msg" only)
  User may access the rest interface (Rest Access)

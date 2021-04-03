@@ -1,0 +1,43 @@
+#!/usr/bin/python
+from __future__ import print_function
+import sys
+import os
+from roundup           import instance
+from roundup.date      import Date, Interval
+from roundup.password  import Password, encodePassword
+user    = 'admin'
+dir     = os.getcwd ()
+tracker = instance.open (dir)
+db      = tracker.open (user)
+sys.path.insert (1, os.path.join (dir, 'lib'))
+
+# Find all open it_issues
+now         = Date ('.')
+last_change = now - Interval ('30d')
+last_change = ';' + last_change.pretty ('%Y-%m-%d')
+stati  = ('new', 'open', 'feedback')
+stati  = list (db.it_issue_status.lookup (n) for n in (stati))
+closed = db.it_issue_status.lookup ('closed')
+ids    = db.it_issue.filter \
+    (None, dict (status = stati, activity = last_change))
+txt    = '''This system is END-OF-LIFE and hence this issue is closed.\n
+Please open ticket in the new system (tttech.4me.com) should the issue\n
+still persist.\n'''
+
+if ids :
+    msg = db.msg.create \
+        ( author  = user
+        , content = txt
+        , date    = now
+        )
+    for id in sorted (ids, key = lambda x : int (x)) :
+        issue = db.it_issue.getnode (id)
+        # Do nothing with containers
+        if issue.composed_of :
+            continue
+        msgs  = issue.messages
+        msgs.append (msg)
+        db.it_issue.set (id, messages = msgs, status = closed)
+        print ('Closed it_issue%s title=%s' % (id, issue.title))
+
+db.commit()

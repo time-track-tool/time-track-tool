@@ -102,16 +102,19 @@
       <th tal:content="structure python:utils.fieldname
           (classname, 'internal_order')"/>
       <td>
-       <span tal:content="structure python:context.internal_order.field ()"/>
-       <span tal:condition="context/internal_order/is_edit_ok"
-             tal:content="structure python:db.internal_order.classhelp
-                  ( 'order_number,name'
-                  , property='internal_order'
-                  , inputtype='radio'
-                  , width='800'
-                  , pagesize=1000
-                  , filter='valid=True'
-                  )"/>
+       <span class="nobreak">
+        <span tal:content="structure python:
+              context.internal_order.field (size=4)"/>
+        <span tal:condition="context/internal_order/is_edit_ok"
+              tal:content="structure python:db.internal_order.classhelp
+                   ( 'order_number,name'
+                   , property='internal_order'
+                   , inputtype='radio'
+                   , width='800'
+                   , pagesize=1000
+                   , filter='valid=True'
+                   )"/>
+       </span>
       </td>
       <th tal:content="structure python:utils.fieldname
           (classname, 'sap_reference')"/>
@@ -239,13 +242,16 @@
           (classname, 'date_approved')"/>
       <td tal:content="structure python:context.date_approved.plain ()"/>
       <th tal:content="structure python:utils.fieldname
-          (classname, 'date_ordered')"/>
-      <td tal:content="structure python:context.date_ordered.plain ()"/>
+          (classname, 'payment_type')"/>
+      <td tal:content="structure python:context.payment_type.menu ()"/>
      </tr>
      <tr>
       <th tal:content="structure python:utils.fieldname
           (classname, 'renew_until')"/>
       <td tal:content="structure python:context.renew_until.field ()"/>
+      <th tal:content="structure python:utils.fieldname
+          (classname, 'date_ordered')"/>
+      <td tal:content="structure python:context.date_ordered.plain ()"/>
      </tr>
      <tr>
       <th tal:content="structure python:utils.fieldname
@@ -285,16 +291,11 @@
      </tr>
      <tr>
       <th tal:content="structure python:utils.fieldname
-          (classname, 'infosec_project')"/>
-      <td tal:content="structure python:context.infosec_project.plain ()"/>
-      <th tal:content="structure python:utils.fieldname
-          (classname, 'infosec_pt')"/>
-      <td tal:content="structure python:context.infosec_pt.field ()"/>
-     </tr>
-     <tr>
-      <th tal:content="structure python:utils.fieldname
           (classname, 'infosec_level')"/>
-      <td tal:content="structure python:context.infosec_level.menu ()"/>
+      <td tal:content="structure python:context.infosec_level.plain ()"/>
+      <th tal:content="structure python:utils.fieldname
+          (classname, 'purchase_risk_type')"/>
+      <td tal:content="structure python: context.purchase_risk_type.plain ()"/>
      </tr>
      <tr>
       <th colspan="4">
@@ -364,12 +365,30 @@
          <th style="text-align:left"
              tal:content="structure python:utils.fieldname
              ('pr_offer_item', 'purchase_type')"/>
+         <th style="text-align:left"
+             tal:content="structure python:utils.fieldname
+             ('pr_offer_item', 'internal_order')"/>
+        </tr>
+        <tr>
+         <th/>
+         <th style="text-align:left"
+             tal:content="structure python:utils.fieldname
+             ('pr_offer_item', 'product_group')"/>
+         <th style="text-align:left"
+             tal:content="structure python:utils.fieldname
+             ('pr_offer_item', 'infosec_level')"/>
+         <th style="text-align:left"
+             tal:content="structure python:utils.fieldname
+             (context, 'purchase_security_risk')"/>
+         <th style="text-align:left"
+             tal:content="structure python:utils.fieldname
+             (context, 'payment_type')"/>
         </tr>
         <tal:block tal:repeat="i python:sorted
             (context.offer_items, key = lambda x : x.index)">
          <tbody>
           <tr>
-           <td rowspan="3"
+           <td rowspan="4"
             tal:content="structure python:i.index.field (size=3)"/>
            <td rowspan="2">
             <textarea wrap="soft" cols="30" rows="3"
@@ -438,8 +457,63 @@
            <td tal:content="structure python:i.sap_cc.menu (** tc_filt)"/>
            <td tal:content="structure python:i.purchase_type.menu
                (valid = True)"/>
+           <td>
+            <span class="nobreak">
+             <span tal:content="structure python:
+                   i.internal_order.field (size=4)"/>
+             <span tal:condition="i/internal_order/is_edit_ok"
+                   tal:content="structure python:db.internal_order.classhelp
+                        ( 'order_number,name'
+                        , property='pr_offer_item%s@internal_order' % i.id
+                        , inputtype='radio'
+                        , width='800'
+                        , pagesize=1000
+                        , filter='valid=True'
+                        )"/>
+            </span>
+           </td>
            <td/>
            <td/>
+          </tr>
+          <tr>
+           <td class="tooltip" tal:define="
+                ep python:utils.ExtProperty
+                  ( utils
+                  , i.product_group
+                  , item = i
+                  , help_groupby = 'pg_category'
+                  , do_classhelp = True
+                  , editable     = True
+                  , fieldwidth   = 25
+                  )">
+            <span tal:content="structure python: ep.as_listentry ()"/>
+            <span tal:content="structure python:db.product_group.classhelp
+             ( 'name,sap_ref'
+             , property  = ep.prop._formname
+             , inputtype = 'radio'
+             , width     = '800'
+             , pagesize  = '1500'
+             , group     = 'pg_category'
+             )"/>
+            <span class="tooltiptext"
+                  tal:condition="python:not i.product_group.is_edit_ok ()"
+                  tal:content="python:'SAP: ' + str (i.product_group.sap_ref)"/>
+           </td>
+           <td class="tooltip">
+            <span tal:content="structure python:i.infosec_level.menu ()"
+                  tal:attributes="class python:
+                      ['', 'warn']
+                      [i.infosec_level.name != utils.orig_infosec_level (i)]"/>
+            <span class="tooltiptext"
+                  tal:condition="python:
+                      not i.product_group.is_edit_ok ()
+                      and utils.orig_infosec_level (i)"
+                  tal:content="python:utils.orig_infosec_level (i)"/>
+           </td>
+           <td class="emphasized"
+               tal:content="structure python:utils.risk_type (db, i)"/>
+           <td tal:content="structure python:i.payment_type.menu ()"
+               colspan="2" />
            <td/>
           </tr>
          </tbody>
@@ -451,7 +525,7 @@
          tal:repeat="idx python:range(1,offer_list_length + 1)">
          <tbody>
           <tr>
-           <td rowspan="3" tal:content="structure python:utils.new_property
+           <td rowspan="4" tal:content="structure python:utils.new_property
                (context, db, 'pr_offer_item', -idx, 'index').field (size=3)"/>
            <td rowspan="2">
             <textarea wrap="soft" cols="30" rows="3"
@@ -508,8 +582,44 @@
            <td tal:content="structure python:utils.new_property
                (context, db, 'pr_offer_item', -idx, 'purchase_type').menu
                   (valid = True)"/>
+           <td>
+            <span class="nobreak">
+             <span tal:content="structure python:utils.new_property
+                 (context, db, 'pr_offer_item', -idx, 'internal_order')
+                 .field (size=4) "/>
+             <span tal:content="structure python:db.internal_order.classhelp
+                        ( 'order_number,name'
+                        , property='pr_offer_item-%s@internal_order' % idx
+                        , inputtype='radio'
+                        , width='800'
+                        , pagesize=1000
+                        , filter='valid=True'
+                        )"/>
+            </span>
+           </td>
            <td/>
            <td/>
+           <td/>
+          </tr>
+          <tr>
+           <td>
+            <span tal:content="structure python:utils.new_property
+             (context, db, 'pr_offer_item', -idx, 'product_group').field
+             (size = 25)"/>
+            <span tal:content="structure python:db.product_group.classhelp
+             ( 'name,sap_ref'
+             , property = 'pr_offer_item-%s@product_group' % idx
+             , inputtype = 'radio'
+             , width = '800'
+             , pagesize = 1500
+             , group = 'pg_category'
+             )"/>
+           </td>
+           <td tal:content="structure python:utils.new_property
+             (context, db, 'pr_offer_item', -idx, 'infosec_level').menu ()"/>
+           <td/>
+           <td colspan="2" tal:content="structure python:utils.new_property
+             (context, db, 'pr_offer_item', -idx, 'payment_type').menu ()"/>
            <td/>
           </tr>
          </tbody>
@@ -555,7 +665,9 @@
                 (None, dict (purchase_request = context.id))">
          <tr tal:repeat="i python:sorted (app, key = lambda x : x.order)">
           <td tal:content="structure python:i.status.menu ()"/>
-          <td tal:content="python:i.date.pretty (utils.ymd)"/>
+          <td tal:condition="python: not isinstance (i.date._value, type (''))"
+              tal:content="python:i.date.pretty (utils.ymd)"/>
+          <td tal:condition="python: isinstance (i.date._value, type (''))"/>
           <td tal:content="python:i.role.plain ()"/>
           <td tal:condition="python:i.status.plain () == 'approved'"
               tal:content="structure python:i.by.plain ()"/>
@@ -564,10 +676,19 @@
               <span tal:condition="i/deputy"
                     tal:content="python:'/ '+i.deputy.plain ()"/>
           </td>
-          <td tal:content="python:i.description.plain ()"/>
-          <input type="hidden" value="msg-1"
-             tal:condition="i/status/is_edit_ok"
-             tal:attributes="name python: 'pr_approval%s@link@msg' % i.id" />
+          <td>
+           <span tal:content="python:i.description.plain ()"/>
+           <input type="hidden" value="msg-1"
+              tal:condition="i/status/is_edit_ok"
+              tal:attributes="name python: 'pr_approval%s@link@msg' % i.id" />
+           <input type="hidden" tal:condition="i/status/is_edit_ok"
+              value="." tal:attributes="
+                name  python: 'pr_approval%s@date' % i.id"/>
+           <input type="hidden" tal:condition="i/status/is_edit_ok"
+              tal:attributes="
+                name  python:'pr_approval%s@link@purchase_request' % i.id;
+                value python:'purchase_request%s' % context.id"/>
+          </td>
          </tr>
         </tal:block>
        </table>

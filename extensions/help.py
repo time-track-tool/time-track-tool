@@ -309,6 +309,8 @@ _helptext          = \
       [""'''Other aliases this %(Classname)s maps to''']
     , ""'alias_to_user'               :
       [""'''List of users this %(Classname)s maps to''']
+    , ""'auto_wp++all_in'             :
+      [""'''If selected, create Automatic Workpackages also for all-in users''']
     , ""'all_in'                      :
       [""'''If selected, the user has an all-inclusive work time contract''']
     , ""'alarm++val'                  :
@@ -355,6 +357,12 @@ _helptext          = \
       [""'''Author of this %(Classname)s''']
     , ""'authors'                     :
       [""'''Authors of the artefact of this %(Classname)s''']
+    , ""'auto_wp++duration'           :
+      [""'''%(Property)s in days of the auto workpackage: The time is
+            measured from the start of the first dynamic user record of
+            the user for whom an automatic workpackage is created.
+         '''
+      ]
     , ""'aux_username'                :
       [""'''Additional username used in subsidiaries or similar''']
     , ""'balance'                     :
@@ -765,6 +773,8 @@ _helptext          = \
           '''
       , green
       ]
+    , ""'entry_date'                  :
+      [""'''Date of entry into the group''']
     , ""'epic_key'                    :
       [ ""'''Unique identifier of the corresponding Epic Issue in Jira
              that is to be synced with the Work Package. It consists of
@@ -775,6 +785,11 @@ _helptext          = \
       [ ""'''Amount of this currency we can buy for 1 unit of the key
              currency (e.g. if the key currency is Euro, how many $ do
              we get for one Euro)
+          '''
+      ]
+    , ""'exemption'                   :
+      [ ""'''Select yes, if exempted. If selected, this person is not
+             available in the staff planning.
           '''
       ]
     , ""'ext_attributes'              :
@@ -941,11 +956,6 @@ _helptext          = \
             index numbers will be automatically set when saving the PR.
          '''
       ]
-    , ""'infosec_req'                 :
-      [""'''Set this flag if the %(Classname)s has special information
-            security requirements (TISAX).
-         '''
-      ]
     , ""'infosec_project'             :
       [""'''Automatically set if one of the Time Categories has special
             information security requirements (TISAX).
@@ -956,6 +966,14 @@ _helptext          = \
             security requirements (TISAX). This flag is automatically
             set if any of the selected Purchase Types has special
             information security requirements.
+         '''
+      ]
+    , ""'ingredient'                  :
+      [""'''%(Property)s of a recipe.''' ]
+    , ""'ingredient.name'             :
+      [""'''Name of ingredient of a recipe.''' ]
+    , ""'infosec_level'               :
+      [""'''Information security level
          '''
       ]
     , ""'inherit_ext'                 :
@@ -1329,6 +1347,14 @@ _helptext          = \
       [""'''%(Property)s on this %(Classname)s, one per line
          '''
       ]
+    , ""'offer_items.infosec_level'   :
+      [""'''Information security level
+         '''
+      ]
+    , ""'offer_items.internal_order'   :
+      [""'''Internal order on offer item level
+         '''
+      ]
     , ""'offer_number'                :
       [ ""'''Optional field for supplier offer number
           '''
@@ -1451,8 +1477,8 @@ _helptext          = \
              person days, so you have to convert old values to hours!
           '''
       ]
-    , ""'position'                    :
-      [""'''%(Property)s in the company''']
+    , ""'position_text'               :
+      [""'''%(Property)s in the group''']
     , ""'postalcode'                  :
       [""'''Postal code for this %(Classname)s ''']
     , ""'pr_approval_config++pr_ext_resource' :
@@ -1591,6 +1617,10 @@ _helptext          = \
              Complete the respective annex and upload it to the PR issue.
              </p>
           '''
+      ]
+    , ""'purchase_request++infosec_level'               :
+      [""'''Maximum Information security level of all offer items
+         '''
       ]
     , ""'purchase_request++msg'              :
       [ ""'''During creation the message field may be used for
@@ -1873,6 +1903,11 @@ _helptext          = \
       [ ""'''Shelf life in months''' ]
     , ""'shipping_address'            :
       [""'''Data for %(Property)s''']
+    , ""'short_time_work_hours'       :
+      [ ""'''Weekly hours reported in FTE reporting if this person is
+             working short time
+          '''
+      ]
     , ""'show_all_users'              :
       [ ""'''If this option is selected, the result will also include
              users that do not
@@ -1946,6 +1981,10 @@ _helptext          = \
              "Substitute" for delegating time record approval.
           '''
       ]
+    , ""'substance'                   :
+      [""'''%(Property)s described by a recipe.''' ]
+    , ""'substance.name'              :
+      [""'''Name of substance described by a recipe.''' ]
     , ""'supplier'                    : [supplier]
     , ""'summary'                     :
       [""'''Short summary of this message (usually first line)''']
@@ -2051,6 +2090,11 @@ _helptext          = \
       [superseder, multiple_allowed]
     , ""'support++type'               :
       [""'Type of %(Classname)s']
+    , ""'sync_foreign_key'            :
+      [ ""'''Sync-key for synchronizing with external database, leave
+             empty if unsure.
+          '''
+      ]
     , ""'sync_with_ldap'              :
       [ ""'''Enabled if this %(Classname)s should be synched with ldap --
              when the user changes PW via PAM, the pw in roundup will be
@@ -2299,9 +2343,11 @@ _helptext          = \
             in the same country, the local VAT is applicable.
          '''
       ]
-    , ""'vie_user'                    :
-      [ ""'''Exclusively used for RT-RK to link to the corresponding
-             @ds1.internal user, leave this field empty.
+    , ""'vie_user_text'               :
+      [ ""'''Exclusively used for linking to the corresponding
+             @ds1.internal user, leave this field empty. Note that this
+             is now a text-field since most users are not in the
+             time-tracker.
           '''
       ]
     , ""'view_roles'                  :
@@ -2339,6 +2385,8 @@ _helptext          = \
       [""'''Flag if booking on weekends is allowed for this %(Classname)s.''']
     , ""'weekly_hours'                :
       [""'''Expected weekly work-time for %(Classname)s.''']
+    , ""'weekly_hours_fte'            :
+      [""'''Weekly full time equivalent hours for %(Classname)s.''']
     , ""'wp'                          :
       [ ""'''Only work packages where you have permission to register show
              here. If you miss one, please contact the responsible project
@@ -2462,7 +2510,7 @@ def fieldname \
     return (_ (''"""<a %(csscls)s title=\"Help for %(i18nprop)s\" """
                """href=\"javascript:help_window"""
                """('%(cls)s?:template=property_help#%(href)s', """
-               """'500', '400')\" """
+               """'800', '400')\" """
                """tabindex="-1">%(label1)s"""
                """%(i18nprop)s%(label2)s%(endswith)s</a>""" \
               ) % locals ()

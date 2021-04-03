@@ -3,6 +3,7 @@
 import sys
 import ldap
 import user_dynamic
+import common
 
 from copy                import copy
 from traceback           import print_exc
@@ -63,12 +64,6 @@ def get_name (user, attr) :
     cl = user.cl.db.classes [attr]
     return cl.get (user [attr], 'name')
 # end def get_name
-
-def get_position (user, attr) :
-    """ Get position name from roundup user class """
-    assert (attr == 'position')
-    return user.cl.db.position.get (user.position, 'position')
-# end def get_position
 
 def tohex (s) :
     return ''.join ('%02X' % ord (k) for k in s)
@@ -275,11 +270,12 @@ class LDAP_Roundup_Sync (object) :
                 , self.ldap_picture
                 , False
                 )
-        if 'position' in props and 'position' not in dontsync :
-            attr_u ['position'] = \
+        if 'position_text' in props and 'position_text' not in dontsync :
+            # We sync that field *to* ldap but not *from* ldap.
+            attr_u ['position_text'] = \
                 ( 'title'
-                , get_position
-                , self.cls_lookup (self.db.position, 'position')
+                , 1
+                , None
                 , False
                 )
         if 'realname' in props and 'realname' not in dontsync :
@@ -296,10 +292,7 @@ class LDAP_Roundup_Sync (object) :
             attr_u ['room'] = \
                 ( 'physicalDeliveryOfficeName'
                 , get_name
-                , self.cls_lookup
-                    ( self.db.room
-                    , 'name'
-                    )
+                , self.cls_lookup (self.db.room)
                 , False
                 )
         if 'substitute' in props and 'substitute' not in dontsync :
@@ -314,13 +307,6 @@ class LDAP_Roundup_Sync (object) :
                 ( 'manager'
                 , self.get_username_attribute_dn
                 , self.get_roundup_uid_from_dn_attr
-                , False
-                )
-        if 'title' in props and 'title' not in dontsync :
-            attr_u ['title'] = \
-                ( 'carLicense'
-                , 1
-                , lambda x, y : x.get (y, [None])[0]
                 , False
                 )
         if 'guid' in props and 'guid' not in dontsync :
@@ -402,7 +388,7 @@ class LDAP_Roundup_Sync (object) :
             Needed for easy check if an LDAP attribute exists as a
             roundup class. We need the roundup class in a closure.
         """
-        def look (luser, txt) :
+        def look (luser, txt, **dynamic_params) :
             try :
                 key = luser [txt][0]
             except KeyError :
@@ -415,7 +401,11 @@ class LDAP_Roundup_Sync (object) :
                 if self.verbose :
                     print "Update roundup: new %s: %s" % (cls.classname, key)
                 if self.update_roundup :
-                    d = params or {}
+                    d = {}
+                    if params :
+                        d.update (params)
+                    if dynamic_params :
+                        d.update (dynamic_params)
                     d [insert_attr_name] = key
                     return cls.create (** d)
             return None
@@ -540,6 +530,8 @@ class LDAP_Roundup_Sync (object) :
             return s
         s = self.db.user.get (s, 'username')
         r = self.get_ldap_user_by_username (s)
+        if r is None :
+            return None
         return r.dn
     # end def get_username_attribute_dn
 
@@ -831,10 +823,13 @@ class LDAP_Roundup_Sync (object) :
             assert len (uids) == 1
             uid = uids [0]
         else :
-            try :
-                uid   = self.db.user.lookup  (username)
-            except KeyError :
-                pass
+            # Try with full username and with username without domain
+            for u in (username, username.split ('@') [0]) :
+                try :
+                    uid   = self.db.user.lookup  (u)
+                    break
+                except KeyError :
+                    pass
         user  = uid and self.db.user.getnode (uid)
         if user and not luser and user.guid :
             luser = self.get_ldap_user_by_guid (fromhex (user.guid))
@@ -864,7 +859,6 @@ class LDAP_Roundup_Sync (object) :
                     v = method (luser, lk)
                     if v or em :
                         d [k] = v
-
             if self.contact_types :
                 self.sync_contacts_from_ldap (luser, user, d)
             new_status_id = self.members [luser.dn.lower ()]
@@ -902,26 +896,27 @@ class LDAP_Roundup_Sync (object) :
                     uid = self.db.user.create (** d)
                     changed = True
                     # Perform user creation magic for new user
-                    olo = dep = None
-                    if 'company' in luser :
-                        olo = luser ['company'][0]
-                        try :
-                            olo = self.db.org_location.lookup (olo)
-                        except KeyError :
-                            olo = None
-                    if 'department' in luser :
-                        dep = luser ['department'][0]
-                        try :
-                            dep = self.db.department.lookup (dep)
-                        except KeyError :
-                            dep = None
-                    if self.verbose :
-                        print \
-                            ( "Dynamic user create magic: %s, "
-                              "org_location: %s, department: %s"
-                            % (username, olo, dep)
-                            )
-                    user_dynamic.user_create_magic (self.db, uid, olo, dep)
+                    if 'org_location' in self.db.classes :
+                        olo = dep = None
+                        if 'company' in luser :
+                            olo = luser ['company'][0]
+                            try :
+                                olo = self.db.org_location.lookup (olo)
+                            except KeyError :
+                                olo = None
+                        if 'department' in luser :
+                            dep = luser ['department'][0]
+                            try :
+                                dep = self.db.department.lookup (dep)
+                            except KeyError :
+                                dep = None
+                        if self.verbose :
+                            print \
+                                ( "Dynamic user create magic: %s, "
+                                  "org_location: %s, department: %s"
+                                % (username, olo, dep)
+                                )
+                        user_dynamic.user_create_magic (self.db, uid, olo, dep)
         if changed and self.update_roundup :
             self.db.commit ()
     # end def sync_user_from_ldap
@@ -1226,7 +1221,15 @@ class LdapLoginAction (LoginAction, autosuper) :
             pass
         # sync the user
         self.client.error_message = []
-        if self.try_ldap () :
+        if  ( common.user_has_role
+                (self.db, self.client.userid, 'admin', 'sub-login')
+            ) :
+            if not user :
+                raise exceptions.LoginError (self._ ('Invalid login'))
+            if user.status == invalid :
+                raise exceptions.LoginError (self._ ('Invalid login'))
+            self.client.userid = user.id
+        elif self.try_ldap () :
             self.ldsync.sync_user_from_ldap (username)
             try :
                 user = self.db.user.lookup  (username)

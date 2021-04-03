@@ -25,3 +25,5 @@ ssl.pem
 _test*
 maildebug
 db
+t.py
+*.csv

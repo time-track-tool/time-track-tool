@@ -626,7 +626,7 @@ class _Report (autosuper) :
             item = self.htmldb [classname].getItem (id)
             prop = getattr (item, propname)
             return self.utils.ExtProperty (self.utils, prop, item = item)
-        except AttributeError :
+        except (AttributeError, TypeError) :
             return self.db.getclass (classname).get (id, propname)
     # end def linked_type
 
@@ -1473,7 +1473,7 @@ class Staff_Report (_Report) :
         container ['actual_open']            = 0
         container ['actual_submitted']       = 0
         container ['actual_accepted']        = 0
-        container ['required']               = 0
+        container ['required']               = 0.0
         container ['supp_hours_2']           = 0
         container ['supp_weekly_hours']      = 0
         container ['additional_hours']       = 0

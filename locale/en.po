@@ -828,7 +828,7 @@ msgid "new %(adr_to)s from %(adr_frm)s"
 msgstr ""
 
 #, python-format
-msgid "Submit to %(nickname)s"
+msgid "Submit"
 msgstr ""
 
 msgid "supervisor"
@@ -1703,9 +1703,6 @@ msgstr ""
 #, python-format
 msgid "%(cc)s responsible/deputy"
 msgstr ""
-
-msgid "position"
-msgstr "Position"
 
 msgid "sex"
 msgstr ""
@@ -2670,6 +2667,9 @@ msgstr "Project type"
 msgid "all_in"
 msgstr "All in"
 
+msgid "auto_wp++all_in"
+msgstr "All in"
+
 msgid "show_empty"
 msgstr "show empty"
 
@@ -2773,6 +2773,9 @@ msgid "wp"
 msgstr "Work package"
 
 msgid "duration"
+msgstr "Duration"
+
+msgid "auto_wp++duration"
 msgstr "Duration"
 
 msgid "start_generated"
@@ -2956,7 +2959,16 @@ msgid "part_of_budget"
 msgstr "Part of budget"
 
 msgid "infosec_level"
-msgstr "InfoSec Security Level"
+msgstr "Protection Level"
+
+msgid "purchase_request++infosec_level"
+msgstr "Protection Level"
+
+msgid "offer_items.infosec_level"
+msgstr "Offer Item Protection Level"
+
+msgid "offer_items.internal_order"
+msgstr "Offer Item Internal order"
 
 msgid "pr_currency"
 msgstr "Currency"
@@ -3005,6 +3017,15 @@ msgstr "External resources"
 
 msgid "infosec_amount"
 msgstr "Amount for InfoSec approval"
+
+msgid "payment_type"
+msgstr "Payment type"
+
+msgid "payment_type_amount"
+msgstr "Amount for payment type approval"
+
+msgid "need_approval"
+msgstr "Needs approval"
 
 msgid "pr_approval_order"
 msgstr "Approval order"
@@ -3086,9 +3107,6 @@ msgstr "Terms & conditions"
 
 msgid "order_number"
 msgstr ""
-
-msgid "infosec_pt"
-msgstr "InfoSec Purchase Type"
 
 msgid "safety_critical"
 msgstr "Safety critical"
@@ -3366,7 +3384,7 @@ msgstr "Want no messages"
 msgid "timing_info"
 msgstr ""
 
-msgid "vie_user"
+msgid "vie_user_text"
 msgstr "TTTech internal user"
 
 msgid "nickname"
@@ -4260,11 +4278,8 @@ msgstr "Metadata"
 msgid "is_extern"
 msgstr "is extern"
 
-msgid "scale_role"
-msgstr "Scale Role"
-
 msgid "scale_seniority"
-msgstr "Seniority"
+msgstr "Functional Seniority"
 
 msgid "group_external"
 msgstr "Group external"
@@ -4272,3 +4287,131 @@ msgstr "Group external"
 msgid "sap_lifnr"
 msgstr "SAP creditor (LIFNR)"
 
+msgid "sync_foreign_key"
+msgstr "Sync Key"
+
+msgid "entry_date"
+msgstr "Entry date"
+
+msgid "position_text"
+msgstr "Position"
+
+msgid "ratio"
+msgstr "Ratio"
+
+msgid "rank"
+msgstr "Rank"
+
+msgid "name_group"
+msgstr "Name group"
+
+msgid "functional_role"
+msgstr "Functional role"
+
+msgid "user_functional_role"
+msgstr "Functional role of user"
+
+msgid "planning_role"
+msgstr "Planning role"
+
+msgid "department_temp"
+msgstr "Department (temp)"
+
+msgid "weekly_hours_fte"
+msgstr "Weekly hours FTE"
+
+msgid "exemption"
+msgstr "Exemption"
+
+msgid "short_time_work_hours"
+msgstr "Short-time work hours"
+
+msgid "job_log"
+msgstr "Job log"
+
+msgid "job_key"
+msgstr "Job key"
+
+msgid "timestamp"
+msgstr "Timestamp"
+
+msgid "room_prefix"
+msgstr "Room prefix"
+
+msgid "org_group"
+msgstr "Organisation group"
+
+msgid "auto_wp"
+msgstr "Automatic Workpackage"
+
+msgid "do_auto_wp"
+msgstr "Auto WP"
+
+msgid "substance"
+msgstr "Substance"
+
+msgid "substance.name"
+msgstr "Substance name"
+
+msgid "ingredient"
+msgstr "Ingredient"
+
+msgid "ingredient.name"
+msgstr "Ingredient name"
+
+msgid "ingredient_used_by_substance"
+msgstr "Ingredient used by Substance"
+
+msgid "identifier"
+msgstr "Identifier"
+
+msgid "quantity"
+msgstr "Quantity"
+
+msgid "rc_product"
+msgstr "Product"
+
+msgid "rc_product_type"
+msgstr "Product type"
+
+msgid "rc_application"
+msgstr "Application"
+
+msgid "rc_substrate"
+msgstr "Substrate"
+
+msgid "rc_suitability"
+msgstr "Suitability"
+
+msgid "rc_brand"
+msgstr "Brand"
+
+msgid "rc_capability"
+msgstr "Capability"
+
+msgid "cost_center_permission_group"
+msgstr "Productivity Permission"
+
+msgid "permission_for"
+msgstr "Permission for"
+
+msgid "security_req_group"
+msgstr "Security requirements group"
+
+msgid "supplier_risk_category"
+msgstr "Supplier risk category"
+
+msgid "purchase_risk_type"
+msgstr "Purchase risk type"
+
+msgid "purchase_security_risk"
+msgstr "Purchase security risk"
+
+msgid "pr_supplier_risk"
+msgstr "Supplier risk"
+
+msgid "is_consulting"
+msgstr "is consulting"
+
+msgid "pg_category"
+msgstr "Product group category"

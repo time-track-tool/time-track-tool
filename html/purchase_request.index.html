@@ -36,18 +36,24 @@
         ( utils, pdict ['internal_order']
         , help_props = ('name', )
         )
-    , utils.ExtProperty (utils, pdict ['purchase_type'],    multiselect = 1)
-    , utils.ExtProperty (utils, pdict ['infosec_project'])
-    , utils.ExtProperty (utils, pdict ['infosec_pt'])
-    , utils.ExtProperty (utils, pdict ['infosec_level'],    multiselect = 1)
+    , utils.ExtProperty
+        ( utils, pdict ['offer_items']
+        , searchable  = True
+        , sortable    = False
+        , searchname  = 'offer_items.internal_order'
+        , help_props  = ('name', )
+        )
+    , utils.ExtProperty (utils, pdict ['purchase_type'],      multiselect = 1)
+    , utils.ExtProperty (utils, pdict ['infosec_level'],      multiselect = 1)
+    , utils.ExtProperty (utils, pdict ['purchase_risk_type'], multiselect = 1)
     , utils.ExtProperty (utils, pdict ['safety_critical'])
-    , utils.ExtProperty (utils, pdict ['part_of_budget'],   multiselect = 1)
+    , utils.ExtProperty (utils, pdict ['part_of_budget'],     multiselect = 1)
     , utils.ExtProperty (utils, pdict ['frame_purchase'])
     , utils.ExtProperty (utils, pdict ['frame_purchase_end'])
     , utils.ExtProperty (utils, pdict ['continuous_obligation'])
     , utils.ExtProperty (utils, pdict ['contract_term'])
     , utils.ExtProperty (utils, pdict ['intended_duration'])
-    , utils.ExtProperty (utils, pdict ['terms_conditions'], multiselect = 1)
+    , utils.ExtProperty (utils, pdict ['terms_conditions'],   multiselect = 1)
     , utils.ExtProperty (utils, pdict ['renegotiations'])
     , utils.ExtProperty (utils, pdict ['delivery_deadline'])
     , utils.ExtProperty (utils, pdict ['date_approved'])
@@ -97,6 +103,27 @@
         , searchable  = True
         , sortable    = False
         , searchname  = 'offer_items.pr_supplier'
+        , multiselect = True
+        )
+    , utils.ExtProperty
+        ( utils, pdict ['offer_items']
+        , searchable  = True
+        , sortable    = False
+        , searchname  = 'offer_items.payment_type'
+        , multiselect = True
+        )
+    , utils.ExtProperty
+        ( utils, pdict ['offer_items']
+        , searchable  = True
+        , sortable    = False
+        , searchname  = 'offer_items.infosec_level'
+        , multiselect = True
+        )
+    , utils.ExtProperty
+        ( utils, pdict ['offer_items']
+        , searchable  = True
+        , sortable    = False
+        , searchname  = 'offer_items.product_group'
         , multiselect = True
         )
     );

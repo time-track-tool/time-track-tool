@@ -66,10 +66,14 @@
         , searchable = False
         )
       )
-    , ('creation', {})
-    , ('creator',  {})
-    , ('activity', {})
-    , ('actor',    {})
+    , ('contract_type',         dict (multiselect = 1))
+    , ('do_auto_wp',            {})
+    , ('exemption',             {})
+    , ('short_time_work_hours', {})
+    , ('creation',              {})
+    , ('creator',               {})
+    , ('activity',              {})
+    , ('actor',                 {})
     );
     props python:
         [ utils.ExtProperty (utils, pdict [p [0]], ** p [1])

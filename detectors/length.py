@@ -65,9 +65,6 @@ def init (db) :
     if 'org_location' in db.classes :
         db.org_location.audit ("create", check_proplen)
         db.org_location.audit ("set",    check_proplen)
-    if 'position' in db.classes :
-        db.position.audit ("create", check_proplen_128)
-        db.position.audit ("set",    check_proplen_128)
     if 'room' in db.classes :
         db.room.audit ("create", check_proplen_128)
         db.room.audit ("set",    check_proplen_128)

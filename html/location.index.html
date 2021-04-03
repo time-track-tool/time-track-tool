@@ -8,21 +8,26 @@
  <tal:block tal:define=
   "batch request/batch;
    pdict python: utils.properties_dict (db, context);
-   props python:
-    ( utils.ExtProperty (utils, pdict ['id'])
-    , utils.ExtProperty (utils, pdict ['name'])
-    , utils.ExtProperty (utils, pdict ['country'])
-    , utils.ExtProperty (utils, pdict ['address'])
-    , utils.ExtProperty
-        ( utils, pdict ['valid_from']
-        , get_cssclass = lambda x: 'nobreak'
-        )
-    , utils.ExtProperty
-        ( utils, pdict ['valid_to']
-        , get_cssclass = lambda x: 'nobreak'
-        )
-    , utils.ExtProperty (utils, pdict ['domain_part'])
+   l python:
+    ( ('id',               {})
+    , ('name',             {})
+    , ('country',          {})
+    , ('city',             {})
+    , ('address',          {})
+    , ( 'valid_from',      dict (get_cssclass = lambda x: 'nobreak'))
+    , ( 'valid_to',        dict (get_cssclass = lambda x: 'nobreak'))
+    , ('weekly_hours_fte', {})
+    , ('room_prefix',      {})
+    , ('domain_part',      {})
+    , ('creation',         {})
+    , ('creator',          {})
+    , ('activity',         {})
+    , ('actor',            {})
     );
+   props python:
+        [ utils.ExtProperty (utils, pdict [p [0]], ** p [1])
+          for p in l if p [0] in pdict
+        ]
    "
   tal:condition="context/is_view_ok">
 

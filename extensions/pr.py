@@ -181,6 +181,25 @@ def pr_type_valid_agents (db, pr_type_id) :
     return list (users)
 # end def pr_type_valid_agents
 
+def risk_type (db, offer_item) :
+    rid = prlib.risk_type (db._db, offer_item.id)
+    if rid :
+        return db._db.purchase_risk_type.get (rid, 'name')
+    return ''
+# end def risk_type
+
+def orig_infosec_level (offer_item) :
+    db = offer_item._db
+    oi = db.pr_offer_item.getnode (offer_item.id)
+    if not oi.product_group :
+        return ''
+    pg = db.product_group.getnode (oi.product_group)
+    if not pg.infosec_level :
+        return ''
+    il = db.infosec_level.getnode (pg.infosec_level)
+    return il.name
+# end def orig_infosec_level
+
 def init (instance) :
     act = instance.registerAction
     act ('pr_sign', Sign_Purchase_Request)
@@ -194,4 +213,6 @@ def init (instance) :
     reg ('pr_filter_status_transitions', pr_filter_status_transitions)
     reg ('pr_justification',             pr_justification)
     reg ('pr_type_valid_agents',         pr_type_valid_agents)
+    reg ('risk_type',                    risk_type)
+    reg ('orig_infosec_level',           orig_infosec_level)
 # end def init

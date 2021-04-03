@@ -1,5 +1,5 @@
-# -*- coding: iso-8859-1 -*-
-# Copyright (C) 2010-13 Ralf Schlatterbeck. All rights reserved
+# -*- coding: utf-8 -*-
+# Copyright (C) 2010-21 Ralf Schlatterbeck. All rights reserved
 # Reichergasse 131, A-3411 Weidling
 # ****************************************************************************
 #
@@ -38,8 +38,26 @@ from email.parser import Parser
 from mailbox      import mbox
 from base64       import b64decode
 
+from roundup.test          import memorydb
+from roundup               import backends
+# Inject memorydb
+backends.memorydb = memorydb
+from roundup               import configuration
 from roundup.exceptions    import Reject
-from roundup.configuration import Option
+
+Option = configuration.Option
+
+
+# Monkey-patch Database
+# Some trackers inject sql for generating indices or unique constraints
+def sql (self, s, *args) :
+    t = ('alter table', 'create index')
+    for x in t :
+        if s.lower ().startswith (t) :
+            break
+    else :
+        assert False, "Unfakeable sql encountered"
+memorydb.Database.sql = sql
 
 from propl_abo     import properties as properties_abo
 from propl_adr     import properties as properties_adr
@@ -110,12 +128,13 @@ def header_decode (h) :
     return header_regex.sub ('', h)
 # end def header_decode
 
-class _Test_Case (unittest.TestCase) :
+class _Test_Base :
     count = 0
     db = None
     roles = ['admin']
     schemafile = None
     maxDiff = None
+    backend = 'memorydb'
     allroles = dict.fromkeys \
         (('abo'
         , 'abo+invoice'
@@ -123,6 +142,7 @@ class _Test_Case (unittest.TestCase) :
         , 'adr_readonly'
         , 'anonymous'
         , 'board'
+        , 'cc-permission'
         , 'contact'
         , 'controlling'
         , 'discount'
@@ -134,6 +154,7 @@ class _Test_Case (unittest.TestCase) :
         , 'external'
         , 'facility'
         , 'finance'
+        , 'functional-role'
         , 'guest'
         , 'hr'
         , 'hr-approval'
@@ -154,6 +175,7 @@ class _Test_Case (unittest.TestCase) :
         , 'msgsync'
         , 'nosy'
         , 'office'
+        , 'organisation'
         , 'pbx'
         , 'pgp'
         , 'pr-view'
@@ -170,6 +192,7 @@ class _Test_Case (unittest.TestCase) :
         , 'staff-report'
         , 'subcontract'
         , 'subcontract-org'
+        , 'sub-login'
         , 'summary_view'
         , 'supportadmin'
         , 'time-report'
@@ -179,15 +202,15 @@ class _Test_Case (unittest.TestCase) :
         , 'user_view'
         ))
 
-
-    def setup_tracker (self, backend = 'postgresql') :
+    def setup_tracker (self, backend = None) :
         """ Install and initialize tracker in dirname, return tracker instance.
             If directory exists, it is wiped out before the operation.
         """
         self.__class__.count += 1
         self.schemafile = self.schemafile or self.schemaname
         self.dirname = '_test_init_%s' % self.count
-        self.backend = 'postgresql'
+        if backend :
+            self.backend = backend
         self.config  = config = configuration.CoreConfig ()
         config.DATABASE       = 'db'
         config.RDBMS_NAME     = "rounduptestttt"
@@ -247,7 +270,9 @@ class _Test_Case (unittest.TestCase) :
         if os.path.exists (self.dirname) :
             shutil.rmtree (self.dirname)
     # end def tearDown
+# end class _Test_Base
 
+class _Test_Case (_Test_Base) :
     def test_0_roles (self) :
         self.log.debug ('test_0_roles')
         self.db = self.tracker.open ('admin')
@@ -383,6 +408,7 @@ class _Test_Case (unittest.TestCase) :
             ,  'nosy'
             ,  'readonly-user'
             ,  'staff-report'
+            ,  'sub-login'
             ,  'user'
             ))
         self.users = {'admin' : '1', 'anonymous' : '2'}
@@ -400,6 +426,8 @@ class _Test_Case (unittest.TestCase) :
                 ( username = u
                 , roles    = ','.join (roles)
                 )
+            if 'firstname' in self.db.user.properties :
+                params ['firstname'] = params ['lastname'] = u
             try :
                 status = self.db.user_status.lookup ('system')
                 params ['status'] = status
@@ -410,10 +438,9 @@ class _Test_Case (unittest.TestCase) :
             except ValueError :
                 self.users [u] = self.db.user.lookup (u)
     # end def create_test_users
-
 # end class _Test_Case
 
-class _Test_Case_Summary (_Test_Case) :
+class _Test_Base_Summary :
     def setup_db (self) :
         self.db = self.tracker.open ('admin')
         self.db.overtime_period.create \
@@ -438,12 +465,19 @@ class _Test_Case_Summary (_Test_Case) :
             , location            = self.loc
             , organisation        = self.org
             , vacation_legal_year = False
-            , vacation_yearly     = 25
+            , vacation_yearly     = 25.0
             , do_leave_process    = True
             , vac_aliq            = '1'
             )
-        self.twsn = self.db.time_wp_summary_no.create \
-            ( name = "TWSN1", order = 1)
+        self.olo2 = self.db.org_location.create \
+            ( name                = 'Another Org, Vienna'
+            , location            = self.loc
+            , organisation        = self.org
+            , vacation_legal_year = False
+            , vacation_yearly     = 25.0
+            , do_leave_process    = True
+            , vac_aliq            = '1'
+            )
         self.dep = self.db.department.create \
             ( name       = 'Software Development'
             , valid_from = date.Date ('2004-01-01')
@@ -461,6 +495,13 @@ class _Test_Case_Summary (_Test_Case) :
             , roles        = roles
             )
         user_dynamic.user_create_magic (self.db, self.user0, self.olo, self.dep)
+        self.db.user_dynamic.create \
+            ( user            = self.user0
+            , valid_from      = date.Date ('.')
+            , org_location    = self.olo
+            , department      = self.dep
+            , vacation_yearly = 25.0
+            )
         cts  = self.db.user.get (self.user0, 'contacts')
         cmin = 0xFFFF
         mail = self.db.uc_type.lookup ('Email')
@@ -478,6 +519,13 @@ class _Test_Case_Summary (_Test_Case) :
             , lastname     = 'User1'
             )
         user_dynamic.user_create_magic (self.db, self.user1, self.olo, self.dep)
+        self.db.user_dynamic.create \
+            ( user            = self.user1
+            , valid_from      = date.Date ('.')
+            , org_location    = self.olo
+            , department      = self.dep
+            , vacation_yearly = 25.0
+            )
         cts  = self.db.user.get (self.user1, 'contacts')
         cmin = 0xFFFF
         mail = self.db.uc_type.lookup ('Email')
@@ -501,6 +549,13 @@ class _Test_Case_Summary (_Test_Case) :
             , supervisor   = self.user1
             )
         user_dynamic.user_create_magic (self.db, self.user2, self.olo, self.dep)
+        self.db.user_dynamic.create \
+            ( user            = self.user2
+            , valid_from      = date.Date ('.')
+            , org_location    = self.olo
+            , department      = self.dep
+            , vacation_yearly = 25.0
+            )
         # create initial dyn_user record for each user
         # others will follow during tests
         ud = self.db.user_dynamic.filter (None, dict (user = self.user1))
@@ -509,7 +564,7 @@ class _Test_Case_Summary (_Test_Case) :
             ( ud [0]
             , valid_from      = date.Date ('2005-09-01')
             , booking_allowed = False
-            , vacation_yearly = 25
+            , vacation_yearly = 25.0
             , all_in          = True
             , hours_mon       = 7.75
             , hours_tue       = 7.75
@@ -524,7 +579,7 @@ class _Test_Case_Summary (_Test_Case) :
             ( user              = self.user1
             , valid_from        = date.Date ('2005-10-01')
             , booking_allowed   = True
-            , vacation_yearly   = 25
+            , vacation_yearly   = 25.0
             , all_in            = False
             , hours_mon         = 7.75
             , hours_tue         = 7.75
@@ -547,7 +602,7 @@ class _Test_Case_Summary (_Test_Case) :
             ( ud [0]
             , valid_from       = date.Date ('2008-11-03')
             , booking_allowed  = True
-            , vacation_yearly  = 25
+            , vacation_yearly  = 25.0
             , all_in           = True
             , hours_mon        = 7.75
             , hours_tue        = 7.75
@@ -634,6 +689,7 @@ class _Test_Case_Summary (_Test_Case) :
             , op_project         = True
             , responsible        = self.user1
             , department         = self.dep
+            , status             = stat_open
             , organisation       = self.org
             , cost_center        = self.cc
             , approval_required  = False
@@ -645,6 +701,7 @@ class _Test_Case_Summary (_Test_Case) :
             , op_project         = False
             , responsible        = self.user1
             , department         = self.dep
+            , status             = stat_open
             , organisation       = self.org
             , cost_center        = self.cc
             , no_overtime        = True
@@ -659,6 +716,7 @@ class _Test_Case_Summary (_Test_Case) :
             , op_project         = False
             , responsible        = self.user1
             , department         = self.dep
+            , status             = stat_open
             , organisation       = self.org
             , cost_center        = self.cc
             , max_hours          = 0
@@ -721,7 +779,6 @@ class _Test_Case_Summary (_Test_Case) :
                 , responsible        = '1'
                 , bookers            = [self.user1, self.user2]
                 , cost_center        = self.cc
-                , time_wp_summary_no = self.twsn
                 )
             self.wps.append (wp)
         self.vacation_wp = self.db.time_wp.create \
@@ -759,62 +816,51 @@ class _Test_Case_Summary (_Test_Case) :
         self.db.commit ()
         self.log.debug ("End of setup")
     # end def setup_db
+# end class _Test_Base_Summary
 
-# end class _Test_Case_Summary
+class _Test_Case_Summary (_Test_Base_Summary, _Test_Case) :
+    pass
 
-
-class Test_Case_Support_Timetracker (_Test_Case) :
+class Test_Case_Support_Timetracker (_Test_Case, unittest.TestCase) :
     schemaname = 'sfull'
     roles = \
-        [ 'admin', 'adr_readonly', 'anonymous', 'contact', 'controlling'
-        , 'doc_admin', 'facility', 'hr'
+        [ 'admin', 'adr_readonly', 'anonymous', 'cc-permission', 'contact'
+        , 'controlling' , 'doc_admin', 'facility', 'functional-role', 'hr'
         , 'hr-leave-approval', 'hr-org-location'
         , 'hr-vacation', 'issue_admin', 'it', 'itview'
-        , 'msgedit', 'msgsync', 'nosy', 'office', 'procurement', 'project'
+        , 'msgedit', 'msgsync', 'nosy', 'office', 'organisation'
+        , 'procurement', 'project'
         , 'project_view', 'sec-incident-nosy'
-        , 'sec-incident-responsible', 'staff-report', 'summary_view'
-        , 'supportadmin', 'time-report', 'type', 'user'
+        , 'sec-incident-responsible', 'staff-report', 'sub-login'
+        , 'summary_view' , 'supportadmin', 'time-report', 'type', 'user'
         ]
     transprop_perms = transprop_sfull
 # end class Test_Case_Support_Timetracker
 
-class Test_Case_Timetracker (_Test_Case_Summary) :
+class Test_Case_Timetracker (_Test_Case_Summary, unittest.TestCase) :
     schemaname = 'time'
     schemafile = 'time_ldap'
     roles = \
-        [ 'admin', 'anonymous', 'controlling', 'doc_admin'
+        [ 'admin', 'anonymous', 'cc-permission', 'controlling', 'doc_admin'
         , 'dom-user-edit-facility', 'dom-user-edit-gtt', 'dom-user-edit-hr'
-        , 'dom-user-edit-office', 'facility', 'hr'
+        , 'dom-user-edit-office', 'facility', 'functional-role', 'hr'
         , 'hr-leave-approval', 'hr-org-location', 'hr-vacation', 'it', 'nosy'
-        , 'office', 'pgp', 'procurement', 'project', 'project_view'
-        , 'staff-report', 'summary_view', 'time-report', 'user', 'user_view'
+        , 'office', 'organisation', 'pgp', 'procurement', 'project'
+        , 'project_view', 'staff-report', 'sub-login', 'summary_view'
+        , 'time-report', 'user', 'user_view'
         ]
     transprop_perms = transprop_time
 
-    def test_domain_user_edit (self) :
-        self.log.debug ('test_domain_user_edit')
-        self.setup_db ()
-        self.db.user.set (self.user1, roles = 'User,Nosy,Dom-User-Edit-GTT')
-        ad_domain = 'some.test.domain'
-        roles     = 'User,Nosy'
-        valid     = self.db.user_status.lookup ('valid')
-        obsolete  = self.db.user_status.lookup ('obsolete')
-        self.db.domain_permission.create \
-            ( ad_domain       = ad_domain
-            , users           = [self.user1]
-            , default_roles   = roles
-            , timetracking_by = self.user2
-            , clearance_by    = '1'
-            , status          = valid
-            )
-        self.db.commit ()
-        self.db.close ()
-        self.db = self.tracker.open (self.username1)
+    def check_user_perms (self, ad_domain) :
+        roles    = 'User,Nosy'
+        valid    = self.db.user_status.lookup ('valid')
+        obsolete = self.db.user_status.lookup ('obsolete')
         # Now create a user
         u = self.db.user.create \
-            ( username = 'testuser'
-            , firstname    = 'Testuser'
-            , lastname     = 'Usertestuser'
+            ( username  = 'testuser'
+            , firstname = 'Testuser'
+            , lastname  = 'Usertestuser'
+            , ad_domain = ad_domain
             )
         u_domain = 'testuser@' + ad_domain
         self.assertEqual (self.db.user.get (u, 'username'), u_domain)
@@ -847,11 +893,44 @@ class Test_Case_Timetracker (_Test_Case_Summary) :
         id = self.db.user_dynamic.create \
             ( org_location    = self.olo
             , department      = self.dep
-            , vacation_yearly = 25
+            , vacation_yearly = 23
             , user            = u
             , valid_from      = date.Date ('.')
             )
-        self.assertEqual (self.db.user_dynamic.get (id, 'vacation_yearly'), 25)
+        self.assertEqual (self.db.user_dynamic.get (id, 'vacation_yearly'), 23)
+    # end def check_user_perms
+
+    def test_domain_user_edit (self) :
+        self.log.debug ('test_domain_user_edit')
+        self.setup_db ()
+        self.db.user.set (self.user1, roles = 'User,Nosy,Dom-User-Edit-GTT')
+        ad_domain = 'some.test.domain'
+        roles     = 'User,Nosy'
+        valid     = self.db.user_status.lookup ('valid')
+        obsolete  = self.db.user_status.lookup ('obsolete')
+        dpid = self.db.domain_permission.create \
+            ( ad_domain       = ad_domain
+            , users           = [self.user1]
+            , default_roles   = roles
+            , timetracking_by = self.user2
+            , clearance_by    = '1'
+            , status          = valid
+            )
+        self.db.commit ()
+        self.db.close ()
+        self.db = self.tracker.open (self.username1)
+        self.check_user_perms (ad_domain)
+        # Do *not* commit
+        self.db.rollback ()
+        self.db.close ()
+        self.db = self.tracker.open ('admin')
+        # Change permission to role-based and retry the whole test.
+        self.db.domain_permission.set \
+            (dpid, users = [], roles_enabled = 'Dom-User-Edit-GTT')
+        self.db.commit ()
+        self.db.close ()
+        self.db = self.tracker.open (self.username1)
+        self.check_user_perms (ad_domain)
     # end def test_domain_user_edit
 
     def setup_user11 (self) :
@@ -863,6 +942,13 @@ class Test_Case_Timetracker (_Test_Case_Summary) :
             )
         user_dynamic.user_create_magic \
             (self.db, self.user11, self.olo, self.dep)
+        self.db.user_dynamic.create \
+            ( user            = self.user11
+            , valid_from      = date.Date ('.')
+            , org_location    = self.olo
+            , department      = self.dep
+            , vacation_yearly = 25.0
+            )
         # create initial dyn_user record for user
         ud = self.db.user_dynamic.filter (None, dict (user = self.user11))
         self.assertEqual (len (ud), 1)
@@ -872,7 +958,7 @@ class Test_Case_Timetracker (_Test_Case_Summary) :
             ( ud.id
             , valid_from        = date.Date ('2011-12-01')
             , booking_allowed   = True
-            , vacation_yearly   = 25
+            , vacation_yearly   = 25.0
             , all_in            = False
             , hours_mon         = 7.75
             , hours_tue         = 7.75
@@ -931,7 +1017,7 @@ class Test_Case_Timetracker (_Test_Case_Summary) :
         summary.init (self.tracker)
         fs = { 'sap_cc'       : [sap_cc]
              , 'date'         : '2013-06-01;2013-06-30'
-             , 'summary_type' : [2, 4]
+             , 'summary_type' : ['2', '4']
              }
         cols = \
             [ 'time_wp'
@@ -1018,7 +1104,7 @@ class Test_Case_Timetracker (_Test_Case_Summary) :
             , department        = ud.department
             , valid_from        = date.Date ('2013-06-05')
             , booking_allowed   = True
-            , vacation_yearly   = 25
+            , vacation_yearly   = 25.0
             , all_in            = False
             , hours_mon         = 7.75
             , hours_tue         = 7.75
@@ -1036,7 +1122,7 @@ class Test_Case_Timetracker (_Test_Case_Summary) :
             , department        = ud.department
             , valid_from        = date.Date ('2013-06-11')
             , booking_allowed   = True
-            , vacation_yearly   = 25
+            , vacation_yearly   = 25.0
             , all_in            = False
             , hours_mon         = 7.75
             , hours_tue         = 7.75
@@ -1097,7 +1183,7 @@ class Test_Case_Timetracker (_Test_Case_Summary) :
         summary.init (self.tracker)
         fs = { 'user'         : [self.user11]
              , 'date'         : '2013-06-01;2013-06-30'
-             , 'summary_type' : [2, 4]
+             , 'summary_type' : ['2', '4']
              }
         cols = \
             [ 'product_family'
@@ -1324,7 +1410,7 @@ class Test_Case_Timetracker (_Test_Case_Summary) :
             ( fs
             , { 'date': '2013-06-01;2013-06-30'
               , 'reporting_group': '2'
-              , 'summary_type': [2, 4]
+              , 'summary_type': ['2', '4']
               }
             )
         sr = summary.Summary_Report \
@@ -1369,7 +1455,7 @@ class Test_Case_Timetracker (_Test_Case_Summary) :
             ( fs
             , { 'date': '2013-06-01;2013-06-30'
               , 'product_family': '1'
-              , 'summary_type': [2, 4]
+              , 'summary_type': ['2', '4']
               }
             )
         sr = summary.Summary_Report \
@@ -1400,7 +1486,7 @@ class Test_Case_Timetracker (_Test_Case_Summary) :
             ( fs
             , { 'date': '2013-06-01;2013-06-30'
               , 'project_type': '4'
-              , 'summary_type': [2, 4]
+              , 'summary_type': ['2', '4']
               }
             )
         sr = summary.Summary_Report \
@@ -1540,7 +1626,7 @@ class Test_Case_Timetracker (_Test_Case_Summary) :
         summary.init (self.tracker)
         fs = { 'user'         : [self.user12]
              , 'date'         : '2013-01-01;2013-12-31'
-             , 'summary_type' : [4]
+             , 'summary_type' : ['4']
              }
         class r : filterspec = fs
         sr = summary.Staff_Report \
@@ -1981,7 +2067,7 @@ class Test_Case_Timetracker (_Test_Case_Summary) :
         self.assertEqual (lines  [1] [5], '')
         self.assertEqual (lines  [1] [6], 'off')
         self.assertEqual (lines  [1] [7], '7.75')
-        self.assertEqual (lines  [1] [8], '')
+        self.assertEqual (lines  [1] [8], '7.75')
         self.assertEqual (lines  [1] [9], '')
     # end def test_user14_tr_csv
 
@@ -3197,6 +3283,13 @@ class Test_Case_Timetracker (_Test_Case_Summary) :
             )
         user_dynamic.user_create_magic \
             (self.db, self.user16, self.olo, self.dep)
+        self.db.user_dynamic.create \
+            ( user            = self.user16
+            , valid_from      = date.Date ('.')
+            , org_location    = self.olo
+            , department      = self.dep
+            , vacation_yearly = 25.0
+            )
         ud = self.db.user_dynamic.filter (None, dict (user = self.user16))
         self.assertEqual (len (ud), 1)
         self.db.user_dynamic.retire (ud [0])
@@ -3491,9 +3584,317 @@ class Test_Case_Timetracker (_Test_Case_Summary) :
         self.assertEqual (prev.valid_to,   date.Date ('2019-10-01'))
     # end def test_dynuser_create_modify
 
+    def test_auto_wp (self) :
+        self.setup_db ()
+        self.db.commit ()
+        # Now we have 3 users.
+        for id in (self.holiday_tp, self.vacation_tp) :
+            tp = self.db.time_project.getnode (id)
+            self.db.auto_wp.create \
+                ( is_valid     = True
+                , name         = 'TEST %s' % tp.name
+                , org_location = self.olo
+                , time_project = id
+                )
+        # normal_tp with duration
+        tp = self.db.time_project.getnode (self.normal_tp)
+        auto_wp_onboarding = self.db.auto_wp.create \
+            ( is_valid           = True
+            , duration           = date.Interval ('3w')
+            , name               = 'TEST %s' % tp.name
+            , org_location       = self.olo
+            , time_project       = self.normal_tp
+            )
+        d = self.db.user_dynamic.filter \
+            (None, {}, sort = [('+', 'user'), ('+', 'valid_from')])
+        # We have 4 dyn user records (without contract_type set)
+        # id  uid from       to
+        # '1' '3' 2013-02-02 None
+        # '2' '4' 2005-09-01 2005-10-01
+        # '4' '4' 2005-10-01 None
+        # '3' '5' 2008-11-03
+
+        u = self.username0
+        n = '%s -%s' % (u, '2013-02-23')
+        self.db.user_dynamic.set ('1', do_auto_wp = True)
+        count = 0
+        expected = \
+            [ ('1', u, date.Date ('2013-02-02'), None)
+            , ('2', u, date.Date ('2013-02-02'), None)
+            , ('3', n, date.Date ('2013-02-02'), date.Date ('2013-02-23'))
+            ]
+        actual = []
+        # All WPs created so far only have user '4' in bookers.
+        wps = self.db.time_wp.filter \
+            (None, dict (bookers = '3'), sort = ('+', 'auto_wp.id'))
+        for w in wps :
+            wp = self.db.time_wp.getnode (w)
+            actual.append ((wp.auto_wp, wp.name, wp.time_start, wp.time_end))
+        self.assertEqual (expected, actual)
+
+        self.db.user_dynamic.set ('1', valid_to = date.Date ('2013-02-22'))
+        wps = self.db.time_wp.filter \
+            (None, dict (bookers = '3'), sort = ('+', 'auto_wp.id'))
+        n = '%s -%s' % (u, '2013-02-22')
+        expected = \
+            [ ('1', n, date.Date ('2013-02-02'), date.Date ('2013-02-22'))
+            , ('2', n, date.Date ('2013-02-02'), date.Date ('2013-02-22'))
+            , ('3', n, date.Date ('2013-02-02'), date.Date ('2013-02-22'))
+            ]
+        actual = []
+        wps = self.db.time_wp.filter \
+            (None, dict (bookers = '3'), sort = ('+', 'auto_wp.id'))
+        for w in wps :
+            wp = self.db.time_wp.getnode (w)
+            actual.append ((wp.auto_wp, wp.name, wp.time_start, wp.time_end))
+        self.assertEqual (expected, actual)
+
+        id = self.db.user_dynamic.create \
+            ( user              = self.user0
+            , valid_from        = date.Date ('2013-02-22')
+            , valid_to          = date.Date ('2013-02-27')
+            , booking_allowed   = True
+            , vacation_yearly   = 25.0
+            , all_in            = False
+            , hours_mon         = 7.75
+            , hours_tue         = 7.75
+            , hours_wed         = 7.75
+            , hours_thu         = 7.75
+            , hours_fri         = 7.5
+            , daily_worktime    = 0.0
+            , org_location      = self.olo
+            , department        = self.dep
+            , supp_weekly_hours = 40
+            , overtime_period   = self.db.overtime_period.lookup ('week')
+            , do_auto_wp        = True
+            )
+        self.assertEqual (id, '5')
+        wps = self.db.time_wp.filter \
+            (None, dict (bookers = '3'), sort = ('+', 'auto_wp.id'))
+        n  = '%s -%s' % (u, '2013-02-27')
+        n2 = '%s -%s' % (u, '2013-02-23')
+        expected = \
+            [ ('1',  n, date.Date ('2013-02-02'), date.Date ('2013-02-27'))
+            , ('2',  n, date.Date ('2013-02-02'), date.Date ('2013-02-27'))
+            , ('3', n2, date.Date ('2013-02-02'), date.Date ('2013-02-23'))
+            ]
+        actual = []
+        for w in wps :
+            wp = self.db.time_wp.getnode (w)
+            actual.append ((wp.auto_wp, wp.name, wp.time_start, wp.time_end))
+        self.assertEqual (expected, actual)
+
+        tp = self.db.time_project.getnode (self.travel_tp)
+        tv = self.db.auto_wp.create \
+            ( is_valid     = True
+            , name         = 'TEST %s' % tp.name
+            , org_location = self.olo
+            , time_project = self.travel_tp
+            )
+        expected = \
+            [ ('1',  n, date.Date ('2013-02-02'), date.Date ('2013-02-27'))
+            , ('2',  n, date.Date ('2013-02-02'), date.Date ('2013-02-27'))
+            , ('3', n2, date.Date ('2013-02-02'), date.Date ('2013-02-23'))
+            , ('4',  n, date.Date ('2013-02-02'), date.Date ('2013-02-27'))
+            ]
+        actual = []
+        wps = self.db.time_wp.filter \
+            (None, dict (bookers = '3'), sort = ('+', 'auto_wp.id'))
+        for w in wps :
+            wp = self.db.time_wp.getnode (w)
+            actual.append ((wp.auto_wp, wp.name, wp.time_start, wp.time_end))
+        self.assertEqual (expected, actual)
+
+        self.db.auto_wp.set (tv, is_valid = False)
+        expected = \
+            [ ('1',  n, date.Date ('2013-02-02'), date.Date ('2013-02-27'))
+            , ('2',  n, date.Date ('2013-02-02'), date.Date ('2013-02-27'))
+            , ('3', n2, date.Date ('2013-02-02'), date.Date ('2013-02-23'))
+            ]
+        actual = []
+        wps = self.db.time_wp.filter \
+            (None, dict (bookers = '3'), sort = ('+', 'auto_wp.id'))
+        for w in wps :
+            wp = self.db.time_wp.getnode (w)
+            actual.append ((wp.auto_wp, wp.name, wp.time_start, wp.time_end))
+        self.assertEqual (expected, actual)
+
+        self.db.user_dynamic.set ('1', valid_from = date.Date ('2013-02-03'))
+        # Note that the limited record also changes the end date!
+        n2 = '%s -%s' % (u, '2013-02-24')
+        expected = \
+            [ ('1',  n, date.Date ('2013-02-03'), date.Date ('2013-02-27'))
+            , ('2',  n, date.Date ('2013-02-03'), date.Date ('2013-02-27'))
+            , ('3', n2, date.Date ('2013-02-03'), date.Date ('2013-02-24'))
+            ]
+        actual = []
+        wps = self.db.time_wp.filter \
+            (None, dict (bookers = '3'), sort = ('+', 'auto_wp.id'))
+        for w in wps :
+            wp = self.db.time_wp.getnode (w)
+            actual.append ((wp.auto_wp, wp.name, wp.time_start, wp.time_end))
+        self.assertEqual (expected, actual)
+
+        self.db.user_dynamic.set ('1', do_auto_wp = False)
+        expected = \
+            [ ('1',  n, date.Date ('2013-02-22'), date.Date ('2013-02-27'))
+            , ('2',  n, date.Date ('2013-02-22'), date.Date ('2013-02-27'))
+            , ('3', n2, date.Date ('2013-02-22'), date.Date ('2013-02-24'))
+            ]
+        actual = []
+        wps = self.db.time_wp.filter \
+            (None, dict (bookers = '3'), sort = ('+', 'auto_wp.id'))
+        for w in wps :
+            wp = self.db.time_wp.getnode (w)
+            actual.append ((wp.auto_wp, wp.name, wp.time_start, wp.time_end))
+        self.assertEqual (expected, actual)
+
+        # No change if we set all_in on the dyn user
+        self.assertEqual (self.db.user_dynamic.get ('5', 'all_in'), False)
+        self.db.user_dynamic.set ('5', all_in = True, max_flexitime = 5)
+        actual = []
+        wps = self.db.time_wp.filter \
+            (None, dict (bookers = '3'), sort = ('+', 'auto_wp.id'))
+        for w in wps :
+            wp = self.db.time_wp.getnode (w)
+            actual.append ((wp.auto_wp, wp.name, wp.time_start, wp.time_end))
+        self.assertEqual (expected, actual)
+
+        # But now if we set all_in = False on the auto_wp:
+        self.db.auto_wp.set ('1', all_in = False)
+        expected = \
+            [ ('2',  n, date.Date ('2013-02-22'), date.Date ('2013-02-27'))
+            , ('3', n2, date.Date ('2013-02-22'), date.Date ('2013-02-24'))
+            ]
+        actual = []
+        wps = self.db.time_wp.filter \
+            (None, dict (bookers = '3'), sort = ('+', 'auto_wp.id'))
+        for w in wps :
+            wp = self.db.time_wp.getnode (w)
+            actual.append ((wp.auto_wp, wp.name, wp.time_start, wp.time_end))
+        self.assertEqual (expected, actual)
+
+        # And set all_in = False in the dyn user:
+        self.db.user_dynamic.set ('5', all_in = False)
+        expected = \
+            [ ('1',  n, date.Date ('2013-02-22'), date.Date ('2013-02-27'))
+            , ('2',  n, date.Date ('2013-02-22'), date.Date ('2013-02-27'))
+            , ('3', n2, date.Date ('2013-02-22'), date.Date ('2013-02-24'))
+            ]
+        actual = []
+        wps = self.db.time_wp.filter \
+            (None, dict (bookers = '3'), sort = ('+', 'auto_wp.id'))
+        for w in wps :
+            wp = self.db.time_wp.getnode (w)
+            actual.append ((wp.auto_wp, wp.name, wp.time_start, wp.time_end))
+        self.assertEqual (expected, actual)
+
+        # Change org_location
+        self.db.user_dynamic.set ('5', org_location = self.olo2)
+        expected = []
+        actual = []
+        wps = self.db.time_wp.filter \
+            (None, dict (bookers = '3'), sort = ('+', 'auto_wp.id'))
+        for w in wps :
+            wp = self.db.time_wp.getnode (w)
+            actual.append ((wp.auto_wp, wp.name, wp.time_start, wp.time_end))
+        self.assertEqual (expected, actual)
+
+        self.db.user_dynamic.set ('5', org_location = self.olo)
+        expected = \
+            [ ('1',  n, date.Date ('2013-02-22'), date.Date ('2013-02-27'))
+            , ('2',  n, date.Date ('2013-02-22'), date.Date ('2013-02-27'))
+            , ('3', n2, date.Date ('2013-02-22'), date.Date ('2013-02-24'))
+            ]
+        actual = []
+        wps = self.db.time_wp.filter \
+            (None, dict (bookers = '3'), sort = ('+', 'auto_wp.id'))
+        for w in wps :
+            wp = self.db.time_wp.getnode (w)
+            actual.append ((wp.auto_wp, wp.name, wp.time_start, wp.time_end))
+        self.assertEqual (expected, actual)
+
+        self.db.user_dynamic.set ('5', do_auto_wp = False)
+        expected = []
+        actual = []
+        wps = self.db.time_wp.filter \
+            (None, dict (bookers = '3'), sort = ('+', 'auto_wp.id'))
+        for w in wps :
+            wp = self.db.time_wp.getnode (w)
+            actual.append ((wp.auto_wp, wp.name, wp.time_start, wp.time_end))
+        self.assertEqual (expected, actual)
+
+        # Test the auto-wp case with a delimited auto-wp
+        # We have 2 dyn user records for user '4':
+        # id  uid from       to
+        # '2' '4' 2005-09-01 2005-10-01
+        # '4' '4' 2005-10-01 None
+        # We set only the dyn_user record '4' auto_wp = True
+        # This should not create a wp because
+        # 2005-09-01 + 3w = 2005-09-22
+        # Then we extend the auto_wp duration (by setting the auto_wp to
+        # false and creating a new one?) to 6w. This should now create
+        # an auto wp starting 2005-10-01 and ending 2005-10-13.
+
+        # Thaw
+        f = self.db.daily_record_freeze.filter (None, dict (user = '4'))
+        self.assertEqual (len (f), 1)
+        self.db.daily_record_freeze.set (f [0], frozen = False)
+
+        self.db.user_dynamic.set ('4', do_auto_wp = True)
+        n  = 'testuser1'
+        expected = \
+            [ ('1', n, date.Date ('2005-10-01'), None)
+            , ('2', n, date.Date ('2005-10-01'), None)
+            ]
+        actual = []
+        wps = self.db.time_wp.filter \
+            (None, dict (bookers = '4'), sort = ('+', 'auto_wp.id'))
+        for w in wps :
+            wp = self.db.time_wp.getnode (w)
+            if not wp.auto_wp :
+                continue
+            actual.append ((wp.auto_wp, wp.name, wp.time_start, wp.time_end))
+        self.assertEqual (expected, actual)
+
+        self.db.auto_wp.set \
+            (auto_wp_onboarding, duration = date.Interval ('6w'))
+
+        actual = []
+        n3 = 'testuser1 -2005-10-13'
+        expected.append \
+            (('3', n3, date.Date ('2005-10-01'), date.Date ('2005-10-13')))
+        wps = self.db.time_wp.filter \
+            (None, dict (bookers = '4'), sort = ('+', 'auto_wp.id'))
+        for w in wps :
+            wp = self.db.time_wp.getnode (w)
+            if not wp.auto_wp :
+                continue
+            actual.append ((wp.auto_wp, wp.name, wp.time_start, wp.time_end))
+        self.assertEqual (expected, actual)
+
+        self.db.auto_wp.set \
+            (auto_wp_onboarding, duration = date.Interval ('3w'))
+
+        actual = []
+        expected = \
+            [ ('1', n, date.Date ('2005-10-01'), None)
+            , ('2', n, date.Date ('2005-10-01'), None)
+            ]
+        wps = self.db.time_wp.filter \
+            (None, dict (bookers = '4'), sort = ('+', 'auto_wp.id'))
+        for w in wps :
+            wp = self.db.time_wp.getnode (w)
+            if not wp.auto_wp :
+                continue
+            actual.append ((wp.auto_wp, wp.name, wp.time_start, wp.time_end))
+        self.assertEqual (expected, actual)
+
+    # end def test_auto_wp
+
 # end class Test_Case_Timetracker
 
-class Test_Case_Tracker (_Test_Case) :
+class Test_Case_Tracker (_Test_Case, unittest.TestCase) :
     schemaname = 'track'
     schemafile = 'trackers'
     roles = \
@@ -3508,19 +3909,20 @@ class Test_Case_Tracker (_Test_Case) :
     transprop_perms = transprop_track
 # end class Test_Case_Tracker
 
-class Test_Case_Fulltracker (_Test_Case_Summary) :
+class Test_Case_Fulltracker (_Test_Case_Summary, unittest.TestCase) :
     schemaname = 'full'
     roles = \
-        [ 'admin', 'anonymous', 'contact', 'controlling', 'doc_admin'
-        , 'dom-user-edit-facility', 'dom-user-edit-gtt'
+        [ 'admin', 'anonymous', 'cc-permission', 'contact', 'controlling'
+        , 'doc_admin', 'dom-user-edit-facility', 'dom-user-edit-gtt'
         , 'dom-user-edit-hr', 'dom-user-edit-office'
-        , 'external', 'facility', 'hr', 'hr-leave-approval', 'hr-org-location'
+        , 'external', 'facility', 'functional-role', 'hr'
+        , 'hr-leave-approval', 'hr-org-location'
         , 'hr-vacation', 'issue_admin', 'it', 'itview'
-        , 'msgedit', 'msgsync', 'nosy'
-        , 'office', 'pgp', 'procurement', 'project', 'project_view'
+        , 'msgedit', 'msgsync', 'nosy', 'office', 'organisation'
+        , 'pgp', 'procurement', 'project', 'project_view'
         , 'sec-incident-nosy', 'sec-incident-responsible'
-        , 'staff-report', 'summary_view', 'supportadmin', 'time-report'
-        , 'user', 'user_view'
+        , 'staff-report', 'sub-login', 'summary_view', 'supportadmin'
+        , 'time-report', 'user', 'user_view'
         ]
     transprop_perms = transprop_full
 
@@ -3532,6 +3934,13 @@ class Test_Case_Fulltracker (_Test_Case_Summary) :
             , lastname     = 'User3'
             )
         user_dynamic.user_create_magic (self.db, self.user3, self.olo, self.dep)
+        self.db.user_dynamic.create \
+            ( user            = self.user3
+            , valid_from      = date.Date ('.')
+            , org_location    = self.olo
+            , department      = self.dep
+            , vacation_yearly = 25.0
+            )
         # create initial dyn_user record for user
         ud = self.db.user_dynamic.filter (None, dict (user = self.user3))
         self.assertEqual (len (ud), 1)
@@ -3540,7 +3949,7 @@ class Test_Case_Fulltracker (_Test_Case_Summary) :
             ( ud [0]
             , valid_from        = date.Date ('2010-01-01')
             , booking_allowed   = True
-            , vacation_yearly   = 25
+            , vacation_yearly   = 25.0
             , all_in            = False
             , hours_mon         = 7.75
             , hours_tue         = 7.75
@@ -3564,6 +3973,13 @@ class Test_Case_Fulltracker (_Test_Case_Summary) :
             , lastname     = 'User4'
             )
         user_dynamic.user_create_magic (self.db, self.user4, self.olo, self.dep)
+        self.db.user_dynamic.create \
+            ( user            = self.user4
+            , valid_from      = date.Date ('.')
+            , org_location    = self.olo
+            , department      = self.dep
+            , vacation_yearly = 25.0
+            )
         # create initial dyn_user record for user
         ud = self.db.user_dynamic.filter (None, dict (user = self.user4))
         self.assertEqual (len (ud), 1)
@@ -3579,7 +3995,7 @@ class Test_Case_Fulltracker (_Test_Case_Summary) :
             ( ud [0]
             , valid_from        = date.Date ('2012-01-01')
             , booking_allowed   = True
-            , vacation_yearly   = 25
+            , vacation_yearly   = 25.0
             , all_in            = False
             , hours_mon         = 7.75
             , hours_tue         = 7.75
@@ -3601,6 +4017,13 @@ class Test_Case_Fulltracker (_Test_Case_Summary) :
             , lastname     = 'User5'
             )
         user_dynamic.user_create_magic (self.db, self.user5, self.olo, self.dep)
+        self.db.user_dynamic.create \
+            ( user            = self.user5
+            , valid_from      = date.Date ('.')
+            , org_location    = self.olo
+            , department      = self.dep
+            , vacation_yearly = 25.0
+            )
         # public holidays
         vienna = self.db.location.lookup ('Vienna')
         hd = \
@@ -3639,7 +4062,7 @@ class Test_Case_Fulltracker (_Test_Case_Summary) :
             ( ud.id
             , valid_from        = date.Date ('2012-01-01')
             , booking_allowed   = True
-            , vacation_yearly   = 25
+            , vacation_yearly   = 25.0
             , all_in            = False
             , hours_mon         = 7.75
             , hours_tue         = 7.75
@@ -3657,7 +4080,7 @@ class Test_Case_Fulltracker (_Test_Case_Summary) :
             , department        = ud.department
             , valid_from        = date.Date ('2012-03-15')
             , booking_allowed   = True
-            , vacation_yearly   = 25
+            , vacation_yearly   = 25.0
             , all_in            = False
             , hours_mon         = 7.75
             , hours_tue         = 7.75
@@ -3674,7 +4097,7 @@ class Test_Case_Fulltracker (_Test_Case_Summary) :
             , department        = ud.department
             , valid_from        = date.Date ('2012-06-01')
             , booking_allowed   = True
-            , vacation_yearly   = 25
+            , vacation_yearly   = 25.0
             , all_in            = False
             , hours_mon         = 7.75
             , hours_tue         = 7.75
@@ -3697,6 +4120,13 @@ class Test_Case_Fulltracker (_Test_Case_Summary) :
             , lastname     = 'User6'
             )
         user_dynamic.user_create_magic (self.db, self.user6, self.olo, self.dep)
+        self.db.user_dynamic.create \
+            ( user            = self.user6
+            , valid_from      = date.Date ('.')
+            , org_location    = self.olo
+            , department      = self.dep
+            , vacation_yearly = 25.0
+            )
         # create initial dyn_user record for user
         ud = self.db.user_dynamic.filter (None, dict (user = self.user6))
         self.assertEqual (len (ud), 1)
@@ -3713,7 +4143,7 @@ class Test_Case_Fulltracker (_Test_Case_Summary) :
             ( ud.id
             , valid_from        = date.Date ('2012-09-03')
             , booking_allowed   = True
-            , vacation_yearly   = 25
+            , vacation_yearly   = 25.0
             , all_in            = False
             , hours_mon         = 7.75
             , hours_tue         = 7.75
@@ -3734,6 +4164,13 @@ class Test_Case_Fulltracker (_Test_Case_Summary) :
             , lastname     = 'User7'
             )
         user_dynamic.user_create_magic (self.db, self.user7, self.olo, self.dep)
+        self.db.user_dynamic.create \
+            ( user            = self.user7
+            , valid_from      = date.Date ('.')
+            , org_location    = self.olo
+            , department      = self.dep
+            , vacation_yearly = 25.0
+            )
         # create initial dyn_user record for user
         ud = self.db.user_dynamic.filter (None, dict (user = self.user7))
         self.assertEqual (len (ud), 1)
@@ -3751,7 +4188,7 @@ class Test_Case_Fulltracker (_Test_Case_Summary) :
             , valid_from        = date.Date ('2012-11-15')
             , valid_to          = date.Date ('2013-05-16')
             , booking_allowed   = True
-            , vacation_yearly   = 25
+            , vacation_yearly   = 25.0
             , all_in            = False
             , hours_mon         = 7.75
             , hours_tue         = 7.75
@@ -3772,6 +4209,13 @@ class Test_Case_Fulltracker (_Test_Case_Summary) :
             , lastname     = 'User8'
             )
         user_dynamic.user_create_magic (self.db, self.user8, self.olo, self.dep)
+        self.db.user_dynamic.create \
+            ( user            = self.user8
+            , valid_from      = date.Date ('.')
+            , org_location    = self.olo
+            , department      = self.dep
+            , vacation_yearly = 25.0
+            )
         # create initial dyn_user record for user
         ud = self.db.user_dynamic.filter (None, dict (user = self.user8))
         self.assertEqual (len (ud), 1)
@@ -3786,7 +4230,7 @@ class Test_Case_Fulltracker (_Test_Case_Summary) :
             ( ud [0]
             , valid_from        = date.Date ('2012-12-31')
             , booking_allowed   = True
-            , vacation_yearly   = 25
+            , vacation_yearly   = 25.0
             , all_in            = False
             , hours_mon         = 7.75
             , hours_tue         = 7.75
@@ -3807,6 +4251,13 @@ class Test_Case_Fulltracker (_Test_Case_Summary) :
             , lastname     = 'User9'
             )
         user_dynamic.user_create_magic (self.db, self.user9, self.olo, self.dep)
+        self.db.user_dynamic.create \
+            ( user            = self.user9
+            , valid_from      = date.Date ('.')
+            , org_location    = self.olo
+            , department      = self.dep
+            , vacation_yearly = 25.0
+            )
         # create initial dyn_user record for user
         ud = self.db.user_dynamic.filter (None, dict (user = self.user9))
         self.assertEqual (len (ud), 1)
@@ -3814,7 +4265,7 @@ class Test_Case_Fulltracker (_Test_Case_Summary) :
             ( ud [0]
             , valid_from        = date.Date ('2012-12-31')
             , booking_allowed   = True
-            , vacation_yearly   = 25
+            , vacation_yearly   = 25.0
             , hours_mon         = 7.75
             , hours_tue         = 7.75
             , hours_wed         = 7.75
@@ -3841,6 +4292,13 @@ class Test_Case_Fulltracker (_Test_Case_Summary) :
             )
         user_dynamic.user_create_magic \
             (self.db, self.user10, self.olo, self.dep)
+        self.db.user_dynamic.create \
+            ( user            = self.user10
+            , valid_from      = date.Date ('.')
+            , org_location    = self.olo
+            , department      = self.dep
+            , vacation_yearly = 25.0
+            )
         # create initial dyn_user record for user
         ud = self.db.user_dynamic.filter (None, dict (user = self.user10))
         self.assertEqual (len (ud), 1)
@@ -3850,7 +4308,7 @@ class Test_Case_Fulltracker (_Test_Case_Summary) :
             ( ud.id
             , valid_from        = date.Date ('2011-12-01')
             , booking_allowed   = True
-            , vacation_yearly   = 25
+            , vacation_yearly   = 25.0
             , all_in            = False
             , hours_mon         = 7.75
             , hours_tue         = 7.75
@@ -3867,7 +4325,7 @@ class Test_Case_Fulltracker (_Test_Case_Summary) :
             , department        = ud.department
             , valid_from        = date.Date ('2012-01-01')
             , booking_allowed   = True
-            , vacation_yearly   = 25
+            , vacation_yearly   = 25.0
             , hours_mon         = 7.75
             , hours_tue         = 7.75
             , hours_wed         = 7.75
@@ -3915,351 +4373,6 @@ class Test_Case_Fulltracker (_Test_Case_Summary) :
             )
     # end def test_rename_status
 
-    def test_user1 (self) :
-        self.log.debug ('test_user1')
-        self.setup_db ()
-        self.db.close ()
-        self.db = self.tracker.open (self.username1)
-        user1_time.import_data_1 (self.db, self.user1)
-        self.db.close ()
-        self.db = self.tracker.open ('admin')
-        self.db.overtime_correction.create \
-            ( user    = self.user1
-            , value   = 910.0
-            , comment = 'Auf null stellen, da keine Eintraege'
-            , date    = date.Date ('2008-09-07')
-            )
-        dr = self.db.daily_record.filter \
-            (None, dict (user = self.user1, date = '2006-01-23')) [0]
-        dr = self.db.daily_record.getnode (dr)
-        user_dynamic.update_tr_duration (self.db, dr)
-        self.assertEqual (dr.tr_duration_ok, 0)
-        self.db.user_dynamic.create \
-            ( user              = self.user1
-            , valid_from        = date.Date ('2006-01-01')
-            , booking_allowed   = True
-            , vacation_yearly   = 25
-            , all_in            = True
-            , hours_mon         = 7.75
-            , hours_tue         = 7.75
-            , hours_wed         = 7.75
-            , hours_thu         = 7.75
-            , hours_fri         = 7.5
-            , daily_worktime    = 0.0
-            , org_location      = self.olo
-            , department        = self.dep
-            , max_flexitime     = 5
-            )
-        self.db.clearCache ()
-        self.assertEqual (dr.tr_duration_ok, None)
-        self.db.user_dynamic.create \
-            ( user              = self.user1
-            , valid_from        = date.Date ('2008-01-01')
-            , valid_to          = date.Date ('2008-09-11')
-            , booking_allowed   = True
-            , vacation_yearly   = 25
-            , all_in            = False
-            , hours_mon         = 5.0
-            , hours_tue         = 5.0
-            , hours_wed         = 5.0
-            , hours_thu         = 5.0
-            , hours_fri         = 5.0
-            , daily_worktime    = 0.0
-            , supp_weekly_hours = 25.
-            , org_location      = self.olo
-            , department        = self.dep
-            , overtime_period   = self.db.overtime_period.lookup ('week')
-            )
-        self.db.user_dynamic.create \
-            ( user              = self.user1
-            , valid_from        = date.Date ('2009-01-04')
-            , booking_allowed   = True
-            , vacation_yearly   = 25
-            , all_in            = True
-            , hours_mon         = 2.0
-            , hours_tue         = 2.0
-            , hours_wed         = 2.0
-            , hours_thu         = 2.0
-            , hours_fri         = 2.0
-            , daily_worktime    = 0.0
-            , org_location      = self.olo
-            , department        = self.dep
-            , max_flexitime     = 5
-            )
-        self.db.user_dynamic.create \
-            ( user              = self.user1
-            , valid_from        = date.Date ('2010-01-01')
-            , booking_allowed   = True
-            , vacation_yearly   = 25
-            , all_in            = True
-            , hours_mon         = 2.0
-            , hours_tue         = 2.0
-            , hours_wed         = 2.0
-            , hours_thu         = 2.0
-            , hours_fri         = 2.0
-            , daily_worktime    = 0.0
-            , org_location      = self.olo
-            , department        = self.dep
-            , max_flexitime     = 5
-            )
-        self.db.commit ()
-        self.db.close  ()
-        self.db = self.tracker.open (self.username1)
-        fs = { 'user'         : [self.user1]
-             , 'date'         : '2008-09-01;2008-09-10'
-             , 'summary_type' : [2, 4]
-             }
-        class r : filterspec = fs
-        summary.init (self.tracker)
-        sr = summary.Staff_Report \
-            (self.db, r, templating.TemplatingUtils (None))
-        lines = [x.strip ().split (',') for x in sr.as_csv ().split ('\n')]
-        self.assertEqual (len (lines), 5)
-        self.assertEqual (lines [0] [0], 'User')
-        self.assertEqual (lines [0] [1], 'Time Period')
-        self.assertEqual (lines [0] [2], 'Balance Start')
-        self.assertEqual (lines [0] [3], 'Actual open')
-        self.assertEqual (lines [0] [4], 'Actual submitted')
-        self.assertEqual (lines [0] [5], 'Actual accepted')
-        self.assertEqual (lines [0] [6], 'Actual all')
-        self.assertEqual (lines [0] [7], 'required')
-        self.assertEqual (lines [0] [8], 'Supp. hours average')
-        self.assertEqual (lines [0] [9], 'Supplementary hours')
-        self.assertEqual (lines [0][10], 'Overtime correction')
-        self.assertEqual (lines [0][11], 'Balance End')
-        self.assertEqual (lines [0][12], 'Overtime period')
-        self.assertEqual (lines [1] [1], 'WW 36/2008')
-        self.assertEqual (lines [2] [1], 'WW 37/2008')
-        self.assertEqual (lines [3] [1], '2008-09-01;2008-09-10')
-        self.assertEqual (lines [1][11], '-23.50')
-        self.assertEqual (lines [2][11], '-38.50')
-        self.assertEqual (lines [3][11], '-38.50')
-        self.assertEqual (lines [3][10], '910.0')
-        fs = { 'user'         : [self.user1]
-             , 'date'         : '2009-12-21;2010-01-03'
-             , 'summary_type' : [2, 4]
-             }
-        class r : filterspec = fs
-        sr = summary.Staff_Report \
-            (self.db, r, templating.TemplatingUtils (None))
-        lines = [x.strip ().split (',') for x in sr.as_csv ().split ('\n')]
-        self.assertEqual (lines [1] [1], 'WW 52/2009')
-        self.assertEqual (lines [2] [1], 'WW 53/2009')
-        self.assertEqual (lines [3] [1], '2009-12-21;2010-01-03')
-        self.assertEqual (lines [1][11], '-38.50')
-        self.assertEqual (lines [2][11], '-38.50')
-        self.assertEqual (lines [3][11], '-38.50')
-
-        for d in ('2006-12-31', '2007-12-31') :
-            f = self.db.daily_record_freeze.create \
-                ( user           = self.user1
-                , frozen         = True
-                , date           = date.Date (d)
-                )
-            f = self.db.daily_record_freeze.getnode (f)
-            self.assertEqual (f.balance,        -38.5)
-            self.assertEqual (f.achieved_hours, 0.0)
-            self.assertEqual (f.validity_date,  date.Date (d))
-
-        f = self.db.daily_record_freeze.create \
-            ( user           = self.user1
-            , frozen         = True
-            , date           = date.Date ('2008-09-10')
-            )
-        f = self.db.daily_record_freeze.getnode (f)
-        self.assertEqual (f.balance,       -23.5)
-        self.assertEqual (f.achieved_hours,  0.0)
-        self.assertEqual (f.validity_date,  date.Date ('2008-09-07'))
-
-        dyn = user_dynamic.first_user_dynamic (self.db, self.user1)
-        self.assertEqual (dyn.valid_from, date.Date ('2005-09-01'))
-        op  = user_dynamic.overtime_periods \
-            (self.db, self.user1, dyn.valid_from, date.Date ('2009-12-31'))
-        self.assertEqual (len (op), 1)
-        self.assertEqual (op [0][0], date.Date ('2005-10-01'))
-        self.assertEqual (op [0][1], date.Date ('2008-09-10'))
-        self.assertEqual (op [0][2].name, 'week')
-        dyn = user_dynamic.next_user_dynamic (self.db, dyn)
-        self.assertEqual (dyn.valid_from, date.Date ('2005-10-01'))
-        dyn = user_dynamic.next_user_dynamic (self.db, dyn)
-        self.assertEqual (dyn.valid_from, date.Date ('2006-01-01'))
-        self.assertEqual (dyn.overtime_period, None)
-
-        bal = user_dynamic.compute_balance \
-            (self.db, self.user1, date.Date ('2009-12-31'), sharp_end = True)
-        self.assertEqual (bal, (-38.5, 0))
-        bal = user_dynamic.compute_balance \
-            (self.db, self.user1, date.Date ('2009-12-27'), sharp_end = True)
-        self.assertEqual (bal, (-38.5, 0))
-        bal = user_dynamic.compute_balance \
-            (self.db, self.user1, date.Date ('2010-01-03'), sharp_end = True)
-        self.assertEqual (bal, (-38.5, 0))
-
-        bal = user_dynamic.compute_balance \
-            (self.db, self.user1, date.Date ('2009-12-31'), not_after = True)
-        self.assertEqual (bal, (-38.5, 0))
-        bal = user_dynamic.compute_balance \
-            (self.db, self.user1, date.Date ('2009-12-27'), not_after = True)
-        self.assertEqual (bal, (-38.5, 0))
-        bal = user_dynamic.compute_balance \
-            (self.db, self.user1, date.Date ('2010-01-03'), not_after = True)
-        self.assertEqual (bal, (-38.5, 0))
-
-        sr = summary.Staff_Report \
-            (self.db, r, templating.TemplatingUtils (None))
-        lines = [x.strip ().split (',') for x in sr.as_csv ().split ('\n')]
-        self.assertEqual (lines [1] [1], 'WW 52/2009')
-        self.assertEqual (lines [2] [1], 'WW 53/2009')
-        self.assertEqual (lines [3] [1], '2009-12-21;2010-01-03')
-        self.assertEqual (lines [1][11], '-38.50')
-        self.assertEqual (lines [2][11], '-38.50')
-        self.assertEqual (lines [3][11], '-38.50')
-
-        f = self.db.daily_record_freeze.create \
-            ( user           = self.user1
-            , frozen         = True
-            , date           = date.Date ('2009-12-31')
-            )
-        f = self.db.daily_record_freeze.getnode (f)
-        self.assertEqual (f.balance,        -38.5)
-        self.assertEqual (f.achieved_hours,   0.0)
-        self.assertEqual (f.validity_date,  date.Date ('2009-12-31'))
-
-        self.db.daily_record_freeze.set (f.id, frozen = False)
-        self.assertEqual (f.balance, None)
-        self.db.daily_record_freeze.set (f.id, frozen = True)
-
-        self.db.clearCache ()
-        self.assertEqual (f.balance,      -38.5)
-        self.assertEqual (f.achieved_hours, 0.0)
-        self.assertEqual (f.validity_date,  date.Date ('2009-12-31'))
-
-        self.db.clearCache ()
-
-        sr = summary.Staff_Report \
-            (self.db, r, templating.TemplatingUtils (None))
-        lines = [x.strip ().split (',') for x in sr.as_csv ().split ('\n')]
-        self.assertEqual (lines [1] [1], 'WW 52/2009')
-        self.assertEqual (lines [2] [1], 'WW 53/2009')
-        self.assertEqual (lines [3] [1], '2009-12-21;2010-01-03')
-        self.assertEqual (lines [1][11], '-38.50')
-        self.assertEqual (lines [2][11], '-38.50')
-        self.assertEqual (lines [3][11], '-38.50')
-    # end def test_user1
-
-    def test_user2 (self) :
-        self.log.debug ('test_user2')
-        self.setup_db ()
-        self.db.close ()
-        self.db = self.tracker.open (self.username2)
-        user2_time.import_data_2 (self.db, self.user2)
-        self.db.close ()
-        self.db = self.tracker.open ('admin')
-        self.db.user_dynamic.create \
-            ( user              = self.user2
-            , valid_from        = date.Date ('2009-01-01')
-            , booking_allowed   = True
-            , vacation_yearly   = 25
-            , all_in            = False
-            , hours_mon         = 7.75
-            , hours_tue         = 7.75
-            , hours_wed         = 7.75
-            , hours_thu         = 7.75
-            , hours_fri         = 7.5
-            , supp_weekly_hours = 38.5
-            , additional_hours  = 38.5
-            , overtime_period   = self.db.overtime_period.lookup ('week')
-            , org_location      = self.olo
-            , department        = self.dep
-            )
-        f = self.db.daily_record_freeze.create \
-            ( user           = self.user2
-            , frozen         = True
-            , date           = date.Date ('2008-12-31')
-            )
-        f = self.db.daily_record_freeze.getnode (f)
-        self.assertEqual (f.balance,        0.0)
-        self.assertEqual (f.achieved_hours, 0.0)
-        self.assertEqual (f.validity_date,  date.Date ('2008-12-31'))
-        self.db.commit ()
-        self.db.close  ()
-        self.db = self.tracker.open (self.username2)
-        fs = { 'user'         : [self.user2]
-             , 'date'         : '2008-12-22;2009-01-04'
-             , 'summary_type' : [2, 4]
-             }
-        class r : filterspec = fs
-        summary.init (self.tracker)
-        ndr = self.db.daily_record.getnode ('51')
-        self.assertEqual (len (ndr.time_record), 2)
-        sr = summary.Staff_Report \
-            (self.db, r, templating.TemplatingUtils (None))
-        lines = [x.strip ().split (',') for x in sr.as_csv ().split ('\n')]
-        self.assertEqual (len (lines), 5)
-        self.assertEqual (lines [1] [1], 'WW 52/2008')
-        self.assertEqual (lines [2] [1], 'WW 1/2009')
-        self.assertEqual (lines [3] [1], '2008-12-22;2009-01-04')
-        self.assertEqual (lines [1][11], '0.00')
-        self.assertEqual (lines [2][11], '0.00')
-        self.assertEqual (lines [3][11], '0.00')
-
-        fs = { 'user'         : [self.user2]
-             , 'date'         : '2009-12-21;2010-01-03'
-             , 'summary_type' : [2, 4]
-             }
-        class r : filterspec = fs
-        sr = summary.Staff_Report \
-            (self.db, r, templating.TemplatingUtils (None))
-        lines = [x.strip ().split (',') for x in sr.as_csv ().split ('\n')]
-        self.assertEqual (len (lines), 5)
-        self.assertEqual (lines [1] [1], 'WW 52/2009')
-        self.assertEqual (lines [2] [1], 'WW 53/2009')
-        self.assertEqual (lines [3] [1], '2009-12-21;2010-01-03')
-        self.assertEqual (lines [1][11], '113.12')
-        self.assertEqual (lines [2][11], '113.12')
-        self.assertEqual (lines [3][11], '113.12')
-        f = self.db.daily_record_freeze.create \
-            ( user           = self.user2
-            , frozen         = True
-            , date           = date.Date ('2009-12-31')
-            )
-        f = self.db.daily_record_freeze.getnode (f)
-        self.assertEqual (f.balance,        113.125)
-        self.assertEqual (f.achieved_hours, 0.0)
-        self.assertEqual (f.validity_date,  date.Date ('2009-12-27'))
-        # test split of frozen dyn record and reset of tr_duration
-        dr1 = self.db.daily_record.filter \
-            (None, dict (user = self.user2, date = '2009-12-31')) [0]
-        dr1 = self.db.daily_record.getnode (dr1)
-        user_dynamic.update_tr_duration (self.db, dr1)
-        self.assertEqual (dr1.tr_duration_ok, 7.75)
-        dr2 = self.db.daily_record.filter \
-            (None, dict (user = self.user2, date = '2010-01-01')) [0]
-        dr2 = self.db.daily_record.getnode (dr2)
-        user_dynamic.update_tr_duration (self.db, dr2)
-        self.assertEqual (dr2.tr_duration_ok, 7.5)
-        self.db.user_dynamic.create \
-            ( user              = self.user2
-            , valid_from        = date.Date ('2010-01-01')
-            , booking_allowed   = True
-            , vacation_yearly   = 25
-            , all_in            = False
-            , hours_mon         = 7.75
-            , hours_tue         = 7.75
-            , hours_wed         = 7.75
-            , hours_thu         = 7.75
-            , hours_fri         = 7.5
-            , supp_weekly_hours = 38.5
-            , additional_hours  = 38.5
-            , overtime_period   = self.db.overtime_period.lookup ('week')
-            , org_location      = self.olo
-            , department        = self.dep
-            )
-        self.db.clearCache ()
-        self.assertEqual (dr1.tr_duration_ok, 7.75)
-        self.assertEqual (dr2.tr_duration_ok, None)
-    # end def test_user2
-
     def test_user3 (self) :
         self.log.debug ('test_user3')
         self.setup_db ()
@@ -4272,7 +4385,7 @@ class Test_Case_Fulltracker (_Test_Case_Summary) :
         summary.init (self.tracker)
         fs = { 'user'         : [self.user3]
              , 'date'         : '2010-01-01;2010-05-31'
-             , 'summary_type' : [2, 3, 4]
+             , 'summary_type' : ['2', '3', '4']
              }
         class r : filterspec = fs
         sr = summary.Staff_Report \
@@ -4312,12 +4425,6 @@ class Test_Case_Fulltracker (_Test_Case_Summary) :
         user4_time.import_data_4 (self.db, self.user4)
         self.db.close ()
         self.db = self.tracker.open (self.username0)
-        #from roundup.admin import AdminTool
-        #t = AdminTool ()
-        #t.tracker_home = '.'
-        #t.db = self.db
-        #t.verbose = False
-        #t.do_export (['/var/tmp/user4'])
         dr = self.db.daily_record.filter \
             (None, dict (user = self.user4, date = '2012-05-04'))
         self.assertEqual (len (dr), 1)
@@ -4326,13 +4433,13 @@ class Test_Case_Fulltracker (_Test_Case_Summary) :
         self.assertEqual (len (tr), 1)
         tr = self.db.time_record.getnode (tr [0])
         self.assertEqual (tr.duration, 12)
-        self.assertEqual (tr.tr_duration, None)
+        self.assertEqual (round (tr.tr_duration, 2), round (7.804, 2))
         user_dynamic.update_tr_duration (self.db, dr)
         self.assertEqual (round (tr.tr_duration, 2), round (7.804, 2))
         summary.init (self.tracker)
         fs = { 'user'         : [self.user4]
              , 'date'         : '2012-01-01;2012-05-31'
-             , 'summary_type' : [2, 3, 4]
+             , 'summary_type' : ['2', '3', '4']
              }
         class r : filterspec = fs
         sr = summary.Staff_Report \
@@ -4446,7 +4553,7 @@ class Test_Case_Fulltracker (_Test_Case_Summary) :
         summary.init (self.tracker)
         fs = { 'user'         : [self.user5]
              , 'date'         : '2012-01-01;2012-09-28'
-             , 'summary_type' : [2, 3, 4]
+             , 'summary_type' : ['2', '3', '4']
              }
         class r : filterspec = fs
         sr = summary.Staff_Report \
@@ -4582,7 +4689,7 @@ class Test_Case_Fulltracker (_Test_Case_Summary) :
         summary.init (self.tracker)
         fs = { 'user'         : [self.user6]
              , 'date'         : '2012-09-01;2012-10-08'
-             , 'summary_type' : [2, 3, 4]
+             , 'summary_type' : ['2', '3', '4']
              }
         class r : filterspec = fs
         sr = summary.Staff_Report \
@@ -4615,7 +4722,7 @@ class Test_Case_Fulltracker (_Test_Case_Summary) :
         summary.init (self.tracker)
         fs = { 'user'         : [self.user7]
              , 'date'         : '2012-11-15;2012-12-18'
-             , 'summary_type' : [2, 3, 4]
+             , 'summary_type' : ['2', '3', '4']
              }
         class r : filterspec = fs
         sr = summary.Staff_Report \
@@ -4651,7 +4758,7 @@ class Test_Case_Fulltracker (_Test_Case_Summary) :
         summary.init (self.tracker)
         fs = { 'user'         : [self.user8]
              , 'date'         : '2013-01-01;2013-01-16'
-             , 'summary_type' : [2, 3, 4]
+             , 'summary_type' : ['2', '3', '4']
              }
         class r : filterspec = fs
         self.user8_staff_report (r, '-0.33', '2.32')
@@ -4668,7 +4775,7 @@ class Test_Case_Fulltracker (_Test_Case_Summary) :
             , valid_from        = date.Date ('2012-12-17')
             , valid_to          = date.Date ('2012-12-24')
             , booking_allowed   = True
-            , vacation_yearly   = 25
+            , vacation_yearly   = 25.0
             , all_in            = False
             , hours_mon         = 7.75
             , hours_tue         = 7.75
@@ -4737,7 +4844,7 @@ class Test_Case_Fulltracker (_Test_Case_Summary) :
         summary.init (self.tracker)
         fs = { 'user'         : [self.user9]
              , 'date'         : '2013-01-01;2013-01-16'
-             , 'summary_type' : [2, 3, 4]
+             , 'summary_type' : ['2', '3', '4']
              }
         class r : filterspec = fs
         sr = summary.Staff_Report \
@@ -4775,7 +4882,7 @@ class Test_Case_Fulltracker (_Test_Case_Summary) :
         summary.init (self.tracker)
         fs = { 'user'         : [self.user10]
              , 'date'         : '2012-12-01;2013-01-31'
-             , 'summary_type' : [2, 3, 4]
+             , 'summary_type' : ['2', '3', '4']
              }
         class r : filterspec = fs
         sr = summary.Staff_Report \
@@ -4784,6 +4891,7 @@ class Test_Case_Fulltracker (_Test_Case_Summary) :
         self.assertEqual (len (lines), 14)
         self.assertEqual (lines  [0] [1], 'Time Period')
         self.assertEqual (lines  [0] [6], 'Actual all')
+        self.assertEqual (lines  [0] [7], 'required')
         self.assertEqual (lines  [0] [8], 'Supp. hours average')
         self.assertEqual (lines  [0] [9], 'Supplementary hours')
         self.assertEqual (lines  [0][10], 'Overtime correction')
@@ -4805,81 +4913,6 @@ class Test_Case_Fulltracker (_Test_Case_Summary) :
         self.assertEqual (lines [13] [2], '76.38')
         self.assertEqual (lines [13][11], '0.00')
     # end def test_user10
-
-    def concurrency (self, method) :
-        """ Ensure that no cached values from previous transaction are used.
-            It is no concurrency test (which would fail due to a
-            concurrent update) in the sense that we have two concurrent
-            transactions.
-        """
-        trid = '4'
-        self.setup_db ()
-        self.db.close ()
-        self.db = None
-        self.db = self.tracker.open (self.username1)
-        user1_time.import_data_1 (self.db, self.user1)
-        self.db.close ()
-        self.db  = None
-
-        self.db1 = self.tracker.open ('admin')
-        self.db2 = self.tracker.open ('admin')
-        self.db1.time_record.set (trid, duration = 7)
-        self.db1.time_record.set (trid, duration = 8)
-        drid = self.db1.time_record.get (trid, 'daily_record')
-        tr_d1 = self.db1.time_record.get  (trid, 'tr_duration')
-        dr_d1 = self.db1.daily_record.get (drid, 'tr_duration_ok')
-        self.log.debug ("db1.commit after time_record.set")
-        self.db1.commit ()
-
-        dr  = self.db2.daily_record.getnode (drid)
-        dud = dr.tr_duration_ok
-        tr  = self.db2.time_record.getnode (trid)
-        dut = tr.tr_duration
-        self.log.debug ("db2.commit - 1 after get")
-        self.db2.commit ()
-        user_dynamic.update_tr_duration (self.db2, dr)
-        self.log.debug ("db2.commit - 2 after update_tr_duration")
-        self.db2.commit ()
-
-        self.db1.commit ()
-
-        self.log.debug ("before method")
-        method (drid, trid)
-        self.log.debug ("after  method")
-        self.db1.commit ()
-
-        self.db1.clearCache ()
-
-        self.assertEqual \
-            (self.db1.daily_record.get (drid, 'tr_duration_ok'), None)
-    # end def concurrency
-
-    def concurrency_create (self, drid, trid) :
-        self.db1.time_record.create (duration = 5, daily_record = drid)
-    # end def concurrency_set
-
-    def concurrency_retire (self, drid, trid) :
-        self.db1.time_record.set (trid, duration = None)
-    # end def concurrency_set
-
-    def concurrency_set (self, drid, trid) :
-        self.db1.time_record.set (trid, duration = 5)
-    # end def concurrency_set
-
-    def test_concurrency_create (self) :
-        self.log.debug ('test_concurrency_create')
-        self.concurrency (self.concurrency_create)
-    # end def test_concurrency_create
-
-    def test_concurrency_retire (self) :
-        self.log.debug ('test_concurrency_retire')
-        self.concurrency (self.concurrency_retire)
-    # end def test_concurrency_retire
-
-    def test_concurrency_set (self) :
-        self.log.debug ('test_concurrency_set')
-        self.concurrency (self.concurrency_set)
-    # end def test_concurrency_set
 
     def test_extproperty (self) :
         self.log.debug ('test_extproperty')
@@ -4906,7 +4939,7 @@ class Test_Case_Fulltracker (_Test_Case_Summary) :
         cli.db       = self.db
         cli.language = None
         cli.userid   = self.db.getuid ()
-        hcit         = templating.HTMLItem (cli, 'time_record', 1)
+        hcit         = templating.HTMLItem (cli, 'time_record', '1')
         dr           = hcit.daily_record
         wp           = hcit.wp
         utils        = templating.TemplatingUtils (cli)
@@ -4964,11 +4997,14 @@ class Test_Case_Fulltracker (_Test_Case_Summary) :
     def test_maturity_index (self) :
         self.log.debug ('test_maturity_index')
         self.db = self.tracker.open ('admin')
-        user = self.db.user.create \
+        d = dict \
             ( username = 'user'
             , status = self.db.user_status.lookup ('system')
             , roles = 'User,Nosy'
             )
+        if 'firstname' in self.db.user.properties :
+            d ['firstname'] = d ['lastname'] = 'm.i.user'
+        user = self.db.user.create (** d)
         pending = self.db.category.lookup ('pending')
         self.db.category.set (pending, responsible = user)
         self.db.commit ()
@@ -5088,22 +5124,488 @@ class Test_Case_Fulltracker (_Test_Case_Summary) :
         self.db.clearCache ()
 
         trok = self.db.daily_record.get (drid, 'tr_duration_ok')
-        self.assertEqual (trok, None)
+        self.assertEqual (trok, 8)
         self.assertEqual (self.db.time_record.get (trid, 'duration'), 8)
-        self.assertEqual (self.db.time_record.get (trid, 'tr_duration'), None)
+        self.assertEqual (self.db.time_record.get (trid, 'tr_duration'), 8)
+        l1 = len (self.db.getjournal ('daily_record', drid))
         self.db.clearCache ()
 
         dr = self.db.daily_record.getnode (drid)
         user_dynamic.update_tr_duration (self.db, dr)
         self.db.commit ()
         self.db.clearCache ()
+        l2 = len (self.db.getjournal ('daily_record', drid))
         self.assertEqual (self.db.time_record.get (trid, 'duration'), 8)
         self.assertEqual (self.db.time_record.get (trid, 'tr_duration'), 8)
         self.assertEqual (self.db.daily_record.get (drid, 'tr_duration_ok'), 8)
+        # No change in history with update_tr_duration: tr_duration_ok
+        # has already been computed when setting time_record
+        self.assertEqual (l1, l2)
     # end def test_tr_duration
 # end class Test_Case_Fulltracker
 
-class Test_Case_Abo (_Test_Case) :
+class Test_Case_Concurrency (_Test_Base, _Test_Base_Summary, unittest.TestCase) :
+    schemaname = 'full'
+    backend = 'postgresql'
+
+    def concurrency (self, method) :
+        """ Ensure that no cached values from previous transaction are used.
+            It is no concurrency test (which would fail due to a
+            concurrent update) in the sense that we have two concurrent
+            transactions.
+        """
+        trid = '4'
+        self.setup_db ()
+        self.db.close ()
+        self.db = None
+        self.db = self.tracker.open (self.username1)
+        user1_time.import_data_1 (self.db, self.user1)
+        self.db.close ()
+        self.db  = None
+
+        self.db1 = self.tracker.open ('admin')
+        self.db2 = self.tracker.open ('admin')
+        self.db1.time_record.set (trid, duration = 7)
+        self.db1.time_record.set (trid, duration = 8)
+        drid = self.db1.time_record.get (trid, 'daily_record')
+        tr_d1 = self.db1.time_record.get  (trid, 'tr_duration')
+        dr_d1 = self.db1.daily_record.get (drid, 'tr_duration_ok')
+        self.log.debug ("db1.commit after time_record.set")
+        self.db1.commit ()
+
+        dr  = self.db2.daily_record.getnode (drid)
+        dud = dr.tr_duration_ok
+        tr  = self.db2.time_record.getnode (trid)
+        dut = tr.tr_duration
+        self.log.debug ("db2.commit - 1 after get")
+        self.db2.commit ()
+        user_dynamic.update_tr_duration (self.db2, dr)
+        self.log.debug ("db2.commit - 2 after update_tr_duration")
+        l2 = len (self.db2.getjournal ('daily_record', drid))
+        self.db2.commit ()
+
+        l1 = len (self.db1.getjournal ('daily_record', drid))
+        self.db1.commit ()
+
+        # Since the update happened immediately after transaction in d1,
+        # the update_tr_duration did nothing and we should not see a
+        # different count here.
+        self.assertEqual (l1, l2)
+
+        self.log.debug ("before method")
+        method (drid, trid)
+        self.log.debug ("after  method")
+        self.db1.commit ()
+
+        self.db1.clearCache ()
+
+        # Verify that the history has grown and that the last element in
+        # the history is value 'None' -- means that the tr_duration_ok
+        # was set to None by some auditor and was automagically
+        # recomputed by the reactor, resulting in the *previous* value
+        # (the one in the journal) to be None
+        j  = list \
+            ( sorted
+                ( self.db1.getjournal ('daily_record', drid)
+                , key = lambda x : x [1]
+                )
+            )
+        l3 = len (j)
+        self.assertEqual (l3 > l1, True)
+        self.assertEqual (j [-1][-1]['tr_duration_ok'], None)
+        self.assertEqual \
+            ( self.db1.daily_record.get (drid, 'tr_duration_ok') is not None
+            , True
+            )
+    # end def concurrency
+
+    def concurrency_create (self, drid, trid) :
+        self.db1.time_record.create (duration = 5, daily_record = drid)
+    # end def concurrency_set
+
+    def concurrency_retire (self, drid, trid) :
+        self.db1.time_record.set (trid, duration = None)
+    # end def concurrency_set
+
+    def concurrency_set (self, drid, trid) :
+        self.db1.time_record.set (trid, duration = 5)
+    # end def concurrency_set
+
+    def test_concurrency_create (self) :
+        self.log.debug ('test_concurrency_create')
+        self.concurrency (self.concurrency_create)
+    # end def test_concurrency_create
+
+    def test_concurrency_retire (self) :
+        self.log.debug ('test_concurrency_retire')
+        self.concurrency (self.concurrency_retire)
+    # end def test_concurrency_retire
+
+    def test_concurrency_set (self) :
+        self.log.debug ('test_concurrency_set')
+        self.concurrency (self.concurrency_set)
+    # end def test_concurrency_set
+
+    def test_user1 (self) :
+        self.log.debug ('test_user1')
+        self.setup_db ()
+        self.db.close ()
+        self.db = self.tracker.open (self.username1)
+        user1_time.import_data_1 (self.db, self.user1)
+        self.db.close ()
+        self.db = self.tracker.open ('admin')
+        self.db.overtime_correction.create \
+            ( user    = self.user1
+            , value   = 910.0
+            , comment = 'Auf null stellen, da keine Eintraege'
+            , date    = date.Date ('2008-09-07')
+            )
+        dr = self.db.daily_record.filter \
+            (None, dict (user = self.user1, date = '2006-01-23')) [0]
+        dr = self.db.daily_record.getnode (dr)
+        user_dynamic.update_tr_duration (self.db, dr)
+        self.assertEqual (dr.tr_duration_ok, 0)
+        self.db.user_dynamic.create \
+            ( user              = self.user1
+            , valid_from        = date.Date ('2006-01-01')
+            , booking_allowed   = True
+            , vacation_yearly   = 25.0
+            , all_in            = True
+            , hours_mon         = 7.75
+            , hours_tue         = 7.75
+            , hours_wed         = 7.75
+            , hours_thu         = 7.75
+            , hours_fri         = 7.5
+            , daily_worktime    = 0.0
+            , org_location      = self.olo
+            , department        = self.dep
+            , max_flexitime     = 5
+            )
+        self.db.clearCache ()
+        self.assertEqual (dr.tr_duration_ok, 0)
+        self.db.user_dynamic.create \
+            ( user              = self.user1
+            , valid_from        = date.Date ('2008-01-01')
+            , valid_to          = date.Date ('2008-09-11')
+            , booking_allowed   = True
+            , vacation_yearly   = 25.0
+            , all_in            = False
+            , hours_mon         = 5.0
+            , hours_tue         = 5.0
+            , hours_wed         = 5.0
+            , hours_thu         = 5.0
+            , hours_fri         = 5.0
+            , daily_worktime    = 0.0
+            , supp_weekly_hours = 25.
+            , org_location      = self.olo
+            , department        = self.dep
+            , overtime_period   = self.db.overtime_period.lookup ('week')
+            )
+        self.db.user_dynamic.create \
+            ( user              = self.user1
+            , valid_from        = date.Date ('2009-01-04')
+            , booking_allowed   = True
+            , vacation_yearly   = 25.0
+            , all_in            = True
+            , hours_mon         = 2.0
+            , hours_tue         = 2.0
+            , hours_wed         = 2.0
+            , hours_thu         = 2.0
+            , hours_fri         = 2.0
+            , daily_worktime    = 0.0
+            , org_location      = self.olo
+            , department        = self.dep
+            , max_flexitime     = 5
+            )
+        self.db.user_dynamic.create \
+            ( user              = self.user1
+            , valid_from        = date.Date ('2010-01-01')
+            , booking_allowed   = True
+            , vacation_yearly   = 25.0
+            , all_in            = True
+            , hours_mon         = 2.0
+            , hours_tue         = 2.0
+            , hours_wed         = 2.0
+            , hours_thu         = 2.0
+            , hours_fri         = 2.0
+            , daily_worktime    = 0.0
+            , org_location      = self.olo
+            , department        = self.dep
+            , max_flexitime     = 5
+            )
+        self.db.commit ()
+        self.db.close  ()
+        self.db = self.tracker.open (self.username1)
+        fs = { 'user'         : [self.user1]
+             , 'date'         : '2008-09-01;2008-09-10'
+             , 'summary_type' : ['2', '4']
+             }
+        class r : filterspec = fs
+        summary.init (self.tracker)
+        sr = summary.Staff_Report \
+            (self.db, r, templating.TemplatingUtils (None))
+        lines = [x.strip ().split (',') for x in sr.as_csv ().split ('\n')]
+        self.assertEqual (len (lines), 5)
+        self.assertEqual (lines [0] [0], 'User')
+        self.assertEqual (lines [0] [1], 'Time Period')
+        self.assertEqual (lines [0] [2], 'Balance Start')
+        self.assertEqual (lines [0] [3], 'Actual open')
+        self.assertEqual (lines [0] [4], 'Actual submitted')
+        self.assertEqual (lines [0] [5], 'Actual accepted')
+        self.assertEqual (lines [0] [6], 'Actual all')
+        self.assertEqual (lines [0] [7], 'required')
+        self.assertEqual (lines [0] [8], 'Supp. hours average')
+        self.assertEqual (lines [0] [9], 'Supplementary hours')
+        self.assertEqual (lines [0][10], 'Overtime correction')
+        self.assertEqual (lines [0][11], 'Balance End')
+        self.assertEqual (lines [0][12], 'Overtime period')
+        self.assertEqual (lines [1] [1], 'WW 36/2008')
+        self.assertEqual (lines [2] [1], 'WW 37/2008')
+        self.assertEqual (lines [3] [1], '2008-09-01;2008-09-10')
+        self.assertEqual (lines [1][11], '-23.50')
+        self.assertEqual (lines [2][11], '-38.50')
+        self.assertEqual (lines [3][11], '-38.50')
+        self.assertEqual (lines [3][10], '910.0')
+        fs = { 'user'         : [self.user1]
+             , 'date'         : '2009-12-21;2010-01-03'
+             , 'summary_type' : ['2', '4']
+             }
+        class r : filterspec = fs
+        sr = summary.Staff_Report \
+            (self.db, r, templating.TemplatingUtils (None))
+        lines = [x.strip ().split (',') for x in sr.as_csv ().split ('\n')]
+        self.assertEqual (lines [1] [1], 'WW 52/2009')
+        self.assertEqual (lines [2] [1], 'WW 53/2009')
+        self.assertEqual (lines [3] [1], '2009-12-21;2010-01-03')
+        self.assertEqual (lines [1][11], '-38.50')
+        self.assertEqual (lines [2][11], '-38.50')
+        self.assertEqual (lines [3][11], '-38.50')
+
+        for d in ('2006-12-31', '2007-12-31') :
+            f = self.db.daily_record_freeze.create \
+                ( user           = self.user1
+                , frozen         = True
+                , date           = date.Date (d)
+                )
+            f = self.db.daily_record_freeze.getnode (f)
+            self.assertEqual (f.balance,        -38.5)
+            self.assertEqual (f.achieved_hours, 0.0)
+            self.assertEqual (f.validity_date,  date.Date (d))
+
+        f = self.db.daily_record_freeze.create \
+            ( user           = self.user1
+            , frozen         = True
+            , date           = date.Date ('2008-09-10')
+            )
+        f = self.db.daily_record_freeze.getnode (f)
+        self.assertEqual (f.balance,       -23.5)
+        self.assertEqual (f.achieved_hours,  0.0)
+        self.assertEqual (f.validity_date,  date.Date ('2008-09-07'))
+
+        dyn = user_dynamic.first_user_dynamic (self.db, self.user1)
+        self.assertEqual (dyn.valid_from, date.Date ('2005-09-01'))
+        op  = user_dynamic.overtime_periods \
+            (self.db, self.user1, dyn.valid_from, date.Date ('2009-12-31'))
+        self.assertEqual (len (op), 1)
+        self.assertEqual (op [0][0], date.Date ('2005-10-01'))
+        self.assertEqual (op [0][1], date.Date ('2008-09-10'))
+        self.assertEqual (op [0][2].name, 'week')
+        dyn = user_dynamic.next_user_dynamic (self.db, dyn)
+        self.assertEqual (dyn.valid_from, date.Date ('2005-10-01'))
+        dyn = user_dynamic.next_user_dynamic (self.db, dyn)
+        self.assertEqual (dyn.valid_from, date.Date ('2006-01-01'))
+        self.assertEqual (dyn.overtime_period, None)
+
+        bal = user_dynamic.compute_balance \
+            (self.db, self.user1, date.Date ('2009-12-31'), sharp_end = True)
+        self.assertEqual (bal, (-38.5, 0))
+        bal = user_dynamic.compute_balance \
+            (self.db, self.user1, date.Date ('2009-12-27'), sharp_end = True)
+        self.assertEqual (bal, (-38.5, 0))
+        bal = user_dynamic.compute_balance \
+            (self.db, self.user1, date.Date ('2010-01-03'), sharp_end = True)
+        self.assertEqual (bal, (-38.5, 0))
+
+        bal = user_dynamic.compute_balance \
+            (self.db, self.user1, date.Date ('2009-12-31'), not_after = True)
+        self.assertEqual (bal, (-38.5, 0))
+        bal = user_dynamic.compute_balance \
+            (self.db, self.user1, date.Date ('2009-12-27'), not_after = True)
+        self.assertEqual (bal, (-38.5, 0))
+        bal = user_dynamic.compute_balance \
+            (self.db, self.user1, date.Date ('2010-01-03'), not_after = True)
+        self.assertEqual (bal, (-38.5, 0))
+
+        sr = summary.Staff_Report \
+            (self.db, r, templating.TemplatingUtils (None))
+        lines = [x.strip ().split (',') for x in sr.as_csv ().split ('\n')]
+        self.assertEqual (lines [1] [1], 'WW 52/2009')
+        self.assertEqual (lines [2] [1], 'WW 53/2009')
+        self.assertEqual (lines [3] [1], '2009-12-21;2010-01-03')
+        self.assertEqual (lines [1][11], '-38.50')
+        self.assertEqual (lines [2][11], '-38.50')
+        self.assertEqual (lines [3][11], '-38.50')
+
+        f = self.db.daily_record_freeze.create \
+            ( user           = self.user1
+            , frozen         = True
+            , date           = date.Date ('2009-12-31')
+            )
+        f = self.db.daily_record_freeze.getnode (f)
+        self.assertEqual (f.balance,        -38.5)
+        self.assertEqual (f.achieved_hours,   0.0)
+        self.assertEqual (f.validity_date,  date.Date ('2009-12-31'))
+
+        self.db.daily_record_freeze.set (f.id, frozen = False)
+        self.assertEqual (f.balance, None)
+        self.db.daily_record_freeze.set (f.id, frozen = True)
+
+        self.db.clearCache ()
+        self.assertEqual (f.balance,      -38.5)
+        self.assertEqual (f.achieved_hours, 0.0)
+        self.assertEqual (f.validity_date,  date.Date ('2009-12-31'))
+
+        self.db.clearCache ()
+
+        sr = summary.Staff_Report \
+            (self.db, r, templating.TemplatingUtils (None))
+        lines = [x.strip ().split (',') for x in sr.as_csv ().split ('\n')]
+        self.assertEqual (lines [1] [1], 'WW 52/2009')
+        self.assertEqual (lines [2] [1], 'WW 53/2009')
+        self.assertEqual (lines [3] [1], '2009-12-21;2010-01-03')
+        self.assertEqual (lines [1][11], '-38.50')
+        self.assertEqual (lines [2][11], '-38.50')
+        self.assertEqual (lines [3][11], '-38.50')
+    # end def test_user1
+
+    def test_user2 (self) :
+        self.log.debug ('test_user2')
+        self.setup_db ()
+        self.db.close ()
+        self.db = self.tracker.open (self.username2)
+        user2_time.import_data_2 (self.db, self.user2)
+        self.db.close ()
+        self.db = self.tracker.open ('admin')
+        self.db.user_dynamic.create \
+            ( user              = self.user2
+            , valid_from        = date.Date ('2009-01-01')
+            , booking_allowed   = True
+            , vacation_yearly   = 25.0
+            , all_in            = False
+            , hours_mon         = 7.75
+            , hours_tue         = 7.75
+            , hours_wed         = 7.75
+            , hours_thu         = 7.75
+            , hours_fri         = 7.5
+            , supp_weekly_hours = 38.5
+            , additional_hours  = 38.5
+            , overtime_period   = self.db.overtime_period.lookup ('week')
+            , org_location      = self.olo
+            , department        = self.dep
+            )
+        f = self.db.daily_record_freeze.create \
+            ( user           = self.user2
+            , frozen         = True
+            , date           = date.Date ('2008-12-31')
+            )
+        f = self.db.daily_record_freeze.getnode (f)
+        self.assertEqual (f.balance,        0.0)
+        self.assertEqual (f.achieved_hours, 0.0)
+        self.assertEqual (f.validity_date,  date.Date ('2008-12-31'))
+        self.db.commit ()
+        self.db.close  ()
+        self.db = self.tracker.open (self.username2)
+        fs = { 'user'         : [self.user2]
+             , 'date'         : '2008-12-22;2009-01-04'
+             , 'summary_type' : ['2', '4']
+             }
+        class r : filterspec = fs
+        summary.init (self.tracker)
+        ndr = self.db.daily_record.getnode ('51')
+        self.assertEqual (len (ndr.time_record), 2)
+        sr = summary.Staff_Report \
+            (self.db, r, templating.TemplatingUtils (None))
+        lines = [x.strip ().split (',') for x in sr.as_csv ().split ('\n')]
+        self.assertEqual (len (lines), 5)
+        self.assertEqual (lines [1] [1], 'WW 52/2008')
+        self.assertEqual (lines [2] [1], 'WW 1/2009')
+        self.assertEqual (lines [3] [1], '2008-12-22;2009-01-04')
+        self.assertEqual (lines [1][11], '0.00')
+        self.assertEqual (lines [2][11], '0.00')
+        self.assertEqual (lines [3][11], '0.00')
+
+        fs = { 'user'         : [self.user2]
+             , 'date'         : '2009-12-21;2010-01-03'
+             , 'summary_type' : ['2', '4']
+             }
+        class r : filterspec = fs
+        sr = summary.Staff_Report \
+            (self.db, r, templating.TemplatingUtils (None))
+        lines = [x.strip ().split (',') for x in sr.as_csv ().split ('\n')]
+        self.assertEqual (len (lines), 5)
+        self.assertEqual (lines [1] [1], 'WW 52/2009')
+        self.assertEqual (lines [2] [1], 'WW 53/2009')
+        self.assertEqual (lines [3] [1], '2009-12-21;2010-01-03')
+        self.assertEqual (lines [1][11], '113.12')
+        self.assertEqual (lines [2][11], '113.12')
+        self.assertEqual (lines [3][11], '113.12')
+        f = self.db.daily_record_freeze.create \
+            ( user           = self.user2
+            , frozen         = True
+            , date           = date.Date ('2009-12-31')
+            )
+        f = self.db.daily_record_freeze.getnode (f)
+        self.assertEqual (f.balance,        113.125)
+        self.assertEqual (f.achieved_hours, 0.0)
+        self.assertEqual (f.validity_date,  date.Date ('2009-12-27'))
+        # test split of frozen dyn record and reset of tr_duration
+        dr1 = self.db.daily_record.filter \
+            (None, dict (user = self.user2, date = '2009-12-31')) [0]
+        dr1 = self.db.daily_record.getnode (dr1)
+        user_dynamic.update_tr_duration (self.db, dr1)
+        self.assertEqual (dr1.tr_duration_ok, 7.75)
+        dr2 = self.db.daily_record.filter \
+            (None, dict (user = self.user2, date = '2010-01-01')) [0]
+        dr2 = self.db.daily_record.getnode (dr2)
+        user_dynamic.update_tr_duration (self.db, dr2)
+        self.assertEqual (dr2.tr_duration_ok, 7.5)
+        # Get len of journal
+        l1_1 = len (self.db.getjournal ('daily_record', dr1.id))
+        l2_1 = len (self.db.getjournal ('daily_record', dr2.id))
+        self.db.user_dynamic.create \
+            ( user              = self.user2
+            , valid_from        = date.Date ('2010-01-01')
+            , booking_allowed   = True
+            , vacation_yearly   = 25.0
+            , all_in            = False
+            , hours_mon         = 7.75
+            , hours_tue         = 7.75
+            , hours_wed         = 7.75
+            , hours_thu         = 7.75
+            , hours_fri         = 7.5
+            , supp_weekly_hours = 38.5
+            , additional_hours  = 38.5
+            , overtime_period   = self.db.overtime_period.lookup ('week')
+            , org_location      = self.olo
+            , department        = self.dep
+            )
+        self.db.clearCache ()
+        self.assertEqual (dr1.tr_duration_ok, 7.75)
+        self.assertEqual (dr2.tr_duration_ok, 7.5)
+        # Get len of journal, tr_duration_ok should have been recomputed
+        l1_2 = len (self.db.getjournal ('daily_record', dr1.id))
+        l2_2 = len (self.db.getjournal ('daily_record', dr2.id))
+        # Rec dr1 was *not* updated
+        self.assertEqual (l1_1, l1_2)
+        # Rec dr2 *was* updated due to update of user_dynamic. Since
+        # the *old* user_dynamic record was changed *and* the new one
+        # was created we have more than two updates.
+        self.assertEqual (l2_2 - l2_1 >= 4, True)
+    # end def test_user2
+
+# end class Test_Case_Concurrency
+
+class Test_Case_Abo (_Test_Case, unittest.TestCase) :
     schemaname = 'abo'
     roles = \
         [ 'abo', 'admin', 'adr_readonly', 'anonymous', 'contact'
@@ -5112,7 +5614,7 @@ class Test_Case_Abo (_Test_Case) :
     transprop_perms = transprop_abo
 # end class Test_Case_Abo
 
-class Test_Case_Adr (_Test_Case) :
+class Test_Case_Adr (_Test_Case, unittest.TestCase) :
     schemaname = 'adr'
     roles = \
         [ 'admin', 'adr_readonly', 'anonymous', 'contact', 'letter'
@@ -5121,7 +5623,7 @@ class Test_Case_Adr (_Test_Case) :
     transprop_perms = transprop_adr
 # end class Test_Case_Adr
 
-class Test_Case_ERP (_Test_Case) :
+class Test_Case_ERP (_Test_Case, unittest.TestCase) :
     schemaname = 'erp'
     roles = \
         [ 'admin', 'adr_readonly', 'anonymous', 'contact', 'discount'
@@ -5130,7 +5632,7 @@ class Test_Case_ERP (_Test_Case) :
     transprop_perms = transprop_erp
 # end class Test_Case_ERP
 
-class Test_Case_IT (_Test_Case) :
+class Test_Case_IT (_Test_Case, unittest.TestCase) :
     schemaname = 'it'
     roles = \
         [ 'admin', 'anonymous'
@@ -5140,7 +5642,7 @@ class Test_Case_IT (_Test_Case) :
         ]
 # end class Test_Case_IT
 
-class Test_Case_ITAdr (_Test_Case) :
+class Test_Case_ITAdr (_Test_Case, unittest.TestCase) :
     schemaname = 'itadr'
     roles = \
         [ 'admin', 'adr_readonly', 'anonymous', 'contact', 'it'
@@ -5151,7 +5653,7 @@ class Test_Case_ITAdr (_Test_Case) :
     transprop_perms = transprop_itadr
 # end class Test_Case_ITAdr
 
-class Test_Case_Kvats (_Test_Case) :
+class Test_Case_Kvats (_Test_Case, unittest.TestCase) :
     schemaname = 'kvats'
     roles = \
         [ 'admin', 'anonymous', 'issue_admin'
@@ -5160,13 +5662,13 @@ class Test_Case_Kvats (_Test_Case) :
     transprop_perms = transprop_kvats
 # end class Test_Case_Kvats
 
-class Test_Case_Lielas (_Test_Case) :
+class Test_Case_Lielas (_Test_Case, unittest.TestCase) :
     schemaname = 'lielas'
     roles = ['admin', 'anonymous', 'guest', 'logger', 'user', 'user_view']
     transprop_perms = transprop_lielas
 # end class Test_Case_Lielas
 
-class Test_Case_PR (_Test_Case) :
+class Test_Case_PR (_Test_Case, unittest.TestCase) :
     schemaname = 'pr'
     roles = \
         [ 'admin', 'anonymous', 'board', 'controlling'

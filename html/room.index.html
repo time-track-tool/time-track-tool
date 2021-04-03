@@ -1,0 +1,38 @@
+<tal:block metal:use-macro="templates/page/macros/icing">
+<tal:block metal:fill-slot="create_or_query">
+ <tal:block 
+  metal:use-macro="templates/page/macros/create_or_query_new_tracker_item" />
+</tal:block>
+
+<tal:block metal:fill-slot="content">
+ <tal:block tal:define=
+  "batch request/batch;
+   pdict python: utils.properties_dict (db, context);
+   l python:
+    ( ('id',                              {})
+    , ('name',                            {})
+    , ('location'
+      , dict
+        ( multiselect = 1
+        , filter      = utils.valid_item (now)
+        )
+      )
+    , ('description',                     {})
+    , ('creation',                        {})
+    , ('creator',                         {})
+    , ('activity',                        {})
+    , ('actor',                           {})
+    );
+   props python:
+       [utils.ExtProperty (utils, pdict [k [0]], ** (k [1])) for k in l
+        if k [0] in pdict and
+           utils.search_allowed (db, request, 'room', k [0])
+       ];
+   "
+  tal:condition="context/is_view_ok">
+
+  <tal:block metal:use-macro="templates/page/macros/search_results"/>
+  <tal:block metal:use-macro="templates/page/macros/simple_search_form"/>
+ </tal:block>
+</tal:block>
+</tal:block>

@@ -30,6 +30,7 @@
 #
 
 from schemacfg import schemadef
+from domain_perm import check_domain_permission
 
 def init \
     ( db
@@ -82,6 +83,7 @@ def init \
         , timetracking_by = Link      ("user")
         , clearance_by    = Link      ("user")
         , status          = Link      ("user_status")
+        , roles_enabled   = String    ()
         )
     domain_permission.setkey ('ad_domain')
 
@@ -102,6 +104,7 @@ def security (db, ** kw) :
     user_props = \
         [ 'contacts'
         , 'csv_delimiter'
+        , 'entry_date'
         , 'firstname'
         , 'hide_message_files'
         , 'job_description'
@@ -110,7 +113,7 @@ def security (db, ** kw) :
         , 'lunch_start'
         , 'nickname'
         , 'pictures'
-        , 'position'
+        , 'position_text'
         , 'room'
         , 'sex'
         , 'status'
@@ -118,15 +121,14 @@ def security (db, ** kw) :
         , 'substitute'
         , 'supervisor'
         , 'timezone'
-        , 'title'
         , 'tt_lines'
-        , 'scale_role'
-        , 'scale_seniority'
-        , 'vie_user'
+        , 'vie_user_text'
 	]
-    user_props_hr  = user_props + ['clearance_by', 'roles', 'reduced_activity_list']
-    user_props_gtt = user_props + ['username']
-    user_props_office = ['contacts', 'position', 'room', 'title']
+    user_props_hr  = user_props + \
+        ['clearance_by', 'roles', 'reduced_activity_list']
+    user_props_gtt = user_props + \
+        ['username', 'sync_foreign_key', 'department_temp']
+    user_props_office = ['contacts', 'position_text', 'room']
     user_props_facility = ['room']
     role_perms = \
         [ ("Dom-User-Edit-GTT",      user_props_gtt)
@@ -140,6 +142,13 @@ def security (db, ** kw) :
           , ["IT"]
           )
         ]
+    if 'contract_type' in db.classes :
+        classes.append \
+            ( ( "contract_type"
+              , ["Dom-User-Edit-GTT", "Dom-User-Edit-HR"]
+              , []
+              )
+            )
     if 'user_contact' in db.classes :
         for role, x in role_perms [:3] :
             classes.append \
@@ -155,42 +164,31 @@ def security (db, ** kw) :
 
     if 'user_dynamic' in db.classes :
 
-        def view_user_dynamic_dom (db, userid, itemid) :
-            """ May only view records with the correct domain
+        def user_dynamic_dom (db, userid, itemid) :
+            """ May only view/edit records with the correct domain
             """
             dyn   = db.user_dynamic.getnode (itemid)
             user  = db.user.getnode (dyn.user)
-            dpids = db.domain_permission.filter (None, dict (users = userid))
-            for dpid in dpids :
-                dp = db.domain_permission.getnode (dpid)
-                if dp.ad_domain == user.ad_domain :
-                    return True
-            return False
-        # end def view_user_dynamic_dom
+            return check_domain_permission (db, userid, user.ad_domain)
+        # end def user_dynamic_dom
 
         for role in ("Dom-User-Edit-GTT", "Dom-User-Edit-HR") :
             db.security.addPermissionToRole (role, 'Create', 'user_dynamic')
-            p = db.security.addPermission \
-                ( name        = 'View'
-                , klass       = 'user_dynamic'
-                , check       = view_user_dynamic_dom
-                , description = fixdoc (view_user_dynamic_dom.__doc__)
-                )
-            db.security.addPermissionToRole (role, p)
+            for perm in ('View', 'Edit') :
+                p = db.security.addPermission \
+                    ( name        = perm
+                    , klass       = 'user_dynamic'
+                    , check       = user_dynamic_dom
+                    , description = fixdoc (user_dynamic_dom.__doc__)
+                    )
+                db.security.addPermissionToRole (role, p)
 
     def domain_access_user (db, userid, itemid) :
         """ Users may view/edit user records for ad_domain for which they
             are in the domain_permission for the user.
         """
-        dpids = db.domain_permission.filter (None, dict (users = userid))
-        if not dpids :
-            return False
         u = db.user.getnode (itemid)
-        for dpid in dpids :
-            dp = db.domain_permission.getnode (dpid)
-            if dp.ad_domain == u.ad_domain :
-                return True
-        return False
+        return check_domain_permission (db, userid, u.ad_domain)
     # end def domain_access_user
 
     for role, props in role_perms :
@@ -208,16 +206,9 @@ def security (db, ** kw) :
         """ Users may view user_dynamic records for ad_domain for which
             they are in the domain_permission for the user
         """
-        dpids = db.domain_permission.filter (None, dict (users = userid))
-        if not dpids :
-            return False
         ud = db.user_dynamic.getnode (itemid)
         u  = db.user.getnode (ud.user)
-        for dpid in dpids :
-            dp = db.domain_permission.getnode (dpid)
-            if dp.ad_domain == u.ad_domain :
-                return True
-        return False
+        return check_domain_permission (db, userid, u.ad_domain)
     # end def domain_view_user_dynamic
 
     p = db.security.addPermission \

@@ -1,5 +1,4 @@
-# -*- coding: iso-8859-1 -*-
-# Copyright (C) 2006-14 Dr. Ralf Schlatterbeck Open Source Consulting.
+# Copyright (C) 2006-20 Dr. Ralf Schlatterbeck Open Source Consulting.
 # Reichergasse 131, A-3411 Weidling.
 # Web: http://www.runtux.com Email: office@runtux.com
 # All rights reserved
@@ -32,7 +31,7 @@
 from roundup.hyperdb import Class
 from common          import tt_clearance_by
 from freeze          import frozen
-from roundup.date    import Interval
+from roundup         import date
 from schemacfg       import schemadef
 import sum_common
 import common
@@ -47,9 +46,8 @@ def init \
     , Multilink
     , Boolean
     , Number
+    , Interval
     , Department_Class
-    , Location_Class
-    , Organisation_Class
     , Time_Project_Status_Class
     , SAP_CC_Class
     , ** kw
@@ -74,6 +72,16 @@ def init \
         , active                = Boolean   ()
         )
     cost_center_group.setkey ("name")
+
+    cost_center_permission_group = Class \
+        ( db
+        , ''"cost_center_permission_group"
+        , name                  = String    ()
+        , description           = String    ()
+        , permission_for        = Multilink ("user", do_journal = 'no')
+        , cost_center           = Multilink ("cost_center")
+        )
+    cost_center_permission_group.setkey ("name")
 
     cost_center_status = Class \
         ( db
@@ -287,7 +295,9 @@ def init \
         , wp_no                 = String    ()
         , description           = String    ()
         , responsible           = Link      ("user")
-        , project               = Link      ("time_project")
+        , project               = Link      ( "time_project"
+                                            , rev_multilink='wps'
+                                            )
         , time_start            = Date      (offset = 0)
         , time_end              = Date      (offset = 0)
         , planned_effort        = Number    ()
@@ -300,6 +310,7 @@ def init \
         , time_wp_summary_no    = Link      ("time_wp_summary_no")
         , epic_key              = String    ()
         , is_extern             = Boolean   ()
+        , auto_wp               = Link      ("auto_wp")
         )
 
     time_wp_summary_no = Class \
@@ -317,6 +328,20 @@ def init \
         , wps                   = Multilink ("time_wp")
         )
     time_wp_group.setkey ("name")
+
+    auto_wp = Class \
+        ( db
+        , ''"auto_wp"
+        , name                  = String    ()
+        , org_location          = Link      ("org_location")
+        , contract_type         = Link      ('contract_type')
+        , time_project          = Link      ("time_project")
+        , duration              = Interval  ()
+        , is_valid              = Boolean   ()
+        , durations_allowed     = Boolean   ()
+        , all_in                = Boolean   ()
+        )
+    auto_wp.setlabelprop ("name")
 
     overtime_period = Class \
         ( db
@@ -371,6 +396,9 @@ def init \
         , sap_cc                = Link      ("sap_cc")
         , max_flexitime         = Number    ()
         , vac_aliq              = Link      ("vac_aliq",     do_journal = "no")
+        , exemption             = Boolean   ()
+        , short_time_work_hours = Number    ()
+        , do_auto_wp            = Boolean   ()
         )
 
     leave_status = Class \
@@ -396,8 +424,8 @@ def init \
         , user                  = Link      ("user")
         , first_day             = Date      (offset = 0)
         , last_day              = Date      (offset = 0)
-        , status                = Link      ("leave_status")
-        , time_wp               = Link      ("time_wp")
+        , status                = Link      ("leave_status", do_journal = 'no')
+        , time_wp               = Link      ("time_wp",      do_journal = 'no')
         , comment               = String    ()
         , comment_cancel        = String    ()
         , approval_hr           = Boolean   () # only for queries
@@ -482,6 +510,25 @@ def init \
         )
     work_location.setkey ("code")
 
+    functional_role = Class \
+        ( db, ''"functional_role"
+        , name                  = String    ()
+        , name_group            = String    ()
+        , rank                  = Number    ()
+        )
+    functional_role.setkey ("name")
+    functional_role.setorderprop ("rank")
+
+    user_functional_role = Class \
+        ( db, ''"user_functional_role"
+        , user                  = Link      ("user"
+                                            , rev_multilink='planning_role'
+                                            )
+        , functional_role       = Link      ("functional_role")
+        , ratio                 = Number    ()
+        )
+    user_functional_role.setlabelprop ("functional_role")
+
     class User_Class (kw ['User_Class']) :
         """ add some attrs to user class
         """
@@ -489,10 +536,13 @@ def init \
             self.update_properties \
                 ( timing_info            = Boolean   ()
                 , timetracking_by        = Link      ("user")
-                , scale_role             = String    ()
                 , scale_seniority        = String    ()
                 , reduced_activity_list  = Date      ()
-                , vie_user               = Link      ("user")
+                , entry_date             = Date      ()
+                , position_text          = String    ()
+                , vie_user_text          = String    ()
+                , sync_foreign_key       = String    ()
+                , department_temp        = String    ()
                 )
             kw ['User_Class'].__init__ (self, db, classname, ** properties)
         # end def __init__
@@ -525,6 +575,7 @@ def init \
                 , vac_aliq                   = Link      ("vac_aliq")
                 , group_external             = Boolean   ()
                 , sap_lifnr                  = String    ()
+                , do_auto_wp                 = Boolean   ()
                 )
             ancestor.__init__ (self, db, classname, ** properties)
         # end def __init__
@@ -532,11 +583,43 @@ def init \
     export.update (dict (Org_Location_Class = Org_Location_Class))
     Org_Location_Class (db, ''"org_location")
 
+    class Location_Class (kw ['Location_Class']) :
+        """ Add some attributes needed for time tracker
+        """
+        def __init__ (self, db, classname, ** properties) :
+            ancestor = kw ['Location_Class']
+            self.update_properties \
+                ( weekly_hours_fte           = Number    ()
+                )
+            ancestor.__init__ (self, db, classname, ** properties)
+        # end def __init__
+    # end class Location_Class
+    export.update (dict (Location_Class = Location_Class))
+    Location_Class     (db, ''"location")
+
     # Some classes defined elsewhere which are required (and possibly
     # extended in several other include files)
     Department_Class   (db, ''"department")
-    Location_Class     (db, ''"location")
+
+    class Organisation_Class (kw ['Organisation_Class']) :
+        """ Add some attributes needed for time tracker
+        """
+        def __init__ (self, db, classname, ** properties) :
+            ancestor = kw ['Organisation_Class']
+            self.update_properties \
+                ( org_group                  = Link      ("org_group")
+                )
+            ancestor.__init__ (self, db, classname, ** properties)
+        # end def __init__
+    # end class Organisation_Class
+    export.update (dict (Organisation_Class = Organisation_Class))
     Organisation_Class (db, ''"organisation")
+
+    org_group = Class \
+        ( db, ''"org_group"
+        , name                  = String    ()
+        )
+    org_group.setkey ("name")
 
     return export
 # end def init
@@ -558,6 +641,10 @@ def security (db, ** kw) :
         , ("Summary_View",      "View full summary report and all WPs")
         , ("Office",            "Office")
         , ("Time-Report",       "External time reports")
+        , ("Functional-Role",   "Editing of functional role related items")
+        , ("Organisation",      "Editing of organisation-related items")
+        , ("Sub-Login",         "Allow to login as another user")
+        , ("CC-Permission",     "Allow editing cost center permission")
         ]
 
     #     classname
@@ -572,6 +659,10 @@ def security (db, ** kw) :
           , ["User"]
           , ["Office"]
           )
+        , ( "auto_wp"
+          , ["HR"]
+          , ["HR"]
+          )
         , ( "contract_type"
           , ["HR", "HR-vacation", "HR-leave-approval", "controlling"]
           , ["HR-vacation"]
@@ -583,6 +674,10 @@ def security (db, ** kw) :
         , ( "cost_center_group"
           , ["User"]
           , ["Controlling"]
+          )
+        , ( "cost_center_permission_group"
+          , ["User"]
+          , ["CC-Permission"]
           )
         , ( "cost_center_status"
           , ["User"]
@@ -601,10 +696,6 @@ def security (db, ** kw) :
           , []
           )
         , ( "leave_status"
-          , ["User"]
-          , []
-          )
-        , ( "timesheet"
           , ["User"]
           , []
           )
@@ -668,6 +759,10 @@ def security (db, ** kw) :
           , ["User"]
           , []
           )
+        , ( "timesheet"
+          , ["User"]
+          , []
+          )
         , ( "user_dynamic"
           , ["HR"]
           , []
@@ -691,6 +786,30 @@ def security (db, ** kw) :
         , ( "time_report"
           , ["Time-Report", "Controlling", "Project", "Project_View"]
           , ["Time-Report"]
+          )
+        , ( "functional_role"
+          , ["User"]
+          , []
+          )
+        , ( "user_functional_role"
+          , ["functional-role"]
+          , ["functional-role"]
+          )
+        , ( "organisation"
+          , ["Organisation"]
+          , ["Organisation"]
+          )
+        , ( "location"
+          , ["Organisation"]
+          , ["Organisation"]
+          )
+        , ( "org_location"
+          , ["Organisation"]
+          , ["Organisation"]
+          )
+        , ( "org_group"
+          , ["User"]
+          , []
           )
         ]
 
@@ -724,7 +843,17 @@ def security (db, ** kw) :
           , ( "id", "sap_cc", "user", "valid_from", "valid_to")
           )
         , ( "user",         "View", ["User"]
-          , ( "timetracking_by", "vie_user")
+          , ( "timetracking_by", "vie_user_text"
+            , "department_temp"
+            )
+          )
+        , ( "user",         "Edit", ["Functional-Role"]
+          , ( "scale_seniority",
+            )
+          )
+        , ( "user",         "View", ["Functional-Role"]
+          , ( "planning_role", "scale_seniority"
+            )
           )
         , ( "user_dynamic", "View", ["User"]
           , ( "org_location", "department")
@@ -733,6 +862,16 @@ def security (db, ** kw) :
 
     schemadef.register_roles             (db, roles)
     schemadef.register_class_permissions (db, classes, prop_perms)
+    schemadef.own_user_detail_permission \
+        (db, 'User', 'View', 'planning_role', 'entry_date')
+
+    # Allow retire/restore for Functional-Role
+    for perm in 'Retire', 'Restore' :
+        p = db.security.addPermission \
+            ( name        = perm
+            , klass       = 'user_functional_role'
+            )
+        db.security.addPermissionToRole ('Functional-Role', p)
 
     # For the following the use is regulated by auditors.
     db.security.addPermissionToRole ('User', 'Create', 'time_record')
@@ -792,6 +931,15 @@ def security (db, ** kw) :
             return owner.timetracking_by == userid
         return userid == ownerid
     # end def own_time_record
+
+    def own_user_functional_role (db, userid, itemid) :
+        """User may view their own user functional role
+        """
+        if int (itemid) < 0 :
+            return True
+        ownerid = db.user_functional_role.get (itemid, 'user')
+        return userid == ownerid
+    # end def own_user_functional_role
 
     def own_leave_submission (db, userid, itemid) :
         """ User may edit own leave submissions. """
@@ -915,7 +1063,7 @@ def security (db, ** kw) :
            Check that no daily_record_freeze is active after date
         """
         df = db.daily_record_freeze.getnode (itemid)
-        return not frozen (db, df.user, df.date + Interval ('1d'))
+        return not frozen (db, df.user, df.date + date.Interval ('1d'))
     # end def dr_freeze_last_frozen
 
     def dynuser_thawed (db, userid, itemid) :
@@ -1211,6 +1359,7 @@ def security (db, ** kw) :
         , 'has_expiration_date', 'time_wp_summary_no', 'epic_key'
         , 'is_public', 'is_extern'
         )
+    wp_search_props = wp_properties + ('auto_wp',)
     p = db.security.addPermission \
         ( name        = 'View'
         , klass       = 'time_wp'
@@ -1222,10 +1371,10 @@ def security (db, ** kw) :
     p = db.security.addPermission \
         ( name        = 'Search'
         , klass       = 'time_wp'
-        , properties  = wp_properties + ('bookers',)
+        , properties  = wp_search_props + ('bookers',)
         )
     db.security.addPermissionToRole ('User', p)
-    schemadef.add_search_permission (db, 'time_wp', 'User', wp_properties)
+    schemadef.add_search_permission (db, 'time_wp', 'User', wp_search_props)
     p = db.security.addPermission \
         ( name        = 'View'
         , klass       = 'time_project'
@@ -1239,6 +1388,7 @@ def security (db, ** kw) :
         , 'is_public_holiday', 'is_vacation', 'is_special_leave'
         , 'creation', 'creator', 'activity', 'actor'
         , 'overtime_reduction', 'only_hours', 'is_extern', 'nosy'
+        , 'wps'
         )
     p = db.security.addPermission \
         ( name        = 'View'
@@ -1347,4 +1497,19 @@ def security (db, ** kw) :
         , description = fixdoc (time_report_visible.__doc__)
         )
     db.security.addPermissionToRole ('User', p)
+    p = db.security.addPermission \
+        ( name        = 'View'
+        , klass       = 'user_functional_role'
+        , check       = own_user_functional_role
+        , description = fixdoc (own_user_functional_role.__doc__)
+        )
+    db.security.addPermissionToRole ('User', p)
+
+    # Allow retire/restore for cost_center_permission_group
+    for perm in 'Retire', 'Restore' :
+        p = db.security.addPermission \
+            ( name        = perm
+            , klass       = 'cost_center_permission_group'
+            )
+        db.security.addPermissionToRole ('CC-Permission', p)
 # end def security

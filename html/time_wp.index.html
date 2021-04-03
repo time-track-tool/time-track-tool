@@ -43,6 +43,7 @@
     , ('durations_allowed',   {})
     , ('travel',              {})
     , ('has_expiration_date', {})
+    , ('auto_wp',             dict (multiselect = 1))
     )
    ; props python:
        [utils.ExtProperty (utils, pdict [k [0]], ** (k [1])) for k in l

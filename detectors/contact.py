@@ -215,10 +215,6 @@ def init (db) :
         db.user.audit    ("create", fix_emails, priority = 120)
         db.user.audit    ("set",    fix_emails, priority = 120)
         db.user.audit    ("create", create_email_contacts)
-    if 'room' in db.classes and 'contacts' in db.room.properties :
-        db.room.audit    ("set",    auto_retire_contacts)
-        db.room.react    ("set",    fix_user_contacts)
-        db.room.react    ("create", fix_user_contacts)
     if 'contact' in db.classes :
         db.contact.audit ("create",  check_contact)
         db.contact.audit ("set",     check_contact)

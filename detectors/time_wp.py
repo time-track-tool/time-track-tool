@@ -31,9 +31,12 @@
 from roundup.exceptions             import Reject
 from roundup.date                   import Date
 from roundup.cgi.TranslationService import get_translation
+from freeze                         import freeze_date
 
-import common
 import re
+import common
+import user_dynamic
+import lib_auto_wp
 
 def check_duplicate_field_value (cl, project, field, value) :
     ids     = cl.filter (None, {field : value, 'project' : project})
@@ -103,10 +106,19 @@ def new_time_wp (db, cl, nodeid, new_values) :
     prid = new_values ['project']
     uid  = db.getuid ()
     prj  = db.time_project.getnode (prid)
+    is_auto_wp = False
+    if 'auto_wp' in new_values :
+        ap = db.auto_wp.getnode (new_values ['auto_wp'])
+        if ap.time_project != new_values ['project'] :
+            raise Reject (_ ("Auto-WP %s doesn't match") % _ ('time_project'))
+        # If user may edit dyn. user we allow auto creation of wp
+        if db.security.hasPermission ('Edit', db.getuid (), 'user_dynamic') :
+            is_auto_wp = True
     if  (  uid != prj.responsible
         and uid != prj.deputy
         and not common.user_has_role (db, uid, 'Project')
         and uid != '1'
+        and not is_auto_wp
         ) :
         raise Reject, ("You may only create WPs for your own projects")
     act  = db.time_project_status.get (prj.status, 'active')
@@ -179,6 +191,117 @@ def check_travel_flag (db, cl, nodeid, new_values) :
             raise Reject ("Travel WP may not be resurrected")
 # end def check_travel_flag
 
+def wp_check_auto_wp (db, cl, nodeid, new_values) :
+    """ Check that modifications to wp that has auto_wp set is ok
+    """
+    if not nodeid and 'auto_wp' not in new_values :
+        return
+    if nodeid :
+        if not cl.get (nodeid, 'auto_wp') :
+            if 'auto_wp' in new_values :
+                raise Reject \
+                    (_ ("Property %s may not change") % _ ('auto_wp'))
+            return
+    # These are not allowed to change
+    props = \
+        ( 'auto_wp'
+        , 'bookers'
+        , 'contract_type'
+        , 'org_location'
+        , 'project'
+        , 'is_public'
+        )
+    if nodeid :
+        for p in props :
+            if p in new_values :
+                raise Reject \
+                    (_ ("Property %s may not change for auto wp") % _ (p))
+        bookers = cl.get (nodeid, 'bookers')
+        auto_wp = cl.get (nodeid, 'auto_wp')
+    else :
+        common.require_attributes \
+            ( _, cl, nodeid, new_values
+            , 'bookers'
+            , 'auto_wp'
+            , 'time_project'
+            , 'durations_allowed'
+            )
+        bookers = new_values ['bookers']
+        auto_wp = new_values ['auto_wp']
+    auto_wp = db.auto_wp.getnode (auto_wp)
+    if 'time_start' not in new_values and 'time_end' not in new_values :
+        return
+    start = new_values.get ('time_start')
+    end   = new_values.get ('time_end')
+    if not start :
+        assert nodeid
+        start = cl.get (nodeid, 'time_start')
+    # Cannot check for empty end here, we could set the end to empty!
+    if 'time_end' not in new_values and nodeid :
+        end = cl.get (nodeid, 'time_end')
+    assert len (bookers) == 1
+    booker = bookers [0]
+    freeze = freeze_date (db, booker)
+    # Get dyn user for start
+    dyn = user_dynamic.get_user_dynamic (db, booker, start)
+    if not dyn and start != end :
+        raise Reject (_ ("Invalid change of start/end: no dyn. user"))
+    if not dyn :
+        return
+    if not lib_auto_wp.is_correct_dyn (dyn, auto_wp) :
+        raise Reject \
+            (_ ("Invalid change of start: Invalid dyn. user"))
+    # loop backwards through dyns
+    if 'time_start' in new_values :
+        # Find the first dyn user which matches up with our start date
+        prev = dyn
+        while prev.valid_from > start :
+            p = user_dynamic.prev_user_dynamic (db, prev)
+            if  (  p.valid_to != prev.valid_from
+                or not lib_auto_wp.is_correct_dyn (p, auto_wp)
+                ) :
+                raise Reject ("Invalid change of start: Invalid dyn. user")
+            prev = p
+        # We need to find previous wp if we don't start freezedate + day
+        if prev.valid_from < start and start > freeze + common.day :
+            d = dict \
+                ( auto_wp  = auto_wp.id
+                , time_end = common.pretty_range (None, start)
+                )
+            wps = db.time_wp.filter (None, d, sort = ('-', 'time_end'))
+            if not wps :
+                raise Reject (_ ("Invalid change of start: No prev. WP"))
+            wp = db.time_wp.getnode (wps [0])
+            if wp.time_end != start :
+                raise Reject (_ ("Invalid change of start: Invalid prev. WP"))
+    # loop forward through dyns
+    if 'time_end' in new_values :
+        next = dyn
+        # Need to find next wp if dyn is valid longer than end and not
+        # limited by a duration
+        dur_end = lib_auto_wp.auto_wp_duration_end (db, auto_wp, booker)
+        while next.valid_to and (not end or next.valid_to < end) :
+            if dur_end and dur_end <= next.valid_to :
+                break
+            n  = user_dynamic.next_user_dynamic (db, next)
+            if  (  n.valid_from != next.valid_to
+                or not lib_auto_wp.is_correct_dyn (n, auto_wp)
+                ) :
+                raise Reject ("Invalid change of end: Invalid dyn. user")
+            next = n
+        if end and not dur_end and (not next.valid_to or end < next.valid_to) :
+            d = dict \
+                ( auto_wp    = auto_wp.id
+                , time_start = common.pretty_range (end)
+                )
+            wps = db.time_wp.filter (None, d, sort = ('+', 'time_start'))
+            if not wps :
+                raise Reject (_ ("Invalid change of end: No next WP"))
+            wp = db.time_wp.getnode (wps [0])
+            if wp.time_start != end :
+                raise Reject (_ ("Invalid change of end: Invalid next WP"))
+# end def wp_check_auto_wp
+
 def init (db) :
     if 'time_wp' not in db.classes :
         return
@@ -187,10 +310,12 @@ def init (db) :
         (db.config.TRACKER_LANGUAGE, db.config.TRACKER_HOME).gettext
     db.time_wp.audit  ("create", new_time_wp)
     db.time_wp.audit  ("set",    check_time_wp)
-    db.time_wp.audit  ("create", check_expiration, priority = 200)
-    db.time_wp.audit  ("set",    check_expiration, priority = 200)
+    db.time_wp.audit  ("create", check_expiration, priority = 400)
+    db.time_wp.audit  ("set",    check_expiration, priority = 400)
     db.time_wp.audit  ("create", check_name)
     db.time_wp.audit  ("set",    check_name)
+    db.time_wp.audit  ("create", wp_check_auto_wp, priority = 300)
+    db.time_wp.audit  ("set",    wp_check_auto_wp, priority = 300)
     db.time_wp.audit  ("create", check_epic_key)
     db.time_wp.audit  ("set",    check_epic_key)
     db.time_wp.audit  ("create", check_travel_flag)

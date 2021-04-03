@@ -137,6 +137,9 @@
       <th tal:content="structure python:utils.fieldname
           (classname, 'contract_type')"/>
       <td tal:content="structure python:context.contract_type.menu ()"/>
+      <th tal:content="structure python:utils.fieldname
+          (classname, 'do_auto_wp')"/>
+      <td tal:content="structure python:context.do_auto_wp.field ()"/>
      </tr>
      <tr>
       <th tal:content="structure python:utils.fieldname
@@ -216,6 +219,15 @@
          , width     = '600'
          )"/>
       </td>
+     </tr>
+     <tr>
+      <th tal:content="structure python:utils.fieldname
+          (classname, 'exemption')"/>
+      <td tal:content="structure python:context.exemption.field ()"/>
+      <th tal:content="structure python:utils.fieldname
+          (classname, 'short_time_work_hours')"/>
+      <td tal:content="structure python:
+          context.short_time_work_hours.field ()"/>
      </tr>
     </tal:block>
    </tal:block>

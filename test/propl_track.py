@@ -78,6 +78,7 @@ properties = \
       , [ 'ad_domain'
         , 'clearance_by'
         , 'default_roles'
+        , 'roles_enabled'
         , 'status'
         , 'timetracking_by'
         , 'users'

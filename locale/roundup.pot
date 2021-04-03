@@ -1128,7 +1128,7 @@ msgstr ""
 
 #: ../extensions/daily_record_action.py:128
 #, python-format
-msgid "Submit to %(nickname)s"
+msgid "Submit"
 msgstr ""
 
 #: ../extensions/daily_record_action.py:255 ../locale/attr.py:738

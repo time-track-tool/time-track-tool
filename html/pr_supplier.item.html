@@ -80,6 +80,51 @@
      </table>
     </tal:block>
    </tal:block>
+   <tal:block tal:condition="python:
+        context.is_view_ok () and 'pr_supplier_risk' in db._db.classes">
+    <tal:block tal:define="risks python:db.pr_supplier_risk.filter
+         (None, dict (supplier = context.id))">
+     <table class="files" tal:condition="python: bool(risks)">
+      <tr tal:define=
+       "uid  python:db._db.getuid ()
+       ;user python:db._db.user.get (uid, 'username')
+       ;cond python: utils.user_has_role (db._db, uid, 'Procurement-Admin')
+       ">
+       <th tal:attributes="colspan python:3-cond" class="header"
+           i18n:translate="">
+           Supplier Risk
+       </th>
+       <td class="header" tal:condition="cond">
+        <a i18n:translate="" tal:attributes="href python:
+         'pr_supplier_risk?:template=item&' + '&'.join
+          ([ '%s=%s' % (i [0], utils.urlquote (str (i [1]))) for i in
+            [ ('supplier', context.name)
+            ]
+           ]
+          )">
+         new Supplier Risk
+        </a>
+       </td>
+      </tr>
+      <tr>
+       <th tal:content="structure python:
+           utils.fieldname ('pr_supplier_risk', 'organisation')"/>
+       <th tal:content="structure python:
+           utils.fieldname ('pr_supplier_risk', 'security_req_group')"/>
+       <th tal:content="structure python:
+           utils.fieldname ('pr_supplier_risk', 'supplier_risk_category')"/>
+      </tr>
+      <tr tal:repeat="risk risks">
+       <td tal:content="structure python:utils.ExtProperty
+           (utils, risk.organisation, item = risk).formatlink ()"/>
+       <td tal:content="structure python:utils.ExtProperty
+           (utils, risk.security_req_group, item = risk).formatlink ()"/>
+       <td tal:content="structure python:utils.ExtProperty
+           (utils, risk.supplier_risk_category, item = risk).formatlink ()"/>
+      </tr>
+     </table>
+    </tal:block>
+   </tal:block>
   </tal:block>
  </tal:block>
 

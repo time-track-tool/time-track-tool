@@ -42,29 +42,12 @@ def init \
     ) :
     export   = {}
 
-    params = {}
-    if 'Room_Class' in kw :
-        Room_Class = kw ['Room_Class']
-        params ['room'] = Link ('room')
-        class N_Room_Class (Room_Class) :
-            """ add contacts to room class
-            """
-            def __init__ (self, db, classname, ** properties) :
-                self.update_properties \
-                    ( contacts               = Multilink ("user_contact")
-                    )
-                Room_Class.__init__ (self, db, classname, ** properties)
-            # end def __init__
-        # end class N_Room_Class
-        export ['Room_Class'] = N_Room_Class
-
     contact = Contact_Class \
         ( db, ''"user_contact"
         , user                = Link      ('user',    do_journal = "no")
         , contact_type        = Link      ("uc_type", do_journal = "no")
         , order               = Number    ()
         , visible             = Boolean   ()
-        , **params
         )
     uc_type = Contact_Type_Class \
         (db, ''"uc_type"

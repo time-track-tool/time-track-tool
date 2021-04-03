@@ -60,7 +60,7 @@
           (classname, 'description')"/>
       <td tal:content="structure python:context.description.field (size=60)"/>
      </tr>
-     <tr>
+     <tr tal:condition="python:'order' in props">
       <th tal:content="structure python:utils.fieldname (classname, 'order')"/>
       <td tal:content="structure python:context.order.field ()"/>
      </tr>

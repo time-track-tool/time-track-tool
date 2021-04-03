@@ -23,13 +23,26 @@
     , ('supervisor',       dict (multiselect = 1))
     , ('substitute',       dict (multiselect = 1))
     , ('subst_active',                         {})
-    , ('position',         dict (multiselect = 1))
-    , ('scale_roles',                          {})
+    , ('position_text',                        {})
+    , ('department_temp',                      {})
     , ('scale_seniority',                      {})
+    , ( 'planning_role'
+      , dict (searchable = False, sortable = False)
+      )
+    , ( 'planning_role'
+      , dict
+          ( searchname  = 'planning_role.functional_role'
+          , searchable  = True
+          , sortable    = True
+          , multiselect = True
+          )
+      )
+    , ('entry_date',                           {})
     , ('sex',              dict (multiselect = 1))
     , ('clearance_by',     dict (multiselect = 1))
     , ('timetracking_by',  dict (multiselect = 1))
-    , ('vie_user',         dict (multiselect = 1))
+    , ('vie_user_text',                        {})
+    , ('sync_foreign_key',                     {})
     , ('title',                                {})
     , ('roles',                                {})
     , ('timezone',                             {})

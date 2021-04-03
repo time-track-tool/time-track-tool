@@ -24,6 +24,10 @@
          (classname, 'country')"/>
      <td tal:content="structure python:context.country.field ()"/>
     </tr>
+    <tr tal:condition="python: 'city' in bclass.properties">
+     <th tal:content="structure python:utils.fieldname (classname, 'city')"/>
+     <td tal:content="structure python:context.city.field ()"/>
+    </tr>
     <tr>
      <th tal:content="structure python:utils.fieldname
          (classname, 'address')"/>
@@ -38,6 +42,16 @@
      <th tal:content="structure python:utils.fieldname
          (classname, 'valid_to')"/>
      <td tal:content="structure python:context.valid_to.field ()"/>
+    </tr>
+    <tr tal:condition="python: 'weekly_hours_fte' in bclass.properties">
+     <th tal:content="structure python:utils.fieldname
+         (classname, 'weekly_hours_fte')"/>
+     <td tal:content="structure python:context.weekly_hours_fte.field ()"/>
+    </tr>
+    <tr>
+     <th tal:content="structure python:utils.fieldname
+         (classname, 'room_prefix')"/>
+     <td tal:content="structure python:context.room_prefix.field ()"/>
     </tr>
     <tr>
      <th tal:content="structure python:utils.fieldname

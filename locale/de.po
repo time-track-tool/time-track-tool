@@ -826,7 +826,7 @@ msgid "new %(adr_to)s from %(adr_frm)s"
 msgstr "Neue %(adr_to)s aus %(adr_frm)s"
 
 #, python-format
-msgid "Submit to %(nickname)s"
+msgid "Submit"
 msgstr ""
 
 msgid "supervisor"
@@ -1707,9 +1707,6 @@ msgstr ""
 #, python-format
 msgid "%(cc)s responsible/deputy"
 msgstr ""
-
-msgid "position"
-msgstr "Position"
 
 msgid "sex"
 msgstr ""
@@ -2779,6 +2776,9 @@ msgstr ""
 msgid "duration"
 msgstr "Dauer"
 
+msgid "auto_wp++duration"
+msgstr "Dauer"
+
 msgid "start_generated"
 msgstr ""
 
@@ -3371,9 +3371,6 @@ msgid "timing_info"
 msgstr ""
 
 msgid "timetracking_by"
-msgstr ""
-
-msgid "vie_user"
 msgstr ""
 
 msgid "aux_username"

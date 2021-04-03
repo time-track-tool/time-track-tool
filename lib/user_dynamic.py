@@ -115,10 +115,24 @@ def last_user_dynamic (db, user, date = None) :
 # end def last_user_dynamic
 
 def find_user_dynamic (db, user, date, direction = '+', ct = -1) :
+    """ Search for the next user dynamic record in the given direction
+        for this user and date. If ct (contract_type) is given, we find
+        only dynamic user records with that contract type. Note that the
+        contract_type 'None' is special, it searches for the default ct
+        which is empty. This is handled specially in the roundup API, it
+        uses the *string* '-1' for the id which indicates searching for
+        an empty Link or Multilink. That's why a don't-care
+        contract_type is encoded with -1 here (something other than
+        None).
+    """
     date = common.next_search_date (date, direction)
     d    = dict (user = user, valid_from = date)
     if ct != -1 :
-        d.update (contract_type = ct)
+        if ct is None :
+            # '-1' is special, it searches for empty ct
+            d.update (contract_type = '-1')
+        else :
+            d.update (contract_type = ct)
     ids = db.user_dynamic.filter (None, d, group = (direction, 'valid_from'))
     if ids :
         return db.user_dynamic.getnode (ids [0])
@@ -979,6 +993,7 @@ dynuser_copyfields = \
      , 'vac_aliq'
      , 'max_flexitime'
      , 'valid_to'
+     , 'do_auto_wp'
      ]
 
 def is_tt_user_status (db, status) :
@@ -1006,10 +1021,11 @@ def check_email (db, contacts, email, t_email) :
 
 def user_create_magic (db, uid, olo, dep) :
     """ Perform magic on new user creation
-        If both, department and org_location are given, we create a
-        dynamic user record. If at least the org_location is given, we
-        look up the mail domain and create email addresses if the user
-        doesn't have any contacts yet.
+        We used to create a dynamic user record here, this is no longer
+        done.
+        If at least the org_location is given, we look up the mail
+        domain and create email addresses if the user doesn't have any
+        contacts yet.
         We also set nickname and lunch duration/lunch_start values if
         those are not yet set for the user.
         And of course we do all this only for timetracking users.
@@ -1022,15 +1038,6 @@ def user_create_magic (db, uid, olo, dep) :
     org_location = None
     if olo :
         org_location = db.org_location.getnode (olo)
-    if 'user_dynamic' in db.classes and uid > 2 and olo and dep :
-        db.user_dynamic.create \
-            ( user            = uid
-            , valid_from      = Date ('.')
-            , org_location    = olo
-            , department      = dep
-            , vacation_yearly = 25
-            )
-
     _ = get_translation \
         (db.config.TRACKER_LANGUAGE, db.config.TRACKER_HOME).gettext
 

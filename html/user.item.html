@@ -3,8 +3,8 @@
  <title metal:fill-slot="head_title">
   <tal:block i18n:translate="" tal:condition="context/id"
    tal:define="_update python:utils.sync_from_ldap and
-       utils.sync_from_ldap (db._db, str (context.username))">
-   User 
+       utils.sync_from_ldap (context, db, str (context.username))">
+   User
    <span tal:replace="string:${context/id}: ${context/username}"/>
   </tal:block>
   <tal:block i18n:translate=""
@@ -17,7 +17,7 @@
  </span>
 
  <tal:block metal:fill-slot="create_or_query">
-  <tal:block 
+  <tal:block
    metal:use-macro="templates/page/macros/create_or_query_new_tracker_item"/>
  </tal:block>
 
@@ -46,11 +46,6 @@
     <tr tal:condition="python:'lastname' in bclass.properties">
      <th tal:content="structure python:utils.fieldname('user', 'lastname')"/>
      <td tal:content="structure context/lastname/field"/>
-    </tr>
-    <tr tal:condition="python:
-        'nickname' in bclass.properties and context.nickname.is_view_ok ()">
-     <th tal:content="structure python:utils.fieldname('user', 'nickname')"/>
-     <td tal:content="structure context/nickname/field"/>
     </tr>
     <tr tal:condition="python:
         'aux_username' in bclass.properties
@@ -145,26 +140,19 @@
      <tr tal:condition="python:'contacts' in props">
       <th tal:content="structure python:utils.fieldname('user', 'contacts')"/>
       <td colspan="3">
-       <table class="form" border="0"
-              style="border-spacing:0px;padding-top:0px;padding-left:0px">
+       <table class="form inner-form">
         <tr>
-         <th style="text-align:left"
-             tal:content="structure python:utils.fieldname
+         <th tal:content="structure python:utils.fieldname
              ('user_contact', 'contact_type')"/>
-         <th style="text-align:left"
-             tal:content="structure python:utils.fieldname
+         <th tal:content="structure python:utils.fieldname
              ('user_contact', 'contact')" class="required"/>
-         <th style="text-align:left"
-             tal:content="structure python:utils.fieldname
+         <th tal:content="structure python:utils.fieldname
              ('user_contact', 'order')"/>
-         <th style="text-align:left"
-             tal:content="structure python:utils.fieldname
+         <th tal:content="structure python:utils.fieldname
              ('user_contact', 'description')"/>
-         <th style="text-align:left"
-             tal:content="structure python:utils.fieldname
+         <th tal:content="structure python:utils.fieldname
              ('user_contact', 'visible')"/>
-         <th style="text-align:left"
-             tal:condition="context/contacts/is_edit_ok" i18n:translate="">
+         <th tal:condition="context/contacts/is_edit_ok" i18n:translate="">
              remove
          </th>
         </tr>
@@ -172,8 +160,7 @@
             ( context.contacts
             , key = lambda x : (x.contact_type.order, x.order, x.contact)
             )">
-         <th style="vertical-align:top;text-align:left"
-             tal:content="structure python:utils.ExtProperty
+         <th tal:content="structure python:utils.ExtProperty
              (utils, ct.contact_type, item = ct).formatlink () + '&nbsp;'"/>
          <td>
           <a tal:condition="python: ct.contact_type.url_template"
@@ -214,15 +201,16 @@
       <th tal:content="structure python:utils.fieldname('user', 'room')"/>
       <td tal:content="structure context/room/menu"/>
      </tr>
-     <tr tal:condition="python:'position' in bclass.properties">
-      <th tal:content="structure python:utils.fieldname('user', 'position')"/>
-      <td tal:content="structure context/position/menu"/>
+     <tr tal:condition="python:'position_text' in bclass.properties">
+      <th tal:content="structure python:utils.fieldname
+          ('user', 'position_text')"/>
+      <td tal:content="structure context/position_text/field"/>
      </tr>
      <tr tal:condition="python:
-       'scale_role' in bclass.properties and context.scale_role.is_view_ok ()">
+       'entry_date' in bclass.properties and context.entry_date.is_view_ok ()">
       <th tal:content="structure python:utils.fieldname
-          ('user', 'scale_role')"/>
-      <td tal:content="structure context/scale_role/field"/>
+          ('user', 'entry_date')"/>
+      <td tal:content="structure context/entry_date/field"/>
      </tr>
      <tr tal:condition="python:
        'scale_seniority' in bclass.properties
@@ -231,6 +219,39 @@
           ('user', 'scale_seniority')"/>
       <td tal:content="structure context/scale_seniority/field"/>
      </tr>
+     <tal:block tal:condition="python:
+          (   context.id
+          and 'user_functional_role' in db._db.classes
+          and context.planning_role
+          and context.planning_role.is_view_ok ()
+          )">
+      <tr tal:condition="python:context.planning_role">
+       <th i18n:translate="">Functional Roles</th>
+       <td colspan="3">
+        <table class="form inner-form">
+         <tr>
+          <th tal:content="structure python:utils.fieldname
+              ('functional_role', 'name_group')"/>
+          <th tal:content="structure python:utils.fieldname
+              ('functional_role', 'name')"/>
+          <th tal:content="structure python:utils.fieldname
+              ('functional_role', 'ratio')"/>
+         </tr>
+         <tr tal:repeat="fr python: list(sorted
+             ( context.planning_role
+             , key = lambda x: (-float(x.ratio or 0.0), x.functional_role.rank)
+             ))">
+          <td tal:content="fr/functional_role/name_group"/>
+          <td tal:content="structure python:utils.ExtProperty
+              ( utils, fr.functional_role
+              , item = fr
+              ).formatlink ()"/>
+          <td tal:content="python: '%2.0f%%' % (float (fr.ratio) * 100.)"/>
+         </tr>
+        </table>
+       </td>
+      </tr>
+     </tal:block>
      <tr tal:condition="python:'supervisor' in bclass.properties">
       <th tal:content="structure python:utils.fieldname('user', 'supervisor')"/>
       <td>
@@ -302,22 +323,6 @@
       </td>
       <td tal:content="context/clearance_by/plain"
        tal:condition="not:context/clearance_by/is_edit_ok"/>
-     </tr>
-     <tr tal:condition="python:'vie_user' in bclass.properties">
-      <th tal:content="structure python:utils.fieldname
-          ('user', 'vie_user')"/>
-      <td tal:condition="context/vie_user/is_edit_ok">
-       <tal:block tal:define=
-         "name      string:vie_user;
-          form      formname;
-          dont_care string:don't care;
-          selected  python:
-            context.vie_user and context.vie_user.id or 0">
-        <tal:block metal:use-macro="templates/userlist/macros/user"></tal:block>
-       </tal:block>
-      </td>
-      <td tal:content="context/vie_user/plain"
-       tal:condition="not:context/vie_user/is_edit_ok"/>
      </tr>
      <tr tal:condition="python:'job_description' in bclass.properties">
       <th tal:content="structure
@@ -444,7 +449,7 @@
      <tr>
        <td/>
        <td tal:condition="python: utils.Size_Limit (db, 'LIMIT_PICTURE_SIZE')"
-           i18n:translate="">max. size of picture: 
+           i18n:translate="">max. size of picture:
          <span tal:content="python:
                utils.Size_Limit (db, 'LIMIT_PICTURE_SIZE')"/>
        </td>
@@ -475,43 +480,44 @@
             )" />
      </td>
     </tr>
-   </tal:block>
-  </tal:block>
- </tal:block>
+   </tal:block><!-- formatted_class_content -->
+  </tal:block><!-- formatted_class -->
+ </tal:block><!-- content -->
 
- <table class="files"
-  tal:condition="python:
-   (   'pictures' in bclass.properties
-   and context.pictures
-   and context.pictures.is_edit_ok ()
-   )">
-  <tr>
-   <th colspan="4" class="header" i18n:translate="">pictures</th>
-  </tr>
-  <tr>
-   <th tal:content="structure python:utils.fieldname ('file', 'name')"/>
-   <th tal:content="structure python:utils.fieldname ('file', 'creation')"/>
-   <th tal:content="structure python:utils.fieldname ('file', 'type')"/>
-   <th tal:content="structure python:utils.fieldname ('file', 'remove')"/>
-  </tr>
-  <tr tal:repeat="file context/pictures">
-   <td>
-    <img width="112" tal:attributes="src file/download_url">
-   </td>
-   <td>
-    <span tal:content="file/creator">creator's name</span>,
-    <span tal:content="file/creation">creation date</span>
-   </td>
-   <td tal:content="file/type"/>
-   <td>
-    <form style="padding:0"
-          tal:condition="context/is_edit_ok"
-          tal:attributes="action string:user${context/id}">
-     <input type="hidden" name="@remove@pictures" tal:attributes="value file/id">
-     <input type="hidden" name="@action" value="edit">
-     <input type="submit" value="remove">
-    </form>
-   </td>
-  </tr>
- </table>
+  <!-- disabled (would need to be inside content above) -->
+  <table class="files"
+   tal:condition="python:
+    (   'pictures' in bclass.properties
+    and context.pictures
+    and context.pictures.is_edit_ok ()
+    )">
+   <tr>
+    <th colspan="4" class="header" i18n:translate="">pictures</th>
+   </tr>
+   <tr>
+    <th tal:content="structure python:utils.fieldname ('file', 'name')"/>
+    <th tal:content="structure python:utils.fieldname ('file', 'creation')"/>
+    <th tal:content="structure python:utils.fieldname ('file', 'type')"/>
+    <th tal:content="structure python:utils.fieldname ('file', 'remove')"/>
+   </tr>
+   <tr tal:repeat="file context/pictures">
+    <td>
+     <img width="112" tal:attributes="src file/download_url">
+    </td>
+    <td>
+     <span tal:content="file/creator">creator's name</span>,
+     <span tal:content="file/creation">creation date</span>
+    </td>
+    <td tal:content="file/type"/>
+    <td>
+     <form style="padding:0"
+           tal:condition="context/is_edit_ok"
+           tal:attributes="action string:user${context/id}">
+      <input type="hidden" name="@remove@pictures" tal:attributes="value file/id">
+      <input type="hidden" name="@action" value="edit">
+      <input type="submit" value="remove">
+     </form>
+    </td>
+   </tr>
+  </table>
 </tal:block>

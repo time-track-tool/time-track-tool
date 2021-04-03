@@ -148,7 +148,7 @@ if len (sys.argv) == 2 :
         while dyn :
             d = {}
             if dyn.vacation_yearly is None :
-                d ['vacation_yearly'] = 25
+                d ['vacation_yearly'] = 25.0
             if dyn.vacation_day is None or dyn.vacation_month is None :
                 d ['vacation_day']   = 1
                 d ['vacation_month'] = 1

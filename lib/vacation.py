@@ -32,6 +32,7 @@
 from math import ceil
 
 from roundup.date import Date, Interval
+from freeze       import freeze_date
 import common
 import user_dynamic
 
@@ -167,7 +168,7 @@ def leave_days (db, user, first_day, last_day) :
     return s
 # end def leave_days
 
-def leave_duration (db, user, date) :
+def leave_duration (db, user, date, ignore_public_holiday = False) :
     """ Duration of leave on a single day to be booked. """
     dyn = user_dynamic.get_user_dynamic (db, user, date)
     wh  = user_dynamic.day_work_hours (dyn, date)
@@ -179,14 +180,15 @@ def leave_duration (db, user, date) :
     try_create_public_holiday (db, dr [0], date, user)
     trs = db.time_record.filter (None, dict (daily_record = dr [0]))
     bk  = 0.0
-    for trid in trs :
-        tr = db.time_record.getnode (trid)
-        if not tr.wp :
-            continue
-        wp = db.time_wp.getnode (tr.wp)
-        tp = db.time_project.getnode (wp.project)
-        if tp.is_public_holiday :
-            bk += tr.duration
+    if not ignore_public_holiday :
+        for trid in trs :
+            tr = db.time_record.getnode (trid)
+            if not tr.wp :
+                continue
+            wp = db.time_wp.getnode (tr.wp)
+            tp = db.time_project.getnode (wp.project)
+            if tp.is_public_holiday :
+                bk += tr.duration
     assert bk <= wh
     return wh - bk
 # end def leave_duration
@@ -638,12 +640,15 @@ def consolidated_vacation \
     return vac
 # end def consolidated_vacation
 
-def valid_wps (db, filter = {}, user = None, date = None, srt = None) :
+def valid_wps \
+    (db, filter = {}, user = None, date = None, srt = None, future = False) :
     srt  = srt or [('+', 'id')]
     wps  = {}
     date = date or Date ('.')
     dt   = (date + common.day).pretty (common.ymd)
-    d    = dict (time_start = ';%s' % date.pretty (common.ymd))
+    d    = {}
+    if not future :
+        d ['time_start'] = ';%s' % date.pretty (common.ymd)
     # Only select WPs that are not exclusively managed by external tool
     d ['is_extern']         = False
     d ['project.is_extern'] = False
@@ -668,9 +673,19 @@ def valid_wps (db, filter = {}, user = None, date = None, srt = None) :
     return db.time_wp.filter (wp, {}, sort = srt)
 # end def valid_wps
 
-def valid_leave_wps (db, user = None, date = None, srt = None) :
+def valid_leave_wps (db, user = None, date = None, srt = None, thawed = None) :
+    """ If thawed is given, find only WPs with an end-time > freeze date
+        If thawed *and* a date is given we use the *later* date
+        Note that for thawed to work a user must be given
+    """
+    if thawed and user :
+        freeze = freeze_date (db, user)
+        if freeze and date :
+            date = max (freeze, date)
+        elif freeze :
+            date = freeze
     d = {'project.approval_required' : True}
-    return valid_wps (db, d, user, date, srt)
+    return valid_wps (db, d, user, date, srt, future = True)
 # end def valid_leave_wps
 
 def valid_leave_projects (db) :
@@ -929,10 +944,12 @@ def fix_vacation (db, uid, date_from = None, date_to = None) :
     """
     #print ("fix_vacation: %s %s %s" % (uid, date_from, date_to))
     if date_from is None :
+        date_from = Date ('2000-01-01')
         frozen = db.daily_record_freeze.filter \
             (None, dict (user = uid, frozen = True), sort = ('-', 'date'))
-        frozen = db.daily_record_freeze.getnode (frozen [0])
-        date_from = frozen.date + common.day
+        if frozen :
+            frozen = db.daily_record_freeze.getnode (frozen [0])
+            date_from = frozen.date + common.day
     leave = db.daily_record_status.lookup ('leave')
     d = dict ()
     d ['daily_record.user']   = uid
@@ -944,9 +961,9 @@ def fix_vacation (db, uid, date_from = None, date_to = None) :
 	dr = db.daily_record.getnode (tr.daily_record)
 	wp = db.time_wp.getnode      (tr.wp)
 	tp = db.time_project.getnode (wp.project)
-	if not tp.is_vacation :
+	if not tp.is_vacation and not tp.is_public_holiday :
 	    continue
-	du = leave_duration (db, uid, dr.date)
+	du = leave_duration (db, uid, dr.date, tp.is_public_holiday)
 	if tr.duration != du :
 	    #print "Wrong: time_record%s: %s->%s" % (trid, tr.duration, du)
 	    db.time_record.set (trid, duration = du)
