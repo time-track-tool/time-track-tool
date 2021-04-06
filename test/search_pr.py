@@ -475,6 +475,9 @@ properties = \
         , ( 'users'
           , ['admin', 'procurement']
           )
+        , ( 'want_no_messages'
+          , ['admin', 'procurement']
+          )
         ]
       )
     , ( 'pr_approval_status'

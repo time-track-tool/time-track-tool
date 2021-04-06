@@ -772,10 +772,11 @@ def nosy_for_approval (db, app, add = False) :
     if app.role_id :
         ao = db.pr_approval_order.getnode (app.role_id)
         subst = []
-        for u in ao.users :
-            # Do not include user replaced by clearance_by (delegation)
-            # in the mailing list.
-            subst.extend (common.approval_by (db, u))
+        if not ao.want_no_messages :
+            for u in ao.users :
+                # Do not include user replaced by clearance_by (delegation)
+                # in the mailing list, common.see approval_by.
+                subst.extend (common.approval_by (db, u))
         nosy_dd = subst
     elif app.role :
         nosy_dd = common.get_uids_with_role (db, app.role)

@@ -125,6 +125,7 @@ properties = \
         , 'order'
         , 'role'
         , 'users'
+        , 'want_no_messages'
         ]
       )
     , ( 'pr_approval_status'

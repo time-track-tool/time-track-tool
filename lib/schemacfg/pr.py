@@ -191,6 +191,7 @@ def init \
         , users                 = Multilink ("user")
         , is_finance            = Boolean   ()
         , is_board              = Boolean   ()
+        , want_no_messages      = Boolean   ()
         )
     pr_approval_order.setkey ('role')
 
