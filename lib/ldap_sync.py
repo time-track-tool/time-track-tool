@@ -259,18 +259,21 @@ class Usercontact_Sync_Config_Entry (Config_Entry) :
                         the first one is a single-value attribute and
                         the second is a multi-value attribute that takes
                         additional values from roundup.
+        sync_to_ldap:   True if we sync this to ldap
     """
 
-    attrs = ( 'sync_vie_user', 'keep_attribute', 'attributes')
+    attrs = ( 'sync_vie_user', 'keep_attribute', 'sync_to_ldap', 'attributes')
 
     def __init__ \
         ( self
         , sync_vie_user
         , keep_attribute
+        , sync_to_ldap
         , attributes
         ) :
         self.sync_vie_user  = sync_vie_user
         self.keep_attribute = keep_attribute
+        self.sync_to_ldap   = sync_to_ldap
         self.attributes     = attributes
     # end def __init__
 
@@ -316,7 +319,9 @@ class LDAP_Roundup_Sync (Log) :
     page_size     = 50
 
     def __init__ \
-        (self, db, update_roundup = None, update_ldap = None, verbose = 0) :
+        ( self, db, update_roundup = None, update_ldap = None, verbose = 0
+        , log = None, ldap = None
+        ) :
         self.db             = db
         self.cfg            = db.config.ext
         self.verbose        = verbose
@@ -325,7 +330,10 @@ class LDAP_Roundup_Sync (Log) :
         self.ad_domain      = self.cfg.LDAP_AD_DOMAINS.split (',')
         self.objectclass    = getattr (self.cfg, 'LDAP_OBJECTCLASS', 'person')
         self.base_dn        = self.cfg.LDAP_BASE_DN
-        self.__super.__init__ ()
+        if log is not None :
+            self.log = log
+        else :
+            self.__super.__init__ ()
 
         # If verbose is set, add logging to stderr in addition to syslog
         if self.verbose :
@@ -370,11 +378,13 @@ class LDAP_Roundup_Sync (Log) :
             self.log.debug ("%s: %s" % (k, getattr (self, k)))
 
         self.log.info ('Connect to LDAP: %s' % self.cfg.LDAP_URI )
-        self.server = ldap3.Server (self.cfg.LDAP_URI, get_info = ldap3.ALL)
+        if ldap is None :
+            ldap = ldap3
+        self.server = ldap.Server (self.cfg.LDAP_URI, get_info = ldap3.ALL)
         self.debug (4, 'Server')
         # auto_range:
         # https://docs.microsoft.com/en-us/previous-versions/windows/desktop/ldap/searching-using-range-retrieval
-        self.ldcon  = ldap3.Connection \
+        self.ldcon  = ldap.Connection \
             ( self.server
             , self.cfg.LDAP_BIND_DN
             , self.cfg.LDAP_PASSWORD
@@ -826,16 +836,16 @@ class LDAP_Roundup_Sync (Log) :
             d = dict \
                 ( key   = 'user_contact'
                 , Email          = Usercontact_Sync_Config_Entry
-                    (False, False, ('mail',))
+                    (False, False, False, ('mail',))
                 )
             d ['internal Phone'] = Usercontact_Sync_Config_Entry \
-                (True,  False, ('otherTelephone',))
+                (True,  False, True, ('otherTelephone',))
             d ['external Phone'] = Usercontact_Sync_Config_Entry \
-                (True,  False, ('telephoneNumber',))
+                (True,  False, True, ('telephoneNumber',))
             d ['mobile Phone']   = Usercontact_Sync_Config_Entry \
-                (True,  False, ('mobile', 'otherMobile'))
+                (True,  False, True, ('mobile', 'otherMobile'))
             d ['Mobile short']   = Usercontact_Sync_Config_Entry \
-                (True,  False, ('pager',  'otherPager'))
+                (True,  False, True, ('pager',  'otherPager'))
             self.append_sync_attribute (**d)
         else :
             self.append_sync_attribute \
@@ -1411,6 +1421,8 @@ class LDAP_Roundup_Sync (Log) :
             if ct not in self.attr_map ['user_contact'] :
                 continue
             synccfg = self.attr_map ['user_contact'][ct][0]
+            if not synccfg.sync_to_ldap :
+                continue
             # Only write if allowed
             if not synccfg.sync_vie_user :
                 continue
@@ -1469,13 +1481,15 @@ class LDAP_Roundup_Sync (Log) :
                             )
                         modlist.append ((ldap3.MODIFY_REPLACE, s, cs [1:]))
         for ct in self.attr_map ['user_contact'] :
-            attributes = self.attr_map ['user_contact'][ct][0].attributes
+            cfg = self.attr_map ['user_contact'][ct][0]
+            if not cfg.sync_to_ldap :
+                continue
             if ct not in contacts :
-                for a in attributes :
+                for a in cfg.attributes :
                     if a in luser :
                         self.log.info \
                             ("%s: Add deletion: %s" % (user.username, a))
-                        modlist.append ((ldap3.MODIFY_REPLACE, a, []))
+                        modlist.append ((ldap3.MODIFY_DELETE, a, None))
     # end def sync_contacts_to_ldap
 
     def sync_user_to_ldap (self, username, update = None) :
