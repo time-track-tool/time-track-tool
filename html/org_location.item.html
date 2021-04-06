@@ -41,36 +41,36 @@
          (classname, 'valid_to')"/>
      <td tal:content="structure python:context.valid_to.field ()"/>
     </tr>
-    <tr>
+    <tr tal:condition="python:'do_leave_process' in bclass.properties">
      <th tal:content="structure python:utils.fieldname
          (classname, 'do_leave_process')"/>
      <td tal:content="structure python:context.do_leave_process.field ()"/>
     </tr>
-    <tr>
+    <tr tal:condition="python:'vacation_yearly' in bclass.properties">
      <th tal:content="structure python:utils.fieldname
          (classname, 'vacation_yearly')"/>
      <td tal:content="structure python:context.vacation_yearly.field ()"/>
     </tr>
-    <tr>
+    <tr tal:condition="python:'vacation_legal_year' in bclass.properties">
      <th tal:content="structure python:utils.fieldname
          (classname, 'vacation_legal_year')"/>
      <td tal:content="structure python:context.vacation_legal_year.field ()"/>
     </tr>
-    <tr>
+    <tr tal:condition="python:'vac_aliq' in bclass.properties">
      <th tal:content="structure python:utils.fieldname
          (classname, 'vac_aliq')"/>
      <td tal:content="structure python:context.vac_aliq.menu ()"/>
     </tr>
-    <tr>
+    <tr tal:condition="python:'phone' in bclass.properties">
      <th tal:content="structure python:utils.fieldname (classname, 'phone')"/>
      <td tal:content="structure python:context.phone.field ()"/>
     </tr>
-    <tr>
+    <tr tal:condition="python:'group_external' in bclass.properties">
      <th tal:content="structure python:utils.fieldname
          (classname, 'group_external')"/>
      <td tal:content="structure python:context.group_external.field ()"/>
     </tr>
-    <tr>
+    <tr tal:condition="python:'sap_lifnr' in bclass.properties">
      <th tal:content="structure python:utils.fieldname
          (classname, 'sap_lifnr')"/>
      <td tal:content="structure python:context.sap_lifnr.field ()"/>
