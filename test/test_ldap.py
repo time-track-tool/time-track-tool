@@ -193,6 +193,7 @@ class _Test_Base :
             self.ldap.Server     = self.mock_connection
             self.ldap.search     = self.mock_ldap_search
             self.ldap.modify     = self.mock_ldap_modify
+            self.ldap.modify_dn  = self.mock_ldap_modify_dn
             # These are single values in AD and must be treated
             # accordingly during sync
             self.ldap.schema.attribute_types = default_dict \
@@ -202,7 +203,8 @@ class _Test_Base :
                 )
         self.ldap_sync = LDAP_Roundup_Sync \
             (self.db, verbose = self.verbose, ldap = self.ldap, log = self.log)
-        self.ldap_modify_result = {}
+        self.ldap_modify_result    = {}
+        self.ldap_modify_dn_result = {}
     # end def setup_ldap
 
     def mock_connection (self, *args, **kw) :
@@ -256,6 +258,10 @@ class _Test_Base :
     def mock_ldap_modify (self, dn, moddict) :
         self.ldap_modify_result [dn] = moddict
     # end def mock_ldap_modify
+
+    def mock_ldap_modify_dn (self, dn, newdn) :
+        self.ldap_modify_dn_result [dn] = newdn
+    # end def mock_ldap_modify_dn
 
     def tearDown (self) :
         for k in 'db', 'db1', 'db2' :
@@ -342,9 +348,12 @@ class Test_Case_LDAP_Sync (_Test_Base, unittest.TestCase) :
     def test_sync_realname_to_ldap (self) :
         self.setup_ldap ()
         self.ldap_sync.sync_user_to_ldap ('testuser1@ds1.internal')
+        olddn = 'CN=Test Middlename Usernameold,OU=test'
+        newdn = 'CN=Test User,OU=test'
+        newcn = newdn.split (',')[0].lower ()
         self.assertEqual \
-            (self.ldap_modify_result.keys (), ['CN=Test User,OU=test'])
-        d = self.ldap_modify_result ['CN=Test User,OU=test']
+            (self.ldap_modify_result.keys (), [newdn])
+        d = self.ldap_modify_result [newdn]
         self.assertEqual (len (d), 5)
         for k in d :
             self.assertEqual (len (d [k]), 1)
@@ -358,6 +367,9 @@ class Test_Case_LDAP_Sync (_Test_Base, unittest.TestCase) :
         self.assertEqual (d ['sn'][0][1], [u'User'])
         self.assertEqual (d ['otherTelephone'][0][0], 'MODIFY_DELETE')
         self.assertEqual (d ['otherTelephone'][0][1], [])
+        self.assertEqual (self.ldap_modify_dn_result.keys (), [olddn])
+        changed = self.ldap_modify_dn_result [olddn].lower ()
+        self.assertEqual (changed, newcn)
     # end def test_sync_realname_to_ldap
 
 # end class Test_Case_LDAP_Sync
