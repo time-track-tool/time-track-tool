@@ -153,7 +153,7 @@ class _Test_Base :
             , ad_domains     = 'ds1.internal'
             , no_starttls    = 'False'
             , allowed_dn_suffix_by_domain = \
-                'ext1.internal:OU=External,OU=external,OU=example,OU=com'
+                'ext1.internal:OU=External'
             )
         config.ext = UserConfig ()
         for k in ldap_settings :
