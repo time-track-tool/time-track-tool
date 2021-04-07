@@ -26,7 +26,7 @@ from ldap3.utils.ciDict import CaseInsensitiveDict
 
 from roundup.test          import memorydb
 from roundup.test.mocknull import MockNull
-from roundup.configuration import Option
+from roundup.configuration import Option, UserConfig
 from roundup               import backends
 # Inject memorydb
 backends.memorydb = memorydb
@@ -155,6 +155,7 @@ class _Test_Base :
             , allowed_dn_suffix_by_domain = \
                 'ext1.internal:OU=External,OU=external,OU=example,OU=com'
             )
+        config.ext = UserConfig ()
         for k in ldap_settings :
             o = Option (config.ext, 'LDAP', k)
             config.ext.add_option (o)
