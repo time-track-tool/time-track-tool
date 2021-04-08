@@ -1564,7 +1564,7 @@ class LDAP_Roundup_Sync (Log) :
                 else:
                     self.log.error \
                         ('User %s has no allowed dn (%s), not syncing: %s'
-                        % (luser.name, dom, luser.dn))
+                        % (luser.UserPrincipalName, dom, luser.dn))
                     return
         assert (user.status in self.status_sync)
         if user.status == self.status_obsolete :
@@ -1581,10 +1581,11 @@ class LDAP_Roundup_Sync (Log) :
         if user.id != r_user.id :
             if self.get_dynamic_user (user.id) :
                 self.log.error \
-                    ( "ERROR: User %s has a vie_user_ml link "
+                    ( "User %s has a vie_user_ml link "
                       "and a dynamic user record"
                     % user.username
                     )
+                return
             dd = {}
             if user.firstname != r_user.firstname :
                 dd ['firstname'] = r_user.firstname
