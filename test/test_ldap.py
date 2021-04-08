@@ -29,6 +29,7 @@ from roundup.test          import memorydb
 from roundup.test.mocknull import MockNull
 from roundup.configuration import Option, UserConfig
 from roundup               import backends
+from roundup.date          import Date
 # Inject memorydb
 backends.memorydb = memorydb
 
@@ -164,7 +165,6 @@ class _Test_Base :
     # end def setup_tracker
 
     def setUp (self) :
-        self.log           = logging.getLogger ('roundup.test')
         self.setup_tracker ()
     # end def setUp
 
@@ -172,8 +172,9 @@ class _Test_Base :
         # Create user-stati for ldap sync
         self.db = self.tracker.open ('admin')
         for g in self.ldap_groups :
-            self.ustatus_valid_ad = self.db.user_status.create \
-                (ldap_group = g, ** self.ldap_groups [g])
+            self.db.user_status.create (ldap_group = g, ** self.ldap_groups [g])
+        self.ustatus_valid_ad = self.db.user_status.lookup ('valid-ad')
+        self.ustatus_valid = self.db.user_status.lookup ('valid')
         for n, name in enumerate (('external Phone', 'Mobile short')) :
             self.db.uc_type.create (name = name, order = n + 5)
         # Create a test-user
@@ -184,6 +185,48 @@ class _Test_Base :
             , status    = self.ustatus_valid_ad
             , ad_domain = 'ds1.internal'
             , guid      = '31' # hex ('1')
+            )
+        self.organisation1 = self.db.organisation.create \
+            ( name = 'testorganisation1'
+            )
+        self.location1 = self.db.location.create \
+            ( name = 'testcity'
+            , room_prefix = 'ASD.'
+            )
+        self.org_location1 = self.db.org_location.create \
+            ( name = 'testorglocation1'
+            , location = self.location1
+            , organisation = self.organisation1
+            )
+        self.department1 = self.db.department.create \
+            ( name = 'testdepartment'
+            )
+        self.room1 = self.db.room.create \
+            ( name = 'ASD.OIZ.501'
+            , location = self.location1
+            )
+        self.testuser2 = self.db.user.create \
+            ( username  = 'testuser2@ds1.internal'
+            , firstname = 'Test2'
+            , lastname  = 'User2'
+            , status    = self.ustatus_valid_ad
+            , ad_domain = 'ds1.internal'
+            , guid      = '32' # hex ('2')
+            )
+        self.user_dynamic2_1 = self.db.user_dynamic.create \
+            ( user = self.testuser2
+            , org_location = self.org_location1
+            , department = self.department1
+            , valid_from  = Date('2021-01-01')
+            , vacation_yearly = 25
+            )
+        self.testuser102 = self.db.user.create \
+            ( username  = 'testuser2@ext1.internal'
+            , firstname = 'Test2'
+            , lastname  = 'User2_differ'
+            , status    = self.ustatus_valid
+            , ad_domain = 'ext1.internal'
+            , vie_user  = self.testuser2
             )
         if not self.log :
             self.log = MockNull ()
@@ -302,13 +345,16 @@ class Test_Case_LDAP_Sync (_Test_Base, unittest.TestCase) :
         }
     person_dn_by_group = \
         { 'roundup-users' :
-          ['CN=Test User,OU=test', 'CN=Test Middlename Usernameold,OU=test']
+          [ 'CN=Test User,OU=internal'
+          , 'CN=Test Middlename Usernameold,OU=internal'
+          , 'CN=Test2 User2,OU=external'
+          ]
         }
 
     # Note: things synced to user_contact must be a list or tuple
     mock_users_by_username = \
         { 'testuser1@ds1.internal' :
-          ( 'CN=Test Middlename Usernameold,OU=test', CaseInsensitiveDict
+          ( 'CN=Test Middlename Usernameold,OU=internal', CaseInsensitiveDict
             ( objectGUID        = MockNull ( raw_values = ['1']
                                            , __len__ = lambda : 1)
             , UserPrincipalName = LDAP_Property ('testuser1@ds1.internal')
@@ -318,6 +364,18 @@ class Test_Case_LDAP_Sync (_Test_Base, unittest.TestCase) :
             , mail              = LDAP_Property ('testuser1@example.com')
             , otherTelephone    = LDAP_Property ('0815')
             , displayname       = LDAP_Property ('Test Middlename Usernameold')
+            )
+          )
+        , 'testuser2@ds1.internal' :
+          ( 'CN=Test2 User2,OU=external', CaseInsensitiveDict
+            ( objectGUID        = MockNull ( raw_values = ['2']
+                                           , __len__ = lambda : 1)
+            , UserPrincipalName = LDAP_Property ('testuser2@ds1.internal')
+            , cn                = LDAP_Property ('Test2 User2')
+            , givenname         = LDAP_Property ('Test2')
+            , sn                = LDAP_Property ('User2')
+            , mail              = LDAP_Property ('testuser2@example.com')
+            , displayname       = LDAP_Property ('Test2 User2')
             )
           )
         }
@@ -350,8 +408,8 @@ class Test_Case_LDAP_Sync (_Test_Base, unittest.TestCase) :
     def test_sync_realname_to_ldap (self) :
         self.setup_ldap ()
         self.ldap_sync.sync_user_to_ldap ('testuser1@ds1.internal')
-        olddn = 'CN=Test Middlename Usernameold,OU=test'
-        newdn = 'CN=Test User,OU=test'
+        olddn = 'CN=Test Middlename Usernameold,OU=internal'
+        newdn = 'CN=Test User,OU=internal'
         newcn = newdn.split (',')[0].lower ()
         self.assertEqual \
             (self.ldap_modify_result.keys (), [newdn])
@@ -377,15 +435,7 @@ class Test_Case_LDAP_Sync (_Test_Base, unittest.TestCase) :
     @pytest.mark.xfail
     def test_sync_room_to_ldap (self) :
         self.setup_ldap ()
-        location = self.db.location.create \
-            ( name = 'testcity'
-            , room_prefix = 'ASD.'
-            )
-        room = self.db.room.create \
-            ( name = 'ASD.OIZ.501'
-            , location = location
-            )
-        self.db.user.set (self.testuser1, room = room)
+        self.db.user.set (self.testuser1, room = self.room1)
         self.ldap_sync.sync_user_from_ldap ('testuser1@ds1.internal')
         self.ldap_sync.sync_user_to_ldap ('testuser1@ds1.internal')
         newdn = 'CN=Test User,OU=test'
@@ -394,6 +444,23 @@ class Test_Case_LDAP_Sync (_Test_Base, unittest.TestCase) :
         self.assertEqual (office [0], 'MODIFY_ADD')
         self.assertEqual (office [1], [u'ASD.OIZ.501'])
     # end test_sync_room_to_ldap
+
+    def test_dont_sync_if_vie_user_and_dyn_user (self) :
+        self.setup_ldap ()
+        messages = []
+        def mock_log (*msg) :
+            messages.append (msg)
+        self.log.error = mock_log
+        self.assertEqual \
+            ( self.db.user.get (self.testuser2, 'vie_user_ml')
+            , [self.testuser102]
+            )
+        self.ldap_sync.sync_user_to_ldap ('testuser2@ds1.internal')
+        self.assertEqual (len (messages), 1)
+        start_str = 'User testuser2@ds1.internal has a vie_user_ml link'
+        self.assertTrue (messages[0][0].startswith (start_str))
+        self.assertEqual (self.ldap_modify_result, {})
+    # end test_dont_sync_if_vie_user_and_dyn_user
 
 # end class Test_Case_LDAP_Sync
 
