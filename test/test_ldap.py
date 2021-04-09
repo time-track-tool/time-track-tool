@@ -432,13 +432,12 @@ class Test_Case_LDAP_Sync (_Test_Base, unittest.TestCase) :
         self.assertEqual (changed, newcn)
     # end def test_sync_realname_to_ldap
 
-    @pytest.mark.xfail
     def test_sync_room_to_ldap (self) :
         self.setup_ldap ()
         self.db.user.set (self.testuser1, room = self.room1)
         self.ldap_sync.sync_user_from_ldap ('testuser1@ds1.internal')
         self.ldap_sync.sync_user_to_ldap ('testuser1@ds1.internal')
-        newdn = 'CN=Test User,OU=test'
+        newdn = 'CN=Test User,OU=internal'
         d = self.ldap_modify_result [newdn]
         office = d ['physicalDeliveryOfficeName'][0]
         self.assertEqual (office [0], 'MODIFY_ADD')

@@ -1308,6 +1308,10 @@ class LDAP_Roundup_Sync (Log) :
                     self.db.user.set (uid, status = self.status_obsolete)
                 changed = True
         else :
+            r_user = self.compute_r_user (user, luser)
+            # If an error occurred this will have returned None
+            if not r_user :
+                return
             d = {}
             c = {}
             for k in self.attr_map ['user'] :
@@ -1318,8 +1322,10 @@ class LDAP_Roundup_Sync (Log) :
                         if isinstance (v, unicode) :
                             v = v.encode ('utf-8')
                         if v or synccfg.empty_allowed :
-                            if  (   synccfg.creation_only
-                                and not synccfg.write_vie_user
+                            if  (  synccfg.creation_only
+                                and ( not synccfg.write_vie_user
+                                    or user.id == r_user.id
+                                    )
                                 ) :
                                 c [k] = v
                             else :
@@ -1492,42 +1498,17 @@ class LDAP_Roundup_Sync (Log) :
                         modlist.append ((ldap3.MODIFY_DELETE, a, None))
     # end def sync_contacts_to_ldap
 
-    def sync_user_to_ldap (self, username, update = None) :
-        self.log.info ("Sync user '%s' to LDAP" % username )
-        if update is not None :
-            self.update_ldap = update
-        allow_empty = False
-        if not self.update_ldap :
-            allow_empty = True
-        check = self.domain_user_check (username, allow_empty = allow_empty)
-        # Do nothing if empty domain and we would require one and we
-        # don't update anyway
-        if not check :
-            self.log.info ("Not syncing user with empty domain: %s" % username)
-            return
-        try :
-            uid  = self.db.user.lookup (username)
-        except KeyError :
-            self.log.debug ("Skip user %s as not existing in Roundup"
-                % username)
-            return
-        user = self.db.user.getnode (uid)
-        self.debug (3, 'Before user_by_username')
-        luser = self.get_ldap_user_by_username (user.username)
-        self.debug (3, 'After user_by_username')
-        if not luser :
-            self.log.info ("LDAP user not found:", user.username)
-            # Might want to create user in LDAP
-            return
-        r_user = user
+    def compute_r_user (self, user, luser) :
         if user.vie_user_ml :
             self.debug \
                 (4, "User %s has a linked user(s): %s"
-                % (user.username, user.vie_user_ml))
+                % (user.username, user.vie_user_ml)
+                )
             if user.vie_user_bl_override :
                 self.debug \
-                    (4, "User %s has a override user set: %s"
-                    % (user.username, user.vie_user_bl_override))
+                    ( 4, "User %s has a override user set: %s"
+                    % (user.username, user.vie_user_bl_override)
+                    )
                 allowed = user.vie_user_ml
                 allowed.append (user.id)
                 if user.vie_user_bl_override not in allowed :
@@ -1558,14 +1539,53 @@ class LDAP_Roundup_Sync (Log) :
             else :
                 if r_user.username == user.username :
                     self.debug \
-                        ( 3, "Field vie_user_bl_override is referring "
-                         "to the user %s itself. Continue sync."
-                         % r_user.username)
+                        ( 3
+                        , "Field vie_user_bl_override is referring "
+                          "to the user %s itself. Continue sync."
+                        % r_user.username
+                        )
+                    return user
                 else:
                     self.log.error \
-                        ('User %s has no allowed dn (%s), not syncing: %s'
-                        % (luser.UserPrincipalName, dom, luser.dn))
+                        ( 'User %s has no allowed dn (%s), not syncing: %s'
+                        % (luser.UserPrincipalName, dom, luser.dn)
+                        )
                     return
+            return r_user
+        return user
+    # end def compute_r_user
+
+    def sync_user_to_ldap (self, username, update = None) :
+        self.log.info ("Sync user '%s' to LDAP" % username )
+        if update is not None :
+            self.update_ldap = update
+        allow_empty = False
+        if not self.update_ldap :
+            allow_empty = True
+        check = self.domain_user_check (username, allow_empty = allow_empty)
+        # Do nothing if empty domain and we would require one and we
+        # don't update anyway
+        if not check :
+            self.log.info ("Not syncing user with empty domain: %s" % username)
+            return
+        try :
+            uid  = self.db.user.lookup (username)
+        except KeyError :
+            self.log.debug ("Skip user %s as not existing in Roundup"
+                % username)
+            return
+        user = self.db.user.getnode (uid)
+        self.debug (3, 'Before user_by_username')
+        luser = self.get_ldap_user_by_username (user.username)
+        self.debug (3, 'After user_by_username')
+        if not luser :
+            self.log.info ("LDAP user not found:", user.username)
+            # Might want to create user in LDAP
+            return
+        r_user = self.compute_r_user (user, luser)
+        # An error occurred and was already reported
+        if not r_user :
+            return
         assert (user.status in self.status_sync)
         if user.status == self.status_obsolete :
             if not self.is_obsolete (luser) :
