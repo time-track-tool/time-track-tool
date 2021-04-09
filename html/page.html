@@ -223,6 +223,11 @@
                           'product_group,measuring_unit,'
                           'packaging_unit,minimum_inventory&'
                           ':filter=status&:pagesize=50&:startwith=0&status=1'
+   , ('pr_offer_item', '')
+                        : '@columns=id,add_to_las,supplier,product_group&'
+                          ':filter=add_to_las,creation&add_to_las=1&'
+                          'creation=.-8w%3B&'
+                          '@sort=supplier&@pagesize=20&@startwith=0'
    , ('pr_supplier', '')
                         : '@columns=id,name,sap_ref'
                           '&@sort=name&@pagesize=20&@startwith=0'
@@ -607,6 +612,7 @@
      , ('person',              'View', 1,               ('',''))
      , ('prodcat',             'View', 1,               ('',''))
      , ('product',             'View', 1,               ('',''))
+     , ('pr_offer_item',       'View', 1,               ('LAS requests',''))
      , ('pr_supplier',         'View', 1,               ('',''))
      , ('pr_supplier_rating',  'View', 1,               ('',''))
      , ('pr_supplier_risk',    'View', 1,               ('',''))
