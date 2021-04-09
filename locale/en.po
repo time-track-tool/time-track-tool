@@ -4415,3 +4415,21 @@ msgstr "is consulting"
 
 msgid "pg_category"
 msgstr "Product group category"
+
+msgid "approvals.role_id"
+msgstr "Approval role"
+
+msgid "approvals.deputy"
+msgstr "Approval deputy"
+
+msgid "approvals.user"
+msgstr "Approval owner"
+
+msgid "pr_approval++user"
+msgstr "Owner"
+
+msgid "approvals.by"
+msgstr "Approval by"
+
+msgid "approvals.status"
+msgstr "Approval status"

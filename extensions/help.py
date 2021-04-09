@@ -56,6 +56,7 @@ adr_type_cat_code  = \
          of running abos. Therefore the address type category with code
          "ABO" may not be deleted or changed.
       '''
+by                 = ""'''User who has approved this %(Classname)s'''
 city               = ""'''City where this person lives.'''
 code               = ""'''Code of this %(Classname)s.'''
 daily_hours        = \
@@ -73,6 +74,7 @@ default_hidden     = \
     ""'''Is hidden by default except for HR and office, except if the
          user explicitly allows the number being visible.
       '''
+deputy             = ""'deputy for this %(Classname)s'
 durations          = \
     ""'''Flag if booking of durations is allowed for this %(Classname)s.'''
 explicit           = \
@@ -147,6 +149,7 @@ order              = \
     ""'''Items are ordered by this property in drop-down boxes etc.'''
 priority           = \
     ""'''Priority for this %(Classname)s.'''
+pr_approval_user   = ""'''User who has to approve this %(Classname)s'''
 pr_sap_cc = Structured_Text ( textwrap.dedent (
     ""'''
          Choose either SAP Cost Center or Time Category (Project) as
@@ -172,6 +175,8 @@ realname_automatic = \
          internally. (Roundup uses this as the sender name when
          sending messages via email)
      """
+role_id = \
+    ""'''Role that has to approve this %(Classname)s'''
 sel_wp             = \
     ""'''This selects Work packages that belong to a %(Property)s.'''
 sel_tc             = \
@@ -339,6 +344,11 @@ _helptext          = \
          '''
       ,  ""'''\"approval_required\".'''
       ]
+    , ""'approvals.by'                : [ by ]
+    , ""'approvals.role_id'           : [ role_id ]
+    , ""'approvals.deputy'            : [deputy]
+    , ""'approvals.status'            : [status]
+    , ""'approvals.user'              : [pr_approval_user]
     , ""'approved_supplier'           :
       [""'''Indicate if the supplier is on the list of approved
             suppliers (LAS).
@@ -380,6 +390,7 @@ _helptext          = \
       ]
     , ""'begin'                       :
       [""'''Begin of period''']
+    , ""'by'                          : [by]
     , ""'birthdate'                   :
       [""'''Date of birth for this %(Classname)s''']
     , ""'bookentry'                   :
@@ -613,8 +624,7 @@ _helptext          = \
           '''
       ]
     , ""'depends.id'                  : [help_id]
-    , ""'deputy'                      :
-      [""'''Substitute for the responsible Person of %(Classname)s''']
+    , ""'deputy'                      : [deputy]
     , ""'description'                 :
       [""'''Verbose description of %(Classname)s''']
     , ""'dev'                         :
@@ -1481,6 +1491,7 @@ _helptext          = \
       [""'''%(Property)s in the group''']
     , ""'postalcode'                  :
       [""'''Postal code for this %(Classname)s ''']
+    , ""'pr_approval++user'           : [pr_approval_user]
     , ""'pr_approval_config++pr_ext_resource' :
       [ ""'''If set, this approval will only apply to PRs with the given
              setting of %(Property)s.
@@ -1787,6 +1798,7 @@ _helptext          = \
              of type RMA.
           '''
       ]
+    , ""'role_id'                     : [ role_id ]
     , ""'roles'                       :
       [ ""'''Roles for this %(Classname)s -- to give the user more than
              one role, enter a comma,separated,list

@@ -67,18 +67,18 @@
     , utils.ExtProperty
         ( utils, pdict ['creator']
         , help_props  = ['realname']
-        , filter = dict (status = vst)
+        , filter      = dict (status = vst)
         )
     , utils.ExtProperty (utils, pdict ['activity'])
     , utils.ExtProperty
         ( utils, pdict ['actor']
         , help_props  = ['realname']
-        , filter = dict (status = vst)
+        , filter      = dict (status = vst)
         )
     , utils.ExtProperty
         ( utils, pdict ['nosy']
         , help_props  = ['realname']
-        , filter = dict (status = vst)
+        , filter      = dict (status = vst)
         )
     , utils.ExtProperty
         ( utils, pdict ['purchasing_agents']
@@ -88,6 +88,7 @@
     , utils.ExtProperty
         ( utils, pdict ['special_approval']
         , help_props  = ['realname']
+        , filter      = dict (status = vst)
         )
     , utils.ExtProperty
         ( utils, pdict ['issue_ids']
@@ -125,6 +126,43 @@
         , sortable    = False
         , searchname  = 'offer_items.product_group'
         , multiselect = True
+        )
+    , utils.ExtProperty
+        ( utils, pdict ['approvals']
+        , searchable  = True
+        , sortable    = False
+        , searchname  = 'approvals.status'
+        )
+    , utils.ExtProperty
+        ( utils, pdict ['approvals']
+        , searchable  = True
+        , sortable    = False
+        , searchname  = 'approvals.role_id'
+        , multiselect = True
+        )
+    , utils.ExtProperty
+        ( utils, pdict ['approvals']
+        , searchable  = True
+        , sortable    = False
+        , searchname  = 'approvals.user'
+        , help_props  = ['realname']
+        , filter      = dict (status = vst)
+        )
+    , utils.ExtProperty
+        ( utils, pdict ['approvals']
+        , searchable  = True
+        , sortable    = False
+        , searchname  = 'approvals.deputy'
+        , help_props  = ['realname']
+        , filter      = dict (status = vst)
+        )
+    , utils.ExtProperty
+        ( utils, pdict ['approvals']
+        , searchable  = True
+        , sortable    = False
+        , searchname  = 'approvals.by'
+        , help_props  = ['realname']
+        , filter      = dict (status = vst)
         )
     );
    "

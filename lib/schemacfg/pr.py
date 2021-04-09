@@ -165,7 +165,9 @@ def init \
         , by                    = Link      ("user", do_journal = 'no')
         , status                = Link      ("pr_approval_status")
         , date                  = Date      ()
-        , purchase_request      = Link      ("purchase_request")
+        , purchase_request      = Link      ( "purchase_request"
+                                            , rev_multilink='approvals'
+                                            )
         , order                 = Number    ()
         , description           = String    ()
         , msg                   = Link      ("msg")
