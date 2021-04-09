@@ -41,12 +41,12 @@
         [bool (context.organisation)]
     ; url_template      python: 
          getattr (db.config.ext, 'LINK_ISSUE_URL_TEMPLATE', None)
+    ; use_highlighting  python: False
     ">
    <tal:block metal:use-macro="templates/page/macros/formatted_class">
     <tal:block metal:fill-slot="formatted_class_content">
      <tr>
-      <th class="required" tal:content="structure python:utils.fieldname
-          (classname, 'requester')"/>
+      <th tal:content="structure python:utils.fieldname (classname, 'requester')"/>
       <td>
        <span tal:content="structure python:context.requester.field ()"/>
        <span tal:condition="context/requester/is_edit_ok"
@@ -58,18 +58,15 @@
                   , pagesize=1000
                   )"/>
       </td>
-      <th class="required" tal:content="structure python:utils.fieldname
-          (classname, 'organisation')"/>
+      <th tal:content="structure python:utils.fieldname (classname, 'organisation')"/>
       <td tal:content="structure python:context.organisation.menu
           (may_purchase = True)"/>
      </tr>
      <tr>
-      <th class="required" tal:content="structure python:utils.fieldname
-          (classname, 'purchase_type')"/>
+      <th tal:content="structure python:utils.fieldname (classname, 'purchase_type')"/>
       <td tal:content="structure python:context.purchase_type.menu
           (valid = True)"/>
-      <th class="required" tal:content="structure python:utils.fieldname
-          (classname, 'department')"/>
+      <th tal:content="structure python:utils.fieldname (classname, 'department')"/>
       <td tal:content="structure python:context.department.menu ()"/>
      </tr>
      <tr>
@@ -155,8 +152,7 @@
        </td>
      </tr>
      <tr>
-      <th class="required" tal:content="structure python:utils.fieldname
-          (classname, 'part_of_budget')"/>
+      <th tal:content="structure python:utils.fieldname (classname, 'part_of_budget')"/>
       <td tal:condition="context/part_of_budget/is_edit_ok"
           tal:define="value context/part_of_budget"><!--
        --><tal:block tal:repeat="choice db/part_of_budget/list"><!--
@@ -173,7 +169,7 @@
       <td tal:content="structure python:context.safety_critical.field ()"/>
      </tr>
      <tr>
-      <th class="required" tal:content="structure python:utils.fieldname
+      <th tal:content="structure python:utils.fieldname
           (classname, 'terms_conditions')"/>
       <td tal:condition="context/terms_conditions/is_edit_ok"
           tal:define="value context/terms_conditions"><!--
@@ -186,7 +182,7 @@
       </td>
       <td tal:condition="not:context/terms_conditions/is_edit_ok"
           tal:content="context/terms_conditions/plain" />
-      <th class="required" tal:content="structure python:utils.fieldname
+      <th tal:content="structure python:utils.fieldname
           (classname, 'pr_ext_resource')"/>
       <td tal:content="structure python:context.pr_ext_resource.menu ()"/>
      </tr>
@@ -210,7 +206,7 @@
       <th tal:content="structure python:utils.fieldname
           (classname, 'renegotiations')"/>
       <td tal:content="structure python:context.renegotiations.field ()"/>
-      <th class="required" tal:content="structure python:utils.fieldname
+      <th tal:content="structure python:utils.fieldname
           (classname, 'delivery_deadline')"/>
       <td tal:content="structure python:context.delivery_deadline.field ()"/>
      </tr>
@@ -233,8 +229,7 @@
        <th/>
        <td/>
       </tal:block>
-      <th class="required" tal:content="structure python:utils.fieldname
-          (classname, 'pr_currency')"/>
+      <th tal:content="structure python:utils.fieldname (classname, 'pr_currency')"/>
       <td tal:content="structure python:context.pr_currency.menu ()"/>
      </tr>
      <tr>
@@ -317,10 +312,10 @@
          <th style="text-align:left"
              tal:content="structure python:utils.fieldname
              ('pr_offer_item', 'index')"/>
-         <th class="required" style="text-align:left"
+         <th style="text-align:left"
              tal:content="structure python:utils.fieldname
              ('pr_offer_item', 'description')"/>
-         <th class="required" style="text-align:left"
+         <th style="text-align:left"
              tal:content="structure python:utils.fieldname
              ('pr_offer_item', 'supplier')"/>
          <th style="text-align:left"
@@ -329,7 +324,7 @@
          <th style="text-align:left"
              tal:content="structure python:utils.fieldname
              ('pr_offer_item', 'units')"/>
-         <th class="required" style="text-align:left"
+         <th style="text-align:left"
              tal:content="structure python:utils.fieldname
              ('pr_offer_item', 'price_per_unit')"/>
          <th style="text-align:left" i18n:translate="">Net price</th>
@@ -350,7 +345,7 @@
              tal:content="structure python:utils.fieldname
              ('pr_offer_item', 'is_asset')"/>
          <th/>
-         <th class="required" style="text-align:right"
+         <th style="text-align:right"
              tal:content="structure python:utils.fieldname
              ('pr_offer_item', 'vat')"/>
         </tr>

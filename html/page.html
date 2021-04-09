@@ -59,6 +59,7 @@
                                  if s.name not in
                                     ('closed', 'postponed', 'suspended')
                                 )
+ ; use_highlighting python: True
  ; default_queries python:
    { ('abo', '')        : '@columns=id,aboprice,amount,begin,'
                           'end,subscriber.lastname,payer.lastname&'
@@ -1120,7 +1121,7 @@
 
    <table tal:attributes="class python:form_class">
     <tr tal:condition="use_labelprop">
-     <th class="required"
+     <th tal:attributes="class python: 'required' if use_highlighting else ''"
       tal:content="structure python:utils.fieldname(classname, labelprop)"/>
      <input tal:condition="python:not context [labelprop].is_edit_ok ()"
       type="hidden" tal:attributes=
@@ -1304,7 +1305,7 @@
 
 <tal:block metal:define-macro="note_required">
  <table class="form" tal:condition="python:
-        not context.id and context.is_edit_ok ()">
+        not context.id and context.is_edit_ok () and use_highlighting">
  <tr>
   <td i18n:translate="">Note:&nbsp;</td>
   <th class="required" i18n:translate="">highlighted</th>
