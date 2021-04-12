@@ -31,6 +31,12 @@ def main () :
         , default = '.'
         )
     parser.add_argument \
+        ( "-m", "--max-changes"
+        , help    = "Maximum number of changed users in any direction"
+        , default = 30
+        , type    = int
+        )
+    parser.add_argument \
         ( "-u", "--update"
         , help    = "Update roundup with info from LDAP directory"
         , default = False
@@ -44,13 +50,7 @@ def main () :
         )
     parser.add_argument \
         ( "-w", "--write-to-ldap"
-        , help    = "Do not turn off the config-item that tries to write "
-                    "to LDAP: "
-                    "If configured a reactor would write local changes back "
-                    "to LDAP but this is disabled in this script. "
-                    "This option leaves the default so "
-                    "that the reactor does write to LDAP if configured "
-                    "in the config-file."
+        , help    = "By default ldap dry-run is configured, this turns it off"
         , default = False
         , action  = 'store_true'
         )
@@ -63,33 +63,29 @@ def main () :
 
     timestamp_start = datetime.datetime.now()
     users = 'all' if not args.users else ','.join(args.users)
+    # If max_changes is 0 we do not set a limit
+    max_changes = args.max_changes or None
 
-    # This raises InvalidOptionError whenever no ldap sync is
-    # configured at all. But the next InvalidOptionError would be
-    # raised when instantiating LDAP_Roundup_Sync below anyway.
-    # So we do not guard for this case (that LDAP sync is called
-    # without a valid LDAP configuration)
-    # Disable sync to LDAP (disable user reactor) by default
-    # Note that we leave the default in the config file if write_to_ldap
-    # is False -- we never turn on the sync if it is not configured!
-    if not args.write_to_ldap :
-        db.config.ext.LDAP_UPDATE_LDAP = 'no'
-
-    lds = LDAP_Roundup_Sync (db, verbose = args.verbose)
+    lds = LDAP_Roundup_Sync \
+        ( db
+        , verbose         = args.verbose
+        , dry_run_roundup = not args.update
+        , dry_run_ldap    = not args.write_to_ldap
+        )
     if not args.two_way_sync :
         lds.log.info ("Update LDAP (two-way-sync) is deactivated")
     try :
         if args.users :
             lds.log.info ("Start to sync users '%s' from LDAP" % users)
             for username in args.users :
-                lds.sync_user_from_ldap (username, update = args.update)
+                lds.sync_user_from_ldap (username)
                 if args.two_way_sync :
                     lds.sync_user_to_ldap (username)
         else :
             lds.log.info ("Start to sync all users from LDAP")
-            lds.sync_all_users_from_ldap (update = args.update)
+            lds.sync_all_users_from_ldap (max_changes = max_changes)
             if args.two_way_sync :
-                lds.sync_all_users_to_ldap ()
+                lds.sync_all_users_to_ldap (max_changes = max_changes)
     except Exception :
         lds.log_exception ()
 

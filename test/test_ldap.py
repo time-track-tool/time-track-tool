@@ -74,6 +74,11 @@ class LDAP_Property :
         return self.args [idx]
     # end def __getitem__
 
+    @property
+    def value (self) :
+        return repr (self)
+    # end def value
+
 # end class LDAP_Property
 
 class default_dict (dict) :
@@ -162,6 +167,8 @@ class _Test_Base :
             o = Option (config.ext, 'LDAP', k)
             config.ext.add_option (o)
             config.ext ['LDAP_' + k.upper ()] = ldap_settings [k]
+        # Override before call to setup_ldap if necessary
+        self.aux_ldap_parameters = {}
     # end def setup_tracker
 
     def setUp (self) :
@@ -171,6 +178,8 @@ class _Test_Base :
     def setup_ldap (self) :
         # Create user-stati for ldap sync
         self.db = self.tracker.open ('admin')
+        # This is used by mock_log which is not used by default
+        self.messages = []
         for g in self.ldap_groups :
             self.db.user_status.create (ldap_group = g, ** self.ldap_groups [g])
         self.ustatus_valid_ad = self.db.user_status.lookup ('valid-ad')
@@ -239,6 +248,7 @@ class _Test_Base :
             self.ldap.search     = self.mock_ldap_search
             self.ldap.modify     = self.mock_ldap_modify
             self.ldap.modify_dn  = self.mock_ldap_modify_dn
+            self.ldap.extend.standard.paged_search = self.mock_paged_search
             # These are single values in AD and must be treated
             # accordingly during sync
             self.ldap.schema.attribute_types = default_dict \
@@ -247,7 +257,12 @@ class _Test_Base :
                 , pager  = sv
                 )
         self.ldap_sync = LDAP_Roundup_Sync \
-            (self.db, verbose = self.verbose, ldap = self.ldap, log = self.log)
+            ( self.db
+            , verbose = self.verbose
+            , ldap    = self.ldap
+            , log     = self.log
+            , ** self.aux_ldap_parameters
+            )
         self.ldap_modify_result    = {}
         self.ldap_modify_dn_result = {}
     # end def setup_ldap
@@ -300,6 +315,15 @@ class _Test_Base :
             return
     # end def mock_ldap_search
 
+    def mock_paged_search (self, base_dn, filter, **d) :
+        self.assertEqual (filter, '(objectclass=user)')
+        m = {}
+        m ['attributes'] = CaseInsensitiveDict \
+            (UserPrincipalName = 'testuser1@ds1.internal')
+        m ['dn'] = 'CN=Test Middlename Usernameold,OU=internal'
+        return [m]
+    # end def mock_paged_search
+
     def mock_ldap_modify (self, dn, moddict) :
         self.ldap_modify_result [dn] = moddict
     # end def mock_ldap_modify
@@ -307,6 +331,12 @@ class _Test_Base :
     def mock_ldap_modify_dn (self, dn, newdn) :
         self.ldap_modify_dn_result [dn] = newdn
     # end def mock_ldap_modify_dn
+
+    def mock_log (self, *msg) :
+        """ Not used by default, needs mockup in test
+        """
+        self.messages.append (msg)
+    # end def mock_log
 
     def tearDown (self) :
         for k in 'db', 'db1', 'db2' :
@@ -405,6 +435,46 @@ class Test_Case_LDAP_Sync (_Test_Base, unittest.TestCase) :
         self.assertEqual (ct.contact, 'testuser1@example.com')
     # end def test_sync_contact_to_roundup
 
+    def test_sync_to_roundup_all (self) :
+        # Change behavior so that names are updated in roundup
+        self.aux_ldap_parameters ['update_ldap'] = False
+        self.setup_ldap ()
+        self.log.info = self.mock_log
+        self.ldap_sync.sync_all_users_from_ldap ()
+        msg = 'Synced 2 users from LDAP to roundup'
+        self.assertEqual (self.messages [-1][0], msg)
+        user = self.db.user.getnode (self.testuser1)
+        self.assertEqual (user.firstname, 'Test Middlename')
+        self.assertEqual (user.lastname,  'Usernameold')
+    # end def test_sync_to_roundup_all
+
+    def test_sync_to_roundup_all_dry (self) :
+        # Change behavior so that names are updated in roundup
+        self.aux_ldap_parameters ['update_ldap']     = False
+        self.aux_ldap_parameters ['dry_run_roundup'] = True
+        self.setup_ldap ()
+        self.log.info = self.mock_log
+        self.ldap_sync.sync_all_users_from_ldap ()
+        msg = 'Synced 2 users from LDAP to roundup (dry run)'
+        self.assertEqual (self.messages [-1][0], msg)
+        user = self.db.user.getnode (self.testuser1)
+        self.assertEqual (user.firstname, 'Test')
+        self.assertEqual (user.lastname,  'User')
+    # end def test_sync_to_roundup_all_dry
+
+    def test_sync_to_roundup_all_limit (self) :
+        # Change behavior so that names are updated in roundup
+        self.aux_ldap_parameters ['update_ldap']     = False
+        self.setup_ldap ()
+        self.log.error = self.mock_log
+        self.ldap_sync.sync_all_users_from_ldap (max_changes = 1)
+        msg = 'Number of changes 2 would exceed maximum 1, aborting'
+        self.assertEqual (self.messages [-1][0], msg)
+        user = self.db.user.getnode (self.testuser1)
+        self.assertEqual (user.firstname, 'Test')
+        self.assertEqual (user.lastname,  'User')
+    # end def test_sync_to_roundup_all_dry
+
     def test_sync_realname_to_ldap (self) :
         self.setup_ldap ()
         self.ldap_sync.sync_user_to_ldap ('testuser1@ds1.internal')
@@ -432,6 +502,36 @@ class Test_Case_LDAP_Sync (_Test_Base, unittest.TestCase) :
         self.assertEqual (changed, newcn)
     # end def test_sync_realname_to_ldap
 
+    def test_sync_realname_to_ldap_all (self) :
+        self.setup_ldap ()
+        self.log.info = self.mock_log
+        self.ldap_sync.sync_all_users_to_ldap ()
+        newdn = 'CN=Test User,OU=internal'
+        self.assertEqual (len (self.ldap_modify_result), 1)
+        self.assertEqual (len (self.ldap_modify_result [newdn]), 5)
+        msg = 'Synced 1 users from roundup to LDAP'
+        self.assertEqual (self.messages [-1][0], msg)
+    # end def test_sync_realname_to_ldap_all
+
+    def test_sync_realname_to_ldap_all_dryrun (self) :
+        self.aux_ldap_parameters ['dry_run_ldap'] = True
+        self.setup_ldap ()
+        self.log.info = self.mock_log
+        self.ldap_sync.sync_all_users_to_ldap ()
+        self.assertEqual (len (self.ldap_modify_result), 0)
+        msg = 'Synced 1 users from roundup to LDAP (dry run)'
+        self.assertEqual (self.messages [-1][0], msg)
+    # end def test_sync_realname_to_ldap_all
+
+    def test_sync_realname_to_ldap_all_limit (self) :
+        self.setup_ldap ()
+        self.log.error = self.mock_log
+        self.ldap_sync.sync_all_users_to_ldap (max_changes = 0)
+        self.assertEqual (len (self.ldap_modify_result), 0)
+        msg = 'Number of changes 1 would exceed maximum 0, aborting'
+        self.assertEqual (self.messages [-1][0], msg)
+    # end def test_sync_realname_to_ldap_all
+
     def test_sync_room_to_ldap (self) :
         self.setup_ldap ()
         self.db.user.set (self.testuser1, room = self.room1)
@@ -446,18 +546,15 @@ class Test_Case_LDAP_Sync (_Test_Base, unittest.TestCase) :
 
     def test_dont_sync_if_vie_user_and_dyn_user (self) :
         self.setup_ldap ()
-        messages = []
-        def mock_log (*msg) :
-            messages.append (msg)
-        self.log.error = mock_log
+        self.log.error = self.mock_log
         self.assertEqual \
             ( self.db.user.get (self.testuser2, 'vie_user_ml')
             , [self.testuser102]
             )
         self.ldap_sync.sync_user_to_ldap ('testuser2@ds1.internal')
-        self.assertEqual (len (messages), 1)
+        self.assertEqual (len (self.messages), 1)
         start_str = 'User testuser2@ds1.internal has a vie_user_ml link'
-        self.assertTrue (messages[0][0].startswith (start_str))
+        self.assertTrue (self.messages[0][0].startswith (start_str))
         self.assertEqual (self.ldap_modify_result, {})
     # end test_dont_sync_if_vie_user_and_dyn_user
 
