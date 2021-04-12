@@ -751,6 +751,8 @@ def set_approval_pr (db, cl, nodeid, new_values) :
 
     if 'date' in new_values and 'status' not in new_values :
         del new_values ['date']
+    if 'purchase_request' in new_values and 'status' not in new_values :
+        del new_values ['purchase_request']
     if 'purchase_request' not in new_values :
         return
     npr = new_values ['purchase_request']

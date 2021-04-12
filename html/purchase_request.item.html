@@ -674,7 +674,8 @@
           <td>
            <span tal:content="python:i.description.plain ()"/>
            <tal:block tal:condition="python:
-                i.status.is_edit_ok () and not context.status.plain () == 'rejected'">
+                i.status.is_edit_ok ()
+                and context.status.plain () == 'undecided'">
             <input type="hidden" value="msg-1"
                tal:attributes="name python: 'pr_approval%s@link@msg' % i.id" />
             <input type="hidden" value="." tal:attributes="
