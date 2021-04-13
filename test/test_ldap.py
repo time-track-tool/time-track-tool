@@ -18,6 +18,7 @@
 
 import os
 import sys
+import copy
 import unittest
 import pytest
 import logging
@@ -90,6 +91,23 @@ class default_dict (dict) :
         return MockNull ()
     # end def __getitem__
 # end class default_dict
+
+class Mock_Guid :
+    def __init__ (self, value) :
+        self.value = value
+        self.raw_values = [value]
+    # end def __init__
+
+    def __len__ (self) :
+        return 1
+    # end def __len__
+
+    def __iter__ (self) :
+        for v in self.value :
+            yield v
+    # end def __iter__
+
+# end class Mock_Guid
 
 class _Test_Base :
     count = 0
@@ -326,13 +344,23 @@ class _Test_Base :
         return self.ldap
     # end def mock_connection
 
-    def mock_ldap_search (self, dn, s, attributes = None) :
+    def mock_ldap_search (self, dn, s, attributes = None, search_scope = None) :
         """ Emulate an ldap search. We get a Mock object as the first
             parameter, then the base dn (which is currently not used) and
             the query string. Depending on the query string we return
             something in self.entries.
         """
         self.ldap.entries = []
+        # Searching by DN
+        if search_scope :
+            username = self.person_username_by_dn [dn]
+            entry = self.mock_users_by_username [username]
+            m = {}
+            m ['attributes'] = entry [1]
+            m ['dn'] = entry [0]
+            self.ldap.entries = [m]
+            return
+
         # Searching for groups
         for g in self.ldap_groups :
             t  = '(&(sAMAccountName=%s)(objectclass=group))' % g
@@ -436,6 +464,9 @@ class Test_Case_LDAP_Sync (_Test_Base, unittest.TestCase) :
           ]
         }
 
+    person_username_by_dn = \
+        { 'CN=Vincent Super,OU=external' : 'jdoe@ds1.internal' }
+
     # Note: things synced to user_contact must be a list or tuple
     mock_users_by_username = \
         { 'testuser1@ds1.internal' :
@@ -479,8 +510,7 @@ class Test_Case_LDAP_Sync (_Test_Base, unittest.TestCase) :
           )
         , 'jdoe@ds1.internal' :
           ( 'CN=Jane Doe,OU=external', CaseInsensitiveDict
-            ( objectGUID        = MockNull ( raw_values = ['4']
-                                           , __len__ = lambda : 1)
+            ( objectGUID        = Mock_Guid ('4')
             , UserPrincipalName = LDAP_Property ('jdoe@ds1.internal')
             , cn                = LDAP_Property ('Jane Doe')
             , givenname         = LDAP_Property ('Jane')
@@ -685,6 +715,7 @@ class Test_Case_LDAP_Sync (_Test_Base, unittest.TestCase) :
         # override with user external user
         self.db.user.set (self.testuser2, vie_user_bl_override = self.testuser102)
         self.ldap_sync.sync_user_to_ldap ('testuser2@ds1.internal')
+        # TODO: add DN call
         #TODO: Check why sync to ldap with linked vie_user does not trigger change with new lastname "NewLastname"
         self.assertEqual (self.ldap_modify_result['CN=Test2 NewLastname,OU=external'], {})
     # end test_dont_sync_if_vie_user_and_dyn_user
@@ -719,7 +750,7 @@ class Test_Case_LDAP_Sync (_Test_Base, unittest.TestCase) :
     def test_sync_supervisor (self) :
         self.setup_ldap ()
         self.ldap_sync.sync_user_to_ldap ('jdoe@ds1.internal')
-        self.assertNotIn('mananger', self.ldap_modify_result['CN=Jane Doe,OU=external'])
+        self.assertNotIn('manager', self.ldap_modify_result['CN=Jane Doe,OU=external'])
         
         # set supervisor on external user
         self.db.user.set (self.testuser104, supervisor = self.testuser105)
@@ -809,7 +840,6 @@ class Test_Case_LDAP_Sync (_Test_Base, unittest.TestCase) :
         self.assertEqual (new_position, position)
     # end test_position_text_sync
 
-    @pytest.mark.xfail
     def test_sync_attributes_not_directly_updating_vie_user (self) :
         self.setup_ldap ()
         self.ldap_sync.sync_user_to_ldap ('jdoe@ds1.internal')
@@ -822,7 +852,11 @@ class Test_Case_LDAP_Sync (_Test_Base, unittest.TestCase) :
         self.assertEqual (new_supervisor, 'CN=Vincent Super,OU=external')
         supervisor_vie_user = self.db.user.get (self.testuser4, 'supervisor')
         # no supervisor set yet -> None
-        self.assertFalse (supervisor_vie_user, self.testuser5)
+        self.assertIsNone (supervisor_vie_user)
+
+        # copy from class to not modify globally
+        self.mock_users_by_username = copy.deepcopy (self.mock_users_by_username)
+        self.mock_users_by_username['jdoe@ds1.internal'][1]['manager'] = new_supervisor
         self.ldap_sync.sync_user_from_ldap ('jdoe@ds1.internal')
         # TODO: Check why supervisor is not updated
         supervisor_vie_user = self.db.user.get (self.testuser4, 'supervisor')
