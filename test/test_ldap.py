@@ -536,7 +536,8 @@ class Test_Case_LDAP_Sync (_Test_Base, unittest.TestCase) :
         self.setup_ldap ()
         self.log.info = self.mock_log
         self.ldap_sync.sync_all_users_from_ldap ()
-        msg = 'Synced 2 users from LDAP to roundup'
+        msg = 'Synced %s users from LDAP to roundup' \
+              % len (self.mock_users_by_username)
         self.assertEqual (self.messages [-1][0], msg)
         user = self.db.user.getnode (self.testuser1)
         self.assertEqual (user.firstname, 'Test Middlename')
@@ -550,7 +551,8 @@ class Test_Case_LDAP_Sync (_Test_Base, unittest.TestCase) :
         self.setup_ldap ()
         self.log.info = self.mock_log
         self.ldap_sync.sync_all_users_from_ldap ()
-        msg = 'Synced 2 users from LDAP to roundup (dry run)'
+        msg = 'Synced %s users from LDAP to roundup (dry run)' \
+              % len (self.mock_users_by_username)
         self.assertEqual (self.messages [-1][0], msg)
         user = self.db.user.getnode (self.testuser1)
         self.assertEqual (user.firstname, 'Test')
@@ -563,7 +565,8 @@ class Test_Case_LDAP_Sync (_Test_Base, unittest.TestCase) :
         self.setup_ldap ()
         self.log.error = self.mock_log
         self.ldap_sync.sync_all_users_from_ldap (max_changes = 1)
-        msg = 'Number of changes 2 would exceed maximum 1, aborting'
+        msg = 'Number of changes %s would exceed maximum 1, aborting' \
+              % len (self.mock_users_by_username)
         self.assertEqual (self.messages [-1][0], msg)
         user = self.db.user.getnode (self.testuser1)
         self.assertEqual (user.firstname, 'Test')
@@ -599,31 +602,34 @@ class Test_Case_LDAP_Sync (_Test_Base, unittest.TestCase) :
 
     def test_sync_realname_to_ldap_all (self) :
         self.setup_ldap ()
+        nusers = len (self.db.user.filter (None, {})) / 2 - 1
         self.log.info = self.mock_log
         self.ldap_sync.sync_all_users_to_ldap ()
         newdn = 'CN=Test User,OU=internal'
-        self.assertEqual (len (self.ldap_modify_result), 1)
+        self.assertEqual (len (self.ldap_modify_result), nusers)
         self.assertEqual (len (self.ldap_modify_result [newdn]), 5)
-        msg = 'Synced 1 users from roundup to LDAP'
+        msg = 'Synced %s users from roundup to LDAP' % nusers
         self.assertEqual (self.messages [-1][0], msg)
     # end def test_sync_realname_to_ldap_all
 
     def test_sync_realname_to_ldap_all_dryrun (self) :
         self.aux_ldap_parameters ['dry_run_ldap'] = True
         self.setup_ldap ()
+        nusers = len (self.db.user.filter (None, {})) / 2 - 1
         self.log.info = self.mock_log
         self.ldap_sync.sync_all_users_to_ldap ()
         self.assertEqual (len (self.ldap_modify_result), 0)
-        msg = 'Synced 1 users from roundup to LDAP (dry run)'
+        msg = 'Synced %s users from roundup to LDAP (dry run)' % nusers
         self.assertEqual (self.messages [-1][0], msg)
     # end def test_sync_realname_to_ldap_all
 
     def test_sync_realname_to_ldap_all_limit (self) :
         self.setup_ldap ()
+        nusers = len (self.db.user.filter (None, {})) / 2 - 1
         self.log.error = self.mock_log
         self.ldap_sync.sync_all_users_to_ldap (max_changes = 0)
         self.assertEqual (len (self.ldap_modify_result), 0)
-        msg = 'Number of changes 1 would exceed maximum 0, aborting'
+        msg = 'Number of changes %s would exceed maximum 0, aborting' % nusers
         self.assertEqual (self.messages [-1][0], msg)
     # end def test_sync_realname_to_ldap_all
 
