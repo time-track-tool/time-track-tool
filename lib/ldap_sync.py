@@ -1034,7 +1034,7 @@ class LDAP_Roundup_Sync (Log) :
         # uid to find the user in roundup.
         for k in 'UserPrincipalName', 'uid' :
             try :
-                return self.db.user.lookup (lsup [k])
+                return self.db.user.lookup (lsup.value (k))
             except KeyError :
                 pass
         return None
@@ -1469,7 +1469,7 @@ class LDAP_Roundup_Sync (Log) :
                     self.log.error \
                         ("%s: invalid length: %s" % (user.username, p))
                 if not s and not self.is_single_value (p) :
-                    ldattr = luser [p]
+                    ldattr = luser.value (p)
                     ins    = cs
                 if ldattr != ins and [ldattr] != ins :
                     if not ins :
@@ -1539,6 +1539,13 @@ class LDAP_Roundup_Sync (Log) :
                         (self.db.user.get (u, 'username')
                          for u in user.vie_user_ml)
                       )
+                    )
+                return
+            elif self.get_dynamic_user (user.id) :
+                self.log.error \
+                    ( "User %s has a vie_user_ml link "
+                      "and a dynamic user record"
+                    % user.username
                     )
                 return
             else :
@@ -1647,13 +1654,6 @@ class LDAP_Roundup_Sync (Log) :
         modlist = []
         # If we have a vie_user:
         if user.id != r_user.id :
-            if self.get_dynamic_user (user.id) :
-                self.log.error \
-                    ( "User %s has a vie_user_ml link "
-                      "and a dynamic user record"
-                    % user.username
-                    )
-                return
             dd = {}
             if user.firstname != r_user.firstname :
                 dd ['firstname'] = r_user.firstname
@@ -1698,7 +1698,7 @@ class LDAP_Roundup_Sync (Log) :
                         % (curuser.username, synccfg.name)
                         )
                 else :
-                    ldattr = pldattr = luser [synccfg.name]
+                    ldattr = pldattr = luser.value (synccfg.name)
                     if rk == 'pictures' :
                         pldattr = '<suppressed>'
                     if rk == 'guid' :

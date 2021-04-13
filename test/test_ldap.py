@@ -16,6 +16,8 @@
 # Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 # ****************************************************************************
 
+from __future__ import unicode_literals
+
 import os
 import sys
 import copy
@@ -93,6 +95,7 @@ class default_dict (dict) :
 # end class default_dict
 
 class Mock_Guid :
+
     def __init__ (self, value) :
         self.value = value
         self.raw_values = [value]
@@ -206,105 +209,105 @@ class _Test_Base :
             self.db.uc_type.create (name = name, order = n + 5)
         # Create a test-user
         self.testuser1 = self.db.user.create \
-            ( username  = 'testuser1@ds1.internal'
-            , firstname = 'Test'
-            , lastname  = 'User'
+            ( username  = str ('testuser1@ds1.internal')
+            , firstname = str ('Test')
+            , lastname  = str ('User')
             , status    = self.ustatus_valid_ad
-            , ad_domain = 'ds1.internal'
+            , ad_domain = str ('ds1.internal')
             , guid      = '31' # hex ('1')
             )
         self.organisation1 = self.db.organisation.create \
-            ( name = 'testorganisation1'
+            ( name = str ('testorganisation1')
             )
         self.location1 = self.db.location.create \
-            ( name = 'testcity'
-            , room_prefix = 'ASD.'
+            ( name = str ('testcity')
+            , room_prefix = str ('ASD.')
             )
         self.org_location1 = self.db.org_location.create \
-            ( name = 'testorglocation1'
+            ( name = str ('testorglocation1')
             , location = self.location1
             , organisation = self.organisation1
             )
         self.department1 = self.db.department.create \
-            ( name = 'testdepartment'
+            ( name = str ('testdepartment')
             )
         self.room1 = self.db.room.create \
-            ( name = 'ASD.OIZ.501'
+            ( name = str ('ASD.OIZ.501')
             , location = self.location1
             )
         self.room2 = self.db.room.create \
-            ( name = 'ASD.MJH.402'
+            ( name = str ('ASD.MJH.402')
             , location = self.location1
             )
         self.testuser2 = self.db.user.create \
-            ( username  = 'testuser2@ds1.internal'
-            , firstname = 'Test2'
-            , lastname  = 'User2'
+            ( username  = str ('testuser2@ds1.internal')
+            , firstname = str ('Test2')
+            , lastname  = str ('User2')
             , status    = self.ustatus_valid_ad
-            , ad_domain = 'ds1.internal'
-            , guid      = '32' # hex ('2')
+            , ad_domain = str ('ds1.internal')
+            , guid      = str ('32') # hex ('2')
             , room      = self.room1
             )
         self.user_dynamic2_1 = self.db.user_dynamic.create \
-            ( user = self.testuser2
-            , org_location = self.org_location1
-            , department = self.department1
-            , valid_from  = Date('2021-01-01')
+            ( user            = self.testuser2
+            , org_location    = self.org_location1
+            , department      = self.department1
+            , valid_from      = Date (str ('2021-01-01'))
             , vacation_yearly = 25
             )
         self.testuser102 = self.db.user.create \
-            ( username  = 'testuser2@ext1.internal'
-            , firstname = 'Test2'
-            , lastname  = 'NewLastname'
+            ( username  = str ('testuser2@ext1.internal')
+            , firstname = str ('Test2')
+            , lastname  = str ('NewLastname')
             , status    = self.ustatus_valid
-            , ad_domain = 'ext1.internal'
+            , ad_domain = str ('ext1.internal')
             , vie_user  = self.testuser2
             )
         self.testuser3 = self.db.user.create \
-            ( username  = 'rcase@ds1.internal'
-            , firstname = 'Roman'
-            , lastname  = 'Case'
+            ( username  = str ('rcase@ds1.internal')
+            , firstname = str ('Roman')
+            , lastname  = str ('Case')
             , status    = self.ustatus_valid_ad
-            , ad_domain = 'ds1.internal'
-            , guid      = '33' # hex ('3')
+            , ad_domain = str ('ds1.internal')
+            , guid      = str ('33') # hex ('3')
             )
         self.user_dynamic3_1 = self.db.user_dynamic.create \
-            ( user = self.testuser3
-            , org_location = self.org_location1
-            , department = self.department1
-            , valid_from  = Date('2021-01-01')
+            ( user            = self.testuser3
+            , org_location    = self.org_location1
+            , department      = self.department1
+            , valid_from      = Date (str ('2021-01-01'))
             , vacation_yearly = 25
             )
         self.testuser4 = self.db.user.create \
-            ( username  = 'jdoe@ds1.internal'
-            , firstname = 'Jane'
-            , lastname  = 'Doe'
+            ( username  = str ('jdoe@ds1.internal')
+            , firstname = str ('Jane')
+            , lastname  = str ('Doe')
             , status    = self.ustatus_valid_ad
-            , ad_domain = 'ds1.internal'
-            , guid      = '34' # hex ('4')
+            , ad_domain = str ('ds1.internal')
+            , guid      = str ('34') # hex ('4')
             )
         self.testuser104 = self.db.user.create \
-            ( username  = 'jane.doe@ext1.internal'
-            , firstname = 'Jane'
-            , lastname  = 'Doe'
+            ( username  = str ('jane.doe@ext1.internal')
+            , firstname = str ('Jane')
+            , lastname  = str ('Doe')
             , status    = self.ustatus_valid
-            , ad_domain = 'ext1.internal'
+            , ad_domain = str ('ext1.internal')
             , vie_user  = self.testuser4
             )
         self.testuser5 = self.db.user.create \
-            ( username  = 'vsuper@ds1.internal'
-            , firstname = 'Vincent'
-            , lastname  = 'Super'
+            ( username  = str ('vsuper@ds1.internal')
+            , firstname = str ('Vincent')
+            , lastname  = str ('Super')
             , status    = self.ustatus_valid_ad
-            , ad_domain = 'ds1.internal'
-            , guid      = '35' # hex ('5')
+            , ad_domain = str ('ds1.internal')
+            , guid      = str ('35') # hex ('5')
             )
         self.testuser105 = self.db.user.create \
-            ( username  = 'vicent.super@ext1.internal'
-            , firstname = 'Vincent'
-            , lastname  = 'Super'
+            ( username  = str ('vicent.super@ext1.internal')
+            , firstname = str ('Vincent')
+            , lastname  = str ('Super')
             , status    = self.ustatus_valid
-            , ad_domain = 'ext1.internal'
+            , ad_domain = str ('ext1.internal')
             , vie_user  = self.testuser5
             )
         if not self.log :
@@ -465,7 +468,8 @@ class Test_Case_LDAP_Sync (_Test_Base, unittest.TestCase) :
         }
 
     person_username_by_dn = \
-        { 'CN=Vincent Super,OU=external' : 'jdoe@ds1.internal' }
+        { 'CN=Vincent Super,OU=external' : 'vsuper@ds1.internal'
+        }
 
     # Note: things synced to user_contact must be a list or tuple
     mock_users_by_username = \
@@ -567,7 +571,7 @@ class Test_Case_LDAP_Sync (_Test_Base, unittest.TestCase) :
         self.log.info = self.mock_log
         self.ldap_sync.sync_all_users_from_ldap ()
         msg = 'Synced %s users from LDAP to roundup' \
-              % len (self.mock_users_by_username)
+              % (len (self.mock_users_by_username) - 1)
         self.assertEqual (self.messages [-1][0], msg)
         user = self.db.user.getnode (self.testuser1)
         self.assertEqual (user.firstname, 'Test Middlename')
@@ -582,7 +586,7 @@ class Test_Case_LDAP_Sync (_Test_Base, unittest.TestCase) :
         self.log.info = self.mock_log
         self.ldap_sync.sync_all_users_from_ldap ()
         msg = 'Synced %s users from LDAP to roundup (dry run)' \
-              % len (self.mock_users_by_username)
+              % (len (self.mock_users_by_username) - 1)
         self.assertEqual (self.messages [-1][0], msg)
         user = self.db.user.getnode (self.testuser1)
         self.assertEqual (user.firstname, 'Test')
@@ -596,7 +600,7 @@ class Test_Case_LDAP_Sync (_Test_Base, unittest.TestCase) :
         self.log.error = self.mock_log
         self.ldap_sync.sync_all_users_from_ldap (max_changes = 1)
         msg = 'Number of changes %s would exceed maximum 1, aborting' \
-              % len (self.mock_users_by_username)
+              % (len (self.mock_users_by_username) - 1)
         self.assertEqual (self.messages [-1][0], msg)
         user = self.db.user.getnode (self.testuser1)
         self.assertEqual (user.firstname, 'Test')
@@ -608,7 +612,7 @@ class Test_Case_LDAP_Sync (_Test_Base, unittest.TestCase) :
         self.ldap_sync.sync_user_to_ldap ('testuser1@ds1.internal')
         olddn = 'CN=Test Middlename Usernameold,OU=internal'
         newdn = 'CN=Test User,OU=internal'
-        newcn = newdn.split (',')[0].lower ()
+        newcn = newdn.split (',') [0].lower ()
         self.assertEqual \
             (self.ldap_modify_result.keys (), [newdn])
         d = self.ldap_modify_result [newdn]
@@ -685,39 +689,43 @@ class Test_Case_LDAP_Sync (_Test_Base, unittest.TestCase) :
         self.ldap_sync.sync_user_to_ldap ('testuser2@ds1.internal')
         self.assertEqual (len (self.messages), 1)
         start_str = 'User testuser2@ds1.internal has a vie_user_ml link'
-        self.assertTrue (self.messages[0][0].startswith (start_str))
+        self.assertTrue (self.messages [0][0].startswith (start_str))
         self.assertEqual (self.ldap_modify_result, {})
     # end test_dont_sync_if_vie_user_and_dyn_user
 
-    @pytest.mark.xfail
     def test_sync_if_vie_user_and_dyn_user_when_bl_override (self) :
         self.setup_ldap ()
-        messages = []
-        def mock_log (*msg) :
-            messages.append (msg)
-        self.log.error = mock_log
+        self.log.error = self.mock_log
         self.assertEqual \
             ( self.db.user.get (self.testuser2, 'vie_user_ml')
             , [self.testuser102]
             )
         self.ldap_sync.sync_user_to_ldap ('testuser2@ds1.internal')
-        self.assertEqual (len (messages), 1)
+        self.assertEqual (len (self.messages), 1)
         start_str = 'User testuser2@ds1.internal has a vie_user_ml link'
-        self.assertTrue (messages[0][0].startswith (start_str))
+        self.assertTrue (self.messages [0][0].startswith (start_str))
         self.assertEqual (self.ldap_modify_result, {})
        
         # override with user itself
         self.db.user.set (self.testuser2, vie_user_bl_override = self.testuser2)
         self.ldap_sync.sync_user_to_ldap ('testuser2@ds1.internal')
         self.maxDiff = None
-        self.assertTrue (self.ldap_modify_result)
+        dn = 'CN=Test2 User2,OU=external'
+        self.assertEqual (len (self.ldap_modify_result), 1)
+        self.assertEqual (len (self.ldap_modify_result [dn]), 4)
+        self.assertEqual (self.ldap_modify_dn_result, {})
 
         # override with user external user
-        self.db.user.set (self.testuser2, vie_user_bl_override = self.testuser102)
+        self.db.user.set \
+            (self.testuser2, vie_user_bl_override = self.testuser102)
         self.ldap_sync.sync_user_to_ldap ('testuser2@ds1.internal')
-        # TODO: add DN call
-        #TODO: Check why sync to ldap with linked vie_user does not trigger change with new lastname "NewLastname"
-        self.assertEqual (self.ldap_modify_result['CN=Test2 NewLastname,OU=external'], {})
+        cn = 'cn=Test2 NewLastname'
+        self.assertEqual (self.ldap_modify_dn_result [dn], cn)
+        dn = 'CN=Test2 NewLastname,OU=external'
+        self.assertEqual (len (self.ldap_modify_result [dn]), 3)
+        results = (('displayname', 'Test2 NewLastname'), ('sn', 'NewLastname'))
+        for k, v in results :
+            self.assertEqual (self.ldap_modify_result [dn][k][0][1][0], v)
     # end test_dont_sync_if_vie_user_and_dyn_user
 
     def test_sync_email_only_from_ad (self) :
@@ -734,11 +742,12 @@ class Test_Case_LDAP_Sync (_Test_Base, unittest.TestCase) :
         # change contact in Roundup, check if not synced back
         self.user_contact1 = self.db.user_contact.create \
             ( contact = 'case@example.com'
-            , contact_type = '1'
+            , contact_type = str ('1')
             )
         self.db.user.set (self.testuser3, contacts = [self.user_contact1])
         self.ldap_sync.sync_user_to_ldap ('rcase@ds1.internal')
-        self.assertNotIn('mail', self.ldap_modify_result['CN=Roman Case,OU=internal'])
+        dn = 'CN=Roman Case,OU=internal'
+        self.assertNotIn ('mail', self.ldap_modify_result [dn])
 
         # check if overwritten again with correct mail address
         self.ldap_sync.sync_user_from_ldap ('rcase@ds1.internal')
@@ -750,18 +759,19 @@ class Test_Case_LDAP_Sync (_Test_Base, unittest.TestCase) :
     def test_sync_supervisor (self) :
         self.setup_ldap ()
         self.ldap_sync.sync_user_to_ldap ('jdoe@ds1.internal')
-        self.assertNotIn('manager', self.ldap_modify_result['CN=Jane Doe,OU=external'])
+        dn = 'CN=Jane Doe,OU=external'
+        self.assertNotIn ('manager', self.ldap_modify_result [dn])
         
         # set supervisor on external user
         self.db.user.set (self.testuser104, supervisor = self.testuser105)
         self.ldap_sync.sync_user_to_ldap ('jdoe@ds1.internal')
-        self.assertIn('manager', self.ldap_modify_result['CN=Jane Doe,OU=external'])
+        self.assertIn ('manager', self.ldap_modify_result [dn])
 
         # unlink vie_user and set internal supervisor
         self.db.user.set (self.testuser104, vie_user = None)
         self.db.user.set (self.testuser4, supervisor = self.testuser3)
         self.ldap_sync.sync_user_to_ldap ('jdoe@ds1.internal')
-        new_secretary = self.ldap_modify_result['CN=Jane Doe,OU=external']['manager'][0][1][0]
+        new_secretary = self.ldap_modify_result [dn]['manager'][0][1][0]
         self.assertEqual (new_secretary, 'CN=Roman Case,OU=internal')
     # end test_sync_supervisor
 
@@ -769,25 +779,31 @@ class Test_Case_LDAP_Sync (_Test_Base, unittest.TestCase) :
         self.setup_ldap ()
         self.ldap_sync.sync_user_from_ldap ('rcase@ds1.internal')
         self.ldap_sync.sync_user_to_ldap ('rcase@ds1.internal')
-        new_department = self.ldap_modify_result['CN=Roman Case,OU=internal']['department'][0][1][0]
-        self.assertEqual (new_department, self.db.department.get (self.department1, 'name'))
+        dn = 'CN=Roman Case,OU=internal'
+        new_department = self.ldap_modify_result [dn]['department'][0][1][0]
+        self.assertEqual \
+            (new_department, self.db.department.get (self.department1, 'name'))
 
         # set department_temp and check override
         department_temp_name = 'dep_override'
-        self.db.user.set (self.testuser3, department_temp = department_temp_name)
+        self.db.user.set \
+            (self.testuser3, department_temp = department_temp_name)
         self.ldap_sync.sync_user_from_ldap ('rcase@ds1.internal')
         self.ldap_sync.sync_user_to_ldap ('rcase@ds1.internal')
-        new_department = self.ldap_modify_result['CN=Roman Case,OU=internal']['department'][0][1][0]
+        dn = 'CN=Roman Case,OU=internal'
+        new_department = self.ldap_modify_result [dn]['department'][0][1][0]
         self.assertEqual (new_department, department_temp_name)
 
         # sync department from vie_user
         department_temp_name = 'dep_override_2'
         self.ldap_sync.sync_user_to_ldap ('jdoe@ds1.internal')
-        self.assertNotIn('department', self.ldap_modify_result['CN=Jane Doe,OU=external'])
-        self.db.user.set (self.testuser104, department_temp = department_temp_name)
+        dn = 'CN=Jane Doe,OU=external'
+        self.assertNotIn ('department', self.ldap_modify_result [dn])
+        self.db.user.set \
+            (self.testuser104, department_temp = department_temp_name)
         self.ldap_sync.sync_user_from_ldap ('jdoe@ds1.internal')
         self.ldap_sync.sync_user_to_ldap ('jdoe@ds1.internal')
-        new_department = self.ldap_modify_result['CN=Jane Doe,OU=external']['department'][0][1][0]
+        new_department = self.ldap_modify_result [dn]['department'][0][1][0]
         self.assertEqual (new_department, department_temp_name)
     # end test_sync_department
 
@@ -795,15 +811,17 @@ class Test_Case_LDAP_Sync (_Test_Base, unittest.TestCase) :
         self.setup_ldap ()
         self.ldap_sync.sync_user_from_ldap ('rcase@ds1.internal')
         self.ldap_sync.sync_user_to_ldap ('rcase@ds1.internal')
-        new_company = self.ldap_modify_result['CN=Roman Case,OU=internal']['company'][0][1][0]
-        self.assertEqual (new_company, self.db.org_location.get (self.org_location1, 'name'))
+        dn = 'CN=Roman Case,OU=internal'
+        new_company = self.ldap_modify_result [dn]['company'][0][1][0]
+        self.assertEqual \
+            (new_company, self.db.org_location.get (self.org_location1, 'name'))
 
         # change org_location name
         new_org_location = 'new_org_location'
         self.db.org_location.set (self.org_location1, name = new_org_location)
         self.ldap_sync.sync_user_from_ldap ('rcase@ds1.internal')
         self.ldap_sync.sync_user_to_ldap ('rcase@ds1.internal')
-        new_company = self.ldap_modify_result['CN=Roman Case,OU=internal']['company'][0][1][0]
+        new_company = self.ldap_modify_result [dn]['company'][0][1][0]
         self.assertEqual (new_company, new_org_location)
     # end test_sync_company
 
@@ -816,18 +834,25 @@ class Test_Case_LDAP_Sync (_Test_Base, unittest.TestCase) :
         self.db.user_dynamic.set (self.user_dynamic3_1, sap_cc = self.sap_cc1)
         self.ldap_sync.sync_user_from_ldap ('rcase@ds1.internal')
         self.ldap_sync.sync_user_to_ldap ('rcase@ds1.internal')
-        new_extAttr3 = self.ldap_modify_result['CN=Roman Case,OU=internal']['extensionAttribute3'][0][1][0]
-        new_extAttr4 = self.ldap_modify_result['CN=Roman Case,OU=internal']['extensionAttribute4'][0][1][0]
-        self.assertEqual (new_extAttr3, self.db.sap_cc.get (self.sap_cc1, 'name'))
-        self.assertEqual (new_extAttr4, self.db.sap_cc.get (self.sap_cc1, 'description'))
+        dn = 'CN=Roman Case,OU=internal'
+        new_extAttr3 = self.ldap_modify_result \
+            [dn]['extensionAttribute3'][0][1][0]
+        new_extAttr4 = self.ldap_modify_result \
+            [dn]['extensionAttribute4'][0][1][0]
+        self.assertEqual \
+            (new_extAttr3, self.db.sap_cc.get (self.sap_cc1, 'name'))
+        self.assertEqual \
+            (new_extAttr4, self.db.sap_cc.get (self.sap_cc1, 'description'))
 
         # change sap_cc name
         new_sap_cc_name = 'new_org_sap_cc_name'
         self.db.sap_cc.set (self.sap_cc1, name = new_sap_cc_name)
         self.ldap_sync.sync_user_from_ldap ('rcase@ds1.internal')
         self.ldap_sync.sync_user_to_ldap ('rcase@ds1.internal')
-        new_extAttr3 = self.ldap_modify_result['CN=Roman Case,OU=internal']['extensionAttribute3'][0][1][0]
-        self.assertEqual (new_extAttr3, self.db.sap_cc.get (self.sap_cc1, 'name'))
+        new_extAttr3 = self.ldap_modify_result \
+            [dn]['extensionAttribute3'][0][1][0]
+        self.assertEqual \
+            (new_extAttr3, self.db.sap_cc.get (self.sap_cc1, 'name'))
     # end test_sync_sap_cc
 
     def test_position_text_sync (self) :
@@ -836,28 +861,33 @@ class Test_Case_LDAP_Sync (_Test_Base, unittest.TestCase) :
         self.db.user.set (self.testuser3, position_text = position)
         self.ldap_sync.sync_user_from_ldap ('rcase@ds1.internal')
         self.ldap_sync.sync_user_to_ldap ('rcase@ds1.internal')
-        new_position = self.ldap_modify_result['CN=Roman Case,OU=internal']['title'][0][1][0]
+        dn = 'CN=Roman Case,OU=internal'
+        new_position = self.ldap_modify_result [dn]['title'][0][1][0]
         self.assertEqual (new_position, position)
     # end test_position_text_sync
 
     def test_sync_attributes_not_directly_updating_vie_user (self) :
         self.setup_ldap ()
-        self.ldap_sync.sync_user_to_ldap ('jdoe@ds1.internal')
-        self.ldap_sync.sync_user_from_ldap ('jdoe@ds1.internal')
+        intname = 'jdoe@ds1.internal'
+        self.ldap_sync.sync_user_to_ldap   (intname)
+        self.ldap_sync.sync_user_from_ldap (intname)
 
         # change external user, supervisor not synced directly
         self.db.user.set (self.testuser104, supervisor = self.testuser105)
         self.ldap_sync.sync_user_to_ldap ('jdoe@ds1.internal')
-        new_supervisor = self.ldap_modify_result['CN=Jane Doe,OU=external']['manager'][0][1][0]
+        dn = 'CN=Jane Doe,OU=external'
+        new_supervisor = self.ldap_modify_result [dn]['manager'][0][1][0]
         self.assertEqual (new_supervisor, 'CN=Vincent Super,OU=external')
         supervisor_vie_user = self.db.user.get (self.testuser4, 'supervisor')
         # no supervisor set yet -> None
         self.assertIsNone (supervisor_vie_user)
 
         # copy from class to not modify globally
-        self.mock_users_by_username = copy.deepcopy (self.mock_users_by_username)
-        self.mock_users_by_username['jdoe@ds1.internal'][1]['manager'] = new_supervisor
-        self.ldap_sync.sync_user_from_ldap ('jdoe@ds1.internal')
+        self.mock_users_by_username = copy.deepcopy \
+            (self.mock_users_by_username)
+        extname = 'jane.doe@ext1.internal'
+        self.mock_users_by_username [intname][1]['manager'] = new_supervisor
+        self.ldap_sync.sync_user_from_ldap (intname)
         # TODO: Check why supervisor is not updated
         supervisor_vie_user = self.db.user.get (self.testuser4, 'supervisor')
         self.assertEqual (supervisor_vie_user, self.testuser5)
@@ -865,8 +895,9 @@ class Test_Case_LDAP_Sync (_Test_Base, unittest.TestCase) :
         # change external user, firstname synced directly
         new_firstname = 'Julia'
         self.db.user.set (self.testuser104, firstname = new_firstname)
-        self.ldap_sync.sync_user_to_ldap ('jdoe@ds1.internal')
-        new_givenname = self.ldap_modify_result['CN=Julia Doe,OU=external']['givenname'][0][1][0]
+        self.ldap_sync.sync_user_to_ldap (intname)
+        dn = 'CN=Julia Doe,OU=external'
+        new_givenname = self.ldap_modify_result [dn]['givenname'][0][1][0]
         self.assertEqual (new_givenname, new_firstname)
         firstname_vie_user = self.db.user.get (self.testuser4, 'firstname')
         self.assertEqual (firstname_vie_user, new_firstname)
