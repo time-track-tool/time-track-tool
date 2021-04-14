@@ -462,10 +462,6 @@ class Test_Case_LDAP_Sync (_Test_Base, unittest.TestCase) :
           ]
         }
 
-    person_username_by_dn = \
-        { 'CN=Vincent Super,OU=external' : 'vsuper@ds1.internal'
-        }
-
     # Note: things synced to user_contact must be a list or tuple
     mock_users_by_username = \
         { 'testuser1@ds1.internal' :
@@ -533,6 +529,10 @@ class Test_Case_LDAP_Sync (_Test_Base, unittest.TestCase) :
             )
           )
         }
+
+    person_username_by_dn = dict \
+        ((v [0], k) for k, v in mock_users_by_username.items ())
+
 
     def test_sync_contact_to_roundup (self) :
         """ Test that modification of firstname and lastname is synced
