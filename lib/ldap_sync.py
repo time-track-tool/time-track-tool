@@ -217,10 +217,15 @@ class User_Sync_Config_Entry (Config_Entry) :
         write_vie_user: tells us if we write to the user if it has a
                         vie_user_ml link. This keeps it consistent with
                         the linked_from user.
+        dyn_user_valid: Perform the sync for the current user only if
+                        there is a valid dynamic user record. This flag
+                        is used only for items that take data from the
+                        dynamic user record.
     """
 
     attrs = ( 'name', 'do_change', 'to_roundup', 'empty_allowed'
             , 'from_vie_user', 'creation_only', 'write_vie_user'
+            , 'dyn_user_valid'
             )
 
     def __init__ \
@@ -232,6 +237,7 @@ class User_Sync_Config_Entry (Config_Entry) :
         , from_vie_user
         , creation_only
         , write_vie_user
+        , dyn_user_valid = False
         ) :
         self.name           = name
         self.do_change      = do_change
@@ -240,6 +246,7 @@ class User_Sync_Config_Entry (Config_Entry) :
         self.from_vie_user  = from_vie_user
         self.creation_only  = creation_only
         self.write_vie_user = write_vie_user
+        self.dyn_user_valid = dyn_user_valid
     # end def __init__
 
 # end class User_Sync_Config_Entry
@@ -286,15 +293,20 @@ class Userdynamic_Sync_Config_Entry (Config_Entry) :
         The entries inside the sub-properties 'sap_cc', 'org_location'
         are as follows:
         One entry for each transitive property to be synced to LDAP
-        name:         is the property name of the linked item (in our
-                      case from sap_cc, org_location)
-        ldap_prop:    is the LDAP property
-        from_roundup: is the function to convert roundup->LDAP
-        to_roundup:   is the function to convert LDAP->roundup this is
-                      currently unused, we don't sync to roundup
+        name:           is the property name of the linked item (in our
+                        case from sap_cc, org_location)
+        ldap_prop:      is the LDAP property
+        from_roundup:   is the function to convert roundup->LDAP
+        to_roundup:     is the function to convert LDAP->roundup this is
+                        currently unused, we don't sync to roundup
+        dyn_user_valid: Perform the sync for the current user only if
+                        there is a valid dynamic user record. This flag
+                        is used only for items that take data from the
+                        dynamic user record.
     """
 
-    attrs = ( 'name', 'ldap_prop', 'from_roundup', 'to_roundup')
+    attrs = \
+        ( 'name', 'ldap_prop', 'from_roundup', 'to_roundup', 'dyn_user_valid')
 
     def __init__ \
         ( self
@@ -302,11 +314,13 @@ class Userdynamic_Sync_Config_Entry (Config_Entry) :
         , ldap_prop
         , from_roundup
         , to_roundup
+        , dyn_user_valid = False
         ) :
-        self.name         = name
-        self.ldap_prop    = ldap_prop
-        self.from_roundup = from_roundup
-        self.to_roundup   = to_roundup
+        self.name           = name
+        self.ldap_prop      = ldap_prop
+        self.from_roundup   = from_roundup
+        self.to_roundup     = to_roundup
+        self.dyn_user_valid = dyn_user_valid
     # end def __init__
 
 # end class Userdynamic_Sync_Config_Entry
@@ -651,6 +665,7 @@ class LDAP_Roundup_Sync (Log) :
                     , from_vie_user  = True
                     , creation_only  = True
                     , write_vie_user = False
+                    , dyn_user_valid = True
                     )
                 )
         if 'lastname' in props :
@@ -1670,8 +1685,21 @@ class LDAP_Roundup_Sync (Log) :
                 if self.update_roundup and not self.dry_run_roundup :
                     self.db.user.set (user.id, **dd)
                     self.db.commit ()
+        now = Date ('.')
+        dyn = user_dynamic.get_user_dynamic (self.db, r_user.id, now)
+        dyn_is_current = \
+            (   dyn
+            and dyn.valid_from <= now
+            and (not dyn.valid_to or dyn.valid_to > now)
+            )
         for rk in sorted (umap) :
             for synccfg in umap [rk] :
+                if synccfg.dyn_user_valid and not dyn_is_current :
+                    self.log.error \
+                        ( 'Not syncing "%s"->"%s": no valid dyn. user for "%s"'
+                        % (rk, synccfg.name, user.username)
+                        )
+                    continue
                 curuser = r_user if synccfg.from_vie_user else user
                 rupattr = curuser [rk]
                 if rk and callable (synccfg.do_change) :
@@ -1760,6 +1788,7 @@ class LDAP_Roundup_Sync (Log) :
                             , dynsync.name
                             , dynsync.ldap_prop
                             , ldattr
+                            , dynsync.dyn_user_valid
                             )
                         if chg :
                             self.log.info \
@@ -1827,7 +1856,8 @@ class LDAP_Roundup_Sync (Log) :
                     )
     # end def sync_user_to_ldap
 
-    def set_user_dynamic_prop (self, user, udprop, linkprop, lk, ldattr) :
+    def set_user_dynamic_prop \
+        (self, user, udprop, linkprop, lk, ldattr, dyn_user_valid) :
         """ Sync transitive dynamic user properties to ldap
             Gets the user to sync, the linkclass, one of (sap_cc,
             org_location), the linkprop (property of the
@@ -1843,8 +1873,12 @@ class LDAP_Roundup_Sync (Log) :
         if dyn :
             is_current = \
                 (   dyn.valid_from <= now
-                and not dyn.valid_to or dyn.valid_to > now
+                and (not dyn.valid_to or dyn.valid_to > now)
                 )
+            if dyn_user_valid and not is_current :
+                self.log.warning \
+                    ('No valid dynamic user for "%s"' % user.username)
+                return
             dynprop = dyn [udprop]
             if dynprop :
                 classname = self.db.user_dynamic.properties [udprop].classname

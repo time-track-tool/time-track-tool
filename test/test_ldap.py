@@ -236,6 +236,13 @@ class _Test_Base :
             ( name = str ('ASD.MJH.402')
             , location = self.location1
             )
+        self.user_dynamic1_1 = self.db.user_dynamic.create \
+            ( user            = self.testuser1
+            , org_location    = self.org_location1
+            , department      = self.department1
+            , valid_from      = Date (str ('2021-01-01'))
+            , vacation_yearly = 25
+            )
         self.testuser2 = self.db.user.create \
             ( username  = str ('testuser2@ds1.internal')
             , firstname = str ('Test2')
@@ -259,6 +266,13 @@ class _Test_Base :
             , status    = self.ustatus_valid
             , ad_domain = str ('ext1.internal')
             , vie_user  = self.testuser2
+            )
+        self.user_dynamic102_1 = self.db.user_dynamic.create \
+            ( user            = self.testuser102
+            , org_location    = self.org_location1
+            , department      = self.department1
+            , valid_from      = Date (str ('2021-01-01'))
+            , vacation_yearly = 25
             )
         self.testuser3 = self.db.user.create \
             ( username  = str ('rcase@ds1.internal')
@@ -613,7 +627,7 @@ class Test_Case_LDAP_Sync (_Test_Base, unittest.TestCase) :
         self.assertEqual \
             (self.ldap_modify_result.keys (), [newdn])
         d = self.ldap_modify_result [newdn]
-        self.assertEqual (len (d), 5)
+        self.assertEqual (len (d), 7)
         for k in d :
             self.assertEqual (len (d [k]), 1)
         self.assertEqual (d ['givenname'][0][0], 'MODIFY_REPLACE')
@@ -626,6 +640,10 @@ class Test_Case_LDAP_Sync (_Test_Base, unittest.TestCase) :
         self.assertEqual (d ['sn'][0][1], [u'User'])
         self.assertEqual (d ['otherTelephone'][0][0], 'MODIFY_DELETE')
         self.assertEqual (d ['otherTelephone'][0][1], [])
+        self.assertEqual (d ['company'][0][0], 'MODIFY_ADD')
+        self.assertEqual (d ['company'][0][1][0], 'testorglocation1')
+        self.assertEqual (d ['department'][0][0], 'MODIFY_ADD')
+        self.assertEqual (d ['department'][0][1][0], 'testdepartment')
         self.assertEqual (self.ldap_modify_dn_result.keys (), [olddn])
         changed = self.ldap_modify_dn_result [olddn].lower ()
         self.assertEqual (changed, newcn)
@@ -639,7 +657,7 @@ class Test_Case_LDAP_Sync (_Test_Base, unittest.TestCase) :
         self.assertEqual \
             (self.ldap_modify_result.keys (), [olddn])
         d = self.ldap_modify_result [olddn]
-        self.assertEqual (len (d), 4)
+        self.assertEqual (len (d), 6)
         assert 'displayname' not in d
         self.assertEqual (d ['givenname'][0][0], 'MODIFY_REPLACE')
         self.assertEqual (d ['givenname'][0][1], [u'Test'])
@@ -661,7 +679,7 @@ class Test_Case_LDAP_Sync (_Test_Base, unittest.TestCase) :
         self.ldap_sync.sync_all_users_to_ldap ()
         newdn = 'CN=Test User,OU=internal'
         self.assertEqual (len (self.ldap_modify_result), nusers)
-        self.assertEqual (len (self.ldap_modify_result [newdn]), 5)
+        self.assertEqual (len (self.ldap_modify_result [newdn]), 7)
         msg = 'Synced %s users from roundup to LDAP' % nusers
         self.assertEqual (self.messages [-1][0], msg)
     # end def test_sync_realname_to_ldap_all
@@ -742,7 +760,7 @@ class Test_Case_LDAP_Sync (_Test_Base, unittest.TestCase) :
         cn = 'cn=Test2 NewLastname'
         self.assertEqual (self.ldap_modify_dn_result [dn], cn)
         dn = 'CN=Test2 NewLastname,OU=external'
-        self.assertEqual (len (self.ldap_modify_result [dn]), 3)
+        self.assertEqual (len (self.ldap_modify_result [dn]), 5)
         results = (('displayname', 'Test2 NewLastname'), ('sn', 'NewLastname'))
         for k, v in results :
             self.assertEqual (self.ldap_modify_result [dn][k][0][1][0], v)
@@ -906,15 +924,38 @@ class Test_Case_LDAP_Sync (_Test_Base, unittest.TestCase) :
         self.mock_users_by_username = copy.deepcopy \
             (self.mock_users_by_username)
         extname = 'jane.doe@ext1.internal'
-        self.mock_users_by_username [intname][1]['manager'] = new_supervisor
+        self.mock_users_by_username [intname][1]['manager'] = LDAP_Property \
+            (new_supervisor)
         self.ldap_sync.sync_user_from_ldap (intname)
-        # TODO: Check why supervisor is not updated
         supervisor_vie_user = self.db.user.get (self.testuser4, 'supervisor')
         self.assertEqual (supervisor_vie_user, self.testuser5)
 
-        # change external user, firstname synced directly
+        # change external user, firstname
         new_firstname = 'Julia'
         self.db.user.set (self.testuser104, firstname = new_firstname)
+
+        # Will not be changed because no dyn user exists
+        self.log.error = self.mock_log
+        self.ldap_sync.sync_user_to_ldap (intname)
+        msg = 'Not syncing "realname"->"cn": no valid dyn. user'
+        self.assertTrue (self.messages [0][0].startswith (msg))
+        # Create *invalid* (valid_to in the past) user_dynamic
+        ud = self.db.user_dynamic.create \
+            ( user            = self.testuser104
+            , org_location    = self.org_location1
+            , department      = self.department1
+            , valid_from      = Date (str ('2021-01-01'))
+            , valid_to        = Date (str ('2021-01-02'))
+            , vacation_yearly = 25
+            )
+
+        # Will not be changed because no *valid* dyn user exists
+        self.messages = []
+        self.ldap_sync.sync_user_to_ldap (intname)
+        self.assertTrue (self.messages [0][0].startswith (msg))
+
+        # Now make dynuser valid
+        self.db.user_dynamic.set (ud, valid_to = None)
         self.ldap_sync.sync_user_to_ldap (intname)
         dn = 'CN=Julia Doe,OU=external'
         new_givenname = self.ldap_modify_result [dn]['givenname'][0][1][0]
