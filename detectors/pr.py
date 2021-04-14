@@ -1042,7 +1042,7 @@ def check_pr_update (db, cl, nodeid, old_values) :
     if not pr :
         return
     if pr.status == rej :
-        db.purchase_request.set (id, status = opn)
+        db.purchase_request.set (pr.id, status = opn)
 # end def check_pr_update
 
 def check_agent_change (db, cl, nodeid, old_values) :
