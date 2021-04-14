@@ -175,6 +175,8 @@ class _Test_Base :
             , objectclass    = 'user'
             , ad_domains     = 'ds1.internal'
             , no_starttls    = 'False'
+            , do_not_sync_roundup_properties = ''
+            , do_not_sync_ldap_properties = ''
             , allowed_dn_suffix_by_domain = \
                 'ext1.internal:OU=External'
             )
@@ -628,6 +630,29 @@ class Test_Case_LDAP_Sync (_Test_Base, unittest.TestCase) :
         changed = self.ldap_modify_dn_result [olddn].lower ()
         self.assertEqual (changed, newcn)
     # end def test_sync_realname_to_ldap
+
+    def test_sync_no_cn (self) :
+        self.tracker.config.ext.LDAP_DO_NOT_SYNC_LDAP_PROPERTIES = 'cn'
+        self.setup_ldap ()
+        self.ldap_sync.sync_user_to_ldap ('testuser1@ds1.internal')
+        olddn = 'CN=Test Middlename Usernameold,OU=internal'
+        self.assertEqual \
+            (self.ldap_modify_result.keys (), [olddn])
+        d = self.ldap_modify_result [olddn]
+        self.assertEqual (len (d), 4)
+        assert 'displayname' not in d
+        self.assertEqual (d ['givenname'][0][0], 'MODIFY_REPLACE')
+        self.assertEqual (d ['givenname'][0][1], [u'Test'])
+        self.assertEqual (d ['sn'][0][0], 'MODIFY_REPLACE')
+        self.assertEqual (d ['sn'][0][1], [u'User'])
+        self.assertFalse (self.ldap_modify_dn_result)
+        self.ldap_sync.sync_user_from_ldap ('testuser1@ds1.internal')
+        u = self.db.user.getnode (self.testuser1)
+        # firstname/lastname/realname *not* changed in roundup
+        self.assertEqual (u.firstname, 'Test')
+        self.assertEqual (u.lastname, 'User')
+        self.assertEqual (u.realname, 'Test User')
+    # end def test_sync_no_cn
 
     def test_sync_realname_to_ldap_all (self) :
         self.setup_ldap ()
