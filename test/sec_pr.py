@@ -15,6 +15,11 @@ Role "admin":
 Role "anonymous":
  User may access the web interface (Web Access)
 Role "board":
+Role "ciso":
+ User is allowed to create pr_supplier_risk (Create for "pr_supplier_risk" only)
+ User is allowed to create security_req_group (Create for "security_req_group" only)
+ User is allowed to edit pr_supplier_risk (Edit for "pr_supplier_risk" only)
+ User is allowed to edit security_req_group (Edit for "security_req_group" only)
 Role "controlling":
  User is allowed to access query (View for "query" only)
  User is allowed to access time_project (View for "time_project" only)

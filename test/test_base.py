@@ -143,6 +143,7 @@ class _Test_Base :
         , 'anonymous'
         , 'board'
         , 'cc-permission'
+        , 'ciso'
         , 'contact'
         , 'controlling'
         , 'discount'
@@ -5671,7 +5672,7 @@ class Test_Case_Lielas (_Test_Case, unittest.TestCase) :
 class Test_Case_PR (_Test_Case, unittest.TestCase) :
     schemaname = 'pr'
     roles = \
-        [ 'admin', 'anonymous', 'board', 'controlling'
+        [ 'admin', 'anonymous', 'board', 'ciso', 'controlling'
         , 'dom-user-edit-facility', 'dom-user-edit-gtt', 'dom-user-edit-hr'
         , 'dom-user-edit-office', 'finance', 'hr'
         , 'hr-approval', 'it', 'it-approval', 'measurement-approval', 'nosy'

@@ -443,6 +443,7 @@ def security (db, ** kw) :
         , ("Measurement-Approval", "Responsible for Measurement-Equipment")
         , ("Training-Approval",    "Approvals for Training")
         , ("Subcontract-Org",      "Approvals for Subcontracting")
+        , ("CISO",                 "Editing of Security Tables")
         ]
 
     #     classname        allowed to view   /  edit
@@ -471,12 +472,12 @@ def security (db, ** kw) :
         , ("pr_offer_item",      ["PR-View"],           [])
         , ("internal_order",     ["User"],              [])
         , ("pr_ext_resource",    ["User"],              [])
-        , ("security_req_group", ["User"],              ["Procurement-Admin"])
+        , ("security_req_group", ["User"],      ["Procurement-Admin", "CISO"])
         , ("product_group",      ["User"],              ["Procurement-Admin"])
         , ("pg_category",        ["User"],              ["Procurement-Admin"])
         , ("supplier_risk_category", ["User"],          [])
         , ("purchase_risk_type", ["User"],              [])
-        , ("pr_supplier_risk",   ["User"],              ["Procurement-Admin"])
+        , ("pr_supplier_risk",   ["User"],      ["Procurement-Admin", "CISO"])
         , ("payment_type",       ["User"],              [])
         , ("purchase_security_risk", ["User"],          [])
         ]
