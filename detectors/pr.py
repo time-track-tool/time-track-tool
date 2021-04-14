@@ -172,6 +172,8 @@ def check_supplier_change (db, cl, nodeid, new_values) :
         If this is below the computed maximum risk type we allow the
         change.
     """
+    if 'supplier' not in new_values :
+        return
     pr  = get_pr_from_offer_item (db, nodeid)
     if not pr :
         return
@@ -179,7 +181,7 @@ def check_supplier_change (db, cl, nodeid, new_values) :
         return
     # Compute the new risk-type and check if it's allowed
     # Return immediately if no risk
-    supplier = new_values.get ('pr_supplier')
+    supplier = new_values ['pr_supplier']
     # So the appropriate risk is computed we need to specify an unknown
     # supplier if None was found
     if supplier is None :
