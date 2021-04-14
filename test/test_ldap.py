@@ -953,6 +953,11 @@ class Test_Case_LDAP_Sync (_Test_Base, unittest.TestCase) :
         self.messages = []
         self.ldap_sync.sync_user_to_ldap (intname)
         self.assertTrue (self.messages [0][0].startswith (msg))
+        # Verify that company contains a '*' due to invalid dynamic user
+        self.assertEqual \
+            ( self.ldap_modify_result [dn]['company'][0][1][0]
+            , '*testorglocation1'
+            )
 
         # Now make dynuser valid
         self.db.user_dynamic.set (ud, valid_to = None)
