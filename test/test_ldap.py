@@ -105,11 +105,6 @@ class Mock_Guid :
         return 1
     # end def __len__
 
-    def __iter__ (self) :
-        for v in self.value :
-            yield v
-    # end def __iter__
-
 # end class Mock_Guid
 
 class _Test_Base :
