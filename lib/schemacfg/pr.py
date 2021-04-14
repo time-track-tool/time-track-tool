@@ -506,6 +506,9 @@ def security (db, ** kw) :
         , ( "sap_cc", "Edit", ["Procurement"]
           , ("deputy_gets_mail",)
           )
+        , ( "pr_approval_order", "View", ["User"]
+          , ("role", "id")
+          )
         ]
 
     schemadef.register_roles             (db, roles)
@@ -552,6 +555,12 @@ def security (db, ** kw) :
     p = db.security.addPermission \
         ( name        = 'Search'
         , klass       = 'pr_offer_item'
+        )
+    db.security.addPermissionToRole ('User', p)
+
+    p = db.security.addPermission \
+        ( name        = 'Search'
+        , klass       = 'pr_approval_order'
         )
     db.security.addPermissionToRole ('User', p)
 

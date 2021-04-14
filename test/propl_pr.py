@@ -207,7 +207,8 @@ properties = \
         ]
       )
     , ( 'purchase_request'
-      , [ 'continuous_obligation'
+      , [ 'approvals'
+        , 'continuous_obligation'
         , 'contract_term'
         , 'date_approved'
         , 'date_ordered'

@@ -122,6 +122,7 @@ Role "subcontract-org":
 Role "training-approval":
 Role "user":
   (Search for "pr_approval" only)
+  (Search for "pr_approval_order" only)
   (Search for "pr_offer_item" only)
   (Search for "purchase_request" only)
   (Search for "time_project": ('name', 'description', 'responsible', 'deputy', 'organisation', 'status', 'id', 'creation', 'creator', 'activity', 'actor') only)
@@ -130,6 +131,7 @@ Role "user":
  Approvers are allowed if not finance and PR not yet approved by finance (Edit for "purchase_request": ('continuous_obligation', 'contract_term', 'intended_duration') only)
  User is allowed Edit on (Edit for "pr_approval": ('date', 'purchase_request') only)
  User is allowed Edit on file if file is linked from an item with Edit permission (Edit for "file" only)
+ User is allowed View on (View for "pr_approval_order": ('id', 'role') only)
  User is allowed View on (View for "user": ('id', 'realname', 'status', 'username') only)
  User is allowed View on file if file is linked from an item with View permission (View for "file" only)
  User is allowed View on msg if msg is linked from an item with View permission (View for "msg" only)
