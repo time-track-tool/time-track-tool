@@ -913,7 +913,8 @@ class Test_Case_LDAP_Sync (_Test_Base, unittest.TestCase) :
         # change external user, supervisor not synced directly
         self.db.user.set (self.testuser104, supervisor = self.testuser105)
         self.ldap_sync.sync_user_to_ldap ('jdoe@ds1.internal')
-        dn = 'CN=Jane Doe,OU=external'
+        dn    = 'CN=Jane Doe,OU=external'
+        newdn = 'CN=Julia Doe,OU=external'
         new_supervisor = self.ldap_modify_result [dn]['manager'][0][1][0]
         self.assertEqual (new_supervisor, 'CN=Vincent Super,OU=external')
         supervisor_vie_user = self.db.user.get (self.testuser4, 'supervisor')
@@ -939,6 +940,11 @@ class Test_Case_LDAP_Sync (_Test_Base, unittest.TestCase) :
         self.ldap_sync.sync_user_to_ldap (intname)
         msg = 'Not syncing "realname"->"cn": no valid dyn. user'
         self.assertTrue (self.messages [0][0].startswith (msg))
+        self.assertTrue (newdn not in self.ldap_modify_result)
+        # But the firstname has been changed:
+        new_givenname = self.ldap_modify_result [dn]['givenname'][0][1][0]
+        self.assertEqual (new_givenname, new_firstname)
+
         # Create *invalid* (valid_to in the past) user_dynamic
         ud = self.db.user_dynamic.create \
             ( user            = self.testuser104
@@ -953,17 +959,18 @@ class Test_Case_LDAP_Sync (_Test_Base, unittest.TestCase) :
         self.messages = []
         self.ldap_sync.sync_user_to_ldap (intname)
         self.assertTrue (self.messages [0][0].startswith (msg))
+        self.assertTrue (newdn not in self.ldap_modify_result)
         # Verify that company contains a '*' due to invalid dynamic user
-        self.assertEqual \
-            ( self.ldap_modify_result [dn]['company'][0][1][0]
-            , '*testorglocation1'
-            )
+        newcomp = self.ldap_modify_result [dn]['company'][0][1][0]
+        self.assertEqual (newcomp, '*testorglocation1')
+        # And the firstname has been changed again:
+        new_givenname = self.ldap_modify_result [dn]['givenname'][0][1][0]
+        self.assertEqual (new_givenname, new_firstname)
 
         # Now make dynuser valid
         self.db.user_dynamic.set (ud, valid_to = None)
         self.ldap_sync.sync_user_to_ldap (intname)
-        dn = 'CN=Julia Doe,OU=external'
-        new_givenname = self.ldap_modify_result [dn]['givenname'][0][1][0]
+        new_givenname = self.ldap_modify_result [newdn]['givenname'][0][1][0]
         self.assertEqual (new_givenname, new_firstname)
         firstname_vie_user = self.db.user.get (self.testuser4, 'firstname')
         self.assertEqual (firstname_vie_user, new_firstname)
