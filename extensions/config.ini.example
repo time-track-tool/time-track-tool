@@ -176,6 +176,14 @@ pr_approval_text  = The purchase request "$(title)s"
 pr_approved_text  = The purchase request "$(title)s" has been approved.
  many thanks!
 
+las_text = In purchase request "$(title)s"
+ there is a request to add Supplier "$(supplier)s" to the LAS.
+ See $(url)spurchase_request$(prid)s
+
+las_subject = 'Add to LAS Request'
+
+las_email = supplier_approval@example.com
+
 [mailgw]
 spam_pattern = ^[[].?S[pP][aA][mM]
 support_from = support@tttech.com

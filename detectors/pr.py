@@ -17,11 +17,13 @@
 # Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 # ****************************************************************************
 
+import re
 import common
 import prlib
 from   roundup.date                   import Date, Interval
 from   roundup.exceptions             import Reject
 from   roundup.cgi.TranslationService import get_translation
+from   roundup                        import roundupdb
 
 def prjust (db, cl, nodeid, new_values) :
     """ Field pr_justification must be edited when signing
@@ -1210,6 +1212,44 @@ def check_pgc (db, cl, nodeid, new_values) :
     common.require_attributes (_, cl, nodeid, new_values, 'sap_ref')
 # end def check_pgc
 
+def send_las_email (db, cl, nodeid, old_values) :
+    oi = cl.getnode (nodeid)
+    if not oi.add_to_las :
+        return
+    try :
+        las_email = getattr (db.config.ext, 'MAIL_LAS_EMAIL', None)
+        las_text  = getattr (db.config.ext, 'MAIL_LAS_TEXT', None)
+        las_subj  = getattr (db.config.ext, 'MAIL_LAS_SUBJECT', None)
+    except InvalidOptionError :
+        return
+    if not las_email or not las_text or not las_subj :
+        return
+    pr = get_pr_from_offer_item (db, nodeid)
+    # Changed?
+    if not old_values or not old_values.get ('add_to_las') :
+        r      = re.compile (r'\s+\n')
+        mailer = roundupdb.Mailer (db.config)
+        sender = None
+        try :
+            sname = getattr (db.config.ext, 'MAIL_SENDER_NAME', None)
+            smail = getattr (db.config.ext, 'MAIL_SENDER_ADDR', None)
+            if sname and smail :
+                sender = (sname, smail)
+        except InvalidOptionError :
+            pass
+        title    = pr.title
+        supplier = oi.supplier
+        prid     = pr.id
+        url      = db.config.TRACKER_WEB
+        d = dict (locals ())
+        txt = r.sub ('\n', las_text)
+        txt = txt.replace ('$', '%') % d
+        try :
+            mailer.standard_message ((las_email,), las_subj, txt, sender)
+        except roundupdb.MessageSendError as message :
+            raise roundupdb.DetectorError (message)
+# end def send_las_email
+
 def init (db) :
     global _
     _   = get_translation \
@@ -1255,6 +1295,8 @@ def init (db) :
     db.pr_offer_item.audit      ("set",    check_input_len, priority = 150)
     db.pr_offer_item.audit      ("set",    check_payment_type)
     db.pr_offer_item.audit      ("set",    check_io_oi)
+    db.pr_offer_item.react      ("create", send_las_email, priority = 150)
+    db.pr_offer_item.react      ("set",    send_las_email, priority = 150)
     db.pr_currency.audit        ("create", check_currency)
     db.pr_currency.audit        ("set",    check_currency)
     db.pr_approval_order.audit  ("create", pao_check_roles)
