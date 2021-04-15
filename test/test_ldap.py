@@ -412,27 +412,18 @@ class _Test_Base :
 
     def mock_paged_search (self, base_dn, filter, **d) :
         self.assertEqual (filter, '(objectclass=user)')
-        if 'attributes' in d :
-            self.assertEqual (base_dn, self.base_dn)
-            self.assertEqual (d ['attributes'], ['UserPrincipalName'])
-            # Loop over *all* ldap users
-            l = []
-            for username in self.mock_users_by_username :
-                m = {}
-                m ['attributes'] = CaseInsensitiveDict \
-                    (UserPrincipalName = username)
-                m ['dn'] = self.mock_users_by_username [username][0]
-                l.append (m)
-            return l
-        else :
-            username = 'testuser1@ds1.internal'
-            u1dn = self.mock_users_by_username [username][0]
-            self.assertEqual (base_dn, u1dn)
+        self.assertIn ('attributes', d)
+        self.assertEqual (base_dn, self.base_dn)
+        self.assertEqual (d ['attributes'], ['UserPrincipalName'])
+        # Loop over *all* ldap users
+        l = []
+        for username in self.mock_users_by_username :
             m = {}
             m ['attributes'] = CaseInsensitiveDict \
                 (UserPrincipalName = username)
-            m ['dn'] = 'CN=Test Middlename Usernameold,OU=internal'
-            return [m]
+            m ['dn'] = self.mock_users_by_username [username][0]
+            l.append (m)
+        return l
     # end def mock_paged_search
 
     def mock_ldap_modify (self, dn, moddict) :
