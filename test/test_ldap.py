@@ -165,11 +165,12 @@ class _Test_Base :
         self.tracker = tracker
         # LDAP Config
         config = self.tracker.config
+        self.base_dn = 'OU=example,DC=example,DC=com'
         ldap_settings = dict \
             ( uri            = 'ldap://do.not.care:389'
             , bind_dn        = 'CN=system,OU=test'
             , password       = 'verysecret: this is not used'
-            , base_dn        = 'OU=example,DC=example,DC=com'
+            , base_dn        = self.base_dn
             , update_ldap    = 'True'
             , update_roundup = 'True'
             , objectclass    = 'user'
@@ -411,11 +412,27 @@ class _Test_Base :
 
     def mock_paged_search (self, base_dn, filter, **d) :
         self.assertEqual (filter, '(objectclass=user)')
-        m = {}
-        m ['attributes'] = CaseInsensitiveDict \
-            (UserPrincipalName = 'testuser1@ds1.internal')
-        m ['dn'] = 'CN=Test Middlename Usernameold,OU=internal'
-        return [m]
+        if 'attributes' in d :
+            self.assertEqual (base_dn, self.base_dn)
+            self.assertEqual (d ['attributes'], ['UserPrincipalName'])
+            # Loop over *all* ldap users
+            l = []
+            for username in self.mock_users_by_username :
+                m = {}
+                m ['attributes'] = CaseInsensitiveDict \
+                    (UserPrincipalName = username)
+                m ['dn'] = self.mock_users_by_username [username][0]
+                l.append (m)
+            return l
+        else :
+            username = 'testuser1@ds1.internal'
+            u1dn = self.mock_users_by_username [username][0]
+            self.assertEqual (base_dn, u1dn)
+            m = {}
+            m ['attributes'] = CaseInsensitiveDict \
+                (UserPrincipalName = username)
+            m ['dn'] = 'CN=Test Middlename Usernameold,OU=internal'
+            return [m]
     # end def mock_paged_search
 
     def mock_ldap_modify (self, dn, moddict) :
@@ -475,6 +492,7 @@ class Test_Case_LDAP_Sync (_Test_Base, unittest.TestCase) :
           , 'CN=Roman Case,OU=internal'
           , 'CN=Jane Doe,OU=external'
           , 'CN=Vincent Super,OU=external'
+          , 'CN=Nonexisting Roundup,OU=internal'
           ]
         }
 
@@ -482,8 +500,7 @@ class Test_Case_LDAP_Sync (_Test_Base, unittest.TestCase) :
     mock_users_by_username = \
         { 'testuser1@ds1.internal' :
           ( 'CN=Test Middlename Usernameold,OU=internal', CaseInsensitiveDict
-            ( objectGUID        = MockNull ( raw_values = ['1']
-                                           , __len__ = lambda : 1)
+            ( objectGUID        = Mock_Guid ('1')
             , UserPrincipalName = LDAP_Property ('testuser1@ds1.internal')
             , cn                = LDAP_Property ('Test Middlename Usernameold')
             , givenname         = LDAP_Property ('Test Middlename')
@@ -495,8 +512,7 @@ class Test_Case_LDAP_Sync (_Test_Base, unittest.TestCase) :
           )
         , 'testuser2@ds1.internal' :
           ( 'CN=Test2 User2,OU=external', CaseInsensitiveDict
-            ( objectGUID        = MockNull ( raw_values = ['2']
-                                           , __len__ = lambda : 1)
+            ( objectGUID        = Mock_Guid ('2')
             , UserPrincipalName = LDAP_Property ('testuser2@ds1.internal')
             , cn                = LDAP_Property ('Test2 User2')
             , givenname         = LDAP_Property ('Test2')
@@ -507,8 +523,7 @@ class Test_Case_LDAP_Sync (_Test_Base, unittest.TestCase) :
           )
         , 'rcase@ds1.internal' :
           ( 'CN=Roman Case,OU=internal', CaseInsensitiveDict
-            ( objectGUID        = MockNull ( raw_values = ['3']
-                                           , __len__ = lambda : 1)
+            ( objectGUID        = Mock_Guid ('3')
             , UserPrincipalName = LDAP_Property ('rcase@ds1.internal')
             , cn                = LDAP_Property ('Roman Case')
             , givenname         = LDAP_Property ('Roman')
@@ -533,8 +548,7 @@ class Test_Case_LDAP_Sync (_Test_Base, unittest.TestCase) :
           )
         , 'vsuper@ds1.internal' :
           ( 'CN=Vincent Super,OU=external', CaseInsensitiveDict
-            ( objectGUID        = MockNull ( raw_values = ['5']
-                                           , __len__ = lambda : 1)
+            ( objectGUID        = Mock_Guid ('5')
             , UserPrincipalName = LDAP_Property ('vsuper@ds1.internal')
             , cn                = LDAP_Property ('Vincent Super')
             , givenname         = LDAP_Property ('Vincent')
@@ -542,6 +556,17 @@ class Test_Case_LDAP_Sync (_Test_Base, unittest.TestCase) :
             , mail              = LDAP_Property ('vincent.super@example.com')
             , displayname       = LDAP_Property ('Vincent Super')
             , physicalDeliveryOfficeName = LDAP_Property ('ASD.MJH.402')
+            )
+          )
+        , 'nonexistingrup@ds1.internal' :
+          ( 'CN=Nonexisting Roundup,OU=internal', CaseInsensitiveDict
+            ( objectGUID        = Mock_Guid ('6')
+            , UserPrincipalName = LDAP_Property ('nonexistingrup@ds1.internal')
+            , cn                = LDAP_Property ('Nonexisting Roundup')
+            , givenname         = LDAP_Property ('Nonexisting')
+            , sn                = LDAP_Property ('Roundup')
+            , mail              = LDAP_Property ('nonexisting.rup@example.com')
+            , displayname       = LDAP_Property ('Nonexisting Roundup')
             )
           )
         }
@@ -574,6 +599,19 @@ class Test_Case_LDAP_Sync (_Test_Base, unittest.TestCase) :
         ct = self.db.user_contact.getnode ('3')
         self.assertEqual (ct.contact, 'testuser1@example.com')
     # end def test_sync_contact_to_roundup
+
+    def test_sync_new_user_to_roundup (self) :
+        self.setup_ldap ()
+        self.ldap_sync.sync_user_from_ldap ('nonexistingrup@ds1.internal')
+        newuser = self.db.user.lookup ('nonexistingrup@ds1.internal')
+        user = self.db.user.getnode (newuser)
+        self.assertEqual (user.username,  'nonexistingrup@ds1.internal')
+        self.assertEqual (user.firstname, 'Nonexisting')
+        self.assertEqual (user.lastname,  'Roundup')
+        self.assertEqual (user.status,    self.ustatus_valid_ad)
+        self.assertEqual (user.guid,      '36')
+        self.assertEqual (user.ad_domain, 'ds1.internal')
+    # end def test_sync_new_user_to_roundup
 
     def test_sync_to_roundup_all (self) :
         # Change behavior so that names are updated in roundup

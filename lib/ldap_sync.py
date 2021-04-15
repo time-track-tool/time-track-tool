@@ -1332,11 +1332,13 @@ class LDAP_Roundup_Sync (Log) :
                 self.log.info ("Obsolete: %s" % username)
                 if self.update_roundup and not self.dry_run_roundup :
                     self.db.user.set (uid, status = self.status_obsolete)
+                self.changed_roundup_users [user.username] = dict \
+                    (status = status_obsolete)
                 changed = True
         else :
             r_user = self.compute_r_user (user, luser)
             # If an error occurred this will have returned None
-            if not r_user :
+            if not r_user and user :
                 return
             d = {}
             c = {}
@@ -1350,7 +1352,7 @@ class LDAP_Roundup_Sync (Log) :
                         if v or synccfg.empty_allowed :
                             if  (  synccfg.creation_only
                                 and ( not synccfg.write_vie_user
-                                    or user.id == r_user.id
+                                    or not user or user.id == r_user.id
                                     )
                                 ) :
                                 c [k] = v
@@ -1527,6 +1529,8 @@ class LDAP_Roundup_Sync (Log) :
     # end def sync_contacts_to_ldap
 
     def compute_r_user (self, user, luser) :
+        if not user :
+            return
         if user.vie_user_ml :
             self.debug \
                 (4, "User %s has a linked user(s): %s"
