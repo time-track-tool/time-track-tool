@@ -1475,12 +1475,12 @@ class LDAP_Roundup_Sync (Log) :
             # an external user that may write attributes to ldap)
             if synccfg.sync_vie_user and not user.vie_user :
                 continue
-            if len (ldn) != 2 :
-                assert (len (ldn) == 1)
-                p = ldn [0]
+            if len (synccfg.attributes) != 2 :
+                assert (len (synccfg.attributes) == 1)
+                p = synccfg.attributes [0]
                 s = None
             else :
-                p, s = ldn
+                p, s = synccfg.attributes
             if p not in luser :
                 ins = cs [0]
                 if not s and not self.is_single_value (p) :

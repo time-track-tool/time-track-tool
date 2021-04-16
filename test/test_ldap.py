@@ -268,6 +268,11 @@ class _Test_Base :
             , ad_domain = str ('ext1.internal')
             , vie_user  = self.testuser2
             )
+        self.telephone_for_102 = self.db.user_contact.create \
+            ( contact      = '08154711'
+            , contact_type = self.db.uc_type.lookup ('mobile Phone')
+            )
+        self.db.user.set (self.testuser102, contacts = [self.telephone_for_102])
         self.user_dynamic102_1 = self.db.user_dynamic.create \
             ( user            = self.testuser102
             , org_location    = self.org_location1
@@ -584,10 +589,10 @@ class Test_Case_LDAP_Sync (_Test_Base, unittest.TestCase) :
         self.assertEqual (user.status,    self.ustatus_valid_ad)
         self.assertEqual (user.guid,      '31')
         self.assertEqual (user.ad_domain, 'ds1.internal')
-        self.assertEqual (user.contacts,  ['2', '3'])
-        ct = self.db.user_contact.getnode ('2')
-        self.assertEqual (ct.contact, '0815')
+        self.assertEqual (user.contacts,  ['3', '4'])
         ct = self.db.user_contact.getnode ('3')
+        self.assertEqual (ct.contact, '0815')
+        ct = self.db.user_contact.getnode ('4')
         self.assertEqual (ct.contact, 'testuser1@example.com')
     # end def test_sync_contact_to_roundup
 
@@ -789,8 +794,12 @@ class Test_Case_LDAP_Sync (_Test_Base, unittest.TestCase) :
         cn = 'cn=Test2 NewLastname'
         self.assertEqual (self.ldap_modify_dn_result [dn], cn)
         dn = 'CN=Test2 NewLastname,OU=external'
-        self.assertEqual (len (self.ldap_modify_result [dn]), 5)
-        results = (('displayname', 'Test2 NewLastname'), ('sn', 'NewLastname'))
+        self.assertEqual (len (self.ldap_modify_result [dn]), 6)
+        results = \
+            ( ('displayname', 'Test2 NewLastname')
+            , ('sn',          'NewLastname')
+            , ('mobile',      '08154711')
+            )
         for k, v in results :
             self.assertEqual (self.ldap_modify_result [dn][k][0][1][0], v)
     # end test_dont_sync_if_vie_user_and_dyn_user
