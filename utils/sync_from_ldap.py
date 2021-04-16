@@ -91,7 +91,7 @@ def main () :
 
     timestamp_end = datetime.datetime.now()
     duration = (timestamp_end - timestamp_start)
-    lds.log.info ("User sync finished after %s" % duration)
+    lds.log.info ("Summary;Duration;%s" % duration)
 # end def main
 
 if __name__ == '__main__' :
