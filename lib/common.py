@@ -1284,6 +1284,7 @@ default_attributes = dict \
          ' time_project title pr_currency intended_duration'
          ' pr_ext_resource'
         ).split ()
+    , pr_supplier_risk = 'supplier organisation'.split ()
     )
 do_not_add_retired = dict.fromkeys \
     (( 'department'

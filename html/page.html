@@ -1287,6 +1287,15 @@
         tal:attributes="href python:utils.copy_url (context)">X</a>
 </tal:block>
 
+<!-- This one *replaces* the current form while the copy_button creates
+     a new page -->
+<tal:block metal:define-macro="add_new_button">
+     <input type="button" tal:condition="context/id"
+            value="Add new" i18n:attributes="value"
+            tal:attributes="onClick python:
+             'javascript:location.href=\'%s\'' % utils.copy_url (context)"/>
+</tal:block>
+
 <tal:block metal:define-macro="spam_button">
      <input type="button" tal:condition="context/id"
             value="Mark as Spam" i18n:attributes="value"
