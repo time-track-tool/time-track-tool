@@ -1320,7 +1320,7 @@ class LDAP_Roundup_Sync (Log) :
         if  (  username in reserved
             or user and user.status not in self.status_sync
             ) :
-            self.info ("Skip user %s as this is a reserved username "
+            self.log.info ("Skip user %s as this is a reserved username "
                 " in Roundup" % username)
             return
         if not user and (not luser or self.is_obsolete (luser)) :
