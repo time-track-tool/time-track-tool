@@ -28,10 +28,6 @@ from domain_perm                    import check_domain_permission
 import common
 import rup_utils
 import user_dynamic
-try :
-    import ldap_sync
-except ImportError :
-    ldap_sync = None
 
 maxlen = dict \
     ( firstname = 64
@@ -103,7 +99,7 @@ def common_user_checks (db, cl, nodeid, new_values) :
 # end def common_user_checks
 
 def is_valid_user_status (db, new_values) :
-    """ Get all stati with 'timetracking_allowed' set it property exists
+    """ Get all stati with 'timetracking_allowed' set if property exists
         Otherwise simply use 'valid' status
         If no user_status class exists, always return True
     """
@@ -127,9 +123,6 @@ def new_user (db, cl, nodeid, new_values) :
             valid = db.user_status.filter (None, dict (name = 'valid')) [0]
         if 'status' not in new_values :
             new_values ['status'] = valid
-        if not is_valid_user_status (db, new_values) :
-            return
-        status = new_values ['status']
     common.require_attributes \
         ( _
         , cl
@@ -189,36 +182,6 @@ def obsolete_action (db, cl, nodeid, new_values) :
             new_values ['nickname'] = ''
         new_values ['roles'] = ''
 # end def obsolete_action
-
-def sync_to_ldap (db, cl, nodeid, old_values) :
-    user = cl.getnode (nodeid)
-    ld   = ldap_sync.LDAP_Roundup_Sync (db, verbose = 0)
-    if user.status not in ld.status_sync :
-        return
-    # Don't sync obsolete users back to ldap
-    if user.status == ld.status_obsolete :
-        return
-    ld.sync_user_to_ldap (user.username)
-# end def sync_to_ldap
-
-def sync_to_ldap_ud_c (db, cl, nodeid, old_values) :
-    """ For things linked to user trigger the ldap sync if modified.
-        Currently done for user_dynamic and user_contact.
-    """
-    ud = cl.getnode (nodeid)
-    props_by_classname = dict \
-        ( user_dynamic = ('sap_cc', 'department', 'org_location')
-        , user_contact = ('contact', 'contact_type', 'order')
-        )
-    props = props_by_classname [cl.classname]
-    for p in props :
-        if p in old_values and old_values [p] != getattr (ud, p, '-1') :
-            break
-    else :
-        # Nothing to do, none of the props changed
-        return
-    sync_to_ldap (db, db.user, ud.user, {})
-# end def sync_to_ldap_ud_c
 
 def check_pictures (db, cl, nodeid, new_values) :
     limit = common.Size_Limit (db, 'LIMIT_PICTURE_SIZE')
@@ -407,6 +370,25 @@ def check_dp_role (db, cl, nodeid, new_values) :
         common.check_roles (db, cl, nodeid, new_values, rname = 'default_roles')
 # end def check_dp_role
 
+def vie_backlink_check (db, cl, nodeid, new_values) :
+    if 'vie_user_bl_override' not in new_values :
+        return
+    # Not allowed on creation!
+    if not nodeid and new_values ['vie_user_bl_override'] :
+        raise Reject \
+            (_ ("Not allowed on creation: %s") % _ ('vie_user_bl_override'))
+    if not nodeid :
+        return
+    allowed_ids = cl.get (nodeid, 'vie_user_ml')
+    allowed_ids.append (nodeid)
+    blo = new_values ['vie_user_bl_override']
+    if blo and blo not in allowed_ids :
+        raise Reject \
+            (_ ('"%s" must match own ID or one in "%s"')
+            % (_ ('vie_user_bl_override'), _ ('vie_user_ml'))
+            )
+# end def vie_backlink_check
+
 def init (db) :
     global _
     _   = get_translation \
@@ -423,11 +405,6 @@ def init (db) :
     db.user.audit ("set",    check_pictures)
     if 'room' in db.user.properties :
         db.user.audit ("set",    check_room_on_restore)
-    # ldap sync only on set not create (!)
-    if ldap_sync and ldap_sync.check_ldap_config (db) :
-        db.user.react ("set", sync_to_ldap, priority = 200)
-        if 'user_dynamic' in db.classes :
-            db.user_dynamic.react ("set", sync_to_ldap_ud_c, priority = 200)
     if 'user_status' in db.classes :
         db.user_status.audit ("create", check_user_status)
         db.user_status.audit ("set",    check_user_status)
@@ -444,7 +421,8 @@ def init (db) :
         db.user_dynamic.audit ("set",    domain_user_check)
     if 'user_contact' in db.classes :
         db.user_contact.audit ("set",    domain_user_check)
-        if ldap_sync and ldap_sync.check_ldap_config (db) :
-            db.user_contact.react ("set", sync_to_ldap_ud_c, priority = 200)
     if 'reduced_activity_list' in db.user.properties :
         db.user.audit ("create", default_reduced_activity_list)
+    if 'vie_user_bl_override' in db.user.properties :
+        db.user.audit ("create", vie_backlink_check)
+        db.user.audit ("set",    vie_backlink_check)

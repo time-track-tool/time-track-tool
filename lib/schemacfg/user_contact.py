@@ -52,6 +52,8 @@ def init \
     uc_type = Contact_Type_Class \
         (db, ''"uc_type"
         , visible             = Boolean   ()
+        # Sync to user address/alternate_addresses if this is set
+        , is_email            = Boolean   ()
         )
 
     class User_Class (kw ['User_Class']) :

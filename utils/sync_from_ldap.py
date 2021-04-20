@@ -16,10 +16,25 @@ def main () :
         , help    = "Users to update, default: all"
         )
     parser.add_argument \
+        ( "-2", "--two-way-sync"
+        , help    = "Turn on two-way sync: By default we will only write "
+                    "to LDAP if some user attribute change (and the -w "
+                    "option is specified). With this option we will "
+                    "alway write the current user setting to LDAP "
+                    "*after* syncing from LDAP"
+        , action  = 'store_true'
+        )
+    parser.add_argument \
         ( "-d", "--database-directory"
         , dest    = "database_directory"
         , help    = "Directory of the roundup installation"
         , default = '.'
+        )
+    parser.add_argument \
+        ( "-m", "--max-changes"
+        , help    = "Maximum number of changed users in any direction"
+        , default = 30
+        , type    = int
         )
     parser.add_argument \
         ( "-u", "--update"
@@ -35,11 +50,7 @@ def main () :
         )
     parser.add_argument \
         ( "-w", "--write-to-ldap"
-        , help    = "Turn on the config-item that tries to write to LDAP: "
-                    "By default a reactor would write local changes back "
-                    "to LDAP but this is disabled in this script. "
-                    "This option turns on this config-item so "
-                    "that the reactor does write to LDAP."
+        , help    = "By default ldap dry-run is configured, this turns it off"
         , default = False
         , action  = 'store_true'
         )
@@ -52,30 +63,35 @@ def main () :
 
     timestamp_start = datetime.datetime.now()
     users = 'all' if not args.users else ','.join(args.users)
-    print("%s: Start to sync users '%s' from LDAP" % (
-        timestamp_start.strftime("%Y-%m-%d %H:%M:%S"), users))
+    # If max_changes is 0 we do not set a limit
+    max_changes = args.max_changes or None
 
-    # This raises InvalidOptionError whenever no ldap sync is
-    # configured at all. But the next InvalidOptionError would be
-    # raised when instantiating LDAP_Roundup_Sync below anyway.
-    # So we do not guard for this case (that LDAP sync is called
-    # without a valid LDAP configuration)
-    # Disbale sync to LDAP (disable user reactor) by default
-    db.config.ext.LDAP_UPDATE_LDAP = 'no'
-    if args.write_to_ldap :
-        db.config.ext.LDAP_UPDATE_LDAP = 'yes'
-
-    lds = LDAP_Roundup_Sync (db, verbose = args.verbose)
-    if args.users :
-        for username in args.users :
-            lds.sync_user_from_ldap (username, update = args.update)
-    else :
-        lds.sync_all_users_from_ldap (update = args.update)
+    lds = LDAP_Roundup_Sync \
+        ( db
+        , verbose         = args.verbose
+        , dry_run_roundup = not args.update
+        , dry_run_ldap    = not args.write_to_ldap
+        )
+    if not args.two_way_sync :
+        lds.log.info ("Update LDAP (two-way-sync) is deactivated")
+    try :
+        if args.users :
+            lds.log.info ("Start to sync users '%s' from LDAP" % users)
+            for username in args.users :
+                lds.sync_user_from_ldap (username)
+                if args.two_way_sync :
+                    lds.sync_user_to_ldap (username)
+        else :
+            lds.log.info ("Start to sync all users from LDAP")
+            lds.sync_all_users_from_ldap (max_changes = max_changes)
+            if args.two_way_sync :
+                lds.sync_all_users_to_ldap (max_changes = max_changes)
+    except Exception :
+        lds.log_exception ()
 
     timestamp_end = datetime.datetime.now()
     duration = (timestamp_end - timestamp_start)
-    print("%s: User sync finished after %s" % (
-        timestamp_end.strftime("%Y-%m-%d %H:%M:%S"), duration))
+    lds.log.info ("Summary;Duration;%s" % duration)
 # end def main
 
 if __name__ == '__main__' :

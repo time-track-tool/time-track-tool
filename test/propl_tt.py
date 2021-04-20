@@ -31,6 +31,7 @@ properties = \
       )
     , ( 'contract_type'
       , [ 'description'
+        , 'group_external'
         , 'name'
         , 'order'
         ]
@@ -200,7 +201,6 @@ properties = \
     , ( 'org_location'
       , [ 'do_auto_wp'
         , 'do_leave_process'
-        , 'group_external'
         , 'location'
         , 'name'
         , 'organisation'
@@ -446,6 +446,7 @@ properties = \
       )
     , ( 'uc_type'
       , [ 'description'
+        , 'is_email'
         , 'name'
         , 'order'
         , 'url_template'
@@ -490,7 +491,9 @@ properties = \
         , 'timing_info'
         , 'tt_lines'
         , 'username'
-        , 'vie_user_text'
+        , 'vie_user'
+        , 'vie_user_bl_override'
+        , 'vie_user_ml'
         ]
       )
     , ( 'user_contact'
@@ -548,6 +551,7 @@ properties = \
       , [ 'description'
         , 'is_nosy'
         , 'ldap_group'
+        , 'ldap_prio'
         , 'name'
         , 'roles'
         , 'timetracking_allowed'

@@ -413,9 +413,10 @@ def init \
     contract_type = Class \
         ( db
         , ''"contract_type"
-        , name                  = String ()
-        , order                 = Number ()
-        , description           = String ()
+        , name                  = String  ()
+        , order                 = Number  ()
+        , description           = String  ()
+        , group_external        = Boolean ()
         )
 
     leave_submission = Class \
@@ -540,7 +541,9 @@ def init \
                 , reduced_activity_list  = Date      ()
                 , entry_date             = Date      ()
                 , position_text          = String    ()
-                , vie_user_text          = String    ()
+                , vie_user               = Link
+                  ("user", rev_multilink = 'vie_user_ml')
+                , vie_user_bl_override   = Link      ("user")
                 , sync_foreign_key       = String    ()
                 , department_temp        = String    ()
                 )
@@ -573,7 +576,6 @@ def init \
                 , vacation_yearly            = Number    ()
                 , do_leave_process           = Boolean   ()
                 , vac_aliq                   = Link      ("vac_aliq")
-                , group_external             = Boolean   ()
                 , sap_lifnr                  = String    ()
                 , do_auto_wp                 = Boolean   ()
                 )
@@ -843,8 +845,8 @@ def security (db, ** kw) :
           , ( "id", "sap_cc", "user", "valid_from", "valid_to")
           )
         , ( "user",         "View", ["User"]
-          , ( "timetracking_by", "vie_user_text"
-            , "department_temp"
+          , ( "timetracking_by", "vie_user", "vie_user_bl_override"
+            , "vie_user_ml", "department_temp"
             )
           )
         , ( "user",         "Edit", ["Functional-Role"]

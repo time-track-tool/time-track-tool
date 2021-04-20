@@ -3384,8 +3384,14 @@ msgstr "Want no messages"
 msgid "timing_info"
 msgstr ""
 
-msgid "vie_user_text"
-msgstr "TTTech internal user"
+msgid "vie_user"
+msgstr "Internal user"
+
+msgid "vie_user_ml"
+msgstr "Internal user backlink"
+
+msgid "vie_user_bl_override"
+msgstr "Internal user backlink override"
 
 msgid "nickname"
 msgstr "Nickname"
@@ -3432,8 +3438,11 @@ msgstr "Timezone"
 msgid "ldap_group"
 msgstr "LDAP group"
 
+msgid "ldap_prio"
+msgstr "LDAP priority"
+
 msgid "timetracking_allowed"
-msgstr ""
+msgstr "timetracking allowed"
 
 msgid "is_nosy"
 msgstr "is nosy"
@@ -4433,3 +4442,9 @@ msgstr "Approval by"
 
 msgid "approvals.status"
 msgstr "Approval status"
+
+msgid "user_status++roles"
+msgstr "Roles"
+
+msgid "is_email"
+msgstr "is Email"

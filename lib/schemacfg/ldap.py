@@ -37,6 +37,7 @@ def init \
     , String
     , Link
     , Multilink
+    , Number
     , Ext_Class
     , Class
     , ** kw
@@ -51,6 +52,7 @@ def init \
             self.update_properties \
                 ( ldap_group             = String    ()
                 , roles                  = String    ()
+                , ldap_prio              = Number    ()
                 )
             User_Status_Ancestor.__init__ (self, db, classname, ** properties)
         # end def __init__
@@ -122,7 +124,7 @@ def security (db, ** kw) :
         , 'supervisor'
         , 'timezone'
         , 'tt_lines'
-        , 'vie_user_text'
+        , 'vie_user'
 	]
     user_props_hr  = user_props + \
         ['clearance_by', 'roles', 'reduced_activity_list']

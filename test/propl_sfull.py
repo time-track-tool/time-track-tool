@@ -84,6 +84,7 @@ properties = \
       )
     , ( 'contract_type'
       , [ 'description'
+        , 'group_external'
         , 'name'
         , 'order'
         ]
@@ -457,7 +458,6 @@ properties = \
     , ( 'org_location'
       , [ 'do_auto_wp'
         , 'do_leave_process'
-        , 'group_external'
         , 'location'
         , 'name'
         , 'organisation'
@@ -869,7 +869,9 @@ properties = \
         , 'timing_info'
         , 'tt_lines'
         , 'username'
-        , 'vie_user_text'
+        , 'vie_user'
+        , 'vie_user_bl_override'
+        , 'vie_user_ml'
         ]
       )
     , ( 'user_dynamic'

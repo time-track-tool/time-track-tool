@@ -2,13 +2,18 @@
 
 try :
     from ldap_sync import LdapLoginAction, LDAP_Roundup_Sync
-    from ldap_sync import check_ldap_config, sync_from_ldap
+    from ldap_sync import check_ldap_config, config_read_boolean, sync_from_ldap
 
     def sync_from_ldap_util (context, db, username) :
         """ Called from templating mechanism
             We re-open the db as the admin user to ensure that logs do
             not contain the currently logged-in user as the actor.
         """
+        user_html_template_update_roundup = config_read_boolean \
+            (db.config.ext, "LDAP_USER_HTML_TEMPLATE_UPDATE_ROUNDUP")
+        # return if user update for html template is deactivated in the config
+        if not user_html_template_update_roundup :
+            return
         rdb = db._db
         uid = rdb.getuid ()
         dbusername = rdb.user.get (uid, 'username')

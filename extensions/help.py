@@ -933,7 +933,8 @@ _helptext          = \
     , ""'gid'                         :
       [""'''Numeric group ID''']
     , ""'group_external'                         :
-      [""'''Mark yes, if this company isn't a member of our corporate
+      [""'''Mark yes, if this %(Classname)s is used for persons not a
+            member of this corporate
             group. A corporate group is a collection of parent and
             subsidiary corporations that function as a single economic
             entity through a common source of control.
@@ -1198,10 +1199,21 @@ _helptext          = \
     , ""'last_uid'                    :
       [""'''Last used uid in this %(Classname)s''']
     , ""'lastname'                    : [lastname]
+    , ""'ldap_group'                  :
+      [""'''Active directory/LDAP group which users must have to get this
+            %(Classname)s.
+         '''
+      ]
+    , ""'ldap_prio'                   :
+      [""'''If a user is in several LDAP groups these are matched in
+            %(Property)s order. The first match (with the lowest
+            %(Property)s) wins.
+         '''
+      ]
     , ""'letter'                      :
       [""'''Download of letter -- usually this will open the letter in
-           OpenOffice
-        '''
+            OpenOffice
+         '''
       ]
     , ""'letters'                     :
       [""'''List of letters for this %(Classname)s''']
@@ -2296,6 +2308,14 @@ _helptext          = \
           '''
       ]
     , ""'user_dynamic++durations_allowed' : [durations]
+    , ""'user_status++roles'          :
+      [ ""'''Roles which a new user automatically gets, do not leave
+             empty, users with empty roles will be marked obsolete.
+             If you need to specify roles without any rights use the
+             anonymous role.
+             Enter a comma,separated,list
+          '''
+      ]
     , ""'user++address'               :
       [""'''Primary email address for this user''']
     , ""'user++status'                : [status]
@@ -2355,11 +2375,22 @@ _helptext          = \
             in the same country, the local VAT is applicable.
          '''
       ]
-    , ""'vie_user_text'               :
+    , ""'vie_user'                    :
       [ ""'''Exclusively used for linking to the corresponding
-             @ds1.internal user, leave this field empty. Note that this
-             is now a text-field since most users are not in the
-             time-tracker.
+             @ds1.internal user, leave this field empty.
+          '''
+      ]
+    , ""'vie_user_ml'                 :
+      [ ""'''Used to show the user backlink if the field %%(user.vie_user)s
+             is set. Filled automatically.
+          '''
+      ]
+    , ""'vie_user_bl_override'        :
+      [ ""'''Can be used to override an existing %%(user.vie_user_ml)s.
+             If set to emtpy, the linked user is synced.
+             If set to the user itself, the linked user is ignored.
+             If there are multiple %%(vie_user_ml)ss,
+             a single one can be selected.
           '''
       ]
     , ""'view_roles'                  :
