@@ -1824,14 +1824,15 @@ class LDAP_Roundup_Sync (Log) :
             self.sync_contacts_to_ldap (r_user, luser, modlist)
         self.debug (3, 'Modlist before updates: %s' % modlist)
         n = ''
-        self.changed_ldap_users [user.username] = modlist
-        if not self.update_ldap or self.dry_run_ldap :
+        if modlist :
+            self.changed_ldap_users [user.username] = modlist
+        if (not self.update_ldap or self.dry_run_ldap) and modlist :
             n = '(Deactivated): '
-            # Can produce *huge* output if a picture is updated!
             self.log.info \
                 ( '%s Update LDAP: %s There are changes but sync is deactivated'
                 % (n, user.username)
                 )
+            # Can produce *huge* output if a picture is updated:
             self.debug (4, 'Update LDAP%s: %s %s' % (n, user.username, modlist))
         if not modlist :
             self.log.info ('%sUpdate LDAP: %s: No changes' % (n, user.username))
