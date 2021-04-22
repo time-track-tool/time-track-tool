@@ -411,12 +411,14 @@ class LDAP_Roundup_Sync (Log) :
         # microsoft specific feature -- the ldap3 docs say otherwise
         self.ldcon.open      ()
         # Double negation because we want the default to be *with* starttls
-        no_starttls = config_read_boolean \
-            (self.db.config.ext, 'LDAP_NO_STARTTLS')
-        if not no_starttls :
-            self.ldcon.start_tls ()
-        self.log.debug ('TLS: %s' % (not no_starttls))
-        self.ldcon.bind      ()
+        ldaps = self.cfg.LDAP_URI.startswith ('ldaps')
+        if not ldaps :
+            no_starttls = config_read_boolean \
+                (self.db.config.ext, 'LDAP_NO_STARTTLS')
+            if not no_starttls :
+                self.ldcon.start_tls ()
+        self.log.debug  ('TLS: %s' % (ldaps or not no_starttls))
+        self.ldcon.bind ()
         self.debug (4, 'Bind')
         self.schema = self.server.schema
 
