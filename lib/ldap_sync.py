@@ -339,6 +339,8 @@ class LDAP_Roundup_Sync (Log) :
         self.db              = db
         self.cfg             = db.config.ext
         self.verbose         = verbose
+        self.error_counter   = 0
+        self.warn_counter    = 0
         self.update_ldap     = update_ldap
         self.update_roundup  = update_roundup
         self.dry_run_ldap    = dry_run_ldap
@@ -364,8 +366,8 @@ class LDAP_Roundup_Sync (Log) :
             handler.setFormatter (formatter)
             self.log.addHandler (handler)
 
-        self.log.info ("User sync started")
-        self.log.info ("Read sync config")
+        self.info ("User sync started")
+        self.info ("Read sync config")
         self.dn_allowed = {}
         varname = 'allowed_dn_suffix_by_domain'
         dn_allowed = getattr (self.cfg, 'LDAP_' + varname.upper (), None)
@@ -376,7 +378,7 @@ class LDAP_Roundup_Sync (Log) :
                     self.dn_allowed [k] = {}
                 self.dn_allowed [k][v] = True
         if not self.dn_allowed :
-            self.log.error \
+            self.error \
                 ('No allowed DN suffix configured for vie_user, '
                  'use "%s" in [ldap] section of ext config' % varname
                 )
@@ -392,9 +394,9 @@ class LDAP_Roundup_Sync (Log) :
                 setattr (self, k, False)
                 if update.lower () in ('yes', 'true') :
                     setattr (self, k, True)
-            self.log.debug ("%s: %s" % (k, getattr (self, k)))
+            self.debug (2, "%s: %s" % (k, getattr (self, k)))
 
-        self.log.info ('Connect to LDAP: %s' % self.cfg.LDAP_URI)
+        self.info ('Connect to LDAP: %s' % self.cfg.LDAP_URI)
         if ldap is None :
             ldap = ldap3
         self.server = ldap.Server (self.cfg.LDAP_URI, get_info = ldap3.ALL)
@@ -417,7 +419,7 @@ class LDAP_Roundup_Sync (Log) :
                 (self.db.config.ext, 'LDAP_NO_STARTTLS')
             if not no_starttls :
                 self.ldcon.start_tls ()
-        self.log.debug  ('TLS: %s' % (ldaps or not no_starttls))
+        self.debug (2, 'TLS: %s' % (ldaps or not no_starttls))
         self.ldcon.bind ()
         self.debug (4, 'Bind')
         self.schema = self.server.schema
@@ -432,8 +434,7 @@ class LDAP_Roundup_Sync (Log) :
         for id in db.user_status.filter (None, {}, sort = ('+', 'id')) :
             st = db.user_status.getnode (id)
             if st.ldap_group :
-                self.log.info \
-                    ("Add group '%s' for user lookup" % st.ldap_group)
+                self.info ("Add group '%s' for user lookup" % st.ldap_group)
                 self.status_sync.append (id)
                 self.valid_stati.append (id)
                 self.ldap_stati  [id] = st
@@ -451,19 +452,40 @@ class LDAP_Roundup_Sync (Log) :
         self.changed_ldap_users    = {}
     # end def __init__
 
+    # Logging with debug, info, warn, error
+    # The only method that would not need to be wrapped is info but we
+    # do it for consistency and maybe at some point we want to count
+    # info messages, too.
     def debug (self, prio, *args, **kw) :
+        """ Note that normal verbose logging (prio = 1) should not
+            include debug logs. So prio should be at least 2.
+        """
         if self.verbose >= prio :
             self.log.debug (*args, **kw)
     # end debug
+
+    def info (self, *args, **kw) :
+        self.log.info (*args, **kw)
+    # end def info
+
+    def warn (self, *args, **kw) :
+        self.warn_counter += 1
+        self.log.warn (*args, **kw)
+    # end def warn
+
+    def error (self, *args, **kw) :
+        self.error_counter += 1
+        self.log.error (*args, **kw)
+    # en def error
 
     def bind_as_user (self, username, password) :
         luser = self.get_ldap_user_by_username (username)
         if not luser :
             return None
         if not self.ldcon.rebind (user = luser.dn, password = password) :
-            self.log.error ('Error binding as %s' % luser.dn)
+            self.error ('Error binding as %s' % luser.dn)
             return None
-        self.log.debug ('Successful bind by %s' % luser.dn)
+        self.debug (2, 'Successful bind by %s' % luser.dn)
         return True
     # end def bind_as_user
 
@@ -498,9 +520,11 @@ class LDAP_Roundup_Sync (Log) :
         AD_MAX_LENGTH_DEPARTMENT = 64
         if department and len (department) > AD_MAX_LENGTH_DEPARTMENT :
             department_trunc = department [0:AD_MAX_LENGTH_DEPARTMENT]
-            self.log.warning ("Cutting of department string to %s"
-                " chars to fit AD: '%s' -> '%s'" %
-                (AD_MAX_LENGTH_DEPARTMENT, department, department_trunc))
+            self.warn \
+                ( "Cutting of department string to %s"
+                  " chars to fit AD: '%s' -> '%s'"
+                % (AD_MAX_LENGTH_DEPARTMENT, department, department_trunc)
+                )
             department = department_trunc
         return department
 
@@ -601,7 +625,7 @@ class LDAP_Roundup_Sync (Log) :
             dontsync_rup = dict.fromkeys (dontsync_rup.split (','))
         else :
             dontsync_rup = {}
-        self.log.info \
+        self.info \
             ( "Exclude the following Roundup attributes from sync: %s"
             % dontsync_rup.keys ()
             )
@@ -612,7 +636,7 @@ class LDAP_Roundup_Sync (Log) :
             dontsync_ldap = dict.fromkeys (dontsync_ldap.split (','))
         else :
             dontsync_ldap = {}
-        self.log.info \
+        self.info \
             ( "Exclude the following LDAP attributes from sync: %s"
             % dontsync_ldap.keys ()
             )
@@ -902,7 +926,7 @@ class LDAP_Roundup_Sync (Log) :
                 n = ''
                 if not self.update_roundup or self.dry_run_roundup :
                     n = '(Deactivated): '
-                self.log.info \
+                self.info \
                     ("%sUpdate Roundup: new %s: %s%s" % (n, cls.classname, key))
                 if self.update_roundup and not self.dry_run_roundup :
                     d = {}
@@ -931,8 +955,8 @@ class LDAP_Roundup_Sync (Log) :
         for gid in sorted (self.ldap_groups, key = srt) :
             g = self.ldap_groups [gid]
             if dn in g.users :
-                self.debug (3, "Sync user %s due to LDAP group %s"
-                    % (dn, g.name))
+                self.debug \
+                    (3, "Sync user %s due to LDAP group %s" % (dn, g.name))
                 return gid
     # end def member_status_id
 
@@ -972,7 +996,7 @@ class LDAP_Roundup_Sync (Log) :
             n = ''
             if not self.update_roundup or self.dry_run_roundup :
                 n = '(Deactivated): '
-            self.log.info \
+            self.info \
                 ( "%sUpdate Roundup: %s alternate_addresses = %s" \
                 % (n, user.username, ','.join (aa.iterkeys ()))
                 )
@@ -1176,11 +1200,9 @@ class LDAP_Roundup_Sync (Log) :
                 l = len (synccfg.attributes)
                 if self.is_single_value (ld) :
                     if k == l - 1  and l > 1 :
-                        self.log.warn \
-                            ('Single-valued attribute is last: %s' % ld)
+                        self.warn ('Single-valued attribute is last: %s' % ld)
                 elif k < l - 1 :
-                    self.log.warn \
-                        ('Multi-valued attribute is not last: %s' % ld)
+                    self.warn ('Multi-valued attribute is not last: %s' % ld)
                 for ldit in luser [ld] :
                     self.debug (3, "contacts LDAP %s: %s" % (ld, ldit))
                     key = (typ, ldit)
@@ -1197,7 +1219,7 @@ class LDAP_Roundup_Sync (Log) :
                         found [key] = 1
                         self.debug (3, 'contacts LDAP found: %s' % (key,))
                     elif key in found :
-                        self.log.error ("Duplicate: %s" % ':'.join (key))
+                        self.error ("Duplicate: %s" % ':'.join (key))
                         continue
                     elif self.update_roundup and not self.dry_run_roundup :
                         d = dict \
@@ -1241,7 +1263,7 @@ class LDAP_Roundup_Sync (Log) :
                 if not self.is_single_value (ld) :
                     # This is a config error. Seems LDAP has changed an
                     # attribute to multi-valued or programmer error.
-                    self.log.warn \
+                    self.warn \
                         ("User contact sync %s with keep_attribute set "
                          "has multi-valued attribute %s"
                         % (ctname, ld)
@@ -1291,7 +1313,7 @@ class LDAP_Roundup_Sync (Log) :
         n = ''
         if not self.update_roundup or self.dry_run_roundup :
             n = '(Deactivated): '
-        self.log.info ("%sProcessing user '%s' from LDAP" % (n, username))
+        self.info ("%sProcessing user '%s' from LDAP" % (n, username))
         luser = self.get_ldap_user_by_username (username)
         self.debug (3, 'User by username')
         if luser :
@@ -1323,22 +1345,20 @@ class LDAP_Roundup_Sync (Log) :
         if  (  username in reserved
             or user and user.status not in self.status_sync
             ) :
-            self.log.info ("Skip user %s as this is a reserved username "
-                " in Roundup" % username)
+            self.info ("Skip reserved roundup user %s" % username)
             return
         if not user and (not luser or self.is_obsolete (luser)) :
-            self.log.info \
-                ("Not syncing %s: Not in LDAP or obsolete" % username)
+            self.info ("Not syncing %s: Not in LDAP or obsolete" % username)
             return
         self.domain_user_check (username, allow_empty = True)
         changed = False
         if not luser or self.is_obsolete (luser) :
             if user.status != self.status_obsolete :
                 if self.update_roundup and not self.dry_run_roundup :
-                    self.log.info ("Obsolete: %s" % username)
+                    self.info ("Obsolete: %s" % username)
                     self.db.user.set (uid, status = self.status_obsolete)
                 else:
-                    self.log.info ("(Deactivated) Obsolete: %s" % username)
+                    self.info ("(Deactivated) Obsolete: %s" % username)
                 self.changed_roundup_users [user.username] = dict \
                     (status = self.status_obsolete)
                 changed = True
@@ -1396,7 +1416,7 @@ class LDAP_Roundup_Sync (Log) :
                 if not self.update_roundup or self.dry_run_roundup :
                     n = '(Deactivated): '
                 if d :
-                    self.log.info ("%sUpdate Roundup: %s %s" % (n, username, d))
+                    self.info ("%sUpdate Roundup: %s %s" % (n, username, d))
                     self.debug (3, 'Before Roundup update')
                     self.changed_roundup_users [user.username] = d
                     if self.update_roundup and not self.dry_run_roundup :
@@ -1404,7 +1424,7 @@ class LDAP_Roundup_Sync (Log) :
                         changed = True
                     self.debug (3, 'After Roundup update')
                 else:
-                    self.log.info \
+                    self.info \
                         ("%sUpdate Roundup: %s: No Changes" % (n, username))
             else :
                 d.update (c)
@@ -1418,7 +1438,7 @@ class LDAP_Roundup_Sync (Log) :
                 n = "(Deactivated): "
                 if self.update_roundup and not self.dry_run_roundup :
                     n = ''
-                self.log.info ("%sCreate Roundup user: %s: %s" % (n, username, d))
+                self.info ("%sCreate Roundup user: %s: %s" % (n, username, d))
                 self.changed_roundup_users [d ['username']] = d
                 if self.update_roundup and not self.dry_run_roundup :
                     self.debug (3, 'Before Roundup create')
@@ -1442,7 +1462,7 @@ class LDAP_Roundup_Sync (Log) :
                                 dep = self.db.department.lookup (dep)
                             except KeyError :
                                 dep = None
-                        self.log.info \
+                        self.info \
                             ( "Dynamic user create magic: %s, "
                               "org_location: %s, department: %s"
                             % (username, olo, dep)
@@ -1488,27 +1508,26 @@ class LDAP_Roundup_Sync (Log) :
                 ins = cs [0]
                 if not s and not self.is_single_value (p) :
                     ins = cs
-                self.log.info \
+                self.info \
                     ("%s: Add insertion: %s (%s)" % (user.username, p, ins))
                 modlist.append ((ldap3.MODIFY_ADD, p, ins))
             else :
                 ldattr = luser [p][0]
                 ins    = cs [0]
                 if self.is_single_value (p) and len (luser [p]) != 1 :
-                    self.log.error \
-                        ("%s: invalid length: %s" % (user.username, p))
+                    self.error ("%s: invalid length: %s" % (user.username, p))
                 if not s and not self.is_single_value (p) :
                     ldattr = luser.value (p)
                     ins    = cs
                 if ldattr != ins and [ldattr] != ins :
                     if not ins :
-                        self.log.info \
+                        self.info \
                             ( "%s: Add deletion: %s -> %s [%s -> %s]"
                             % (user.username, ct, p, ldattr, ins)
                             )
                         modlist.append ((ldap3.MODIFY_DELETE, p, None))
                     else :
-                        self.log.info \
+                        self.info \
                             ( "%s: Add update: %s -> %s [%s -> %s]"
                             % (user.username, ct, p, ldattr, ins)
                             )
@@ -1516,14 +1535,14 @@ class LDAP_Roundup_Sync (Log) :
             if s :
                 if s not in luser :
                     if cs [1:] :
-                        self.log.info \
+                        self.info \
                             ( "%s: Add insertion: %s (%s)" \
                             % (user.username, s, cs [1:])
                             )
                         modlist.append ((ldap3.MODIFY_ADD, s, cs [1:]))
                 else :
                     if luser [s] != cs [1:] :
-                        self.log.info \
+                        self.info \
                             ( "%s: Add update: %s -> %s [%s -> %s]"
                             % (user.username, ct, s, ldattr, cs [1:])
                             )
@@ -1535,8 +1554,7 @@ class LDAP_Roundup_Sync (Log) :
             if ct not in contacts :
                 for a in cfg.attributes :
                     if a in luser :
-                        self.log.info \
-                            ("%s: Add deletion: %s" % (user.username, a))
+                        self.info ("%s: Add deletion: %s" % (user.username, a))
                         modlist.append ((ldap3.MODIFY_DELETE, a, None))
     # end def sync_contacts_to_ldap
 
@@ -1556,14 +1574,14 @@ class LDAP_Roundup_Sync (Log) :
                 allowed = user.vie_user_ml
                 allowed.append (user.id)
                 if user.vie_user_bl_override not in allowed :
-                    self.log.error \
+                    self.error \
                         ( "User %s: invalid user in backlink override: %s"
                         % (user.username, user.vie_user_bl_override)
                         )
                     return
                 r_user = self.db.user.getnode (user.vie_user_bl_override)
             elif len (user.vie_user_ml) > 1 :
-                self.log.error \
+                self.error \
                     ( "More than one user links to user %s: %s"
                     % (user.username
                       , ', '.join
@@ -1573,7 +1591,7 @@ class LDAP_Roundup_Sync (Log) :
                     )
                 return
             elif self.get_dynamic_user (user.id) :
-                self.log.error \
+                self.error \
                     ( "User %s has a vie_user_ml link "
                       "and a dynamic user record"
                     % user.username
@@ -1597,7 +1615,7 @@ class LDAP_Roundup_Sync (Log) :
                         )
                     return user
                 else:
-                    self.log.error \
+                    self.error \
                         ( 'User %s has no allowed dn (%s), not syncing: %s'
                         % (luser.UserPrincipalName, dom, luser.dn)
                         )
@@ -1612,7 +1630,7 @@ class LDAP_Roundup_Sync (Log) :
         """
         assert rupattr is not None
         # displayname needs to be set, too
-        self.log.info \
+        self.info \
             ( "Update LDAP: %s 'MODIFY_DN' (RDN part of DN) "
               "['cn=%s' -> 'cn=%s']"
             % (user.username, ldattr, rupattr)
@@ -1624,7 +1642,7 @@ class LDAP_Roundup_Sync (Log) :
             # Note: We try to continue if mod of DN fails, maybe a
             # permission problem and other updates to same user go
             # through.
-            self.log.error \
+            self.error \
                 ( 'Error on modify_dn (set to %s) for %s: %s %s'
                 % ( rupattr
                   , luser.dn
@@ -1637,12 +1655,11 @@ class LDAP_Roundup_Sync (Log) :
             rdn, rest = luser.dn.split (',', 1)
             nrdn = '='.join (('CN', rupattr))
             luser.dn = ','.join ((nrdn, rest))
-        self.debug \
-            (3, 'Result: %s' % self.ldcon.result)
+        self.debug (3, 'Result: %s' % self.ldcon.result)
     # end def update_dn
 
     def sync_user_to_ldap (self, username, update = None) :
-        self.log.info ("Sync user '%s' to LDAP" % username )
+        self.info ("Sync user '%s' to LDAP" % username )
         if update is not None :
             self.update_ldap = update
         allow_empty = False
@@ -1652,20 +1669,19 @@ class LDAP_Roundup_Sync (Log) :
         # Do nothing if empty domain and we would require one and we
         # don't update anyway
         if not check :
-            self.log.info ("Not syncing user with empty domain: %s" % username)
+            self.info ("Not syncing user with empty domain: %s" % username)
             return
         try :
             uid  = self.db.user.lookup (username)
         except KeyError :
-            self.log.debug ("Skip user %s as not existing in Roundup"
-                % username)
+            self.debug (2, "Skip user %s as not existing in Roundup" % username)
             return
         user = self.db.user.getnode (uid)
         self.debug (3, 'Before user_by_username')
         luser = self.get_ldap_user_by_username (user.username)
         self.debug (3, 'After user_by_username')
         if not luser :
-            self.log.info ("LDAP user %s not found:", user.username)
+            self.info ("LDAP user %s not found:", user.username)
             # Might want to create user in LDAP
             return
         r_user = self.compute_r_user (user, luser)
@@ -1675,11 +1691,11 @@ class LDAP_Roundup_Sync (Log) :
         assert (user.status in self.status_sync)
         if user.status == self.status_obsolete :
             if not self.is_obsolete (luser) :
-                self.log.info ("Roundup user obsolete:", user.username)
+                self.info ("Roundup user obsolete:", user.username)
                 # Might want to move user in LDAP Tree
             return
         if self.is_obsolete (luser) :
-            self.log.info ("Obsolete LDAP user: %s" % user.username)
+            self.info ("Obsolete LDAP user: %s" % user.username)
             return
         umap = self.attr_map ['user']
         modlist = []
@@ -1696,8 +1712,8 @@ class LDAP_Roundup_Sync (Log) :
                 suffix = ''
                 if not self.update_roundup or self.dry_run_roundup :
                     suffix = ' (not writing)'
-                self.log.debug \
-                    ("Set vie_user: %s: %s%s" % (user.username, dd, suffix))
+                self.debug \
+                    (2, "Set vie_user: %s: %s%s" % (user.username, dd, suffix))
                 if self.update_roundup and not self.dry_run_roundup :
                     self.db.user.set (user.id, **dd)
                     self.db.commit ()
@@ -1711,7 +1727,7 @@ class LDAP_Roundup_Sync (Log) :
         for rk in sorted (umap) :
             for synccfg in umap [rk] :
                 if synccfg.dyn_user_valid and not dyn_is_current :
-                    self.log.error \
+                    self.error \
                         ( 'Not syncing "%s"->"%s": no valid dyn. user for "%s"'
                         % (rk, synccfg.name, user.username)
                         )
@@ -1729,7 +1745,7 @@ class LDAP_Roundup_Sync (Log) :
                         rupattr = rupattr.decode ('utf-8')
                 if synccfg.name not in luser :
                     if rupattr :
-                        self.log.info \
+                        self.info \
                             ( "%s: Add insertion: %s (%s)" \
                             % (user.username, synccfg.name, prupattr)
                             )
@@ -1737,7 +1753,7 @@ class LDAP_Roundup_Sync (Log) :
                         modlist.append \
                             ((ldap3.MODIFY_ADD, synccfg.name, rupattr))
                 elif len (luser [synccfg.name]) != 1 :
-                    self.log.error \
+                    self.error \
                         ( "%s: invalid length: %s"
                         % (curuser.username, synccfg.name)
                         )
@@ -1749,7 +1765,7 @@ class LDAP_Roundup_Sync (Log) :
                         pldattr = repr (ldattr)
                     if ldattr != rupattr :
                         if synccfg.do_change :
-                            self.log.info \
+                            self.info \
                                 ( "%s: Add update: %s -> %s [%s -> %r]"
                                 % ( user.username, rk, synccfg.name, pldattr
                                   , prupattr
@@ -1765,7 +1781,7 @@ class LDAP_Roundup_Sync (Log) :
                             if synccfg.name.lower () == 'cn' :
                                 modlist.append \
                                     ((op, 'displayname', rupattr))
-                                self.log.info \
+                                self.info \
                                     ( "%s: Add update: %s -> %s [%s -> %s]"
                                     % ( user.username, rk, 'displayname'
                                       , luser.displayname, rupattr
@@ -1783,8 +1799,8 @@ class LDAP_Roundup_Sync (Log) :
                                 pldattr = synccfg.to_roundup \
                                     (luser, synccfg.name)
                             if pldattr != prupattr :
-                                self.log.debug \
-                                    ( "%s: attribute differs: %s/%s >%r/%s<"
+                                self.debug \
+                                    (2, "%s: attribute differs: %s/%s >%r/%s<"
                                     % ( user.username, rk, synccfg.name
                                       , prupattr, pldattr
                                       )
@@ -1807,7 +1823,7 @@ class LDAP_Roundup_Sync (Log) :
                             , dynsync.dyn_user_valid
                             )
                         if chg :
-                            self.log.info \
+                            self.info \
                                 ( "%s: Updating: %s.%s -> %s [%s -> %s]"
                                 % ( user.username
                                   , udprop
@@ -1831,14 +1847,14 @@ class LDAP_Roundup_Sync (Log) :
             self.changed_ldap_users [user.username] = modlist
         if (not self.update_ldap or self.dry_run_ldap) and modlist :
             n = '(Deactivated): '
-            self.log.info \
+            self.info \
                 ( '%s Update LDAP: %s There are changes but sync is deactivated'
                 % (n, user.username)
                 )
             # Can produce *huge* output if a picture is updated:
             self.debug (4, 'Update LDAP%s: %s %s' % (n, user.username, modlist))
         if not modlist :
-            self.log.info ('%sUpdate LDAP: %s: No changes' % (n, user.username))
+            self.info ('%sUpdate LDAP: %s: No changes' % (n, user.username))
         if modlist and self.update_ldap and not self.dry_run_ldap :
             # Make a dictionary from modlist as required by ldap3
             moddict = {}
@@ -1856,7 +1872,7 @@ class LDAP_Roundup_Sync (Log) :
             self.debug (3, 'modifying Properties for DN: %s' % luser.dn)
             self.debug (3, 'Mod-Dict: %s' % str (logdict))
             self.debug (3, 'Before modify')
-            self.log.info \
+            self.info \
                 ( "Update LDAP: Apply collected modifications to %s"
                 % user.username
                 )
@@ -1866,7 +1882,7 @@ class LDAP_Roundup_Sync (Log) :
             self.debug (3, 'After modify')
             self.debug (3, 'Result: %s' % self.ldcon.result)
             if self.ldcon.last_error :
-                self.log.error \
+                self.error \
                     ( 'Error on modify of user %s: %s %s'
                     % (luser.dn, self.ldcon.result['description'],
                        self.ldcon.result['message'])
@@ -1893,8 +1909,7 @@ class LDAP_Roundup_Sync (Log) :
                 and (not dyn.valid_to or dyn.valid_to > now)
                 )
             if dyn_user_valid and not is_current :
-                self.log.warning \
-                    ('No valid dynamic user for "%s"' % user.username)
+                self.warn ('No valid dynamic user for "%s"' % user.username)
                 return
             dynprop = dyn [udprop]
             if dynprop :
@@ -1932,8 +1947,9 @@ class LDAP_Roundup_Sync (Log) :
             assert not self.dry_run_roundup
             self.dry_run_roundup = True
             self._sync_all_users_from_ldap (update)
+            self.warn_counter = self.error_counter = 0
             if len (self.changed_roundup_users) > max_changes :
-                self.log.error \
+                self.error \
                     ( "Number of changes %s would exceed maximum %s, aborting"
                     % (len (self.changed_roundup_users), max_changes)
                     )
@@ -1944,6 +1960,7 @@ class LDAP_Roundup_Sync (Log) :
             self.dry_run_roundup = False
 
         self._sync_all_users_from_ldap (update)
+        self.warn_counter = self.error_counter = 0
         self.changed_roundup_users = {}
     # end def sync_all_users_from_ldap
 
@@ -1967,7 +1984,7 @@ class LDAP_Roundup_Sync (Log) :
             try :
                 self.sync_user_from_ldap (username)
             except (Exception, Reject) :
-                self.log.error ("Error synchronizing user %s" % username)
+                self.error ("Error synchronizing user %s" % username)
                 self.log_exception ()
         u_rup = [usrcls.get (i, 'username') for i in usrcls.getnodeids ()]
         users = []
@@ -1987,14 +2004,18 @@ class LDAP_Roundup_Sync (Log) :
             try :
                 self.sync_user_from_ldap (username)
             except (Exception, Reject) :
-                self.log.error ("Error synchronizing user %s" % username)
+                self.error ("Error synchronizing user %s" % username)
                 self.log_exception ()
         dry = ''
         if not self.update_roundup or self.dry_run_roundup :
             dry = ' (dry run)'
-        self.log.info \
+        self.info \
             ( "Synced %s users from LDAP to roundup%s"
             % (len (self.changed_roundup_users), dry)
+            )
+        self.info \
+            ( "Finished sync from ldap%s with %s errors and %s warnings"
+            % (dry, self.error_counter, self.warn_counter)
             )
     # end def _sync_all_users_from_ldap
 
@@ -2007,8 +2028,9 @@ class LDAP_Roundup_Sync (Log) :
             assert not self.dry_run_ldap
             self.dry_run_ldap = True
             self._sync_all_users_to_ldap (update)
+            self.warn_counter = self.error_counter = 0
             if len (self.changed_ldap_users) > max_changes :
-                self.log.error \
+                self.error \
                     ( "Number of changes %s would exceed maximum %s, aborting"
                     % (len (self.changed_ldap_users), max_changes)
                     )
@@ -2019,6 +2041,7 @@ class LDAP_Roundup_Sync (Log) :
             self.dry_run_ldap = False
 
         self._sync_all_users_to_ldap (update)
+        self.warn_counter = self.error_counter = 0
         self.changed_ldap_users = {}
     # end def sync_all_users_to_ldap
 
@@ -2043,9 +2066,13 @@ class LDAP_Roundup_Sync (Log) :
         dry = ''
         if not self.update_ldap or self.dry_run_ldap :
             dry = ' (dry run)'
-        self.log.info \
+        self.info \
             ( "Synced %s users from roundup to LDAP%s"
             % (len (self.changed_ldap_users), dry)
+            )
+        self.info \
+            ( "Finished sync to ldap%s with %s errors and %s warnings"
+            % (dry, self.error_counter, self.warn_counter)
             )
     # end def _sync_all_users_to_ldap
 # end LDAP_Roundup_Sync
