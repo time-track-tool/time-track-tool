@@ -7,16 +7,17 @@ import user_dynamic
 import common
 import io
 
-from copy                import copy
-from ldap3.utils.conv    import escape_bytes
-from rsclib.autosuper    import autosuper
-from rsclib.execute      import Log
-from roundup.date        import Date
-from roundup.cgi.actions import LoginAction
-from roundup.cgi         import exceptions
-from roundup.exceptions  import Reject
-from datetime            import datetime
-from PIL                 import Image
+from copy                  import copy
+from ldap3.utils.conv      import escape_bytes
+from rsclib.autosuper      import autosuper
+from rsclib.execute        import Log
+from roundup.date          import Date
+from roundup.cgi.actions   import LoginAction
+from roundup.cgi           import exceptions
+from roundup.exceptions    import Reject
+from roundup.configuration import InvalidOptionError
+from datetime              import datetime
+from PIL                   import Image
 
 LDAPCursorError = ldap3.core.exceptions.LDAPCursorError
 LDAPKeyError    = ldap3.core.exceptions.LDAPKeyError
@@ -2067,7 +2068,10 @@ def config_read_boolean (config, attribute_name) :
         'true', 'yes' -> True
         'false', 'no' -> False
     """
-    raw_value = getattr (config, attribute_name)
+    try :
+        raw_value = getattr (config, attribute_name)
+    except InvalidOptionError :
+        return False
     if raw_value.lower () in ('yes', 'true') :
         value = True
     elif raw_value.lower () in ('no', 'false') :
