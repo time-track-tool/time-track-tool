@@ -1429,8 +1429,7 @@ class LDAP_Roundup_Sync (Log) :
             else :
                 d.update (c)
                 assert (d)
-                assert 'lastname'  in d
-                assert 'firstname' in d
+                assert 'lastname'  in d or 'firstname' in d
                 d ['roles']  = roles
                 d ['status'] = new_status_id
                 if 'username' not in d :
