@@ -617,7 +617,7 @@ class Test_Case_LDAP_Sync (_Test_Base, unittest.TestCase) :
         self.ldap_sync.sync_all_users_from_ldap ()
         msg = 'Synced %s users from LDAP to roundup' \
               % (len (self.mock_users_by_username) - 1)
-        self.assertEqual (self.messages [-1][0], msg)
+        self.assertEqual (self.messages [-2][0], msg)
         user = self.db.user.getnode (self.testuser1)
         self.assertEqual (user.firstname, 'Test Middlename')
         self.assertEqual (user.lastname,  'Usernameold')
@@ -630,9 +630,10 @@ class Test_Case_LDAP_Sync (_Test_Base, unittest.TestCase) :
         self.setup_ldap ()
         self.log.info = self.mock_log
         self.ldap_sync.sync_all_users_from_ldap ()
-        msg = 'Synced %s users from LDAP to roundup (dry run)' \
+        msg = '(Dry Run): Synced %s users from LDAP to roundup' \
               % (len (self.mock_users_by_username) - 1)
-        self.assertEqual (self.messages [-1][0], msg)
+        #import pdb; pdb.set_trace()
+        self.assertEqual (self.messages [-2][0], msg)
         user = self.db.user.getnode (self.testuser1)
         self.assertEqual (user.firstname, 'Test')
         self.assertEqual (user.lastname,  'User')
@@ -644,7 +645,8 @@ class Test_Case_LDAP_Sync (_Test_Base, unittest.TestCase) :
         self.setup_ldap ()
         self.log.error = self.mock_log
         self.ldap_sync.sync_all_users_from_ldap (max_changes = 1)
-        msg = 'Number of changes %s would exceed maximum 1, aborting' \
+        msg = ('Number of changes (%s) from LDAP to Roundup '
+              'would exceed maximum 1, aborting') \
               % (len (self.mock_users_by_username) - 1)
         self.assertEqual (self.messages [-1][0], msg)
         user = self.db.user.getnode (self.testuser1)
@@ -715,7 +717,7 @@ class Test_Case_LDAP_Sync (_Test_Base, unittest.TestCase) :
         self.assertEqual (len (self.ldap_modify_result), nusers)
         self.assertEqual (len (self.ldap_modify_result [newdn]), 7)
         msg = 'Synced %s users from roundup to LDAP' % nusers
-        self.assertEqual (self.messages [-1][0], msg)
+        self.assertEqual (self.messages [-2][0], msg)
     # end def test_sync_realname_to_ldap_all
 
     def test_sync_realname_to_ldap_all_dryrun (self) :
@@ -725,8 +727,8 @@ class Test_Case_LDAP_Sync (_Test_Base, unittest.TestCase) :
         self.log.info = self.mock_log
         self.ldap_sync.sync_all_users_to_ldap ()
         self.assertEqual (len (self.ldap_modify_result), 0)
-        msg = 'Synced %s users from roundup to LDAP (dry run)' % nusers
-        self.assertEqual (self.messages [-1][0], msg)
+        msg = '(Dry Run): Synced %s users from roundup to LDAP' % nusers
+        self.assertEqual (self.messages [-2][0], msg)
     # end def test_sync_realname_to_ldap_all
 
     def test_sync_realname_to_ldap_all_limit (self) :
@@ -735,7 +737,8 @@ class Test_Case_LDAP_Sync (_Test_Base, unittest.TestCase) :
         self.log.error = self.mock_log
         self.ldap_sync.sync_all_users_to_ldap (max_changes = 0)
         self.assertEqual (len (self.ldap_modify_result), 0)
-        msg = 'Number of changes %s would exceed maximum 0, aborting' % nusers
+        msg = ('Number of changes (%s) from Roundup to LDAP would exceed '
+              'maximum 0, aborting') % nusers
         self.assertEqual (self.messages [-1][0], msg)
     # end def test_sync_realname_to_ldap_all
 
