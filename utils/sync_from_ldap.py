@@ -91,7 +91,7 @@ def main () :
 
     timestamp_end = datetime.datetime.now()
     duration = (timestamp_end - timestamp_start)
-    lds.log.info ("Summary;Duration;%s" % duration)
+    lds.log.info ("Summary_overall;Duration;%s" % duration)
 # end def main
 
 if __name__ == '__main__' :
