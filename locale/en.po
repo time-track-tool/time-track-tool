@@ -834,6 +834,9 @@ msgstr ""
 msgid "supervisor"
 msgstr "Supervisor"
 
+msgid "business_responsible"
+msgstr "Business responsible"
+
 #, python-format
 msgid "No %(f_supervisor)s for %(user)s"
 msgstr ""

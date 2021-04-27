@@ -828,6 +828,7 @@ properties = \
       , [ 'ad_domain'
         , 'address'
         , 'alternate_addresses'
+        , 'business_responsible'
         , 'clearance_by'
         , 'contacts'
         , 'csv_delimiter'

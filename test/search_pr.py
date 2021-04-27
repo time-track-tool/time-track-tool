@@ -1437,6 +1437,9 @@ properties = \
         , ( 'alternate_addresses'
           , ['admin', 'procurement-admin', 'user_view']
           )
+        , ( 'business_responsible'
+          , ['admin', 'procurement-admin', 'user_view']
+          )
         , ( 'clearance_by'
           , ['admin', 'procurement-admin', 'user_view']
           )

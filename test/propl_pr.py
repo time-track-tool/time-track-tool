@@ -339,6 +339,7 @@ properties = \
       , [ 'ad_domain'
         , 'address'
         , 'alternate_addresses'
+        , 'business_responsible'
         , 'clearance_by'
         , 'csv_delimiter'
         , 'guid'

@@ -839,6 +839,7 @@ properties = \
     , ( 'user'
       , [ 'address'
         , 'alternate_addresses'
+        , 'business_responsible'
         , 'clearance_by'
         , 'department_temp'
         , 'entry_date'

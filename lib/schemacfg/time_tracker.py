@@ -850,11 +850,11 @@ def security (db, ** kw) :
             )
           )
         , ( "user",         "Edit", ["Functional-Role"]
-          , ( "scale_seniority",
+          , ( "scale_seniority", "business_responsible"
             )
           )
         , ( "user",         "View", ["Functional-Role"]
-          , ( "planning_role", "scale_seniority"
+          , ( "planning_role", "scale_seniority", "business_responsible"
             )
           )
         , ( "user_dynamic", "View", ["User"]

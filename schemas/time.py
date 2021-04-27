@@ -106,7 +106,7 @@ prop_perms = \
         , "id", "lunch_duration", "lunch_start", "nickname"
         , "pictures", "position_text", "queries", "realname", "room", "sex"
         , "status", "subst_active", "substitute", "supervisor", "timezone"
-        , "title", "username", "tt_lines"
+        , "title", "username", "tt_lines", "business_responsible"
         )
       )
     ]
