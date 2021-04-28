@@ -407,6 +407,12 @@ _helptext          = \
           '''
       ]
     , ""'born'                        : [""'''Date of birth''']
+    , ""'business_responsible'        :
+      [ ""'''The business responsible defines who is responsible for a person
+             from a Business Unit point of view. The field is used, when the
+             business responsible is a different person from the
+             disciplinary-line manager within a legal entity.'''
+      ]
     , ""'business_unit'               :
       [""'''%(Property)s responsible for this %(Classname)s''']
     , ""'card_type'                   : [""'''Type of this %(Classname)s''']
