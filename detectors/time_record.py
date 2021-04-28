@@ -366,28 +366,13 @@ def check_daily_record (db, cl, nodeid, new_values) :
 # end def check_daily_record
 
 def update_timerecs (db, time_record_id, set_it) :
-    """ Update list of time_records with the given time_record_id
-        if do_reset is specified, we *remove* the given id from the
-        list, otherwise we *add* it.
+    """ Invalidate tr duration, this used to also set the list of
+        time_records in the daily record which is now an automatic
+        backlink.
     """
-    id      = int (time_record_id)
     drec_id = db.time_record.get (time_record_id, 'daily_record')
-    trecs_o = [int (i) for i in db.daily_record.get (drec_id, 'time_record')]
-    trecs   = dict ([(i, 1) for i in trecs_o])
-    if set_it :
-        trecs [id] = 1
-    elif id in trecs :
-        del trecs [id]
-    trecs   = trecs.keys ()
-    trecs.sort ()
-    if trecs != trecs_o :
-        dr = db.daily_record.getnode (drec_id)
-        db.daily_record.set \
-            ( drec_id
-            , time_record    = [str (i) for i in trecs]
-            , tr_duration_ok = None
-            )
-        user_dynamic.invalidate_tr_duration (db, dr.user, dr.date, dr.date)
+    dr      = db.daily_record.getnode (drec_id)
+    user_dynamic.invalidate_tr_duration (db, dr.user, dr.date, dr.date)
 # end def update_timerecs
 
 def update_time_record_in_daily_record (db, cl, nodeid, old_values) :
@@ -420,7 +405,6 @@ def new_daily_record (db, cl, nodeid, new_values) :
             ("Only user, Timetracking by user, "
              "and Controlling may create daily records"
             )
-    common.reject_attributes (_, new_values, 'time_record')
     # the following is allowed for the admin (import!)
     if uid != '1' :
         common.reject_attributes (_, new_values, 'status')
@@ -440,7 +424,6 @@ def new_daily_record (db, cl, nodeid, new_values) :
         (None, {'date' : date.pretty ('%Y-%m-%d'), 'user' : user}) :
         raise Reject, _ ("Duplicate record: date = %(date)s, user = %(user)s") \
             % new_values
-    new_values ['time_record'] = []
     if 'status' not in new_values :
         new_values ['status']  = db.daily_record_status.lookup ('open')
     new_values ['tr_duration_ok'] = None
