@@ -111,7 +111,6 @@ def init \
                                             )
         , required_overtime     = Boolean   ()
         , weekend_allowed       = Boolean   ()
-        , time_record           = Multilink ("time_record",   do_journal = "no")
         , tr_duration_ok        = Number    ()
         )
     daily_record.setlabelprop ('date')
@@ -309,7 +308,10 @@ def init \
     time_record = Class \
         ( db
         , ''"time_record"
-        , daily_record          = Link      ("daily_record",  do_journal = "no")
+        , daily_record          = Link      ( "daily_record"
+                                            , do_journal = "no"
+                                            , rev_multilink = "time_record"
+                                            )
         , start                 = String    (indexme = "no")
         , end                   = String    (indexme = "no")
         , start_generated       = Boolean   ()
