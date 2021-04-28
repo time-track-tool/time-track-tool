@@ -2387,7 +2387,7 @@ _helptext          = \
           '''
       ]
     , ""'vie_user_ml'                 :
-      [ ""'''Used to show the user backlink if the field %%(user.vie_user)s
+      [ ""'''Used to show the user backlink if the field Internal user
              is set. Filled automatically.
           '''
       ]
