@@ -4460,3 +4460,6 @@ msgstr "is Email"
 
 msgid "is_raw_material"
 msgstr "Is raw material"
+
+msgid "doc_category"
+msgstr "Document category"
