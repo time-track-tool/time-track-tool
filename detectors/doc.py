@@ -52,9 +52,11 @@ def check_document_frozen (db, cl, nodeid, newvalues) :
     if common.user_has_role (db, db.getuid (), 'Doc_Admin') :
         return
 
+    action = _ ('modify')
     if nodeid :
         attr_lst = ('product_type', 'reference', 'artefact', 'doc_category')
-        action   = _ ('modify')
+        if db.getuid () == '1' :
+            attr_lst = ('product_type', 'reference', 'artefact')
     else :
         attr_lst = ('document_nr',)
         action   = _ ('specify')
