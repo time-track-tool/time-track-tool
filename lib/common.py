@@ -45,6 +45,7 @@ from   roundup.date           import Date, Interval, Range
 from   roundup.hyperdb        import String, Link, Multilink
 from   roundup.hyperdb        import Date as Hyperdb_Date
 from   roundup.cgi.templating import MultilinkHTMLProperty, LinkHTMLProperty
+from   roundup.anypy.strings  import is_us
 from   rup_utils              import translate
 
 TFL = None
@@ -1194,7 +1195,7 @@ def update_emails (db, uid, verbose = False) :
 # end def update_emails
 
 class Size_Limit (object) :
-    def __init__ (self, db, config) :
+    def __init__ (self, db, config, default = None) :
         try :
             db = db._db
         except AttributeError :
@@ -1202,8 +1203,8 @@ class Size_Limit (object) :
         try :
             limit = getattr (db.config.ext, config)
         except AttributeError :
-            limit = None
-        if isinstance (limit, str) :
+            limit = default
+        if is_us (limit) :
             if limit.endswith ('k') or limit.endswith ('K') :
                 limit = int (limit [:-1]) * 1024
             elif limit.endswith ('M') :
@@ -1227,6 +1228,7 @@ class Size_Limit (object) :
     def __nonzero__ (self) :
         return bool (self.limit)
     # end def __nonzero__
+    __bool__ = __nonzero__
 
 # end class Size_Limit
 

@@ -17,9 +17,10 @@ user_html_template_update_roundup = False
 ##port is default
 
 [limit]
-picture_size = 10k
-file_size    = 100k
-effort       = 8
+picture_size      = 10k
+file_size         = 100k
+effort            = 8
+picture_sync_size = 10k
 
 [ttt]
 freeze_days = 0

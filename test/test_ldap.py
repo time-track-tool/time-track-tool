@@ -26,6 +26,7 @@ import pytest
 import logging
 import shutil
 
+from hashlib            import md5
 from ldap3.utils.ciDict import CaseInsensitiveDict
 
 from roundup.test          import memorydb
@@ -181,11 +182,19 @@ class _Test_Base :
             , allowed_dn_suffix_by_domain = \
                 'ext1.internal:OU=External'
             )
+        limit_settings = dict \
+            ( picture_sync_size = '9k'
+            #, picture_quality   = '80'
+            )
         config.ext = UserConfig ()
         for k in ldap_settings :
             o = Option (config.ext, 'LDAP', k)
             config.ext.add_option (o)
             config.ext ['LDAP_' + k.upper ()] = ldap_settings [k]
+        for k in limit_settings :
+            o = Option (config.ext, 'LIMIT', k)
+            config.ext.add_option (o)
+            config.ext ['LIMIT_' + k.upper ()] = limit_settings [k]
         # Override before call to setup_ldap if necessary
         self.aux_ldap_parameters = {}
     # end def setup_tracker
@@ -571,6 +580,16 @@ class Test_Case_LDAP_Sync (_Test_Base, unittest.TestCase) :
         ((v [0], k) for k, v in mock_users_by_username.items ())
 
 
+    def set_testuser1_testpic (self) :
+        with open ('test/240px-Bald_Man.svg.png', 'rb') as f :
+            fid = self.db.file.create \
+                ( name    = 'picture'
+                , type    = 'image/png'
+                , content = f.read ()
+                )
+            self.db.user.set (self.testuser1, pictures = [fid])
+    # end def set_testuser1_testpic
+
     def test_sync_contact_to_roundup (self) :
         """ Test that modification of firstname and lastname is synced
             to LDAP
@@ -632,7 +651,6 @@ class Test_Case_LDAP_Sync (_Test_Base, unittest.TestCase) :
         self.ldap_sync.sync_all_users_from_ldap ()
         msg = '(Dry Run): Synced %s users from LDAP to roundup' \
               % (len (self.mock_users_by_username) - 1)
-        #import pdb; pdb.set_trace()
         self.assertEqual (self.messages [-2][0], msg)
         user = self.db.user.getnode (self.testuser1)
         self.assertEqual (user.firstname, 'Test')
@@ -1016,6 +1034,50 @@ class Test_Case_LDAP_Sync (_Test_Base, unittest.TestCase) :
         firstname_vie_user = self.db.user.get (self.testuser4, 'firstname')
         self.assertEqual (firstname_vie_user, new_firstname)
     # end test_sync_attributes_not_directly_updating_vie_user
+
+    def test_pic_convert_no_resize (self) :
+        # Although the original pic is > 15k in size it will be smaller
+        # than the 9k limit after conversion to JPEG.
+        self.setup_ldap ()
+        self.set_testuser1_testpic ()
+        self.ldap_sync.sync_user_to_ldap ('testuser1@ds1.internal')
+        newdn = 'CN=Test User,OU=internal'
+        self.assertEqual \
+            (self.ldap_modify_result.keys (), [newdn])
+        d = self.ldap_modify_result [newdn]
+        self.assertEqual (len (d), 8)
+        pic = d ['thumbnailPhoto'][0][1][0]
+        self.assertEqual (len (pic), 6034)
+        # compute md5sum over synced picture to assert that the picture
+        # conversion is stable and produces same result every time.
+        # Otherwise we would produce lots of ldap changes!
+        # This *may* change for different versions of PIL.
+        m = md5 (pic)
+        self.assertEqual (m.hexdigest (), 'c3b3e3bd46d5c7e9c82b71e1d92ad1a1')
+    # end def test_pic_convert_no_resize
+
+    def test_pic_convert_with_resize (self) :
+        # Although the original pic is > 15k in size it will be smaller
+        # than the 9k limit after conversion to JPEG. So we need to set
+        # the limit lower to trigger the resizing mechanism
+        self.setup_ldap ()
+        self.set_testuser1_testpic ()
+        self.db.config.ext ['LIMIT_PICTURE_SYNC_SIZE'] = '5000'
+        self.ldap_sync.sync_user_to_ldap ('testuser1@ds1.internal')
+        newdn = 'CN=Test User,OU=internal'
+        self.assertEqual \
+            (self.ldap_modify_result.keys (), [newdn])
+        d = self.ldap_modify_result [newdn]
+        self.assertEqual (len (d), 8)
+        pic = d ['thumbnailPhoto'][0][1][0]
+        self.assertEqual (len (pic), 4663)
+        # compute md5sum over synced picture to assert that the picture
+        # conversion is stable and produces same result every time.
+        # Otherwise we would produce lots of ldap changes!
+        # This *may* change for different versions of PIL.
+        m = md5 (pic)
+        self.assertEqual (m.hexdigest (), '6d339cc744579e0349da05c78a2f1026')
+    # end def test_pic_convert_with_resize
 
 # end class Test_Case_LDAP_Sync
 

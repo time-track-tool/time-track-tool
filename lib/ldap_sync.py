@@ -28,11 +28,23 @@ class Pic :
         self.b = b = fileobj.binary_content
         self.len   = len (b)
         self.img   = Image.open (io.BytesIO (b))
+        # Can only convert RGB to JPEG, not something that contains
+        # transparent layers
+        if self.img.mode in ('P', 'RGBA') :
+            self.img = self.img.convert ('RGB')
     # end def __init__
 
-    def resized_picture (self, size) :
-        if self.len <= size :
+    def resized_picture (self, size = None, quality = 80) :
+        if (not size or self.len <= size) and self.img.format == 'JPEG' :
             return self.b
+        # Maybe no resize necessary after conversion to JPEG:
+        if self.img.format != 'JPEG' :
+            picio  = io.BytesIO ()
+            self.img.save (picio, format = 'JPEG', quality = quality)
+            sz     = len (picio.getvalue ())
+            if not size or sz <= size :
+                return picio.getvalue ()
+
         #print (self.img.getbbox ())
         x1, y1, x2, y2 = self.img.getbbox ()
         #self.img.show ()
@@ -46,7 +58,7 @@ class Pic :
                 break
             imn    = self.img.resize (middle)
             picio  = io.BytesIO ()
-            imn.save (picio, format = self.img.format)
+            imn.save (picio, format = 'JPEG', quality = quality)
             sz     = len (picio.getvalue ())
             #print (size, sz)
             if sz <= size :
@@ -545,14 +557,19 @@ class LDAP_Roundup_Sync (Log) :
         return cl.get (user [attr], 'name')
     # end def get_name
 
-    def get_picture (self, user, attr, max_size = 102400) :
+    def get_picture (self, user, attr) :
         """ Get picture from roundup user class
             and reduce to given max_size
         """
-        pics = [self.db.file.getnode (i) for i in user.pictures]
+        max_size = common.Size_Limit \
+            (self.db, 'LIMIT_PICTURE_SYNC_SIZE', default = 10240)
+        max_size = max_size.limit
+        quality  = getattr (self.cfg, 'LIMIT_PICTURE_QUALITY', '80')
+        quality  = int (quality)
+        pics     = [self.db.file.getnode (i) for i in user.pictures]
         for p in sorted (pics, reverse = True, key = lambda x : x.activity) :
             pic = Pic (p)
-            return pic.resized_picture (max_size)
+            return pic.resized_picture (max_size, quality)
     # end def get_picture
 
     def get_realname (self, x, y) :
