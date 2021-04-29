@@ -89,6 +89,7 @@ def init \
         ( db, "doc_category"
         , name                = String    (required = True)
         , doc_num             = String    (required = True)
+        , valid               = Boolean   ()
         )
     doc_category.setkey ("name")
 
