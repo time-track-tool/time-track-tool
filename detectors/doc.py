@@ -148,6 +148,8 @@ def check_name \
 
 def check_doc_category (db, cl, nodeid, newvalues) :
     common.require_attributes (_, cl, nodeid, newvalues, 'doc_num')
+    if 'valid' not in newvalues :
+        newvalues ['valid'] = True
     check_name (db, cl, nodeid, newvalues, 'doc_num', num_re, num_txt)
 # end def check_doc_category
 
