@@ -203,6 +203,7 @@ properties = \
     , ( 'doc'
       , [ 'artefact'
         , 'department'
+        , 'doc_category'
         , 'document_nr'
         , 'files'
         , 'link'
@@ -214,6 +215,11 @@ properties = \
         , 'state_changed_by'
         , 'status'
         , 'title'
+        ]
+      )
+    , ( 'doc_category'
+      , [ 'doc_num'
+        , 'name'
         ]
       )
     , ( 'doc_issue_status'
