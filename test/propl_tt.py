@@ -122,6 +122,7 @@ properties = \
     , ( 'doc_category'
       , [ 'doc_num'
         , 'name'
+        , 'valid'
         ]
       )
     , ( 'doc_status'
