@@ -33,13 +33,15 @@ import common
 import re
 
 name_txt  = "[0-9a-zA-Z/]+"
+num_txt   = "[0-9]{2}"
 ref_txt   = "[-0-9a-zA-Z/]+" # allow '-' for reference name
 ref_re    = re.compile ("^%s$" % ref_txt)
 name_re   = re.compile ("^%s$" % name_txt)
+num_re    = re.compile (num_txt)
 doc_nr_re = re.compile ("^(%s-)+? (?P<suffix> [0-9]+ )$" % name_txt, re.X)
 
 def check_document_required (db, cl, nodeid, newvalues) :
-    req = ['product_type', 'reference', 'artefact', 'department', 'title']
+    req = ['product_type', 'reference', 'artefact', 'doc_category', 'title']
     if nodeid :
         req.append ('document_nr')
         req.append ('responsible')
@@ -51,7 +53,7 @@ def check_document_frozen (db, cl, nodeid, newvalues) :
         return
 
     if nodeid :
-        attr_lst = ('product_type', 'reference', 'artefact', 'department')
+        attr_lst = ('product_type', 'reference', 'artefact', 'doc_category')
         action   = _ ('modify')
     else :
         attr_lst = ('document_nr',)
@@ -73,12 +75,11 @@ def check_document_nr (db, cl, nodeid, newvalues) :
             raise Reject (_ ('Document number is not valid: "%s"') % doc_nr)
     elif not nodeid :
         ### Creation where no `document_nr` is given
-        dept_doc_num = db.department.get (newvalues ['department'], 'doc_num')
         prefix  = "-".join \
             ( ( db.product_type.get (newvalues ['product_type'], 'name')
               , db.reference.get    (newvalues ['reference']   , 'name')
               , db.artefact.get     (newvalues ['artefact']    , 'name')
-              , _dept_doc_nr (db, cl, nodeid, newvalues)
+              , _cat_doc_nr (db, cl, nodeid, newvalues)
               , "" # for the trailing dash
               )
             )
@@ -117,14 +118,13 @@ def defaults (db, cl, nodeid, newvalues) :
     newvalues ['state_changed_by'] = db.getuid ()
 # end def defaults
 
-def _dept_doc_nr (db, cl, nodeid, newvalues) :
-    """Return the selected department's `doc_num`, or reject, if it is not set.
+def _cat_doc_nr (db, cl, nodeid, newvalues) :
+    """Return the selected doc_category's `doc_num`
     """
-    res = db.department.get (newvalues ['department'], 'doc_num')
-    if not res :
-        raise Reject, _ ('Selected department has no document number')
+    res = db.doc_category.get (newvalues ['doc_category'], 'doc_num')
+    assert res
     return res
-# end def _dept_doc_nr
+# end def _cat_doc_nr
 
 def _next_document_nr (db, cl, prefix) :
     filterspec = dict (document_nr = prefix)
@@ -146,9 +146,10 @@ def check_name \
             % dict (attr = _ (name), name = txt)
 # end def check_name
 
-def check_department (db, cl, nodeid, newvalues) :
-    return check_name (db, cl, nodeid, newvalues, name = 'doc_num')
-# end def check_department
+def check_doc_category (db, cl, nodeid, newvalues) :
+    common.require_attributes (_, cl, nodeid, newvalues, 'doc_num')
+    check_name (db, cl, nodeid, newvalues, 'doc_num', num_re, num_txt)
+# end def check_doc_category
 
 def check_reference (db, cl, nodeid, newvalues) :
     return check_name (db, cl, nodeid, newvalues, regex = ref_re, txt = ref_txt)
@@ -195,7 +196,7 @@ def init (db) :
         for cl in (db.product_type, db.artefact) :
             cl.audit          (action, check_name)
         db.reference.audit    (action, check_reference)
-        db.department.audit   (action, check_department)
+        db.doc_category.audit (action, check_doc_category)
 
     db.doc.audit ('create', defaults, 140)
     db.doc.audit ('set',    check_statechange)
