@@ -19,7 +19,7 @@
  <tal:block metal:fill-slot="content"
   tal:define=
    "use_labelprop       nothing;
-    required_attributes string:title,product_type,reference,artefact,department;
+    required_attributes string:title,product_type,reference,artefact,doc_category;
     fieldname           python:lambda f, utils = utils, classname = classname :
                                utils.fieldname (classname, f);
     is_doc_admin        python:utils.user_has_role (db._db, uid, 'Doc_Admin');
@@ -98,7 +98,7 @@
     title       = {${context/title}},
     type        = {${context/artefact/description}},
     number      = {${context/document_nr}},
-    institution = {TTTech, ${context/department/name}},
+    institution = {TTTech},
 }"/>
     </tal:block>
    </tal:block>
