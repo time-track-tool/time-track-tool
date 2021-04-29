@@ -20,9 +20,9 @@
     , utils.ExtProperty (utils, pdict ['artefact'],     multiselect = 1)
     , utils.ExtProperty
         ( utils
-        , pdict ['department']
+        , pdict ['doc_category']
         , multiselect = 1
-        , filter      = utils.valid_item (now)
+        , filter      = dict (valid = True)
         )
     , utils.ExtProperty (utils, pdict ['status'],       multiselect = 1)
     , utils.ExtProperty (utils, pdict ['responsible'])

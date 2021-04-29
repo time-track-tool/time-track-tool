@@ -4451,3 +4451,6 @@ msgstr "Roles"
 
 msgid "is_email"
 msgstr "is Email"
+
+msgid "doc_category"
+msgstr "Document category"
