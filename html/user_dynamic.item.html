@@ -50,17 +50,13 @@
       </td>
      </tr>
      <tr>
-      <th tal:content="structure python:utils.fieldname
-          (classname, 'user')"/>
+      <th tal:content="structure python:utils.fieldname (classname, 'user')"/>
       <td tal:condition="not:context/id">
-       <tal:block tal:define=
-            "name      python:'user';
-             form      string:itemSynopsis;
-             dont_care string:- no selection -;
-             selected  python:context.user and context.user.id or 0;
-            ">
-        <tal:block metal:use-macro="templates/userlist/macros/user"/>
-       </tal:block>
+       <span tal:content="structure python:context.user.field ()"/>
+       <span tal:content="structure python:utils.user_classhelp
+         ( db, property='user'
+         , exclude_system = True
+         )"/>
       </td>
       <td tal:condition="context/id"
         tal:content="structure python:utils.ExtProperty

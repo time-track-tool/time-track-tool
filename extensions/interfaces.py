@@ -414,20 +414,28 @@ def user_props (db) :
 def user_classhelp \
     ( db
     , property='responsible'
-    , inputtype   = 'radio'
-    , user_status = None
-    , ids         = None
-    , form        = 'itemSynopsis'
+    , inputtype      = 'radio'
+    , user_status    = None
+    , ids            = None
+    , form           = 'itemSynopsis'
+    , internal_only  = False
+    , exclude_system = False
     ) :
     if user_status :
         status = user_status
     else :
-        status = ','.join \
-            (db._db.user_status.filter (None, dict (is_nosy = True)))
+        udict = dict (is_nosy = True)
+        if exclude_system :
+            udict ['is_system'] = False
+        if internal_only :
+            udict ['is_internal'] = True
+        status = ','.join (db._db.user_status.filter (None, udict))
     if status :
         status = ';status=' + status
     idfilter = ''
     if ids :
+        if isinstance (ids, type ([])) :
+            ids = ','.join (ids)
         idfilter = ';id=' + ids
     return db.user.classhelp \
         ( user_props (db)

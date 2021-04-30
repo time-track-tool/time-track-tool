@@ -24,7 +24,7 @@
       <td>
        <span tal:replace="structure context/user/field"/>
        <span tal:replace="structure python:utils.user_classhelp
-             (db, property = 'user')"/>
+             (db, property = 'user', exclude_system = True)"/>
       </td>
       <th tal:content="structure python:utils.fieldname (classname, 'date')"/>
       <td tal:content="structure python:context.date.field (size=20)"/>

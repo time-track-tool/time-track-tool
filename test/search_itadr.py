@@ -477,6 +477,9 @@ properties = \
       , [ ( 'description'
           , ['admin', 'contact', 'it', 'itview', 'pbx', 'sec-incident-nosy', 'sec-incident-responsible', 'type', 'user', 'user_view']
           )
+        , ( 'is_internal'
+          , ['admin', 'contact', 'it', 'itview', 'pbx', 'sec-incident-nosy', 'sec-incident-responsible', 'type', 'user', 'user_view']
+          )
         , ( 'is_nosy'
           , ['admin', 'contact', 'it', 'itview', 'pbx', 'sec-incident-nosy', 'sec-incident-responsible', 'type', 'user', 'user_view']
           )

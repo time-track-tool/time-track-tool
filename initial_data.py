@@ -267,6 +267,7 @@ if 'user_status' in db.classes :
         ( name        = "valid"
         , is_nosy     = True
         , is_system   = False
+        , is_internal = True
         , description = "Valid user"
         )
     if 'timetracking_allowed' in user_status.properties :
@@ -276,12 +277,14 @@ if 'user_status' in db.classes :
         ( name        = "obsolete"
         , is_nosy     = False
         , is_system   = False
+        , is_internal = False
         , description = "No longer valid"
         )
     user_status.create \
         ( name        = "system"
         , is_nosy     = True
         , is_system   = True
+        , is_internal = False
         , description = "Needed by system"
         )
 

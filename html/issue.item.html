@@ -389,12 +389,10 @@
             (classname, 'external_users')"/>
        <td>
         <span tal:content="structure context/external_users/field" />
-        <span tal:content="structure python:db.user.classhelp
-              ( utils.user_props (db)
-              , property = 'external_users'
-              , width    = '600'
-              , pagesize = 5000
-              , filter   = 'status=external'
+        <span tal:content="structure python:utils.user_classhelp
+              ( db, property = 'external_users'
+              , inputtype    = 'checkbox'
+              , user_status  = 'external'
               )" />
        </td>
       </tal:block>

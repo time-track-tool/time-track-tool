@@ -93,14 +93,12 @@
           (classname, 'purchasing_agents')"/>
       <td>
        <span tal:content="structure python:context.purchasing_agents.field ()"/>
-       <span tal:content="structure python:db.user.classhelp
-         ( utils.user_props (db)
-         , property='purchasing_agents'
-         , filter = 'id=%s'
-           % (','.join (utils.pr_type_valid_agents (db, context.id)))
-         , inputtype='checkbox'
-         , width = '600'
-         , pagesize = 1500
+       <span tal:content="structure python:utils.user_classhelp
+         ( db, property = 'purchasing_agents'
+         , ids            = utils.pr_type_valid_agents (db, context.id)
+         , inputtype      = 'checkbox'
+         , internal_only  = True
+         , exclude_system = True
          )"/>
       </td>
      </tr>

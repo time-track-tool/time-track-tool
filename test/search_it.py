@@ -280,6 +280,9 @@ properties = \
       , [ ( 'description'
           , ['admin', 'it', 'itview', 'sec-incident-nosy', 'sec-incident-responsible', 'user', 'user_view']
           )
+        , ( 'is_internal'
+          , ['admin', 'it', 'itview', 'sec-incident-nosy', 'sec-incident-responsible', 'user', 'user_view']
+          )
         , ( 'is_nosy'
           , ['admin', 'it', 'itview', 'sec-incident-nosy', 'sec-incident-responsible', 'user', 'user_view']
           )

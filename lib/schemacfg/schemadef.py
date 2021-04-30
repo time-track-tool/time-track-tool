@@ -353,6 +353,7 @@ class Importer (object) :
                     , description           = String    ()
                     , is_nosy               = Boolean   ()
                     , is_system             = Boolean   ()
+                    , is_internal           = Boolean   ()
                     )
                 User_Status_Ancestor.__init__ \
                     (self, db, classname, ** properties)

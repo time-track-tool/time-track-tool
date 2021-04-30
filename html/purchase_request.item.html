@@ -50,13 +50,11 @@
       <td>
        <span tal:content="structure python:context.requester.field ()"/>
        <span tal:condition="context/requester/is_edit_ok"
-             tal:content="structure python:db.user.classhelp
-                  ( 'username,realname'
-                  , property='requester'
-                  , inputtype='radio'
-                  , width='800'
-                  , pagesize=1000
-                  )"/>
+	     tal:replace="structure python:utils.user_classhelp
+		 ( db, property = 'requester'
+                 , internal_only  = True
+                 , exclude_system = True
+                 )"/>
       </td>
       <th tal:content="structure python:utils.fieldname (classname, 'organisation')"/>
       <td tal:content="structure python:context.organisation.menu
@@ -133,8 +131,7 @@
                    python:context.purchasing_agents.field ()"/>
          <span tal:condition="context/is_edit_ok"
 	       tal:replace="structure python:utils.user_classhelp
-		 ( db
-		 , property='purchasing_agents'
+		 ( db, property='purchasing_agents'
 		 , inputtype='checkbox'
                  , ids = utils.pr_agents (db)
 		 )"/><br>
@@ -274,11 +271,11 @@
           (classname, 'special_approval')"/>
       <td>
        <span tal:content="structure python: context.special_approval.field ()"/>
-       <span tal:content="structure python:db.user.classhelp
-        ( 'username,realname'
-        , property  = 'special_approval'
-        , width     = '600'
-        , pagesize  = '5000'
+       <span tal:content="structure python:utils.user_classhelp
+        ( db, property = 'special_approval'
+        , inputtype      = 'checkbox'
+        , internal_only  = True
+        , exclude_system = True
         )"/>
      </tr>
      <tr>

@@ -157,13 +157,10 @@
      <tal:block tal:condition="python: not context.id">
       <td>
        <span tal:content="structure python:context.user.field ()" />
-       <span tal:replace="structure python:db.user.classhelp
-             ( utils.user_props (db)
-             , property='user'
-             , inputtype='radio'
-             , width='600'
-             , filter='status=%s' % utils.valid_user_stati_filter (db)
-             , pagesize=500
+       <span tal:replace="structure python:utils.user_classhelp
+             ( db, property   = 'user'
+             , internal_only  = True
+             , exclude_system = True
              )"/>
       </td>
      </tal:block>

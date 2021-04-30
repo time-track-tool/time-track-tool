@@ -27,14 +27,8 @@
       <th tal:content="structure python:utils.fieldname (classname, 'author')"/>
       <td>
        <span tal:content="structure context/author/field"/>
-       <tal:block tal:replace="structure python:db.user.classhelp
-             ( utils.user_props (db)
-             , property='author'
-             , filter='status=%s' % utils.valid_user_stati_filter (db)
-             , inputtype='radio'
-             , width='600'
-             , pagesize=500
-             )"/>
+       <tal:block tal:replace="structure python:utils.user_classhelp
+             (db, property = 'author')"/>
       </td>
      </tr>
      <tr>

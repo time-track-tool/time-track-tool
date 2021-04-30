@@ -3453,6 +3453,9 @@ msgstr "is nosy"
 msgid "is_system"
 msgstr "is system"
 
+msgid "is_internal"
+msgstr "is internal"
+
 msgid "user_status"
 msgstr "User Status"
 

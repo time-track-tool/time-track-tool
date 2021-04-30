@@ -108,12 +108,11 @@
      <td>
       <span tal:replace="structure context/bookers/field"/>
       <span tal:condition="context/bookers/is_edit_ok"
-         tal:replace="structure python:db.user.classhelp
-            ( utils.user_props (db)
-            , property='bookers'
-            , width='600'
-            , filter='status=%s' % utils.valid_user_stati_filter (db)
-            , pagesize=5000
+         tal:replace="structure python:utils.user_classhelp
+            ( db, property   = 'bookers'
+            , inputtype      = 'checkbox'
+            , internal_only  = True
+            , exclude_system = True
             )"/>
      </td>
     </tr>

@@ -64,9 +64,8 @@
       <td>
        <span tal:content="structure python:context.user.field ()"/>
        <span tal:content="structure python:utils.user_classhelp
-         ( db
-         , property='user'
-         , user_status = nosy_stati
+         ( db, property='user'
+         , exclude_system = True
          )"/>
       </td>
      </tr>

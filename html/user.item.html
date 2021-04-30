@@ -257,10 +257,8 @@
       <td>
        <span tal:content="structure python:context.supervisor.field ()"/>
        <span tal:content="structure python:utils.user_classhelp
-             ( db
-             , property    = 'supervisor'
-             , user_status = nosy_stati
-             , form        = 'user_form'
+             ( db, property = 'supervisor'
+             , form = 'user_form'
              )"/>
       </td>
      </tr>
@@ -271,10 +269,9 @@
        <span tal:content="structure python:
              context.business_responsible.field ()"/>
        <span tal:content="structure python:utils.user_classhelp
-             ( db
-             , property    = 'business_responsible'
-             , user_status = nosy_stati
-             , form        = 'user_form'
+             ( db, property   = 'business_responsible'
+             , form           = 'user_form'
+             , exclude_system = True
              )"/>
       </td>
      </tr>
@@ -283,10 +280,9 @@
       <td>
        <span tal:content="structure python: context.substitute.field ()"/>
        <span tal:content="structure python:utils.user_classhelp
-             ( db
-             , property    = 'substitute'
-             , user_status = nosy_stati
-             , form        = 'user_form'
+             ( db, property   = 'substitute'
+             , form           = 'user_form'
+             , exclude_system = True
              )"/>
       </td>
      </tr>
@@ -312,10 +308,10 @@
       <td tal:condition="context/timetracking_by/is_edit_ok">
        <span tal:content="structure python: context.timetracking_by.field ()"/>
        <span tal:content="structure python:utils.user_classhelp
-             ( db
-             , property    = 'timetracking_by'
-             , user_status = nosy_stati
-             , form        = 'user_form'
+             ( db, property   = 'timetracking_by'
+             , form           = 'user_form'
+             , exclude_system = True
+             , internal_only  = True
              )"/>
       </td>
       <td tal:content="context/timetracking_by/plain"
@@ -327,10 +323,10 @@
       <td tal:condition="context/clearance_by/is_edit_ok">
        <span tal:content="structure python: context.clearance_by.field ()"/>
        <span tal:content="structure python:utils.user_classhelp
-             ( db
-             , property    = 'clearance_by'
-             , user_status = nosy_stati
-             , form        = 'user_form'
+             ( db, property   = 'clearance_by'
+             , form           = 'user_form'
+             , exclude_system = True
+             , internal_only  = True
              )"/>
       </td>
       <td tal:content="context/clearance_by/plain"
@@ -342,10 +338,10 @@
        <td tal:condition="context/vie_user/is_edit_ok">
         <span tal:content="structure python: context.vie_user.field ()"/>
         <span tal:content="structure python:utils.user_classhelp
-             ( db
-             , property    = 'vie_user'
-             , user_status = nosy_stati
-             , form        = 'user_form'
+             ( db, property   = 'vie_user'
+             , form           = 'user_form'
+             , internal_only  = True
+             , exclude_system = True
              )"/>
        </td>
       </tr>
