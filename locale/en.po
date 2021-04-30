@@ -3450,6 +3450,9 @@ msgstr "timetracking allowed"
 msgid "is_nosy"
 msgstr "is nosy"
 
+msgid "is_system"
+msgstr "is system"
+
 msgid "user_status"
 msgstr "User Status"
 

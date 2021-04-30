@@ -283,6 +283,9 @@ properties = \
         , ( 'is_nosy'
           , ['admin', 'it', 'itview', 'sec-incident-nosy', 'sec-incident-responsible', 'user', 'user_view']
           )
+        , ( 'is_system'
+          , ['admin', 'it', 'itview', 'sec-incident-nosy', 'sec-incident-responsible', 'user', 'user_view']
+          )
         , ( 'name'
           , ['admin', 'it', 'itview', 'sec-incident-nosy', 'sec-incident-responsible', 'user', 'user_view']
           )

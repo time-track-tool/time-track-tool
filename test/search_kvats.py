@@ -351,6 +351,9 @@ properties = \
         , ( 'is_nosy'
           , ['admin', 'issue_admin', 'msgedit', 'msgsync', 'user']
           )
+        , ( 'is_system'
+          , ['admin', 'issue_admin', 'msgedit', 'msgsync', 'user']
+          )
         , ( 'name'
           , ['admin', 'issue_admin', 'msgedit', 'msgsync', 'user']
           )

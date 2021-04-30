@@ -480,6 +480,9 @@ properties = \
         , ( 'is_nosy'
           , ['admin', 'contact', 'it', 'itview', 'pbx', 'sec-incident-nosy', 'sec-incident-responsible', 'type', 'user', 'user_view']
           )
+        , ( 'is_system'
+          , ['admin', 'contact', 'it', 'itview', 'pbx', 'sec-incident-nosy', 'sec-incident-responsible', 'type', 'user', 'user_view']
+          )
         , ( 'name'
           , ['admin', 'contact', 'it', 'itview', 'pbx', 'sec-incident-nosy', 'sec-incident-responsible', 'type', 'user', 'user_view']
           )

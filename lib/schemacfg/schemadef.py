@@ -352,6 +352,7 @@ class Importer (object) :
                     ( name                  = String    ()
                     , description           = String    ()
                     , is_nosy               = Boolean   ()
+                    , is_system             = Boolean   ()
                     )
                 User_Status_Ancestor.__init__ \
                     (self, db, classname, ** properties)

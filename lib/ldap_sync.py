@@ -231,9 +231,9 @@ class User_Sync_Config_Entry (Config_Entry) :
                         vie_user_ml link. This keeps it consistent with
                         the linked_from user.
         dyn_user_valid: Perform the sync for the current user only if
-                        there is a valid dynamic user record. This flag
-                        is used only for items that take data from the
-                        dynamic user record.
+                        there is a valid dynamic user record or if the
+                        user has the is_system flag set in the
+                        user_status.
     """
 
     attrs = ( 'name', 'do_change', 'to_roundup', 'empty_allowed'
@@ -313,9 +313,9 @@ class Userdynamic_Sync_Config_Entry (Config_Entry) :
         to_roundup:     is the function to convert LDAP->roundup this is
                         currently unused, we don't sync to roundup
         dyn_user_valid: Perform the sync for the current user only if
-                        there is a valid dynamic user record. This flag
-                        is used only for items that take data from the
-                        dynamic user record.
+                        there is a valid dynamic user record.
+                        The dyn_user_valid flag is used only for items
+                        that take data from the dynamic user record.
     """
 
     attrs = \
@@ -1743,9 +1743,14 @@ class LDAP_Roundup_Sync (Log) :
             and dyn.valid_from <= now
             and (not dyn.valid_to or dyn.valid_to > now)
             )
+        ustatus   = self.db.user_status.getnode (user.status)
+        is_system = (r_user.id == user.id and ustatus.is_system)
         for rk in sorted (umap) :
             for synccfg in umap [rk] :
-                if synccfg.dyn_user_valid and not dyn_is_current :
+                if  (   synccfg.dyn_user_valid
+                    and not dyn_is_current
+                    and not is_system
+                    ) :
                     self.error \
                         ( 'Not syncing "%s"->"%s": no valid dyn. user for "%s"'
                         % (rk, synccfg.name, user.username)

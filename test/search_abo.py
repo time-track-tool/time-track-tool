@@ -489,6 +489,9 @@ properties = \
         , ( 'is_nosy'
           , ['abo', 'abo+invoice', 'admin', 'contact', 'invoice', 'letter', 'product', 'type', 'user', 'user_view']
           )
+        , ( 'is_system'
+          , ['abo', 'abo+invoice', 'admin', 'contact', 'invoice', 'letter', 'product', 'type', 'user', 'user_view']
+          )
         , ( 'name'
           , ['abo', 'abo+invoice', 'admin', 'contact', 'invoice', 'letter', 'product', 'type', 'user', 'user_view']
           )

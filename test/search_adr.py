@@ -307,6 +307,9 @@ properties = \
         , ( 'is_nosy'
           , ['admin', 'contact', 'letter', 'type', 'user', 'user_view']
           )
+        , ( 'is_system'
+          , ['admin', 'contact', 'letter', 'type', 'user', 'user_view']
+          )
         , ( 'name'
           , ['admin', 'contact', 'letter', 'type', 'user', 'user_view']
           )

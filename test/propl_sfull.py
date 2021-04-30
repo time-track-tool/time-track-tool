@@ -920,6 +920,7 @@ properties = \
     , ( 'user_status'
       , [ 'description'
         , 'is_nosy'
+        , 'is_system'
         , 'name'
         , 'timetracking_allowed'
         ]

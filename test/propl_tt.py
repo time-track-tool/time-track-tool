@@ -551,6 +551,7 @@ properties = \
     , ( 'user_status'
       , [ 'description'
         , 'is_nosy'
+        , 'is_system'
         , 'ldap_group'
         , 'ldap_prio'
         , 'name'

@@ -263,20 +263,27 @@ if 'severity' in db.classes :
 if 'user_status' in db.classes :
     # user status must come first.
     user_status = db.getclass ('user_status')
+    d = dict \
+        ( name        = "valid"
+        , is_nosy     = True
+        , is_system   = False
+        , description = "Valid user"
+        )
     if 'timetracking_allowed' in user_status.properties :
-        user_status.create \
-            ( name                 = "valid"
-            , is_nosy              = True
-            , description          = "Valid user"
-            , timetracking_allowed = True
-            )
-    else :
-        user_status.create \
-            (name = "valid", is_nosy = True, description = "Valid user")
+        d ['timetracking_allowed'] = True
+    user_status.create (**d)
     user_status.create \
-        (name = "obsolete", is_nosy = False, description = "No longer valid")
+        ( name        = "obsolete"
+        , is_nosy     = False
+        , is_system   = False
+        , description = "No longer valid"
+        )
     user_status.create \
-        (name = "system",   is_nosy = True,  description = "Needed by system")
+        ( name        = "system"
+        , is_nosy     = True
+        , is_system   = True
+        , description = "Needed by system"
+        )
 
 if 'uc_type' in db.classes :
     db.uc_type.create \

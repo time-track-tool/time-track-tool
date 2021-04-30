@@ -703,6 +703,41 @@ class Test_Case_LDAP_Sync (_Test_Base, unittest.TestCase) :
         self.assertEqual (changed, newcn)
     # end def test_sync_realname_to_ldap
 
+    def test_dont_sync_cn_if_no_dynuser (self) :
+        self.setup_ldap ()
+        self.log.error = self.mock_log
+        self.db.user_dynamic.retire (self.user_dynamic1_1)
+        self.ldap_sync.sync_user_to_ldap ('testuser1@ds1.internal')
+        olddn = 'CN=Test Middlename Usernameold,OU=internal'
+        self.assertEqual \
+            (self.ldap_modify_result.keys (), [olddn])
+        d = self.ldap_modify_result [olddn]
+        self.assertEqual (len (d), 4)
+        self.assertEqual (self.ldap_modify_dn_result.keys (), [])
+        msg = 'Not syncing "realname"->"cn": no valid dyn. user for'
+        self.assertTrue (self.messages [-1][0].startswith (msg))
+    # end def test_dont_sync_cn_if_no_dynuser
+
+    def test_sync_cn_if_no_dynuser_but_system (self) :
+        self.setup_ldap ()
+        self.log.error = self.mock_log
+        self.db.user_dynamic.retire (self.user_dynamic1_1)
+        self.db.user_status.set (self.ustatus_valid_ad, is_system = True)
+        self.ldap_sync.sync_user_to_ldap ('testuser1@ds1.internal')
+        newdn = 'CN=Test User,OU=internal'
+        olddn = 'CN=Test Middlename Usernameold,OU=internal'
+        newcn = newdn.split (',') [0].lower ()
+        self.assertEqual \
+            (self.ldap_modify_result.keys (), [newdn])
+        d = self.ldap_modify_result [newdn]
+        # The number differs from the test_sync_realname_to_ldap above
+        # because we've retired the dynamic user record
+        self.assertEqual (len (d), 5)
+        self.assertEqual (self.ldap_modify_dn_result.keys (), [olddn])
+        changed = self.ldap_modify_dn_result [olddn].lower ()
+        self.assertEqual (changed, newcn)
+    # end def test_sync_cn_if_no_dynuser_but_system
+
     def test_sync_no_cn (self) :
         self.tracker.config.ext.LDAP_DO_NOT_SYNC_LDAP_PROPERTIES = 'cn'
         self.setup_ldap ()
