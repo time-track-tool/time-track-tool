@@ -35,7 +35,9 @@ import os
 import re
 import locale
 from roundup.cgi.TranslationService import get_translation
+from roundup.cgi.templating         import HTMLClass
 from roundup.date                   import Date, Interval
+from roundup.hyperdb                import Database as hyperdb_database
 from copy                           import copy
 from xml.sax.saxutils               import escape
 
@@ -420,7 +422,12 @@ def user_classhelp \
     , form           = 'itemSynopsis'
     , internal_only  = False
     , exclude_system = False
+    , client         = None
     ) :
+    try :
+        hdb = db._db
+    except AttributeError :
+        hdb = db
     if user_status :
         status = user_status
     else :
@@ -429,7 +436,7 @@ def user_classhelp \
             udict ['is_system'] = False
         if internal_only :
             udict ['is_internal'] = True
-        status = ','.join (db._db.user_status.filter (None, udict))
+        status = ','.join (hdb.user_status.filter (None, udict))
     if status :
         status = ';status=' + status
     idfilter = ''
@@ -437,7 +444,11 @@ def user_classhelp \
         if isinstance (ids, type ([])) :
             ids = ','.join (ids)
         idfilter = ';id=' + ids
-    return db.user.classhelp \
+    if isinstance (db, hyperdb_database) :
+        classhelp = HTMLClass (client, 'user').classhelp
+    else :
+        classhelp = db.user.classhelp
+    return classhelp \
         ( user_props (db)
         , property  = property
         , filter    = 'roles=Nosy' + status + idfilter
