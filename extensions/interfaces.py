@@ -402,7 +402,7 @@ def user_props (db) :
         db = db._db
     except AttributeError :
         pass
-    props = dict (username = 0, firstname = 2, lastname = 3, address = 4)
+    props = dict (username = 0, firstname = 2, lastname = 3, address = 6)
     props = dict \
         ((k, v) for k, v in props.iteritems () if k in db.user.properties)
     if 'firstname' not in props :
@@ -442,7 +442,7 @@ def user_classhelp \
         , property  = property
         , filter    = 'roles=Nosy' + status + idfilter
         , inputtype = inputtype
-        , width     = '600'
+        , width     = '1200'
         , pagesize  = 2000
         , form      = form
         )
