@@ -1744,7 +1744,7 @@ class LDAP_Roundup_Sync (Log) :
             and (not dyn.valid_to or dyn.valid_to > now)
             )
         ustatus   = self.db.user_status.getnode (user.status)
-        is_system = (r_user.id == user.id and ustatus.is_system)
+        is_system = ustatus.is_system
         for rk in sorted (umap) :
             for synccfg in umap [rk] :
                 if  (   synccfg.dyn_user_valid
