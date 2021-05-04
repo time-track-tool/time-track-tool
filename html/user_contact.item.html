@@ -102,13 +102,7 @@
           ( utils, context.user.realname
           , item = context.user
           ).formatlink ()"/>
-       (<span tal:condition="python: 'nickname' in db._db.user.properties"
-              tal:content="structure python:utils.ExtProperty
-           ( utils, context.user.nickname
-           , item = context.user
-           ).formatlink ()"/><span
-              tal:condition="python: 'nickname' not in db._db.user.properties"
-              tal:content="structure python:utils.ExtProperty
+       (<span tal:content="structure python:utils.ExtProperty
            ( utils, context.user.username
            , item = context.user
            ).formatlink ()"/>)

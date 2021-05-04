@@ -1098,14 +1098,13 @@
     <th tal:attributes="class responsible_required | default"
      tal:content="structure python:utils.fieldname(classname, 'responsible')">
     </th>
-    <td colspan="3">
-     <tal:block tal:define=
-        "name      string:responsible;
-         form      string:itemSynopsis;
-         dont_care python:i18n.gettext ('''- don't care -''');
-         selected python:context.responsible and context.responsible.id or 0">
-      <tal:block metal:use-macro="templates/userlist/macros/user"/>
-     </tal:block>
+    <td>
+     <span tal:content="structure python:context.responsible.field ()"/>
+     <span tal:content="structure python:utils.user_classhelp
+       ( db, property='responsible'
+       , internal_only  = True
+       , exclude_system = True
+       )"/>
     </td>
    </tr>
 </tal:block>
@@ -1388,22 +1387,6 @@
 <!-- status/name, status/abbreviation, title, responsible -->
 <!-- status should map a ${klassname}_${item/status}_${postfix} a.href class in style.css -->
 <!--   where postfix will be "${item/test_ok|nothing}" -->
-<tal:block metal:define-macro="task_list">
- <tal:block tal:repeat="item items"
-            tal:define="postfix item/test_ok|python:''">
-  <a tal:attributes="href item/designator;
-                     class string:${klassname}_${item/status}_${postfix}"
-     tal:content="structure string:<code>${item/designator} (${item/status/abbreviation}, ${item/responsible/nickname}):</code> ${item/title}"></a><br>
- </tal:block>
-</tal:block>
-
-<tal:block metal:define-macro="simple_list">
- <tal:block tal:repeat="item items">
-  <a tal:attributes="href item/designator;
-                     class string:${klassname}_${item/status}"
-     tal:content="structure string:<code>${item/designator} (${item/status}, ${item/responsible/nickname}):</code> ${item/title}"></a><br>
- </tal:block>
-</tal:block>
 
 <tal:block metal:define-macro="file_list">
  <tal:block tal:define="files context/files">
@@ -1696,30 +1679,6 @@
        </tr>
        <tr>
         <td style="text-align:center;">
-         <tal:block tal:condition="python:
-          prop.lnkcls.classname == 'user' and prop.searchname != 'nosy'"
-          tal:define=
-           "size      string:7;
-            name      python:prop.searchname;
-            form      string:query;
-            dont_care python:i18n.gettext ('''- don't care -''');
-            selected  python:
-             str(request.filterspec.get(prop.searchname) or [''])[1:-1]
-           ">
-          <tal:block metal:use-macro="templates/userlist/macros/user_multi_read"/>
-         </tal:block>
-         <tal:block tal:condition="python:prop.searchname == 'nosy'"
-          tal:define=
-           "size      string:7;
-            name      python:prop.searchname;
-            form      string:query;
-            dont_care python:i18n.gettext ('''- don't care -''');
-            selected  python:
-             str(request.filterspec.get(prop.searchname) or [''])[1:-1]
-           ">
-          <tal:block metal:use-macro="templates/userlist/macros/nosy_multi"/>
-         </tal:block>
-         <tal:block tal:condition="python:prop.lnkcls.classname != 'user'">
           <select multiple
                   size="7"
                   tal:attributes="name python:prop.searchname"
@@ -1747,7 +1706,6 @@
               ">
            </option>
           </select>
-         </tal:block>
         </td>
        </tr>
       </table>
@@ -1773,7 +1731,8 @@
             [('description', 'status', 'responsible'), ()]
             [prop.lnkcls and prop.lnkcls.classname == 'user' or 0]">
          <tal:block tal:replace="structure python:prop.search_input (request)"/>
-         <span tal:condition="python:prop.do_classhelp"
+         <span tal:condition="python:
+           prop.do_classhelp and prop.lnkcls.classname!='user'"
            tal:replace="structure python:db[prop.lnkcls.classname].classhelp
             ( properties=prop.classhelp_properties (*prps)
             , property=prop.searchname
@@ -1782,6 +1741,13 @@
             , width='800'
             , filter=prop.help_filter
             , sort=prop.help_sort
+            )"/>
+         <span tal:condition="python:
+           prop.do_classhelp and prop.lnkcls.classname=='user'"
+           tal:replace="structure python:utils.user_classhelp
+            ( db, property=prop.searchname
+            , form      = 'query'
+            , inputtype = 'checkbox'
             )"/>
         </td>
        </tr>

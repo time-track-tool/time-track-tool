@@ -35,7 +35,9 @@ import os
 import re
 import locale
 from roundup.cgi.TranslationService import get_translation
+from roundup.cgi.templating         import HTMLClass
 from roundup.date                   import Date, Interval
+from roundup.hyperdb                import Database as hyperdb_database
 from copy                           import copy
 from xml.sax.saxutils               import escape
 
@@ -402,7 +404,7 @@ def user_props (db) :
         db = db._db
     except AttributeError :
         pass
-    props = dict (username = 0, firstname = 2, lastname = 3, address = 4)
+    props = dict (username = 0, firstname = 2, lastname = 3, address = 6)
     props = dict \
         ((k, v) for k, v in props.iteritems () if k in db.user.properties)
     if 'firstname' not in props :
@@ -414,27 +416,44 @@ def user_props (db) :
 def user_classhelp \
     ( db
     , property='responsible'
-    , inputtype   = 'radio'
-    , user_status = None
-    , ids         = None
-    , form        = 'itemSynopsis'
+    , inputtype      = 'radio'
+    , user_status    = None
+    , ids            = None
+    , form           = 'itemSynopsis'
+    , internal_only  = False
+    , exclude_system = False
+    , client         = None
     ) :
+    try :
+        hdb = db._db
+    except AttributeError :
+        hdb = db
     if user_status :
         status = user_status
     else :
-        status = ','.join \
-            (db._db.user_status.filter (None, dict (is_nosy = True)))
+        udict = dict (is_nosy = True)
+        if exclude_system :
+            udict ['is_system'] = False
+        if internal_only :
+            udict ['is_internal'] = True
+        status = ','.join (hdb.user_status.filter (None, udict))
     if status :
         status = ';status=' + status
     idfilter = ''
     if ids :
+        if isinstance (ids, type ([])) :
+            ids = ','.join (ids)
         idfilter = ';id=' + ids
-    return db.user.classhelp \
+    if isinstance (db, hyperdb_database) :
+        classhelp = HTMLClass (client, 'user').classhelp
+    else :
+        classhelp = db.user.classhelp
+    return classhelp \
         ( user_props (db)
         , property  = property
         , filter    = 'roles=Nosy' + status + idfilter
         , inputtype = inputtype
-        , width     = '600'
+        , width     = '1200'
         , pagesize  = 2000
         , form      = form
         )

@@ -6,9 +6,14 @@ dir     = os.getcwd ()
 tracker = instance.open (dir)
 db      = tracker.open ('admin')
 
-for sid in db.user_status.filter (None, dict (name = 'system')) :
+for sid in db.user_status.getnodeids (retired = False) :
     us = db.user_status.getnode (sid)
+    d  = {}
     if us.is_system is None :
-        db.user_status.set (sid, is_system = True)
+        d ['is_system'] = ('system' in us.name)
+    if us.is_internal is None :
+        d ['is_internal'] = (us.name == 'valid-ad' or us.name == 'system-ad')
+    if d :
+        db.user_status.set (sid, **d)
 
 db.commit()

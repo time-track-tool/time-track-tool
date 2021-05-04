@@ -25,9 +25,9 @@
      <td>
       <span tal:content="structure python:context.responsible.field ()"/>
       <span tal:content="structure python:utils.user_classhelp
-        ( db
-        , property='responsible'
-        , user_status = nosy_stati
+        ( db, property='responsible'
+        , internal_only  = True
+        , exclude_system = True
         )"/>
      </td>
     </tr>
@@ -37,9 +37,9 @@
      <td>
       <span tal:content="structure python:context.deputy.field ()"/>
       <span tal:content="structure python:utils.user_classhelp
-        ( db
-        , property='deputy'
-        , user_status = nosy_stati
+        ( db, property='deputy'
+        , internal_only  = True
+        , exclude_system = True
         )"/>
      </td>
     </tr>
@@ -60,10 +60,10 @@
      <td>
       <span tal:content="structure python:context.purchasing_agents.field ()"/>
       <span tal:content="structure python:utils.user_classhelp
-        ( db
-        , property='purchasing_agents'
-        , user_status = nosy_stati
-        , inputtype='checkbox'
+        ( db, property='purchasing_agents'
+        , inputtype      = 'checkbox'
+        , internal_only  = True
+        , exclude_system = True
         )"/>
     </tr>
     <tr>

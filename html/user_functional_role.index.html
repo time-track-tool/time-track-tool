@@ -24,11 +24,7 @@
         , sortable   = True
         )
       )
-    , ('user', dict
-       ( help_props = ['firstname', 'lastname', 'nickname']
-       , filter     = dict (status = nosy_stati)
-       )
-      )
+    , ('user', dict (filter = dict (status = nosy_stati)))
     , ('user', dict
        ( searchname = 'user.firstname'
         , searchable = True
@@ -37,12 +33,6 @@
       )
     , ('user', dict
        ( searchname = 'user.lastname'
-        , searchable = True
-        , sortable   = True
-       )
-      )
-    , ('user', dict
-       ( searchname = 'user.nickname'
         , searchable = True
         , sortable   = True
        )

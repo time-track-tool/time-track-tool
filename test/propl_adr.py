@@ -127,6 +127,7 @@ properties = \
       )
     , ( 'user_status'
       , [ 'description'
+        , 'is_internal'
         , 'is_nosy'
         , 'is_system'
         , 'name'

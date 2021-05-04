@@ -363,6 +363,9 @@ properties = \
       , [ ( 'description'
           , ['admin', 'user', 'user_view']
           )
+        , ( 'is_internal'
+          , ['admin', 'user', 'user_view']
+          )
         , ( 'is_nosy'
           , ['admin', 'user', 'user_view']
           )

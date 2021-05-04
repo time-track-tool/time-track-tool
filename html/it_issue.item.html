@@ -86,15 +86,11 @@
       <th tal:content="structure python:utils.fieldname
           (classname, 'stakeholder')"/>
       <td>
-       <tal:block tal:define=
-            "name      python:'stakeholder';
-             form      string:itemSynopsis;
-             dont_care string:- no selection -;
-             selected  python:context.stakeholder
-                       and context.stakeholder.id or 0;
-            ">
-        <tal:block metal:use-macro="templates/userlist/macros/user"/>
-       </tal:block>
+       <span tal:content="structure python:context.stakeholder.field ()"/>
+       <span tal:content="structure python:utils.user_classhelp
+	 ( db, property='stakeholder'
+	 , exclude_system = True
+	 )"/>
       </td>
      </tr>
      <tr tal:condition="python: context.it_project.is_view_ok ()">

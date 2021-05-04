@@ -33,7 +33,10 @@
       <td tal:condition="not:context/id">
        <span tal:replace="structure context/user/field"/>
        <span tal:replace="structure python:utils.user_classhelp
-             (db, property = 'user')"/>
+             ( db, property = 'user'
+             , internal_only = True
+             , exclude_system = True
+             )"/>
       </td>
       <th class="required"
           tal:content="structure python:utils.fieldname (classname, 'date')"/>

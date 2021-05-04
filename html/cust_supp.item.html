@@ -219,13 +219,8 @@
            (classname, 'attendant')"/>
        <td>
         <tal:block tal:content="structure python:context.attendant.field ()"/>
-        <tal:block tal:replace="structure python:db.user.classhelp
-             ( utils.user_props (db)
-             , property='attendant'
-             , inputtype='radio'
-             , width='600'
-             , pagesize=5000
-             )"/>
+        <tal:block tal:replace="structure python:utils.user_classhelp
+             (db, property = 'attendant')"/>
        </td>
       </tr>
       <tr>

@@ -378,7 +378,8 @@ class ExtProperty :
 
     def default_fieldwidth (self) :
         if self.is_link_or_multilink and self.prop._prop.classname == 'user' :
-            return 60
+            if isinstance (self.prop, MultilinkHTMLProperty) :
+                return 60
         return 30
     # end def default_fieldwidth
 
@@ -569,27 +570,14 @@ class ExtProperty :
         if self.editable :
             if self.is_link_or_multilink :
                 if prop._prop.classname == 'user' :
-                    client = self.item._client
-                    classhelp = HTMLClass (client, 'user').classhelp
-                    prps = 'username,lastname,firstname,nickname'.split (',')
-                    prps = [x for x in prps if x in self.db.user.properties]
-                    if 'lastname' not in prps :
-                        prps.append ('realname')
                     return ' '.join \
                         (( prop.field (size = self.fieldwidth)
-                        ,  classhelp \
-                            ( ','.join (prps)
-                            , property=self.searchname
+                        ,  self.utils.user_classhelp \
+                            ( self.db
+                            , property = self.searchname
                             , inputtype='%s' % ('radio', 'checkbox')
                               [isinstance (self.prop, MultilinkHTMLProperty)]
-                            , width='600'
-                            , pagesize=1500
-                            , filter='status=%s' % ','.join
-                               (self.db.user_status.filter
-                                  (None, dict (is_nosy = True))
-                               )
-                            , group = self.help_groupby
-                            , sort  = self.help_sort
+                            , client = self.item._client
                             )
                         ))
                 return self.menu ()
