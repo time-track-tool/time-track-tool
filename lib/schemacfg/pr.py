@@ -644,6 +644,30 @@ def security (db, ** kw) :
         )
     db.security.addPermissionToRole ('User', p)
 
+    p = db.security.addPermission \
+        ( name = 'Edit'
+        , klass = 'pr_offer_item'
+        , properties =
+            ( 'add_to_las'
+            ,
+            )
+        )
+    db.security.addPermissionToRole ('CISO', p)
+    p = db.security.addPermission \
+        ( name = 'View'
+        , klass = 'pr_offer_item'
+        , properties =
+            ( 'add_to_las'
+            , 'supplier'
+            , 'pr_supplier'
+            , 'creation'
+            , 'creator'
+            , 'activity'
+            , 'actor'
+            )
+        )
+    db.security.addPermissionToRole ('CISO', p)
+
     def view_role_approval (db, userid, itemid) :
         """ Users are allowed to view if they have one of the view roles
             of the purchase type

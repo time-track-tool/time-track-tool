@@ -16,6 +16,8 @@ Role "anonymous":
  User may access the web interface (Web Access)
 Role "board":
 Role "ciso":
+  (Edit for "pr_offer_item": ('add_to_las',) only)
+  (View for "pr_offer_item": ('activity', 'actor', 'add_to_las', 'creation', 'creator', 'pr_supplier', 'supplier') only)
  User is allowed to create pr_supplier_risk (Create for "pr_supplier_risk" only)
  User is allowed to create security_req_group (Create for "security_req_group" only)
  User is allowed to edit pr_supplier_risk (Edit for "pr_supplier_risk" only)

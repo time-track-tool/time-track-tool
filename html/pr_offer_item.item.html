@@ -45,6 +45,11 @@
      </tr>
      <tr>
       <th tal:content="structure python:utils.fieldname
+          (classname, 'add_to_las')"/>
+      <td tal:content="structure python:context.add_to_las.field ()"/>
+     </tr>
+     <tr>
+      <th tal:content="structure python:utils.fieldname
           (classname, 'offer_number')"/>
       <td tal:content="structure python:context.offer_number.field ()"/>
      </tr>
