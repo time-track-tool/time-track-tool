@@ -18,6 +18,16 @@ properties = \
         , 'name'
         ]
       )
+    , ( 'attendance_record'
+      , [ 'daily_record'
+        , 'dist'
+        , 'end'
+        , 'end_generated'
+        , 'start'
+        , 'start_generated'
+        , 'work_location'
+        ]
+      )
     , ( 'auto_wp'
       , [ 'all_in'
         , 'contract_type'
@@ -70,7 +80,8 @@ properties = \
         ]
       )
     , ( 'daily_record'
-      , [ 'date'
+      , [ 'attendance_record'
+        , 'date'
         , 'required_overtime'
         , 'status'
         , 'time_record'
@@ -399,7 +410,8 @@ properties = \
         ]
       )
     , ( 'time_record'
-      , [ 'comment'
+      , [ 'attendance_record'
+        , 'comment'
         , 'daily_record'
         , 'dist'
         , 'duration'
