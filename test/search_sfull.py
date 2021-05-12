@@ -80,6 +80,30 @@ properties = \
           )
         ]
       )
+    , ( 'attendance_record'
+      , [ ( 'daily_record'
+          , ['admin', 'cc-permission', 'contact', 'controlling', 'doc_admin', 'facility', 'functional-role', 'hr', 'hr-leave-approval', 'hr-vacation', 'issue_admin', 'it', 'itview', 'msgedit', 'msgsync', 'office', 'organisation', 'procurement', 'project', 'project_view', 'sec-incident-nosy', 'sec-incident-responsible', 'summary_view', 'supportadmin', 'time-report', 'type', 'user', 'vacation-report']
+          )
+        , ( 'dist'
+          , ['admin', 'cc-permission', 'contact', 'controlling', 'doc_admin', 'facility', 'functional-role', 'hr', 'hr-leave-approval', 'hr-org-location', 'hr-vacation', 'issue_admin', 'it', 'itview', 'msgedit', 'msgsync', 'office', 'organisation', 'procurement', 'project', 'project_view', 'sec-incident-nosy', 'sec-incident-responsible', 'summary_view', 'supportadmin', 'time-report', 'type', 'user', 'vacation-report']
+          )
+        , ( 'end'
+          , ['admin', 'cc-permission', 'contact', 'controlling', 'doc_admin', 'facility', 'functional-role', 'hr', 'hr-leave-approval', 'hr-org-location', 'hr-vacation', 'issue_admin', 'it', 'itview', 'msgedit', 'msgsync', 'office', 'organisation', 'procurement', 'project', 'project_view', 'sec-incident-nosy', 'sec-incident-responsible', 'summary_view', 'supportadmin', 'time-report', 'type', 'user', 'vacation-report']
+          )
+        , ( 'end_generated'
+          , ['admin', 'cc-permission', 'contact', 'controlling', 'doc_admin', 'facility', 'functional-role', 'hr', 'hr-leave-approval', 'hr-org-location', 'hr-vacation', 'issue_admin', 'it', 'itview', 'msgedit', 'msgsync', 'office', 'organisation', 'procurement', 'project', 'project_view', 'sec-incident-nosy', 'sec-incident-responsible', 'summary_view', 'supportadmin', 'time-report', 'type', 'user', 'vacation-report']
+          )
+        , ( 'start'
+          , ['admin', 'cc-permission', 'contact', 'controlling', 'doc_admin', 'facility', 'functional-role', 'hr', 'hr-leave-approval', 'hr-org-location', 'hr-vacation', 'issue_admin', 'it', 'itview', 'msgedit', 'msgsync', 'office', 'organisation', 'procurement', 'project', 'project_view', 'sec-incident-nosy', 'sec-incident-responsible', 'summary_view', 'supportadmin', 'time-report', 'type', 'user', 'vacation-report']
+          )
+        , ( 'start_generated'
+          , ['admin', 'cc-permission', 'contact', 'controlling', 'doc_admin', 'facility', 'functional-role', 'hr', 'hr-leave-approval', 'hr-org-location', 'hr-vacation', 'issue_admin', 'it', 'itview', 'msgedit', 'msgsync', 'office', 'organisation', 'procurement', 'project', 'project_view', 'sec-incident-nosy', 'sec-incident-responsible', 'summary_view', 'supportadmin', 'time-report', 'type', 'user', 'vacation-report']
+          )
+        , ( 'work_location'
+          , ['admin', 'cc-permission', 'contact', 'controlling', 'doc_admin', 'facility', 'functional-role', 'hr', 'hr-leave-approval', 'hr-vacation', 'issue_admin', 'it', 'itview', 'msgedit', 'msgsync', 'office', 'organisation', 'procurement', 'project', 'project_view', 'sec-incident-nosy', 'sec-incident-responsible', 'summary_view', 'supportadmin', 'time-report', 'type', 'user', 'vacation-report']
+          )
+        ]
+      )
     , ( 'auto_wp'
       , [ ( 'all_in'
           , ['admin', 'hr']
@@ -373,7 +397,10 @@ properties = \
         ]
       )
     , ( 'daily_record'
-      , [ ( 'date'
+      , [ ( 'attendance_record'
+          , ['admin', 'cc-permission', 'contact', 'controlling', 'doc_admin', 'facility', 'functional-role', 'hr', 'hr-leave-approval', 'hr-vacation', 'issue_admin', 'it', 'itview', 'msgedit', 'msgsync', 'office', 'organisation', 'procurement', 'project', 'project_view', 'sec-incident-nosy', 'sec-incident-responsible', 'summary_view', 'supportadmin', 'time-report', 'type', 'user', 'vacation-report']
+          )
+        , ( 'date'
           , ['admin', 'cc-permission', 'contact', 'controlling', 'doc_admin', 'facility', 'functional-role', 'hr', 'hr-leave-approval', 'hr-vacation', 'issue_admin', 'it', 'itview', 'msgedit', 'msgsync', 'office', 'organisation', 'procurement', 'project', 'project_view', 'sec-incident-nosy', 'sec-incident-responsible', 'summary_view', 'supportadmin', 'time-report', 'type', 'user', 'vacation-report']
           )
         , ( 'required_overtime'
@@ -1829,7 +1856,10 @@ properties = \
         ]
       )
     , ( 'time_record'
-      , [ ( 'comment'
+      , [ ( 'attendance_record'
+          , ['admin', 'cc-permission', 'contact', 'controlling', 'doc_admin', 'facility', 'functional-role', 'hr', 'hr-leave-approval', 'hr-org-location', 'hr-vacation', 'issue_admin', 'it', 'itview', 'msgedit', 'msgsync', 'office', 'organisation', 'procurement', 'project', 'project_view', 'sec-incident-nosy', 'sec-incident-responsible', 'summary_view', 'supportadmin', 'time-report', 'type', 'user', 'vacation-report']
+          )
+        , ( 'comment'
           , ['admin', 'cc-permission', 'contact', 'controlling', 'doc_admin', 'facility', 'functional-role', 'hr', 'hr-leave-approval', 'hr-org-location', 'hr-vacation', 'issue_admin', 'it', 'itview', 'msgedit', 'msgsync', 'office', 'organisation', 'procurement', 'project', 'project_view', 'sec-incident-nosy', 'sec-incident-responsible', 'summary_view', 'supportadmin', 'time-report', 'type', 'user', 'vacation-report']
           )
         , ( 'daily_record'
