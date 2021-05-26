@@ -4457,3 +4457,6 @@ msgstr "Roles"
 
 msgid "is_email"
 msgstr "is Email"
+
+msgid "is_raw_material"
+msgstr "Is raw material"

@@ -24,10 +24,16 @@
           (classname, 'name')"/>
       <td tal:content="structure python:context.name.field ()"/>
      </tr>
+     <tr>
+      <th tal:content="structure python:utils.fieldname
+          (classname, 'is_raw_material')"/>
+      <td tal:content="structure python:context.is_raw_material.field ()"/>
+     </tr>
     </tal:block>
    </tal:block>
    <tal:block tal:condition="python:
-     context.is_view_ok () and context.id and context.ingredients">
+     context.is_view_ok () and context.id and
+     (context.ingredients or not context.is_raw_material)">
     <table class="files">
      <tr tal:define="cond python: not not context.id">
       <th colspan="3" class="header" i18n:translate="">Ingredients</th>

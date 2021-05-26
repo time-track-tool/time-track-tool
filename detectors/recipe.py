@@ -58,12 +58,36 @@ def check_product (db, cl, nodeid, new_values) :
         )
 # end def check_product
 
+def require_ingr (db, cl, nodeid, new_values) :
+    common.require_attributes \
+        ( _, cl, nodeid, new_values
+        , 'substance', 'ingredient', 'quantity'
+        )
+# end def require_ingr
+
+def subst_default (db, cl, nodeid, new_values) :
+    if 'is_raw_material' not in new_values :
+        new_values ['is_raw_material'] = True
+    common.require_attributes \
+        (_, cl, nodeid, new_values, 'name')
+# end def subst_default
+
+def require_subst (db, cl, nodeid, new_values) :
+    common.require_attributes \
+        (_, cl, nodeid, new_values, 'name')
+# end def require_subst
+
 def init (db) :
     if 'substance' not in db.classes :
         return
     global _
     _   = get_translation \
         (db.config.TRACKER_LANGUAGE, db.config.TRACKER_HOME).gettext
-    db.rc_product.audit ("create", set_defaults)
-    db.rc_product.audit ("set",    check_product)
+    ingr = db.ingredient_used_by_substance
+    db.rc_product.audit   ("create", set_defaults)
+    db.rc_product.audit   ("set",    check_product)
+    db.substance.audit    ("create", subst_default)
+    db.substance.audit    ("set",    require_subst)
+    ingr.audit            ("create", require_ingr)
+    ingr.audit            ("set",    require_ingr)
 # end def init

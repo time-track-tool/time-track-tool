@@ -21,13 +21,14 @@
 import common
 from   schemacfg import schemadef
 
-def init (db, Link, Multilink, Number, String, Class, ** kw) :
+def init (db, Link, Multilink, Number, String, Boolean, Class, ** kw) :
     export = {}
 
     substance = Class \
         ( db, ''"substance"
         , name                  = String    ()
         , identifier            = String    ()
+        , is_raw_material       = Boolean   ()
         )
     substance.setkey ("identifier")
 
@@ -41,6 +42,7 @@ def init (db, Link, Multilink, Number, String, Class, ** kw) :
                                        )
         , quantity         = Number    ()
         )
+    ingredient_used_by_substance.setlabelprop ('substance')
 
     rc_product_type = Class \
         ( db, ''"rc_product_type"

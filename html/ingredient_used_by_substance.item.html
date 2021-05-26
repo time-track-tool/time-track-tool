@@ -16,13 +16,24 @@
   </tal:block> 
 
  <tal:block metal:fill-slot="content">
-  <tal:block tal:define="use_labelprop python:False">
+  <tal:block tal:define=
+      " use_labelprop       python:False
+      ; required_attributes python:'substance,ingredient,quantity'
+      ">
   <tal:block metal:use-macro="templates/page/macros/formatted_class">
    <tal:block metal:fill-slot="formatted_class_content">
     <tr>
      <th tal:content="structure python:utils.fieldname
          (classname, 'substance')"/>
-     <td tal:content="structure python:context.substance.field ()"/>
+     <td>
+      <span tal:content="structure python:context.substance.field ()"/>
+      <span tal:condition="python: context.substance"
+            tal:content="structure python: utils.ExtProperty
+             ( utils, context.substance.name
+             , item = context.substance
+             ).formatlink ()"/>
+     </td>
+
     </tr>
     <tr>
      <th tal:content="structure python:utils.fieldname
