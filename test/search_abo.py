@@ -219,7 +219,16 @@ properties = \
       , [ ( 'description'
           , ['abo', 'abo+invoice', 'admin', 'contact', 'invoice', 'letter', 'product', 'type', 'user', 'user_view']
           )
+        , ( 'exchange_rate'
+          , ['abo', 'abo+invoice', 'admin', 'contact', 'invoice', 'letter', 'product', 'type', 'user', 'user_view']
+          )
+        , ( 'key_currency'
+          , ['abo', 'abo+invoice', 'admin', 'contact', 'invoice', 'letter', 'product', 'type', 'user', 'user_view']
+          )
         , ( 'name'
+          , ['abo', 'abo+invoice', 'admin', 'contact', 'invoice', 'letter', 'product', 'type', 'user', 'user_view']
+          )
+        , ( 'order'
           , ['abo', 'abo+invoice', 'admin', 'contact', 'invoice', 'letter', 'product', 'type', 'user', 'user_view']
           )
         ]

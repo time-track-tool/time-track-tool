@@ -114,7 +114,16 @@ properties = \
       , [ ( 'description'
           , ['admin', 'contact', 'discount', 'invoice', 'letter', 'product', 'type', 'user']
           )
+        , ( 'exchange_rate'
+          , ['admin', 'contact', 'discount', 'invoice', 'letter', 'product', 'type', 'user']
+          )
+        , ( 'key_currency'
+          , ['admin', 'contact', 'discount', 'invoice', 'letter', 'product', 'type', 'user']
+          )
         , ( 'name'
+          , ['admin', 'contact', 'discount', 'invoice', 'letter', 'product', 'type', 'user']
+          )
+        , ( 'order'
           , ['admin', 'contact', 'discount', 'invoice', 'letter', 'product', 'type', 'user']
           )
         ]

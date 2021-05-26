@@ -1,5 +1,5 @@
 #! /usr/bin/python
-# Copyright (C) 2015 Dr. Ralf Schlatterbeck Open Source Consulting.
+# Copyright (C) 2015-21 Dr. Ralf Schlatterbeck Open Source Consulting.
 # Reichergasse 131, A-3411 Weidling.
 # Web: http://www.runtux.com Email: office@runtux.com
 # All rights reserved
@@ -45,6 +45,7 @@ schemas = \
     , 'sync_id'
     , 'user'
     , 'ldap'
+    , 'currency'
     , 'pr'
     , 'core'
     )

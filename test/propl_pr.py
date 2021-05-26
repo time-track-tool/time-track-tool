@@ -135,7 +135,8 @@ properties = \
         ]
       )
     , ( 'pr_currency'
-      , [ 'exchange_rate'
+      , [ 'description'
+        , 'exchange_rate'
         , 'key_currency'
         , 'min_sum'
         , 'name'

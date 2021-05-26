@@ -1,6 +1,5 @@
 #! /usr/bin/python
-# -*- coding: iso-8859-1 -*-
-# Copyright (C) 2006 Dr. Ralf Schlatterbeck Open Source Consulting.
+# Copyright (C) 2006-21 Dr. Ralf Schlatterbeck Open Source Consulting.
 # Reichergasse 131, A-3411 Weidling.
 # Web: http://www.runtux.com Email: office@runtux.com
 # All rights reserved
@@ -41,18 +40,16 @@ def init \
     , Multilink
     , Boolean
     , Number
+    , Currency_Class
     , ** kw
     ) :
 
     do_index = "no"
     export   = {}
 
-    currency = Class \
+    currency = Currency_Class \
         ( db, ''"currency"
-        , name                = String    ()
-        , description         = String    ()
         )
-    currency.setkey (''"name")
 
     class Invoice_Class (Ext_Class) :
         """ Create an invoice class that should be extended in later

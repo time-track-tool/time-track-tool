@@ -89,7 +89,10 @@ properties = \
       )
     , ( 'currency'
       , [ 'description'
+        , 'exchange_rate'
+        , 'key_currency'
         , 'name'
+        , 'order'
         ]
       )
     , ( 'file'

@@ -50,6 +50,7 @@ def init \
     , Organisation_Class
     , Org_Location_Class
     , Time_Project_Status_Class
+    , Currency_Class
     , ** kw
     ) :
     export = {}
@@ -135,15 +136,10 @@ def init \
         )
     payment_type.setkey ('name')
 
-    pr_currency = Class \
+    pr_currency = Currency_Class \
         ( db, ''"pr_currency"
-        , name                  = String    ()
-        , order                 = Number    ()
         , min_sum               = Number    ()
-        , exchange_rate         = Number    ()
-        , key_currency          = Boolean   ()
         )
-    pr_currency.setkey ('name')
 
     pr_approval_status = Class \
         ( db, ''"pr_approval_status"
