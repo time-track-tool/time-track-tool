@@ -75,6 +75,10 @@ def subst_default (db, cl, nodeid, new_values) :
 def require_subst (db, cl, nodeid, new_values) :
     common.require_attributes \
         (_, cl, nodeid, new_values, 'name')
+    subst = cl.getnode (nodeid)
+    raw = new_values.get ('is_raw_material', subst.is_raw_material)
+    if raw and subst.ingredients :
+        new_values ['is_raw_material'] = False
 # end def require_subst
 
 def init (db) :
