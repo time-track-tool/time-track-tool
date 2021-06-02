@@ -223,6 +223,7 @@ class Product_Sync (object) :
         res.sort ()
         if res :
             return res [-1]
+        raise ValueError ("Did not find any data download link")
     # end def get_latest_export_url
 
     def get_material (self, rec) :
