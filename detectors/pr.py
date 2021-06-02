@@ -1241,6 +1241,9 @@ def send_las_email (db, cl, nodeid, old_values) :
         supplier = oi.supplier
         prid     = pr.id
         url      = db.config.TRACKER_WEB
+        user     = db.user.getnode (db.getuid ())
+        realname = user.realname
+        address  = user.address
         d = dict (locals ())
         txt = r.sub ('\n', las_text)
         txt = txt.replace ('$', '%') % d

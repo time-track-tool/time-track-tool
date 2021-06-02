@@ -186,6 +186,7 @@ pr_approved_text  = The purchase request "$(title)s" has been approved.
 
 las_text = In purchase request "$(title)s"
  there is a request to add Supplier "$(supplier)s" to the LAS.
+ This was requested by $(realname)s <$(address)s>.
  See $(url)spurchase_request$(prid)s
 
 las_subject = 'Add to LAS Request'
