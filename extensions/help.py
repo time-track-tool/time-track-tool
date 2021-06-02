@@ -2614,6 +2614,20 @@ def user_manual (db) :
     return fn
 # end def user_manual
 
+def aux_links (db) :
+    try :
+        db = db._db
+    except AttributeError :
+        pass
+    aux = getattr (db.config.ext, 'LINK_AUX_LINKS', None)
+    links = []
+    if aux :
+        for l in aux.split (';') :
+            name, link = l.split ('+', 1)
+            links.append ((name, link))
+    return links
+# end def aux_links
+
 def init_purchase_type (db) :
     # FIXME: one day this should go into a helptext method that has a db
     # as parameter.
@@ -2642,4 +2656,5 @@ def init (instance) :
     reg ('set_language',    set_language)
     reg ('user_manual',     user_manual)
     reg ('user_manual_ok',  user_manual_ok)
+    reg ('aux_links',       aux_links)
 # end def init

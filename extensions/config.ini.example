@@ -29,6 +29,8 @@ freeze_days = 0
 minid = 6
 maxid = 6
 issue_url_template = https://issue-tracker.vie.at.tttech.ttt/ttt/issue%s
+pr_manual = https://example.com/pr-manual.pdf
+aux_links = PGroups+https://example.com/another-link;Nocheiner+https://example.com/nocheiner
 
 [mail]
 # name and address of sender of outgoing emails

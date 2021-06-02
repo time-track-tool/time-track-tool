@@ -857,6 +857,11 @@
       </a>
      </span>
 
+     <!-- Auxiliary links if existing -->
+     <span class="classblock" tal:repeat="aux python: utils.aux_links (db)">
+      <a tal:attributes="href python:aux [1]" tal:content="python: aux [0]" />
+     </span>
+
      <!-- username -> link to own profile -->
      <span class="classblock" tal:condition="request/user/username/is_view_ok">
       <a tal:attributes="href string:user${request/user/id}"
