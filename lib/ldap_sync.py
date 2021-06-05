@@ -1446,7 +1446,7 @@ class LDAP_Roundup_Sync (Log) :
             else :
                 d.update (c)
                 assert (d)
-                assert 'lastname'  in d or 'firstname' in d
+                assert 'lastname' in d or 'firstname' in d or 'realname' in d
                 d ['roles']  = roles
                 d ['status'] = new_status_id
                 if 'username' not in d :
@@ -1577,6 +1577,8 @@ class LDAP_Roundup_Sync (Log) :
     def compute_r_user (self, user, luser) :
         if not user :
             return
+        if 'vie_user_ml' not in self.db.user.properties :
+            return user
         if user.vie_user_ml :
             self.debug \
                 (4, "User %s has a linked user(s): %s"
