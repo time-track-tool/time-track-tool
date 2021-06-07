@@ -389,7 +389,7 @@ class LDAP_Roundup_Sync (Log) :
                 if k not in self.dn_allowed :
                     self.dn_allowed [k] = {}
                 self.dn_allowed [k][v] = True
-        if not self.dn_allowed :
+        if not self.dn_allowed and self.update_ldap :
             self.error \
                 ('No allowed DN suffix configured for vie_user, '
                  'use "%s" in [ldap] section of ext config' % varname
