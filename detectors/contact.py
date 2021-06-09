@@ -105,7 +105,11 @@ def check_contact (db, cl, nodeid, new_values) :
         ct = new_values.get ('contact_type')
         if not ct :
             ct = cl.get (nodeid, 'contact_type')
-        if tc.get (ct, 'is_email') :
+        name = tc.get (ct, 'name')
+        if 'is_email' in tc.properties :
+            if tc.get (ct, 'is_email') :
+                new_values ['contact'] = new_values ['contact'].lower ()
+        elif name == 'Email' :
             new_values ['contact'] = new_values ['contact'].lower ()
 # end def check_contact
 
