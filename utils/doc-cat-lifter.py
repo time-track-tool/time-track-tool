@@ -15,12 +15,25 @@ with open ('doc_cat.csv', 'r') as f :
     for rec in dr :
         name    = rec ['name']
         doc_num = rec ['doc_num']
-        try :
-            id = db.doc_category.lookup (name)
-        except KeyError :
+        valid   = bool (int (rec ['valid']))
+        ids     = db.doc_category.filter (None, dict (doc_num = doc_num))
+        if ids :
+            assert len (ids) == 1
+            id = ids [0]
+            node = db.doc_category.getnode (id)
+            d = {}
+            if node.name != name :
+                d ['name'] = name
+            if node.valid != valid :
+                d ['valid'] = valid
+            if d :
+                db.doc_category.set (id, ** d)
+                modified = True
+        else :
             id = db.doc_category.create \
                 ( name    = name
                 , doc_num = doc_num
+                , valid   = valid
                 )
             modified = True
         cat_by_doc_num [doc_num] = id
