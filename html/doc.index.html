@@ -18,12 +18,7 @@
     , utils.ExtProperty (utils, pdict ['product_type'], multiselect = 1)
     , utils.ExtProperty (utils, pdict ['reference'],    multiselect = 1)
     , utils.ExtProperty (utils, pdict ['artefact'],     multiselect = 1)
-    , utils.ExtProperty
-        ( utils
-        , pdict ['doc_category']
-        , multiselect = 1
-        , filter      = dict (valid = True)
-        )
+    , utils.ExtProperty (utils, pdict ['doc_category'], multiselect = 1)
     , utils.ExtProperty (utils, pdict ['status'],       multiselect = 1)
     , utils.ExtProperty (utils, pdict ['responsible'])
     , utils.ExtProperty
