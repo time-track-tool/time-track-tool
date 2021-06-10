@@ -705,7 +705,7 @@ class Test_Case_LDAP_Sync (_Test_Base, unittest.TestCase) :
 
     def test_dont_sync_cn_if_no_dynuser (self) :
         self.setup_ldap ()
-        self.log.error = self.mock_log
+        self.log.warn = self.mock_log
         self.db.user_dynamic.retire (self.user_dynamic1_1)
         self.ldap_sync.sync_user_to_ldap ('testuser1@ds1.internal')
         olddn = 'CN=Test Middlename Usernameold,OU=internal'
@@ -1030,7 +1030,7 @@ class Test_Case_LDAP_Sync (_Test_Base, unittest.TestCase) :
         self.db.user.set (self.testuser104, firstname = new_firstname)
 
         # Will not be changed because no dyn user exists
-        self.log.error = self.mock_log
+        self.log.warn = self.mock_log
         self.ldap_sync.sync_user_to_ldap (intname)
         msg = 'Not syncing "realname"->"cn": no valid dyn. user'
         self.assertTrue (self.messages [0][0].startswith (msg))

@@ -1187,6 +1187,13 @@ class LDAP_Roundup_Sync (Log) :
     # end def paged_search_iter
 
     def sync_contacts_from_ldap (self, luser, user, udict) :
+        changed = False
+        dry = ''
+        if not self.update_roundup or self.dry_run_roundup :
+            dry = '(Dry Run): '
+        uname = '<new-user>'
+        if user :
+            uname = user.username
         oct = []
         if user :
             oct = user.contacts
@@ -1226,19 +1233,21 @@ class LDAP_Roundup_Sync (Log) :
                     if key in oldmap :
                         n = oldmap [key]
                         new_contacts.append (n.id)
-                        if  (   n.order != order
-                            and self.update_roundup
-                            and not self.dry_run_roundup
-                            ) :
-                            self.db.user_contact.set (n.id, order = order)
-                            changed = True
+                        if n.order != order :
+                            self.info \
+                                ( "%sUpdate Roundup: %s contact%s.order=%s"
+                                % (dry, uname, n.id, order)
+                                )
+                            if self.update_roundup and not self.dry_run_roundup:
+                                self.db.user_contact.set (n.id, order = order)
+                                changed = True
                         del oldmap [key]
                         found [key] = 1
                         self.debug (3, 'contacts LDAP found: %s' % (key,))
                     elif key in found :
                         self.error ("Duplicate: %s" % ':'.join (key))
                         continue
-                    elif self.update_roundup and not self.dry_run_roundup :
+                    else :
                         d = dict \
                             ( contact_type = tid
                             , contact      = ldit
@@ -1247,9 +1256,14 @@ class LDAP_Roundup_Sync (Log) :
                         # If we have the user id at this point add it
                         if user :
                             d ['user'] = user.id
-                        id = self.db.user_contact.create (** d)
-                        new_contacts.append (id)
-                        changed = True
+                        self.info \
+                            ( "%sUpdate Roundup: %s create contact %s"
+                            % (dry, uname, d)
+                            )
+                        if self.update_roundup and not self.dry_run_roundup :
+                            id = self.db.user_contact.create (** d)
+                            new_contacts.append (id)
+                            changed = True
                     order += 1
         # This used to be a special hard-coded behaviour for emails so
         # that emails not found in LDAP were kept in roundup. This is due
@@ -1294,23 +1308,31 @@ class LDAP_Roundup_Sync (Log) :
                 continue
             if n.contact_type not in order_by_ct :
                 order_by_ct [n.contact_type] = 2
-            if  (   n.order != order_by_ct [n.contact_type]
-                and self.update_roundup and not self.dry_run_roundup
-                ) :
+            if n.order != order_by_ct [n.contact_type] :
                 order = order_by_ct [n.contact_type]
-                self.db.user_contact.set (n.id, order = order)
-                changed = True
+                self.info \
+                    ( "%sUpdate Roundup: %s contact%s.order=%s"
+                    % (dry, uname, n.id, order)
+                    )
+                if self.update_roundup and not self.dry_run_roundup :
+                    self.db.user_contact.set (n.id, order = order)
+                    changed = True
             order_by_ct [n.contact_type] += 1
             new_contacts.append (n.id)
             del oldmap [k]
-        if self.update_roundup and not self.dry_run_roundup :
-            for n in oldmap.itervalues () :
+        for n in oldmap.itervalues () :
+            self.info \
+                ( "%sUpdate Roundup: %s retire contact%s"
+                % (dry, uname, n.id)
+                )
+            if self.update_roundup and not self.dry_run_roundup :
                 self.db.user_contact.retire (n.id)
                 changed = True
         oct = list (sorted (oct.iterkeys ()))
         new_contacts.sort ()
         if new_contacts != oct :
             udict ['contacts'] = new_contacts
+        return changed
     # end def sync_contacts_from_ldap
 
     def domain_user_check (self, username, allow_empty = False) :
@@ -1410,7 +1432,12 @@ class LDAP_Roundup_Sync (Log) :
                 % (c, d, self.contact_types)
                 )
             if self.contact_types :
-                self.sync_contacts_from_ldap (luser, user, d)
+                ret = self.sync_contacts_from_ldap (luser, user, d)
+                if ret :
+                    changed = True
+                    # May be overwritten again later, just for counting
+                    if user and user.username not in self.changed_roundup_users:
+                        self.changed_roundup_users [user.username] = d
             new_status_id = self.member_status_id (luser.dn)
             assert (new_status_id)
             new_status = self.db.user_status.getnode (new_status_id)
