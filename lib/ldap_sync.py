@@ -984,7 +984,7 @@ class LDAP_Roundup_Sync (Log) :
             retained.
         """
         try :
-            mail = luser [txt]
+            mail = luser.value (txt)
         except KeyError :
             return None
         uid = None
