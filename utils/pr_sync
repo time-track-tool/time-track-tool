@@ -34,7 +34,6 @@ class PR_Sync (Requester) :
          , ('time_project.responsible',       'user')
          , ('time_project.purchasing_agents', 'user')
          , ('time_project.status',            'time_project_status')
-         , ('user.status',                    'user_status')
          , ('user.supervisor',                'user')
         ))
 
@@ -176,11 +175,13 @@ class PR_Sync (Requester) :
         #    )
         self.sync_class \
             ('time_project_status', ('name', 'description', 'active'))
-        # only once at beginning?
-        self.sync_class \
-            ( 'user_status'
-            , ('name', 'description', 'is_nosy', 'ldap_group', 'roles')
-            )
+# Do *NOT* sync user status: The stati in the pr-tracker (in particular
+# the roles and ldap groups) are different.
+#        # only once at beginning?
+#        self.sync_class \
+#            ( 'user_status'
+#            , ('name', 'description', 'is_nosy', 'ldap_group', 'roles')
+#            )
         self.sync_class \
             ( 'user'
             , ( 'username', 'address', 'alternate_addresses'
