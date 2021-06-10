@@ -1753,7 +1753,7 @@ class LDAP_Roundup_Sync (Log) :
                     and not dyn_is_current
                     and not is_system
                     ) :
-                    self.error \
+                    self.warn \
                         ( 'Not syncing "%s"->"%s": no valid dyn. user for "%s"'
                         % (rk, synccfg.name, user.username)
                         )
