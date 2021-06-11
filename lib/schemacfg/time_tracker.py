@@ -331,7 +331,6 @@ def init \
         , bookers               = Multilink ("user")
         , durations_allowed     = Boolean   ()
         , cost_center           = Link      ("cost_center")
-        , travel                = Boolean   ()
         , is_public             = Boolean   ()
         , has_expiration_date   = Boolean   ()
         , time_wp_summary_no    = Link      ("time_wp_summary_no")
@@ -1468,7 +1467,7 @@ def security (db, ** kw) :
     db.security.addPermissionToRole ('HR', 'Create', 'user_dynamic')
     wp_properties = \
         ( 'name', 'wp_no', 'description', 'responsible', 'project'
-        , 'time_start', 'time_end', 'durations_allowed', 'travel'
+        , 'time_start', 'time_end', 'durations_allowed'
         , 'cost_center', 'creation', 'creator', 'activity', 'actor', 'id'
         , 'has_expiration_date', 'time_wp_summary_no', 'epic_key'
         , 'is_public', 'is_extern'
