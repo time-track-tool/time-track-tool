@@ -104,8 +104,8 @@ def time_records_consistent (db, cl, nodeid) :
         + check that there is a lunch break of at least .5 hours if user
           worked for more than 6 hours and durations_allowed is not
           specified
-        + Travel times (either wp has travel flag or time_activity has
-          travel flag) are excempt from work-time and lunch break checks
+        + Travel times (if time_activity has travel flag) are excempt
+          from work-time and lunch break checks
         + no_overtime flag in time_project: check if really no overtime
           booked
         + Check that all WP are bookable
@@ -138,10 +138,7 @@ def time_records_consistent (db, cl, nodeid) :
         tr_pr  = pretty_time_record (tr, date, uname)
         act    = tr.time_activity
         wp     = tr.wp
-        travel = \
-            (  act and db.time_activity.get (act, 'travel')
-            or wp  and db.time_wp.get       (wp,  'travel')
-            )
+        travel = act and db.time_activity.get (act, 'travel')
         if not travel :
             trec_notravel.append (tr)
         if not tr.work_location :
@@ -620,7 +617,6 @@ def new_time_record (db, cl, nodeid, new_values) :
         wp = new_values ['wp']
         # overwrite work location default if default specified in time category
         correct_work_location (db, wp, new_values)
-        travel = travel or db.time_wp.get (wp, 'travel')
     if 'time_activity' in new_values and new_values ['time_activity'] :
         act    = new_values ['time_activity']
         travel = travel or db.time_activity.get (act, 'travel')
