@@ -437,7 +437,6 @@ properties = \
         , 'time_end'
         , 'time_start'
         , 'time_wp_summary_no'
-        , 'travel'
         , 'wp_no'
         ]
       )
