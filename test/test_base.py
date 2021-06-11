@@ -755,7 +755,6 @@ class _Test_Base_Summary :
             ( name               = 'Travel'
             , project            = self.travel_tp
             , time_start         = date.Date ('2004-01-01')
-            , travel             = True
             , responsible        = '1'
             , bookers            = [self.user1, self.user2]
             , cost_center        = self.cc
@@ -766,7 +765,6 @@ class _Test_Base_Summary :
                 ( name               = 'Work Package %s' % i
                 , project            = self.normal_tp
                 , time_start         = date.Date ('2004-01-01')
-                , travel             = True
                 , responsible        = '1'
                 , bookers            = [self.user1, self.user2]
                 , cost_center        = self.cc
@@ -776,7 +774,6 @@ class _Test_Base_Summary :
             ( name               = 'Vacation'
             , project            = self.vacation_tp
             , time_start         = date.Date ('2004-01-01')
-            , travel             = False
             , responsible        = '1'
             , bookers            = [self.user1, self.user2]
             , cost_center        = self.cc
@@ -787,7 +784,6 @@ class _Test_Base_Summary :
             ( name               = 'Flexi'
             , project            = self.flexi_tp
             , time_start         = date.Date ('2004-01-01')
-            , travel             = False
             , responsible        = '1'
             , bookers            = [self.user1, self.user2]
             , cost_center        = self.cc
@@ -797,7 +793,6 @@ class _Test_Base_Summary :
             ( name               = 'Special'
             , project            = self.special_tp
             , time_start         = date.Date ('2004-01-01')
-            , travel             = False
             , responsible        = '1'
             , bookers            = []
             , is_public          = True

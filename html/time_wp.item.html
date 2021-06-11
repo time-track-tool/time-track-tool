@@ -129,8 +129,10 @@
          (classname, 'epic_key')"/>
      <td tal:content="structure python:context.epic_key.field ()"/>
     </tr>
-    <tr tal:condition="python: context.id or db._db.security.hasPermission
-           ('Edit', db._db.getuid(), 'time_wp', 'travel')">
+    <!-- Prevent non-authorized person to set durations_allowed by not
+         allowing it during creation
+    -->
+    <tr tal:condition="python: context.id">
      <th tal:content="structure python:utils.fieldname
          (classname, 'durations_allowed')"/>
      <td tal:content="structure python:context.durations_allowed.field ()"/>
