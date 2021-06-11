@@ -1256,9 +1256,10 @@ class LDAP_Roundup_Sync (Log) :
                         # If we have the user id at this point add it
                         if user :
                             d ['user'] = user.id
+                        uc_type_name = self.db.uc_type.get (tid, 'name')
                         self.info \
-                            ( "%sUpdate Roundup: %s create contact %s"
-                            % (dry, uname, d)
+                            ( "%sUpdate Roundup: %s create contact %s %s"
+                            % (dry, uname, uc_type_name, d)
                             )
                         if self.update_roundup and not self.dry_run_roundup :
                             id = self.db.user_contact.create (** d)
