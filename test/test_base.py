@@ -2594,10 +2594,11 @@ class Test_Case_Timetracker (_Test_Case_Summary, unittest.TestCase) :
             )
         self.assertEqual (len (dr), 1)
         self.db.time_record.create \
-            ( daily_record = dr [0]
-            , start        = '08:00'
-            , end          = '10:00'
-            , wp           = self.wps [0]
+            ( daily_record  = dr [0]
+            , start         = '08:00'
+            , end           = '10:00'
+            , wp            = self.wps [0]
+            , work_location = '1'
             )
         dr_sub = self.db.daily_record_status.lookup ('submitted')
         dr_opn = self.db.daily_record_status.lookup ('open')
