@@ -91,6 +91,7 @@ def time_records_consistent (db, cl, nodeid) :
     """ Check if all time records for this daily record are consistent
 
         + check that each record contains a wp
+        + check that each record contains a work_location
         + check that a start_time exists unless durations_allowed
         + check that there are no overlapping work hours
           - get all records with a start time
@@ -140,6 +141,8 @@ def time_records_consistent (db, cl, nodeid) :
             )
         if not travel :
             trec_notravel.append (tr)
+        if not tr.work_location :
+            msgs.append ("%(tr_pr)s: No work location" % locals ())
         if not tr.wp :
             msgs.append ("%(tr_pr)s: No work package" % locals ())
             durations_allowed = dynamic.durations_allowed
@@ -621,11 +624,6 @@ def new_time_record (db, cl, nodeid, new_values) :
                 raise Reject, _ ('No weekend booking allowed')
     dstart, dend = check_start_end_duration \
         (dr.date, start, end, duration, new_values)
-    # set default work location for new time record by work location ID
-    # for ID reference values check file initial_data.py or use endpoint
-    # /work_location in the web interface
-    if 'work_location' not in new_values :
-        new_values ['work_location'] = '2'
     # set default values according to selected work package
     if 'wp' in new_values and new_values ['wp'] :
         wp = new_values ['wp']
@@ -727,8 +725,6 @@ def check_time_record (db, cl, nodeid, new_values) :
     comment  = new_values.get ('comment',      cl.get (nodeid, 'comment'))
     check_start_end_duration \
         (date, start, end, duration, new_values, dist = dist)
-    if not location :
-        new_values ['work_location'] = '1'
     if dist and not wp :
         raise Reject, _ ("Distribution: WP must be given")
     if dist :
