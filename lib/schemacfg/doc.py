@@ -85,12 +85,21 @@ def init \
         )
     doc_status.setkey ("name")
 
+    doc_category = Class \
+        ( db, "doc_category"
+        , name                = String    (required = True)
+        , doc_num             = String    (required = True)
+        , valid               = Boolean   ()
+        )
+    doc_category.setkey ("name")
+
     doc = Full_Issue_Class \
         ( db, "doc"
         , product_type        = Link      ("product_type", do_journal = 'no')
         , reference           = Link      ("reference",    do_journal = 'no')
         , artefact            = Link      ("artefact",     do_journal = 'no')
         , department          = Link      ("department",   do_journal = 'no')
+        , doc_category        = Link      ("doc_category", do_journal = 'no')
         , status              = Link      ("doc_status",   do_journal = 'no')
         , link                = String    ()
         , document_nr         = String    ()
@@ -109,11 +118,12 @@ def security (db, ** kw) :
                  )
     prop_perms = (("department", "Edit", ("Doc_Admin", ), ("doc_num", )), )
     classes    = \
-        ( ("doc"         , ("User",), ("Doc_Admin", "User"))
-        , ("artefact"    , ("User",), ("Doc_Admin",))
-        , ("product_type", ("User",), ("Doc_Admin",))
-        , ("reference"   , ("User",), ("Doc_Admin",))
-        , ("doc_status"  , ("User",), ("Doc_Admin",))
+        ( ("doc"          , ("User",), ("Doc_Admin", "User"))
+        , ("artefact"     , ("User",), ("Doc_Admin",))
+        , ("product_type" , ("User",), ("Doc_Admin",))
+        , ("reference"    , ("User",), ("Doc_Admin",))
+        , ("doc_status"   , ("User",), ("Doc_Admin",))
+        , ("doc_category" , ("User",), ("Doc_Admin",))
         )
 
     schemadef.register_roles             (db, roles)
