@@ -25,6 +25,7 @@ properties = \
         , 'end_generated'
         , 'start'
         , 'start_generated'
+        , 'time_record'
         , 'work_location'
         ]
       )
@@ -401,7 +402,6 @@ properties = \
       , [ 'attendance_record'
         , 'comment'
         , 'daily_record'
-        , 'dist'
         , 'duration'
         , 'end'
         , 'end_generated'
@@ -608,6 +608,8 @@ properties = \
     , ( 'work_location'
       , [ 'code'
         , 'description'
+        , 'durations_allowed'
+        , 'travel'
         ]
       )
     ]

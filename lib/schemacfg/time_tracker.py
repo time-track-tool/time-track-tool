@@ -290,11 +290,9 @@ def init \
         , time_activity         = Link      ("time_activity", do_journal = "no")
         , comment               = String    (indexme = "no")
         , metadata              = String    ()
-        , attendance_record     = Link      ("attendance_record")
         # Fields to be deleted (see attendance_record)
         , start                 = String    (indexme = "no")
         , end                   = String    (indexme = "no")
-        , dist                  = Number    ()
         , start_generated       = Boolean   ()
         , end_generated         = Boolean   ()
         , work_location         = Link      ("work_location", do_journal = "no")
@@ -303,7 +301,6 @@ def init \
     attendance_record = Class \
         ( db, ''"attendance_record"
         , daily_record          = Link      ( "daily_record"
-                                            , do_journal = "no"
                                             , rev_multilink
                                               = "attendance_record"
                                             )
@@ -313,6 +310,10 @@ def init \
         , end_generated         = Boolean   ()
         , work_location         = Link      ("work_location", do_journal = "no")
         , dist                  = Number    ()
+        , time_record           = Link      ( "time_record"
+                                            , rev_multilink
+                                              = "attendance_record"
+                                            )
         )
 
     time_wp = Class \
@@ -534,6 +535,8 @@ def init \
         , ''"work_location"
         , code                  = String    ()
         , description           = String    ()
+        , durations_allowed     = Boolean   ()
+        , travel                = Boolean   ()
         )
     work_location.setkey ("code")
 

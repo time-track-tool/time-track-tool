@@ -42,42 +42,14 @@
         , searchname  = 'daily_record.weekend_allowed'
         , searchable  = True
         )
+    , utils.ExtProperty (utils, pdict ['work_location'], multiselect = 1)
     , utils.ExtProperty
-        ( utils, pdict ['wp']
-        , searchname  = 'wp.project'
-        , searchable  = True
-        )
-    , utils.ExtProperty
-        ( utils, pdict ['wp']
-        , searchname  = 'wp.project.id'
+        ( utils, pdict ['work_location']
+        , searchname  = 'work_location.id'
         , searchable  = False
         )
-    , utils.ExtProperty
-        ( utils, pdict ['wp']
-        , searchname  = 'wp.project.op_project'
-        , searchable  = True
-        )
-    , utils.ExtProperty (utils, pdict ['wp'], searchable = 1)
-    , utils.ExtProperty
-        ( utils, pdict ['wp']
-        , searchname  = 'wp.id'
-        , searchable  = False
-        )
-    , utils.ExtProperty (utils, pdict ['time_activity'], multiselect = 1)
-    , utils.ExtProperty
-        ( utils, pdict ['time_activity']
-        , searchname  = 'time_activity.id'
-        , searchable  = False
-        )
-    , utils.ExtProperty
-        ( utils, pdict ['duration']
-        , get_cssclass = utils.color_duration
-        )
-    , utils.ExtProperty
-        ( utils, pdict ['tr_duration']
-        , get_cssclass = utils.color_duration
-        )
-    , utils.ExtProperty (utils, pdict ['comment'])
+    , utils.ExtProperty (utils, pdict ['start'])
+    , utils.ExtProperty (utils, pdict ['end'])
     );
    "
   tal:condition="context/is_view_ok">
