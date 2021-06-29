@@ -2018,7 +2018,7 @@ class Test_Case_Timetracker (_Test_Case_Summary, unittest.TestCase) :
         q.append \
             (':columns=daily_record.user,daily_record.date,'
              'daily_record.status,wp.project,wp,time_activity,'
-             'work_location,duration,tr_duration,comment'
+             'duration,tr_duration,comment'
             )
         q.append (':sort=daily_record.user,daily_record.date,wp.project,wp')
         q.append (':filter=daily_record.user,daily_record.date')
@@ -2040,28 +2040,96 @@ class Test_Case_Timetracker (_Test_Case_Summary, unittest.TestCase) :
             v = v.decode ('utf-8')
         lines = tuple (csv.reader (StringIO (v), delimiter = '\t'))
         self.assertEqual (len (lines), 2)
-        self.assertEqual (len (lines [0]), 10)
+        self.assertEqual (len (lines [0]), 9)
         self.assertEqual (lines  [0] [0], 'daily_record.user')
         self.assertEqual (lines  [0] [1], 'daily_record.date')
         self.assertEqual (lines  [0] [2], 'daily_record.status')
         self.assertEqual (lines  [0] [3], 'wp.project')
         self.assertEqual (lines  [0] [4], 'wp')
         self.assertEqual (lines  [0] [5], 'time_activity')
-        self.assertEqual (lines  [0] [6], 'work_location')
-        self.assertEqual (lines  [0] [7], 'duration')
-        self.assertEqual (lines  [0] [8], 'tr_duration')
-        self.assertEqual (lines  [0] [9], 'comment')
+        self.assertEqual (lines  [0] [6], 'duration')
+        self.assertEqual (lines  [0] [7], 'tr_duration')
+        self.assertEqual (lines  [0] [8], 'comment')
         self.assertEqual (lines  [1] [0], 'testuser14')
         self.assertEqual (lines  [1] [1], '2015-01-01')
         self.assertEqual (lines  [1] [2], 'open')
         self.assertEqual (lines  [1] [3], 'Public Holiday')
         self.assertEqual (lines  [1] [4], 'Holiday')
         self.assertEqual (lines  [1] [5], '')
-        self.assertEqual (lines  [1] [6], 'off')
+        self.assertEqual (lines  [1] [6], '7.75')
         self.assertEqual (lines  [1] [7], '7.75')
-        self.assertEqual (lines  [1] [8], '7.75')
-        self.assertEqual (lines  [1] [9], '')
+        self.assertEqual (lines  [1] [8], '')
     # end def test_user14_tr_csv
+
+    def test_user14_ar_csv (self) :
+        """  Test csv export for attendance_record
+        """
+
+        class FakeRequest (object) :
+            rfile = None
+            def start_response (self, a, b) :
+                pass
+        # end class FakeRequest
+        self.log.debug ('test_user14_ar_csv')
+        self.setup_db ()
+        self.setup_user14 ()
+        # Allow user0
+        rl = self.db.user.get (self.user0, 'roles')
+        rl = ','.join ((rl, 'controlling'))
+        self.db.user.set (self.user0, roles = rl)
+        self.db.commit ()
+        self.db.close ()
+        self.db = self.tracker.open (self.username14)
+        user14_time.import_data_14 (self.db, self.user14, self.olo)
+        self.db.commit ()
+        self.db.close ()
+        self.db = self.tracker.open (self.username0)
+        req = FakeRequest ()
+        q = []
+        q.append \
+            (':columns=daily_record.user,daily_record.date,'
+             'daily_record.status,work_location,start,end'
+            )
+        q.append (':sort=daily_record.user,daily_record.date,start')
+        q.append (':filter=daily_record.user,daily_record.date')
+        q.append ('daily_record.user=testuser14')
+        q.append ('daily_record.date=2015-01-07')
+        env = dict (PATH_INFO = '', REQUEST_METHOD = 'GET')
+        env ['QUERY_STRING'] = '&'.join (q)
+        cli = self.tracker.Client (self.tracker, req, env, None)
+        cli.db = self.db
+        cli.language = 'en'
+        cli.userid = self.db.getuid ()
+        cli.classname = 'attendance_record'
+        cls = self.tracker.cgi_actions ['export_csv_names']
+        exp = cls (cli)
+        io = BytesIO ()
+        exp.handle (outfile = io)
+        v = io.getvalue ()
+        if isinstance (u'', str):
+            v = v.decode ('utf-8')
+        lines = tuple (csv.reader (StringIO (v), delimiter = '\t'))
+        self.assertEqual (len (lines), 3)
+        self.assertEqual (len (lines [0]), 6)
+        self.assertEqual (lines  [0] [0], 'daily_record.user')
+        self.assertEqual (lines  [0] [1], 'daily_record.date')
+        self.assertEqual (lines  [0] [2], 'daily_record.status')
+        self.assertEqual (lines  [0] [3], 'work_location')
+        self.assertEqual (lines  [0] [4], 'start')
+        self.assertEqual (lines  [0] [5], 'end')
+        self.assertEqual (lines  [1] [0], 'testuser14')
+        self.assertEqual (lines  [1] [1], '2015-01-07')
+        self.assertEqual (lines  [1] [2], 'open')
+        self.assertEqual (lines  [1] [3], 'office')
+        self.assertEqual (lines  [1] [4], '08:15')
+        self.assertEqual (lines  [1] [5], '12:00')
+        self.assertEqual (lines  [2] [0], 'testuser14')
+        self.assertEqual (lines  [2] [1], '2015-01-07')
+        self.assertEqual (lines  [2] [2], 'open')
+        self.assertEqual (lines  [2] [3], 'office')
+        self.assertEqual (lines  [2] [4], '12:30')
+        self.assertEqual (lines  [2] [5], '17:00')
+    # end def test_user14_ar_csv
 
     def test_user14_vacation (self) :
         self.log.debug ('test_user14')
@@ -2176,7 +2244,8 @@ class Test_Case_Timetracker (_Test_Case_Summary, unittest.TestCase) :
 
         ext.add_option (Option (ext, 'MAIL', 'LEAVE_USER_ACCEPT_SUBJECT'))
         ext.add_option (Option (ext, 'MAIL', 'LEAVE_USER_ACCEPT_TEXT'))
-        ext.add_option (Option (ext, 'MAIL', 'LEAVE_USER_ACCEPT_RECS_TEXT'))
+        ext.add_option (Option (ext, 'MAIL', 'LEAVE_USER_ACCEPT_TIMERECS_TEXT'))
+        ext.add_option (Option (ext, 'MAIL', 'LEAVE_USER_ACCEPT_ATTRECS_TEXT'))
         ext.add_option (Option (ext, 'MAIL', 'LEAVE_USER_DECLINE_SUBJECT'))
         ext.add_option (Option (ext, 'MAIL', 'LEAVE_USER_DECLINE_TEXT'))
         ext.add_option (Option (ext, 'MAIL', 'LEAVE_USER_CANCELLED_SUBJECT'))
@@ -2304,8 +2373,10 @@ class Test_Case_Timetracker (_Test_Case_Summary, unittest.TestCase) :
              'This is an automatically generated message.\n'
              'Responses to this address are not possible.\n'
             )
-        ext.MAIL_LEAVE_USER_ACCEPT_RECS_TEXT = \
+        ext.MAIL_LEAVE_USER_ACCEPT_TIMERECS_TEXT = \
             'The following existing time records have been deleted:\n'
+        ext.MAIL_LEAVE_USER_ACCEPT_ATTRECS_TEXT = \
+            'The following existing attendance records have been deleted:\n'
         ext.MAIL_LEAVE_USER_DECLINE_SUBJECT = \
             ('Leave "$(tp_name)s/$(wp_name)s"\n'
              '$(first_day)s to $(last_day)s declined'
@@ -2584,11 +2655,16 @@ class Test_Case_Timetracker (_Test_Case_Summary, unittest.TestCase) :
                 )
             )
         self.assertEqual (len (dr), 1)
-        self.db.time_record.create \
+        tr = self.db.time_record.create \
             ( daily_record  = dr [0]
+            , wp            = self.wps [0]
+            , duration      = 2.0
+            )
+        ar1 = self.db.attendance_record.create \
+            ( daily_record  = dr [0]
+            , time_record   = tr
             , start         = '08:00'
             , end           = '10:00'
-            , wp            = self.wps [0]
             , work_location = '1'
             )
         dr_sub = self.db.daily_record_status.lookup ('submitted')
@@ -2630,14 +2706,21 @@ class Test_Case_Timetracker (_Test_Case_Summary, unittest.TestCase) :
             , status = dr_sub
             )
         # But may still create time_recs in range
-        self.db.time_record.create \
+        tr = self.db.time_record.create \
             ( daily_record = dr [0]
+            , duration     = 1.0
+            )
+        ar2 = self.db.attendance_record.create \
+            ( daily_record = dr [0]
+            , time_record  = tr
             , start        = '10:00'
             , end          = '11:00'
             )
         trs = self.db.time_record.filter (None, dict (daily_record = drs))
+        ars = self.db.attendance_record.filter (None, dict (daily_record = drs))
         # Stephanitag is on Saturday, two extra records for deletion
         self.assertEqual (len (trs), 5 + 2)
+        self.assertEqual (len (ars), 5 + 2)
 
         e = Parser ().parse (open (maildebug, 'r'))
         for h, t in \
@@ -2812,9 +2895,11 @@ class Test_Case_Timetracker (_Test_Case_Summary, unittest.TestCase) :
             )
         self.assertEqual (len (drs), 18)
         trs = self.db.time_record.filter (None, dict (daily_record = drs))
+        ars = self.db.attendance_record.filter (None, dict (daily_record = drs))
         # Stephanitag is on Saturday, vacation records for weekdays and
         # half public holidays
         self.assertEqual (len (trs), 5 + 10)
+        self.assertEqual (len (ars), 5 + 10)
         box = mbox (maildebug, create = False)
         headers = \
             [ ( ('subject',    'Leave "Vacation/Vacation" '
@@ -2834,13 +2919,14 @@ class Test_Case_Timetracker (_Test_Case_Summary, unittest.TestCase) :
             ]
         body = \
             [ b'Your absence request "Vacation/Vacation" has been accepted.\n'
-              b'The following existing time records have been deleted:\n\n'
-              b'2009-12-22: '
-              b'A Project / Work Package 0 08:00-10:00 duration: 2.0'
-              b'\n'
-              b'2009-12-22:           /                '
-              b'10:00-11:00 duration: 1.0'
-              b'\n\n\nThis is an automatically generated message.\n'
+              b'\nThe following existing time records have been deleted:\n'
+              b'2009-12-22: A Project / Work Package 0 duration: 2.0\n'
+              b'2009-12-22:           /                duration: 1.0\n'
+              b'\nThe following existing attendance records '
+              b'have been deleted:\n'
+              b'2009-12-22: office 08:00-10:00\n'
+              b'2009-12-22:        10:00-11:00\n'
+              b'\n\nThis is an automatically generated message.\n'
               b'Responses to this address are not possible.'
             , b'Dear member of the Office Team,\n'
               b'the user Test User2 has approved Vacation/Vacation\n'
@@ -3064,9 +3150,11 @@ class Test_Case_Timetracker (_Test_Case_Summary, unittest.TestCase) :
             )
         self.assertEqual (len (drs), 18)
         trs = self.db.time_record.filter (None, dict (daily_record = drs))
+        ars = self.db.attendance_record.filter (None, dict (daily_record = drs))
         # Stephanitag is on Saturday, vacation records for weekdays and
         # half public holidays
         self.assertEqual (len (trs), 5)
+        self.assertEqual (len (ars), 5)
         for st in (st_open, st_subm, st_accp, st_decl, st_carq) :
             self.assertRaises \
                 ( Reject, self.db.leave_submission.set
@@ -4584,6 +4672,9 @@ class Test_Case_Fulltracker (_Test_Case_Summary, unittest.TestCase) :
         lines = [x.strip ().split (',') for x in sr.as_csv ().split ('\n')]
         self.assertEqual (len (lines), 31)
         self.assertEqual (lines [0]  [1], 'Time Period')
+        self.assertEqual (lines [0]  [6], 'Actual all')
+        self.assertEqual (lines [0]  [9], 'Supplementary hours')
+        self.assertEqual (lines [0] [11], 'Balance End')
         self.assertEqual (lines [0] [13], 'Achieved supplementary hours')
         self.assertEqual (lines [1]  [1], 'WW 53/2009')
         self.assertEqual (lines [2]  [1], 'WW 1/2010')
@@ -4980,11 +5071,15 @@ class Test_Case_Fulltracker (_Test_Case_Summary, unittest.TestCase) :
             ( user = self.user8
             , date = date.Date ('2012-12-28')
             )
-        self.db.time_record.create \
+        trn = self.db.time_record.create \
             ( daily_record  = dr
             , duration      = 8.0
-            , work_location = '5'
             , wp            = '5'
+            )
+        self.db.attendance_record.create \
+            ( daily_record  = dr
+            , time_record   = trn
+            , work_location = '5'
             )
         f = self.db.daily_record_freeze.create \
             ( user           = self.user8
@@ -5080,6 +5175,7 @@ class Test_Case_Fulltracker (_Test_Case_Summary, unittest.TestCase) :
         lines = tuple (csv.reader (StringIO (sr.as_csv ()), delimiter = ','))
         self.assertEqual (len (lines), 14)
         self.assertEqual (lines  [0] [1], 'Time Period')
+        self.assertEqual (lines  [0] [2], 'Balance Start')
         self.assertEqual (lines  [0] [6], 'Actual all')
         self.assertEqual (lines  [0] [7], 'required')
         self.assertEqual (lines  [0] [8], 'Supp. hours average')
@@ -5117,11 +5213,15 @@ class Test_Case_Fulltracker (_Test_Case_Summary, unittest.TestCase) :
             ( user = self.user1
             , date = date.Date ('2009-12-08')
             )
-        self.db.time_record.create \
+        tr = self.db.time_record.create \
             ( daily_record  = dr
             , duration      = 2.0
-            , work_location = '5'
             , wp            = '1'
+            )
+        self.db.attendance_record.create \
+            ( daily_record  = dr
+            , time_record   = tr
+            , work_location = '5'
             )
         request      = Request ()
         env          = dict (PATH_INFO = '', REQUEST_METHOD = 'GET')

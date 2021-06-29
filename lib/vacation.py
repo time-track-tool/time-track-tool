@@ -106,11 +106,15 @@ def try_create_public_holiday (db, daily_record, date, user):
             comment = holiday.name
             if holiday.description:
                 comment = '\n'.join ((holiday.name, holiday.description))
-            db.time_record.create \
+            trn = db.time_record.create \
                 ( daily_record  = daily_record
                 , duration      = wh
                 , wp            = wp
                 , comment       = comment
+                )
+            db.attendance_record.create \
+                ( daily_record  = daily_record
+                , time_record   = trn
                 , work_location = db.work_location.lookup ('off')
                 )
 # end def try_create_public_holiday
