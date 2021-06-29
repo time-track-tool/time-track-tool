@@ -183,29 +183,41 @@ if 'work_location' in db.classes :
     work_location = db.getclass ('work_location')
     work_location.create \
         ( code = "office"
-        , description = "Abwesend"
+        , description = "in office"
+        , durations_allowed = False
+        , travel            = False
         )
     work_location.create \
         ( code = "home"
-        , description = "Zuhause / Home office"
+        , description = "Home office"
+        , durations_allowed = False
+        , travel            = False
         )
     work_location.create \
         ( code = "off-site/trav."
         , description =
           "Travel -- Unterwegs, Dienstgang, Dienstreise "
           "(reisend oder an einer fremden Location)"
+        , durations_allowed = False
+        , travel            = True
         )
     work_location.create \
         ( code = "other"
         , description = "In einer anderen als der eigenen Org-Location"
+        , durations_allowed = False
+        , travel            = False
         )
     work_location.create \
         ( code = "off"
         , description = "Abwesend"
+        , durations_allowed = True
+        , travel            = False
         )
     work_location.create \
         ( code = "on site"
         , description = "Person working at customer site"
+        , durations_allowed = False
+        , travel            = False
         )
 
 if 'sex' in db.classes :

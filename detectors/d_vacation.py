@@ -305,15 +305,16 @@ def state_change_reactor (db, cl, nodeid, old_values) :
         return
     dt  = common.pretty_range (vs.first_day, vs.last_day)
     drs = db.daily_record.filter (None, dict (user = vs.user, date = dt))
+    ars = db.attendance_record.filter (None, dict (daily_record = drs))
     trs = db.time_record.filter (None, dict (daily_record = drs))
     if new_status == accepted :
-        handle_accept    (db, vs, trs, old_status)
+        handle_accept    (db, vs, ars, trs, old_status)
     elif new_status == declined :
         handle_decline   (db, vs)
     elif new_status == submitted :
         handle_submit    (db, vs)
     elif new_status == cancelled :
-        handle_cancel    (db, vs, drs, trs, old_status == crq)
+        handle_cancel    (db, vs, drs, ars, trs, old_status == crq)
     elif new_status == crq :
         handle_cancel_rq (db, vs)
 # end def state_change_reactor
@@ -366,10 +367,12 @@ def try_send_mail (db, vs, now, var_text, var_subject, var_mail = None, ** kw) :
             raise roundupdb.DetectorError (message)
 # end def try_send_mail
 
-def handle_accept (db, vs, trs, old_status) :
-    cancr = db.leave_status.lookup ('cancel requested')
-    warn  = []
+def handle_accept (db, vs, ars, trs, old_status) :
+    cancr   = db.leave_status.lookup ('cancel requested')
+    warn_tr = []
+    warn_ar = []
     if old_status != cancr :
+        arid_dict = {}
         for trid in trs :
             tr  = db.time_record.getnode (trid)
             wp  = tp = None
@@ -380,12 +383,28 @@ def handle_accept (db, vs, trs, old_status) :
             if tp is None or not tp.is_public_holiday :
                 if wp is None or wp.id != vs.time_wp :
                     dt = trd.pretty (common.ymd)
-                    st = tr.start or ''
-                    en = tr.end   or ''
                     wn = (wp and wp.name) or ''
                     tn = (tp and tp.name) or ''
-                    warn.append ((dt, tn, wn, st, en, tr.duration))
+                    warn_tr.append ((dt, tn, wn, tr.duration))
                 db.time_record.retire (trid)
+            else :
+                # All public holiday tr have a linked ar, we do not
+                # retire the ar in that case
+                assert len (tr.attendance_record) == 1
+                arid_dict [tr.attendance_record [0]] = 1
+        for arid in ars :
+            ar  = db.attendance_record.getnode (arid)
+            if ar.id in arid_dict :
+                continue
+            trd = db.daily_record.get (ar.daily_record, 'date')
+            dt = trd.pretty (common.ymd)
+            wl = ar.work_location or ''
+            if wl :
+                wl = db.work_location.get (wl, 'code')
+            st = ar.start or ''
+            en = ar.end   or ''
+            warn_ar.append ((dt, wl, st, en))
+            db.attendance_record.retire (arid)
         d = vs.first_day
         off = db.work_location.lookup ('off')
         while (d <= vs.last_day) :
@@ -398,28 +417,46 @@ def handle_accept (db, vs, trs, old_status) :
                 du = min (ld, tp.max_hours)
             assert len (dr) == 1
             if ld :
-                db.time_record.create \
+                trn = db.time_record.create \
                     ( daily_record  = dr [0]
                     , duration      = du
-                    , work_location = off
                     , wp            = vs.time_wp
+                    )
+                db.attendance_record.create \
+                    ( daily_record  = dr [0]
+                    , time_record   = trn
+                    , work_location = off
                     )
             leave = db.daily_record_status.lookup ('leave')
             db.daily_record.set (dr [0], status = leave)
             d += common.day
     deleted_records = ''
-    if warn :
+    if warn_tr or warn_ar :
         d = []
-        try :
-            d = [db.config.ext.MAIL_LEAVE_USER_ACCEPT_RECS_TEXT]
-        except KeyError :
-            pass
         tdl = wdl = 0
-        for w in warn :
+        if warn_tr :
+            try :
+                d.append ('')
+                t = db.config.ext.MAIL_LEAVE_USER_ACCEPT_TIMERECS_TEXT.rstrip ()
+                d.append (t)
+            except KeyError :
+                pass
+        for w in warn_tr :
             tdl = max (tdl, len (w [1]))
             wdl = max (wdl, len (w [2]))
-        fmt = "%%s: %%%ds / %%%ds %%5s-%%5s duration: %%s" % (tdl, wdl)
-        for w in warn :
+        fmt = "%%s: %%%ds / %%%ds duration: %%s" % (tdl, wdl)
+        for w in warn_tr :
+            d.append (fmt % w)
+        if warn_ar :
+            try :
+                d.append ('')
+                t = db.config.ext.MAIL_LEAVE_USER_ACCEPT_ATTRECS_TEXT.rstrip ()
+                d.append (t)
+            except KeyError :
+                pass
+        tll = max (len (w [1]) for w in warn_ar)
+        fmt = "%%s: %%%ds %%5s-%%5s" % tll
+        for w in warn_ar :
             d.append (fmt % w)
         deleted_records = '\n'.join (d) + '\n'
 
@@ -453,8 +490,9 @@ def handle_accept (db, vs, trs, old_status) :
                 )
 # end def handle_accept
 
-def handle_cancel (db, vs, drs, trs, is_crq) :
+def handle_cancel (db, vs, drs, ars, trs, is_crq) :
     if is_crq :
+        ard = {}
         for trid in trs :
             tr  = db.time_record.getnode (trid)
             if tr.wp :
@@ -463,11 +501,17 @@ def handle_cancel (db, vs, drs, trs, is_crq) :
                 if not tp.is_public_holiday :
                     assert tp.approval_required
                     db.time_record.retire (trid)
+                else :
+                    assert len (tr.attendance_record) == 1
+                    ard [tr.attendance_record [0]] = 1
             else :
                 # inconsistency with missing wp
                 db.time_record.retire (trid)
+        for arid in ars :
+            if arid not in ard :
+                db.attendance_record.retire (arid)
+        st_open = db.daily_record_status.lookup ('open')
         for dr in drs :
-            st_open = db.daily_record_status.lookup ('open')
             db.daily_record.set (dr, status = st_open)
 
         now = Date ('.')
