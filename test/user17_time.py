@@ -106,19 +106,29 @@ def import_data_17 (db, user, olo) :
         , weekend_allowed   = 0
         , required_overtime = 0
         )
-    db.time_record.create \
+    tr = db.time_record.create \
         ( daily_record  = dr
+        , duration      = 5.50
+        , wp            = '4'
+        )
+    ar = db.attendance_record.create \
+        ( daily_record  = dr
+        , time_record   = tr
         , start         = '12:30'
         , end           = '18:00'
         , work_location = '1'
+        )
+    tr = db.time_record.create \
+        ( daily_record  = dr
+        , duration      = 3.00
         , wp            = '4'
         )
-    db.time_record.create \
+    ar = db.attendance_record.create \
         ( daily_record  = dr
+        , time_record   = tr
         , start         = '09:00'
         , end           = '12:00'
         , work_location = '1'
-        , wp            = '4'
         )
     dr = db.daily_record.create \
         ( user = user
@@ -132,12 +142,17 @@ def import_data_17 (db, user, olo) :
         , weekend_allowed   = 0
         , required_overtime = 0
         )
-    db.time_record.create \
+    tr = db.time_record.create \
         ( daily_record  = dr
+        , duration      = 2.00
+        , wp            = '4'
+        )
+    ar = db.attendance_record.create \
+        ( daily_record  = dr
+        , time_record   = tr
         , start         = '16:00'
         , end           = '18:00'
         , work_location = '1'
-        , wp            = '4'
         )
     dr = db.daily_record.create \
         ( user = user
@@ -163,11 +178,15 @@ def import_data_17 (db, user, olo) :
         , weekend_allowed   = 0
         , required_overtime = 0
         )
-    db.time_record.create \
+    tr = db.time_record.create \
         ( daily_record  = dr
         , duration      = 1.0
-        , work_location = '5'
         , wp            = '1'
+        )
+    ar = db.attendance_record.create \
+        ( daily_record  = dr
+        , time_record   = tr
+        , work_location = '5'
         )
     dr = db.daily_record.create \
         ( user = user
@@ -175,11 +194,15 @@ def import_data_17 (db, user, olo) :
         , weekend_allowed   = 0
         , required_overtime = 0
         )
-    db.time_record.create \
+    tr = db.time_record.create \
         ( daily_record  = dr
         , duration      = 1.0
-        , work_location = '5'
         , wp            = '1'
+        )
+    ar = db.attendance_record.create \
+        ( daily_record  = dr
+        , time_record   = tr
+        , work_location = '5'
         )
     dr = db.daily_record.create \
         ( user = user
@@ -187,11 +210,15 @@ def import_data_17 (db, user, olo) :
         , weekend_allowed   = 0
         , required_overtime = 0
         )
-    db.time_record.create \
+    tr = db.time_record.create \
         ( daily_record  = dr
         , duration      = 1.0
-        , work_location = '5'
         , wp            = '1'
+        )
+    ar = db.attendance_record.create \
+        ( daily_record  = dr
+        , time_record   = tr
+        , work_location = '5'
         )
     dr = db.daily_record.create \
         ( user = user
@@ -199,12 +226,17 @@ def import_data_17 (db, user, olo) :
         , weekend_allowed   = 0
         , required_overtime = 0
         )
-    db.time_record.create \
+    tr = db.time_record.create \
         ( daily_record  = dr
+        , duration      = 4.00
+        , wp            = '4'
+        )
+    ar = db.attendance_record.create \
+        ( daily_record  = dr
+        , time_record   = tr
         , start         = '09:00'
         , end           = '13:00'
         , work_location = '1'
-        , wp            = '4'
         )
     dr = db.daily_record.create \
         ( user = user
@@ -230,11 +262,15 @@ def import_data_17 (db, user, olo) :
         , weekend_allowed   = 0
         , required_overtime = 0
         )
-    db.time_record.create \
+    tr = db.time_record.create \
         ( daily_record  = dr
         , duration      = 1.0
-        , work_location = '5'
         , wp            = '1'
+        )
+    ar = db.attendance_record.create \
+        ( daily_record  = dr
+        , time_record   = tr
+        , work_location = '5'
         )
     dr = db.daily_record.create \
         ( user = user
@@ -242,11 +278,15 @@ def import_data_17 (db, user, olo) :
         , weekend_allowed   = 0
         , required_overtime = 0
         )
-    db.time_record.create \
+    tr = db.time_record.create \
         ( daily_record  = dr
         , duration      = 1.0
-        , work_location = '5'
         , wp            = '1'
+        )
+    ar = db.attendance_record.create \
+        ( daily_record  = dr
+        , time_record   = tr
+        , work_location = '5'
         )
     dr = db.daily_record.create \
         ( user = user
@@ -254,12 +294,17 @@ def import_data_17 (db, user, olo) :
         , weekend_allowed   = 0
         , required_overtime = 0
         )
-    db.time_record.create \
+    tr = db.time_record.create \
         ( daily_record  = dr
+        , duration      = 4.00
+        , wp            = '4'
+        )
+    ar = db.attendance_record.create \
+        ( daily_record  = dr
+        , time_record   = tr
         , start         = '09:00'
         , end           = '13:00'
         , work_location = '2'
-        , wp            = '4'
         )
     dr = db.daily_record.create \
         ( user = user
@@ -303,19 +348,29 @@ def import_data_17 (db, user, olo) :
         , weekend_allowed   = 0
         , required_overtime = 0
         )
-    db.time_record.create \
+    tr = db.time_record.create \
         ( daily_record  = dr
+        , duration      = 4.50
+        , wp            = '4'
+        )
+    ar = db.attendance_record.create \
+        ( daily_record  = dr
+        , time_record   = tr
         , start         = '12:30'
         , end           = '17:00'
         , work_location = '1'
+        )
+    tr = db.time_record.create \
+        ( daily_record  = dr
+        , duration      = 2.00
         , wp            = '4'
         )
-    db.time_record.create \
+    ar = db.attendance_record.create \
         ( daily_record  = dr
+        , time_record   = tr
         , start         = '10:00'
         , end           = '12:00'
         , work_location = '1'
-        , wp            = '4'
         )
     dr = db.daily_record.create \
         ( user = user
@@ -347,12 +402,17 @@ def import_data_17 (db, user, olo) :
         , weekend_allowed   = 0
         , required_overtime = 0
         )
-    db.time_record.create \
+    tr = db.time_record.create \
         ( daily_record  = dr
+        , duration      = 5.00
+        , wp            = '4'
+        )
+    ar = db.attendance_record.create \
+        ( daily_record  = dr
+        , time_record   = tr
         , start         = '13:00'
         , end           = '18:00'
         , work_location = '1'
-        , wp            = '4'
         )
     dr = db.daily_record.create \
         ( user = user
@@ -408,19 +468,29 @@ def import_data_17 (db, user, olo) :
         , weekend_allowed   = 0
         , required_overtime = 0
         )
-    db.time_record.create \
+    tr = db.time_record.create \
         ( daily_record  = dr
+        , duration      = 5.50
+        , wp            = '4'
+        )
+    ar = db.attendance_record.create \
+        ( daily_record  = dr
+        , time_record   = tr
         , start         = '12:30'
         , end           = '18:00'
         , work_location = '1'
+        )
+    tr = db.time_record.create \
+        ( daily_record  = dr
+        , duration      = 2.00
         , wp            = '4'
         )
-    db.time_record.create \
+    ar = db.attendance_record.create \
         ( daily_record  = dr
+        , time_record   = tr
         , start         = '10:00'
         , end           = '12:00'
         , work_location = '1'
-        , wp            = '4'
         )
     dr = db.daily_record.create \
         ( user = user
@@ -458,12 +528,17 @@ def import_data_17 (db, user, olo) :
         , weekend_allowed   = 0
         , required_overtime = 0
         )
-    db.time_record.create \
+    tr = db.time_record.create \
         ( daily_record  = dr
+        , duration      = 5.00
+        , wp            = '4'
+        )
+    ar = db.attendance_record.create \
+        ( daily_record  = dr
+        , time_record   = tr
         , start         = '13:00'
         , end           = '18:00'
         , work_location = '1'
-        , wp            = '4'
         )
     dr = db.daily_record.create \
         ( user = user
@@ -525,12 +600,17 @@ def import_data_17 (db, user, olo) :
         , weekend_allowed   = 0
         , required_overtime = 0
         )
-    db.time_record.create \
+    tr = db.time_record.create \
         ( daily_record  = dr
+        , duration      = 6.00
+        , wp            = '4'
+        )
+    ar = db.attendance_record.create \
+        ( daily_record  = dr
+        , time_record   = tr
         , start         = '13:00'
         , end           = '19:00'
         , work_location = '2'
-        , wp            = '4'
         )
     dr = db.daily_record.create \
         ( user = user
@@ -550,12 +630,17 @@ def import_data_17 (db, user, olo) :
         , weekend_allowed   = 0
         , required_overtime = 0
         )
-    db.time_record.create \
+    tr = db.time_record.create \
         ( daily_record  = dr
+        , duration      = 5.00
+        , wp            = '4'
+        )
+    ar = db.attendance_record.create \
+        ( daily_record  = dr
+        , time_record   = tr
         , start         = '13:00'
         , end           = '18:00'
         , work_location = '1'
-        , wp            = '4'
         )
     dr = db.daily_record.create \
         ( user = user
@@ -623,12 +708,17 @@ def import_data_17 (db, user, olo) :
         , weekend_allowed   = 0
         , required_overtime = 0
         )
-    db.time_record.create \
+    tr = db.time_record.create \
         ( daily_record  = dr
+        , duration      = 5.00
+        , wp            = '4'
+        )
+    ar = db.attendance_record.create \
+        ( daily_record  = dr
+        , time_record   = tr
         , start         = '13:00'
         , end           = '18:00'
         , work_location = '1'
-        , wp            = '4'
         )
     dr = db.daily_record.create \
         ( user = user
@@ -648,12 +738,17 @@ def import_data_17 (db, user, olo) :
         , weekend_allowed   = 0
         , required_overtime = 0
         )
-    db.time_record.create \
+    tr = db.time_record.create \
         ( daily_record  = dr
+        , duration      = 5.00
+        , wp            = '4'
+        )
+    ar = db.attendance_record.create \
+        ( daily_record  = dr
+        , time_record   = tr
         , start         = '09:00'
         , end           = '14:00'
         , work_location = '1'
-        , wp            = '4'
         )
     dr = db.daily_record.create \
         ( user = user
@@ -697,19 +792,29 @@ def import_data_17 (db, user, olo) :
         , weekend_allowed   = 0
         , required_overtime = 0
         )
-    db.time_record.create \
+    tr = db.time_record.create \
         ( daily_record  = dr
+        , duration      = 3.50
+        , wp            = '4'
+        )
+    ar = db.attendance_record.create \
+        ( daily_record  = dr
+        , time_record   = tr
         , start         = '12:30'
         , end           = '16:00'
         , work_location = '1'
+        )
+    tr = db.time_record.create \
+        ( daily_record  = dr
+        , duration      = 3.00
         , wp            = '4'
         )
-    db.time_record.create \
+    ar = db.attendance_record.create \
         ( daily_record  = dr
+        , time_record   = tr
         , start         = '09:00'
         , end           = '12:00'
         , work_location = '1'
-        , wp            = '4'
         )
     dr = db.daily_record.create \
         ( user = user
@@ -759,19 +864,29 @@ def import_data_17 (db, user, olo) :
         , weekend_allowed   = 0
         , required_overtime = 0
         )
-    db.time_record.create \
+    tr = db.time_record.create \
         ( daily_record  = dr
+        , duration      = 4.25
+        , wp            = '4'
+        )
+    ar = db.attendance_record.create \
+        ( daily_record  = dr
+        , time_record   = tr
         , start         = '12:30'
         , end           = '16:45'
         , work_location = '1'
+        )
+    tr = db.time_record.create \
+        ( daily_record  = dr
+        , duration      = 3.25
         , wp            = '4'
         )
-    db.time_record.create \
+    ar = db.attendance_record.create \
         ( daily_record  = dr
+        , time_record   = tr
         , start         = '08:45'
         , end           = '12:00'
         , work_location = '1'
-        , wp            = '4'
         )
     dr = db.daily_record.create \
         ( user = user
@@ -779,12 +894,17 @@ def import_data_17 (db, user, olo) :
         , weekend_allowed   = 0
         , required_overtime = 0
         )
-    db.time_record.create \
+    tr = db.time_record.create \
         ( daily_record  = dr
+        , duration      = 1.00
+        , wp            = '4'
+        )
+    ar = db.attendance_record.create \
+        ( daily_record  = dr
+        , time_record   = tr
         , start         = '10:00'
         , end           = '11:00'
         , work_location = '3'
-        , wp            = '4'
         )
     dr = db.daily_record.create \
         ( user = user
@@ -840,19 +960,29 @@ def import_data_17 (db, user, olo) :
         , weekend_allowed   = 0
         , required_overtime = 0
         )
-    db.time_record.create \
+    tr = db.time_record.create \
         ( daily_record  = dr
+        , duration      = 3.50
+        , wp            = '4'
+        )
+    ar = db.attendance_record.create \
+        ( daily_record  = dr
+        , time_record   = tr
         , start         = '12:30'
         , end           = '16:00'
         , work_location = '1'
+        )
+    tr = db.time_record.create \
+        ( daily_record  = dr
+        , duration      = 3.25
         , wp            = '4'
         )
-    db.time_record.create \
+    ar = db.attendance_record.create \
         ( daily_record  = dr
+        , time_record   = tr
         , start         = '08:45'
         , end           = '12:00'
         , work_location = '1'
-        , wp            = '4'
         )
     dr = db.daily_record.create \
         ( user = user
@@ -878,12 +1008,17 @@ def import_data_17 (db, user, olo) :
         , weekend_allowed   = 0
         , required_overtime = 0
         )
-    db.time_record.create \
+    tr = db.time_record.create \
         ( daily_record  = dr
+        , duration      = 5.00
+        , wp            = '4'
+        )
+    ar = db.attendance_record.create \
+        ( daily_record  = dr
+        , time_record   = tr
         , start         = '09:00'
         , end           = '14:00'
         , work_location = '2'
-        , wp            = '4'
         )
     dr = db.daily_record.create \
         ( user = user
@@ -939,19 +1074,29 @@ def import_data_17 (db, user, olo) :
         , weekend_allowed   = 0
         , required_overtime = 0
         )
-    db.time_record.create \
+    tr = db.time_record.create \
         ( daily_record  = dr
+        , duration      = 4.00
+        , wp            = '4'
+        )
+    ar = db.attendance_record.create \
+        ( daily_record  = dr
+        , time_record   = tr
         , start         = '08:15'
         , end           = '12:15'
         , work_location = '1'
+        )
+    tr = db.time_record.create \
+        ( daily_record  = dr
+        , duration      = 1.00
         , wp            = '4'
         )
-    db.time_record.create \
+    ar = db.attendance_record.create \
         ( daily_record  = dr
+        , time_record   = tr
         , start         = '14:00'
         , end           = '15:00'
         , work_location = '3'
-        , wp            = '4'
         )
     dr = db.daily_record.create \
         ( user = user
@@ -1001,12 +1146,17 @@ def import_data_17 (db, user, olo) :
         , weekend_allowed   = 0
         , required_overtime = 0
         )
-    db.time_record.create \
+    tr = db.time_record.create \
         ( daily_record  = dr
+        , duration      = 4.00
+        , wp            = '4'
+        )
+    ar = db.attendance_record.create \
+        ( daily_record  = dr
+        , time_record   = tr
         , start         = '13:00'
         , end           = '17:00'
         , work_location = '1'
-        , wp            = '4'
         )
     dr = db.daily_record.create \
         ( user = user
@@ -1032,12 +1182,17 @@ def import_data_17 (db, user, olo) :
         , weekend_allowed   = 0
         , required_overtime = 0
         )
-    db.time_record.create \
+    tr = db.time_record.create \
         ( daily_record  = dr
+        , duration      = 5.00
+        , wp            = '4'
+        )
+    ar = db.attendance_record.create \
+        ( daily_record  = dr
+        , time_record   = tr
         , start         = '09:00'
         , end           = '14:00'
         , work_location = '2'
-        , wp            = '4'
         )
     dr = db.daily_record.create \
         ( user = user
@@ -1057,11 +1212,15 @@ def import_data_17 (db, user, olo) :
         , weekend_allowed   = 0
         , required_overtime = 0
         )
-    db.time_record.create \
+    tr = db.time_record.create \
         ( daily_record  = dr
         , duration      = 1.0
-        , work_location = '5'
         , wp            = '1'
+        )
+    ar = db.attendance_record.create \
+        ( daily_record  = dr
+        , time_record   = tr
+        , work_location = '5'
         )
     dr = db.daily_record.create \
         ( user = user
@@ -1081,11 +1240,15 @@ def import_data_17 (db, user, olo) :
         , weekend_allowed   = 0
         , required_overtime = 0
         )
-    db.time_record.create \
+    tr = db.time_record.create \
         ( daily_record  = dr
         , duration      = 1.0
-        , work_location = '5'
         , wp            = '1'
+        )
+    ar = db.attendance_record.create \
+        ( daily_record  = dr
+        , time_record   = tr
+        , work_location = '5'
         )
     dr = db.daily_record.create \
         ( user = user
@@ -1093,19 +1256,29 @@ def import_data_17 (db, user, olo) :
         , weekend_allowed   = 0
         , required_overtime = 0
         )
-    db.time_record.create \
+    tr = db.time_record.create \
         ( daily_record  = dr
+        , duration      = 4.50
+        , wp            = '4'
+        )
+    ar = db.attendance_record.create \
+        ( daily_record  = dr
+        , time_record   = tr
         , start         = '12:30'
         , end           = '17:00'
         , work_location = '1'
+        )
+    tr = db.time_record.create \
+        ( daily_record  = dr
+        , duration      = 2.25
         , wp            = '4'
         )
-    db.time_record.create \
+    ar = db.attendance_record.create \
         ( daily_record  = dr
+        , time_record   = tr
         , start         = '09:45'
         , end           = '12:00'
         , work_location = '1'
-        , wp            = '4'
         )
     dr = db.daily_record.create \
         ( user = user
@@ -1143,19 +1316,29 @@ def import_data_17 (db, user, olo) :
         , weekend_allowed   = 0
         , required_overtime = 0
         )
-    db.time_record.create \
+    tr = db.time_record.create \
         ( daily_record  = dr
+        , duration      = 5.50
+        , wp            = '4'
+        )
+    ar = db.attendance_record.create \
+        ( daily_record  = dr
+        , time_record   = tr
         , start         = '12:30'
         , end           = '18:00'
         , work_location = '2'
+        )
+    tr = db.time_record.create \
+        ( daily_record  = dr
+        , duration      = 3.00
         , wp            = '4'
         )
-    db.time_record.create \
+    ar = db.attendance_record.create \
         ( daily_record  = dr
+        , time_record   = tr
         , start         = '09:00'
         , end           = '12:00'
         , work_location = '2'
-        , wp            = '4'
         )
     dr = db.daily_record.create \
         ( user = user
@@ -1169,11 +1352,15 @@ def import_data_17 (db, user, olo) :
         , weekend_allowed   = 0
         , required_overtime = 0
         )
-    db.time_record.create \
+    tr = db.time_record.create \
         ( daily_record  = dr
         , duration      = 1.0
-        , work_location = '5'
         , wp            = '1'
+        )
+    ar = db.attendance_record.create \
+        ( daily_record  = dr
+        , time_record   = tr
+        , work_location = '5'
         )
     dr = db.daily_record.create \
         ( user = user
@@ -1211,12 +1398,17 @@ def import_data_17 (db, user, olo) :
         , weekend_allowed   = 0
         , required_overtime = 0
         )
-    db.time_record.create \
+    tr = db.time_record.create \
         ( daily_record  = dr
+        , duration      = 5.00
+        , wp            = '4'
+        )
+    ar = db.attendance_record.create \
+        ( daily_record  = dr
+        , time_record   = tr
         , start         = '09:00'
         , end           = '14:00'
         , work_location = '1'
-        , wp            = '4'
         )
     dr = db.daily_record.create \
         ( user = user
@@ -1272,19 +1464,29 @@ def import_data_17 (db, user, olo) :
         , weekend_allowed   = 0
         , required_overtime = 0
         )
-    db.time_record.create \
+    tr = db.time_record.create \
         ( daily_record  = dr
+        , duration      = 2.00
+        , wp            = '4'
+        )
+    ar = db.attendance_record.create \
+        ( daily_record  = dr
+        , time_record   = tr
         , start         = '13:00'
         , end           = '15:00'
         , work_location = '1'
+        )
+    tr = db.time_record.create \
+        ( daily_record  = dr
+        , duration      = 3.00
         , wp            = '4'
         )
-    db.time_record.create \
+    ar = db.attendance_record.create \
         ( daily_record  = dr
+        , time_record   = tr
         , start         = '16:00'
         , end           = '19:00'
         , work_location = '2'
-        , wp            = '4'
         )
     dr = db.daily_record.create \
         ( user = user
@@ -1316,12 +1518,17 @@ def import_data_17 (db, user, olo) :
         , weekend_allowed   = 0
         , required_overtime = 0
         )
-    db.time_record.create \
+    tr = db.time_record.create \
         ( daily_record  = dr
+        , duration      = 5.50
+        , wp            = '4'
+        )
+    ar = db.attendance_record.create \
+        ( daily_record  = dr
+        , time_record   = tr
         , start         = '12:30'
         , end           = '18:00'
         , work_location = '1'
-        , wp            = '4'
         )
     dr = db.daily_record.create \
         ( user = user
@@ -1359,12 +1566,17 @@ def import_data_17 (db, user, olo) :
         , weekend_allowed   = 0
         , required_overtime = 0
         )
-    db.time_record.create \
+    tr = db.time_record.create \
         ( daily_record  = dr
+        , duration      = 3.00
+        , wp            = '4'
+        )
+    ar = db.attendance_record.create \
+        ( daily_record  = dr
+        , time_record   = tr
         , start         = '09:00'
         , end           = '12:00'
         , work_location = '2'
-        , wp            = '4'
         )
     dr = db.daily_record.create \
         ( user = user
@@ -1372,12 +1584,17 @@ def import_data_17 (db, user, olo) :
         , weekend_allowed   = 0
         , required_overtime = 0
         )
-    db.time_record.create \
+    tr = db.time_record.create \
         ( daily_record  = dr
+        , duration      = 3.50
+        , wp            = '4'
+        )
+    ar = db.attendance_record.create \
+        ( daily_record  = dr
+        , time_record   = tr
         , start         = '15:00'
         , end           = '18:30'
         , work_location = '1'
-        , wp            = '4'
         )
     dr = db.daily_record.create \
         ( user = user
@@ -1391,11 +1608,15 @@ def import_data_17 (db, user, olo) :
         , weekend_allowed   = 0
         , required_overtime = 0
         )
-    db.time_record.create \
+    tr = db.time_record.create \
         ( daily_record  = dr
         , duration      = 1.0
-        , work_location = '5'
         , wp            = '1'
+        )
+    ar = db.attendance_record.create \
+        ( daily_record  = dr
+        , time_record   = tr
+        , work_location = '5'
         )
     dr = db.daily_record.create \
         ( user = user
@@ -1427,12 +1648,17 @@ def import_data_17 (db, user, olo) :
         , weekend_allowed   = 0
         , required_overtime = 0
         )
-    db.time_record.create \
+    tr = db.time_record.create \
         ( daily_record  = dr
+        , duration      = 4.00
+        , wp            = '4'
+        )
+    ar = db.attendance_record.create \
+        ( daily_record  = dr
+        , time_record   = tr
         , start         = '11:00'
         , end           = '15:00'
         , work_location = '1'
-        , wp            = '4'
         )
     dr = db.daily_record.create \
         ( user = user
@@ -1470,11 +1696,15 @@ def import_data_17 (db, user, olo) :
         , weekend_allowed   = 0
         , required_overtime = 0
         )
-    db.time_record.create \
+    tr = db.time_record.create \
         ( daily_record  = dr
         , duration      = 1.0
-        , work_location = '5'
         , wp            = '1'
+        )
+    ar = db.attendance_record.create \
+        ( daily_record  = dr
+        , time_record   = tr
+        , work_location = '5'
         )
     dr = db.daily_record.create \
         ( user = user
@@ -1482,19 +1712,29 @@ def import_data_17 (db, user, olo) :
         , weekend_allowed   = 0
         , required_overtime = 0
         )
-    db.time_record.create \
+    tr = db.time_record.create \
         ( daily_record  = dr
+        , duration      = 4.50
+        , wp            = '4'
+        )
+    ar = db.attendance_record.create \
+        ( daily_record  = dr
+        , time_record   = tr
         , start         = '12:30'
         , end           = '17:00'
         , work_location = '3'
+        )
+    tr = db.time_record.create \
+        ( daily_record  = dr
+        , duration      = 3.00
         , wp            = '4'
         )
-    db.time_record.create \
+    ar = db.attendance_record.create \
         ( daily_record  = dr
+        , time_record   = tr
         , start         = '09:00'
         , end           = '12:00'
         , work_location = '3'
-        , wp            = '4'
         )
     dr = db.daily_record.create \
         ( user = user
@@ -1502,19 +1742,29 @@ def import_data_17 (db, user, olo) :
         , weekend_allowed   = 0
         , required_overtime = 0
         )
-    db.time_record.create \
+    tr = db.time_record.create \
         ( daily_record  = dr
+        , duration      = 4.50
+        , wp            = '4'
+        )
+    ar = db.attendance_record.create \
+        ( daily_record  = dr
+        , time_record   = tr
         , start         = '12:30'
         , end           = '17:00'
         , work_location = '3'
+        )
+    tr = db.time_record.create \
+        ( daily_record  = dr
+        , duration      = 3.00
         , wp            = '4'
         )
-    db.time_record.create \
+    ar = db.attendance_record.create \
         ( daily_record  = dr
+        , time_record   = tr
         , start         = '09:00'
         , end           = '12:00'
         , work_location = '3'
-        , wp            = '4'
         )
     dr = db.daily_record.create \
         ( user = user
@@ -1552,12 +1802,17 @@ def import_data_17 (db, user, olo) :
         , weekend_allowed   = 0
         , required_overtime = 0
         )
-    db.time_record.create \
+    tr = db.time_record.create \
         ( daily_record  = dr
+        , duration      = 2.00
+        , wp            = '4'
+        )
+    ar = db.attendance_record.create \
+        ( daily_record  = dr
+        , time_record   = tr
         , start         = '09:00'
         , end           = '11:00'
         , work_location = '3'
-        , wp            = '4'
         )
     dr = db.daily_record.create \
         ( user = user
@@ -1565,17 +1820,25 @@ def import_data_17 (db, user, olo) :
         , weekend_allowed   = 0
         , required_overtime = 0
         )
-    db.time_record.create \
+    tr = db.time_record.create \
         ( daily_record  = dr
         , duration      = 1.0
-        , work_location = '5'
         , wp            = '1'
         )
-    db.time_record.create \
+    ar = db.attendance_record.create \
+        ( daily_record  = dr
+        , time_record   = tr
+        , work_location = '5'
+        )
+    tr = db.time_record.create \
         ( daily_record  = dr
         , duration      = 1.0
-        , work_location = '5'
         , wp            = '44'
+        )
+    ar = db.attendance_record.create \
+        ( daily_record  = dr
+        , time_record   = tr
+        , work_location = '5'
         )
     dr = db.daily_record.create \
         ( user = user
@@ -1619,12 +1882,17 @@ def import_data_17 (db, user, olo) :
         , weekend_allowed   = 0
         , required_overtime = 0
         )
-    db.time_record.create \
+    tr = db.time_record.create \
         ( daily_record  = dr
+        , duration      = 6.00
+        , wp            = '4'
+        )
+    ar = db.attendance_record.create \
+        ( daily_record  = dr
+        , time_record   = tr
         , start         = '09:00'
         , end           = '15:00'
         , work_location = '1'
-        , wp            = '4'
         )
     dr = db.daily_record.create \
         ( user = user
@@ -1668,12 +1936,17 @@ def import_data_17 (db, user, olo) :
         , weekend_allowed   = 0
         , required_overtime = 0
         )
-    db.time_record.create \
+    tr = db.time_record.create \
         ( daily_record  = dr
+        , duration      = 6.00
+        , wp            = '4'
+        )
+    ar = db.attendance_record.create \
+        ( daily_record  = dr
+        , time_record   = tr
         , start         = '09:00'
         , end           = '15:00'
         , work_location = '1'
-        , wp            = '4'
         )
     dr = db.daily_record.create \
         ( user = user
@@ -1717,12 +1990,17 @@ def import_data_17 (db, user, olo) :
         , weekend_allowed   = 0
         , required_overtime = 0
         )
-    db.time_record.create \
+    tr = db.time_record.create \
         ( daily_record  = dr
+        , duration      = 3.50
+        , wp            = '4'
+        )
+    ar = db.attendance_record.create \
+        ( daily_record  = dr
+        , time_record   = tr
         , start         = '15:00'
         , end           = '18:30'
         , work_location = '1'
-        , wp            = '4'
         )
     dr = db.daily_record.create \
         ( user = user
@@ -1754,12 +2032,17 @@ def import_data_17 (db, user, olo) :
         , weekend_allowed   = 0
         , required_overtime = 0
         )
-    db.time_record.create \
+    tr = db.time_record.create \
         ( daily_record  = dr
+        , duration      = 5.00
+        , wp            = '4'
+        )
+    ar = db.attendance_record.create \
+        ( daily_record  = dr
+        , time_record   = tr
         , start         = '13:00'
         , end           = '18:00'
         , work_location = '1'
-        , wp            = '4'
         )
     dr = db.daily_record.create \
         ( user = user
@@ -1815,12 +2098,17 @@ def import_data_17 (db, user, olo) :
         , weekend_allowed   = 0
         , required_overtime = 0
         )
-    db.time_record.create \
+    tr = db.time_record.create \
         ( daily_record  = dr
+        , duration      = 6.00
+        , wp            = '4'
+        )
+    ar = db.attendance_record.create \
+        ( daily_record  = dr
+        , time_record   = tr
         , start         = '09:00'
         , end           = '15:00'
         , work_location = '2'
-        , wp            = '4'
         )
     dr = db.daily_record.create \
         ( user = user
@@ -1834,11 +2122,15 @@ def import_data_17 (db, user, olo) :
         , weekend_allowed   = 0
         , required_overtime = 0
         )
-    db.time_record.create \
+    tr = db.time_record.create \
         ( daily_record  = dr
         , duration      = 1.0
-        , work_location = '5'
         , wp            = '44'
+        )
+    ar = db.attendance_record.create \
+        ( daily_record  = dr
+        , time_record   = tr
+        , work_location = '5'
         )
     dr = db.daily_record.create \
         ( user = user
@@ -1876,11 +2168,15 @@ def import_data_17 (db, user, olo) :
         , weekend_allowed   = 0
         , required_overtime = 0
         )
-    db.time_record.create \
+    tr = db.time_record.create \
         ( daily_record  = dr
         , duration      = 1.0
-        , work_location = '5'
         , wp            = '44'
+        )
+    ar = db.attendance_record.create \
+        ( daily_record  = dr
+        , time_record   = tr
+        , work_location = '5'
         )
     dr = db.daily_record.create \
         ( user = user
@@ -1900,19 +2196,29 @@ def import_data_17 (db, user, olo) :
         , weekend_allowed   = 0
         , required_overtime = 0
         )
-    db.time_record.create \
+    tr = db.time_record.create \
         ( daily_record  = dr
+        , duration      = 4.00
+        , wp            = '4'
+        )
+    ar = db.attendance_record.create \
+        ( daily_record  = dr
+        , time_record   = tr
         , start         = '12:30'
         , end           = '16:30'
         , work_location = '2'
+        )
+    tr = db.time_record.create \
+        ( daily_record  = dr
+        , duration      = 2.00
         , wp            = '4'
         )
-    db.time_record.create \
+    ar = db.attendance_record.create \
         ( daily_record  = dr
+        , time_record   = tr
         , start         = '10:00'
         , end           = '12:00'
         , work_location = '2'
-        , wp            = '4'
         )
     dr = db.daily_record.create \
         ( user = user
@@ -1920,12 +2226,17 @@ def import_data_17 (db, user, olo) :
         , weekend_allowed   = 0
         , required_overtime = 0
         )
-    db.time_record.create \
+    tr = db.time_record.create \
         ( daily_record  = dr
+        , duration      = 1.50
+        , wp            = '4'
+        )
+    ar = db.attendance_record.create \
+        ( daily_record  = dr
+        , time_record   = tr
         , start         = '08:30'
         , end           = '10:00'
         , work_location = '2'
-        , wp            = '4'
         )
     dr = db.daily_record.create \
         ( user = user
@@ -1957,12 +2268,17 @@ def import_data_17 (db, user, olo) :
         , weekend_allowed   = 0
         , required_overtime = 0
         )
-    db.time_record.create \
+    tr = db.time_record.create \
         ( daily_record  = dr
+        , duration      = 4.00
+        , wp            = '4'
+        )
+    ar = db.attendance_record.create \
+        ( daily_record  = dr
+        , time_record   = tr
         , start         = '14:00'
         , end           = '18:00'
         , work_location = '1'
-        , wp            = '4'
         )
     dr = db.daily_record.create \
         ( user = user
@@ -1970,11 +2286,15 @@ def import_data_17 (db, user, olo) :
         , weekend_allowed   = 0
         , required_overtime = 0
         )
-    db.time_record.create \
+    tr = db.time_record.create \
         ( daily_record  = dr
         , duration      = 1.0
-        , work_location = '5'
         , wp            = '1'
+        )
+    ar = db.attendance_record.create \
+        ( daily_record  = dr
+        , time_record   = tr
+        , work_location = '5'
         )
     dr = db.daily_record.create \
         ( user = user
@@ -2024,19 +2344,29 @@ def import_data_17 (db, user, olo) :
         , weekend_allowed   = 0
         , required_overtime = 0
         )
-    db.time_record.create \
+    tr = db.time_record.create \
         ( daily_record  = dr
+        , duration      = 3.50
+        , wp            = '4'
+        )
+    ar = db.attendance_record.create \
+        ( daily_record  = dr
+        , time_record   = tr
         , start         = '12:30'
         , end           = '16:00'
         , work_location = '2'
+        )
+    tr = db.time_record.create \
+        ( daily_record  = dr
+        , duration      = 4.00
         , wp            = '4'
         )
-    db.time_record.create \
+    ar = db.attendance_record.create \
         ( daily_record  = dr
+        , time_record   = tr
         , start         = '08:00'
         , end           = '12:00'
         , work_location = '2'
-        , wp            = '4'
         )
     dr = db.daily_record.create \
         ( user = user
@@ -2056,12 +2386,17 @@ def import_data_17 (db, user, olo) :
         , weekend_allowed   = 0
         , required_overtime = 0
         )
-    db.time_record.create \
+    tr = db.time_record.create \
         ( daily_record  = dr
+        , duration      = 2.00
+        , wp            = '4'
+        )
+    ar = db.attendance_record.create \
+        ( daily_record  = dr
+        , time_record   = tr
         , start         = '15:00'
         , end           = '17:00'
         , work_location = '2'
-        , wp            = '4'
         )
     dr = db.daily_record.create \
         ( user = user
@@ -2069,12 +2404,17 @@ def import_data_17 (db, user, olo) :
         , weekend_allowed   = 0
         , required_overtime = 0
         )
-    db.time_record.create \
+    tr = db.time_record.create \
         ( daily_record  = dr
+        , duration      = 4.00
+        , wp            = '4'
+        )
+    ar = db.attendance_record.create \
+        ( daily_record  = dr
+        , time_record   = tr
         , start         = '08:00'
         , end           = '12:00'
         , work_location = '1'
-        , wp            = '4'
         )
     dr = db.daily_record.create \
         ( user = user
@@ -2082,12 +2422,17 @@ def import_data_17 (db, user, olo) :
         , weekend_allowed   = 0
         , required_overtime = 0
         )
-    db.time_record.create \
+    tr = db.time_record.create \
         ( daily_record  = dr
+        , duration      = 2.00
+        , wp            = '4'
+        )
+    ar = db.attendance_record.create \
+        ( daily_record  = dr
+        , time_record   = tr
         , start         = '10:00'
         , end           = '12:00'
         , work_location = '2'
-        , wp            = '4'
         )
     dr = db.daily_record.create \
         ( user = user
