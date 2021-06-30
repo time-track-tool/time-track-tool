@@ -18,21 +18,19 @@ class PR_Sync (Requester) :
     """
 
     property_classes = dict \
-        (( ('department.part_of',             'department')
-         , ('department.manager',             'user')
-         , ('department.deputy',              'user')
-         , ('org_location.organisation',      'organisation')
+        (( ('org_location.organisation',      'organisation')
          , ('org_location.location',          'location')
          , ('sap_cc.deputy',                  'user')
          , ('sap_cc.responsible',             'user')
          , ('sap_cc.purchasing_agents',       'user')
+         , ('sap_cc.group_lead',              'user')
          , ('sap_cc.organisation',            'organisation')
-         #, ('time_project.department',        'department')
          , ('time_project.deputy',            'user')
          , ('time_project.nosy',              'user')
          , ('time_project.organisation',      'organisation')
          , ('time_project.responsible',       'user')
          , ('time_project.purchasing_agents', 'user')
+         , ('time_project.group_lead',        'user')
          , ('time_project.status',            'time_project_status')
          , ('user.supervisor',                'user')
         ))
@@ -166,13 +164,6 @@ class PR_Sync (Requester) :
         self.sync_class ('location',     ('name', 'country'))
         self.sync_class ('org_location', ('name', 'location', 'organisation'))
         self.sync_pending ()
-        # FIXME: Add deputy to department when rolled out for time-tracker
-        # FIXME: At some point we want to re-enable department
-        #self.sync_class \
-        #    ( 'department'
-        #    , ('name', 'description', 'part_of', 'manager')
-        #    , ('valid_to',)
-        #    )
         self.sync_class \
             ('time_project_status', ('name', 'description', 'active'))
 # Do *NOT* sync user status: The stati in the pr-tracker (in particular
@@ -195,15 +186,14 @@ class PR_Sync (Requester) :
         self.sync_pending ()
         self.sync_class \
             ( 'sap_cc'
-            , ( 'name', 'description', 'responsible', 'deputy'
+            , ( 'name', 'description', 'group_lead', 'responsible', 'deputy'
               , 'purchasing_agents', 'valid', 'organisation'
               )
             , required = ('responsible',)
             )
-        # FIXME: Add department when we sync it again
         self.sync_class \
             ( 'time_project'
-            , ( 'name', 'deputy', 'description'
+            , ( 'name', 'deputy', 'description', 'group_lead'
               , 'organisation', 'responsible', 'status'
               , 'purchasing_agents', 'infosec_req'
               )
