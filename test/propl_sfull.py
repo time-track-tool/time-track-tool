@@ -590,6 +590,7 @@ properties = \
         , 'organisation'
         , 'purchasing_agents'
         , 'responsible'
+        , 'team_lead'
         , 'valid'
         ]
       )
@@ -773,6 +774,7 @@ properties = \
         , 'reporting_group'
         , 'responsible'
         , 'status'
+        , 'team_lead'
         , 'work_location'
         , 'wps'
         ]

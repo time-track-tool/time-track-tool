@@ -271,8 +271,8 @@ Role "organisation":
 Role "procurement":
   (View for "sap_cc" only)
   (View for "time_project" only)
- User is allowed Edit on (Edit for "sap_cc": ('group_lead', 'purchasing_agents') only)
- User is allowed Edit on (Edit for "time_project": ('group_lead', 'purchasing_agents') only)
+ User is allowed Edit on (Edit for "sap_cc": ('group_lead', 'purchasing_agents', 'team_lead') only)
+ User is allowed Edit on (Edit for "time_project": ('group_lead', 'purchasing_agents', 'team_lead') only)
 Role "project":
  User is allowed Edit on (Edit for "time_project": ('cost_center', 'department', 'deputy', 'description', 'name', 'nosy', 'organisation', 'responsible', 'status') only)
  User is allowed Edit on (Edit for "time_project": ('infosec_req', 'is_extern', 'max_hours', 'op_project', 'planned_effort', 'product_family', 'project_type', 'reporting_group', 'work_location') only)

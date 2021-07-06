@@ -297,6 +297,7 @@ properties = \
         , 'purchasing_agents'
         , 'responsible'
         , 'sync_id'
+        , 'team_lead'
         , 'valid'
         ]
       )
@@ -329,6 +330,7 @@ properties = \
         , 'responsible'
         , 'status'
         , 'sync_id'
+        , 'team_lead'
         ]
       )
     , ( 'time_project_status'
