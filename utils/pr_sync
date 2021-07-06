@@ -24,6 +24,7 @@ class PR_Sync (Requester) :
          , ('sap_cc.responsible',             'user')
          , ('sap_cc.purchasing_agents',       'user')
          , ('sap_cc.group_lead',              'user')
+         , ('sap_cc.team_lead',               'user')
          , ('sap_cc.organisation',            'organisation')
          , ('time_project.deputy',            'user')
          , ('time_project.nosy',              'user')
@@ -31,6 +32,7 @@ class PR_Sync (Requester) :
          , ('time_project.responsible',       'user')
          , ('time_project.purchasing_agents', 'user')
          , ('time_project.group_lead',        'user')
+         , ('time_project.team_lead',         'user')
          , ('time_project.status',            'time_project_status')
          , ('user.supervisor',                'user')
         ))
@@ -187,13 +189,13 @@ class PR_Sync (Requester) :
         self.sync_class \
             ( 'sap_cc'
             , ( 'name', 'description', 'group_lead', 'responsible', 'deputy'
-              , 'purchasing_agents', 'valid', 'organisation'
+              , 'purchasing_agents', 'team_lead', 'valid', 'organisation'
               )
             , required = ('responsible',)
             )
         self.sync_class \
             ( 'time_project'
-            , ( 'name', 'deputy', 'description', 'group_lead'
+            , ( 'name', 'deputy', 'description', 'group_lead', 'team_lead'
               , 'organisation', 'responsible', 'status'
               , 'purchasing_agents', 'infosec_req'
               )
