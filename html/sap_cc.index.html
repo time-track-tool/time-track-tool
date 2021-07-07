@@ -35,6 +35,16 @@
         , help_props = ('realname',)
         , filter     = { 'status.is_nosy' : True }
         )
+    , utils.ExtProperty
+        ( utils, pdict ['team_lead']
+        , help_props = ('realname',)
+        , filter     = { 'status.is_nosy' : True }
+        )
+    , utils.ExtProperty
+        ( utils, pdict ['group_lead']
+        , help_props = ('realname',)
+        , filter     = { 'status.is_nosy' : True }
+        )
     , utils.ExtProperty (utils, pdict ['valid'])
     );
    "
