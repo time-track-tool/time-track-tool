@@ -1069,6 +1069,19 @@ def check_currency (db, cl, nodeid, new_values) :
                 continue
             if cl.get (id, 'key_currency') :
                 raise Reject (_ ("Duplicate key currency"))
+    tmax = new_values.get ('max_team')
+    if tmax is None and nodeid :
+        tmax = cl.get (nodeid, 'max_team')
+    gmax = new_values.get ('max_group')
+    if gmax is None and nodeid :
+        gmax = cl.get (nodeid, 'max_group')
+    # If both, max_group and max_team are specified, max_team must be
+    # lower than max_group
+    if tmax and gmax :
+        if gmax <= tmax :
+            mg = _ ("max_group")
+            mt = _ ("max_team")
+            raise Reject (_ ("%(mt)s must be < %(mg)s") % locals ())
 # end def check_currency
 
 def requester_chg (db, cl, nodeid, new_values) :
