@@ -138,6 +138,8 @@ properties = \
       , [ 'description'
         , 'exchange_rate'
         , 'key_currency'
+        , 'max_group'
+        , 'max_team'
         , 'min_sum'
         , 'name'
         , 'order'
