@@ -4463,3 +4463,15 @@ msgstr "Is raw material"
 
 msgid "doc_category"
 msgstr "Document category"
+
+msgid "max_group"
+msgstr "Grouplead approval"
+
+msgid "max_team"
+msgstr "Teamlead approval"
+
+msgid "group_lead"
+msgstr "Grouplead"
+
+msgid "team_lead"
+msgstr "Teamlead"
