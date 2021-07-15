@@ -1081,7 +1081,7 @@ class LDAP_Roundup_Sync (Log) :
 
     def get_roundup_uid_from_dn_attr (self, luser, attr) :
         try :
-            v = str (luser [attr])
+            v = luser [attr].value
         except KeyError :
             return None
         lsup = self.get_ldap_user_by_dn (v)
