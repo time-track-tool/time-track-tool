@@ -1086,6 +1086,7 @@ class LDAP_Roundup_Sync (Log) :
             return None
         lsup = self.get_ldap_user_by_dn (v)
         if not lsup :
+            self.info ("DN %s not found" % v)
             return None
         # Legacy: The supervisor/substitute may still be stored without
         # domain, so we have to try both, the UserPrincipalName and the
@@ -1498,6 +1499,7 @@ class LDAP_Roundup_Sync (Log) :
                             try :
                                 olo = self.db.org_location.lookup (olo)
                             except KeyError :
+                                self.warn ("Company %s not found" % olo)
                                 olo = None
                         if 'department' in luser :
                             dep = luser ['department'].value
@@ -1505,9 +1507,10 @@ class LDAP_Roundup_Sync (Log) :
                             try :
                                 dep = self.db.department.lookup (dep)
                             except KeyError :
+                                self.warn ("Department %s not found" % dep)
                                 dep = None
                         self.info \
-                            ( "Dynamic user create magic: %s, "
+                            ( "Before user create magic: %s, "
                               "org_location: %s, department: %s"
                             % (username, olo, dep)
                             )
