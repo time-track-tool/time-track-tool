@@ -57,7 +57,16 @@ def check_time_wp (db, cl, nodeid, new_values) :
         , 'project'
         , 'is_public'
         )
-    common.check_prop_len (_, new_values.get ('name', cl.get (nodeid, 'name')))
+    # check wp name length, make exception for auto wp name
+    awp = db.time_wp.get (nodeid, 'auto_wp')
+    if awp :
+        # auto wp = username (20 chars)+ ' -yyyy-mm-dd' (12 chars) = 32
+        common.check_prop_len \
+            (_, new_values.get ('name', cl.get (nodeid, 'name')), limit=32)
+    else:
+        # otherwise default length
+        common.check_prop_len \
+            (_, new_values.get ('name', cl.get (nodeid, 'name')))
     opr  = cl.get (nodeid, 'project')
     oprj = db.time_project.getnode (opr)
     prid = new_values.get ('project', opr)
