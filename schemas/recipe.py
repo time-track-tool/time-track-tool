@@ -52,3 +52,21 @@ db.security.addPermission \
     , description='User is allowed to request a password reset'
     )
 db.security.addPermissionToRole('Anonymous', 'Password-Reset')
+
+schemadef.allow_user_details (db, 'User', 'Edit')
+
+classes = \
+    [ ("file",         [],               [])
+    , ("msg",          [],               [])
+    ]
+
+prop_perms = \
+    [ ( "user", "View", ["User"]
+      , ( "activity", "actor", "address", "alternate_addresses", "creation"
+        , "creator", "id", "realname"
+        , "status", "timezone", "username"
+        )
+      )
+    ]
+
+schemadef.register_class_permissions (db, classes, prop_perms)
