@@ -24,9 +24,7 @@
        <th tal:content="structure python:utils.fieldname
            (classname, 'number')"/>
        <td>
-        <span tal:content="structure python:context.number.plain ()"/>
-        <input name="number" type="hidden" tal:attributes=
-            "value python:context.number">
+        <span tal:content="structure python:context.number.field ()"/>
        </td>
       </tal:block>
       <td tal:condition="python: not context.id">
@@ -80,18 +78,19 @@
        </span>
       </td>
      </tr>
-     <tr tal:condition="python: context.id">
+     <tr tal:condition="python: context.id"
+         tal:define="nl python:
+           ( context.rc_application.name.plain ()
+           , context.number.plain ()
+           , context.rc_substrate.name.plain ()
+           )">
       <th>Product number</th>
       <td tal:content="python:
           ( context.rc_brand.name.plain ()
           + ' '
           + context.rc_product_type.name.plain ()
           + ' '
-          + context.rc_application.name.plain ()
-          + '-'
-          + context.number.plain ()
-          + '-'
-          + context.rc_substrate.name.plain ()
+          + '-'.join (k for k in nl if k)
           + ['', ' '][bool (context.rc_suitability)]
           + ['', context.rc_suitability.name.plain ()]
             [bool (context.rc_suitability)]

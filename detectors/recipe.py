@@ -45,16 +45,14 @@ def set_defaults (db, cl, nodeid, new_values) :
     new_values ['number'] = "%04d" % number
     common.require_attributes \
         ( _, cl, nodeid, new_values
-        , 'rc_brand', 'rc_product_type', 'rc_application'
-        , 'rc_substrate', 'substance'
+        , 'rc_brand', 'rc_product_type', 'substance'
         )
 # end def set_defaults
 
 def check_product (db, cl, nodeid, new_values) :
     common.require_attributes \
         ( _, cl, nodeid, new_values
-        , 'rc_brand', 'rc_product_type', 'rc_application'
-        , 'rc_substrate', 'substance'
+        , 'rc_brand', 'rc_product_type', 'substance'
         )
 # end def check_product
 
