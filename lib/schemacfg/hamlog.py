@@ -1,6 +1,5 @@
 #! /usr/bin/python
-# -*- coding: iso-8859-1 -*-
-# Copyright (C) 2012 Dr. Ralf Schlatterbeck Open Source Consulting.
+# Copyright (C) 2012-21 Dr. Ralf Schlatterbeck Open Source Consulting.
 # Reichergasse 131, A-3411 Weidling.
 # Web: http://www.runtux.com Email: office@runtux.com
 # All rights reserved
@@ -80,6 +79,10 @@ def init \
         , gridsquare            = String    ()
         , iota                  = String    ()
         , eqsl_nickname         = String    ()
+        , cq_zone               = Integer   ()
+        , itu_zone              = Integer   ()
+        , owner                 = Link      ("user", rev_multilink = 'call')
+        , cardname              = String    ()
         )
     ham_call.setkey (''"name")
 
@@ -158,24 +161,13 @@ def init \
         )
     qso.setlabelprop ('call')
 
-    class User_Class (kw ['User_Class']) :
-        """ add some attrs to user class
-        """
-        def __init__ (self, db, classname, ** properties) :
-            self.update_properties \
-                ( call                   = Multilink ("ham_call")
-                )
-            kw ['User_Class'].__init__ (self, db, classname, ** properties)
-        # end def __init__
-    # end class User_Class
-    export.update (dict (User_Class = User_Class))
-
     return export
 # end def init
 
 
 def security (db, ** kw) :
 
+    roles = [('Nosy', 'Nosy list')]
     classes = \
         [ ("ham_call",    ["User"],    ["User"])
         , ("ham_mode",    ["User"],    ["User"])
@@ -193,6 +185,7 @@ def security (db, ** kw) :
         [ ( "user", "View", ["User"], ("call",))
         ]
 
+    schemadef.register_roles             (db, roles)
     schemadef.register_class_permissions (db, classes, prop_perms)
 # end def security
 

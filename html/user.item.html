@@ -469,18 +469,6 @@
                 tal:attributes="value ct/id">
         </td>
        </tr>
-       <tr tal:condition="python: db.ham_call.is_edit_ok ()">
-        <td tal:content="structure python:utils.new_property
-            (context, db, 'ham_call', -1, 'name').field (size=16)"/>
-        <td tal:content="structure python:utils.new_property
-            (context, db, 'ham_call', -1, 'call').field (size=8)"/>
-        <td tal:content="structure python:utils.new_property
-            (context, db, 'ham_call', -1, 'qth').field (size=12)"/>
-        <td tal:content="structure python:utils.new_property
-            (context, db, 'ham_call', -1, 'gridsquare').field (size=6)"/>
-        <td/>
-        <input type="hidden" name="@link@call" value="ham_call-1"/>
-       </tr>
       </table>
      </td>
     </tr>
