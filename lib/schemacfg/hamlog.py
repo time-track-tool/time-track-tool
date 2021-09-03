@@ -47,6 +47,7 @@ def init \
     antenna = Class \
         ( db, ''"antenna"
         , name                  = String    ()
+        , description           = String    ()
         , order                 = Number    ()
         )
     antenna.setkey (''"name")
