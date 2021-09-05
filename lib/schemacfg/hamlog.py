@@ -65,6 +65,7 @@ def init \
         ( db, ''"dxcc_entity"
         , code                  = String    ()
         , name                  = String    ()
+        , shortname             = String    ()
         , continent             = Multilink ("continent")
         , cq_zone               = Integer   ()
         , itu_zone              = Integer   ()
@@ -84,6 +85,7 @@ def init \
         , itu_zone              = Integer   ()
         , owner                 = Link      ("user", rev_multilink = 'call')
         , cardname              = String    ()
+        , dxcc_entity           = Link      ("dxcc_entity", do_journal = "no")
         )
     ham_call.setkey (''"name")
 
@@ -158,7 +160,7 @@ def init \
         , itu_zone              = Integer   ()
         , iota                  = String    ()
         , german_dok            = String    ()
-        , dxcc_entity           = Link      ("dxcc_entity")
+        , dxcc_entity           = Link      ("dxcc_entity", do_journal = "no")
         , remarks               = String    ()
         )
     qso.setlabelprop ('call')
