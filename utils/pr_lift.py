@@ -28,6 +28,26 @@ def get_user (db, username) :
         print ('username not found: "%s"' % username, file = sys.stderr)
 # end def get_user
 
+def update_currency (db) :
+    kc  = db.pr_currency.filter (None, dict (key_currency = 1))
+    assert len (kc) == 1
+    kc  = db.pr_currency.getnode (kc [0])
+    for id in db.pr_currency.getnodeids (retired = False) :
+        cur = db.pr_currency.getnode (id)
+        d   = {}
+        if cur.key_currency :
+            assert cur.name == 'EUR'
+            assert kc.exchange_rate == 1
+        if cur.max_group is None or cur.max_group == 20000 :
+            d ['max_group'] = ceil (20000. * cur.exchange_rate)
+        if cur.max_team is None or cur.max_team == 10000 :
+            d ['max_team']  = ceil (10000. * cur.exchange_rate)
+        if d :
+            print ("Updating currency%s %s: %s" % (id, cur.name, d))
+        if d and args.update :
+            db.pr_currency.set (id, **d)
+# end def update_currency
+
 def main () :
     cmd = ArgumentParser ()
     cmd.add_argument \
@@ -63,24 +83,6 @@ def main () :
     tracker = instance.open (args.dir)
     db      = tracker.open ('admin')
     sys.path.insert (1, args.dir)
-
-    kc  = db.pr_currency.filter (None, dict (key_currency = 1))
-    assert len (kc) == 1
-    kc  = db.pr_currency.getnode (kc [0])
-    for id in db.pr_currency.getnodeids (retired = False) :
-        cur = db.pr_currency.getnode (id)
-        d   = {}
-        if cur.key_currency :
-            assert cur.name == 'EUR'
-            assert kc.exchange_rate == 1
-        if cur.max_group is None or cur.max_group == 20000 :
-            d ['max_group'] = ceil (20000. * cur.exchange_rate)
-        if cur.max_team is None or cur.max_team == 10000 :
-            d ['max_team']  = ceil (10000. * cur.exchange_rate)
-        if d :
-            print ("Updating currency%s %s: %s" % (id, cur.name, d))
-        if d and args.update :
-            db.pr_currency.set (id, **d)
 
     with open (args.tc, 'rb') as f :
         dr = DictReader (export_iter (f), delimiter = ';')
