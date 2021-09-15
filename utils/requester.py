@@ -121,7 +121,7 @@ class Requester (autosuper) :
 
 # end class Requester
 
-def main (argv = None) :
+def get_default_cmd (argv = None) :
     if argv is None :
         argv = sys.argv [1:]
     cmd = ArgumentParser ()
@@ -145,6 +145,11 @@ def main (argv = None) :
         ( "-p", "--password"
         , help    = "Password, better use .netrc"
         )
+    return cmd
+# end def get_default_cmd
+
+def main (argv = None) :
+    cmd  = get_default_cmd (argv)
     args = cmd.parse_args (argv)
     rq = Requester (args)
     return rq

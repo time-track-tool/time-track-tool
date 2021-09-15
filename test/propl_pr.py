@@ -138,6 +138,8 @@ properties = \
       , [ 'description'
         , 'exchange_rate'
         , 'key_currency'
+        , 'max_group'
+        , 'max_team'
         , 'min_sum'
         , 'name'
         , 'order'
@@ -291,11 +293,13 @@ properties = \
       , [ 'deputy'
         , 'deputy_gets_mail'
         , 'description'
+        , 'group_lead'
         , 'name'
         , 'organisation'
         , 'purchasing_agents'
         , 'responsible'
         , 'sync_id'
+        , 'team_lead'
         , 'valid'
         ]
       )
@@ -320,6 +324,7 @@ properties = \
         , 'deputy'
         , 'deputy_gets_mail'
         , 'description'
+        , 'group_lead'
         , 'infosec_req'
         , 'name'
         , 'organisation'
@@ -327,6 +332,7 @@ properties = \
         , 'responsible'
         , 'status'
         , 'sync_id'
+        , 'team_lead'
         ]
       )
     , ( 'time_project_status'

@@ -1155,9 +1155,13 @@ if 'pr_approval_order' in db.classes :
     db.pr_approval_order.create (role = 'board',       order = 70)
 if 'pr_currency' in db.classes :
     db.pr_currency.create \
-        (name = '€', order = 10, min_sum = 1000, exchange_rate = 1)
+        ( name = '€', order = 10, exchange_rate = 1
+        , min_sum = 1000, max_team = 10000, max_group = 20000
+        )
     db.pr_currency.create \
-        (name = '$', order = 20, min_sum = 1000, exchange_rate = 1.2)
+        ( name = '$', order = 20, exchange_rate = 1.2
+        , min_sum = 1000, max_team = 12000, max_group = 24000
+        )
 if 'it_request_type' in db.classes :
     db.it_request_type.create (name = 'Incident',       order = 1)
     db.it_request_type.create (name = 'Change Request', order = 2)

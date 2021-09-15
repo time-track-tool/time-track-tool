@@ -67,6 +67,30 @@
         )"/>
     </tr>
     <tr>
+     <th tal:content="structure python:utils.fieldname
+         (classname, 'team_lead')"/>
+     <td>
+      <span tal:content="structure python:context.team_lead.field ()"/>
+      <span tal:content="structure python:utils.user_classhelp
+        ( db, property='team_lead'
+        , internal_only  = True
+        , exclude_system = True
+        )"/>
+     </td>
+    </tr>
+    <tr>
+     <th tal:content="structure python:utils.fieldname
+         (classname, 'group_lead')"/>
+     <td>
+      <span tal:content="structure python:context.group_lead.field ()"/>
+      <span tal:content="structure python:utils.user_classhelp
+        ( db, property='group_lead'
+        , internal_only  = True
+        , exclude_system = True
+        )"/>
+     </td>
+    </tr>
+    <tr>
      <th tal:content="structure python:utils.fieldname (classname, 'valid')"/>
      <td tal:content="structure python:context.valid.field ()"/>
     </tr>

@@ -63,6 +63,8 @@ def init \
                 , deputy                = Link      ("user")
                 , status                = Link      ("time_project_status")
                 , purchasing_agents     = Multilink ("user")
+                , group_lead            = Link      ("user")
+                , team_lead             = Link      ("user")
                 , infosec_req           = Boolean   ()
                 )
             Ext_Class.__init__ (self, db, classname, ** properties)
@@ -98,6 +100,8 @@ def init \
                 , responsible           = Link      ("user")
                 , deputy                = Link      ("user")
                 , purchasing_agents     = Multilink ("user")
+                , group_lead            = Link      ("user")
+                , team_lead             = Link      ("user")
                 , valid                 = Boolean   ()
                 , organisation          = Link      ("organisation")
                 )
@@ -149,10 +153,10 @@ def security (db, ** kw) :
             )
           )
         , ( "time_project", "Edit", ["Procurement"]
-          , ("purchasing_agents",)
+          , ("purchasing_agents", "group_lead", "team_lead")
           )
         , ( "sap_cc", "Edit", ["Procurement"]
-          , ("purchasing_agents",)
+          , ("purchasing_agents", "group_lead", "team_lead")
           )
         ]
 

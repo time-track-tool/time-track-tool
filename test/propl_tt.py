@@ -300,10 +300,12 @@ properties = \
     , ( 'sap_cc'
       , [ 'deputy'
         , 'description'
+        , 'group_lead'
         , 'name'
         , 'organisation'
         , 'purchasing_agents'
         , 'responsible'
+        , 'team_lead'
         , 'valid'
         ]
       )
@@ -358,6 +360,7 @@ properties = \
         , 'department'
         , 'deputy'
         , 'description'
+        , 'group_lead'
         , 'infosec_req'
         , 'is_extern'
         , 'is_public_holiday'
@@ -379,6 +382,7 @@ properties = \
         , 'reporting_group'
         , 'responsible'
         , 'status'
+        , 'team_lead'
         , 'work_location'
         , 'wps'
         ]

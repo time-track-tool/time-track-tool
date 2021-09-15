@@ -139,6 +139,8 @@ def init \
     pr_currency = Currency_Class \
         ( db, ''"pr_currency"
         , min_sum               = Number    ()
+        , max_team              = Number    ()
+        , max_group             = Number    ()
         )
 
     pr_approval_status = Class \
