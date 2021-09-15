@@ -85,18 +85,19 @@ def main () :
     with open (args.tc, 'rb') as f :
         dr = DictReader (export_iter (f), delimiter = ';')
         for rec in dr :
-            name = rec ['Name'].decode ('utf-8')
+            name  = rec ['Name']
+            dname = name.decode ('utf-8')
             try :
                 tcid = db.time_project.lookup (name)
             except KeyError :
-                print ('TC not found: "%s"' % name, file = sys.stderr)
+                print ('TC not found: "%s"' % dname, file = sys.stderr)
                 continue
 
             tc   = db.time_project.getnode (tcid)
             rid  = rec ['Id'].decode ('utf-8')
             if args.verify_id and tcid != rid :
                 raise ValueError \
-                    ( "Non-matching ID for %s: got %s expected %s"
+                    ( "Non-matching ID for %r: got %s expected %s"
                     % (tc.name, tcid, rid)
                     )
             d  = {}
@@ -115,17 +116,18 @@ def main () :
     with open (args.cc, 'rb') as f :
         dr = DictReader (export_iter (f), delimiter = ';')
         for rec in dr :
-            name = rec ['Name'].decode ('utf-8')
+            name  = rec ['Name']
+            dname = name.decode ('utf-8')
             try :
                 ccid = db.sap_cc.lookup (name)
             except KeyError :
-                print ('CC not found: "%s"' % name, file = sys.stderr)
+                print ('CC not found: "%s"' % dname, file = sys.stderr)
                 continue
             cc   = db.sap_cc.getnode (ccid)
             rid  = rec ['Id'].decode ('utf-8')
             if args.verify_id and ccid != rid :
                 raise ValueError \
-                    ( "Non-matching ID for %s: got %s expected %s"
+                    ( "Non-matching ID for %r: got %s expected %s"
                     % (cc.name, ccid, rid)
                     )
             d  = {}
