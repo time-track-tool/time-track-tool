@@ -125,8 +125,10 @@ def init \
         ( db, ''"qsl"
         , qsl_type              = Link      ("qsl_type", do_journal = "no")
         , qso                   = Link      ("qso")
+        , qso_time              = Date      ()
         , date_recv             = Date      ()
         , date_sent             = Date      ()
+        , files                 = Multilink ("file")
         )
 
     qso = Class \

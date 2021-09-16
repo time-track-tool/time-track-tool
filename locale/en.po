@@ -4475,3 +4475,6 @@ msgstr "Grouplead"
 
 msgid "team_lead"
 msgstr "Teamlead"
+
+msgid "qso_time"
+msgstr "QSO Time"
