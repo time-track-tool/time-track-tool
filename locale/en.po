@@ -4478,3 +4478,6 @@ msgstr "Teamlead"
 
 msgid "qso_time"
 msgstr "QSO Time"
+
+msgid "non_std_card"
+msgstr "Nonstandard QSL-Card"

@@ -128,6 +128,7 @@ def init \
         , qso_time              = Date      ()
         , date_recv             = Date      ()
         , date_sent             = Date      ()
+        , non_std_card          = Boolean   ()
         , files                 = Multilink ("file")
         )
 

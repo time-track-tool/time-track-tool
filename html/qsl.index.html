@@ -14,8 +14,7 @@
     , utils.ExtProperty (utils, pdict ['qso_time'])
     , utils.ExtProperty (utils, pdict ['date_recv'], force_link = 1)
     , utils.ExtProperty (utils, pdict ['date_sent'], force_link = 1)
-    , utils.ExtProperty (utils, pdict ['creation'])
-    , utils.ExtProperty (utils, pdict ['activity'])
+    , utils.ExtProperty (utils, pdict ['non_std_card'])
     , utils.ExtProperty
         ( utils, pdict ['qso']
         , searchname   = 'qso.call'
@@ -199,6 +198,10 @@
         , searchable   = True
         , searchname   = 'qso.reject'
         )
+    , utils.ExtProperty (utils, pdict ['creator'])
+    , utils.ExtProperty (utils, pdict ['actor'])
+    , utils.ExtProperty (utils, pdict ['creation'])
+    , utils.ExtProperty (utils, pdict ['activity'])
     );
    "
   tal:condition="context/is_view_ok">
