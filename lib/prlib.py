@@ -51,7 +51,8 @@ def gen_pr_approval (db, do_create, ** values) :
         values. If unset we only return a dict of the given values.
     """
     if do_create :
-        return db.pr_approval.create (** values)
+        id = db.pr_approval.create (** values)
+        return db.pr_approval.getnode (id)
     else :
         if values.get ('deputy') :
             values ['deputy'] = db.user.get (values ['deputy'], 'username')
