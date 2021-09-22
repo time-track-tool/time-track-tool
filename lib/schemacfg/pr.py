@@ -485,7 +485,7 @@ def security (db, ** kw) :
           , ("roles", "password", "substitute", "subst_until", "clearance_by")
           )
         , ( "user", "View", ["User"]
-          , ("username", "id", "realname", "status")
+          , ("username", "id", "realname", "status", "address")
           )
         , ( "user", "Edit", ["Procurement-Admin"]
           , ("want_no_messages",)
