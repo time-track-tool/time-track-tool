@@ -373,6 +373,24 @@ def vie_backlink_check (db, cl, nodeid, new_values) :
             )
 # end def vie_backlink_check
 
+def business_responsible_check (db, cl, nodeid, new_values) :
+    """ Check the field business_responsible
+        Setting business_responsible for a user who has a
+        vie_user_ml is not allowed. Likewise setting the
+        business_responsible *to* a user who has a vie_user_ml is not
+        allowed.
+    """
+    if 'business_responsible' not in new_values :
+        return
+    resp = cl.getnode (new_values ['business_responsible'])
+    if resp.vie_user_ml :
+        raise Reject ('Business responsible must be a source user')
+    if nodeid :
+        user = cl.getnode (nodeid)
+        if user.vie_user_ml :
+            raise Reject ('Business responsible must not be set for this user')
+# end def business_responsible_check
+
 def init (db) :
     global _
     _   = get_translation \
@@ -408,3 +426,5 @@ def init (db) :
     if 'vie_user_bl_override' in db.user.properties :
         db.user.audit ("create", vie_backlink_check)
         db.user.audit ("set",    vie_backlink_check)
+        db.user.audit ("create", business_responsible_check, priority = 150)
+        db.user.audit ("set",    business_responsible_check, priority = 150)

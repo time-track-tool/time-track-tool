@@ -262,7 +262,10 @@
              )"/>
       </td>
      </tr>
-     <tr tal:condition="python:'business_responsible' in bclass.properties">
+     <tr tal:condition="python:
+        (   'business_responsible' in bclass.properties
+        and not bool (context.vie_user_ml)
+        ) ">
       <th tal:content="structure python:utils.fieldname
           ('user', 'business_responsible')"/>
       <td>
