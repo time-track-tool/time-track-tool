@@ -337,7 +337,7 @@
      <tal:block tal:condition="python:'vie_user' in bclass.properties">
       <tr>
        <th tal:content="structure python:utils.fieldname ('user', 'vie_user')"/>
-       <td tal:condition="context/vie_user/is_edit_ok">
+       <td>
         <span tal:content="structure python: context.vie_user.field ()"/>
         <span tal:content="structure python:utils.user_classhelp
              ( db, property   = 'vie_user'
