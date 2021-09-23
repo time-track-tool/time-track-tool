@@ -1,6 +1,6 @@
 #! /usr/bin/python
 # -*- coding: iso-8859-1 -*-
-# Copyright (C) 2006-16 Dr. Ralf Schlatterbeck Open Source Consulting.
+# Copyright (C) 2006-21 Dr. Ralf Schlatterbeck Open Source Consulting.
 # Reichergasse 131, A-3411 Weidling.
 # Web: http://www.runtux.com Email: office@runtux.com
 # All rights reserved
@@ -182,6 +182,23 @@ class Approval_Logic :
             (db.config.TRACKER_LANGUAGE, db.config.TRACKER_HOME).gettext
     # end def __init__
 
+    def _add_approval (self, key, value) :
+        if key not in self.apr_by_r_d :
+            self.apr_by_r_d [key] = []
+        self.apr_by_r_d [key].append (value)
+    # end def _add_approval
+
+    def _lookup_approval (self, key, value = None) :
+        if key not in self.apr_by_r_d :
+            return None
+        if value is None :
+            return True
+        for v in self.apr_by_r_d [key] :
+            if v ['description'] == value :
+                return True
+        return False
+    # end def _lookup_approval
+
     def add_approval_with_role (self, appr_order_id) :
         ord   = self.db.pr_approval_order.getnode (appr_order_id)
         apr   = gen_pr_approval \
@@ -251,7 +268,7 @@ class Approval_Logic :
                 , deputy_gets_mail = pcc.deputy_gets_mail or False
                 , description      = d
                 )
-            self.apr_by_r_d [(pcc.responsible, pcc.deputy)] = apr
+            self._add_approval ((pcc.responsible, pcc.deputy), apr)
         for u in pr.special_approval :
             apr = gen_pr_approval \
                 ( db, self.do_create
@@ -261,7 +278,7 @@ class Approval_Logic :
                 , deputy           = u
                 , description      = self._ ("Special approval")
                 )
-            self.apr_by_r_d [(u, u)] = apr
+            self._add_approval ((u, u), apr)
 
         max_risk = max_risk_type (db, pr.id)
         prc_ids  = db.pr_approval_config.filter (None, dict (valid = True))
@@ -319,7 +336,7 @@ class Approval_Logic :
                         , deputy           = dep.deputy
                         , description      = "Department Head"
                         )
-                    self.apr_by_r_d [(dep.manager, dep.deputy)] = apr
+                    self._add_approval ((dep.manager, dep.deputy), apr)
         if cur and oisum > cur.min_sum :
             # Loop over order items and check if any is not on the approved
             # suppliers list
@@ -369,7 +386,7 @@ class Approval_Logic :
             if cur :
                 self.team_group_head_approval (cur, oisum, pcc)
             if (   pcc
-               and (pcc.responsible, pcc.deputy) not in self.apr_by_r_d
+               and not self._lookup_approval ((pcc.responsible, pcc.deputy))
                and cur
                ) :
                 idx = oi.index or 0
@@ -381,7 +398,7 @@ class Approval_Logic :
                     , deputy           = pcc.deputy
                     , description      = d
                     )
-                self.apr_by_r_d [(pcc.responsible, pcc.deputy)] = apr
+                self._add_approval ((pcc.responsible, pcc.deputy), apr)
             if oi.purchase_type :
                 pt    = db.purchase_type.getnode (oi.purchase_type)
                 roles = []
@@ -392,7 +409,10 @@ class Approval_Logic :
                     if role not in self.apr_by_role :
                         self.add_approval_with_role (role)
         if not self.do_create :
-            vals = self.apr_by_r_d.values () + self.apr_by_role.values ()
+            vals = []
+            for k in self.apr_by_r_d :
+                vals.extend (self.apr_by_r_d [k])
+            vals.extend (self.apr_by_role.values ())
             vals.sort (key = lambda x : x ['order'])
             return vals
     # end def compute_approvals
@@ -449,9 +469,7 @@ class Approval_Logic :
             u    = cc_or_tc.team_lead
             desc = 'Team Lead'
             key  = (u, u)
-            if  (  key not in self.apr_by_r_d
-                or self.apr_by_r_d [key]['description'] != desc
-                ) :
+            if not self._lookup_approval (key, desc) :
                 apr = gen_pr_approval \
                     ( self.db, self.do_create
                     , order            = 53
@@ -460,14 +478,12 @@ class Approval_Logic :
                     , deputy           = u
                     , description      = desc
                     )
-                self.apr_by_r_d [key] = apr
+                self._add_approval (key, apr)
         if min_group is not None and min_group < oisum :
             u    = cc_or_tc.group_lead
             desc = 'Group Lead'
             key  = (u, u)
-            if  (  key not in self.apr_by_r_d
-                or self.apr_by_r_d [key]['description'] != desc
-                ) :
+            if not self._lookup_approval (key, desc) :
                 apr = gen_pr_approval \
                     ( self.db, self.do_create
                     , order            = 54
@@ -476,7 +492,7 @@ class Approval_Logic :
                     , deputy           = u
                     , description      = desc
                     )
-                self.apr_by_r_d [(u, u)] = apr
+                self._add_approval (key, apr)
         assert min_head is not None
         return min_head
     # end def team_group_head_approval
