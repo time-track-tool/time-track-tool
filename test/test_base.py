@@ -201,6 +201,7 @@ class _Test_Base :
         , 'type'
         , 'user'
         , 'user_view'
+        , 'vacation-report'
         ))
 
     def setup_tracker (self, backend = None) :
@@ -834,6 +835,7 @@ class Test_Case_Support_Timetracker (_Test_Case, unittest.TestCase) :
         , 'project_view', 'sec-incident-nosy'
         , 'sec-incident-responsible', 'staff-report', 'sub-login'
         , 'summary_view' , 'supportadmin', 'time-report', 'type', 'user'
+        , 'vacation-report'
         ]
     transprop_perms = transprop_sfull
 # end class Test_Case_Support_Timetracker
@@ -848,7 +850,7 @@ class Test_Case_Timetracker (_Test_Case_Summary, unittest.TestCase) :
         , 'hr-leave-approval', 'hr-org-location', 'hr-vacation', 'it', 'nosy'
         , 'office', 'organisation', 'pgp', 'procurement', 'project'
         , 'project_view', 'staff-report', 'sub-login', 'summary_view'
-        , 'time-report', 'user', 'user_view'
+        , 'time-report', 'user', 'user_view', 'vacation-report'
         ]
     transprop_perms = transprop_time
 
@@ -3924,7 +3926,7 @@ class Test_Case_Fulltracker (_Test_Case_Summary, unittest.TestCase) :
         , 'pgp', 'procurement', 'project', 'project_view'
         , 'sec-incident-nosy', 'sec-incident-responsible'
         , 'staff-report', 'sub-login', 'summary_view', 'supportadmin'
-        , 'time-report', 'user', 'user_view'
+        , 'time-report', 'user', 'user_view', 'vacation-report'
         ]
     transprop_perms = transprop_full
 

@@ -24,6 +24,8 @@ Role "contact":
  User is allowed to edit contact (Edit for "contact" only)
 Role "controlling":
  User is allowed Edit on (Edit for "daily_record": ('status', 'time_record') only)
+ User is allowed Edit on (Edit for "sap_cc": ('group_lead', 'team_lead') only)
+ User is allowed Edit on (Edit for "time_project": ('group_lead', 'team_lead') only)
  User is allowed Edit on (Edit for "time_wp": ('project',) only)
  User is allowed View on (View for "user": ('roles',) only)
  User is allowed View on (View for "user_dynamic": ('id', 'sap_cc', 'user', 'valid_from', 'valid_to') only)
@@ -418,8 +420,8 @@ Role "user":
  User is allowed Edit on support if support is non-confidential or user is on nosy list (Edit for "support": ('analysis_end', 'analysis_result', 'analysis_start', 'bcc', 'business_unit', 'category', 'cc', 'cc_emails', 'classification', 'closed', 'confidential', 'customer', 'emails', 'execution', 'external_ref', 'files', 'goods_received', 'goods_sent', 'lot', 'messages', 'nosy', 'number_effected', 'numeric_effort', 'prio', 'prodcat', 'product', 'related_issues', 'related_support', 'release', 'responsible', 'return_type', 'sap_ref', 'send_to_customer', 'serial_number', 'set_first_reply', 'status', 'superseder', 'title', 'type', 'warranty') only)
  User is allowed View on (View for "user": ('activity', 'actor', 'ad_domain', 'address', 'alternate_addresses', 'business_responsible', 'clearance_by', 'creation', 'creator', 'firstname', 'id', 'job_description', 'lastname', 'lunch_duration', 'lunch_start', 'nickname', 'pictures', 'position_text', 'queries', 'realname', 'room', 'sex', 'status', 'subst_active', 'substitute', 'supervisor', 'timezone', 'title', 'tt_lines', 'username') only)
  User is allowed View on (View for "user": ('activity', 'actor', 'address', 'alternate_addresses', 'creation', 'creator', 'id', 'queries', 'realname', 'status', 'timezone', 'username') only)
+ User is allowed View on (View for "user": ('business_responsible', 'department_temp', 'timetracking_by', 'vie_user', 'vie_user_bl_override', 'vie_user_ml') only)
  User is allowed View on (View for "user": ('contacts',) only)
- User is allowed View on (View for "user": ('department_temp', 'timetracking_by', 'vie_user', 'vie_user_bl_override', 'vie_user_ml') only)
  User is allowed View on (View for "user_dynamic": ('department', 'org_location') only)
  User is allowed View on file if file is linked from an item with View permission (View for "file" only)
  User is allowed View on issue if issue is non-confidential or user is on nosy list (View for "issue" only)
@@ -571,4 +573,5 @@ Role "user":
  Users may see daily record if they may see one of the time_records for that day (View for "daily_record" only)
 Role "user_view":
  User is allowed to access user (View for "user" only)
+Role "vacation-report":
 """.strip ()

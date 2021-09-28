@@ -21,6 +21,8 @@ Role "cc-permission":
  User is allowed to edit cost_center_permission_group (Edit for "cost_center_permission_group" only)
 Role "controlling":
  User is allowed Edit on (Edit for "daily_record": ('status', 'time_record') only)
+ User is allowed Edit on (Edit for "sap_cc": ('group_lead', 'team_lead') only)
+ User is allowed Edit on (Edit for "time_project": ('group_lead', 'team_lead') only)
  User is allowed Edit on (Edit for "time_wp": ('project',) only)
  User is allowed View on (View for "user": ('roles',) only)
  User is allowed View on (View for "user_dynamic": ('id', 'sap_cc', 'user', 'valid_from', 'valid_to') only)
@@ -267,8 +269,8 @@ Role "user":
  Search (Search for "user_contact" only)
  User is allowed Edit on file if file is linked from an item with Edit permission (Edit for "file" only)
  User is allowed View on (View for "user": ('activity', 'actor', 'ad_domain', 'address', 'alternate_addresses', 'business_responsible', 'clearance_by', 'creation', 'creator', 'firstname', 'job_description', 'lastname', 'id', 'lunch_duration', 'lunch_start', 'nickname', 'pictures', 'position_text', 'queries', 'realname', 'room', 'sex', 'status', 'subst_active', 'substitute', 'supervisor', 'timezone', 'title', 'username', 'tt_lines') only)
+ User is allowed View on (View for "user": ('business_responsible', 'department_temp', 'timetracking_by', 'vie_user', 'vie_user_bl_override', 'vie_user_ml') only)
  User is allowed View on (View for "user": ('contacts',) only)
- User is allowed View on (View for "user": ('department_temp', 'timetracking_by', 'vie_user', 'vie_user_bl_override', 'vie_user_ml') only)
  User is allowed View on (View for "user_dynamic": ('department', 'org_location') only)
  User is allowed View on file if file is linked from an item with View permission (View for "file" only)
  User is allowed View on msg if msg is linked from an item with View permission (View for "msg" only)
@@ -370,4 +372,5 @@ Role "user":
  Users may see daily record if they may see one of the time_records for that day (View for "daily_record" only)
 Role "user_view":
  User is allowed to access user (View for "user" only)
+Role "vacation-report":
 """.strip ()

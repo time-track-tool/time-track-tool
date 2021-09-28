@@ -158,6 +158,12 @@ def security (db, ** kw) :
         , ( "sap_cc", "Edit", ["Procurement"]
           , ("purchasing_agents", "group_lead", "team_lead")
           )
+        , ( "time_project", "Edit", ["Controlling"]
+          , ("group_lead", "team_lead")
+          )
+        , ( "sap_cc", "Edit", ["Controlling"]
+          , ("group_lead", "team_lead")
+          )
         ]
 
     schemadef.register_roles             (db, roles)

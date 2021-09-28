@@ -23,6 +23,8 @@ Role "ciso":
  User is allowed to edit pr_supplier_risk (Edit for "pr_supplier_risk" only)
  User is allowed to edit security_req_group (Edit for "security_req_group" only)
 Role "controlling":
+ User is allowed Edit on (Edit for "sap_cc": ('group_lead', 'team_lead') only)
+ User is allowed Edit on (Edit for "time_project": ('group_lead', 'team_lead') only)
  User is allowed to access query (View for "query" only)
  User is allowed to access time_project (View for "time_project" only)
  User is allowed to create organisation (Create for "organisation" only)
@@ -139,7 +141,7 @@ Role "user":
  User is allowed Edit on (Edit for "pr_approval": ('date', 'purchase_request') only)
  User is allowed Edit on file if file is linked from an item with Edit permission (Edit for "file" only)
  User is allowed View on (View for "pr_approval_order": ('id', 'role') only)
- User is allowed View on (View for "user": ('id', 'realname', 'status', 'username') only)
+ User is allowed View on (View for "user": ('address', 'id', 'realname', 'status', 'username') only)
  User is allowed View on file if file is linked from an item with View permission (View for "file" only)
  User is allowed View on msg if msg is linked from an item with View permission (View for "msg" only)
  User is allowed if on the nosy list (Edit for "purchase_request": ('files', 'messages', 'nosy') only)
