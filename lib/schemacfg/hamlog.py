@@ -129,6 +129,8 @@ def init \
         , date_recv             = Date      ()
         , date_sent             = Date      ()
         , non_std_card          = Boolean   ()
+        , gridsquare            = String    ()
+        , rst_rcvd              = String    (indexme = "no")
         , files                 = Multilink ("file")
         )
 

@@ -73,6 +73,15 @@
       <td tal:content="structure python:context.date_sent.field (size = 15)"/>
      </tr>
      <tr>
+     <tr>
+      <th tal:content="structure python:utils.fieldname
+          (classname, 'gridsquare')"/>
+      <td tal:content="structure python:context.gridsquare.field (size = 15)"/>
+      <th tal:content="structure python:utils.fieldname
+          (classname, 'rst_rcvd')"/>
+      <td tal:content="structure python:context.rst_rcvd.field (size = 15)"/>
+     </tr>
+     <tr>
       <th tal:content="structure python:utils.fieldname
           (classname, 'non_std_card')"/>
       <td tal:content="structure python:context.non_std_card.field ()"/>
