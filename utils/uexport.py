@@ -54,6 +54,9 @@ class Exporter (sqlparser.SQL_Parser) :
             tn = '__'.join ((t, 'journal'))
             self.register_empty_table (tn)
         self.uids = dict.fromkeys (int (i) for i in self.args.user_id)
+        # admin and anonymous
+        self.uids [1] = True
+        self.uids [2] = True
         self.drid = {}
         self.wpid = {}
         for t in self.empty_multilinks :
@@ -71,6 +74,7 @@ class Exporter (sqlparser.SQL_Parser) :
 
     def user_callback (self, rec) :
         if rec.id in self.uids :
+            rec._supervisor = rec._substitute = 1
             return True
         return False
     # end def user_callback
@@ -122,6 +126,7 @@ class Exporter (sqlparser.SQL_Parser) :
         wps = []
         for i in self.tables._time_wp.contents :
             if i.id in self.wpid or i.id in bookwp :
+                i._responsible = 1
                 wps.append (i)
                 tpid [i._project] = True
         self.tables._time_wp.contents = wps
@@ -154,6 +159,30 @@ class Exporter (sqlparser.SQL_Parser) :
             if i._user in self.uids :
                 vc.append (i)
         self.tables._vacation_correction.contents = vc
+        ufr = []
+        fr  = {}
+        for i in self.tables._user_functional_role.contents :
+            if i._user in self.uids :
+                ufr.append (i)
+                fr [i._functional_role] = True
+        self.tables._user_functional_role.contents = ufr
+        frn = []
+        for i in self.tables._functional_role.contents :
+            if i.id in fr :
+                frn.append (i)
+        self.tables._functional_role.contents = frn
+        for i in self.tables._cost_center_group.contents :
+            i._responsible = 1
+        for i in self.tables._department.contents :
+            i._deputy = i._manager = 1
+        for i in self.tables._domain_permission.contents :
+            i._clearance_by = i._timetracking_by = 1
+        for i in self.tables._msg.contents :
+            i._author = 1
+        for tblname in '_sap_cc', '_time_project' :
+            tbl = getattr (self.tables, tblname)
+            for i in tbl.contents :
+                i._deputy = i._group_lead = i._responsible = i._team_lead = 1
     # end def export
 
 # end class Exporter
