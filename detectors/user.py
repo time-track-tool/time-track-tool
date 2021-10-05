@@ -380,7 +380,8 @@ def business_responsible_check (db, cl, nodeid, new_values) :
         business_responsible *to* a user who has a vie_user_ml is not
         allowed.
     """
-    if 'business_responsible' not in new_values :
+    # Either not in new_values or changed to None
+    if not new_values.get ('business_responsible', None) :
         return
     resp = cl.getnode (new_values ['business_responsible'])
     if resp.vie_user_ml :
