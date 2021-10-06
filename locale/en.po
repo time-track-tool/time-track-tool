@@ -4481,3 +4481,6 @@ msgstr "QSO Time"
 
 msgid "non_std_card"
 msgstr "Nonstandard QSL-Card"
+
+msgid "time_activity_perm"
+msgstr "Activity Permission"

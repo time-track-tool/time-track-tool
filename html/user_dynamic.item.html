@@ -225,6 +225,12 @@
       <td tal:content="structure python:
           context.short_time_work_hours.field ()"/>
      </tr>
+     <tr>
+      <th tal:content="structure python:utils.fieldname
+          (classname, 'time_activity_perm')"/>
+      <td tal:content="structure python:context.time_activity_perm.menu
+          (height = 3)"/>
+     </tr>
     </tal:block>
    </tal:block>
   </tal:block>

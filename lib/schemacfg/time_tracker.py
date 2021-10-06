@@ -216,12 +216,22 @@ def init \
         )
     summary_type.setkey ("name")
 
+    time_activity_perm = Class \
+        ( db
+        , ''"time_activity_perm"
+        , name                  = String    ()
+        , description           = String    ()
+        )
+    time_activity_perm.setkey ("name")
+
     time_activity = Class \
         ( db
         , ''"time_activity"
         , name                  = String    ()
         , description           = String    ()
         , travel                = Boolean   ()
+        , time_activity_perm    = Link      ("time_activity_perm")
+        , is_valid              = Boolean   ()
         )
     time_activity.setkey ("name")
 
@@ -399,6 +409,9 @@ def init \
         , exemption             = Boolean   ()
         , short_time_work_hours = Number    ()
         , do_auto_wp            = Boolean   ()
+        , time_activity_perm    = Multilink ( "time_activity_perm"
+                                            , do_journal = "no"
+                                            )
         )
 
     leave_status = Class \

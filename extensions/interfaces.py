@@ -516,14 +516,24 @@ def valid_activities (db, date) :
         db = db._db
     except AttributeError :
         pass
+    uid  = db.getuid ()
     date = date._value
+    dyn  = user_dynamic.get_user_dynamic (db, uid, date)
+    if not dyn :
+        return []
     all_activities = db.time_activity.getnodeids (retired = False)
+    acts = [db.time_activity.getnode (a) for a in all_activities]
+    act  = [ a.id for a in acts if
+             not a.time_activity_perm
+             or  a.time_activity_perm in dyn.time_activity_perm
+           ]
     if 'reduced_activity_list' not in db.user.properties :
-        return all_activities
-    ts = db.user.get (db.getuid (), 'reduced_activity_list')
+        return act
+    ts = db.user.get (uid, 'reduced_activity_list')
     if ts and ts <= date :
-        return list (set (all_activities).intersection (['10', '11']))
-    return all_activities
+        valid = db.time_activity.filter (None, dict (is_valid = True))
+        return list (set (act).intersection (valid))
+    return act
 # end def valid_activities
 
 def valid_item (now) :
