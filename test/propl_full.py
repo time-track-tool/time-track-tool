@@ -720,8 +720,15 @@ properties = \
       )
     , ( 'time_activity'
       , [ 'description'
+        , 'is_valid'
         , 'name'
+        , 'time_activity_perm'
         , 'travel'
+        ]
+      )
+    , ( 'time_activity_perm'
+      , [ 'description'
+        , 'name'
         ]
       )
     , ( 'time_project'
@@ -912,6 +919,7 @@ properties = \
         , 'short_time_work_hours'
         , 'supp_per_period'
         , 'supp_weekly_hours'
+        , 'time_activity_perm'
         , 'travel_full'
         , 'user'
         , 'vac_aliq'

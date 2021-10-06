@@ -759,6 +759,10 @@ def security (db, ** kw) :
           , ["User"]
           , ["Controlling"]
           )
+        , ( "time_activity_perm"
+          , ["User"]
+          , ["Controlling"]
+          )
         , ( "time_record"
           , ["HR", "Controlling"]
           , ["HR", "Controlling"]
@@ -1466,6 +1470,11 @@ def security (db, ** kw) :
     p = db.security.addPermission \
         ( name        = 'Search'
         , klass       = 'user_dynamic'
+        )
+    db.security.addPermissionToRole ('HR-Org-Location', p)
+    p = db.security.addPermission \
+        ( name        = 'Search'
+        , klass       = 'time_activity_perm'
         )
     db.security.addPermissionToRole ('HR-Org-Location', p)
     p = db.security.addPermission \

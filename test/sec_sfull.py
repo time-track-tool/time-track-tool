@@ -58,6 +58,7 @@ Role "controlling":
  User is allowed to create reporting_group (Create for "reporting_group" only)
  User is allowed to create sap_cc (Create for "sap_cc" only)
  User is allowed to create time_activity (Create for "time_activity" only)
+ User is allowed to create time_activity_perm (Create for "time_activity_perm" only)
  User is allowed to create time_record (Create for "time_record" only)
  User is allowed to create work_location (Create for "work_location" only)
  User is allowed to edit cost_center (Edit for "cost_center" only)
@@ -71,6 +72,7 @@ Role "controlling":
  User is allowed to edit reporting_group (Edit for "reporting_group" only)
  User is allowed to edit sap_cc (Edit for "sap_cc" only)
  User is allowed to edit time_activity (Edit for "time_activity" only)
+ User is allowed to edit time_activity_perm (Edit for "time_activity_perm" only)
  User is allowed to edit time_record (Edit for "time_record" only)
  User is allowed to edit work_location (Edit for "work_location" only)
 Role "doc_admin":
@@ -155,6 +157,7 @@ Role "hr-leave-approval":
 Role "hr-org-location":
   (Search for "daily_record_freeze" only)
   (Search for "overtime_correction" only)
+  (Search for "time_activity_perm" only)
   (Search for "time_record" only)
   (Search for "user_dynamic" only)
  User is allowed to view dynamic user data if he/she is in group HR-Org-Location and in the same Org-Location as the given user (View for "user_dynamic" only)
@@ -434,6 +437,7 @@ Role "user":
  User is allowed to access sup_warranty (View for "sup_warranty" only)
  User is allowed to access test_level (View for "test_level" only)
  User is allowed to access time_activity (View for "time_activity" only)
+ User is allowed to access time_activity_perm (View for "time_activity_perm" only)
  User is allowed to access time_project_status (View for "time_project_status" only)
  User is allowed to access time_wp_group (View for "time_wp_group" only)
  User is allowed to access time_wp_summary_no (View for "time_wp_summary_no" only)
