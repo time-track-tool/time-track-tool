@@ -1,6 +1,6 @@
 <tal:block metal:use-macro="templates/page/macros/icing">
 <tal:block metal:fill-slot="create_or_query">
- <tal:block 
+ <tal:block
   metal:use-macro="templates/page/macros/create_or_query_new_tracker_item" />
 </tal:block>
 
@@ -13,6 +13,16 @@
     , ('identifier',          {})
     , ('name',                {})
     , ('is_raw_material',     {})
+    , ('ingredients', dict
+       ( searchname = 'ingredients.ingredient'
+       , searchable = True
+       )
+      )
+    , ('part_of', dict
+       ( searchname = 'part_of.substance'
+       , searchable = True
+       )
+      )
     );
    props python:
        [ utils.ExtProperty (utils, pdict [p [0]], ** p [1])
