@@ -111,9 +111,7 @@ def security (db, ** kw) :
         , ("rc_suitability",               ["User"], ["User"])
         , ("rc_brand",                     ["User"], ["User"])
         , ("rc_capability",                ["User"], ["User"])
-        , ("rc_product",                   ["User"], [])
+        , ("rc_product",                   ["User"], ["User"])
         ]
     schemadef.register_class_permissions (db, classes, [])
-    # Allow creation but not modification
-    db.security.addPermissionToRole ('User', 'Create', 'rc_product')
 # end def security

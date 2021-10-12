@@ -1,0 +1,281 @@
+#!/usr/bin/python3
+
+import sys
+import os
+import json
+import urllib3
+import requests
+from datetime import datetime
+from argparse import ArgumentParser
+from netrc    import netrc
+from getpass  import getpass
+from rsclib.autosuper import autosuper
+try :
+    from urllib.parse import urlparse, urlencode
+except ImportError:
+    from urlparse import urlparse
+    from urllib   import urlencode
+
+class Requester (autosuper) :
+
+    def __init__ (self, args) :
+        self.args    = args
+        if args.disable_cert_check_warning :
+            urllib3.disable_warnings (urllib3.exceptions.InsecureRequestWarning)
+        self.session = requests.session ()
+        self.session.verify = False
+        self.user    = args.username
+        self.url     = args.url
+        self.baseurl = args.url
+        # Basic Auth: user, password
+        self.session.auth = (self.user, self.get_pw ())
+        if self.url.endswith ('/') :
+            orig = self.url.rstrip ('/')
+        else :
+            orig = self.url
+            self.url += '/'
+        self.headers = dict \
+            ( Origin  = orig
+            , Referer = self.url
+            )
+        self.headers ['X-Requested-With'] = 'requests library'
+        self.url += 'rest/data/'
+    # end def __init__
+
+    def get (self, s) :
+        r = self.session.get (self.url + s, headers = self.headers)
+        if not (200 <= r.status_code <= 299) :
+            raise RuntimeError \
+                ( 'Invalid get result: %s: %s\n    %s'
+                % (r.status_code, r.reason, r.text)
+                )
+        return r.json ()
+    # end def get
+
+    def get_pw (self) :
+        """ Password given as option takes precedence.
+            Next we try password via .netrc. If that doesn't work we ask.
+        """
+        if self.args.password :
+            return self.args.password
+        a = n = None
+        try :
+            n = netrc ()
+        except IOError :
+            pass
+        if n and self.args.url :
+            t = urlparse (self.args.url)
+            a = n.authenticators (t.netloc)
+        if a :
+            un, d, pw = a
+            if un != self.user :
+                raise ValueError \
+                    ( "Netrc username doesn't match: %s vs.  %s"
+                    % (un, self.user)
+                    )
+            return pw
+        pw = getpass ('Password: ')
+        return pw
+    # end def get_pw
+
+    def delete (self, s, etag = None) :
+        h = dict (self.headers)
+        if etag :
+            h ['If-Match'] = etag
+        r = self.session.delete (self.url + s, headers = h)
+        if not (200 <= r.status_code <= 299) :
+            raise RuntimeError \
+                ( 'Invalid get result: %s: %s\n    %s'
+                % (r.status_code, r.reason, r.text)
+                )
+        return r.json ()
+    # end def delete
+
+    def post_or_put (self, method, s, data = None, json = None, etag = None) :
+        d = {}
+        if data :
+            d ['data'] = data
+        if json :
+            d ['json'] = json
+        d ['headers'] = h = dict (self.headers)
+        if etag :
+            h ['If-Match'] = etag
+        r = method (self.url + s, **d)
+        if not (200 <= r.status_code <= 299) :
+            raise RuntimeError \
+                ( 'Invalid put/post result: %s: %s\n    %s'
+                % (r.status_code, r.reason, r.text)
+                )
+        return r.json ()
+    # end def post_or_put
+
+    def post (self, s, data = None, json = None, etag = None) :
+        return self.post_or_put (self.session.post, s, data, json, etag)
+    # end def post
+
+    def put (self, s, data = None, json = None, etag = None) :
+        return self.post_or_put (self.session.put, s, data, json, etag)
+    # end def put
+
+# end class Requester
+
+class Changed_Quantity :
+
+    def __init__ (self, ing, quantity, sum_q) :
+        self.ing      = ing
+        self.quantity = quantity
+        self.rep_q    = self.ing ['quantity']
+        self.sum_q    = sum_q
+        self.scaled_q = self.rep_q / sum_q
+        self.factor   = quantity / self.scaled_q
+    # end def __init__
+
+    def scale (self, minfactor) :
+        self.minfactor = minfactor
+        self.remain    = self.quantity - self.scaled_q * minfactor
+        # Because we used the minfactor:
+        eps = 1e-10
+        assert self.remain + eps >= 0
+        self.error     = self.remain / self.quantity * 100
+        if self.error < 1 :
+            self.remain = 0.0
+    # end def scale
+
+    def __str__ (self) :
+        if not getattr (self, 'minfactor', None) :
+            return \
+                ( "%s q:%.4f r_q:%.4f scaled:%.4f"
+                % ( self.ing ['ingredient.name']
+                  , self.quantity
+                  , self.rep_q
+                  , self.scaled_q
+                  )
+                )
+        err = ' (error: %.2f%%)' % self.error
+        if self.remain :
+            err = ''
+        return \
+            ( "%28s %8.4f - %8.4f -> %8.4f%s"
+            % ( self.ing ['ingredient.name']
+              , self.quantity
+              , self.quantity - self.remain
+              , self.remain
+              , err
+              )
+            )
+    # end def __str__
+    __repr__ = __str__
+
+# end class Changed_Quantity
+
+class Factor_Recipe (Requester) :
+
+    def factor (self, substance_id, error = 1.0) :
+        """ This takes a substance and searches it in all other recipes
+            (except for itself of course). If all ingredients of the
+            given substance match in the found recipe (up to a given error)
+            we print old and new recipe.
+        """
+        substance    = self.get ('substance/%s' % substance_id)
+        substance    = substance ['data']['attributes']
+        self.max_q   = 0.0
+        self.max_ing = None
+        self.sum_q   = 0.0
+        self.ingredients  = {}
+        self.substance    = substance
+        for iid in substance ['ingredients'] :
+            f   = 'quantity,substance,ingredient,ingredient.name'
+            u   = 'ingredient_used_by_substance/%s?@fields=' + f
+            ing = self.get (u % iid ['id'])
+            ing = ing ['data']['attributes']
+            if ing ['quantity'] > self.max_q :
+                self.max_q   = ing ['quantity']
+                self.sum_q  += ing ['quantity']
+                self.max_ing = ing ['ingredient']['id']
+            self.ingredients [ing ['ingredient']['id']] = ing
+        self.ingredient_set = set (self.ingredients)
+        # Now we search all substances that at least have the ingredient
+        # with the maximum quantity
+        d = {}
+        d ['ingredients.ingredient'] = self.max_ing
+        d ['@fields'] = 'identifier,name,ingredients'
+        candidates = self.get ('substance?' + urlencode (d))
+        candidates = candidates ['data']['collection']
+        for c in candidates :
+            if c ['id'] == substance_id :
+                continue
+            quantities = {}
+            for iid in c ['ingredients'] :
+                ing = self.get ('ingredient_used_by_substance/%s' % iid ['id'])
+                ing = ing ['data']['attributes']
+                if ing ['ingredient']['id'] not in self.ingredients :
+                    continue
+                quantities [ing ['ingredient']['id']] = ing ['quantity']
+            self.try_candidate (c, quantities)
+    # end def factor
+
+    def try_candidate (self, cand, quantities) :
+        # Check if candidate contains all ingredients
+        if  (  self.ingredient_set.intersection (quantities)
+            != self.ingredient_set
+            ) :
+            return
+        # Compute ingredient with minimum factor
+        changed = {}
+        for ing in quantities :
+            changed [ing] = Changed_Quantity \
+                (self.ingredients [ing], quantities [ing], self.sum_q)
+        minfactor = min (changed [i].factor for i in changed)
+        print \
+            ("Replacing %s into %s:" % (self.substance ['name'], cand ['name']))
+        for ing in changed :
+            cq = changed [ing]
+            cq.scale (minfactor)
+            print ("   ", cq)
+        print ('    %28s    %16.4f' % (self.substance ['name'], minfactor))
+    # end def try_candidate
+
+# end class Factor_Recipe
+
+def main (argv = None) :
+    if argv is None :
+        argv = sys.argv [1:]
+    cmd = ArgumentParser ()
+    cmd.add_argument \
+        ( "substance"
+        , help    = "Substance to search in other recipes"
+        )
+    cmd.add_argument \
+        ( "-C", "--disable-cert-check-warning"
+        , help    = "Disable certificate check warning for https connection"
+        , default = False
+        , action  = 'store_true'
+        )
+    cmd.add_argument \
+        ( "-e", "--error"
+        , help    = "Error margin in percent when matching substances"
+                    " default=%(default)s"
+        , type    = float
+        , default = 1.0
+        )
+    cmd.add_argument \
+        ( "-U", "--url"
+        , help    = "URL of tracker (without rest path) default: %(default)s"
+        , default = 'http://bee.priv.zoo:9090/recipe/'
+        )
+    cmd.add_argument \
+        ( "-u", "--username"
+        , help    = "Username, default: %(default)s"
+        , default = 'dirk'
+        )
+    cmd.add_argument \
+        ( "-p", "--password"
+        , help    = "Password, better use .netrc"
+        )
+    args = cmd.parse_args (argv)
+    fct = Factor_Recipe (args)
+    fct.factor (args.substance, args.error)
+# end def main
+
+if __name__ == '__main__' :
+    main ()

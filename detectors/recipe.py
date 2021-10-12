@@ -45,17 +45,21 @@ def set_defaults (db, cl, nodeid, new_values) :
     new_values ['number'] = "%04d" % number
     common.require_attributes \
         ( _, cl, nodeid, new_values
-        , 'rc_brand', 'rc_product_type', 'rc_application'
-        , 'rc_substrate', 'substance'
+        , 'rc_brand', 'rc_product_type', 'substance', 'number'
         )
 # end def set_defaults
 
 def check_product (db, cl, nodeid, new_values) :
     common.require_attributes \
         ( _, cl, nodeid, new_values
-        , 'rc_brand', 'rc_product_type', 'rc_application'
-        , 'rc_substrate', 'substance'
+        , 'rc_brand', 'rc_product_type', 'substance', 'number'
         )
+    if 'number' in new_values :
+        num = new_values ['number']
+        try :
+            n = int (num)
+        except ValueError :
+            raise Reject (_ ('Product number must be numeric, got "%s"') % num)
 # end def check_product
 
 def require_ingr (db, cl, nodeid, new_values) :
