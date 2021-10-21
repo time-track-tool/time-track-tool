@@ -1,5 +1,5 @@
 # -*- coding: iso-8859-1 -*-
-# Copyright (C) 2006 Dr. Ralf Schlatterbeck Open Source Consulting.
+# Copyright (C) 2006-21 Dr. Ralf Schlatterbeck Open Source Consulting.
 # 
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -245,7 +245,8 @@ class Importer (object) :
 
             def __init__ (self, db, properties) :
                 props = getattr (self, 'default_properties', {})
-                for k, v in props.iteritems () :
+                for k in props :
+                    v = props [k]
                     properties.setdefault (k, v)
             # end def __init__
 

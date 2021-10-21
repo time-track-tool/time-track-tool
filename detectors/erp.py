@@ -1,5 +1,5 @@
 #! /usr/bin/python
-# Copyright (C) 2007 Dr. Ralf Schlatterbeck Open Source Consulting.
+# Copyright (C) 2007-21 Dr. Ralf Schlatterbeck Open Source Consulting.
 # Reichergasse 131, A-3411 Weidling.
 # Web: http://www.runtux.com Email: office@runtux.com
 # All rights reserved
@@ -43,11 +43,11 @@ def check_group_discount (db, new_values) :
         for a in 'product_group', 'discount' :
             attr = _ (a)
             if gd [a] is None :
-                raise Reject, _ (""'%(attr)s must be specified') % locals ()
+                raise Reject (_ (""'%(attr)s must be specified') % locals ())
         pg = gd.product_group
         groupname = db.product_group.get (pg, 'name')
         if pg in seen :
-            raise Reject, _ (""'Duplicate %(grp)s "%(groupname)s"') % locals ()
+            raise Reject (_ (""'Duplicate %(grp)s "%(groupname)s"') % locals ())
         seen [pg] = True
 # end def check_group_discount
 
@@ -63,8 +63,10 @@ def check_overall_discount (db, new_values) :
         if last and (od.price <= last.price or od.discount <= last.discount) :
             pd = "%s: %s%% / %s: %s%%" \
                 % (last.price, last.discount, od.price, od.discount)
-            raise Reject, _ (''"price/discount must be increasing: %(pd)s") \
+            raise Reject \
+                ( _ (''"price/discount must be increasing: %(pd)s")
                 % locals ()
+                )
         last = od
 # end def check_overall_discount
 
@@ -95,7 +97,7 @@ def check_product_price (db, cl, nodeid, new_values) :
         and cl.get (nodeid, 'currency') != new_values ['currency']
         ) :
         attr = _ ('currency')
-        raise Reject, _ ("%(attr)s must not be changed") % locals ()
+        raise Reject (_ ("%(attr)s must not be changed") % locals ())
 # end def check_product_price
 
 def check_product (db, cl, nodeid, new_values) :

@@ -102,7 +102,8 @@ class Unicode_DictReader (object) :
         '''
         for d in self.reader :
             r = []
-            for k, v in d.iteritems () :
+            for k in d :
+                v = d [k]
                 k = k.decode ('utf-8')
                 if v is not None :
                     v = v.decode ('utf-8')
@@ -268,7 +269,8 @@ class Product_Sync (object) :
                 self.warn ('Ignoring (no family): %r' % rec)
                 continue
             pcats = []
-            for keys, lvl in sorted (self.levels.iteritems (), key = skey) :
+            for keys, lvl in sorted (self.levels.items (), key = skey) :
+                lvl = self.levels [keys]
                 for k in keys :
                     try :
                         v = rec [k].strip ()
@@ -393,7 +395,8 @@ class Product_Sync (object) :
     # end def url
 
     def validity (self, cls, nodedict, usedict) :
-        for k, v in usedict.iteritems () :
+        for k in usedict :
+            v = usedict [k]
             id = nodedict [k]
             if v or self.args.invalidate :
                 if not v :

@@ -50,7 +50,7 @@ for uid in db.user.getnodeids () :
             del roles [r]
             print "User %s: delete role: %s" % (u.username, r)
     if change :
-        db.user.set (uid, roles = ','.join (roles.iterkeys ()))
+        db.user.set (uid, roles = ','.join (roles))
 
 if opt.update :
     db.commit()

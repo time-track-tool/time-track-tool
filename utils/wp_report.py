@@ -48,17 +48,17 @@ class WP_Report (object) :
                 self.messages [key].append (header)
             self.messages [key].append (format % (pdate, prj, i.name, url))
         formatted_messages = {}
-        for u, v in self.messages.iteritems () :
-            formatted_messages [u] = '\n'.join (v)
+        for u in self.messages :
+            formatted_messages [u] = '\n'.join (self.messages [u])
         self.messages = formatted_messages
     # end def build_mails
 
     def output (self, fp) :
-        for uid, m in sorted (self.messages.iteritems ()) :
+        for uid in sorted (self.messages) :
             assert (uid)
             user = self.db.user.getnode (uid)
             print ("Expiring Work Packages for %s:" % user.username, file = fp)
-            print (m, file = fp)
+            print (self.messages [uid], file = fp)
             print ("", file = fp)
     # end def output
 
@@ -77,7 +77,8 @@ class WP_Report (object) :
             ))
         frm = "From: %s" % self.db.config.ADMIN_EMAIL
 
-        for uid, m in sorted (self.messages.iteritems ()) :
+        for uid in sorted (self.messages) :
+            m = self.messages [uid]
             assert (uid)
             user = self.db.user.getnode (uid)
             addr = user.address

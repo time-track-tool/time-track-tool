@@ -1,5 +1,5 @@
 #! /usr/bin/python
-# Copyright (C) 2014-15 Dr. Ralf Schlatterbeck Open Source Consulting.
+# Copyright (C) 2014-21 Dr. Ralf Schlatterbeck Open Source Consulting.
 # Reichergasse 131, A-3411 Weidling.
 # Web: http://www.runtux.com Email: office@runtux.com
 # All rights reserved
@@ -22,7 +22,10 @@
 
 from   math   import ceil
 from   time   import gmtime
-from   urllib import urlencode
+try :
+    from urllib.parse import urlencode
+except ImportError :
+    from urllib import urlencode
 import re
 import common
 import user_dynamic
@@ -226,7 +229,7 @@ class New_Leave_Action (NewItemAction) :
         url = None
         try :
             NewItemAction.handle (self)
-        except Redirect, exc :
+        except Redirect as exc :
             url = exc.message
         if url :
             up     = url.split  ('?', 1)

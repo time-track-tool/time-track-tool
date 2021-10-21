@@ -1,5 +1,5 @@
 #! /usr/bin/python
-# Copyright (C) 2017-20 Dr. Ralf Schlatterbeck Open Source Consulting.
+# Copyright (C) 2017-21 Dr. Ralf Schlatterbeck Open Source Consulting.
 # Reichergasse 131, A-3411 Weidling.
 # Web: http://www.runtux.com Email: office@runtux.com
 # All rights reserved
@@ -97,9 +97,7 @@ def security (db, ** kw) :
     # don't allow Readonly-User for some issue attributes
     exceptions = dict.fromkeys \
         (('external_company', 'confidential'))
-    issue_props = [p for p in db.issue.getprops ().iterkeys ()
-                   if p not in exceptions
-                  ]
+    issue_props = [p for p in db.issue.getprops () if p not in exceptions]
 
     if 'external_users' in db.issue.properties :
         def ro_user_access (db, userid, itemid) :

@@ -1,5 +1,5 @@
 #! /usr/bin/python
-# Copyright (C) 2006-10 Dr. Ralf Schlatterbeck Open Source Consulting.
+# Copyright (C) 2006-21 Dr. Ralf Schlatterbeck Open Source Consulting.
 # 
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -27,7 +27,10 @@
 #
 #--
 
-from urllib                         import quote as urlquote
+try :
+    from urllib.parse import quote as urlquote
+except ImportError :
+    from urllib import quote as urlquote
 from roundup.cgi.templating         import MultilinkHTMLProperty     \
                                          , BooleanHTMLProperty       \
                                          , DateHTMLProperty          \
@@ -312,7 +315,8 @@ class ExtProperty :
             self.filter = {}
         if not self.help_filter and self.filter :
             f = []
-            for k, v in self.filter.iteritems () :
+            for k in self.filter :
+                v = self.filter [k]
                 if isinstance (v, list) :
                     v = ','.join (str (k) for k in v)
                 f.append ((k, v))

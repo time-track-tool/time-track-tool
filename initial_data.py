@@ -1,5 +1,5 @@
 #! /usr/bin/python
-# Copyright (C) 2004-20 Dr. Ralf Schlatterbeck Open Source Consulting.
+# Copyright (C) 2004-21 Dr. Ralf Schlatterbeck Open Source Consulting.
 # Reichergasse 131, A-3411 Weidling.
 # Web: http://www.runtux.com Email: office@runtux.com
 # All rights reserved
@@ -348,7 +348,8 @@ if 'status' in db.classes and 'status_transition' in db.classes :
     for order, (name, desc, x) in enumerate (status_lst) :
         db.status.create (name = name, order = str (order), description = desc)
 
-    for name, tgt, msg, resp in trans_lst.itervalues () :
+    for k in trans_lst :
+        name, tgt, msg, resp = trans_lst [k]
         db.status_transition.create \
             ( name                = name
             , target              = tgt

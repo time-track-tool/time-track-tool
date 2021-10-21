@@ -1,5 +1,5 @@
 # -*- coding: iso-8859-1 -*-
-# Copyright (C) 2006-15 Dr. Ralf Schlatterbeck Open Source Consulting.
+# Copyright (C) 2006-21 Dr. Ralf Schlatterbeck Open Source Consulting.
 # Reichergasse 131, A-3411 Weidling.
 # Web: http://www.runtux.com Email: office@runtux.com
 # All rights reserved
@@ -187,11 +187,11 @@ def security (db, ** kw) :
 
     # Retire/Restore permission for room
     for perm in 'Retire', 'Restore' :
-	p = db.security.addPermission \
+        p = db.security.addPermission \
             ( name        = perm
             , klass       = 'room'
             )
-	for role in ("HR", "Office", "Facility") :
-	    db.security.addPermissionToRole (role, p)
+        for role in ("HR", "Office", "Facility") :
+            db.security.addPermissionToRole (role, p)
 
 # end def security

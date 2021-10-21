@@ -1,5 +1,5 @@
 #! /usr/bin/python
-# Copyright (C) 2014 Dr. Ralf Schlatterbeck Open Source Consulting.
+# Copyright (C) 2014-21 Dr. Ralf Schlatterbeck Open Source Consulting.
 # Reichergasse 131, A-3411 Weidling.
 # Web: http://www.runtux.com Email: office@runtux.com
 # All rights reserved
@@ -362,8 +362,8 @@ def try_send_mail (db, vs, now, var_text, var_subject, var_mail = None, ** kw) :
             pass
         try :
             mailer.standard_message (notify_mail, subject, msg, sender)
-        except roundupdb.MessageSendError, message :
-            raise roundupdb.DetectorError, message
+        except roundupdb.MessageSendError as message :
+            raise roundupdb.DetectorError (message)
 # end def try_send_mail
 
 def handle_accept (db, vs, trs, old_status) :
@@ -592,7 +592,9 @@ def check_correction (db, cl, nodeid, new_values) :
     # first dynamic user record
     if dyn.valid_from.year > date.year :
         raise Reject \
-            (_ ('Dyn. user record starts too late for "%(username)s"') % locals ())
+            (_ ('Dyn. user record starts too late for "%(username)s"')
+            % locals ()
+            )
     while dyn and (not dyn.valid_to or dyn.valid_to > date) :
         if  (  dyn.vacation_yearly is None
             or not dyn.vacation_month

@@ -1,6 +1,6 @@
 #! /usr/bin/python
 # -*- coding: iso-8859-1 -*-
-# Copyright (C) 2009 Dr. Ralf Schlatterbeck Open Source Consulting.
+# Copyright (C) 2009-21 Dr. Ralf Schlatterbeck Open Source Consulting.
 # Reichergasse 131, A-3411 Weidling.
 # Web: http://www.runtux.com Email: office@runtux.com
 # All rights reserved
@@ -43,7 +43,9 @@ def linkclass_iter (db, classname) :
         that link to that class.
     """
     for clname in sorted (db.getclasses ()) :
-        for p, v in sorted (db.getclass (clname).properties.iteritems ()) :
+        props = db.getclass (clname).properties
+        for p in sorted (props) :
+            v = props [p]
             if  (    (isinstance (v, Multilink) or isinstance (v, Link))
                 and v.classname == classname
                 ) :

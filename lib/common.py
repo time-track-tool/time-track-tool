@@ -1,6 +1,5 @@
 #! /usr/bin/python
-# -*- coding: iso-8859-1 -*-
-# Copyright (C) 2006-16 Dr. Ralf Schlatterbeck Open Source Consulting.
+# Copyright (C) 2006-21 Dr. Ralf Schlatterbeck Open Source Consulting.
 # Reichergasse 131, A-3411 Weidling.
 # Web: http://www.runtux.com Email: office@runtux.com
 # All rights reserved
@@ -34,12 +33,17 @@
 #
 #--
 #
+from __future__ import print_function
 import locale
 import datetime
 import cgi
-from   urllib                 import quote as urlquote
+try :
+    from urllib.parse import quote as urlquote
+except ImportError :
+    from urllib import quote as urlquote
 from   time                   import gmtime
 from   roundup                import roundupdb, hyperdb
+from   roundup.anypy.strings  import _py3, s2u
 from   roundup.exceptions     import Reject
 from   roundup.date           import Date, Interval, Range
 from   roundup.hyperdb        import String, Link, Multilink
@@ -66,12 +70,13 @@ def check_prop_len (_, s, propname = 'name', limit = 25) :
         string_len = len(s)
     if string_len > limit:
         pn = _ (propname)
-        raise Reject, \
-            _ ('%(pn)s "%(s)s" too long (> %(limit)s characters)') % locals ()
+        raise Reject \
+            (_ ('%(pn)s "%(s)s" too long (> %(limit)s characters)') % locals ())
 # end def check_prop_len
 
 def is_matching_result (cl, kw, search_result) :
-    for k, v in kw.iteritems () :
+    for k in kw :
+        v = kw [k]
         if isinstance (cl.properties [k], String) :
             if cl.get (search_result, k) != v :
                 return False
@@ -84,7 +89,8 @@ def check_unique (_, cl, id, ** kw) :
     for s in search :
         if s != id and is_matching_result (cl, kw, s) :
             r = []
-            for k, v in kw.iteritems () :
+            for k in kw :
+                v = kw [k]
                 attr = _ (str (k))
                 val  =    cgi.escape (str (v))
                 r.append ("%(attr)s=%(val)s" % locals ())
@@ -113,9 +119,12 @@ def check_loop (_, cl, id, prop, attr, labelprop = None, ids = None) :
             attr = [attr]
         for a in attr :
             if a in ids :
-                raise Reject, _ ('"%(prop)s" loop: %(labels)s') % dict \
-                    ( prop   = _ (prop)
-                    , labels = ','.join ([cl.get (i, labelprop) for i in ids])
+                raise Reject \
+                    (_ ('"%(prop)s" loop: %(labels)s') % dict
+                        ( prop   = _ (prop)
+                        , labels = ','.join
+                            ([cl.get (i, labelprop) for i in ids])
+                        )
                     )
             check_loop (_, cl, a, prop, cl.get (a, prop), labelprop, ids)
             ids.pop ()
@@ -135,21 +144,21 @@ def interval_set_from_string (interval_string) :
         bounds = i.split ('-')
         if len (bounds) == 1 :
             bounds = (bounds [0], bounds [0])
-        bounds = (long (b) for b in bounds)
+        bounds = (int (b) for b in bounds)
         intervals.append (TFL.Numeric_Interval (* bounds))
     return TFL.Interval_Set (* intervals)
 # end def interval_set_from_string
 
 def next_uid_or_gid (last, interval_string) :
     """
-        >>> next_uid_or_gid (1, '1-2')
-        2L
-        >>> next_uid_or_gid (30000, '30000-39999')
-        30001L
-        >>> next_uid_or_gid (399, '300-399, 7000-7999')
-        7000L
+        >>> print ("%d" % next_uid_or_gid (1, '1-2'))
+        2
+        >>> print ("%d" % next_uid_or_gid (30000, '30000-39999'))
+        30001
+        >>> print ("%d" % next_uid_or_gid (399, '300-399, 7000-7999'))
+        7000
     """
-    last = long (last) or 0L
+    last = int (last) or 0
     iset = interval_set_from_string (interval_string)
     return iset.next_point_up (last + 1)
 # end def next_uid_or_gid
@@ -174,14 +183,14 @@ def uid_or_gid_in_range (id, interval_string) :
 # end def uid_or_gid_in_range
 
 char_table = \
-    { 'ä'.decode ('latin1') : 'ae'
-    , 'ö'.decode ('latin1') : 'oe'
-    , 'ü'.decode ('latin1') : 'ue'
-    , 'ß'.decode ('latin1') : 'ss'
-    , 'Ä'.decode ('latin1') : 'ae'
-    , 'Ö'.decode ('latin1') : 'oe'
-    , 'Ü'.decode ('latin1') : 'ue'
-    , ' '.decode ('latin1') : '.'
+    { b'\xc3\xa4'.decode ('utf-8') : 'ae'
+    , b'\xc3\xb6'.decode ('utf-8') : 'oe'
+    , b'\xc3\xbc'.decode ('utf-8') : 'ue'
+    , b'\xc3\x9f'.decode ('utf-8') : 'ss'
+    , b'\xc3\x84'.decode ('utf-8') : 'ae'
+    , b'\xc3\x96'.decode ('utf-8') : 'oe'
+    , b'\xc3\x9c'.decode ('utf-8') : 'ue'
+    , b' '.decode ('utf-8') : '.'
     }
 for j in 'abcdefghijklmnopqrstuvwxyz' :
     char_table [j]          = j
@@ -189,13 +198,19 @@ for j in 'abcdefghijklmnopqrstuvwxyz' :
 
 def tolower_ascii (name) :
     """ Compute lowercase value from name suitable for email address
+        This gets a string from the roundup API which returns type 'str'
+        for python3 and an utf-8 encoded string for python2.
     >>> tolower_ascii ('Ralf Schlatterbeck')
     'ralf.schlatterbeck'
-    >>> tolower_ascii ('Günther Umläütß'.decode ('latin1').encode ('utf-8'))
+    >>> x = b'G\\xc3\\xbcnther Uml\\xc3\\xa4\\xc3\\xbct\\xc3\\x9f'
+    >>> if _py3 :
+    ...    tolower_ascii (x.decode ('utf-8'))
+    ... else :
+    ...    tolower_ascii (x)
     'guenther.umlaeuetss'
     """
     n = []
-    for i in name.decode ('utf-8') :
+    for i in s2u (name) :
         n.extend (list (char_table.get (i, '')))
     return ''.join (n)
 # end def tolower_ascii
@@ -208,7 +223,7 @@ def uniq (_, cl, id, ** kw) :
     nick = kw.get ('nickname')
     user = kw.get ('username')
     if nick in rej or user in rej :
-        raise Reject, "BLA"
+        raise Reject ("BLA")
 # end def uniq
 
 def new_nickname (_, cl, nodeid, lfn, lln, uniq = check_unique) :
@@ -1002,7 +1017,7 @@ def auto_retire (db, cl, nodeid, new_values, multilink_attr) :
     new = dict.fromkeys (new_values [multilink_attr])
     old = dict.fromkeys (cl.get (nodeid, multilink_attr))
     cls = db.classes [cl.properties [multilink_attr].classname]
-    for o in old.iterkeys () :
+    for o in old :
         if o not in new :
             cls.retire (o)
 # end def auto_retire
@@ -1014,14 +1029,14 @@ def require_attributes (_, cl, nodeid, new_values, * attributes) :
         attr = _ (a)
         if isinstance (cl.properties [a], Multilink) :
             if not nodeid and (a not in new_values or not new_values [a]) :
-                raise Reject, _ (''"%(attr)s must be specified") % locals ()
+                raise Reject (_ (''"%(attr)s must be specified") % locals ())
             elif nodeid and not new_values.get (a, cl.get (nodeid, a)) :
-                raise Reject, _ (''"%(attr)s must not be empty") % locals ()
+                raise Reject (_ (''"%(attr)s must not be empty") % locals ())
         else :
             if not nodeid and (a not in new_values or new_values [a] is None) :
-                raise Reject, _ (''"%(attr)s must be specified") % locals ()
+                raise Reject (_ (''"%(attr)s must be specified") % locals ())
             elif nodeid and new_values.get (a, cl.get (nodeid, a)) is None :
-                raise Reject, _ (''"%(attr)s must not be empty") % locals ()
+                raise Reject (_ (''"%(attr)s must not be empty") % locals ())
 # end def require_attributes
 
 def check_attribute_lines (_, new_values, name, length) :
@@ -1030,15 +1045,15 @@ def check_attribute_lines (_, new_values, name, length) :
         l = len (attr.split ('\n'))
         if l > length :
             atname = _ (name)
-            raise Reject, _ \
-                (''"%(atname)s must not exceed %(length)s lines") % locals ()
+            raise Reject \
+                (_ (''"%(atname)s must not exceed %(length)s lines") % locals ())
 # end def check_attribute_lines
 
 def reject_attributes (_, new_values, * attributes) :
     for a in attributes :
         attr = _ (a)
         if a in new_values :
-            raise Reject, _ (''"%(attr)s must not be specified") % locals ()
+            raise Reject (_ (''"%(attr)s must not be specified") % locals ())
 # end def reject_attributes
 
 def default_status (new_values, status_class, valid = True, status = 'status') :
@@ -1060,18 +1075,18 @@ def changed_values (old_values, cl, id) :
     """
     exc = dict.fromkeys ('creation creator activity actor'.split ())
     changed = []
-    for k in old_values.iterkeys () :
+    for k in old_values :
         if k not in exc and old_values [k] != cl.get (id, k) :
             changed.append (k)
     return changed
 # end def changed_values
 
 def lookalike_computation (db, cl, nodeid, new_values) :
-    for field in cl.properties.iterkeys () :
+    for field in cl.properties :
         if  (    'lookalike_' + field in cl.properties
             and  (  field in new_values
                  or nodeid and 'lookalike_' + field in new_values
-                 ) 
+                 )
             ) :
             nv = new_values.get (field)
             if field not in new_values :
@@ -1136,10 +1151,10 @@ def update_emails (db, uid, verbose = False) :
         d ['alternate_addresses'] = '\n'.join (alt)
     if d :
         if verbose :
-            print "Updating %s %s" \
-                % ( user.username
-                  , ' '.join (': '.join ((k, v)) for k, v in d.iteritems ())
-                  )
+            print \
+                ("Updating %s %s"
+                % ( user.username, ' '.join (': '.join ((k, d [k])) for k in d))
+                )
         db.user.set (user.id, ** d)
 # end def update_emails
 
@@ -1370,7 +1385,7 @@ def check_roles (db, cl, nodeid, new_values, rname = 'roles') :
         if roles :
             roles = role_list (roles)
             for r in roles :
-                if not db.security.role.has_key (r) :
+                if r not in db.security.role :
                     raise Reject ('Role "%s" does not exist' % r)
 # end def check_roles
 

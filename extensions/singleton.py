@@ -1,5 +1,5 @@
 #! /usr/bin/python
-# Copyright (C) 2006 Dr. Ralf Schlatterbeck Open Source Consulting.
+# Copyright (C) 2006-21 Dr. Ralf Schlatterbeck Open Source Consulting.
 # Reichergasse 131, A-3411 Weidling.
 # Web: http://www.runtux.com Email: office@runtux.com
 # All rights reserved
@@ -42,11 +42,11 @@ class Singleton (Action) :
             if ids :
                 id = ids [0]
         if id :
-            raise Redirect, '%s%s' % (request.classname, id)
+            raise Redirect ('%s%s' % (request.classname, id))
         add = ''
         if request.classname == 'dyndns' :
             add = '&local_hostname=localhost'
-        raise Redirect, '%s?@template=item%s' % (request.classname, add)
+        raise Redirect ('%s?@template=item%s' % (request.classname, add))
     # end def handle
 # end class Singleton
 

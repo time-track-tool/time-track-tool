@@ -1,5 +1,5 @@
 #! /usr/bin/python
-# Copyright (C) 2006 Dr. Ralf Schlatterbeck Open Source Consulting.
+# Copyright (C) 2006-21 Dr. Ralf Schlatterbeck Open Source Consulting.
 # Reichergasse 131, A-3411 Weidling.
 # Web: http://www.runtux.com Email: office@runtux.com
 # All rights reserved
@@ -38,12 +38,12 @@ notes_autoreply = \
     , re.compile ( r"R[eE]: Your EMail" )
     ]
 nasty_chars     = re.compile \
-    ('\x00\x01\x02\x03\x04\x05\x06\x07\x08'
-     '\x0b'
-     '\x0e\x0f'
-     '\x10\x11\x12\x13\x14\x15\x16\x17\x18\x19\x1a\x1b\x1c\x1d\x1e\x1f'
-     '\x80\x81\x82\x83\x84\x85\x86\x87\x88\x89\x8a\x8b\x8c\x8d\x8e\x8f'
-     '\x90\x91\x92\x93\x94\x95\x96\x97\x98\x99\x9a\x9b\x9c\x9d\x9e\x9f'
+    (b'\x00\x01\x02\x03\x04\x05\x06\x07\x08'
+     b'\x0b'
+     b'\x0e\x0f'
+     b'\x10\x11\x12\x13\x14\x15\x16\x17\x18\x19\x1a\x1b\x1c\x1d\x1e\x1f'
+     b'\x80\x81\x82\x83\x84\x85\x86\x87\x88\x89\x8a\x8b\x8c\x8d\x8e\x8f'
+     b'\x90\x91\x92\x93\x94\x95\x96\x97\x98\x99\x9a\x9b\x9c\x9d\x9e\x9f'
      .decode ('latin1')
     )
 
@@ -76,33 +76,37 @@ Nasty_msg = \
 def title_create_check (db, cl, nodeid, newvalues) :
     """Checks on title when creating new issue
     """
-    if not newvalues.has_key ("title") : return
+    if "title" not in newvalues :
+        return
     for r in notes_autoreply :
         if r.search (newvalues ["title"]) :
-            raise ValueError, Autoreply_msg
+            raise ValueError (Autoreply_msg)
 
 def title_check (db, cl, nodeid, newvalues) :
     """Checks when creating or changing the title
     """
     title_create_check (db, cl, nodeid, newvalues)
-    if not newvalues.has_key ("title")          : return
+    if "title" not in newvalues :
+        return
     if nasty_chars.search (newvalues ["title"].decode ('utf-8')) :
-        raise ValueError, Nasty_msg % "title"
+        raise ValueError (Nasty_msg % "title")
 
 def msg_check (db, cl, nodeid, newvalues) :
-    if not newvalues.has_key ("messages") : return
+    if "messages" not in newvalues :
+        return
     msgs = {}
     for m in newvalues ["messages"] :
         msgs [m] = 1
     if nodeid :
         for m in cl.get (nodeid, "messages") :
-            if msgs.has_key (m) : del (msgs [m])
+            if m in msgs :
+                del (msgs [m])
     for m in msgs.keys () :
         msg = db.msg.getnode (m)
         if notes_tofu.search (msg.content) :
-            raise ValueError, Tofu_msg
+            raise ValueError (Tofu_msg)
         if nasty_chars.search (msg.content.decode ('utf-8')) :
-            raise ValueError, Nasty_msg % "message"
+            raise ValueError (Nasty_msg % "message")
 
 def init (db) :
     if 'issue' not in db.classes :

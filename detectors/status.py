@@ -1,5 +1,5 @@
 #! /usr/bin/python
-# Copyright (C) 2006-14 Dr. Ralf Schlatterbeck Open Source Consulting.
+# Copyright (C) 2006-21 Dr. Ralf Schlatterbeck Open Source Consulting.
 # Reichergasse 131, A-3411 Weidling.
 # Web: http://www.runtux.com Email: office@runtux.com
 # All rights reserved
@@ -69,25 +69,27 @@ def check_status (db, cl, nodeid, new_values) :
         else :
             targets = o_status.transitions
         if n_status.id not in targets and not container :
-            raise Reject, _ ("Invalid Status transition: %(o_s)s -> %(n_s)s") \
+            raise Reject \
+                ( _ ("Invalid Status transition: %(o_s)s -> %(n_s)s") \
                 % dict (o_s = o_status.name, n_s = n_status.name)
+                )
         need_msg = True
-	if 'relaxed' in status_cl.properties and n_status.relaxed :
-	    need_msg = False
+        if 'relaxed' in status_cl.properties and n_status.relaxed :
+            need_msg = False
         if extended and not container :
             old_resp  = cl.get (nodeid, "responsible")
             new_resp  = new_values.get ("responsible", old_resp)
             target    = targets [n_status.id]
             need_msg  = target.require_msg
             if target.require_resp_change and new_resp == old_resp :
-                raise Reject, _ \
-                    ("Responsible must change for this status change")
+                raise Reject \
+                    (_ ("Responsible must change for this status change"))
         # No msg for container changes
         if container :
             need_msg = False
         if 'messages' in cl.properties :
             if need_msg and not 'messages' in new_values :
-                raise Reject, _ ("State change requires a message")
+                raise Reject (_ ("State change requires a message"))
 # end def check_status
 
 def init (db) :

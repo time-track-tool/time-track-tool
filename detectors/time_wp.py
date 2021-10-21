@@ -1,5 +1,5 @@
 #! /usr/bin/python
-# Copyright (C) 2006-18 Dr. Ralf Schlatterbeck Open Source Consulting.
+# Copyright (C) 2006-21 Dr. Ralf Schlatterbeck Open Source Consulting.
 # Reichergasse 131, A-3411 Weidling.
 # Web: http://www.runtux.com Email: office@runtux.com
 # All rights reserved
@@ -44,7 +44,7 @@ def check_duplicate_field_value (cl, project, field, value) :
     ids     = [i for i in ids if cl.get (i, field) == value]
     if ids :
         assert (len (ids) == 1)
-        raise Reject, _ ('Duplicate %(field)s "%(value)s"') % locals ()
+        raise Reject (_ ('Duplicate %(field)s "%(value)s"') % locals ())
 # end def check_duplicate_field_value
 
 def check_time_wp_len (cl, nodeid, new_values) :
@@ -135,10 +135,10 @@ def new_time_wp (db, cl, nodeid, new_values) :
         and uid != '1'
         and not is_auto_wp
         ) :
-        raise Reject, ("You may only create WPs for your own projects")
+        raise Reject ("You may only create WPs for your own projects")
     act  = db.time_project_status.get (prj.status, 'active')
     if not act and uid != '1' :
-        raise Reject, ("You may only create WPs for active projects")
+        raise Reject ("You may only create WPs for active projects")
     if 'durations_allowed' not in new_values :
         new_values ['durations_allowed'] = False
     check_time_wp_len (cl, nodeid, new_values)
@@ -214,8 +214,7 @@ def wp_check_auto_wp (db, cl, nodeid, new_values) :
     if nodeid :
         if not cl.get (nodeid, 'auto_wp') :
             if 'auto_wp' in new_values :
-                raise Reject \
-                    (_ ("Property %s may not change") % _ ('auto_wp'))
+                raise Reject (_ ("Property %s may not change") % _ ('auto_wp'))
             return
     # These are not allowed to change
     props = \

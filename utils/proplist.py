@@ -149,7 +149,7 @@ for clcnt, cl in enumerate (sorted (db.getclasses ())) :
                 print "    ", p
         if args.search :
             roles = []
-            for role in sorted (db.security.role.iterkeys ()) :
+            for role in sorted (db.security.role) :
                 if db.security.roleHasSearchPermission (cl, p, role) :
                     roles.append (role)
             if args.as_list :

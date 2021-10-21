@@ -1,5 +1,5 @@
 #! /usr/bin/python
-# Copyright (C) 2006-13 Dr. Ralf Schlatterbeck Open Source Consulting.
+# Copyright (C) 2006-21 Dr. Ralf Schlatterbeck Open Source Consulting.
 # Reichergasse 131, A-3411 Weidling.
 # Web: http://www.runtux.com Email: office@runtux.com
 # All rights reserved
@@ -40,7 +40,10 @@
 from time                           import gmtime
 from copy                           import copy
 from operator                       import add
-from urllib                         import quote as urlquote
+try :
+    from urllib.parse import quote as urlquote
+except ImportError :
+    from urllib import quote as urlquote
 
 from rsclib.autosuper               import autosuper
 
@@ -229,7 +232,7 @@ class Daily_Record_Common (Action, autosuper) :
                   , ':error_message' : msg
                   }
                 )
-            raise Redirect, url
+            raise Redirect (url)
         if 'user' in filterspec :
             self.user = filterspec ['user'][0]
         else :
@@ -255,7 +258,7 @@ class Daily_Record_Action (Daily_Record_Common) :
             user      = self.user
             msg       = self._ ("No %(f_supervisor)s for %(user)s") % locals ()
             url       = 'index?:error_message=' + msg 
-            raise Redirect, url
+            raise Redirect (url)
 
         self.create_daily_records ()
         self.request.filterspec = \
@@ -272,7 +275,7 @@ class Daily_Record_Action (Daily_Record_Common) :
               , ':filter'    : ','.join (self.request.filterspec.keys ())
               }
             )
-        raise Redirect, url
+        raise Redirect (url)
     # end def handle
 
 # end class Daily_Record_Action
@@ -289,9 +292,8 @@ class Daily_Record_Edit_Action (EditItemAction, Daily_Record_Common) :
     permissionType = 'Edit'
 
     def _editnodes (self, props, links) :
-        # use props.items here, with iteritems we get a RuntimeError
-        # "dictionary changed size during iteration"
-        for (cl, id), val in props.items () :
+        # use props.items here, dict is modified
+        for (cl, id), val in list (props.items ()) :
             if cl == 'time_record' :
                 if int (id) < 0 and val.keys () == ['daily_record'] :
                     del props [(cl, id)]
@@ -349,7 +351,7 @@ class Weekno_Action (Daily_Record_Edit_Action) :
             , ':ok_message'    : self.ok_msg
             }
         url = self.request.indexargs_url ('', args)
-        raise Redirect, url
+        raise Redirect (url)
     # end def handle
 # end class Weekno_Action
 
@@ -376,7 +378,7 @@ class Daily_Record_Change_State (Daily_Record_Edit_Action) :
             try :
                 if klass.get (itemid, 'status') == self.state_from :
                     klass.set (itemid, status = self.state_to)
-            except Reject, cause :
+            except Reject as cause :
                 msg.append (str (cause).replace ("\n", "<br>"))
         args = \
             { ':action'        : 'search'
@@ -393,7 +395,7 @@ class Daily_Record_Change_State (Daily_Record_Edit_Action) :
             args [':ok_message']    = self.ok_msg
             self.db.commit ()
         url = request.indexargs_url ('', args)
-        raise Redirect, url
+        raise Redirect (url)
     # end def handle
 # end class Daily_Record_Change_State
 
@@ -474,7 +476,7 @@ def approvals_pending (db, request, userlist) :
                     , 'todo'
                     ]
             interval = latest - earliest
-            for k in pending [u].iterkeys () :
+            for k in pending [u] :
                 if interval < Interval ('31d') :
                     filter ['date'] = common.pretty_range (earliest, latest)
                     pending [u][k][0] = request.indexargs_url ('', editdict)
@@ -585,17 +587,17 @@ class Freeze_Action (Action, autosuper) :
         self.request = templating.HTMLRequest (self.client)
         user         = self.request.form ['user'].value
         if not user :
-            raise Reject, self._ (self.user_required_msg)
+            raise Reject (self._ (self.user_required_msg))
         try :
             self.user = self.db.user.lookup (user)
         except KeyError :
-            raise Reject, self._ (self.user_invalid_msg)
+            raise Reject (self._ (self.user_invalid_msg))
         return self.user
     # end def get_user
 
     def handle (self) :
         if not self.request.form ['date'].value :
-            raise Reject, self._ ("Date is required")
+            raise Reject (self._ ("Date is required"))
         self.date  = Date (self.request.form ['date'].value)
         msg = []
         for u in self.users :
@@ -613,7 +615,7 @@ class Freeze_Action (Action, autosuper) :
                 try :
                     self.db.daily_record_freeze.create \
                         (date = date, user = u, frozen = 1)
-                except Reject, cause :
+                except Reject as cause :
                     msg.append ((str (cause), u))
         self.db.commit ()
         if msg :
@@ -649,7 +651,7 @@ class Freeze_Action (Action, autosuper) :
             + '&:sort=user,date&:filter=creation'
             + '&:pagesize=200&:startwith=0&creation=%s%%3B'
             ) % (Date ('.') - Interval ('00:05'))
-        raise Redirect, url
+        raise Redirect (url)
     # end def handle
 # end class Freeze_Action
 
@@ -657,7 +659,7 @@ class Freeze_All_Action (Freeze_Action) :
     def handle (self) :
         self.request = templating.HTMLRequest (self.client)
         if 'user' in self.request.form and self.request.form ['user'].value :
-            raise Reject, self._ ('''Don't specify a user for "Freeze all"''')
+            raise Reject (self._ ('''Don't specify a user for "Freeze all"'''))
         self.users   = self.db.user.getnodeids ()
         return self.__super.handle ()
     # end def handle
@@ -701,7 +703,7 @@ class Split_Dynamic_User_Action (Action) :
         dyn      = self.db.user_dynamic.getnode (id)
         perm     = self.db.security.hasPermission
         if not common.user_has_role (self.db, self.db.getuid (), 'HR') :
-            raise Reject, "Not allowed"
+            raise Reject ("Not allowed")
         fields   = user_dynamic.dynuser_copyfields + ['valid_to']
         param    = dict ((i, dyn [i]) for i in fields)
         if dyn.valid_to :
@@ -722,7 +724,7 @@ class Split_Dynamic_User_Action (Action) :
         param ['valid_from'] = splitdate
         newid                = self.db.user_dynamic.create (** param)
         self.db.commit ()
-        raise Redirect, 'user_dynamic%s' % newid
+        raise Redirect ('user_dynamic%s' % newid)
     # end def handle
 # end class Split_Dynamic_User_Action
 

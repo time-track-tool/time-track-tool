@@ -1,6 +1,5 @@
 #! /usr/bin/python
-# -*- coding: iso-8859-1 -*-
-# Copyright (C) 2006 Dr. Ralf Schlatterbeck Open Source Consulting.
+# Copyright (C) 2006-21 Dr. Ralf Schlatterbeck Open Source Consulting.
 # Reichergasse 131, A-3411 Weidling.
 # Web: http://www.runtux.com Email: office@runtux.com
 # All rights reserved
@@ -246,8 +245,8 @@ def travel_worktime (full_hours, half_hours, daily_hours) :
     
        >>> travel_worktime ( 8,  4, 8)
        (8, 1.0)
-       >>> travel_worktime (12,  6, 8)
-       (8, 0.66666666666666663)
+       >>> print ("%d %.6f" % travel_worktime (12,  6, 8))
+       8 0.666667
        >>> travel_worktime (12,  9, 8)
        (9, 0.5)
        >>> travel_worktime (16,  8, 8)
@@ -866,8 +865,8 @@ def compute_balance (db, user, date, sharp_end = False, not_after = False) :
         for d in overtime_corr (db, user, frm, to) :
             del corr [d]
     # overtime corrections not yet covered:
-    for cs in corr.itervalues () :
-        for c in cs :
+    for k in corr :
+        for c in corr [k] :
             balance += c.value or 0
     if abs (balance)  < 1e-14 :
         balance  = 0.0

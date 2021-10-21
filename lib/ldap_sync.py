@@ -1023,11 +1023,10 @@ class LDAP_Roundup_Sync (Log) :
                 n = '(Dry Run): '
             self.info \
                 ( "%sUpdate Roundup: %s alternate_addresses = %s" \
-                % (n, user.username, ','.join (aa.iterkeys ()))
+                % (n, user.username, ','.join (aa))
                 )
             if self.update_roundup and not self.dry_run_roundup :
-                self.db.user.set \
-                    (uid, alternate_addresses = '\n'.join (aa.iterkeys ()))
+                self.db.user.set (uid, alternate_addresses = '\n'.join (aa))
         return mail
     # end def set_roundup_email_address
 
@@ -1212,8 +1211,8 @@ class LDAP_Roundup_Sync (Log) :
              for i in self.db.uc_type.getnodeids ()
             )
         oldmap = dict \
-            (((ctypes [n.contact_type], n.contact), n)
-             for n in oct.itervalues ()
+            (((ctypes [oct [k].contact_type], oct [k].contact), oct [k])
+             for k in oct
             )
         self.debug (3, 'old contacts: %s' % oldmap.keys ())
         found = {}
@@ -1330,7 +1329,8 @@ class LDAP_Roundup_Sync (Log) :
             order_by_ct [n.contact_type] += 1
             new_contacts.append (n.id)
             del oldmap [k]
-        for n in oldmap.itervalues () :
+        for k in oldmap :
+            n = oldmap [k]
             self.info \
                 ( "%sUpdate Roundup: %s retire contact%s"
                 % (dry, uname, n.id)
@@ -1338,7 +1338,7 @@ class LDAP_Roundup_Sync (Log) :
             if self.update_roundup and not self.dry_run_roundup :
                 self.db.user_contact.retire (n.id)
                 changed = True
-        oct = list (sorted (oct.iterkeys ()))
+        oct = list (sorted (oct))
         new_contacts.sort ()
         if new_contacts != oct :
             udict ['contacts'] = new_contacts

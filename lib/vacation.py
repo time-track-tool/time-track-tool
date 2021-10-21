@@ -1,6 +1,6 @@
 #! /usr/bin/python
 # -*- coding: iso-8859-1 -*-
-# Copyright (C) 2014 Dr. Ralf Schlatterbeck Open Source Consulting.
+# Copyright (C) 2014-21 Dr. Ralf Schlatterbeck Open Source Consulting.
 # Reichergasse 131, A-3411 Weidling.
 # Web: http://www.runtux.com Email: office@runtux.com
 # All rights reserved
@@ -442,7 +442,8 @@ def vacation_time_sum (db, user, ctype, start, end) :
             by_dr [dr.id] = (wh, [])
         assert by_dr [dr.id][0] == wh
         by_dr [dr.id][1].append (tr.duration)
-    for wh, durs in by_dr.itervalues () :
+    for k in by_dr :
+        wh, durs = by_dr [k]
         vac += ceil (sum (durs) / wh * 2) / 2.
     return vac
 # end def vacation_time_sum
@@ -957,16 +958,16 @@ def fix_vacation (db, uid, date_from = None, date_to = None) :
     d ['daily_record.status'] = leave
     trs = db.time_record.filter (None, d)
     for trid in trs :
-	tr = db.time_record.getnode  (trid)
-	dr = db.daily_record.getnode (tr.daily_record)
-	wp = db.time_wp.getnode      (tr.wp)
-	tp = db.time_project.getnode (wp.project)
-	if not tp.is_vacation and not tp.is_public_holiday :
-	    continue
-	du = leave_duration (db, uid, dr.date, tp.is_public_holiday)
-	if tr.duration != du :
-	    #print "Wrong: time_record%s: %s->%s" % (trid, tr.duration, du)
-	    db.time_record.set (trid, duration = du)
+        tr = db.time_record.getnode  (trid)
+        dr = db.daily_record.getnode (tr.daily_record)
+        wp = db.time_wp.getnode      (tr.wp)
+        tp = db.time_project.getnode (wp.project)
+        if not tp.is_vacation and not tp.is_public_holiday :
+            continue
+        du = leave_duration (db, uid, dr.date, tp.is_public_holiday)
+        if tr.duration != du :
+            #print "Wrong: time_record%s: %s->%s" % (trid, tr.duration, du)
+            db.time_record.set (trid, duration = du)
 # end def fix_vacation
 
 ### __END__

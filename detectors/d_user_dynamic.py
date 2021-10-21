@@ -1,5 +1,5 @@
 #! /usr/bin/python
-# Copyright (C) 2006-14 Dr. Ralf Schlatterbeck Open Source Consulting.
+# Copyright (C) 2006-21 Dr. Ralf Schlatterbeck Open Source Consulting.
 # Reichergasse 131, A-3411 Weidling.
 # Web: http://www.runtux.com Email: office@runtux.com
 # All rights reserved
@@ -28,7 +28,10 @@
 #    Detectors for 'user_dynamic'
 #
 
-from itertools                      import izip
+try :
+    from itertools import izip
+except ImportError :
+    izip = zip
 from roundup.exceptions             import Reject
 from roundup.date                   import Date
 from roundup.cgi.TranslationService import get_translation

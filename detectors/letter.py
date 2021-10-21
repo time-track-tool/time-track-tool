@@ -1,4 +1,4 @@
-# Copyright (C) 2004 Ralf Schlatterbeck. All rights reserved
+# Copyright (C) 2004-21 Ralf Schlatterbeck. All rights reserved
 # Reichergasse 131, A-3411 Weidling
 # ****************************************************************************
 #
@@ -26,7 +26,7 @@ _ = lambda x : x
 def new_letter (db, cl, nodeid, new_values) :
     for i in ('address', 'subject') :
         if not i in new_values :
-            raise Reject, _ ('"%(attr)s" must be filled in') % {'attr' : _ (i)}
+            raise Reject (_ ('"%(attr)s" must be filled in') % {'attr' : _ (i)})
     if 'date' not in new_values :
         new_values ['date'] = Date ('.')
 # end def new_letter
@@ -41,11 +41,13 @@ def store_in_address (db, cl, nodeid, old_values) :
 def check_letter (db, cl, nodeid, new_values) :
     for i in ('address', 'invoice') :
         if i in new_values :
-            raise Reject, _ ('"%(attr)s" may not be changed') % {'attr' : _ (i)}
+            raise Reject \
+                (_ ('"%(attr)s" may not be changed') % {'attr' : _ (i)})
     for i in ('subject', 'date') :
         x = new_values.get (i, cl.get (nodeid, i))
         if x is None :
-            raise Reject, _ ('"%(attr)s" may not be deleted') % {'attr' : _ (i)}
+            raise Reject \
+                (_ ('"%(attr)s" may not be deleted') % {'attr' : _ (i)})
     adr  = cl.get (nodeid, 'address')
     ltrs = db.address.get (adr, 'letters')
     if nodeid not in ltrs :

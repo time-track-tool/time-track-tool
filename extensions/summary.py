@@ -1,5 +1,5 @@
 #! /usr/bin/python
-# Copyright (C) 2006-14 Dr. Ralf Schlatterbeck Open Source Consulting.
+# Copyright (C) 2006-21 Dr. Ralf Schlatterbeck Open Source Consulting.
 # Reichergasse 131, A-3411 Weidling.
 # Web: http://www.runtux.com Email: office@runtux.com
 # All rights reserved
@@ -30,13 +30,13 @@
 import csv
 import cgi
 import time
-try :
-    from cStringIO import StringIO
-except ImportError :
-    from StringIO  import StringIO
 
 from math                           import ceil
-from urllib                         import urlencode
+try :
+    from urllib.parse import urlencode
+except ImportError :
+    from urllib import urlencode
+from roundup.anypy.strings          import StringIO
 from roundup.date                   import Date, Interval
 from roundup.cgi                    import templating
 from roundup.cgi.TranslationService import get_translation
@@ -61,7 +61,7 @@ class Extended_Node (autosuper) :
             result = getattr (self.node, name)
             setattr (self, name, result)
             return result
-        raise AttributeError, name
+        raise AttributeError (name)
     # end def __getattr__
 
     def __repr__ (self) :
@@ -157,7 +157,7 @@ class Extended_Time_Record (Extended_Node) :
                     return result
                 except AttributeError :
                     return self.__super.__getattr__ (name)
-        raise AttributeError, name
+        raise AttributeError (name)
     # end def __getattr__
 
     def __cmp__ (self, other) :
@@ -264,13 +264,8 @@ class Time_Container (Container) :
     # end def __delitem__
 
     def __iter__ (self) :
-        return self.dict.iterkeys ()
+        return self.dict
     # end def __iter__
-    iterkeys = __iter__
-
-    def iteritems (self) :
-        return self.dict.iteritems ()
-    # end def iteritems
 
     def __contains__ (self, name) :
         return name in self.dict
@@ -611,8 +606,8 @@ class _Report (autosuper) :
     # end def as_html
 
     def as_csv (self) :
-        io             = StringIO ()
-        d              = ','
+        io = StringIO ()
+        d  = ','
         if 'csv_delimiter' in self.db.user.properties :
             d = self.db.user.get (self.uid, 'csv_delimiter') or d
         self.csvwriter = csv.writer (io, dialect = 'excel', delimiter = d)
@@ -768,8 +763,8 @@ class Summary_Report (_Report) :
         db.log_info ("summary_report: after dr.update: %s"
             % (time.time () - timestamp))
         self.dr_by_user_date = dict \
-            (((str (v.username), v.date.pretty (ymd)), v)
-             for v in dr.itervalues ()
+            (((str (dr [k].username), dr [k].date.pretty (ymd)), dr [k])
+             for k in dr
             )
         db.log_info ("summary_report: after dr_dat_usr: %s"
             % (time.time () - timestamp))
@@ -930,13 +925,14 @@ class Summary_Report (_Report) :
             wp = dict ((w, 1) for w in db.time_wp.getnodeids ())
         db.log_info ("summary_report: wp-default: n_wp: %s (%s)"
             % (len (wp), time.time () - timestamp))
-        work_pkg    = dict ((w, Extended_WP (db, w)) for w in wp.iterkeys ())
+        work_pkg    = dict ((w, Extended_WP (db, w)) for w in wp)
         db.log_info ("summary_report: ext wp (%s)" % (time.time () - timestamp))
         time_recs   = []
         # 276 sec: (4.6 min) (for Decos: ~ 250 sec)
         if dr and wp :
             time_recs = []
-            for d in dr.itervalues () :
+            for k in dr :
+                d = dr [k]
                 for t in d.time_record :
                     if db.time_record.get (t, 'wp') in work_pkg :
                         tr = Extended_Time_Record (db, t, dr, work_pkg)
@@ -956,7 +952,8 @@ class Summary_Report (_Report) :
             # Except for those who have booked in the range
             if not self.show_all_users :
                 users = {}
-                for u, uid in uids_by_name.iteritems () :
+                for u in uids_by_name :
+                    uid = uids_by_name [u]
                     d   = start
                     while d <= end :
                         if user_dynamic.get_user_dynamic (db, uid, d) :
@@ -976,13 +973,13 @@ class Summary_Report (_Report) :
 
         db.log_info ("summary_report: filtered usernames (%s)"
             % (time.time () - timestamp))
-        usernames.sort ()
+        usernames = list (sorted (usernames))
         db.log_info ("summary_report: sorted   usernames (%s)"
             % (time.time () - timestamp))
         
         # append only wps where somebody actually booked on
         wps         = dict ((tr.wp.id, 1) for tr in time_recs)
-        for w in wps.iterkeys () :
+        for w in wps :
             wp_containers.append \
                 ( WP_Container
                     ( db.time_wp, w
@@ -1022,7 +1019,8 @@ class Summary_Report (_Report) :
         time_containers = dict ((t, []) for t in rep_types)
         d = start
         while d <= end :
-            for t, cont in time_containers.iteritems () :
+            for t in time_containers :
+                cont = time_containers [t]
                 if not cont or cont [-1].end <= d :
                     try :
                         cont.append (time_container_classes [t] (d))
@@ -1055,7 +1053,7 @@ class Summary_Report (_Report) :
                     containers_by_dr [dr.id]      = [c]
         db.log_info ("summary_report: inverted containers (%s)"
             % (time.time () - timestamp))
-        tc_pointers = dict ((i, 0) for i in time_containers.iterkeys ())
+        tc_pointers = dict ((i, 0) for i in time_containers)
         db.log_info ("summary_report: after tc_pointers (%s)"
             % (time.time () - timestamp))
 
@@ -1064,7 +1062,9 @@ class Summary_Report (_Report) :
         invalid  = PM_Value (0, 1)
         # wp may not be viewable due to permissions
         valid_wp = \
-            [w for w in work_pkg.itervalues () if w.id in containers_by_wp]
+            [work_pkg [k] for k in work_pkg
+             if work_pkg [k].id in containers_by_wp
+            ]
         while d <= end :
             if show_missing :
                 no_daily_record = \
@@ -1078,7 +1078,7 @@ class Summary_Report (_Report) :
                     ]
                 db.log_info ("summary_report: user dr_len: %s (%s)"
                     % (len (no_daily_record), time.time () - timestamp))
-            for tcp in tc_pointers.iterkeys () :
+            for tcp in tc_pointers :
                 while (d >= time_containers [tcp][tc_pointers [tcp]].sort_end) :
                     tc_pointers [tcp] += 1
                 tc = time_containers [tcp][tc_pointers [tcp]]
@@ -1096,7 +1096,7 @@ class Summary_Report (_Report) :
                     % (time.time () - timestamp))
             while tidx < len (time_recs) and time_recs [tidx].date == d :
                 t  = time_recs [tidx]
-                for tcp in tc_pointers.iterkeys () :
+                for tcp in tc_pointers :
                     tc = time_containers [tcp][tc_pointers [tcp]]
                     for wpc in containers_by_wp.get (t.wp.id, []) :
                         tc. add_sum (wpc, t)
@@ -1267,7 +1267,7 @@ class Summary_Report (_Report) :
             ])
         for wpc in self.wp_containers :
             tc_pointers = dict \
-                ([(i, 0) for i in self.time_containers.iterkeys ()])
+                ([(i, 0) for i in self.time_containers])
             d = start
             containertypes = 'day', 'week', 'month', 'range' # order matters.
             while d <= end :
@@ -1424,10 +1424,10 @@ class Staff_Report (_Report) :
                 else :
                     date = start
                     while date <= end :
-			eop = common.end_of_period \
+                        eop = common.end_of_period \
                             (date, period_objects [period])
-			if eop > end :
-			    eop = end
+                        if eop > end :
+                            eop = end
                         container = time_container_classes [period] (date)
                         values [u].append   (container)
                         self.fill_container (container, u, dyn, date, eop)
@@ -1442,7 +1442,7 @@ class Staff_Report (_Report) :
     def fill_container (self, container, user, dyn, start, end) :
         db      = self.db
         u       = user
-	otp     = user_dynamic.overtime_periods (db, user, start, end)
+        otp     = user_dynamic.overtime_periods (db, user, start, end)
         periods = [p [2] for p in otp]
         ov = db.overtime_correction.filter \
             (None, dict (user = u, date = common.pretty_range (start, end)))
@@ -1464,7 +1464,7 @@ class Staff_Report (_Report) :
             container ['overtime_correction'] = ' + '.join \
                 (str (db.overtime_correction.get (i, 'value')) for i in ov)
         container ['overtime_period']        = \
-	    ', '.join (p.name for p in periods)
+            ', '.join (p.name for p in periods)
         container ['balance_start']          = 0.0
         container ['balance_end']            = 0.0
         container ['supp_per_period']        = ''
@@ -1477,20 +1477,20 @@ class Staff_Report (_Report) :
         container ['supp_weekly_hours']      = 0
         container ['additional_hours']       = 0
         container ['achieved_supplementary'] = ''
-	effective_overtime = []
+        effective_overtime = []
 
-	bal       = user_dynamic.compute_balance (db, u, start - day, True) [0]
-	container ['balance_start'] += bal
-	#db.commit () # immediately commit cached tr_duration if changed
-	bal, asup = user_dynamic.compute_balance (db, u, end,         True)
-	container ['balance_end']   += bal
-	container ['achieved_supplementary'] = asup
-	#db.commit () # immediately commit cached tr_duration if changed
+        bal       = user_dynamic.compute_balance (db, u, start - day, True) [0]
+        container ['balance_start'] += bal
+        #db.commit () # immediately commit cached tr_duration if changed
+        bal, asup = user_dynamic.compute_balance (db, u, end,         True)
+        container ['balance_end']   += bal
+        container ['achieved_supplementary'] = asup
+        #db.commit () # immediately commit cached tr_duration if changed
         for s, e, period in otp :
-	    #print "otp:", period.name, s.pretty (ymd), e.pretty (ymd)
+            #print "otp:", period.name, s.pretty (ymd), e.pretty (ymd)
             if not common.period_is_weekly (period) :
                 self.need_period = True
-		pd  = user_dynamic.Period_Data (db, user, s, e, period, 0.0)
+                pd  = user_dynamic.Period_Data (db, user, s, e, period, 0.0)
                 opp = pd.overtime_per_period
                 if opp is not None :
                     effective_overtime.append ('=> %.2f' % opp)
@@ -1510,8 +1510,8 @@ class Staff_Report (_Report) :
                     and user_dynamic.use_work_hours (db, dur.dyn, period)
                     )
                 do_ovt  = do_ovt or period.required_overtime
-	    if dur.supp_per_period :
-		supp_pp [str (int (dur.supp_per_period))] = True
+            if dur.supp_per_period :
+                supp_pp [str (int (dur.supp_per_period))] = True
             assert (not dur.tr_duration or dur.dr_status)
             container ['actual_all'] += dur.tr_duration
             if dur.dr_status :
@@ -1522,12 +1522,12 @@ class Staff_Report (_Report) :
             if do_ovt :
                 container ['supp_hours_2']  += wh + dur.required_overtime
             container ['supp_weekly_hours'] += dur.supp_weekly_hours * do_week
-	    container ['additional_hours']  += dur.additional_hours  * do_perd
+            container ['additional_hours']  += dur.additional_hours  * do_perd
             d = d + day
-	cont = [' / '.join (supp_pp.iterkeys ())]
-	if len (effective_overtime) == 1 :
-	    cont.append (effective_overtime [0])
-	container ['supp_per_period'] = ' '.join (cont)
+        cont = [' / '.join (supp_pp)]
+        if len (effective_overtime) == 1 :
+            cont.append (effective_overtime [0])
+        container ['supp_per_period'] = ' '.join (cont)
         # db.commit () # commit cached daily_record values
     # end def fill_container
 

@@ -1,5 +1,5 @@
 #! /usr/bin/python
-# Copyright (C) 2006-14 Dr. Ralf Schlatterbeck Open Source Consulting.
+# Copyright (C) 2006-21 Dr. Ralf Schlatterbeck Open Source Consulting.
 # Reichergasse 131, A-3411 Weidling.
 # Web: http://www.runtux.com Email: office@runtux.com
 # All rights reserved
@@ -47,7 +47,7 @@ def loopchecks (db, cl, nodeid, new_values) :
 def forbidden_props (db, cl, nodeid, new_values) :
     for prop in 'superseder', :
         if prop in new_values :
-            raise Reject, _ ('New issue may not define "%s"') % _ (prop)
+            raise Reject (_ ('New issue may not define "%s"') % _ (prop))
 # end def forbidden_props
 
 def update_eff_prio (db, cl, nodeid, new_values) :
@@ -156,13 +156,15 @@ def check_container_status (db, cl, nodeid, new_values) :
     if status not in (open, closed) :
         open_n   = status_cls.get (open,   'name')
         closed_n = status_cls.get (closed, 'name')
-        raise Reject, _ \
-            ("Container status must be %(open_n)s or %(closed_n)s") % locals ()
+        raise Reject \
+            ( _ ("Container status must be %(open_n)s or %(closed_n)s")
+            % locals ()
+            )
     if status != closed :
         return
     for child in composed_of :
         if cl.get (child, 'status') != closed :
-            raise Reject, _ ("Can't close container with non-closed children")
+            raise Reject (_ ("Can't close container with non-closed children"))
 # end def check_container_status
 
 def check_part_of (db, cl, nodeid, new_values) :
@@ -189,7 +191,7 @@ def check_part_of (db, cl, nodeid, new_values) :
         ) :
         return
     if part_of.status != open :
-        raise Reject, _ ("Parent container must be in state open")
+        raise Reject (_ ("Parent container must be in state open"))
 # end def check_part_of
 
 def no_autoclose_container (db, cl, nodeid, new_values) :
@@ -205,7 +207,7 @@ def no_autoclose_container (db, cl, nodeid, new_values) :
     mistaken = db.kind.lookup ('Mistaken')
     if new_values ['kind'] in (mistaken, obsolete) :
         if new_values.get ('composed_of', cl.get (nodeid, 'composed_of')) :
-            raise Reject, _ ("Containers may not be Obsolete/Mistaken")
+            raise Reject (_ ("Containers may not be Obsolete/Mistaken"))
 # end def no_autoclose_container
 
 def set_maturity_index (db, cl, nodeid, new_values, do_update = False) :
@@ -320,9 +322,10 @@ def doc_issue_status (db, cl, nodeid, new_values) :
     if  (n in new_values) :
         di = db.doc_issue_status.getnode (new_values [n])
         if di.need_msg and 'messages' not in new_values :
-            raise Reject, _ \
-                ("Change of %(doc_issue_status)s requires a message") \
+            raise Reject \
+                (_ ("Change of %(doc_issue_status)s requires a message")
                 % {n : _ (n)}
+                )
 # end def doc_issue_status
 
 def new_doc_issue_status (db, cl, nodeid, new_values) :
@@ -355,12 +358,13 @@ def check_ext_user_container (db, cl, nodeid, new_values) :
     u  = new_values.get ('responsible', cl.get (nodeid, 'responsible'))
     if co and common.user_has_role (db, u, 'External') :
         if 'responsible' in new_values :
-            raise Reject, _ \
-                ("External user may not be responsible for container")
+            raise Reject \
+                (_ ("External user may not be responsible for container"))
         else :
-            raise Reject, _ \
-                ("Operation would create a container "
-                 "with an external user as owner"
+            raise Reject \
+                ( _ ("Operation would create a container "
+                     "with an external user as owner"
+                    )
                 )
 # end def check_ext_user_container
 
@@ -370,8 +374,8 @@ def check_ext_user_part_of (db, cl, nodeid, new_values) :
         if  (not db.security.hasPermission
                 ('View', db.getuid (), cl.classname, 'title', container)
             ) :
-            raise Reject, _ \
-                ("Part of can be set to visible container only")
+            raise Reject \
+                (_ ("Part of can be set to visible container only"))
 # end def check_ext_user_part_of
 
 def check_ext_user_responsible (db, cl, nodeid, new_values) :

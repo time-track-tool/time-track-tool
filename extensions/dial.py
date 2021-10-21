@@ -1,5 +1,5 @@
 #! /usr/bin/python
-# Copyright (C) 2013 Dr. Ralf Schlatterbeck Open Source Consulting.
+# Copyright (C) 2013-21 Dr. Ralf Schlatterbeck Open Source Consulting.
 # Reichergasse 131, A-3411 Weidling.
 # Web: http://www.runtux.com Email: office@runtux.com
 # All rights reserved
@@ -26,7 +26,10 @@
 # Purpose
 #    Action(s) for dialling
 
-from urllib                 import urlopen
+try :
+    from urllib.request import urlopen
+except ImportError :
+    from urllib import urlopen
 from roundup.cgi.actions    import Action
 from roundup.cgi            import templating
 from roundup.cgi.exceptions import Redirect
@@ -64,7 +67,7 @@ class Dial (Action) :
             f.close ()
         except EOFError :
             pass
-        raise Redirect, "address%s" % contact.address
+        raise Redirect ("address%s" % contact.address)
     # end def handle
 
 # end class Dial

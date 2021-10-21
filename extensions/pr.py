@@ -1,5 +1,5 @@
 #! /usr/bin/python
-# Copyright (C) 2015 Dr. Ralf Schlatterbeck Open Source Consulting.
+# Copyright (C) 2015-21 Dr. Ralf Schlatterbeck Open Source Consulting.
 # Reichergasse 131, A-3411 Weidling.
 # Web: http://www.runtux.com Email: office@runtux.com
 # All rights reserved
@@ -22,7 +22,10 @@
 import prlib
 import common
 import cgi
-from   urllib                 import urlencode
+try :
+    from urllib.parse import urlencode
+except ImportError :
+    from urllib import urlencode
 from   rsclib.autosuper       import autosuper
 from   roundup.cgi.exceptions import Redirect
 from   roundup.cgi.actions    import EditItemAction, NewItemAction, EditCommon

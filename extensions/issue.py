@@ -1,5 +1,5 @@
 # Copyright (C) 2007 Philipp Gortan <gortan@tttech.com>
-# Copyright (C) 2010-15 Dr. Ralf Schlatterbeck Open Source Consulting
+# Copyright (C) 2010-21 Dr. Ralf Schlatterbeck Open Source Consulting
 # Web: http://www.runtux.com Email: office@runtux.com
 # ****************************************************************************
 # This library is free software; you can redistribute it and/or
@@ -48,9 +48,7 @@ def ext_attr (value) :
             return value ['key'].encode ('utf-8')
         else :
             return ','.join \
-                ('%s: %s' % (k, ext_attr (v))
-                 for k, v in sorted (value.iteritems ())
-                )
+                ('%s: %s' % (k, ext_attr (value [k])) for k in sorted (value))
     elif isinstance (value, list) :
         return ','.join (ext_attr (x) for x in value)
     else :
@@ -60,8 +58,7 @@ def ext_attr (value) :
 def ext_attributes (context) :
     json_attr = str (context.ext_attributes.content.plain (escape=1))
     d = json.loads (json_attr)
-    return dict \
-        ((k.encode ('utf-8'), ext_attr (v)) for k, v in d.iteritems ())
+    return dict ((k.encode ('utf-8'), ext_attr (d [k])) for k in d)
 # end def ext_attributes
 
 class KPM_Filter_Action (EditCommon) :

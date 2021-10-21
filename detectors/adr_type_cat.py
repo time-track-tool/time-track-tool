@@ -1,4 +1,4 @@
-# Copyright (C) 2004 Ralf Schlatterbeck. All rights reserved
+# Copyright (C) 2004-21 Ralf Schlatterbeck. All rights reserved
 # Reichergasse 131, A-3411 Weidling
 # ****************************************************************************
 #
@@ -24,17 +24,19 @@ _ = lambda x : x
 
 def check (db, cl, nodeid, new_values) :
     if 'code' in new_values and cl.get (nodeid, 'code') == 'ABO' :
-        raise Reject, _ \
-            ('address type category "ABO" is used by the system '
-             'and may not be changed.'
+        raise Reject \
+            (_ ('address type category "ABO" is used by the system '
+                'and may not be changed.'
+               )
             )
 # end def check
 
 def retire_check (db, cl, nodeid, new_values) :
     if cl.get (nodeid, 'code') == 'ABO' :
-        raise Reject, _ \
-            ('address type category "ABO" is used by the system '
-             'and may not be changed.'
+        raise Reject \
+            (_ ('address type category "ABO" is used by the system '
+                'and may not be changed.'
+               )
             )
 # end def retire_check
 

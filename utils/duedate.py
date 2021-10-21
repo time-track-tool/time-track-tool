@@ -1,5 +1,5 @@
 #!/usr/bin/python
-# Copyright (C) 2009 Dr. Ralf Schlatterbeck Open Source Consulting.
+# Copyright (C) 2009-21 Dr. Ralf Schlatterbeck Open Source Consulting.
 # Reichergasse 131, A-3411 Weidling.
 # Web: http://www.runtux.com Email: office@runtux.com
 # All rights reserved
@@ -41,7 +41,7 @@ class ReportLine (object) :
         return self.format % self
 
     def __getitem__ (self, name) :
-        subhead = dict ((x,x) for x in self.db.issue.getprops ().iterkeys ())
+        subhead = dict ((x,x) for x in self.db.issue.getprops ())
         if self.node [name] is None :
             return ''
         try :
@@ -71,7 +71,7 @@ class UserReport (object) :
 
     def __str__ (self) :
         s = []
-        subhead = dict ((x,x) for x in self.db.issue.getprops ().iterkeys ())
+        subhead = dict ((x,x) for x in self.db.issue.getprops ())
         for h, lines in \
             zip ( self.headings
                 , (self.report_lines, self.nosy_lines, self.all_lines)
@@ -164,7 +164,8 @@ class Report (object) :
         return self.user_reports [email]
 
     def print_results (self) :
-        for email, report in self.user_reports.iteritems () :
+        for email in self.user_reports :
+            report = self.user_reports [email]
             print "%s:\n" % email, str (report)
 
     def mail_results (self) :

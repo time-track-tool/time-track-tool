@@ -1,6 +1,10 @@
 import sys
 import os
 import urllib
+try :
+    from urllib.request import urlopen
+except ImportError :
+    from urllib import urlopen
 from roundup import instance
 dir     = os.getcwd ()
 tracker = instance.open (dir)
@@ -25,7 +29,7 @@ for u in db.user.list () :
         print "     no nickname:", user.username
         continue
     try :
-        pic = urllib.urlopen(http % user.nickname.lower()).read()
+        pic = urlopen(http % user.nickname.lower()).read()
     except IOError :
         print "          no pic:", user.username
         continue

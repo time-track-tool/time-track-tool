@@ -1,5 +1,5 @@
 #! /usr/bin/python
-# Copyright (C) 2006 Dr. Ralf Schlatterbeck Open Source Consulting.
+# Copyright (C) 2006-21 Dr. Ralf Schlatterbeck Open Source Consulting.
 # Reichergasse 131, A-3411 Weidling.
 # Web: http://www.runtux.com Email: office@runtux.com
 # All rights reserved
@@ -297,9 +297,10 @@ def u_sorted (vals, keys, fun = str) :
 # end def u_sorted
 
 def weekend_allowed (db, daily_record) :
-    user, date = [str (daily_record [i]) for i in 'user', 'date']
+    user = daily_record.user
+    date = daily_record.date
     user = db.user.lookup (user)
-    dyn = user_dynamic.get_user_dynamic (db, user, date)
+    dyn  = user_dynamic.get_user_dynamic (db, user, date)
     return dyn and dyn.weekend_allowed
 # end def weekend_allowed
 
@@ -392,8 +393,8 @@ def until_now () :
 def get_from_form (request, name) :
     try :
         for key in ('@' + name, ':' + name):
-            if request.form.has_key (key):
-                return request.form [key].value.strip()
+            if key in request.form :
+                return request.form [key].value.strip ()
     except TypeError:
         pass
     return ''
@@ -405,12 +406,10 @@ def user_props (db) :
     except AttributeError :
         pass
     props = dict (username = 0, firstname = 2, lastname = 3, address = 6)
-    props = dict \
-        ((k, v) for k, v in props.iteritems () if k in db.user.properties)
+    props = dict ((k, props [k]) for k in props if k in db.user.properties)
     if 'firstname' not in props :
         props ['realname'] = 5
-    return ','.join \
-        (x [0] for x in sorted (props.iteritems (), key = lambda x : x [1]))
+    return ','.join (x for x in sorted (props, key = lambda k : props [k]))
 # end def user_props
 
 def user_classhelp \
@@ -469,7 +468,7 @@ def indexargs_dict (nav, form) :
     d = {}
     if nav :
         d = {':startwith' : nav.first, ':pagesize' : nav.size}
-    if form.has_key (':nosearch') :
+    if ':nosearch' in form :
         d [':nosearch'] = 1
     return d
 # end def indexargs_dict

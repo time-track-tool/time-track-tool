@@ -1,4 +1,4 @@
-# Copyright (C) 2012 Dr. Ralf Schlatterbeck Open Source Consulting.
+# Copyright (C) 2012-21 Dr. Ralf Schlatterbeck Open Source Consulting.
 # Reichergasse 131, A-3411 Weidling.
 # Web: http://www.runtux.com Email: office@runtux.com
 # All rights reserved
@@ -44,7 +44,7 @@ def check_dupe_qsl_type (db, cl, nodeid, new_values) :
     qsl  = db.qsl.filter (None, dict (qso = qso, qsl_type = type))
     qn   = db.qsl_type.get (type, 'name')
     if qsl :
-        raise Reject, _ ('Duplicate QSL type "%s" for QSO' % qn)
+        raise Reject (_ ('Duplicate QSL type "%s" for QSO' % qn))
 # end def check_dupe_qsl_type
 
 def check_owner_has_qsos (db, cl, nodeid, new_values) :
@@ -59,8 +59,8 @@ def check_owner_has_qsos (db, cl, nodeid, new_values) :
         qsos = db.qso.filter (None, dict (owner = call))
         if qsos :
             name = db.ham_call.get (call, 'name')
-            raise Reject, _ ('Cant\'t delete "%(name)s" Call has QSOs') \
-                % locals ()
+            raise Reject \
+                (_ ('Cant\'t delete "%(name)s" Call has QSOs') % locals ())
         else :
             db.ham_call.retire (call)
 # end def check_owner_has_qsos

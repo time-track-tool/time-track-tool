@@ -27,17 +27,17 @@ import logging
 import csv
 import re
 
-import user1_time, user2_time, user3_time, user4_time, user5_time, user6_time
-import user7_time, user8_time, user10_time, user11_time, user12_time
-import user13_time, user14_time, user15_19_vac, user16_leave
-import user17_time, user18_time, user20_time
+from . import user1_time, user2_time, user3_time, user4_time, user5_time
+from . import user6_time, user7_time, user8_time, user10_time, user11_time
+from . import user12_time, user13_time, user14_time, user15_19_vac, user16_leave
+from . import user17_time, user18_time, user20_time
 
 from operator     import mul
-from StringIO     import StringIO
 from email.parser import Parser
 from mailbox      import mbox
 from base64       import b64decode
 
+from roundup.anypy.strings import StringIO
 from roundup.test          import memorydb
 from roundup               import backends
 # Inject memorydb
@@ -59,58 +59,58 @@ def sql (self, s, *args) :
         assert False, "Unfakeable sql encountered"
 memorydb.Database.sql = sql
 
-from propl_abo     import properties as properties_abo
-from propl_adr     import properties as properties_adr
-from propl_erp     import properties as properties_erp
-from propl_full    import properties as properties_full
-from propl_itadr   import properties as properties_itadr
-from propl_it      import properties as properties_it
-from propl_kvats   import properties as properties_kvats
-from propl_lielas  import properties as properties_lielas
-from propl_pr      import properties as properties_pr
-from propl_sfull   import properties as properties_sfull
-from propl_track   import properties as properties_track
-from propl_tt      import properties as properties_time
+from .propl_abo     import properties as properties_abo
+from .propl_adr     import properties as properties_adr
+from .propl_erp     import properties as properties_erp
+from .propl_full    import properties as properties_full
+from .propl_itadr   import properties as properties_itadr
+from .propl_it      import properties as properties_it
+from .propl_kvats   import properties as properties_kvats
+from .propl_lielas  import properties as properties_lielas
+from .propl_pr      import properties as properties_pr
+from .propl_sfull   import properties as properties_sfull
+from .propl_track   import properties as properties_track
+from .propl_tt      import properties as properties_time
 
-from sec_abo       import security as security_abo
-from sec_adr       import security as security_adr
-from sec_erp       import security as security_erp
-from sec_full      import security as security_full
-from sec_itadr     import security as security_itadr
-from sec_it        import security as security_it
-from sec_kvats     import security as security_kvats
-from sec_lielas    import security as security_lielas
-from sec_pr        import security as security_pr
-from sec_sfull     import security as security_sfull
-from sec_track     import security as security_track
-from sec_tt        import security as security_time
+from .sec_abo       import security as security_abo
+from .sec_adr       import security as security_adr
+from .sec_erp       import security as security_erp
+from .sec_full      import security as security_full
+from .sec_itadr     import security as security_itadr
+from .sec_it        import security as security_it
+from .sec_kvats     import security as security_kvats
+from .sec_lielas    import security as security_lielas
+from .sec_pr        import security as security_pr
+from .sec_sfull     import security as security_sfull
+from .sec_track     import security as security_track
+from .sec_tt        import security as security_time
 
-from search_abo    import properties as sec_search_abo
-from search_adr    import properties as sec_search_adr
-from search_erp    import properties as sec_search_erp
-from search_full   import properties as sec_search_full
-from search_itadr  import properties as sec_search_itadr
-from search_it     import properties as sec_search_it
-from search_kvats  import properties as sec_search_kvats
-from search_lielas import properties as sec_search_lielas
-from search_pr     import properties as sec_search_pr
-from search_sfull  import properties as sec_search_sfull
-from search_track  import properties as sec_search_track
-from search_tt     import properties as sec_search_time
+from .search_abo    import properties as sec_search_abo
+from .search_adr    import properties as sec_search_adr
+from .search_erp    import properties as sec_search_erp
+from .search_full   import properties as sec_search_full
+from .search_itadr  import properties as sec_search_itadr
+from .search_it     import properties as sec_search_it
+from .search_kvats  import properties as sec_search_kvats
+from .search_lielas import properties as sec_search_lielas
+from .search_pr     import properties as sec_search_pr
+from .search_sfull  import properties as sec_search_sfull
+from .search_track  import properties as sec_search_track
+from .search_tt     import properties as sec_search_time
 
-from trans_abo     import transprop_perms as transprop_abo
-from trans_adr     import transprop_perms as transprop_adr
-from trans_erp     import transprop_perms as transprop_erp
-from trans_full    import transprop_perms as transprop_full
-from trans_itadr   import transprop_perms as transprop_itadr
-from trans_kvats   import transprop_perms as transprop_kvats
-from trans_lielas  import transprop_perms as transprop_lielas
-from trans_pr      import transprop_perms as transprop_pr
-from trans_sfull   import transprop_perms as transprop_sfull
-from trans_track   import transprop_perms as transprop_track
-from trans_tt      import transprop_perms as transprop_time
+from .trans_abo     import transprop_perms as transprop_abo
+from .trans_adr     import transprop_perms as transprop_adr
+from .trans_erp     import transprop_perms as transprop_erp
+from .trans_full    import transprop_perms as transprop_full
+from .trans_itadr   import transprop_perms as transprop_itadr
+from .trans_kvats   import transprop_perms as transprop_kvats
+from .trans_lielas  import transprop_perms as transprop_lielas
+from .trans_pr      import transprop_perms as transprop_pr
+from .trans_sfull   import transprop_perms as transprop_sfull
+from .trans_track   import transprop_perms as transprop_track
+from .trans_tt      import transprop_perms as transprop_time
 
-from trans_search  import classdict  as trans_classprops
+from .trans_search  import classdict  as trans_classprops
 
 from roundup       import instance, configuration, init, password, date
 from roundup.cgi   import templating
@@ -278,7 +278,7 @@ class _Test_Case (_Test_Base) :
     def test_0_roles (self) :
         self.log.debug ('test_0_roles')
         self.db = self.tracker.open ('admin')
-        roles = list (sorted (self.db.security.role.iterkeys ()))
+        roles = list (sorted (self.db.security.role))
         self.assertEqual (roles, self.roles)
         for r in roles :
             self.assertEqual (r in self.allroles, True)
@@ -344,10 +344,10 @@ class _Test_Case (_Test_Base) :
         l1 = len (secdesc)
         l2 = len (s)
         if l1 < l2 :
-            for k in xrange (l2 - l1) :
+            for k in range (l2 - l1) :
                 secdesc.append ('')
         if l2 < l1 :
-            for k in xrange (l1 - l2) :
+            for k in range (l1 - l2) :
                 s.append ('')
         for s1, s2 in zip (secdesc, s) :
             if s1.startswith ('Role') :
@@ -368,7 +368,8 @@ class _Test_Case (_Test_Base) :
             clprops = []
             for p in sorted (self.db.getclass (cls).properties.keys ()) :
                 users = []
-                for user, uid in sorted (self.users.iteritems ()) :
+                for user in sorted (self.users) :
+                    uid = self.users [user]
                     if self.db.security.hasSearchPermission (uid, cl, p) :
                         users.append (user)
                 clprops.append ((p, users))
@@ -381,7 +382,8 @@ class _Test_Case (_Test_Base) :
         self.db = self.tracker.open ('admin')
         self.create_test_users ()
         perms = []
-        for cl, props in sorted (trans_classprops.iteritems ()) :
+        for cl in sorted (trans_classprops) :
+            props = trans_classprops [cl]
             if cl not in self.db.classes :
                 continue
             klass = self.db.classes [cl]
@@ -390,7 +392,8 @@ class _Test_Case (_Test_Base) :
                 if ps [0] not in klass.getprops () :
                     continue
                 pusers = []
-                for user, uid in sorted (self.users.iteritems ()) :
+                for user in sorted (self.users) :
+                    uid = self.users [user]
                     if self.db.security.hasSearchPermission (uid, cl, p) :
                         pusers.append (user)
                 perms.append (('.'.join ((cl, p)), pusers))
@@ -420,7 +423,7 @@ class _Test_Case (_Test_Base) :
             roles = u.split ('+')
             if u not in nouserroles :
                 roles.append ('user')
-            r_ok = (self.db.security.role.has_key (r) for r in roles)
+            r_ok = (r in self.db.security.role for r in roles)
             # wired and :-)
             if not reduce (mul, r_ok, 1) :
                 continue
@@ -757,7 +760,7 @@ class _Test_Base_Summary :
             , cost_center        = self.cc
             )
         self.wps = []
-        for i in xrange (40) :
+        for i in range (40) :
             wp = self.db.time_wp.create \
                 ( name               = 'Work Package %s' % i
                 , project            = self.normal_tp
@@ -4762,17 +4765,17 @@ class Test_Case_Fulltracker (_Test_Case_Summary, unittest.TestCase) :
             )) :
             self.assertEqual (lines [n + 1][11], v)
         off = 1
-        for n in xrange (11) :
+        for n in range (11) :
             self.assertEqual (lines [n + off][12], "week")
         off += 11
         self.assertEqual (lines [off][12], "week, monthly average required")
         off += 1
-        for n in xrange (10) :
+        for n in range (10) :
             self.assertEqual (lines [n + off][12], "monthly average required")
         off += 10
         self.assertEqual (lines [off][12], "monthly average required, week")
         off += 1
-        for n in xrange (19) :
+        for n in range (19) :
             self.assertEqual (lines [n + off][12], "week")
         off += 19
         self.assertEqual (lines [off][12], "week, monthly average required")
@@ -4786,29 +4789,29 @@ class Test_Case_Fulltracker (_Test_Case_Summary, unittest.TestCase) :
             (lines [off + 7][12], "week, monthly average required, week")
 
         off = 1
-        for n in xrange (11) :
+        for n in range (11) :
             self.assertEqual (lines [off + n][14], "")
         off += 11
         self.assertEqual (lines [off]    [14], "7 => 3.82")
         self.assertEqual (lines [off + 1][14], "7 => 3.82")
         self.assertEqual (lines [off + 2][14], "7")
         off += 3
-        for n in xrange (4) :
+        for n in range (4) :
             self.assertEqual (lines [off + n][14], "7 => 6.67")
         off += 4
         self.assertEqual (lines [off][14], "7")
         off += 1
-        for n in xrange (4) :
+        for n in range (4) :
             self.assertEqual (lines [off + n][14], "7 => 6.09")
         off += 4
-        for n in xrange (19) :
+        for n in range (19) :
             self.assertEqual (lines [off + n][14], "")
         off += 19
         self.assertEqual (lines [off]    [14], "7 => 3.82")
         self.assertEqual (lines [off + 1][14], "7 => 6.67")
         self.assertEqual (lines [off + 2][14], "7 => 6.09")
         off += 3
-        for n in xrange (4) :
+        for n in range (4) :
             self.assertEqual (lines [off + n][14], "")
         off += 4
         self.assertEqual (lines [off]    [14], "7")

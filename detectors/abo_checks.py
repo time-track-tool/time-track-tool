@@ -1,4 +1,4 @@
-# Copyright (C) 2004 Ralf Schlatterbeck. All rights reserved
+# Copyright (C) 2004-21 Ralf Schlatterbeck. All rights reserved
 # Reichergasse 131, A-3411 Weidling
 # ****************************************************************************
 #
@@ -49,24 +49,24 @@ errmsgs = \
 
 def err (msg, ** param) :
     d = {}
-    for k, v in param.iteritems () :
-        d [k] = _ (v)
+    for k in param :
+        d [k] = _ (param [v])
     return _ (errmsgs [msg]) % d
 # end def err
 
 def set_defaults (db, cl, nodeid, new_values) :
     for i in ('aboprice', 'subscriber') :
-        if not new_values.has_key (i) :
-            raise Reject, err ('mandatory', attr = i)
+        if i not in new_values :
+            raise Reject (err ('mandatory', attr = i))
     for i in ('invoices', 'end') :
-        if new_values.has_key (i) :
-            raise Reject, err ('forbidden', attr = i)
-    if not new_values.has_key ('amount') :
+        if i in new_values :
+            raise Reject (err ('forbidden', attr = i))
+    if 'amount' not in new_values :
         new_values ['amount'] = \
             db.abo_price.get (new_values ['aboprice'], 'amount')
     # if no begin-date is specified, use start of next month
     # or today if the start of month is today.
-    if not new_values.has_key ('begin') :
+    if 'begin' not in new_values :
         year, month, day = localtime ()[:3]
         if day != 1 :
             day    = 1
@@ -77,7 +77,7 @@ def set_defaults (db, cl, nodeid, new_values) :
         new_values ['begin'] = Date ('%d-%d-%d' % (year, month, day))
     else :
         new_values ['begin'] = fix_date (new_values ['begin'])
-    if not new_values.has_key ('payer') :
+    if 'payer' not in new_values :
         new_values ['payer'] = new_values ['subscriber']
 # end def set_defaults
 
@@ -110,12 +110,12 @@ def check_change (db, cl, nodeid, new_values) :
     abo = cl.getnode (nodeid)
     for i in ('aboprice', 'begin') :
         if i in new_values :
-            raise Reject, err ('nochange', attr = i)
+            raise Reject (err ('nochange', attr = i))
     if 'amount' in new_values :
         if new_values ['amount'] == 0 and abo ['amount']  > 0 :
-            raise Reject, err ('nonzero',  attr = 'amount')
+            raise Reject (err ('nonzero',  attr = 'amount'))
         if new_values ['amount']  > 0 and abo ['amount'] == 0 :
-            raise Reject, err ('nochange', attr = 'amount')
+            raise Reject (err ('nochange', attr = 'amount'))
     # Changing 'end':
     if  'end' in new_values :
         new_values ['end'] = fix_date (new_values ['end'])
@@ -125,35 +125,37 @@ def check_change (db, cl, nodeid, new_values) :
         invoice = abo_max_invoice (db, abo)
         # Attempt to change error-closed abo (unlinked from address)
         if o_end == abo ['begin'] :
-            raise Reject, err ('openfail')
+            raise Reject (err ('openfail'))
         # Attempt to resurrect a closed abo:
         if  (not n_end and o_end) :
             if invoice :
                 if o_end < now - month2 :
-                    raise Reject, err ('closefree')
+                    raise Reject (err ('closefree'))
         # Attempt to close (or modify close date), check end-date:
         if  (n_end) :
             if n_end < abo ['begin'] :
-                raise Reject, err ('endtime')
+                raise Reject (err ('endtime'))
             if not invoice and (n_end < now - month or n_end > now + month) :
-                raise Reject, err ('month')
+                raise Reject (err ('month'))
             if  (invoice) :
                 if  (  n_end < invoice ['period_start']
                     or n_end > invoice ['period_end']
                     ) :
-                    raise Reject, err \
-                        ( 'period'
-                        , ** dict ([(x, invoice [x].pretty ('%Y-%m-%d'))
-                              for x in ('period_start', 'period_end')
-                             ])
+                    raise Reject \
+                        ( err
+                            ( 'period'
+                            , ** dict ([(x, invoice [x].pretty ('%Y-%m-%d'))
+                                  for x in ('period_start', 'period_end')
+                                 ])
+                            )
                         )
                 if (invoice.get ('invoice_group')) :
-                    raise Reject, err ('marked')
+                    raise Reject (err ('marked'))
             if n_end == abo ['begin'] :
                 if  (  len (abo ['invoices']) > 1
                     or (invoice and not invoice ['open'])
                     ) :
-                    raise Reject, err ('delete')
+                    raise Reject (err ('delete'))
                 # unlink abo from payer/subscriber addresses
                 for lattr, rattr in \
                     (('payer', 'payed_abos'), ('subscriber', 'abos')) :
@@ -172,7 +174,7 @@ def check_change (db, cl, nodeid, new_values) :
 
 def check_amount (db, cl, nodeid, new_values) :
     if 'amount' in new_values and new_values['amount'] < 0 :
-        raise Reject, err ('positive', {'attr' : 'amount'})
+        raise Reject (err ('positive', {'attr' : 'amount'}))
 # end def check_amount
 
 def update_adr_type_in_address (db, cl, nodeid, oldvalues) :

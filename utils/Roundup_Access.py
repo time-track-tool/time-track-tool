@@ -1,6 +1,6 @@
 #! /usr/bin/python
 # -*- coding: iso-8859-1 -*-
-# Copyright (C) 2004 Dr. Ralf Schlatterbeck Open Source Consulting.
+# Copyright (C) 2004-21 Dr. Ralf Schlatterbeck Open Source Consulting.
 # Reichergasse 131, A-3411 Weidling.
 # Web: http://www.runtux.com Email: office@runtux.com
 # All rights reserved
@@ -36,7 +36,7 @@ import ldif
 import ldap
 import textwrap
 
-from cStringIO          import StringIO
+from io                 import StringIO
 from rsclib.autosuper   import autosuper
 from rsclib.IP_Address  import IP4_Address
 from roundup.date       import Date
@@ -112,7 +112,8 @@ class Roundup_Access (object) :
 
         def as_ldap_entry (self) :
             entry  = { 'objectClass' : self.object_class }
-            for ldn, name in self.ldif_map.iteritems () :
+            for ldn in self.ldif_map :
+                name = self.ldif_map [ldn]
                 try :
                     attr = getattr (self, name)
                 except AttributeError, cause :

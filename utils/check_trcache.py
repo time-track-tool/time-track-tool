@@ -44,7 +44,8 @@ class Err_Rec (object) :
               , self.dr.date.pretty ('%Y-%m-%d')
               )
             )
-        for trid, (tr, err, trd) in sorted (self.by_tri.iteritems ()) :
+        for trid in sorted (self.by_tri) :
+            tr, err, trd = self.by_tri [trid]
             s.append (err)
         if abs (self.dr.tr_duration_ok - self.sum) < eps :
             s.append ("        but sum in daily_record OK")
@@ -69,7 +70,8 @@ class Err_Rec (object) :
         ]
 
     def as_csv (self, writer) :
-        for trid, (tr, err, trd) in sorted (self.by_tri.iteritems ()) :
+        for trid in sorted (self.by_tri) :
+            tr, err, trd = self.by_tri [trid]
             d = dict \
                 ( user           = self.username
                 , date           = self.dr.date.pretty ('%Y-%m-%d')
@@ -94,7 +96,7 @@ class Err_Rec (object) :
     def output (cls) :
         old = None
         for rec in sorted \
-            ( cls.by_dri.itervalues ()
+            ( cls.by_dri.values ()
             , key = lambda x : (x.username, x.dr.date)
             ) :
             if old != rec.username :
@@ -107,7 +109,7 @@ class Err_Rec (object) :
     def output_csv (cls) :
         w = cls.csv_writer (sys.stdout)
         for rec in sorted \
-            ( cls.by_dri.itervalues ()
+            ( cls.by_dri.values ()
             , key = lambda x : (x.username, x.dr.date)
             ) :
             rec.as_csv (w)

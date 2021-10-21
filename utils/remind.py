@@ -17,7 +17,7 @@ users     = {}
 clearers  = {}
 for dr in drecs :
     users [db.daily_record.get (dr, 'user')] = 1
-for u in users.iterkeys () :
+for u in users :
     for c in tt_clearance_by (db, u, only_subs = True) :
         clearers [c] = 1
 print clearers

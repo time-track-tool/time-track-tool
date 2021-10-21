@@ -1,5 +1,5 @@
 #! /usr/bin/python
-# Copyright (C) 2004-2010 Dr. Ralf Schlatterbeck Open Source Consulting.
+# Copyright (C) 2004-21 Dr. Ralf Schlatterbeck Open Source Consulting.
 # 
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -22,10 +22,7 @@
 
 import csv
 import re
-try :
-    from cStringIO import StringIO
-except ImportError :
-    from StringIO  import StringIO
+from io import StringIO
 
 from datetime              import datetime
 from roundup.cgi.actions   import Action, SearchAction
@@ -320,29 +317,29 @@ class Export_CSV_Names (Action, autosuper) :
         # end def repr_extprop
 
         if 'contact_type' in self.db.classes :
-		cts = self.db.contact_type.getnodeids (retired = False)
-		cts = dict \
+                cts = self.db.contact_type.getnodeids (retired = False)
+                cts = dict \
                     ((i, self.db.contact_type.get (i, 'name')) for i in cts)
-		class Repr_Contact (Repr_Str) :
-		    def __call__ (self, itemid, col) :
-			type = col.split ('.') [1]
-			ccls = self.klass.db.contact
-			contacts = self.klass.get (itemid, 'contacts') or []
-			cnames = []
-			for c in contacts :
-			    co = ccls.getnode (c)
-			    ct = cts [co.contact_type]
-			    if type == 'Telefon' :
-				if ct != type and ct != 'Mobiltelefon' :
-				    continue
-			    else :
-				if ct != type :
-				    continue
-			    cnames.append (co.contact)
-			x = ', '.join (cnames)
-			return self.conv (x)
-		    # end def __call__
-		# end class Repr_Contact
+                class Repr_Contact (Repr_Str) :
+                    def __call__ (self, itemid, col) :
+                        type = col.split ('.') [1]
+                        ccls = self.klass.db.contact
+                        contacts = self.klass.get (itemid, 'contacts') or []
+                        cnames = []
+                        for c in contacts :
+                            co = ccls.getnode (c)
+                            ct = cts [co.contact_type]
+                            if type == 'Telefon' :
+                                if ct != type and ct != 'Mobiltelefon' :
+                                    continue
+                            else :
+                                if ct != type :
+                                    continue
+                            cnames.append (co.contact)
+                        x = ', '.join (cnames)
+                        return self.conv (x)
+                    # end def __call__
+                # end class Repr_Contact
 
         for col in self.columns :
             self.represent [col] = repr_str
@@ -575,7 +572,8 @@ class Export_CSV_Lielas (Export_CSV_Names, SearchAction) :
             return 'dummy'
 
         sensorspec = {}
-        for k, v in self.filterspec.iteritems () :
+        for k in self.filterspec :
+            v = self.filterspec [k]
             if k.startswith ('sensor.') :
                 sensorspec [k [7:]] = v
             if k == 'sensor' :
