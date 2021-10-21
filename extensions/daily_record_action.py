@@ -504,7 +504,7 @@ def approvals_pending (db, request, userlist) :
 
 def daysum (db, daily_record, format = None) :
     tr  = db.daily_record.get (daily_record, 'time_record')
-    val =  reduce (add, [db.time_record.get (i, 'duration') for i in tr], 0)
+    val = sum (db.time_record.get (i, 'duration') for i in tr)
     if format :
         return format % val
     return val

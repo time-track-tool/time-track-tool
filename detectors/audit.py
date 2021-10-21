@@ -33,15 +33,6 @@ _fixed_in_patterns = \
     , re.compile (r"[bB][rR][aA][nN][cC][hH]")
     ]
 
-def union (* lists) :
-    """Compute the union of lists.
-    """
-    tab = {}
-    for l in lists :
-        map (lambda x, tab = tab : tab.update  ({x : 1}), l)
-    return tab.keys ()
-# end def union
-
 def initial_status_ok (db, status_id, cat_id, is_simple) :
     """ Allow "escalated" when submitting new issue. This is allowed in
         case the analysis was done in advance. The first (submission)
@@ -160,12 +151,13 @@ def limit_new_entry (db, cl, nodeid, newvalues) :
     nosy     = newvalues.get   ("nosy", [])
     cat_nosy = category.nosy
     cat_resp = category.responsible
-    creator  = newvalues.get   ("creator")
-    addnosy  = [creator, responsible]
+    addnosy  = []
+    if responsible :
+        addnosy.append (responsible)
     if cat_resp :
         addnosy.append (cat_resp)
-    nosy     = union (nosy, cat_nosy, addnosy)
-    newvalues ["nosy"] = filter (None, nosy)
+    nosy     = list (set (nosy).union (cat_nosy).union (addnosy))
+    newvalues ["nosy"] = nosy
 
     # It is meaningless to create obsolete or mistaken issues.
     if kind.name in ["Mistaken", "Obsolete"] :
@@ -431,7 +423,7 @@ def part_of_changed (db, cl, nodeid, newvalues) :
                 # remove this issue from old_part_of's composed_of
                 parts = cl.get (old_part_of_id, "composed_of")
                 # remove multiples
-                parts = filter (lambda x: x != nodeid, parts)
+                parts = [x for x in parts if x != nodeid]
                 cl.set (old_part_of_id, composed_of = parts)
                 validate_composed_of (db, cl, old_part_of_id)
             if new_part_of_id :

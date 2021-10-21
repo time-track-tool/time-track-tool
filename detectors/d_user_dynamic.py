@@ -315,14 +315,14 @@ def check_user_dynamic (db, cl, nodeid, new_values) :
         and db.getuid () == '1'
         )
     flexi_fix = \
-        new_values.keys () == ['max_flexitime'] and old_flexmax is None
+        list (new_values.keys ()) == ['max_flexitime'] and old_flexmax is None
     exemption = \
         (   list (new_values.keys ()) == ['exemption']
         and new_values ['exemption'] == False
         and db.getuid () == '1'
         )
     if  (   freeze.frozen (db, user, old_from)
-        and (  new_values.keys () != ['valid_to']
+        and (  list (new_values.keys ()) != ['valid_to']
             or not val_to
             or freeze.frozen (db, user, val_to)
             )

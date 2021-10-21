@@ -423,9 +423,9 @@ class _Test_Case (_Test_Base) :
             roles = u.split ('+')
             if u not in nouserroles :
                 roles.append ('user')
-            r_ok = (r in self.db.security.role for r in roles)
             # wired and :-)
-            if not reduce (mul, r_ok, 1) :
+            r_ok = min (r in self.db.security.role for r in roles)
+            if not r_ok :
                 continue
             params = dict \
                 ( username = u
@@ -2645,14 +2645,14 @@ class Test_Case_Timetracker (_Test_Case_Summary, unittest.TestCase) :
         # base64-encoded body
         self.assertEqual \
             ( b64decode (e.get_payload ()).strip ()
-            , 'Test User2 has submitted a leave request\n'
-              '"Vacation/Vacation".\n'
-              'Comment from user: None\n'
-              'Please approve or decline at\n'
-              'http://localhost:4711/ttt/leave_submission?@template=approve\n'
-              'Many thanks!\n\n'
-              'This is an automatically generated message.\n'
-              'Responses to this address are not possible.'
+            , b'Test User2 has submitted a leave request\n'
+              b'"Vacation/Vacation".\n'
+              b'Comment from user: None\n'
+              b'Please approve or decline at\n'
+              b'http://localhost:4711/ttt/leave_submission?@template=approve\n'
+              b'Many thanks!\n\n'
+              b'This is an automatically generated message.\n'
+              b'Responses to this address are not possible.'
             )
         os.unlink (maildebug)
         for st in (st_accp, st_decl, st_carq, st_canc) :
@@ -2676,14 +2676,14 @@ class Test_Case_Timetracker (_Test_Case_Summary, unittest.TestCase) :
             self.assertEqual (header_decode (e [h]), t)
         self.assertEqual \
             ( b64decode (e.get_payload ()).strip ()
-            , 'Test User2 has submitted a leave request\n'
-              '"Leave/Unpaid".\n'
-              'Comment from user: None\n'
-              'Needs approval by HR.\n'
-              'http://localhost:4711/ttt/leave_submission?@template=approve\n'
-              'Many thanks!\n\n'
-              'This is an automatically generated message.\n'
-              'Responses to this address are not possible.'
+            , b'Test User2 has submitted a leave request\n'
+              b'"Leave/Unpaid".\n'
+              b'Comment from user: None\n'
+              b'Needs approval by HR.\n'
+              b'http://localhost:4711/ttt/leave_submission?@template=approve\n'
+              b'Many thanks!\n\n'
+              b'This is an automatically generated message.\n'
+              b'Responses to this address are not possible.'
             )
         os.unlink (maildebug)
         self.db.leave_submission.set (u2, status = st_subm)
@@ -2698,14 +2698,14 @@ class Test_Case_Timetracker (_Test_Case_Summary, unittest.TestCase) :
             self.assertEqual (header_decode (e [h]), t)
         self.assertEqual \
             ( b64decode (e.get_payload ()).strip ()
-            , 'Test User2 has submitted a leave request\n'
-              '"Leave/Unpaid".\n'
-              'Comment from user: None\n'
-              'Needs approval by HR.\n'
-              'http://localhost:4711/ttt/leave_submission?@template=approve\n'
-              'Many thanks!\n\n'
-              'This is an automatically generated message.\n'
-              'Responses to this address are not possible.'
+            , b'Test User2 has submitted a leave request\n'
+              b'"Leave/Unpaid".\n'
+              b'Comment from user: None\n'
+              b'Needs approval by HR.\n'
+              b'http://localhost:4711/ttt/leave_submission?@template=approve\n'
+              b'Many thanks!\n\n'
+              b'This is an automatically generated message.\n'
+              b'Responses to this address are not possible.'
             )
         os.unlink (maildebug)
         self.db.leave_submission.set (za, status = st_subm)
@@ -2720,14 +2720,14 @@ class Test_Case_Timetracker (_Test_Case_Summary, unittest.TestCase) :
             self.assertEqual (header_decode (e [h]), t)
         self.assertEqual \
             ( b64decode (e.get_payload ()).strip ()
-            , 'Test User2 has submitted a leave request\n'
-              '"Flexi/Flexi".\n'
-              'Comment from user: None\n'
-              'Please approve or decline at\n'
-              'http://localhost:4711/ttt/leave_submission?@template=approve\n'
-              'Many thanks!\n\n'
-              'This is an automatically generated message.\n'
-              'Responses to this address are not possible.'
+            , b'Test User2 has submitted a leave request\n'
+              b'"Flexi/Flexi".\n'
+              b'Comment from user: None\n'
+              b'Please approve or decline at\n'
+              b'http://localhost:4711/ttt/leave_submission?@template=approve\n'
+              b'Many thanks!\n\n'
+              b'This is an automatically generated message.\n'
+              b'Responses to this address are not possible.'
             )
         os.unlink (maildebug)
         self.db.commit ()
@@ -2759,14 +2759,14 @@ class Test_Case_Timetracker (_Test_Case_Summary, unittest.TestCase) :
               )
             ]
         body = \
-            [ 'Your absence request "Flexi/Flexi" has been accepted.\n\n\n'
-              'This is an automatically generated message.\n'
-              'Responses to this address are not possible.'
-            , 'Dear member of the Office Team,\n'
-              'the user Test User2 has approved Flexi/Flexi\n'
-              'from 2009-12-04 to 2009-12-04.\n'
-              'Please add this information to the time table,\n\n'
-              'many thanks!'
+            [ b'Your absence request "Flexi/Flexi" has been accepted.\n\n\n'
+              b'This is an automatically generated message.\n'
+              b'Responses to this address are not possible.'
+            , b'Dear member of the Office Team,\n'
+              b'the user Test User2 has approved Flexi/Flexi\n'
+              b'from 2009-12-04 to 2009-12-04.\n'
+              b'Please add this information to the time table,\n\n'
+              b'many thanks!'
             ]
         for n, e in enumerate (box) :
             for h, t in headers [n] :
@@ -2827,18 +2827,20 @@ class Test_Case_Timetracker (_Test_Case_Summary, unittest.TestCase) :
               )
             ]
         body = \
-            [ 'Your absence request "Vacation/Vacation" has been accepted.\n'
-              'The following existing time records have been deleted:\n\n'
-              '2009-12-22: A Project / Work Package 0 08:00-10:00 duration: 2.0'
-              '\n'
-              '2009-12-22:           /                10:00-11:00 duration: 1.0'
-              '\n\n\nThis is an automatically generated message.\n'
-              'Responses to this address are not possible.'
-            , 'Dear member of the Office Team,\n'
-              'the user Test User2 has approved Vacation/Vacation\n'
-              'from 2009-12-20 to 2010-01-06.\n'
-              'Please add this information to the time table,\n\n'
-              'many thanks!'
+            [ b'Your absence request "Vacation/Vacation" has been accepted.\n'
+              b'The following existing time records have been deleted:\n\n'
+              b'2009-12-22: '
+              b'A Project / Work Package 0 08:00-10:00 duration: 2.0'
+              b'\n'
+              b'2009-12-22:           /                '
+              b'10:00-11:00 duration: 1.0'
+              b'\n\n\nThis is an automatically generated message.\n'
+              b'Responses to this address are not possible.'
+            , b'Dear member of the Office Team,\n'
+              b'the user Test User2 has approved Vacation/Vacation\n'
+              b'from 2009-12-20 to 2010-01-06.\n'
+              b'Please add this information to the time table,\n\n'
+              b'many thanks!'
             ]
         for n, e in enumerate (box) :
             for h, t in headers [n] :
@@ -2879,10 +2881,10 @@ class Test_Case_Timetracker (_Test_Case_Summary, unittest.TestCase) :
             self.assertEqual (header_decode (e [h]), t)
         self.assertEqual \
             ( b64decode (e.get_payload ()).strip ()
-            , 'Your absence request "Leave/Unpaid" has been declined.\n'
-              'Please contact your supervisor.'
-              '\n\nThis is an automatically generated message.\n'
-              'Responses to this address are not possible.'
+            , b'Your absence request "Leave/Unpaid" has been declined.\n'
+              b'Please contact your supervisor.'
+              b'\n\nThis is an automatically generated message.\n'
+              b'Responses to this address are not possible.'
         )
         os.unlink (maildebug)
         self.db.leave_submission.set (u2, status = st_accp)
@@ -2904,14 +2906,14 @@ class Test_Case_Timetracker (_Test_Case_Summary, unittest.TestCase) :
               )
             ]
         body = \
-            [ 'Your absence request "Leave/Unpaid" has been accepted.'
-              '\n\n\nThis is an automatically generated message.\n'
-              'Responses to this address are not possible.'
-            , 'Dear member of the Office Team,\n'
-              'the user Test User2 has approved Leave/Unpaid\n'
-              'from 2009-12-03 to 2009-12-03.\n'
-              'Please add this information to the time table,\n\n'
-              'many thanks!'
+            [ b'Your absence request "Leave/Unpaid" has been accepted.'
+              b'\n\n\nThis is an automatically generated message.\n'
+              b'Responses to this address are not possible.'
+            , b'Dear member of the Office Team,\n'
+              b'the user Test User2 has approved Leave/Unpaid\n'
+              b'from 2009-12-03 to 2009-12-03.\n'
+              b'Please add this information to the time table,\n\n'
+              b'many thanks!'
             ]
         for n, e in enumerate (box) :
             for h, t in headers [n] :
@@ -2959,14 +2961,14 @@ class Test_Case_Timetracker (_Test_Case_Summary, unittest.TestCase) :
             self.assertEqual (header_decode (e [h]), t)
         self.assertEqual \
             ( b64decode (e.get_payload ()).strip ()
-            , 'Test User2 has submitted a cancel request\n'
-              '"Vacation/Vacation" from 2009-12-20 to 2010-01-06.\n'
-              'Comment from user: Cancel Comment\n'
-              'Please approve or decline at\n'
-              'http://localhost:4711/ttt/leave_submission?@template=approve'
-              '\nMany thanks!'
-              '\n\nThis is an automatically generated message.\n'
-              'Responses to this address are not possible.'
+            , b'Test User2 has submitted a cancel request\n'
+              b'"Vacation/Vacation" from 2009-12-20 to 2010-01-06.\n'
+              b'Comment from user: Cancel Comment\n'
+              b'Please approve or decline at\n'
+              b'http://localhost:4711/ttt/leave_submission?@template=approve'
+              b'\nMany thanks!'
+              b'\n\nThis is an automatically generated message.\n'
+              b'Responses to this address are not possible.'
             )
         os.unlink (maildebug)
         self.db.commit ()
@@ -2998,10 +3000,10 @@ class Test_Case_Timetracker (_Test_Case_Summary, unittest.TestCase) :
             self.assertEqual (header_decode (e [h]), t)
         self.assertEqual \
             ( b64decode (e.get_payload ()).strip ()
-            , 'Your cancel request "Vacation/Vacation" was not granted.\n'
-              'Please contact your supervisor.\n\n'
-              'This is an automatically generated message.\n'
-              'Responses to this address are not possible.'
+            , b'Your cancel request "Vacation/Vacation" was not granted.\n'
+              b'Please contact your supervisor.\n\n'
+              b'This is an automatically generated message.\n'
+              b'Responses to this address are not possible.'
             )
         os.unlink (maildebug)
         self.db.commit ()
@@ -3031,16 +3033,16 @@ class Test_Case_Timetracker (_Test_Case_Summary, unittest.TestCase) :
               )
             ]
         body = \
-            [ 'Your cancel request "Vacation/Vacation"\n'
-              'from 2009-12-20 to 2010-01-06 was granted.'
-              '\n\nThis is an automatically generated message.\n'
-              'Responses to this address are not possible.'
-            , 'Dear member of the Office Team,\n'
-              'the user Test User2 has cancelled Vacation/Vacation\n'
-              'from 2009-12-20 to 2010-01-06\n'
-              'due to Cancel Comment.\n'
-              'Please remove this information from the time table,\n\n'
-              'many thanks!'
+            [ b'Your cancel request "Vacation/Vacation"\n'
+              b'from 2009-12-20 to 2010-01-06 was granted.'
+              b'\n\nThis is an automatically generated message.\n'
+              b'Responses to this address are not possible.'
+            , b'Dear member of the Office Team,\n'
+              b'the user Test User2 has cancelled Vacation/Vacation\n'
+              b'from 2009-12-20 to 2010-01-06\n'
+              b'due to Cancel Comment.\n'
+              b'Please remove this information from the time table,\n\n'
+              b'many thanks!'
             ]
         for n, e in enumerate (box) :
             for h, t in headers [n] :
@@ -3102,13 +3104,14 @@ class Test_Case_Timetracker (_Test_Case_Summary, unittest.TestCase) :
             self.assertEqual (header_decode (e [h]), t)
         self.assertEqual \
             ( b64decode (e.get_payload ()).strip ()
-            , 'Test User2 has submitted a leave request\n"Vacation/Vacation".\n'
-              'Comment from user: None\n'
-              'Please approve or decline at\n'
-              'http://localhost:4711/ttt/leave_submission?@template=approve'
-              '\nMany thanks!'
-              '\n\nThis is an automatically generated message.\n'
-              'Responses to this address are not possible.'
+            , b'Test User2 has submitted a leave request\n'
+              b'"Vacation/Vacation".\n'
+              b'Comment from user: None\n'
+              b'Please approve or decline at\n'
+              b'http://localhost:4711/ttt/leave_submission?@template=approve'
+              b'\nMany thanks!'
+              b'\n\nThis is an automatically generated message.\n'
+              b'Responses to this address are not possible.'
             )
         os.unlink (maildebug)
         self.db.commit ()
@@ -3168,23 +3171,23 @@ class Test_Case_Timetracker (_Test_Case_Summary, unittest.TestCase) :
               )
             ]
         body = \
-            [ 'Test User2 has submitted a leave request\n'
-              '"Special Leave/Special".\n'
-              'Comment from user: Special leave comment\n'
-              'Please approve or decline at\n'
-              'http://localhost:4711/ttt/leave_submission?@template=approve'
-              '\nMany thanks!'
-              '\n\nThis is an automatically generated message.\n'
-              'Responses to this address are not possible.'
-            , "Dear Test User2,\n"
-              "please don't forget to submit written documentation "
-              "for your special leave\n"
-              "Special Leave/Special from 2010-12-22 to 2010-12-30 to HR,\n"
-              "according to our processes.\n"
-              "Eg. marriage certificate, new residence registration "
-              "(Meldezettel),\n"
-              "birth certificate for new child, death notice letter "
-              "(Parte).\n\nMany thanks!"
+            [ b'Test User2 has submitted a leave request\n'
+              b'"Special Leave/Special".\n'
+              b'Comment from user: Special leave comment\n'
+              b'Please approve or decline at\n'
+              b'http://localhost:4711/ttt/leave_submission?@template=approve'
+              b'\nMany thanks!'
+              b'\n\nThis is an automatically generated message.\n'
+              b'Responses to this address are not possible.'
+            , b"Dear Test User2,\n"
+              b"please don't forget to submit written documentation "
+              b"for your special leave\n"
+              b"Special Leave/Special from 2010-12-22 to 2010-12-30 to HR,\n"
+              b"according to our processes.\n"
+              b"Eg. marriage certificate, new residence registration "
+              b"(Meldezettel),\n"
+              b"birth certificate for new child, death notice letter "
+              b"(Parte).\n\nMany thanks!"
             ]
         for n, e in enumerate (box) :
             for h, t in headers [n] :
@@ -3220,20 +3223,20 @@ class Test_Case_Timetracker (_Test_Case_Summary, unittest.TestCase) :
               )
             ]
         body = \
-            [ 'Your absence request "Special Leave/Special" has been accepted.'
-              '\n\n\nThis is an automatically generated message.\n'
-              'Responses to this address are not possible.'
-            , 'Dear member of the Office Team,\n'
-              'the user Test User2 has approved Special Leave/Special\n'
-              'from 2010-12-22 to 2010-12-30.\n'
-              'Please add this information to the time table,\n\n'
-              'many thanks!'
-            , 'Dear member of HR Admin,\n'
-              'the user Test User2 has approved Special Leave/Special\n'
-              'from 2010-12-22 to 2010-12-30.\n'
-              'Comment: Special leave comment\n'
-              'Please put it into the paid absence data sheet\n'
-              'many thanks!'
+            [ b'Your absence request "Special Leave/Special" has been accepted.'
+              b'\n\n\nThis is an automatically generated message.\n'
+              b'Responses to this address are not possible.'
+            , b'Dear member of the Office Team,\n'
+              b'the user Test User2 has approved Special Leave/Special\n'
+              b'from 2010-12-22 to 2010-12-30.\n'
+              b'Please add this information to the time table,\n\n'
+              b'many thanks!'
+            , b'Dear member of HR Admin,\n'
+              b'the user Test User2 has approved Special Leave/Special\n'
+              b'from 2010-12-22 to 2010-12-30.\n'
+              b'Comment: Special leave comment\n'
+              b'Please put it into the paid absence data sheet\n'
+              b'many thanks!'
             ]
         for n, e in enumerate (box) :
             for h, t in headers [n] :
@@ -4743,12 +4746,12 @@ class Test_Case_Fulltracker (_Test_Case_Summary, unittest.TestCase) :
         for n, v in enumerate \
             ((   "0.00",  "38.50",  "38.50",  "38.50",  "38.50",  "38.50"
             ,   "38.50",  "38.50",  "38.50",  "38.50",  "38.50",  "23.10"
-            ,    "0",      "0",      "0",      "0",      "0",      "0"
-            ,    "0",      "0",      "0",      "0",      "8.20",  "41.00"
+            ,    "0.00",   "0.00",   "0.00",   "0.00",   "0.00",   "0.00"
+            ,    "0.00",   "0.00",   "0.00",   "0.00",   "8.20",  "41.00"
             ,   "41.00",  "41.00",  "41.00",  "41.00",  "41.00",  "41.00"
             ,   "41.00",  "41.00",  "41.00",  "41.00",  "41.00",  "41.00"
             ,   "41.00",  "41.00",  "41.00",  "41.00", "169.40", "161.70"
-            ,   "77.00",   "0",      "0",    "172.20", "180.40", "188.60"
+            ,   "77.00",   "0.00",   "0.00", "172.20", "180.40", "188.60"
             , "164.00", "1113.30"
             )) :
             self.assertEqual (lines [n + 1][9], v)
@@ -5046,8 +5049,8 @@ class Test_Case_Fulltracker (_Test_Case_Summary, unittest.TestCase) :
         self.assertEqual (lines [13] [7], '0.00')
         self.assertEqual (lines  [1] [8], '0')
         self.assertEqual (lines [13] [8], '0')
-        self.assertEqual (lines  [1] [9], '0')
-        self.assertEqual (lines [13] [9], '0')
+        self.assertEqual (lines  [1] [9], '0.00')
+        self.assertEqual (lines [13] [9], '0.00')
         self.assertEqual (lines  [1] [2], '76.38')
         self.assertEqual (lines [13] [2], '76.38')
         self.assertEqual (lines [13][11], '0.00')

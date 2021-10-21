@@ -273,7 +273,7 @@ def update_maturity_index (db, cl, nodeid, old_values, is_new = False) :
     if  (   is_new
         or  part_of != opart_of
         or  'maturity_index' in old_values
-        and old_values ['maturity_index'] != mi
+            and old_values ['maturity_index'] != mi
         ) :
         parts = dict.fromkeys ((part_of, opart_of)).keys ()
         for p in parts :

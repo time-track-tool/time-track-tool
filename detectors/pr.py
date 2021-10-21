@@ -804,7 +804,7 @@ def change_pr_approval (db, cl, nodeid, new_values) :
             new_values ['date'] = Date ('.')
             approvals = cl.filter (None, dict (purchase_request = pr.id))
             assert nodeid in approvals
-    elif new_values.keys () == ['role_id'] :
+    elif list (new_values.keys ()) == ['role_id'] :
         n = db.pr_approval_order.get (new_values ['role_id'], 'role')
         if cl.get (nodeid, 'role') != n :
             raise Reject ("Inconsistent role_id")
@@ -1298,7 +1298,7 @@ def check_psr (db, cl, nodeid, new_values) :
 # end def check_psr
 
 def check_no_change (db, cl, nodeid, new_values) :
-    if new_values and new_values.keys () != ['name'] :
+    if new_values and list (new_values.keys ()) != ['name'] :
         classname = cl.classname
         raise Reject (_ ("%(classname)s may not be changed" % locals ()))
 # end def check_no_change

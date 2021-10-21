@@ -21,6 +21,7 @@
 # ****************************************************************************
 
 import re
+from roundup.anypy.strings import s2u
 
 notes_tofu = re.compile \
     (  "\n{3}"
@@ -105,7 +106,7 @@ def msg_check (db, cl, nodeid, newvalues) :
         msg = db.msg.getnode (m)
         if notes_tofu.search (msg.content) :
             raise ValueError (Tofu_msg)
-        if nasty_chars.search (msg.content.decode ('utf-8')) :
+        if nasty_chars.search (s2u (msg.content)) :
             raise ValueError (Nasty_msg % "message")
 
 def init (db) :

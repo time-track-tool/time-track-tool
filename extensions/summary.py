@@ -27,6 +27,7 @@
 #    Time-tracking summary reports, vacation report
 #
 
+from __future__ import division
 import csv
 import cgi
 import time
@@ -91,6 +92,14 @@ class Extended_Daily_Record (Extended_Node) :
         return \
             cmp (self.date, other.date) or cmp (self.username, other.username)
     # end def __cmp__
+
+    def __lt__ (self, other) :
+        return \
+            (  self.date < other.date
+            or self.date == other.date and self.username < other.username
+            )
+    # end def __lt__
+
 # end class Extended_Daily_Record
 
 class Extended_WP (Extended_Node) :
@@ -129,6 +138,14 @@ class Extended_WP (Extended_Node) :
             or cmp (self.name,         other.name)
             )
     # end def __cmp__
+
+    def __lt__ (self, other) :
+        return \
+            (  self.project_name < other.project_name
+            or self.project_name == other.project_name
+               and self.name < other.name
+            )
+    # end def __lt__
 # end class Extended_WP
 
 class Extended_Time_Record (Extended_Node) :
@@ -163,6 +180,10 @@ class Extended_Time_Record (Extended_Node) :
     def __cmp__ (self, other) :
         return (cmp (self.dr, other.dr) or cmp (self.wp, other.wp))
     # end def __cmp__
+
+    def __lt__ (self, other) :
+        return self.dr < other.dr or self.dr == other.dr and self.wp < other.wp
+    # end def __lt__
 # end class Extended_Time_Record
 
 class Container (autosuper) :
@@ -347,6 +368,17 @@ class Comparable_Container (Container, dict) :
             or cmp (self.name, other.name)
             )
     # end def __cmp__
+
+    def __lt__ (self, other) :
+        return \
+            (  self.sortkey < other.sortkey
+            or self.sortkey == other.sortkey
+               and _ (self.classname) < _ (other.classname)
+            or self.sortkey == other.sortkey
+               and _ (self.classname) == _ (other.classname)
+               and self.name < other.name
+            )
+    # end def __lt__
 
 # end class Comparable_Container
 
@@ -670,7 +702,7 @@ class Summary_Report (_Report) :
         assert (request.classname == 'summary_report')
         wp_containers   = []
         if not columns :
-            columns     = db.summary_report.getprops ().keys ()
+            columns     = list (db.summary_report.getprops ().keys ())
         self.columns    = dict ((c, True) for c in columns)
         status          = filterspec.get \
             ('status', db.daily_record_status.getnodeids ())
@@ -697,7 +729,7 @@ class Summary_Report (_Report) :
         svu         = []
         if sv :
             svu = db.user.find (supervisor = sv)
-        users         = dict ((u, 1) for u in users + svu).keys ()
+        users         = list (set (users).union (svu))
         olo_or_dept   = False
         drecs         = {}
         org_dep_usr   = {}
@@ -946,7 +978,7 @@ class Summary_Report (_Report) :
         db.log_info ("summary_report: srt time_recs: %s (%s)"
             % (len (time_recs), time.time () - timestamp))
         if self.show_empty :
-            usrs         = users + org_dep_usr.keys ()
+            usrs         = users + list (org_dep_usr.keys ())
             uids_by_name = dict ((db.user.get (u, 'username'), u) for u in usrs)
             # filter out users without a dyn user record in our date range
             # Except for those who have booked in the range
@@ -964,9 +996,9 @@ class Summary_Report (_Report) :
                     u = tr.username
                     users [u] = uids_by_name [u]
                 uids_by_name = users
-            usernames    = uids_by_name.keys ()
+            usernames    = list (uids_by_name.keys ())
         else :
-            usernames    = dict ((tr.username, 1) for tr in time_recs).keys ()
+            usernames    = list (set (tr.username for tr in time_recs))
             uids_by_name = dict ((u, db.user.lookup (u)) for u in usernames)
         db.log_info ("summary_report:          usernames (%s)"
             % (time.time () - timestamp))
@@ -1263,7 +1295,7 @@ class Summary_Report (_Report) :
         start = self.start + Interval ('1d')
         end   = max \
             ([self.time_containers [i][-1].sort_end
-              for i in self.time_containers.keys ()
+              for i in self.time_containers
             ])
         for wpc in self.wp_containers :
             tc_pointers = dict \
@@ -1385,7 +1417,7 @@ class Staff_Report (_Report) :
         all_in = filterspec.get ('all_in')
         if all_in is not None :
             all_in = all_in == 'yes'
-        for u in users.keys () :
+        for u in list (users.keys ()) :
             dyn = user_dynamic.get_user_dynamic (db, u, end)
             if not dyn :
                 dyn = user_dynamic.last_user_dynamic (db, u, end)
@@ -1403,7 +1435,7 @@ class Staff_Report (_Report) :
                 ) :
                 del users [u]
         self.users = sorted \
-            ( users.keys ()
+            ( list (users.keys ())
             , key = lambda x : db.user.get (x, 'username')
             )
         db.log_info  ("staff_report: users: %s" % (time.time () - timestamp))
@@ -1474,7 +1506,7 @@ class Staff_Report (_Report) :
         container ['actual_accepted']        = 0
         container ['required']               = 0.0
         container ['supp_hours_2']           = 0
-        container ['supp_weekly_hours']      = 0
+        container ['supp_weekly_hours']      = 0.0
         container ['additional_hours']       = 0
         container ['achieved_supplementary'] = ''
         effective_overtime = []
@@ -1649,7 +1681,7 @@ class Vacation_Report (_Report) :
             if k not in request.columns :
                 del fields [k]
         self.fields  = sorted \
-            (fields.keys (), key = lambda x : fields [x])
+            (list (fields.keys ()), key = lambda x : fields [x])
 
         if d :
             try :
@@ -1677,7 +1709,7 @@ class Vacation_Report (_Report) :
         max_user_date    = {}
         user_vc          = {}
         self.user_ctypes = {}
-        for u in users.keys () :
+        for u in list (users.keys ()) :
             srt = [('+', 'date')]
             vcs = db.vacation_correction.filter \
                 (None, dict (user = u, absolute = True), sort = srt)
@@ -1719,7 +1751,7 @@ class Vacation_Report (_Report) :
                     self.user_ctypes [u] = []
                 self.user_ctypes [u].append (ctype)
         self.users = sorted \
-            ( users.keys ()
+            ( list (users.keys ())
             , key = lambda x : db.user.get (x, 'username')
             )
         db.log_info ("vacation_report: users: %s" % (time.time () - timestamp))
@@ -1756,7 +1788,7 @@ class Vacation_Report (_Report) :
                             (db, u, min_user_date [(u, ctype)], vc, hv)
                     rcarry = carry
                     if not hv :
-                        rcarry = ceil (carry)
+                        rcarry = float (ceil (carry))
                     if (u, ctype) in max_user_date :
                         if max_user_date [(u, ctype)] <= ld :
                             break
@@ -1796,16 +1828,17 @@ class Vacation_Report (_Report) :
                     container ['carry forward'] = rcarry
                     cons = vacation.consolidated_vacation \
                         (db, u, ctype, d, to_eoy = not hv)
-                    et = cons - ltot + carry
-                    yp = cons - ltot
+                    et = float (cons - ltot + carry)
+                    yp = float (cons - ltot)
                     # new carry and remaining vacation
                     carry = rv = vacation.remaining_vacation \
                         (db, u, ctype, d, cons, to_eoy = not hv)
                     if not hv :
-                        et = ceil (et)
-                        yp = ceil (yp)
-                        rc = ceil (cons)
-                        rv = ceil (carry)
+                        # ceil in Py3 will return an int if possible ugh
+                        et = float (ceil (et))
+                        yp = float (ceil (yp))
+                        rc = float (ceil (cons))
+                        rv = float (ceil (carry))
                     container ['entitlement total']  = et
                     container ['yearly prorated']    = yp
                     container ['remaining vacation'] = rv

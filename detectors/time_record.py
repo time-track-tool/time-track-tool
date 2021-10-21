@@ -217,7 +217,7 @@ def time_records_consistent (db, cl, nodeid) :
             % locals ()
             )
     if dynamic.daily_worktime :
-        work = reduce (add, [t.duration for t in trec_notravel], 0)
+        work = sum (t.duration for t in trec_notravel)
         if work > dynamic.daily_worktime :
             dwt = dynamic.daily_worktime
             msgs.append \
@@ -270,7 +270,9 @@ def check_daily_record (db, cl, nodeid, new_values) :
             raise Reject (_ ("%(attr)s must be set") % {'attr' : _ (i)})
     user       = cl.get (nodeid, 'user')
     date       = cl.get (nodeid, 'date')
-    if frozen (db, user, date) and new_values.keys () != ['tr_duration_ok'] :
+    if  (  frozen (db, user, date)
+        and list (new_values.keys ()) != ['tr_duration_ok']
+        ) :
         uname = db.user.get (user, 'username')
         raise Reject (_ ("Frozen: %(uname)s, %(date)s") % locals ())
     uid        = db.getuid ()
@@ -681,7 +683,7 @@ def check_time_record (db, cl, nodeid, new_values) :
         tp = db.time_project.getnode (wp.project)
         is_ph = tp.is_public_holiday
     if  (   frozen (db, user, date)
-        and new_values.keys () != ['tr_duration']
+        and list (new_values.keys ()) != ['tr_duration']
         ) :
         uname = db.user.get (user, 'username')
         raise Reject (_ ("Frozen: %(uname)s, %(date)s") % locals ())
@@ -690,14 +692,14 @@ def check_time_record (db, cl, nodeid, new_values) :
     allow    = False
     if dr.status == leave :
         du = vacation.leave_duration (db, user, date, is_ph)
-        if  (   new_values.keys () == ['duration']
+        if  (   list (new_values.keys ()) == ['duration']
             and new_values ['duration'] == du
             and cl.get (nodeid, 'duration') != du
             ) :
             allow = True
     allow    = allow or db.getuid () == '1'
     if  (   status != db.daily_record_status.lookup ('open')
-        and new_values.keys () != ['tr_duration']
+        and list (new_values.keys ()) != ['tr_duration']
         and not allow
         ) :
         raise Reject (_ ('Editing of time records only for status "open"'))
@@ -780,8 +782,8 @@ def check_time_record (db, cl, nodeid, new_values) :
                   ]
             trs.sort ()
             trs = [tr [2] for tr in trs]
-            sum = reduce (add, [t.duration for t in trs], 0)
-            if sum < dist :
+            s   = sum (t.duration for t in trs)
+            if s < dist :
                 raise Reject \
                     (_ ("dist must not exceed sum of unassigned times in week"))
             for tr in trs :

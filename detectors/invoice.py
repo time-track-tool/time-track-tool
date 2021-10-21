@@ -116,7 +116,7 @@ def check_invoice (db, cl, nodeid, new_values) :
             new_values ['open'] = True
     inv_no  = cl.get (nodeid, 'invoice_no')
     abo     = db.abo.getnode (cl.get (nodeid, 'abo'))
-    if abo ['end'] and new_values.keys () != ['invoice_group'] :
+    if abo ['end'] and list (new_values.keys ()) != ['invoice_group'] :
         raise Reject (_ ('no change of closed subscription'))
     common.auto_retire (db, cl, nodeid, new_values, 'payment')
 # end def check_invoice

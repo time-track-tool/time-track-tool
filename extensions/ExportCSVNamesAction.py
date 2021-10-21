@@ -40,8 +40,7 @@ from request_util          import True_Value
 locale = None
 
 def charsetconv (x) :
-    # FIXME: This should be utf-8 at some point
-    return str (x).decode ('utf-8').encode ('latin1', 'replace')
+    return x
 # end def charsetconv
 
 class Repr_Str (autosuper) :

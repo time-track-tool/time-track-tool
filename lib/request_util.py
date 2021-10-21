@@ -34,9 +34,10 @@ class True_Value (type ("")) :
         We use this as return value from a handle routine where the
         output happend to the file descriptor
     """
-    def __nonzero__ (self) :
+    def __bool__ (self) :
         return True
-    # end def __nonzero__
+    # end def __bool__
+    __nonzero__ = __bool__
 # end class True_Value
 
 ### __END__

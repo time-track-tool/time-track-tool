@@ -140,13 +140,13 @@ def check_freeze_record (db, cl, nodeid, new_values) :
     user = cl.get (nodeid, 'user')
     # special cases for fixing existing freeze records:
     if  (   db.getuid () == '1'
-        and new_values.keys () == ['validity_date']
+        and list (new_values.keys ()) == ['validity_date']
         and new_values ['validity_date'] == date
         and cl.get (nodeid, 'validity_date') is None
         ) :
         return
     if  (   db.getuid () == '1'
-        and new_values.keys () == ['achieved_hours']
+        and list (new_values.keys ()) == ['achieved_hours']
         and new_values ['achieved_hours'] == 0
         and cl.get (nodeid, 'achieved_hours') is None
         ) :
@@ -165,7 +165,7 @@ def check_freeze_record (db, cl, nodeid, new_values) :
         assert (dyn.valid_to)
         # already frozen??
         if prev and prev.date >= dyn.valid_to - day :
-            for k in new_values.keys () :
+            for k in list (new_values.keys ()) :
                 del new_values [k]
             cl.retire (nodeid)
             return

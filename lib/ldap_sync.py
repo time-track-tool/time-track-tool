@@ -16,6 +16,7 @@ from roundup.cgi.actions   import LoginAction
 from roundup.cgi           import exceptions
 from roundup.exceptions    import Reject
 from roundup.configuration import InvalidOptionError
+from roundup.anypy.strings import u2s
 from datetime              import datetime
 from PIL                   import Image, ImageOps
 
@@ -1424,9 +1425,8 @@ class LDAP_Roundup_Sync (Log) :
                 for synccfg in self.attr_map ['user'][k] :
                     if synccfg.to_roundup :
                         v = synccfg.to_roundup (luser, synccfg.name)
-                        # FIXME: This must change for python3
-                        if isinstance (v, unicode) :
-                            v = v.encode ('utf-8')
+                        if v is not None :
+                            v = u2s (v)
                         if v or synccfg.empty_allowed :
                             if  (  synccfg.creation_only
                                 and ( not synccfg.write_vie_user
@@ -1457,7 +1457,7 @@ class LDAP_Roundup_Sync (Log) :
             if user :
                 assert (user.status in self.status_sync)
                 # dict changes during iteration, use items here
-                for k, v in d.items () :
+                for k, v in list (d.items ()) :
                     if user [k] == v :
                         del d [k]
                 if user.status != new_status_id :
@@ -1796,9 +1796,6 @@ class LDAP_Roundup_Sync (Log) :
                 if rupattr is not None :
                     if rk == 'pictures' :
                         prupattr = '<suppressed: %s>' % len (rupattr)
-                    # FIXME: No longer necessary in python3
-                    elif isinstance (rupattr, str) :
-                        rupattr = rupattr.decode ('utf-8')
                 if synccfg.name not in luser :
                     if rupattr :
                         self.info \
@@ -1979,9 +1976,6 @@ class LDAP_Roundup_Sync (Log) :
                 if udprop == 'org_location' and linkprop == 'name' :
                     if not is_current :
                         val = '*' + val
-                # FIXME: Not needed in python3
-                if isinstance (val, str) :
-                    val = val.decode ('utf-8')
                 if val != ldattr :
                     if not ldattr :
                         return (ldap3.MODIFY_ADD, lk, val)

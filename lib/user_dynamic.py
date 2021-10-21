@@ -226,8 +226,8 @@ def work_days (dynuser) :
         overtime and additional time computation: We need to know the
         ratio for a given day...
     """
-    sum   = reduce (add, (bool (dynuser ['hours_' + f]) for f in wdays))
-    return sum or 5
+    s = sum (bool (dynuser ['hours_' + f]) for f in wdays)
+    return s or 5
 # end def work_days
 
 def round_daily_work_hours (hours) :
@@ -649,7 +649,11 @@ class Period_Data (object) :
             if worked < required :
                 self.overtime_balance += worked - required
         self._consolidate  ()
-        self.achieved_supp = min (self.achieved_supp, self.overtime_per_period)
+        if self.overtime_per_period is None :
+            self.achieved_supp = None
+        else :
+            self.achieved_supp = min \
+                (self.achieved_supp, self.overtime_per_period)
     # end def __init__
 
     def _consolidate (self) :
@@ -955,12 +959,12 @@ def user_dynamic_year_iter (db, user, date_in_year) :
     if not dyn :
         dyn = first_user_dynamic (db, user, date = y)
     if not dyn :
-        raise StopIteration ("No records found")
+        return
     yield dyn
     while dyn :
         dyn = next_user_dynamic (db, dyn)
         if not dyn or dyn.valid_from > eoy :
-            raise StopIteration ()
+            return
         yield (dyn)
 # end def user_dynamic_year_iter
 
