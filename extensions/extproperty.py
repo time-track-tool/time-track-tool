@@ -46,16 +46,11 @@ from roundup.date                   import Date
 
 _ = None
 
-def propsort (p1, p2) :
-    return cmp (_ (p1._name), _ (p2._name))
-# end def propsort
-
 def sorted_properties (db, context) :
     global _
     _ = db._
     props = db [context._classname].properties ()
-    props.sort (propsort)
-    return props
+    return list (sorted (props, key = lambda x: _ (x._name)))
 # end def sorted_properties
 
 def properties_dict (db, context) :

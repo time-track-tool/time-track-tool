@@ -142,8 +142,8 @@
                   (request.filterspec.get('sensor.device.device_group') or [])
           ; formsns python: dict.fromkeys
                   (request.filterspec.get('sensor') or [])
-          ; grps    python: dict (id=formdev.keys(),device_group=formgrp.keys())
-          ; idx    python: dict ((k,v) for (k,v) in grps.iteritems() if v)
+          ; grps    python: dict (id=list(formdev),device_group=list(formgrp))
+          ; idx     python: dict ((k,v) for (k,v) in grps.items() if v)
           ; devs    python: db.device.filter(None, idx, sort=('+', 'addr'))
           ; asens   python: utils.sensors_by_device (db, is_app = True)
           ; ssens   python: utils.sensors_by_device (db, is_app = False)

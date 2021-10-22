@@ -1,6 +1,6 @@
 <tal:block
  tal:define=
-  " invoice_g   python: (   request.form.has_key ('invoice_group')
+  " invoice_g   python: (   'invoice_group' in request.form
                         and str (request.form ['invoice_group'].value)
                         )
   ; inv_group   python:db.invoice_group.getItem (invoice_g or '1')
@@ -31,7 +31,7 @@
         -->
        </span>
      </td>
-     <td tal:condition="python:request.filterspec.has_key ('invoice_group')"
+     <td tal:condition="python:'invoice_group' in request.filterspec"
          class="sidebar" nowrap>
       <span class="classblock">
        <a tal:attributes="href python:request.indexargs_url

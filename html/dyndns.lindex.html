@@ -173,7 +173,7 @@
                    i18n:translate="">Database Maintenance</div>
                 <tal:block
                   tal:repeat="a python:
-                              sorted ( utils.lielas_actions.iteritems()
+                              sorted ( utils.lielas_actions.items()
                                      , key = lambda x: x[1][1]
                                      )">
                   <div class="settings_row">

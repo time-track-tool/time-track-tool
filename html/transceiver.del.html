@@ -32,7 +32,7 @@
    re-creating) the whole database including all sensors and all devices.
    Proceed only if you have backed up the sensor/measurement data.
 
-   <tal:block tal:condition="python:request.form.has_key ('@what')">
+   <tal:block tal:condition="python:'@what' in request.form">
     <tal:block tal:repeat="act python:actions">
      <tal:block tal:condition="python:request.form ['@what'].value == act">
       <h3 tal:content="python: actions [act][0]"/>

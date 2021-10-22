@@ -31,7 +31,6 @@
       , w_allo = utils.ExtProperty (utils, pdict ['weekend_allowed'])
       , r_over = utils.ExtProperty (utils, pdict ['required_overtime'])
       )
-    ; props   python: pdict.itervalues ()
     ; uid     python: db._db.getuid    ()
     ; edit_ok python: (  uid == user
                       or utils.user_has_role (db._db, uid, 'controlling')
