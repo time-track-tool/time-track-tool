@@ -141,7 +141,7 @@ class Roundup_Access (object) :
                 ( basedn
                 , ldap.SCOPE_SUBTREE
                 , sk
-                , self.ldif_map.keys () + self.object_class
+                , list (self.ldif_map) + self.object_class
                 )
             print lu
             if len (lu) > 1 :

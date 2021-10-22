@@ -42,10 +42,10 @@ class PR_Submit (EditCommon, autosuper) :
     def _editnodes (self, props, links) :
         for (cl, id), val in props.items () :
             if cl == 'pr_offer_item' :
-                if int (id) < 0 and val.keys () == ['is_asset'] :
+                if int (id) < 0 and list (val) == ['is_asset'] :
                     del props [(cl, id)]
             if cl == 'pr_approval' :
-                if val.keys () == ['msg'] or val.keys () == [] :
+                if list (val) == ['msg'] or list (val) == [] :
                     del props [(cl, id)]
                     # find it in links
                     for n, (c, i, p, r) in enumerate (links [:]) :

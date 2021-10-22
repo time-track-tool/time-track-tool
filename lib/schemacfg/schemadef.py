@@ -206,7 +206,7 @@ def allow_user_details (db, role, permission, *additional_props) :
     allprops.update (dict.fromkeys (additional_props))
     clsprops = db.user.getprops ()
     props = []
-    for p in sorted (allprops.keys ()) :
+    for p in sorted (allprops) :
         if p in clsprops :
             props.append (p)
     own_user_detail_permission (db, role, permission, *props)

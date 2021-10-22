@@ -670,8 +670,7 @@ class Test_Case_LDAP_Sync (_Test_Base, unittest.TestCase) :
         olddn = 'CN=Test Middlename Usernameold,OU=internal'
         newdn = 'CN=Test User,OU=internal'
         newcn = newdn.split (',') [0].lower ()
-        self.assertEqual \
-            (list (self.ldap_modify_result.keys ()), [newdn])
+        self.assertEqual (list (self.ldap_modify_result), [newdn])
         d = self.ldap_modify_result [newdn]
         self.assertEqual (len (d), 6)
         for k in d :
@@ -688,7 +687,7 @@ class Test_Case_LDAP_Sync (_Test_Base, unittest.TestCase) :
         self.assertEqual (d ['otherTelephone'][0][1], [])
         self.assertEqual (d ['company'][0][0], 'MODIFY_ADD')
         self.assertEqual (d ['company'][0][1][0], 'testorglocation1')
-        self.assertEqual (list (self.ldap_modify_dn_result.keys ()), [olddn])
+        self.assertEqual (list (self.ldap_modify_dn_result), [olddn])
         changed = self.ldap_modify_dn_result [olddn].lower ()
         self.assertEqual (changed, newcn)
     # end def test_sync_realname_to_ldap
@@ -699,11 +698,10 @@ class Test_Case_LDAP_Sync (_Test_Base, unittest.TestCase) :
         self.db.user_dynamic.retire (self.user_dynamic1_1)
         self.ldap_sync.sync_user_to_ldap ('testuser1@ds1.internal')
         olddn = 'CN=Test Middlename Usernameold,OU=internal'
-        self.assertEqual \
-            (list (self.ldap_modify_result.keys ()), [olddn])
+        self.assertEqual (list (self.ldap_modify_result), [olddn])
         d = self.ldap_modify_result [olddn]
         self.assertEqual (len (d), 4)
-        self.assertEqual (list (self.ldap_modify_dn_result.keys ()), [])
+        self.assertEqual (list (self.ldap_modify_dn_result), [])
         msg = 'Not syncing "realname"->"cn": no valid dyn. user for'
         self.assertTrue (self.messages [-1][0].startswith (msg))
     # end def test_dont_sync_cn_if_no_dynuser
@@ -717,13 +715,12 @@ class Test_Case_LDAP_Sync (_Test_Base, unittest.TestCase) :
         newdn = 'CN=Test User,OU=internal'
         olddn = 'CN=Test Middlename Usernameold,OU=internal'
         newcn = newdn.split (',') [0].lower ()
-        self.assertEqual \
-            (list (self.ldap_modify_result.keys ()), [newdn])
+        self.assertEqual (list (self.ldap_modify_result), [newdn])
         d = self.ldap_modify_result [newdn]
         # The number differs from the test_sync_realname_to_ldap above
         # because we've retired the dynamic user record
         self.assertEqual (len (d), 5)
-        self.assertEqual (list (self.ldap_modify_dn_result.keys ()), [olddn])
+        self.assertEqual (list (self.ldap_modify_dn_result), [olddn])
         changed = self.ldap_modify_dn_result [olddn].lower ()
         self.assertEqual (changed, newcn)
     # end def test_sync_cn_if_no_dynuser_but_system
@@ -733,8 +730,7 @@ class Test_Case_LDAP_Sync (_Test_Base, unittest.TestCase) :
         self.setup_ldap ()
         self.ldap_sync.sync_user_to_ldap ('testuser1@ds1.internal')
         olddn = 'CN=Test Middlename Usernameold,OU=internal'
-        self.assertEqual \
-            (list (self.ldap_modify_result.keys ()), [olddn])
+        self.assertEqual (list (self.ldap_modify_result), [olddn])
         d = self.ldap_modify_result [olddn]
         self.assertEqual (len (d), 5)
         assert 'displayname' not in d
@@ -1068,8 +1064,7 @@ class Test_Case_LDAP_Sync (_Test_Base, unittest.TestCase) :
         self.set_testuser1_testpic ()
         self.ldap_sync.sync_user_to_ldap ('testuser1@ds1.internal')
         newdn = 'CN=Test User,OU=internal'
-        self.assertEqual \
-            (list (self.ldap_modify_result.keys ()), [newdn])
+        self.assertEqual (list (self.ldap_modify_result), [newdn])
         d = self.ldap_modify_result [newdn]
         self.assertEqual (len (d), 7)
         pic = d ['thumbnailPhoto'][0][1][0]
@@ -1092,8 +1087,7 @@ class Test_Case_LDAP_Sync (_Test_Base, unittest.TestCase) :
         self.db.config.ext ['LIMIT_PICTURE_SYNC_SIZE'] = '5000'
         self.ldap_sync.sync_user_to_ldap ('testuser1@ds1.internal')
         newdn = 'CN=Test User,OU=internal'
-        self.assertEqual \
-            (list (self.ldap_modify_result.keys ()), [newdn])
+        self.assertEqual (list (self.ldap_modify_result), [newdn])
         d = self.ldap_modify_result [newdn]
         self.assertEqual (len (d), 7)
         pic = d ['thumbnailPhoto'][0][1][0]

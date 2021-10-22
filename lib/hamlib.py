@@ -46,7 +46,7 @@ def fix_qsl_status (db, qso_id) :
                 |= int (db.qsl_type.get (qsl.qsl_type, 'code'))
     for qsl_type_id in db.qso.get (qso_id, 'wont_qsl_via') :
         stati ['no_qsl_status'] |= int (db.qsl_type.get (qsl_type_id, 'code'))
-    for k in stati.keys () :
+    for k in stati :
         stati [k] = db.qsl_status.filter (None, dict (code = stati [k])) [0]
     db.qso.set (qso_id, **stati)
 # end def fix_qsl_status

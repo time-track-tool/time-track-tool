@@ -215,7 +215,7 @@ def leave_submission_days (db, user, ctype, start, end, type, * stati) :
     vs2  = db.leave_submission.filter (None, d2)
     d3   = dict (d, first_day = dts, last_day = dte)
     vs3  = db.leave_submission.filter (None, d3)
-    vss  = dict.fromkeys (vs1 + vs2 + vs3).keys ()
+    vss  = list (set (vs1 + vs2 + vs3))
     vss  = [db.leave_submission.getnode (i) for i in vss]
     days = 0.0
     for vs in vss :

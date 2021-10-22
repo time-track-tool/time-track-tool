@@ -275,7 +275,7 @@ def update_maturity_index (db, cl, nodeid, old_values, is_new = False) :
         or  'maturity_index' in old_values
             and old_values ['maturity_index'] != mi
         ) :
-        parts = dict.fromkeys ((part_of, opart_of)).keys ()
+        parts = list (dict.fromkeys ((part_of, opart_of)))
         for p in parts :
             if p :
                 parent_mi = cl.get (p, 'maturity_index')
@@ -391,7 +391,7 @@ def check_ext_user_responsible (db, cl, nodeid, new_values) :
                 xu = []
             xu = dict.fromkeys (xu)
             xu [u.id] = True
-            new_values ['external_users'] = xu.keys ()
+            new_values ['external_users'] = list (xu)
 # end def check_ext_user_responsible
 
 def check_ext_msg (db, cl, nodeid, new_values) :

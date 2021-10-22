@@ -227,7 +227,7 @@ class Daily_Record_Common (Action, autosuper) :
                   , ':template'      : 'edit'
                   , ':sort'          : 'date'
                   , ':group'         : 'user'
-                  , ':filter'        : ','.join (request.filterspec.keys ())
+                  , ':filter'        : ','.join (request.filterspec)
                   , ':startwith'     : '0'
                   , ':error_message' : msg
                   }
@@ -272,7 +272,7 @@ class Daily_Record_Action (Daily_Record_Common) :
               , ':sort'      : 'date'
               , ':group'     : 'user'
               , ':startwith' : '0'
-              , ':filter'    : ','.join (self.request.filterspec.keys ())
+              , ':filter'    : ','.join (self.request.filterspec)
               }
             )
         raise Redirect (url)
@@ -295,7 +295,7 @@ class Daily_Record_Edit_Action (EditItemAction, Daily_Record_Common) :
         # use props.items here, dict is modified
         for (cl, id), val in list (props.items ()) :
             if cl == 'time_record' :
-                if int (id) < 0 and val.keys () == ['daily_record'] :
+                if int (id) < 0 and list (val) == ['daily_record'] :
                     del props [(cl, id)]
         self.ok_msg = EditItemAction._editnodes (self, props, links)
         return self.ok_msg
@@ -346,7 +346,7 @@ class Weekno_Action (Daily_Record_Edit_Action) :
             , ':template'      : 'edit'
             , ':sort'          : 'date'
             , ':group'         : 'user'
-            , ':filter'        : ','.join (self.request.filterspec.keys ())
+            , ':filter'        : ','.join (self.request.filterspec)
             , ':startwith'     : '0'
             , ':ok_message'    : self.ok_msg
             }
@@ -385,7 +385,7 @@ class Daily_Record_Change_State (Daily_Record_Edit_Action) :
             , ':template'      : 'edit'
             , ':sort'          : 'date'
             , ':group'         : 'user'
-            , ':filter'        : ','.join (request.filterspec.keys ())
+            , ':filter'        : ','.join (request.filterspec)
             , ':startwith'     : '0'
             }
         if msg :

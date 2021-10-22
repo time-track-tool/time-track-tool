@@ -272,7 +272,7 @@ class Export_CSV_Names (Action, autosuper) :
     def _setup (self) :
         columns    = self.request.columns
         if not columns :
-            columns = self.props.keys ()
+            columns = list (self.props)
             columns.sort ()
         # full-text search
         if self.request.search_text :

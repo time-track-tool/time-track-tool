@@ -55,7 +55,7 @@ def new_it (db, cl, nodeid, new_values) :
             new_values ['responsible'] = cat.responsible
     if cat.nosy :
         nosy.update (dict.fromkeys (cat.nosy))
-    new_values ['nosy'] = nosy.keys ()
+    new_values ['nosy'] = list (nosy)
     if 'responsible'  not in new_values :
         new_values ['responsible'] = db.user.lookup ('helpdesk')
     if 'stakeholder'  not in new_values :

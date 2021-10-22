@@ -271,7 +271,7 @@ def check_daily_record (db, cl, nodeid, new_values) :
     user       = cl.get (nodeid, 'user')
     date       = cl.get (nodeid, 'date')
     if  (  frozen (db, user, date)
-        and list (new_values.keys ()) != ['tr_duration_ok']
+        and list (new_values) != ['tr_duration_ok']
         ) :
         uname = db.user.get (user, 'username')
         raise Reject (_ ("Frozen: %(uname)s, %(date)s") % locals ())
@@ -381,7 +381,7 @@ def update_timerecs (db, time_record_id, set_it) :
         trecs [id] = 1
     elif id in trecs :
         del trecs [id]
-    trecs = list (sorted (trecs.keys ()))
+    trecs = list (sorted (trecs))
     if trecs != trecs_o :
         dr = db.daily_record.getnode (drec_id)
         db.daily_record.set \
@@ -683,7 +683,7 @@ def check_time_record (db, cl, nodeid, new_values) :
         tp = db.time_project.getnode (wp.project)
         is_ph = tp.is_public_holiday
     if  (   frozen (db, user, date)
-        and list (new_values.keys ()) != ['tr_duration']
+        and list (new_values) != ['tr_duration']
         ) :
         uname = db.user.get (user, 'username')
         raise Reject (_ ("Frozen: %(uname)s, %(date)s") % locals ())
@@ -692,14 +692,14 @@ def check_time_record (db, cl, nodeid, new_values) :
     allow    = False
     if dr.status == leave :
         du = vacation.leave_duration (db, user, date, is_ph)
-        if  (   list (new_values.keys ()) == ['duration']
+        if  (   list (new_values) == ['duration']
             and new_values ['duration'] == du
             and cl.get (nodeid, 'duration') != du
             ) :
             allow = True
     allow    = allow or db.getuid () == '1'
     if  (   status != db.daily_record_status.lookup ('open')
-        and list (new_values.keys ()) != ['tr_duration']
+        and list (new_values) != ['tr_duration']
         and not allow
         ) :
         raise Reject (_ ('Editing of time records only for status "open"'))

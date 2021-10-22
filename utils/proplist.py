@@ -107,7 +107,7 @@ for clcnt, cl in enumerate (sorted (db.getclasses ())) :
         writer.writerow ((cl, '', _ (cl)))
     else :
         print cl
-    for n, p in enumerate (sorted (klass.properties.keys ())) :
+    for n, p in enumerate (sorted (klass.properties)) :
         rs = ''
         if args.search :
             rs = '( '

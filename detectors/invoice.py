@@ -104,7 +104,7 @@ def check_invoice (db, cl, nodeid, new_values) :
         raise Reject (_ ('amount may not be changed after payment'))
     if 'payment' in new_values :
         payment = dict.fromkeys (new_values.get ('payment'))
-        new_values ['payment'] = payment = sorted (payment.keys ())
+        new_values ['payment'] = payment = list (sorted (payment))
         payed   = sum (db.payment.get (i, 'amount') for i in payment)
         new_values ['amount_payed'] = payed
         balance = new_values ['balance_open'] = amount - payed
@@ -116,7 +116,7 @@ def check_invoice (db, cl, nodeid, new_values) :
             new_values ['open'] = True
     inv_no  = cl.get (nodeid, 'invoice_no')
     abo     = db.abo.getnode (cl.get (nodeid, 'abo'))
-    if abo ['end'] and list (new_values.keys ()) != ['invoice_group'] :
+    if abo ['end'] and list (new_values) != ['invoice_group'] :
         raise Reject (_ ('no change of closed subscription'))
     common.auto_retire (db, cl, nodeid, new_values, 'payment')
 # end def check_invoice

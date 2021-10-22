@@ -98,13 +98,6 @@ def check_unique (_, cl, id, ** kw) :
                 (_ ("Duplicate: %s: %s%s") % (', '.join (r), cl.classname, s))
 # end def check_unique
 
-def sort_uniq (list) :
-    d = dict ([(x, 1) for x in list])
-    k = d.keys ()
-    k.sort ()
-    return k
-# end def sort_uniq
-
 def check_loop (_, cl, id, prop, attr, labelprop = None, ids = None) :
     if ids is None :
         ids = []
@@ -1014,12 +1007,11 @@ def auto_retire (db, cl, nodeid, new_values, multilink_attr) :
     """
     if multilink_attr not in new_values :
         return
-    new = dict.fromkeys (new_values [multilink_attr])
-    old = dict.fromkeys (cl.get (nodeid, multilink_attr))
+    new = set (new_values [multilink_attr])
+    old = set (cl.get (nodeid, multilink_attr))
     cls = db.classes [cl.properties [multilink_attr].classname]
-    for o in old :
-        if o not in new :
-            cls.retire (o)
+    for o in old.difference (new) :
+        cls.retire (o)
 # end def auto_retire
 
 def require_attributes (_, cl, nodeid, new_values, * attributes) :

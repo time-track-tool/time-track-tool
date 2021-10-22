@@ -335,7 +335,7 @@ def header_check (db, cl, nodeid, new_values) :
                         else :
                             cc [mail.lower ()] = 1
                 if cc :
-                    new_values ['cc'] = ', '.join (cc.keys ())
+                    new_values ['cc'] = ', '.join (cc)
         else :
             if send_to_customer :
                 mails = []
@@ -410,7 +410,7 @@ def remove_support_from_nosy (db, cl, nodeid, new_values) :
     sup = db.user.lookup ('support')
     if conf and sup in nosy :
         del nosy [sup]
-        new_values ['nosy'] = nosy.keys ()
+        new_values ['nosy'] = list (nosy)
 # end def remove_support_from_nosy
 
 def initial_props (db, cl, nodeid, new_values) :
@@ -436,7 +436,7 @@ def initial_props (db, cl, nodeid, new_values) :
             grp = db.mailgroup.getnode (g)
             for k in grp.nosy :
                 nosy [k] = 1
-    new_values ['nosy'] = nosy.keys ()
+    new_values ['nosy'] = list (nosy)
     if 'confidential' not in new_values :
         if cust.confidential :
             new_values ['confidential'] = True

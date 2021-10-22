@@ -338,7 +338,8 @@ def approval_for (db, valid_only = False) :
              if x != d_a ['status']
             )
         invalid = dict.fromkeys (db.user.filter (None, d), 1)
-        for u in invalid.keys () :
+        # dict modified during iteration
+        for u in list (invalid) :
             if u in approve_for :
                 del invalid [u]
                 continue
@@ -360,7 +361,7 @@ def approval_for (db, valid_only = False) :
 def welcome (db) :
     fname = os.path.join (db.config.TRACKER_HOME, 'Welcome-Info.txt')
     try :
-        text = file (fname, 'rU').read ()
+        text = open (fname, 'rU').read ()
         return escape (text).replace ('\n\n', '<br>\n')
     except IOError :
         pass

@@ -62,7 +62,8 @@ class Support_Report (object) :
             users [customer.responsible] = None
         if self.sowner in users :
             del users [self.sowner]
-        for u in users.keys () :
+        # Dict modified during iteration
+        for u in list (users) :
             status = self.db.user.get (u, 'status')
             if not self.db.user_status.get (status, 'is_nosy') :
                 del users [u]

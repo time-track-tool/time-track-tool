@@ -655,7 +655,7 @@ class LDAP_Roundup_Sync (Log) :
             dontsync_rup = {}
         self.info \
             ( "Exclude the following Roundup attributes from sync: %s"
-            % dontsync_rup.keys ()
+            % list (dontsync_rup)
             )
         self.dontsync_rup = dontsync_rup
         name = 'LDAP_DO_NOT_SYNC_LDAP_PROPERTIES'
@@ -666,7 +666,7 @@ class LDAP_Roundup_Sync (Log) :
             dontsync_ldap = {}
         self.info \
             ( "Exclude the following LDAP attributes from sync: %s"
-            % dontsync_ldap.keys ()
+            % list (dontsync_ldap)
             )
         self.dontsync_ldap = dontsync_ldap
         attr_map = self.attr_map = dict ()
@@ -1215,7 +1215,7 @@ class LDAP_Roundup_Sync (Log) :
             (((ctypes [oct [k].contact_type], oct [k].contact), oct [k])
              for k in oct
             )
-        self.debug (3, 'old contacts: %s' % oldmap.keys ())
+        self.debug (3, 'old contacts: %s' % list (oldmap))
         found = {}
         new_contacts = []
         for typ in self.attr_map ['user_contact'] :

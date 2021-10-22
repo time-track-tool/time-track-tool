@@ -72,7 +72,7 @@ class Create_New_Address (Action) :
         if isinstance (klass.properties [attr], Multilink) :
             newvalue = klass.get (id, attr) [:]
             newvalue.append (newid)
-            newvalue = dict.fromkeys (newvalue).keys ()
+            newvalue = list (set (newvalue))
         klass.set (id, ** {attr : newvalue})
         self.db.commit ()
         raise Redirect ("%s%s" % (self.request.classname, id))

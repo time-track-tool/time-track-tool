@@ -94,7 +94,7 @@ class KPM_Filter_Action (EditCommon) :
             for id in self.msgidx :
                 key = ('msg', id)
                 if key in props :
-                    assert props [key].keys () == ['content']
+                    assert list (props [key]) == ['content']
                     content = props [key]['content']
                     msgid   = self.db.kpm.get (kpmid, self.msgidx [id])
                     if msgid :

@@ -36,7 +36,7 @@ def add_files (db, cl, nodeid, newvalues) :
     for msg_id in newvalues ["messages"] :
         for f in db.msg.get (msg_id, "files") :
             files [f] = 1
-    newvalues ["files"] = files.keys ()
+    newvalues ["files"] = list (files)
 
 def init (db) :
     if 'issue' not in db.classes :

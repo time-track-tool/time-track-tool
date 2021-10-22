@@ -702,7 +702,7 @@ class Summary_Report (_Report) :
         assert (request.classname == 'summary_report')
         wp_containers   = []
         if not columns :
-            columns     = list (db.summary_report.getprops ().keys ())
+            columns     = list (db.summary_report.getprops ())
         self.columns    = dict ((c, True) for c in columns)
         status          = filterspec.get \
             ('status', db.daily_record_status.getnodeids ())
@@ -978,7 +978,7 @@ class Summary_Report (_Report) :
         db.log_info ("summary_report: srt time_recs: %s (%s)"
             % (len (time_recs), time.time () - timestamp))
         if self.show_empty :
-            usrs         = users + list (org_dep_usr.keys ())
+            usrs         = users + list (org_dep_usr)
             uids_by_name = dict ((db.user.get (u, 'username'), u) for u in usrs)
             # filter out users without a dyn user record in our date range
             # Except for those who have booked in the range
@@ -996,7 +996,7 @@ class Summary_Report (_Report) :
                     u = tr.username
                     users [u] = uids_by_name [u]
                 uids_by_name = users
-            usernames    = list (uids_by_name.keys ())
+            usernames    = list (uids_by_name)
         else :
             usernames    = list (set (tr.username for tr in time_recs))
             uids_by_name = dict ((u, db.user.lookup (u)) for u in usernames)
@@ -1417,7 +1417,7 @@ class Staff_Report (_Report) :
         all_in = filterspec.get ('all_in')
         if all_in is not None :
             all_in = all_in == 'yes'
-        for u in list (users.keys ()) :
+        for u in list (users) :
             dyn = user_dynamic.get_user_dynamic (db, u, end)
             if not dyn :
                 dyn = user_dynamic.last_user_dynamic (db, u, end)
@@ -1435,7 +1435,7 @@ class Staff_Report (_Report) :
                 ) :
                 del users [u]
         self.users = sorted \
-            ( list (users.keys ())
+            ( list (users)
             , key = lambda x : db.user.get (x, 'username')
             )
         db.log_info  ("staff_report: users: %s" % (time.time () - timestamp))
@@ -1681,7 +1681,7 @@ class Vacation_Report (_Report) :
             if k not in request.columns :
                 del fields [k]
         self.fields  = sorted \
-            (list (fields.keys ()), key = lambda x : fields [x])
+            (list (fields), key = lambda x : fields [x])
 
         if d :
             try :
@@ -1709,7 +1709,7 @@ class Vacation_Report (_Report) :
         max_user_date    = {}
         user_vc          = {}
         self.user_ctypes = {}
-        for u in list (users.keys ()) :
+        for u in list (users) :
             srt = [('+', 'date')]
             vcs = db.vacation_correction.filter \
                 (None, dict (user = u, absolute = True), sort = srt)
@@ -1751,7 +1751,7 @@ class Vacation_Report (_Report) :
                     self.user_ctypes [u] = []
                 self.user_ctypes [u].append (ctype)
         self.users = sorted \
-            ( list (users.keys ())
+            ( list (users)
             , key = lambda x : db.user.get (x, 'username')
             )
         db.log_info ("vacation_report: users: %s" % (time.time () - timestamp))
@@ -1815,7 +1815,7 @@ class Vacation_Report (_Report) :
                         ent [dyn.vacation_yearly] = 1
                         dyn = vacation.vac_next_user_dynamic (db, dyn)
                     container ['is_obsolete'] = self.is_obsolete (dyn, d)
-                    v = list (sorted (ent.keys ()))
+                    v = list (sorted (ent))
                     # Use '..' as separator to prevent excel from computing
                     # difference if exported to excel
                     if len (v) > 1 :

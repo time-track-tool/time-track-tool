@@ -290,7 +290,7 @@ class _Test_Case (_Test_Base) :
         classnames = sorted (self.db.getclasses ())
         for (cl, props), cls in zip (self.properties, classnames) :
             self.assertEqual (cl, cls)
-            clprops = sorted (self.db.getclass (cls).properties.keys ())
+            clprops = sorted (list (self.db.getclass (cls).properties))
             self.assertEqual (props, clprops)
     # end def test_1_schema
 
@@ -339,7 +339,7 @@ class _Test_Case (_Test_Base) :
                             )
                 else:
                     perms.append (' %(description)s (%(name)s)' % d)
-            s.extend (sorted (dict.fromkeys (perms).keys ()))
+            s.extend (sorted (list (set (perms))))
         lr1 = lr2 = None
         l1 = len (secdesc)
         l2 = len (s)
@@ -366,7 +366,7 @@ class _Test_Case (_Test_Base) :
         for (cl, props), cls in zip (self.search_desc, classnames) :
             self.assertEqual (cl, cls)
             clprops = []
-            for p in sorted (self.db.getclass (cls).properties.keys ()) :
+            for p in sorted (self.db.getclass (cls).properties) :
                 users = []
                 for user in sorted (self.users) :
                     uid = self.users [user]

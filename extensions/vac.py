@@ -54,7 +54,7 @@ def approval_stati (db) :
 def approve_leave_submissions (db, utils, context) :
     uid = db._db.getuid ()
     d   = approval_stati (db)
-    d ['user'] = utils.approval_for (db, True).keys ()
+    d ['user'] = list (utils.approval_for (db, True))
     ls  = db.leave_submission.filter (None, d)
     return ls
 # end def approve_leave_submissions
@@ -333,7 +333,7 @@ class Leave_Display (object) :
         lvlast   = db.leave_submission.filter \
             (None, dict (last_day = dt, user = users, status = acc))
         lvperiod = db.leave_submission.filter (None, flt)
-        lvs = dict.fromkeys (lvfirst + lvlast + lvperiod).keys ()
+        lvs = list (set (lvfirst + lvlast + lvperiod))
         # Put them in a dict by user-id
         self.lvdict = {}
         for id in lvs :
@@ -350,7 +350,7 @@ class Leave_Display (object) :
         ablast   = db.absence.filter \
             (None, dict (last_day  = dt, user = users))
         abperiod = db.absence.filter (None, flt)
-        abs = dict.fromkeys (abfirst + ablast + abperiod).keys ()
+        abs = list (set (abfirst + ablast + abperiod))
         # Put them in a dict by user-id
         self.abdict = {}
         for id in abs :

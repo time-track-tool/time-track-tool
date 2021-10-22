@@ -424,7 +424,7 @@ class Edit_Payment_Action (EditItemAction, autosuper) :
         for (cl, id), val in list (props.items ()) :
             if (   cl == 'payment'
                and int (id) < 0
-               and sorted (val.keys ()) == ['invoice', 'receipt_no']
+               and sorted (list (val)) == ['invoice', 'receipt_no']
                and val ['receipt_no'] == 'auto'
                ) :
                del props [(cl, id)]

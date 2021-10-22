@@ -43,7 +43,8 @@ for uid in db.user.getnodeids () :
         continue
     roles  = dict.fromkeys (r.strip () for r in u.roles.split (','))
     change = False
-    for r in roles.keys () :
+    # dict modified during iteration
+    for r in list (roles) :
         rl = r.lower ()
         if rl not in db.security.role :
             change = True

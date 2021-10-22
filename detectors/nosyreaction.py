@@ -268,7 +268,7 @@ def updatenosy(db, cl, nodeid, newvalues):
     # that's it, save off the new nosy list -- filter out those users
     # that do not have the 'Nosy' permission.
     newnosy = \
-        [ x for x in current.keys ()
+        [ x for x in current
             if db.security.hasPermission ('Nosy', x, cl.classname)
         ]
     newnosy.sort ()

@@ -102,7 +102,7 @@ def msg_check (db, cl, nodeid, newvalues) :
         for m in cl.get (nodeid, "messages") :
             if m in msgs :
                 del (msgs [m])
-    for m in msgs.keys () :
+    for m in msgs :
         msg = db.msg.getnode (m)
         if notes_tofu.search (msg.content) :
             raise ValueError (Tofu_msg)

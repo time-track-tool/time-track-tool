@@ -65,7 +65,8 @@ for uid in db.user.getnodeids () :
             % (uid, ', '.join (sorted (list (diff))))
         qs.update (dict.fromkeys (allq))
         ch = True
-    for qid in qs.keys () :
+    # dict modified during iteration
+    for qid in list (qs) :
         q = db.query.getnode (qid)
         try :
             n = q.name
@@ -82,7 +83,7 @@ for uid in db.user.getnodeids () :
             except KeyError :
                 pass
     if ch :
-        db.user.set (uid, queries = qs.keys ())
+        db.user.set (uid, queries = list (qs))
 
 for qid in db.query.getnodeids () :
     delq (qid, txt = ' remaining ', verbose = opt.verbose)

@@ -178,7 +178,7 @@ def check_statechange (db, cl, nodeid, newvalues) :
         for u in db.user.getnodeids () :
             if common.user_has_role (db, u, 'Doc_Admin') :
                 nosy [u] = True
-        newvalues ['nosy'] = nosy.keys ()
+        newvalues ['nosy'] = list (nosy)
     if newstate != oldstate :
         newvalues ['state_changed_by'] = db.getuid ()
         st = db.doc_status.getnode (newstate)
