@@ -439,12 +439,37 @@ def inherit_safety_level (db, cl, nodeid, new_values) :
         new_values ['safety_level'] = cl.get (container, 'safety_level')
 # end def inherit_safety_level
 
+def dict_from_config (cfg) :
+    d = {}
+    for kv in cfg.split (';') :
+        k, v = (x.strip () for x in kv.split (':', 1))
+        d [k] = v
+    return d
+# end def dict_from_config
+
+def forbidden_cat_or_container (db, cl, nodeid, new_values) :
+    cat_reject  = getattr (db.config.ext, 'MAIL_CATEGORY_REJECT', None)
+    cont_reject = getattr (db.config.ext, 'MAIL_CONTAINER_REJECT', None)
+    if cat_reject :
+        cat_reject = dict_from_config (cat_reject)
+        cat = new_values.get ('category')
+        if cat and cat in cat_reject :
+            raise Reject (cat_reject [cat])
+    if cont_reject :
+        cont_reject = dict_from_config (cont_reject)
+        cont = new_values.get ('part_of')
+        if cont and cont in cont_reject :
+            raise Reject (cont_reject [cont])
+# end def forbidden_cat_or_container
+
 def init (db) :
     global _
     _   = get_translation \
         (db.config.TRACKER_LANGUAGE, db.config.TRACKER_HOME).gettext
     if 'issue' in db.classes :
         db.issue.audit ("create", forbidden_props)
+        db.issue.audit ("create", forbidden_cat_or_container)
+        db.issue.audit ("set",    forbidden_cat_or_container)
         if 'safety_level' in db.issue.properties :
             db.issue.audit ("set",    inherit_safety_level)
             db.issue.audit ("create", inherit_safety_level)

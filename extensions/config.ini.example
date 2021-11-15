@@ -193,6 +193,9 @@ las_subject = 'Add to LAS Request'
 
 las_email = supplier_approval@example.com
 
+category_reject = 275:Category must no longer be used
+container_reject = 56653:Container must no longer be used
+
 [mailgw]
 spam_pattern = ^[[].?S[pP][aA][mM]
 support_from = support@tttech.com
