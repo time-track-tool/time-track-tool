@@ -17,7 +17,7 @@
   </span>
 
   <tal:block metal:fill-slot="create_or_query">
-   <tal:block 
+   <tal:block
     metal:use-macro="templates/page/macros/create_or_query_new_tracker_item" />
   </tal:block>
 
@@ -140,9 +140,6 @@
              ('time_record', 'time_activity', endswith = '')" colspan="2"/>
          <th tal:content="structure python:utils.fieldname
              ('time_record', 'work_location', endswith = '')"/>
-         <th tal:condition="python:is_open and edit_ok"
-             tal:content="structure python:utils.fieldname
-             ('time_record', 'dist',          endswith = '')"/>
         </tr>
         <tal:block tal:repeat="i batch">
          <tal:block
@@ -212,7 +209,7 @@
               tal:attributes="class python: ['generated',''][not gen] + pn [0]
                              ;colspan python: pn [1]
                              "
-              tal:content="structure python: 
+              tal:content="structure python:
                [ ''
                , utils.ExtProperty
                  (utils, r [pn [0]], item = r, editable = editable, fieldwidth = 5)
@@ -258,12 +255,6 @@
             <td tal:condition="python: not editable and not r.comment"/>
             <td tal:content="structure python: utils.ExtProperty
              (utils, r.work_location, item = r, editable = editable).menu ()"/>
-            <td tal:condition="python:is_open and edit_ok">
-             <tal:block tal:condition="editable"
-              tal:replace="structure python: utils.ExtProperty
-              (utils, r.dist, item = r, editable = editable, fieldwidth = 5)
-              .as_listentry ()"/>
-            </td>
            </tr>
           </tal:block>
           <tr tal:condition="python: editable and allowed"
