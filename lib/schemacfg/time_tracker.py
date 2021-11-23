@@ -1,4 +1,4 @@
-# Copyright (C) 2006-20 Dr. Ralf Schlatterbeck Open Source Consulting.
+# Copyright (C) 2006-2021-20 Dr. Ralf Schlatterbeck Open Source Consulting.
 # Reichergasse 131, A-3411 Weidling.
 # Web: http://www.runtux.com Email: office@runtux.com
 # All rights reserved
@@ -989,6 +989,15 @@ def security (db, ** kw) :
         return userid == ownerid
     # end def own_user_functional_role
 
+    def own_user_dynamic (db, userid, itemid) :
+        """User may view their own user dynamic
+        """
+        if int (itemid) < 0 :
+            return True
+        ownerid = db.user_dynamic.get (itemid, 'user')
+        return userid == ownerid
+    # end def own_user_dynamic
+
     def own_leave_submission (db, userid, itemid) :
         """ User may edit own leave submissions. """
         ownerid = db.leave_submission.get (itemid, 'user')
@@ -1635,6 +1644,20 @@ def security (db, ** kw) :
         , klass       = 'user_functional_role'
         , check       = own_user_functional_role
         , description = fixdoc (own_user_functional_role.__doc__)
+        )
+    db.security.addPermissionToRole ('User', p)
+
+    p = db.security.addPermission \
+        ( name        = 'Search'
+        , klass       = 'user_dynamic'
+        )
+    db.security.addPermissionToRole ('User', p)
+
+    p = db.security.addPermission \
+        ( name        = 'View'
+        , klass       = 'user_dynamic'
+        , check       = own_user_dynamic
+        , description = fixdoc (own_user_dynamic.__doc__)
         )
     db.security.addPermissionToRole ('User', p)
 
