@@ -1,0 +1,312 @@
+#!/usr/bin/env python
+
+from __future__ import print_function
+import os
+import re
+import sys
+import requests
+from requests.packages.urllib3.exceptions import InsecureRequestWarning
+
+from csv      import DictReader
+from roundup  import instance
+from argparse import ArgumentParser
+from netrc    import netrc
+from bs4      import BeautifulSoup
+from roundup.anypy.strings import u2s
+from roundup.date          import Date
+
+try :
+    from urllib.parse import urlunparse, quote
+except ImportError :
+    from urlparse import urlunparse
+    from urllib   import quote
+
+class Importer (object) :
+
+    def __init__ (self, args) :
+        self.args = args
+        self._url = None
+        tracker   = instance.open (args.dir)
+        self.db   = tracker.open (args.user)
+        self.f_in = None
+        self.chk  = not self.args.no_check_certificate
+        if not self.chk :
+            requests.packages.urllib3.disable_warnings(InsecureRequestWarning)
+    # end def __init__
+
+    def get_latest_export_url (self) :
+        """ The URL given is a directory url of an apache directory listing.
+            We search through all files in that directory and return the URL
+            which contains the latest file. The format of the filenames we
+            search for is prefix + YYYYmmddHHMMSS + suffix.
+            For this we simply search for all the hrefs matching the
+            pattern. We sort these by name (the date format above is
+            sortable) and return the latest and greatest.
+        """
+        page = requests.get (self.url, verify = self.chk).text
+        soup = BeautifulSoup (page, 'html.parser')
+        res  = []
+        for a in soup.find_all ('a') :
+            href = a.get ('href')
+            if not href.startswith (self.args.prefix) :
+                continue
+            if not href.endswith (self.args.suffix) :
+                continue
+            res.append (href)
+        res.sort ()
+        if res :
+            return res [-1]
+    # end def get_latest_export_url
+
+    def importer (self) :
+        r  = DictReader (self.f_in, delimiter = self.args.delimiter)
+
+        self.psp_by_number = {}
+        # Get all existing psp elements from database
+        for pspid in self.db.psp_element.getnodeids (retired = False) :
+            psp = self.db.psp_element.getnode (pspid)
+            self.psp_by_number [psp.number] = psp
+        # Get all valid organisations
+        now = Date ('.')
+        self.org_by_company_code = {}
+        for orgid in self.db.organisation.getnodeids (retired = False) :
+            org = self.db.organisation.getnode (orgid)
+            if not org.company_code :
+                continue
+            if org.valid_from and org.valid_from > now :
+                continue
+            if org.valid_to and org.valid_to < now :
+                continue
+            self.org_by_company_code [org.company_code] = org
+
+        for line in r :
+            # HMPF: the status flag has no heading
+            stat  = line [None]
+            assert len (stat) == 1
+            stat  = stat [0].decode (self.args.encoding)
+            pspno = line ['PRPS~POSID'].decode (self.args.encoding)
+            name  = line ['PRPS~POST1'].decode (self.args.encoding)
+            ccode = line ['PRPS~PBUKR'].decode (self.args.encoding)
+            spt = pspno.split ('-')
+            print (pspno, ccode, stat)
+            # FIXME: Really? The others have TC and org in the last two fields
+            if spt [0] != 'B' :
+                print ("WARN: Ignoring PSP: %s" % pspno)
+                continue
+            if len (spt [-2]) != 5 :
+                print ("WARN: Ignoring malformed PSP: %s" % pspno)
+                continue
+            assert len (spt) == 5 or spt [0] != 'B'
+            # stat field contains an 'X' if invalid, otherwise it is empty
+            if stat :
+                assert stat == 'X'
+                if pspno in self.psp_by_number :
+                    psp = self.psp_by_number [pspno]
+                    if psp.valid :
+                        if self.args.update :
+                            self.db.psp_element.set (psp.id, valid = False)
+                    del self.psp_by_number [pspno]
+                    if self.args.verbose :
+                        print ( "Set to invalid psp_element%s (%s)"
+                              % (psp.id, psp.number)
+                              )
+                continue
+            tcno  = spt [-2].lstrip ('0')
+            if not tcno :
+                assert pspno not in self.psp_by_number
+                continue
+            if spt [-1] != ccode :
+                print \
+                    ( "WARN: Setting ccode to last field of psp-number for %s"
+                    % pspno
+                    )
+                ccode = spt [-1]
+            if pspno in self.psp_by_number :
+                d = {}
+                psp = self.psp_by_number [pspno]
+                if not psp.valid :
+                    d ['valid'] = True
+                if psp.name != name :
+                    d ['name'] = u2s (name)
+                if d :
+                    if self.args.update :
+                        self.db.psp_element.set (psp.id, **d)
+                    if self.args.verbose :
+                        print ( "Update psp_element%s (%s): %s"
+                              % (psp.id, psp.number, d)
+                              )
+                del self.psp_by_number [pspno]
+            else :
+                # Find TC
+                tcids = self.db.time_project.filter \
+                    (None, dict (description = '-%s' % tcno))
+                tcs = [self.db.time_project.getnode (id) for id in tcids]
+                tcs = [x for x in tcs
+                       if x.description.split ('-')[-1] == tcno
+                      ]
+                assert len (tcs) <= 1
+                if not tcs :
+                    print ("No TC found for %s" % pspno, file = sys.stderr)
+                    continue
+                tc = tcs [0]
+                if ccode not in self.org_by_company_code :
+                    print ("No org found for %s" % pspno, file = sys.stderr)
+                    continue
+                if self.args.update :
+                    self.db.psp_element.create \
+                        ( number       = u2s (pspno)
+                        , name         = u2s (name)
+                        , valid        = True
+                        , organisation = self.org_by_company_code [ccode].id
+                        , project      = tc.id
+                        )
+                if self.args.verbose :
+                    print ("Creating %s: %s" % (pspno, name))
+
+        if self.args.update :
+            self.db.commit ()
+    # end importer
+
+    def open (self) :
+        if self.args.file :
+            self.f_in = open (self.args.file, 'r')
+        else :
+            fn  = self.get_latest_export_url ()
+            url = '/'.join ((self.url, fn))
+            gr  = requests.get (url, verify = self.chk)
+            self.f_in = gr.iter_lines ()
+    # end def open
+
+    def run (self) :
+        self.open     ()
+        self.importer ()
+    # end def run
+
+    @property
+    def url (self) :
+        if self._url :
+            return self._url
+        username = ''
+        password = ''
+        a = n = None
+        try :
+            n = netrc ()
+        except IOError :
+            pass
+        if n and self.args.hostname :
+            a = n.authenticators (self.args.hostname)
+        if a :
+            un, d, pw = a
+            username = un
+            password = pw
+        un = ''
+        if username :
+            un = [username]
+            if password :
+                un.append (':')
+                un.append (quote (password))
+            un.append ('@')
+            un = ''.join (un)
+        netloc = []
+        if un :
+            netloc.append (un)
+        netloc.append (self.args.hostname)
+        if self.args.port :
+            netloc.append (':')
+            netloc.append (self.args.port)
+        netloc = ''.join (netloc)
+        self._url = urlunparse \
+            ((self.args.scheme, netloc, self.args.path, '', '', ''))
+        return self._url
+    # end def url
+
+# end class Importer
+
+def main () :
+    cmd = ArgumentParser ()
+    cmd.add_argument \
+        ( '-d', '--directory'
+        , dest    = 'dir'
+        , help    = 'Tracker instance directory default: "%(default)s"'
+        , default = '.'
+        )
+    cmd.add_argument \
+        ( '-C', '--no-check-certificate'
+        , help    = 'Do not check issuer certificate for https url'
+        , action  = 'store_true'
+        )
+    cmd.add_argument \
+        ( '-D', '--delimiter'
+        , dest    = 'delimiter'
+        , help    = 'CSV delimiter character default: "%(default)s"'
+        , default = ';'
+        )
+    cmd.add_argument \
+        ( '-E', '--encoding'
+        , dest    = 'encoding'
+        , help    = 'CSV encoding default: %(default)s'
+        , default = 'utf-8'
+        )
+    cmd.add_argument \
+        ( "-n", "--hostname"
+        , help    = "URL for data download, default=%(default)s"
+        , default = "data-export.vie.at.tttech.ttt"
+        )
+    cmd.add_argument \
+        ( "-P", "--port"
+        , help    = '"Port for retrieving file, default="%(default)s"'
+        , default = ""
+        )
+    cmd.add_argument \
+        ( "-p", "--path"
+        , help    = "Directory component of URL for data download, "
+                    "default=%(default)s"
+        , default = "/sap-export/erp-productive/masterdata/PSP"
+        )
+    cmd.add_argument \
+        ( "--prefix"
+        , help    = "Filename prefix on remote storage, default=%(default)s"
+        , default = "PSP_"
+        )
+    cmd.add_argument \
+        ( "-s", "--scheme"
+        , help    = "URL schem for retrieving file, default=%(default)s"
+        , default = "https"
+        )
+    cmd.add_argument \
+        ( "--suffix"
+        , help    = "Filename suffix on remote storage, default=%(default)s"
+        , default = ".CSV"
+        )
+    cmd.add_argument \
+        ( "-u", "--user"
+        , help    = "User to open the tracker as (%(default)s)"
+        , default = 'admin'
+        )
+    cmd.add_argument \
+        ( "-U", "--update"
+        , help    = "Really update the database"
+        , action  = 'store_true'
+        , default = False
+        )
+    cmd.add_argument \
+        ( "-V", "--verbose"
+        , help    = "Verbose output"
+        , action  = 'store_true'
+        , default = False
+        )
+    cmd.add_argument \
+        ( "file"
+        , help    = "Optional name of the CSV export file"
+                    " -- we're using the URL to retrieve the file if not given"
+        , nargs   = '?'
+        )
+    args = cmd.parse_args ()
+
+    impo = Importer (args)
+    impo.run ()
+
+# end def main
+
+if __name__ == '__main__' :
+    main ()
