@@ -69,8 +69,6 @@ def init \
         def __init__ (self, db, classname, ** properties) :
             self.update_properties \
                 ( messages              = Multilink ("msg")
-                , valid_from            = Date      ()
-                , valid_to              = Date      ()
                 )
             Dep_Ancestor.__init__ (self, db, classname, ** properties)
         # end def __init__

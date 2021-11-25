@@ -43,7 +43,6 @@ def init \
     , Number
     , String
     , Class
-    , Department_Class
     , Ext_Class
     , Full_Issue_Class
     , Location_Class
@@ -182,6 +181,7 @@ def init \
         , purchase_type         = Multilink ("purchase_type")
         , infosec_amount        = Number    ()
         , payment_type_amount   = Number    ()
+        , departments           = Multilink ("department")
         )
 
     pr_approval_order = Class \
@@ -192,6 +192,7 @@ def init \
         , is_finance            = Boolean   ()
         , is_board              = Boolean   ()
         , want_no_messages      = Boolean   ()
+        , only_nosy             = Boolean   ()
         )
     pr_approval_order.setkey ('role')
 
@@ -290,6 +291,16 @@ def init \
         , valid                 = Boolean   ()
         )
     io.setkey ('order_number')
+
+    psp = Class \
+        ( db, ''"psp_element"
+        , number                = String    ()
+        , name                  = String    ()
+        , valid                 = Boolean   ()
+        , project               = Link      ("time_project")
+        , organisation          = Link      ("organisation")
+        )
+    psp.setkey ('number')
 
     class PR (Full_Issue_Class) :
         def __init__ (self, db, classname, ** properties) :
@@ -391,6 +402,21 @@ def init \
     # end class PR_SAP_CC_Class
     PR_SAP_CC_Class (db, ''"sap_cc")
 
+    Dep_Ancestor = kw ['Department_Class']
+    class Department_Class (Dep_Ancestor) :
+        """ Add some attributes to department """
+        def __init__ (self, db, classname, ** properties) :
+            self.update_properties \
+                ( nosy                  = Multilink ("user")
+                , deputy_gets_mail      = Boolean   ()
+                )
+            Dep_Ancestor.__init__ (self, db, classname, ** properties)
+        # end def __init__
+    # end class Department_Class
+    export.update (dict (Department_Class = Department_Class))
+    assert 'department' not in db.classes
+    Department_Class (db, ''"department")
+
     # Protect against dupe instantiation during i18n template generation
     if 'organisation' not in db.classes :
         Organisation_Class (db, ''"organisation")
@@ -398,8 +424,6 @@ def init \
         Location_Class (db, ''"location")
     if 'org_location' not in db.classes :
         Org_Location_Class (db, ''"org_location")
-    if 'department' not in db.classes :
-        Department_Class   (db, ''"department")
     if 'time_project_status' not in db.classes :
         Time_Project_Status_Class (db, ''"time_project_status")
 
