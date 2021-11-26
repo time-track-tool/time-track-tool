@@ -292,14 +292,12 @@ def check_user_dynamic (db, cl, nodeid, new_values) :
         ( _, cl, nodeid, new_values
         , 'valid_from'
         , 'org_location'
-        , 'department'
         )
     user     = new_values.get ('user',         cl.get (nodeid, 'user'))
     old_from = cl.get (nodeid, 'valid_from')
     val_from = new_values.get ('valid_from',   old_from)
     val_to   = new_values.get ('valid_to',     cl.get (nodeid, 'valid_to'))
     olo      = new_values.get ('org_location', cl.get (nodeid, 'org_location'))
-    dept     = new_values.get ('department',   cl.get (nodeid, 'department'))
     # Note: The valid_to date is *not* part of the validity interval of
     # the user_dynamic record. So when checking for frozen status we
     # can allow exactly the valid_to date.
@@ -458,13 +456,11 @@ def new_user_dynamic (db, cl, nodeid, new_values) :
         , 'user'
         , 'valid_from'
         , 'org_location'
-        , 'department'
         )
     user       = new_values ['user']
     valid_from = new_values ['valid_from']
     valid_to   = new_values.get ('valid_to', None)
     olo        = new_values ['org_location']
-    dept       = new_values ['department']
     if freeze.frozen (db, user, valid_from) :
         raise Reject (_ ("Frozen: %(valid_from)s") % locals ())
     last = user_dynamic.last_user_dynamic (db, user)

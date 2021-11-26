@@ -118,7 +118,7 @@ Role "procurement-admin":
  User is allowed to edit security_req_group (Edit for "security_req_group" only)
  User is allowed to reject PR in state approving or approved (Edit for "purchase_request": ('messages', 'status') only)
 Role "project":
- User is allowed Edit on (Edit for "time_project": ('cost_center', 'deputy', 'description', 'department', 'name', 'nosy', 'organisation', 'responsible', 'status') only)
+ User is allowed Edit on (Edit for "time_project": ('cost_center', 'deputy', 'description', 'name', 'nosy', 'organisation', 'responsible', 'status') only)
  User is allowed to access time_project (View for "time_project" only)
  User is allowed to create time_project (Create for "time_project" only)
  User is allowed to create time_project_status (Create for "time_project_status" only)
@@ -203,7 +203,7 @@ Role "user":
  User may access the web interface (Web Access)
  User may access the xmlrpc interface (Xmlrpc Access)
  User may use the email interface (Email Access)
- User may view time category if user is owner or deputy of time category or on nosy list of time category or if user is department manager of time category (View for "time_project" only)
+ User may view time category if user is owner or deputy of time category or on nosy list of time category (View for "time_project" only)
  User with view role is allowed editing if status is 'approved' or 'ordered' (Edit for "purchase_request": ('files', 'messages', 'nosy', 'status') only)
  Users are allowed if an approval from them is linked to the PR (Edit for "purchase_request": ('files', 'messages', 'nosy') only)
  Users are allowed if an approval from them is linked to the PR (View for "purchase_request" only)

@@ -200,41 +200,8 @@ properties = \
           )
         ]
       )
-    , ( 'department'
-      , [ ( 'deputy'
-          , ['admin', 'cc-permission', 'controlling', 'doc_admin', 'dom-user-edit-facility', 'dom-user-edit-gtt', 'dom-user-edit-hr', 'dom-user-edit-office', 'facility', 'functional-role', 'hr', 'hr-leave-approval', 'hr-vacation', 'it', 'office', 'organisation', 'pgp', 'procurement', 'project', 'project_view', 'summary_view', 'time-report', 'user', 'user_view', 'vacation-report']
-          )
-        , ( 'description'
-          , ['admin', 'cc-permission', 'controlling', 'doc_admin', 'dom-user-edit-facility', 'dom-user-edit-gtt', 'dom-user-edit-hr', 'dom-user-edit-office', 'facility', 'functional-role', 'hr', 'hr-leave-approval', 'hr-vacation', 'it', 'office', 'organisation', 'pgp', 'procurement', 'project', 'project_view', 'summary_view', 'time-report', 'user', 'user_view', 'vacation-report']
-          )
-        , ( 'doc_num'
-          , ['admin', 'cc-permission', 'controlling', 'doc_admin', 'dom-user-edit-facility', 'dom-user-edit-gtt', 'dom-user-edit-hr', 'dom-user-edit-office', 'facility', 'functional-role', 'hr', 'hr-leave-approval', 'hr-vacation', 'it', 'office', 'organisation', 'pgp', 'procurement', 'project', 'project_view', 'summary_view', 'time-report', 'user', 'user_view', 'vacation-report']
-          )
-        , ( 'manager'
-          , ['admin', 'cc-permission', 'controlling', 'doc_admin', 'dom-user-edit-facility', 'dom-user-edit-gtt', 'dom-user-edit-hr', 'dom-user-edit-office', 'facility', 'functional-role', 'hr', 'hr-leave-approval', 'hr-vacation', 'it', 'office', 'organisation', 'pgp', 'procurement', 'project', 'project_view', 'summary_view', 'time-report', 'user', 'user_view', 'vacation-report']
-          )
-        , ( 'messages'
-          , ['admin', 'cc-permission', 'controlling', 'doc_admin', 'dom-user-edit-facility', 'dom-user-edit-gtt', 'dom-user-edit-hr', 'dom-user-edit-office', 'facility', 'functional-role', 'hr', 'hr-leave-approval', 'hr-vacation', 'it', 'office', 'organisation', 'pgp', 'procurement', 'project', 'project_view', 'summary_view', 'time-report', 'user', 'user_view', 'vacation-report']
-          )
-        , ( 'name'
-          , ['admin', 'cc-permission', 'controlling', 'doc_admin', 'dom-user-edit-facility', 'dom-user-edit-gtt', 'dom-user-edit-hr', 'dom-user-edit-office', 'facility', 'functional-role', 'hr', 'hr-leave-approval', 'hr-vacation', 'it', 'office', 'organisation', 'pgp', 'procurement', 'project', 'project_view', 'summary_view', 'time-report', 'user', 'user_view', 'vacation-report']
-          )
-        , ( 'part_of'
-          , ['admin', 'cc-permission', 'controlling', 'doc_admin', 'dom-user-edit-facility', 'dom-user-edit-gtt', 'dom-user-edit-hr', 'dom-user-edit-office', 'facility', 'functional-role', 'hr', 'hr-leave-approval', 'hr-vacation', 'it', 'office', 'organisation', 'pgp', 'procurement', 'project', 'project_view', 'summary_view', 'time-report', 'user', 'user_view', 'vacation-report']
-          )
-        , ( 'valid_from'
-          , ['admin', 'cc-permission', 'controlling', 'doc_admin', 'dom-user-edit-facility', 'dom-user-edit-gtt', 'dom-user-edit-hr', 'dom-user-edit-office', 'facility', 'functional-role', 'hr', 'hr-leave-approval', 'hr-vacation', 'it', 'office', 'organisation', 'pgp', 'procurement', 'project', 'project_view', 'summary_view', 'time-report', 'user', 'user_view', 'vacation-report']
-          )
-        , ( 'valid_to'
-          , ['admin', 'cc-permission', 'controlling', 'doc_admin', 'dom-user-edit-facility', 'dom-user-edit-gtt', 'dom-user-edit-hr', 'dom-user-edit-office', 'facility', 'functional-role', 'hr', 'hr-leave-approval', 'hr-vacation', 'it', 'office', 'organisation', 'pgp', 'procurement', 'project', 'project_view', 'summary_view', 'time-report', 'user', 'user_view', 'vacation-report']
-          )
-        ]
-      )
     , ( 'doc'
       , [ ( 'artefact'
-          , ['admin', 'cc-permission', 'controlling', 'doc_admin', 'dom-user-edit-facility', 'dom-user-edit-gtt', 'dom-user-edit-hr', 'dom-user-edit-office', 'facility', 'functional-role', 'hr', 'hr-leave-approval', 'hr-vacation', 'it', 'office', 'organisation', 'pgp', 'procurement', 'project', 'project_view', 'summary_view', 'time-report', 'user', 'user_view', 'vacation-report']
-          )
-        , ( 'department'
           , ['admin', 'cc-permission', 'controlling', 'doc_admin', 'dom-user-edit-facility', 'dom-user-edit-gtt', 'dom-user-edit-hr', 'dom-user-edit-office', 'facility', 'functional-role', 'hr', 'hr-leave-approval', 'hr-vacation', 'it', 'office', 'organisation', 'pgp', 'procurement', 'project', 'project_view', 'summary_view', 'time-report', 'user', 'user_view', 'vacation-report']
           )
         , ( 'doc_category'
@@ -720,9 +687,6 @@ properties = \
         , ( 'date'
           , ['admin', 'cc-permission', 'controlling', 'doc_admin', 'dom-user-edit-facility', 'dom-user-edit-gtt', 'dom-user-edit-hr', 'dom-user-edit-office', 'facility', 'functional-role', 'hr', 'hr-leave-approval', 'hr-vacation', 'it', 'office', 'organisation', 'pgp', 'procurement', 'project', 'project_view', 'summary_view', 'time-report', 'user', 'user_view', 'vacation-report']
           )
-        , ( 'department'
-          , ['admin', 'cc-permission', 'controlling', 'doc_admin', 'dom-user-edit-facility', 'dom-user-edit-gtt', 'dom-user-edit-hr', 'dom-user-edit-office', 'facility', 'functional-role', 'hr', 'hr-leave-approval', 'hr-vacation', 'it', 'office', 'organisation', 'pgp', 'procurement', 'project', 'project_view', 'summary_view', 'time-report', 'user', 'user_view', 'vacation-report']
-          )
         , ( 'op_project'
           , ['admin', 'cc-permission', 'controlling', 'doc_admin', 'dom-user-edit-facility', 'dom-user-edit-gtt', 'dom-user-edit-hr', 'dom-user-edit-office', 'facility', 'functional-role', 'hr', 'hr-leave-approval', 'hr-vacation', 'it', 'office', 'organisation', 'pgp', 'procurement', 'project', 'project_view', 'summary_view', 'time-report', 'user', 'user_view', 'vacation-report']
           )
@@ -832,9 +796,6 @@ properties = \
           , ['admin', 'controlling', 'procurement', 'project', 'project_view']
           )
         , ( 'cost_center'
-          , ['admin', 'controlling', 'procurement', 'project', 'project_view']
-          )
-        , ( 'department'
           , ['admin', 'controlling', 'procurement', 'project', 'project_view']
           )
         , ( 'deputy'
@@ -1065,10 +1026,7 @@ properties = \
         ]
       )
     , ( 'timesheet'
-      , [ ( 'department'
-          , ['admin', 'cc-permission', 'controlling', 'doc_admin', 'dom-user-edit-facility', 'dom-user-edit-gtt', 'dom-user-edit-hr', 'dom-user-edit-office', 'facility', 'functional-role', 'hr', 'hr-leave-approval', 'hr-vacation', 'it', 'office', 'organisation', 'pgp', 'procurement', 'project', 'project_view', 'summary_view', 'time-report', 'user', 'user_view', 'vacation-report']
-          )
-        , ( 'first_day'
+      , [ ( 'first_day'
           , ['admin', 'cc-permission', 'controlling', 'doc_admin', 'dom-user-edit-facility', 'dom-user-edit-gtt', 'dom-user-edit-hr', 'dom-user-edit-office', 'facility', 'functional-role', 'hr', 'hr-leave-approval', 'hr-vacation', 'it', 'office', 'organisation', 'pgp', 'procurement', 'project', 'project_view', 'summary_view', 'time-report', 'user', 'user_view', 'vacation-report']
           )
         , ( 'last_day'
@@ -1266,9 +1224,6 @@ properties = \
         , ( 'daily_worktime'
           , ["admin", "dom-user-edit-gtt", "dom-user-edit-hr", "hr", "hr-org-location"]
           )
-        , ( 'department'
-          , ['admin', 'cc-permission', 'controlling', 'doc_admin', 'dom-user-edit-facility', 'dom-user-edit-gtt', 'dom-user-edit-hr', 'dom-user-edit-office', 'facility', 'functional-role', 'hr', 'hr-leave-approval', 'hr-vacation', 'it', 'office', 'organisation', 'pgp', 'procurement', 'project', 'project_view', 'summary_view', 'time-report', 'user', 'user_view', 'vacation-report']
-          )
         , ( 'do_auto_wp'
           , ["admin", "dom-user-edit-gtt", "dom-user-edit-hr", "hr", "hr-org-location"]
           )
@@ -1432,9 +1387,6 @@ properties = \
           , ['admin', 'cc-permission', 'controlling', 'doc_admin', 'dom-user-edit-facility', 'dom-user-edit-gtt', 'dom-user-edit-hr', 'dom-user-edit-office', 'facility', 'functional-role', 'hr', 'hr-leave-approval', 'hr-vacation', 'it', 'office', 'organisation', 'pgp', 'procurement', 'project', 'project_view', 'summary_view', 'time-report', 'user', 'user_view', 'vacation-report']
           )
         , ( 'date'
-          , ['admin', 'cc-permission', 'controlling', 'doc_admin', 'dom-user-edit-facility', 'dom-user-edit-gtt', 'dom-user-edit-hr', 'dom-user-edit-office', 'facility', 'functional-role', 'hr', 'hr-leave-approval', 'hr-vacation', 'it', 'office', 'organisation', 'pgp', 'procurement', 'project', 'project_view', 'summary_view', 'time-report', 'user', 'user_view', 'vacation-report']
-          )
-        , ( 'department'
           , ['admin', 'cc-permission', 'controlling', 'doc_admin', 'dom-user-edit-facility', 'dom-user-edit-gtt', 'dom-user-edit-hr', 'dom-user-edit-office', 'facility', 'functional-role', 'hr', 'hr-leave-approval', 'hr-vacation', 'it', 'office', 'organisation', 'pgp', 'procurement', 'project', 'project_view', 'summary_view', 'time-report', 'user', 'user_view', 'vacation-report']
           )
         , ( 'flexi_max'

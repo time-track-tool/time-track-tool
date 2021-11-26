@@ -127,14 +127,6 @@
           , item = dyn.org_location
           ).formatlink ()"/>
        </tr>
-       <tr tal:condition="python: dyn">
-        <th tal:content="structure python:
-            utils.fieldname ('user_dynamic', 'department')"/>
-        <td tal:content="structure python:utils.ExtProperty
-          ( utils, dyn.department.name
-          , item = dyn.department
-          ).formatlink ()"/>
-       </tr>
       </tal:block>
      </tal:block>
      <tr tal:condition="python:'contacts' in props">

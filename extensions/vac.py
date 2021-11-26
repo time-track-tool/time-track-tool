@@ -277,7 +277,6 @@ class Leave_Display (object) :
         now        = self.now = Date ('.')
         user       = None
         dt         = None
-        department = None
         supervisor = None
         self.filterspec = request.filterspec
         self.request    = request
@@ -288,8 +287,6 @@ class Leave_Display (object) :
                 user = request.filterspec ['user']
             if 'supervisor' in request.filterspec :
                 supervisor = request.filterspec ['supervisor']
-            if 'department' in request.filterspec :
-                department = request.filterspec ['department']
         if not dt :
             som = common.start_of_month (now)
             eom = common.end_of_month (now)
@@ -311,17 +308,6 @@ class Leave_Display (object) :
         if supervisor :
             u = db.user.filter \
                 (None, dict (supervisor = supervisor), sort = srt)
-            users.extend (u)
-        if department :
-            did = db.user_dynamic.filter (None, dict (department = department))
-            u = []
-            for d in did :
-                dyn = db.user_dynamic.getnode (d)
-                if dyn.valid_from > now :
-                    continue
-                if dyn.valid_to and dyn.valid_to < now :
-                    continue
-                u.append (dyn.user)
             users.extend (u)
         valid = db.user_status.filter (None, dict (name = 'valid'))
         if not self.users :

@@ -1,6 +1,6 @@
 from roundup import date
 
-def import_data_13 (db, user, dep, olo) :
+def import_data_13 (db, user, olo) :
      otp = None
      db.user_dynamic.create \
          ( hours_fri          = 7.5
@@ -21,7 +21,6 @@ def import_data_13 (db, user, dep, olo) :
          , travel_full        = 0
          , vacation_month     = 1.0
          , hours_sat          = 0.0
-         , department         = dep
          , org_location       = olo
          , overtime_period    = otp
          , user               = user

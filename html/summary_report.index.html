@@ -22,12 +22,6 @@
          (utils, pdict ['date'])
        , user              = utils.ExtProperty 
          (utils, pdict ['user'])
-       , department        = utils.ExtProperty
-         ( utils, pdict ['department']
-         , multiselect   = 1
-         , multi_selonly = 1
-         , filter        = utils.valid_item (now)
-         )
        , supervisor        = utils.ExtProperty
          (utils, pdict ['supervisor'])
        , org_location      = utils.ExtProperty
@@ -172,7 +166,7 @@
            [myprops [p] for p in sorted (fpkeys, key = i18n.gettext)
             if p in myprops]
          ; propkeys       python:
-           ( 'date', 'user', 'department', 'supervisor', 'org_location'
+           ( 'date', 'user', 'supervisor', 'org_location'
            , 'time_wp', 'time_project', 'time_wp_group'
            , 'time_wp_summary_no', 'cost_center'
            , 'cost_center_group'

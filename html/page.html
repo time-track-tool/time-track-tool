@@ -78,8 +78,6 @@
    , ('adr_type', '')   : '@columns=id,code,description,typecat&'
                           '@sort=code&@filter=typecat&@pagesize=50&'
                           '@startwith=0&typecat=%s' % typecat
-   , ('alias', '')      : '@columns=name,alias_to_alias,alias_to_user&'
-                          '@pagesize=500&@startwith=0'
    , ('auto_wp', '')    : '@columns=name,time_project,contract_type,duration&'
                           '@sort=contract_type&@group=org_location&'
                           '@filter=is_valid&'
@@ -124,7 +122,7 @@
    , ('discount_group', '')
                         : '@columns=id,name,currency&'
                           '@sort=-id&@pagesize=20&@startwith=0'
-   , ('doc', '')        : '@columns=title,document_nr,artefact,department&'
+   , ('doc', '')        : '@columns=title,document_nr,artefact&'
                           '@sort=title&@filter=status&status=-1,1,2,3'
    , ('dyndns', '')     : '@action=singleton'
    , ('ext_tracker_state', '')
@@ -135,8 +133,6 @@
                           '@filter=issue.status,issue.responsible&@pagesize=50&'
                           '@startwith=0&issue.status=%s&issue.responsible=%s'
                           % (s_stati, uid)
-   , ('group', '')      : '@columns=name,gid,description,org_location&'
-                          '@sort=-id&@pagesize=500&@startwith=0'
    , ('ingredient_used_by_substance', '') :
                           '@columns=id,ingredient,ingredient.name,'
                           'substance,substance.name,quantity&'
@@ -420,7 +416,6 @@
      , ('device_group',        'Edit',   '?@template=item', 1)
      , ('discount_group',      'Edit',   '?@template=item', 1)
      , ('dispatch_type',       'Edit',   '?@template=item', 1)
-     , ('dns_record_type',     'Edit',   '?@template=item', 1)
      , ('doc',                 'Edit',   '?@template=item', 1)
      , ('doc_category',        'Edit',   '?@template=item', 1)
      , ('doc_issue_status',    'Edit',   '?@template=item', 1)

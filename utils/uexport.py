@@ -173,8 +173,6 @@ class Exporter (sqlparser.SQL_Parser) :
         self.tables._functional_role.contents = frn
         for i in self.tables._cost_center_group.contents :
             i._responsible = 1
-        for i in self.tables._department.contents :
-            i._deputy = i._manager = 1
         for i in self.tables._domain_permission.contents :
             i._clearance_by = i._timetracking_by = 1
         for i in self.tables._msg.contents :

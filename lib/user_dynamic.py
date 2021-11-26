@@ -984,7 +984,6 @@ dynuser_copyfields = \
      , 'hours_sat'
      , 'hours_sun'
      , 'org_location'
-     , 'department'
      , 'all_in'
      , 'additional_hours'
      , 'overtime_period'
@@ -1019,7 +1018,7 @@ def check_email (db, contacts, email, t_email) :
     return False
 # end def check_email
 
-def user_create_magic (db, uid, olo, dep) :
+def user_create_magic (db, uid, olo) :
     """ Perform magic on new user creation
         We used to create a dynamic user record here, this is no longer
         done.
