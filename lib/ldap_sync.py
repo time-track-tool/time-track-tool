@@ -301,7 +301,7 @@ class Userdynamic_Sync_Config_Entry (Config_Entry) :
     """ Items to be synced from current user_dynamic record.
         Currently this is one-way, only from roundup to ldap.
         Except for creation: If a new user is created and the
-        org_location and department properties exist in ldap we perform
+        org_location properties exist in ldap we perform
         the user_create_magic.
         The entries inside the sub-properties 'sap_cc', 'org_location'
         are as follows:
@@ -543,10 +543,6 @@ class LDAP_Roundup_Sync (Log) :
     def get_department (self, user, attr) :
         if user.department_temp :
             return self.truncate_department (user.department_temp)
-        dyn = self.get_dynamic_user (user.id)
-        if dyn :
-            dyn_d = self.db.department.get (dyn.department, 'name')
-            return self.truncate_department (dyn_d)
     # end def get_department
 
     def get_name (self, user, attr) :
@@ -1492,7 +1488,7 @@ class LDAP_Roundup_Sync (Log) :
                     changed = True
                     # Perform user creation magic for new user
                     if 'org_location' in self.db.classes :
-                        olo = dep = None
+                        olo = None
                         if 'company' in luser :
                             olo = luser ['company'].value
                             olo = olo.encode ('utf-8')
@@ -1501,20 +1497,11 @@ class LDAP_Roundup_Sync (Log) :
                             except KeyError :
                                 self.warn ("Company %s not found" % olo)
                                 olo = None
-                        if 'department' in luser :
-                            dep = luser ['department'].value
-                            dep = dep.encode ('utf-8')
-                            try :
-                                dep = self.db.department.lookup (dep)
-                            except KeyError :
-                                self.warn ("Department %s not found" % dep)
-                                dep = None
                         self.info \
-                            ( "Before user create magic: %s, "
-                              "org_location: %s, department: %s"
-                            % (username, olo, dep)
+                            ( "Before user create magic: %s, org_location: %s"
+                            % (username, olo)
                             )
-                        user_dynamic.user_create_magic (self.db, uid, olo, dep)
+                        user_dynamic.user_create_magic (self.db, uid, olo)
         if changed and self.update_roundup and not self.dry_run_roundup :
             self.db.commit ()
     # end def sync_user_from_ldap
