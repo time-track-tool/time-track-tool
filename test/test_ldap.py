@@ -542,7 +542,6 @@ class Test_Case_LDAP_Sync (_Test_Base, unittest.TestCase) :
             , mail              = LDAP_Property ('jane.doe@example.com')
             , displayname       = LDAP_Property ('Jane Doe')
             , physicalDeliveryOfficeName = LDAP_Property ('ASD.MJH.402')
-            , department = LDAP_Property ('jdoe_department')
             )
           )
         , 'vsuper@ds1.internal' :
@@ -904,7 +903,9 @@ class Test_Case_LDAP_Sync (_Test_Base, unittest.TestCase) :
         self.ldap_sync.sync_user_from_ldap ('rcase@ds1.internal')
         self.ldap_sync.sync_user_to_ldap ('rcase@ds1.internal')
         dn = 'CN=Roman Case,OU=internal'
-        self.assertNotIn ('department', self.ldap_modify_result [dn])
+        self.assertIn ('department', self.ldap_modify_result [dn])
+        depentry = self.ldap_modify_result [dn]['department'][0][0]
+        self.assertEqual (depentry, 'MODIFY_DELETE')
 
         # set department_temp and check override
         department_temp_name = 'dep_override'
@@ -916,7 +917,6 @@ class Test_Case_LDAP_Sync (_Test_Base, unittest.TestCase) :
         new_department = self.ldap_modify_result [dn]['department'][0][1][0]
         self.assertEqual (new_department, department_temp_name)
 
-        import pdb; pdb.set_trace ()
         # sync department from vie_user
         department_temp_name = 'dep_override_2'
         self.ldap_sync.sync_user_to_ldap ('jdoe@ds1.internal')

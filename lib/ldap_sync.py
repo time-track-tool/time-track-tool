@@ -539,6 +539,7 @@ class LDAP_Roundup_Sync (Log) :
                 )
             department = department_trunc
         return department
+    # end def truncate_department
 
     def get_department (self, user, attr) :
         if user.department_temp :
@@ -847,9 +848,7 @@ class LDAP_Roundup_Sync (Log) :
                     , write_vie_user = False
                     )
                 )
-        if  (   self.allow_sync_user ('department_temp', 'department')
-            and self.allow_sync_user ('department', 'department')
-            ) :
+        if self.allow_sync_user ('department_temp', 'department') :
             self.append_sync_attribute \
                 ( department_temp = User_Sync_Config_Entry
                     ( name           = 'department'
