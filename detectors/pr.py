@@ -369,12 +369,20 @@ def check_tp_cc_consistency (db, cl, nodeid, new_values, org = None) :
 
 def update_nosy (db, cl, nodeid, new_values) :
     """ On sign&send of a PR we update the nosy list with the nosy list
-        from the purchase_type
+        from purchase_type, department, sap_cc, and time_project
     """
     nosy = set (new_values.get ('nosy', cl.get (nodeid, 'nosy')))
     pt   = new_values.get ('purchase_type', cl.get (nodeid, 'purchase_type'))
     nosy.update (db.purchase_type.get (pt, 'nosy'))
-    new_values ['nosy'] = nosy
+    tc   = new_values.get ('time_project', cl.get (nodeid, 'time_project'))
+    if tc :
+        nosy.update (db.time_project.get (tc, 'nosy'))
+    sap  = new_values.get ('sap_cc', cl.get (nodeid, 'sap_cc'))
+    if sap :
+        nosy.update (db.sap_cc.get (sap, 'nosy'))
+    dep  = new_values.get ('department', cl.get (nodeid, 'department'))
+    nosy.update (db.department.get (dep, 'nosy'))
+    new_values ['nosy'] = list (nosy)
 # end def update_nosy
 
 def change_pr (db, cl, nodeid, new_values) :
@@ -766,6 +774,9 @@ def set_approval_pr (db, cl, nodeid, new_values) :
 # end def set_approval_pr
 
 def nosy_for_approval (db, app, add = False) :
+    """ Used for adding/removing users from nosy list prior to/after
+        approval
+    """
     nosy = {}
     if app.user :
         for k in common.approval_by (db, app.user) :
@@ -795,24 +806,35 @@ def nosy_for_approval (db, app, add = False) :
 # end def nosy_for_approval
 
 def fix_nosy (db, cl, nodeid, new_values) :
-    nosy  = dict.fromkeys (new_values.get ('nosy', cl.get (nodeid, 'nosy')))
-    onosy = dict (nosy)
+    """ At the end of all nosy-list manipulations make sure that some
+        users *stay* on the nosy list even if they were removed for some
+        reason previously.
+    """
+    nosy  = set (new_values.get ('nosy', cl.get (nodeid, 'nosy')))
+    onosy = set (nosy)
     rq    = new_values.get ('requester', cl.get (nodeid, 'requester'))
     if rq not in nosy :
-        nosy [rq] = 1
+        nosy.add (rq)
     # Allow creator to remove her/himself after initial sign&send
     pr_approving = db.pr_status.lookup ('approving')
     if 'status' in new_values and new_values ['status'] == pr_approving :
         cr = cl.get (nodeid, 'creator')
         if cr not in nosy :
-            nosy [cr] = 1
+            nosy.add (cr)
     # Agent should always be kept on nosy list, might vanish due to
     # removal by nosy_for_approval
     pan = 'purchasing_agents'
     agents = new_values.get (pan, cl.get (nodeid, pan))
-    nosy.update (dict.fromkeys (agents))
+    nosy.update (agents)
+    # All users from roles configured as 'only_nosy' in approval_order
+    # should be kept on the nosy list, but only while approving
+    status = new_values.get ('status', cl.get (nodeid, 'status'))
+    if status == pr_approving :
+        pr = db.purchase_request.getnode (nodeid)
+        users = prlib.compute_approvals (db, pr, email_only = True)
+        nosy.update (users)
     if onosy != nosy :
-        new_values ['nosy'] = nosy.keys ()
+        new_values ['nosy'] = list (nosy)
 # end def fix_nosy
 
 def set_infosec (db, cl, nodeid, new_values) :
@@ -866,10 +888,10 @@ def update_pr (db, pr, ap, nosy, txt, ** kw) :
         , author  = '1' # admin
         , date    = Date ('.')
         )
-    msgs = dict.fromkeys (pr.messages)
-    msgs [msg] = 1
+    msgs = set (pr.messages)
+    msgs.add (msg)
     d = kw
-    d.update (nosy = nosy.keys (), messages = msgs.keys ())
+    d.update (nosy = list (nosy), messages = list (msgs))
     db.purchase_request.set (pr.id, ** d)
 # end def update_pr
 
@@ -1114,9 +1136,25 @@ def pt_check_roles (db, cl, nodeid, new_values) :
 # end def pt_check_roles
 
 def pao_check_roles (db, cl, nodeid, new_values) :
-    """ Now allow the role-name to not be a roundup role anymore """
+    """ Now allow the role-name to not be a roundup role anymore
+        Also check that only_nosy is set to a boolean value.
+    """
     if 'role' in new_values and ',' in new_values ['role'] :
         raise Reject (_ ("No commas allowed in role name"))
+    nosyflag   = new_values.get ('only_nosy')
+    is_board   = new_values.get ('is_board')
+    is_finance = new_values.get ('is_finance')
+    if nodeid :
+        if nosyflag is None :
+            nosyflag   = cl.get (nodeid, 'only_nosy')
+        if is_board is None :
+            is_board   = cl.get (nodeid, 'is_board')
+        if is_finance is None :
+            is_finance = cl.get (nodeid, 'is_finance')
+    if nosyflag is None :
+        new_values ['only_nosy'] = False
+    if nosyflag and (is_board or is_finance) :
+        raise Reject ('Finance or Board may not be set only nosy')
 # end def pao_check_roles
 
 def check_supplier_rating (db, cl, nodeid, new_values) :

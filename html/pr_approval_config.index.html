@@ -1,0 +1,35 @@
+<tal:block metal:use-macro="templates/page/macros/icing">
+<tal:block metal:fill-slot="create_or_query">
+ <tal:block 
+  metal:use-macro="templates/page/macros/create_or_query_new_tracker_item" />
+</tal:block>
+
+<tal:block metal:fill-slot="content">
+ <tal:block tal:define=
+  "batch request/batch;
+   pdict python: utils.properties_dict (db, context);
+   props python:
+    ( utils.ExtProperty (utils, pdict ['id'])
+    , utils.ExtProperty (utils, pdict ['amount'], force_link = 1)
+    , utils.ExtProperty (utils, pdict ['infosec_amount'], force_link = 1)
+    , utils.ExtProperty (utils, pdict ['payment_type_amount'], force_link = 1)
+    , utils.ExtProperty (utils, pdict ['pr_ext_resource'], multiselect = 1)
+    , utils.ExtProperty (utils, pdict ['role'], multiselect = 1)
+    , utils.ExtProperty (utils, pdict ['purchase_type'], multiselect = 1)
+    , utils.ExtProperty (utils, pdict ['organisations'], multiselect = 1)
+    , utils.ExtProperty (utils, pdict ['departments'], multiselect = 1)
+    , utils.ExtProperty (utils, pdict ['if_not_in_las'])
+    , utils.ExtProperty (utils, pdict ['valid'])
+    , utils.ExtProperty (utils, pdict ['creation'])
+    , utils.ExtProperty (utils, pdict ['creator'])
+    , utils.ExtProperty (utils, pdict ['activity'])
+    , utils.ExtProperty (utils, pdict ['actor'])
+    );
+   "
+  tal:condition="context/is_view_ok">
+
+  <tal:block metal:use-macro="templates/page/macros/search_results"/>
+  <tal:block metal:use-macro="templates/page/macros/simple_search_form"/>
+ </tal:block>
+</tal:block>
+</tal:block>

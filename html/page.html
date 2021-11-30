@@ -222,6 +222,12 @@
                           'product_group,measuring_unit,'
                           'packaging_unit,minimum_inventory&'
                           ':filter=status&:pagesize=50&:startwith=0&status=1'
+   , ('pr_approval_config', '')
+                        : ':columns=id,amount,infosec_amount,'
+                          'payment_type_amount,pr_ext_resource,role,'
+                          'purchase_type,organisations,departments,'
+                          'if_not_in_las,valid&:filter=valid&valid=yes&'
+                          ':pagesize=50&:startwith=0'
    , ('pr_offer_item', '')
                         : '@columns=id,add_to_las,supplier,product_group&'
                           ':filter=add_to_las,creation&add_to_las=1&'
@@ -619,6 +625,7 @@
      , ('public_holiday',      'View', 1,               ('',''))
      , ('purchase_request',    'View', 1,               ('',''))
      , ('purchase_type',       'View', 1,               ('',''))
+     , ('pr_approval_config',  'View', 1,               ('',''))
      , ('qsl',                 'View', 1,               ('',''))
      , ('qso',                 'View', 1,               ('',''))
      , ('rc_product',          'View', 1,               ('',''))
