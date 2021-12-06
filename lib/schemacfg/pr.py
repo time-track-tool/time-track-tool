@@ -216,6 +216,7 @@ def init \
         , vat                   = Number    ()
         , sap_cc                = Link      ("sap_cc")
         , time_project          = Link      ("time_project")
+        , psp_element           = Link      ("psp_element")
         , purchase_type         = Link      ("purchase_type")
         , is_asset              = Boolean   ()
         , product_group         = Link      ("product_group", do_journal = 'no')
@@ -319,6 +320,9 @@ def init \
                                                     )
                 , safety_critical       = Boolean   ()
                 , time_project          = Link      ( "time_project"
+                                                    , do_journal = 'no'
+                                                    )
+                , psp_element           = Link      ( "psp_element"
                                                     , do_journal = 'no'
                                                     )
                 , part_of_budget        = Link      ( "part_of_budget"
@@ -486,6 +490,7 @@ def security (db, ** kw) :
         , ("pr_supplier",        ["User"],              ["Procurement-Admin"])
         , ("pr_rating_category", ["User"],              ["Procurement-Admin"])
         , ("pr_supplier_rating", ["User"],              ["Procurement-Admin"])
+        , ("psp_element",        ["User"],              [])
         , ("purchase_type",      ["User"],              ["Procurement-Admin"])
         , ("terms_conditions",   ["User"],              [])
         , ("time_project",       ["User"],              [])

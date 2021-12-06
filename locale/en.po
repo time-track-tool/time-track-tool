@@ -4490,3 +4490,6 @@ msgstr "Only nosy"
 
 msgid "departments"
 msgstr "Departments"
+
+msgid "psp_element"
+msgstr "PSP Element"

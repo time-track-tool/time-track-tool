@@ -68,18 +68,26 @@
       <td tal:content="structure python:context.department.menu ()"/>
      </tr>
      <tr>
-      <th tal:content="structure python:utils.fieldname
-          (classname, 'time_project')"/>
-      <td>
-       <tal:block tal:content="structure python:context.time_project.menu
-            ( sort_on    = ('+', 'description')
-            , additional = ('description',)
-            , ** tc_filt
-            )"/>
-       <tal:block tal:condition="python:
-         context.time_project and not context.time_project.is_edit_ok ()"
-                  tal:replace="context/time_project/description"/>
-      </td>
+      <tal:block tal:condition="python: utils.need_psp (context)">
+       <th tal:content="structure python:utils.fieldname
+           (classname, 'psp_element')"/>
+       <td tal:content="structure python:context.psp_element.menu
+           (valid = True)"/>
+      </tal:block>
+      <tal:block tal:condition="python: not utils.need_psp (context)">
+       <th tal:content="structure python:utils.fieldname
+           (classname, 'time_project')"/>
+       <td>
+        <tal:block tal:content="structure python:context.time_project.menu
+             ( sort_on    = ('+', 'description')
+             , additional = ('description',)
+             , ** tc_filt
+             )"/>
+        <tal:block tal:condition="python:
+          context.time_project and not context.time_project.is_edit_ok ()"
+                   tal:replace="context/time_project/description"/>
+       </td>
+      </tal:block>
       <th tal:content="structure python:utils.fieldname (classname, 'sap_cc')"/>
       <td>
         <span tal:replace="structure python:context.sap_cc.field ()"/>
@@ -349,6 +357,11 @@
         <tr>
          <th/>
          <th style="text-align:left"
+             tal:condition="python: utils.need_psp (context)"
+             tal:content="structure python:utils.fieldname
+             ('pr_offer_item', 'psp_element')"/>
+         <th style="text-align:left"
+             tal:condition="python: not utils.need_psp (context)"
              tal:content="structure python:utils.fieldname
              ('pr_offer_item', 'time_project')"/>
          <th style="text-align:left"
@@ -435,7 +448,10 @@
            <td tal:attributes="colspan python:3+cond"/>
           </tr>
           <tr>
-           <td>
+           <td tal:condition="python: utils.need_psp (i)"
+               tal:content="structure python:i.psp_element.menu
+                   (valid = True)"/>
+           <td tal:condition="python: not utils.need_psp (i)">
             <tal:block tal:content="structure python:i.time_project.menu
                 ( sort_on = ('+', 'description')
                 , additional=('description',)
@@ -566,8 +582,8 @@
           <tr>
            <td>
             <tal:block tal:content="structure python:utils.new_property
-             (context, db, 'pr_offer_item', -idx, 'time_project').menu
-               (sort_on = ('+', 'description'), additional=('description',))"/>
+             (context, db, 'pr_offer_item', -idx, 'psp_element').menu
+               (valid = True)"/>
            </td>
            <td tal:content="structure python:utils.new_property
                (context, db, 'pr_offer_item', -idx, 'sap_cc').menu ()"/>

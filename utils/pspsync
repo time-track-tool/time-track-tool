@@ -58,6 +58,10 @@ class Importer (object) :
             return res [-1]
     # end def get_latest_export_url
 
+    def warn (self, s) :
+        print ("WARN: %s" % s, file = sys.stderr)
+    # end def warn
+
     def importer (self) :
         r  = DictReader (self.f_in, delimiter = self.args.delimiter)
 
@@ -78,49 +82,45 @@ class Importer (object) :
             if org.valid_to and org.valid_to < now :
                 continue
             self.org_by_company_code [org.company_code] = org
+        # Get tc-status active field by tc-status number
+        self.tcs_active = {}
+        for tcsid in self.db.time_project_status.getnodeids (retired = False) :
+            tcs = self.db.time_project_status.getnode (tcsid)
+            self.tcs_active [tcsid] = tcs.active
 
         for line in r :
-            # HMPF: the status flag has no heading
-            stat  = line [None]
-            assert len (stat) == 1
-            stat  = stat [0].decode (self.args.encoding)
             pspno = line ['PRPS~POSID'].decode (self.args.encoding)
             name  = line ['PRPS~POST1'].decode (self.args.encoding)
             ccode = line ['PRPS~PBUKR'].decode (self.args.encoding)
             spt = pspno.split ('-')
-            print (pspno, ccode, stat)
-            # FIXME: Really? The others have TC and org in the last two fields
-            if spt [0] != 'B' :
-                print ("WARN: Ignoring PSP: %s" % pspno)
-                continue
-            if len (spt [-2]) != 5 :
-                print ("WARN: Ignoring malformed PSP: %s" % pspno)
-                continue
-            assert len (spt) == 5 or spt [0] != 'B'
-            # stat field contains an 'X' if invalid, otherwise it is empty
-            if stat :
-                assert stat == 'X'
-                if pspno in self.psp_by_number :
-                    psp = self.psp_by_number [pspno]
-                    if psp.valid :
-                        if self.args.update :
-                            self.db.psp_element.set (psp.id, valid = False)
-                    del self.psp_by_number [pspno]
-                    if self.args.verbose :
-                        print ( "Set to invalid psp_element%s (%s)"
-                              % (psp.id, psp.number)
-                              )
+            #print (pspno, ccode)
+            if len (spt) < 3 :
+                self.warn ("%s: Unknown PSP name format" % pspno)
                 continue
             tcno  = spt [-2].lstrip ('0')
             if not tcno :
                 assert pspno not in self.psp_by_number
                 continue
             if spt [-1] != ccode :
-                print \
-                    ( "WARN: Setting ccode to last field of psp-number for %s"
-                    % pspno
+                self.warn \
+                    ( "%s: Last field in PSP vs Buchungskreis %s"
+                    % (pspno, ccode)
                     )
-                ccode = spt [-1]
+                continue
+            # Get TC, tcs are in pr-tracker after '-'
+            tcs = self.db.time_project.filter \
+                (None, dict (description = '-' + tcno))
+            for tcid in tcs :
+                tc = self.db.time_project.getnode (tcid)
+                if tc.description.endswith ('-' + tcno) :
+                    break
+            else :
+                self.warn ("TC %s not found" % tcno)
+                continue
+            # TC active?
+            if not self.tcs_active [tc.status] :
+                self.warn ("TC %s not active" % tcno)
+                continue
             if pspno in self.psp_by_number :
                 d = {}
                 psp = self.psp_by_number [pspno]
@@ -128,6 +128,8 @@ class Importer (object) :
                     d ['valid'] = True
                 if psp.name != name :
                     d ['name'] = u2s (name)
+                assert tc.description.endswith ('-' + tcno)
+                assert ccode in self.org_by_company_code
                 if d :
                     if self.args.update :
                         self.db.psp_element.set (psp.id, **d)
@@ -137,21 +139,11 @@ class Importer (object) :
                               )
                 del self.psp_by_number [pspno]
             else :
-                # Find TC
-                tcids = self.db.time_project.filter \
-                    (None, dict (description = '-%s' % tcno))
-                tcs = [self.db.time_project.getnode (id) for id in tcids]
-                tcs = [x for x in tcs
-                       if x.description.split ('-')[-1] == tcno
-                      ]
-                assert len (tcs) <= 1
-                if not tcs :
-                    print ("No TC found for %s" % pspno, file = sys.stderr)
-                    continue
-                tc = tcs [0]
                 if ccode not in self.org_by_company_code :
-                    print ("No org found for %s" % pspno, file = sys.stderr)
+                    self.warn ("No org found for %s" % pspno)
                     continue
+                if self.args.verbose :
+                    print ("Creating %s: %s" % (pspno, name))
                 if self.args.update :
                     self.db.psp_element.create \
                         ( number       = u2s (pspno)
@@ -160,9 +152,14 @@ class Importer (object) :
                         , organisation = self.org_by_company_code [ccode].id
                         , project      = tc.id
                         )
-                if self.args.verbose :
-                    print ("Creating %s: %s" % (pspno, name))
 
+        # Mark psp elements that were not found as invalid
+        for pspno in self.psp_by_number :
+            psp = self.psp_by_number [pspno]
+            if self.args.verbose :
+                print ("Marking invalid %s: %s" % (pspno, psp.name))
+            if self.args.update :
+                self.db.psp_element.set (psp.id, valid = False)
         if self.args.update :
             self.db.commit ()
     # end importer
