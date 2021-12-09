@@ -206,7 +206,7 @@ def need_psp (context) :
     if context.sap_cc :
         return True
     if not context.psp_element and context.time_project :
-        if context.status.id == context._db.status.lookup ('open') :
+        if context.status.id == context._db.pr_status.lookup ('open') :
             return True
         return False
     return True
