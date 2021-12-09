@@ -998,6 +998,15 @@ def security (db, ** kw) :
         return userid == ownerid
     # end def own_user_dynamic
 
+    def own_vacation_correction (db, userid, itemid) :
+        """User may view their own vacation corrections
+        """
+        if int (itemid) < 0 :
+            return False
+        ownerid = db.vacation_correction.get (itemid, 'user')
+        return userid == ownerid
+    # end def own_vacation_correction
+
     def own_leave_submission (db, userid, itemid) :
         """ User may edit own leave submissions. """
         ownerid = db.leave_submission.get (itemid, 'user')
@@ -1658,6 +1667,14 @@ def security (db, ** kw) :
         , klass       = 'user_dynamic'
         , check       = own_user_dynamic
         , description = fixdoc (own_user_dynamic.__doc__)
+        )
+    db.security.addPermissionToRole ('User', p)
+
+    p = db.security.addPermission \
+        ( name        = 'View'
+        , klass       = 'vacation_correction'
+        , check       = own_vacation_correction
+        , description = fixdoc (own_vacation_correction.__doc__)
         )
     db.security.addPermissionToRole ('User', p)
 
