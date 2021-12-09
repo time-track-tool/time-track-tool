@@ -1716,6 +1716,12 @@ def security (db, ** kw) :
     db.security.addPermissionToRole ('User', p)
 
     p = db.security.addPermission \
+        ( name        = 'Search'
+        , klass       = 'vacation_correction'
+        )
+    db.security.addPermissionToRole ('User', p)
+
+    p = db.security.addPermission \
         ( name        = 'View'
         , klass       = 'vacation_correction'
         , check       = own_vacation_correction
