@@ -683,7 +683,15 @@
           <td tal:condition="python: not isinstance (i.date._value, type (''))"
               tal:content="python:i.date.pretty (utils.ymd)"/>
           <td tal:condition="python: isinstance (i.date._value, type (''))"/>
-          <td tal:content="python:i.role.plain ()"/>
+          <td tal:condition="python: i.role_id">
+               <a tal:content="python:i.role.plain ()" tal:attributes=
+                  " href  python: 'pr_approval_order%s' % i.role_id.id
+                  ; title python: i.role_id.users.plain ()
+                  "/>
+          </td>
+          <td tal:condition="python: not i.role_id">
+               <span tal:content="python:i.role.plain ()"/>
+          </td>
           <td tal:condition="python:i.status.plain () == 'approved'"
               tal:content="structure python:i.by.plain ()"/>
           <td tal:condition="python:i.status.plain () != 'approved'">
