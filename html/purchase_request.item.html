@@ -36,6 +36,11 @@
     ; tc_filt             python:
         [{}, dict (organisation = context.organisation.id)]
         [bool (context.organisation)]
+    ; psp_filt            python:
+        [ dict (valid = 1)
+        , dict (organisation = context.organisation.id, valid = 1)
+        ]
+        [bool (context.organisation)]
     ; cc_filt             python:
         ['valid=yes', 'valid=yes\x3borganisation=%s' % context.organisation.id]
         [bool (context.organisation)]
@@ -72,7 +77,9 @@
        <th tal:content="structure python:utils.fieldname
            (classname, 'psp_element')"/>
        <td tal:content="structure python:context.psp_element.menu
-           (valid = True)"/>
+           ( additional = ('name',)
+           , ** psp_filt
+           )"/>
       </tal:block>
       <tal:block tal:condition="python: not utils.need_psp (context)">
        <th tal:content="structure python:utils.fieldname

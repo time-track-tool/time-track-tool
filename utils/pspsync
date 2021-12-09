@@ -128,6 +128,8 @@ class Importer (object) :
                     d ['valid'] = True
                 if psp.name != name :
                     d ['name'] = u2s (name)
+                if psp.project_org != '-'.join (spt [-2:]) :
+                    d ['project_org'] = '-'.join (spt [-2:])
                 assert tc.description.endswith ('-' + tcno)
                 assert ccode in self.org_by_company_code
                 if d :
@@ -151,6 +153,7 @@ class Importer (object) :
                         , valid        = True
                         , organisation = self.org_by_company_code [ccode].id
                         , project      = tc.id
+                        , project_org  = '-'.join (spt [-2:])
                         )
 
         # Mark psp elements that were not found as invalid

@@ -300,8 +300,10 @@ def init \
         , valid                 = Boolean   ()
         , project               = Link      ("time_project")
         , organisation          = Link      ("organisation")
+        , project_org           = String    ()
         )
     psp.setkey ('number')
+    psp.setorderprop ('project_org')
 
     class PR (Full_Issue_Class) :
         def __init__ (self, db, classname, ** properties) :
