@@ -455,10 +455,10 @@
            <td tal:attributes="colspan python:3+cond"/>
           </tr>
           <tr>
-           <td tal:condition="python: utils.need_psp (i)"
+           <td tal:condition="python: utils.need_psp (context)"
                tal:content="structure python:i.psp_element.menu
                    (valid = True)"/>
-           <td tal:condition="python: not utils.need_psp (i)">
+           <td tal:condition="python: not utils.need_psp (context)">
             <tal:block tal:content="structure python:i.time_project.menu
                 ( sort_on = ('+', 'description')
                 , additional=('description',)
