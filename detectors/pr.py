@@ -45,7 +45,9 @@ def new_pr (db, cl, nodeid, new_values) :
         new_values ['payment_type'] = '1'
 # end def new_pr
 
-def check_tp_rq (db, cl, nodeid, new_values) :
+def check_psp_cc (db, cl, nodeid, new_values) :
+    """ Check concerning psp_element, sap_cc, organisation
+    """
     dep = new_values.get ('department',   None)
     org = new_values.get ('organisation', None)
     if nodeid :
@@ -53,16 +55,19 @@ def check_tp_rq (db, cl, nodeid, new_values) :
             dep = cl.get (nodeid, 'department')
         if not org :
             org = cl.get (nodeid, 'organisation')
-    if new_values.get ('time_project', None) :
-        tp  = db.time_project.getnode (new_values ['time_project'])
-        # FIXME: At some point we want to re-enable department
-        #if not dep and tp.department :
-        #    new_values ['department'] = dep = tp.department
+    if new_values.get ('psp_element', None) :
+        psp = db.psp_element.getnode (new_values ['psp_element'])
         if  (   not org
-            and tp.organisation
-            and db.organisation.get (tp.organisation, 'may_purchase')
+            and db.organisation.get (psp.organisation, 'may_purchase')
             ) :
-            new_values ['organisation'] = org = tp.organisation
+            new_values ['organisation'] = org = psp.organisation
+        new_values ['time_project'] = psp.project
+    elif new_values.get ('time_project', None) :
+        # Change of time_project without psp change
+        if not nodeid or not cl.get (nodeid, 'psp_element') :
+            raise Reject ("Need PSP element not Time Category")
+        psp = cl.get (nodeid, "psp_element")
+        new_values ["time_project"] = psp.project
     if new_values.get ('sap_cc', None) :
         sc  = db.sap_cc.getnode (new_values ['sap_cc'])
         if  (   not org
@@ -70,6 +75,14 @@ def check_tp_rq (db, cl, nodeid, new_values) :
             and db.organisation.get (sc.organisation, 'may_purchase')
             ) :
             new_values ['organisation'] = org = sc.organisation
+        # Legacy: If no psp element but we *do* have a time_project, reset it
+        if  (   'time_project' not in new_values
+            and 'psp_element' not in new_values
+            and nodeid
+            and cl.get (nodeid, 'time_project')
+            and not cl.get (nodeid, 'psp_element')
+            ) :
+            new_values ['time_project'] = None
     if new_values.get ('requester', None) :
         rq = db.user.getnode (new_values ['requester'])
         if nodeid :
@@ -83,7 +96,7 @@ def check_tp_rq (db, cl, nodeid, new_values) :
             o = _ ('organisation')
             oname = org.name
             raise Reject (_ ("%(o)s %(oname)s may not purchase") % locals ())
-# end def check_tp_rq
+# end def check_psp_cc
 
 def create_pr_approval (db, cl, nodeid, old_values) :
     user = cl.get (nodeid, 'requester')
@@ -125,22 +138,24 @@ def reopen (db, cl, nodeid, new_values) :
 
 def check_io_pr (db, cl, nodeid, new_values) :
     """ Check that internal_order isn't specified together with time
-        category, but only if the PR isn't in status open (not yet
-        submitted with sign&send).
+        category and psp_element, but only if the PR isn't in status
+        open (not yet submitted with sign&send).
     """
     st = new_values.get ('status', cl.get (nodeid, 'status'))
     if st == db.pr_status.lookup ('open') :
         return
     if 'internal_order' in new_values :
-        io = new_values ['internal_order']
-        tc = new_values.get ('time_project', cl.get (nodeid, 'time_project'))
-        if tc and io :
+        pr  = cl.getnode (nodeid)
+        io  = new_values ['internal_order']
+        tc  = new_values.get ('time_project', pr.time_project)
+        psp = new_values.get ('psp_element',  pr.psp_element)
+        if tc and io or psp and io :
             raise Reject \
-                (_ ("Specify %(cc)s not %(tp)s with %(io)s")
+                (_ ("Specify %(cc)s not %(psp)s with %(io)s")
                 % dict
-                    ( tp = _ ('time_project')
-                    , cc = _ ('sap_cc')
-                    , io = _ ('internal_order')
+                    ( psp = _ ('psp_element')
+                    , cc  = _ ('sap_cc')
+                    , io  = _ ('internal_order')
                     )
                 )
 # end def check_io_pr
@@ -151,11 +166,18 @@ def check_io_oi (db, cl, nodeid, new_values) :
         return
     if pr.status == db.pr_status.lookup ('open') :
         return
-    if 'internal_order' not in new_values and 'time_project' not in new_values :
+    if  (   'internal_order' not in new_values
+        and 'time_project'   not in new_values
+        and 'psp_element'    not in new_values
+        ) :
         return
-    io = new_values.get ('internal_order', cl.get (nodeid, 'internal_order'))
-    tc = new_values.get ('time_project', cl.get (nodeid, 'time_project'))
-    if (tc or pr.time_project) and (io or pr.internal_order) :
+    oi  = cl.getnode (nodeid)
+    io  = new_values.get ('internal_order', oi.internal_order)
+    tc  = new_values.get ('time_project',   oi.time_project)
+    psp = new_values.get ('psp_element',    oi.psp_element)
+    if  (  (tc  or pr.time_project) and (io or pr.internal_order)
+        or (psp or pr.psp_element)  and (io or pr.internal_order)
+        ) :
         raise Reject \
             (_ ("Specify %(cc)s not %(tp)s with %(io)s")
             % dict
@@ -330,26 +352,38 @@ def namelen (db, cl, nodeid, new_values) :
         raise Reject (_ ("Supplier name too long (max 55)"))
 # end def namelen
 
-def check_tp_cc_consistency (db, cl, nodeid, new_values, org = None) :
-    """ Check that the organisation in tp or cc is correct and
+def check_psp_cc_consistency (db, cl, nodeid, new_values, org = None) :
+    """ Check that the organisation in psp or cc is correct and
         consistent with the organisation stored in the PR.
-        Also check that the tp or cc is valid.
+        Also check that the psp or cc is valid.
+        Note: This is called with a valid nodeid.
     """
-    pr  = cl.getnode (nodeid)
-    tc  = new_values.get ('time_project', pr.time_project)
-    cc  = new_values.get ('sap_cc', pr.sap_cc)
-    # Can happen only for order item:
-    if not tc and not cc :
+    proi = cl.getnode (nodeid) # Can be offer item or pr
+    tc   = new_values.get ('time_project', proi.time_project)
+    psp  = new_values.get ('psp_element', proi.psp_element)
+    cc   = new_values.get ('sap_cc', proi.sap_cc)
+    # Can happen only for offer item:
+    if not psp and not cc :
         return
-    org = org or pr.organisation
-    if tc :
-        node = db.time_project.getnode (tc)
-        st   = db.time_project_status.getnode (node.status)
-        if not st.active :
-            time_project = _ ('time_project')
-            name = node.name + ' ' + node.description
+    # Needs to be specified for offer_item
+    org = org or proi.organisation
+    if psp :
+        assert tc # Timecat *must be defined if psp element is defined
+        node = db.psp_element.getnode (psp)
+        tp   = db.time_project.getnode (tc)
+        st   = db.time_project_status.getnode (tp.status)
+        if not node.valid or not st.active :
+            d = dict \
+            ( psp_element  = _ ('psp_element')
+            , time_project = _ ('time_project')
+            , name = tc.name + ' ' + tc.description
+            , pspn = node.name
+            )
             raise Reject \
-                (_ ("Non-active %(time_project)s: %(name)s") % locals ())
+                (_ ("Non-active %(psp_element)s: %(pspn)s or "
+                    "%(time_project)s: %(name)s"
+                   ) % locals ()
+                )
     else :
         node = db.sap_cc.getnode (cc)
         if not node.valid :
@@ -365,16 +399,26 @@ def check_tp_cc_consistency (db, cl, nodeid, new_values, org = None) :
             ( _("Organisation must be consistent with CC/TC: got %s expect %s")
             % (o1, o2)
             )
-# end def check_tp_cc_consistency
+# end def check_psp_cc_consistency
 
 def update_nosy (db, cl, nodeid, new_values) :
     """ On sign&send of a PR we update the nosy list with the nosy list
-        from the purchase_type
+        from purchase_type, department, sap_cc, and time_project
+        Note that we don't need the psp_element because time_project is
+        updated consistently.
     """
     nosy = set (new_values.get ('nosy', cl.get (nodeid, 'nosy')))
     pt   = new_values.get ('purchase_type', cl.get (nodeid, 'purchase_type'))
     nosy.update (db.purchase_type.get (pt, 'nosy'))
-    new_values ['nosy'] = nosy
+    tc   = new_values.get ('time_project', cl.get (nodeid, 'time_project'))
+    if tc :
+        nosy.update (db.time_project.get (tc, 'nosy'))
+    sap  = new_values.get ('sap_cc', cl.get (nodeid, 'sap_cc'))
+    if sap :
+        nosy.update (db.sap_cc.get (sap, 'nosy'))
+    dep  = new_values.get ('department', cl.get (nodeid, 'department'))
+    nosy.update (db.department.get (dep, 'nosy'))
+    new_values ['nosy'] = list (nosy)
 # end def update_nosy
 
 def change_pr (db, cl, nodeid, new_values) :
@@ -391,29 +435,30 @@ def change_pr (db, cl, nodeid, new_values) :
         if new_values ['status'] == db.pr_status.lookup ('approving') :
             # check that pr_justification is given
             prjust (db, cl, nodeid, new_values)
-            io = new_values.get \
+            io  = new_values.get \
                 ('internal_order', cl.get (nodeid, 'internal_order'))
-            tc = new_values.get \
+            psp = new_values.get ('psp_element', cl.get (nodeid, 'psp_element'))
+            tc  = new_values.get \
                 ('time_project', cl.get (nodeid, 'time_project'))
-            cc = new_values.get \
+            cc  = new_values.get \
                 ('sap_cc',  cl.get (nodeid, 'sap_cc'))
-            if not tc and not cc :
+            if not psp and not cc :
                 raise Reject \
-                    (_ ("Need to specify %(tp)s or %(cc)s")
-                    % dict (tp = _ ('time_project'), cc = _ ('sap_cc'))
+                    (_ ("Need to specify %(psp)s or %(cc)s")
+                    % dict (psp = _ ('psp_element'), cc = _ ('sap_cc'))
                     )
-            if tc and cc :
+            if psp and cc :
                 raise Reject \
-                    (_ ("Either specify %(tp)s or %(cc)s, not both")
-                    % dict (tp = _ ('time_project'), cc = _ ('sap_cc'))
+                    (_ ("Either specify %(psp)s or %(cc)s, not both")
+                    % dict (psp = _ ('psp_element'), cc = _ ('sap_cc'))
                     )
-            if tc and io :
+            if psp and io :
                 raise Reject \
-                    (_ ("Specify %(cc)s not %(tp)s with %(io)s")
+                    (_ ("Specify %(cc)s not %(psp)s with %(io)s")
                     % dict
-                        ( tp = _ ('time_project')
-                        , cc = _ ('sap_cc')
-                        , io = _ ('internal_order')
+                        ( psp = _ ('psp_element')
+                        , cc  = _ ('sap_cc')
+                        , io  = _ ('internal_order')
                         )
                     )
             common.require_attributes \
@@ -461,23 +506,26 @@ def change_pr (db, cl, nodeid, new_values) :
                     , 'vat'
                     )
                 oitem = db.pr_offer_item.getnode (oi)
-                if oitem.sap_cc and oitem.time_project :
+                if oitem.sap_cc and oitem.psp_element :
                     raise Reject \
-                        (_ ("Either specify %(tp)s or %(cc)s, not both")
-                        % dict (tp = _ ('time_project'), cc = _ ('sap_cc'))
+                        (_ ("Either specify %(psp)s or %(cc)s, not both")
+                        % dict (psp = _ ('psp_element'), cc = _ ('sap_cc'))
                         )
-                if (tc or oitem.time_project) and (io or oitem.internal_order) :
+                if (psp or oitem.psp_element) and (io or oitem.internal_order) :
                     raise Reject \
-                        (_ ("Specify %(cc)s not %(tp)s with %(io)s")
+                        (_ ("Specify %(cc)s not %(psp)s with %(io)s")
                         % dict
-                            ( tp = _ ('time_project')
-                            , cc = _ ('sap_cc')
-                            , io = _ ('internal_order')
+                            ( psp = _ ('psp_element')
+                            , cc  = _ ('sap_cc')
+                            , io  = _ ('internal_order')
                             )
                         )
                 nv = dict \
-                    (time_project = oitem.time_project, sap_cc = oitem.sap_cc)
-                check_tp_cc_consistency (db, db.pr_offer_item, oi, nv, org)
+                    ( time_project = oitem.time_project
+                    , sap_cc       = oitem.sap_cc
+                    , psp_element  = oitem.psp_element
+                    )
+                check_psp_cc_consistency (db, db.pr_offer_item, oi, nv, org)
             # Check that approval of requester exists
             for ap in approvals :
                 if  (   ap.status == ap_appr
@@ -493,7 +541,7 @@ def change_pr (db, cl, nodeid, new_values) :
             else :
                 raise Reject ( _ ("No approval by requester found"))
             new_values ['total_cost']  = prlib.pr_offer_item_sum (db, nodeid)
-            check_tp_cc_consistency (db, cl, nodeid, new_values)
+            check_psp_cc_consistency (db, cl, nodeid, new_values)
             update_nosy (db, cl, nodeid, new_values)
 
         elif new_values ['status'] == db.pr_status.lookup ('approved') :
@@ -766,6 +814,9 @@ def set_approval_pr (db, cl, nodeid, new_values) :
 # end def set_approval_pr
 
 def nosy_for_approval (db, app, add = False) :
+    """ Used for adding/removing users from nosy list prior to/after
+        approval
+    """
     nosy = {}
     if app.user :
         for k in common.approval_by (db, app.user) :
@@ -795,24 +846,35 @@ def nosy_for_approval (db, app, add = False) :
 # end def nosy_for_approval
 
 def fix_nosy (db, cl, nodeid, new_values) :
-    nosy  = dict.fromkeys (new_values.get ('nosy', cl.get (nodeid, 'nosy')))
-    onosy = dict (nosy)
+    """ At the end of all nosy-list manipulations make sure that some
+        users *stay* on the nosy list even if they were removed for some
+        reason previously.
+    """
+    nosy  = set (new_values.get ('nosy', cl.get (nodeid, 'nosy')))
+    onosy = set (nosy)
     rq    = new_values.get ('requester', cl.get (nodeid, 'requester'))
     if rq not in nosy :
-        nosy [rq] = 1
+        nosy.add (rq)
     # Allow creator to remove her/himself after initial sign&send
     pr_approving = db.pr_status.lookup ('approving')
     if 'status' in new_values and new_values ['status'] == pr_approving :
         cr = cl.get (nodeid, 'creator')
         if cr not in nosy :
-            nosy [cr] = 1
+            nosy.add (cr)
     # Agent should always be kept on nosy list, might vanish due to
     # removal by nosy_for_approval
     pan = 'purchasing_agents'
     agents = new_values.get (pan, cl.get (nodeid, pan))
-    nosy.update (dict.fromkeys (agents))
+    nosy.update (agents)
+    # All users from roles configured as 'only_nosy' in approval_order
+    # should be kept on the nosy list, but only while approving
+    status = new_values.get ('status', cl.get (nodeid, 'status'))
+    if status == pr_approving :
+        pr = db.purchase_request.getnode (nodeid)
+        users = prlib.compute_approvals (db, pr, email_only = True)
+        nosy.update (users)
     if onosy != nosy :
-        new_values ['nosy'] = nosy.keys ()
+        new_values ['nosy'] = list (nosy)
 # end def fix_nosy
 
 def set_infosec (db, cl, nodeid, new_values) :
@@ -866,10 +928,10 @@ def update_pr (db, pr, ap, nosy, txt, ** kw) :
         , author  = '1' # admin
         , date    = Date ('.')
         )
-    msgs = dict.fromkeys (pr.messages)
-    msgs [msg] = 1
+    msgs = set (pr.messages)
+    msgs.add (msg)
     d = kw
-    d.update (nosy = nosy.keys (), messages = msgs.keys ())
+    d.update (nosy = list (nosy), messages = list (msgs))
     db.purchase_request.set (pr.id, ** d)
 # end def update_pr
 
@@ -1114,9 +1176,25 @@ def pt_check_roles (db, cl, nodeid, new_values) :
 # end def pt_check_roles
 
 def pao_check_roles (db, cl, nodeid, new_values) :
-    """ Now allow the role-name to not be a roundup role anymore """
+    """ Now allow the role-name to not be a roundup role anymore
+        Also check that only_nosy is set to a boolean value.
+    """
     if 'role' in new_values and ',' in new_values ['role'] :
         raise Reject (_ ("No commas allowed in role name"))
+    nosyflag   = new_values.get ('only_nosy')
+    is_board   = new_values.get ('is_board')
+    is_finance = new_values.get ('is_finance')
+    if nodeid :
+        if nosyflag is None :
+            nosyflag   = cl.get (nodeid, 'only_nosy')
+        if is_board is None :
+            is_board   = cl.get (nodeid, 'is_board')
+        if is_finance is None :
+            is_finance = cl.get (nodeid, 'is_finance')
+    if nosyflag is None :
+        new_values ['only_nosy'] = False
+    if nosyflag and (is_board or is_finance) :
+        raise Reject ('Finance or Board may not be set only nosy')
 # end def pao_check_roles
 
 def check_supplier_rating (db, cl, nodeid, new_values) :
@@ -1266,6 +1344,13 @@ def send_las_email (db, cl, nodeid, old_values) :
             raise roundupdb.DetectorError (message)
 # end def send_las_email
 
+def check_psp (db, cl, nodeid, new_values) :
+    common.require_attributes \
+        (_, cl, nodeid, new_values, 'name', 'number', 'organisation', 'project')
+    if not nodeid and 'valid' not in new_values :
+        new_values ['valid'] = True
+# end def check_psp
+
 def init (db) :
     global _
     _   = get_translation \
@@ -1276,8 +1361,8 @@ def init (db) :
     db.purchase_type.audit      ("set",    pt_check_roles)
     db.purchase_request.audit   ("create", new_pr,          priority = 50)
     db.purchase_request.audit   ("set",    check_requester, priority = 50)
-    db.purchase_request.audit   ("create", check_tp_rq,     priority = 80)
-    db.purchase_request.audit   ("set",    check_tp_rq,     priority = 80)
+    db.purchase_request.audit   ("create", check_psp_cc,    priority = 80)
+    db.purchase_request.audit   ("set",    check_psp_cc,    priority = 80)
     db.purchase_request.audit   ("set",    requester_chg,   priority = 70)
     db.purchase_request.audit   ("set",    reopen,          priority = 90)
     db.purchase_request.audit   ("set",    change_pr)
@@ -1329,4 +1414,6 @@ def init (db) :
     db.product_group.audit      ("set",    check_pg)
     db.pg_category.audit        ("create", check_pgc)
     db.pg_category.audit        ("set",    check_pgc)
+    db.psp_element.audit        ("create", check_psp)
+    db.psp_element.audit        ("set",    check_psp)
 # end def init

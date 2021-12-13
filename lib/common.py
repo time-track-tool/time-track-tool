@@ -1283,7 +1283,7 @@ default_attributes = dict \
          ' department frame_purchase organisation part_of_budget'
          ' purchase_type renegotiations requester safety_critical'
          ' sap_cc termination_date terms_conditions'
-         ' time_project title pr_currency intended_duration'
+         ' psp_element title pr_currency intended_duration'
          ' pr_ext_resource'
         ).split ()
     , pr_supplier_risk = 'supplier organisation'.split ()

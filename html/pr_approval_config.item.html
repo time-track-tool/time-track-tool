@@ -1,0 +1,84 @@
+<tal:block metal:use-macro="templates/page/macros/icing">
+ <title metal:fill-slot="head_title">
+  <tal:block tal:condition="context/id" i18n:translate="">
+   <span tal:replace="string:${Classname}: ${context/id}"
+    i18n:name="classname_id"/>
+   created by
+   <span tal:replace="context/creator" i18n:name="creator"/>
+  </tal:block>
+  <tal:block tal:condition="not:context/id" i18n:translate="">New
+   <span tal:replace="Classname" i18n:name="Classname" />
+  </tal:block>
+ </title>
+  <tal:block metal:fill-slot="create_or_query">
+    <tal:block
+     metal:use-macro="templates/page/macros/create_or_query_new_tracker_item" />
+  </tal:block>
+
+ <tal:block metal:fill-slot="content">
+  <tal:block tal:define=
+    " use_labelprop       python:0
+    ; has_resp            python:0
+    ; required_attributes python:''
+    ">
+   <tal:block metal:use-macro="templates/page/macros/formatted_class">
+    <tal:block metal:fill-slot="formatted_class_content">
+     <tr>
+      <th tal:content="structure python:utils.fieldname
+          (classname, 'amount')"/>
+      <td tal:content="structure python:context.amount.field ()"/>
+     </tr>
+     <tr>
+      <th tal:content="structure python:utils.fieldname
+          (classname, 'infosec_amount')"/>
+      <td tal:content="structure python:context.infosec_amount.field ()"/>
+     </tr>
+     <tr>
+      <th tal:content="structure python:utils.fieldname
+          (classname, 'payment_type_amount')"/>
+      <td tal:content="structure python:context.payment_type_amount.field ()"/>
+     </tr>
+     <tr>
+      <th tal:content="structure python:utils.fieldname
+          (classname, 'pr_ext_resource')"/>
+      <td tal:content="structure python:context.pr_ext_resource.menu ()"/>
+     </tr>
+     <tr>
+      <th tal:content="structure python:utils.fieldname
+          (classname, 'role')"/>
+      <td tal:content="structure python:context.role.menu ()"/>
+     </tr>
+     <tr>
+      <th tal:content="structure python:utils.fieldname
+          (classname, 'purchase_type')"/>
+      <td tal:content="structure python:
+          context.purchase_type.menu (height=5, valid=1)"/>
+     </tr>
+     <tr>
+      <th tal:content="structure python:utils.fieldname
+          (classname, 'organisations')"/>
+      <td tal:content="structure python:
+          context.organisations.menu (height=5, **utils.valid_item (now))"/>
+     </tr>
+     <tr>
+      <th tal:content="structure python:utils.fieldname
+          (classname, 'departments')"/>
+      <td tal:content="structure python:
+          context.departments.menu (height=5, **utils.valid_item (now))"/>
+     </tr>
+     <tr>
+      <th tal:content="structure python:utils.fieldname
+          (classname, 'if_not_in_las')"/>
+      <td tal:content="structure python:context.if_not_in_las.field ()"/>
+     </tr>
+     <tr>
+      <th tal:content="structure python:utils.fieldname
+          (classname, 'valid')"/>
+      <td tal:content="structure python:context.valid.field ()"/>
+     </tr>
+    </tal:block>
+   </tal:block>
+  </tal:block>
+ </tal:block>
+
+</tal:block>

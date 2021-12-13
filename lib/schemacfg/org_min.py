@@ -30,7 +30,7 @@
 
 from schemacfg       import schemadef
 
-def init (db, Ext_Class, Link, Boolean, String, ** kw) :
+def init (db, Ext_Class, Link, Boolean, String, Date, ** kw) :
     export = {}
 
     User_Ancestor = kw.get ('User_Class', Ext_Class)
@@ -56,6 +56,8 @@ def init (db, Ext_Class, Link, Boolean, String, ** kw) :
             self.update_properties \
                 ( manager               = Link      ("user")
                 , deputy                = Link      ("user")
+                , valid_from            = Date      ()
+                , valid_to              = Date      ()
                 )
             Dep_Ancestor.__init__ (self, db, classname, ** properties)
         # end def __init__

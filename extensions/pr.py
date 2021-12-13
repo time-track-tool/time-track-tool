@@ -200,6 +200,18 @@ def orig_infosec_level (offer_item) :
     return il.name
 # end def orig_infosec_level
 
+def need_psp (context) :
+    if not context or not context.id :
+        return True
+    if context.sap_cc :
+        return True
+    if not context.psp_element and context.time_project :
+        if context.status.id == context._db.pr_status.lookup ('open') :
+            return True
+        return False
+    return True
+# end def need_psp
+
 def init (instance) :
     act = instance.registerAction
     act ('pr_sign', Sign_Purchase_Request)
@@ -215,4 +227,5 @@ def init (instance) :
     reg ('pr_type_valid_agents',         pr_type_valid_agents)
     reg ('risk_type',                    risk_type)
     reg ('orig_infosec_level',           orig_infosec_level)
+    reg ('need_psp',                     need_psp)
 # end def init

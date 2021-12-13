@@ -91,6 +91,10 @@ def _app_cfgs (db, pr, ids) :
             and pr.organisation not in ac.organisations
             ) :
             continue
+        if  (   ac.departments and pr.department
+            and pr.department not in ac.departments
+            ) :
+            continue
         acs.append (ac)
     return acs
 # end def _app_cfgs
@@ -172,17 +176,22 @@ def need_payment_type_approval (db, pr, new = None) :
 
 class Approval_Logic :
 
-    def __init__ (self, db, pr, do_create) :
+    def __init__ (self, db, pr, do_create, email_only) :
         self.db          = db
         self.pr          = pr
         self.do_create   = do_create
+        self.email_only  = email_only
         self.apr_by_r_d  = {}
         self.apr_by_role = {}
         self._           = get_translation \
             (db.config.TRACKER_LANGUAGE, db.config.TRACKER_HOME).gettext
+        # These do not go together
+        assert not (do_create and email_only)
     # end def __init__
 
     def _add_approval (self, key, value) :
+        if self.email_only :
+            return
         if key not in self.apr_by_r_d :
             self.apr_by_r_d [key] = []
         self.apr_by_r_d [key].append (value)
@@ -201,6 +210,12 @@ class Approval_Logic :
 
     def add_approval_with_role (self, appr_order_id) :
         ord   = self.db.pr_approval_order.getnode (appr_order_id)
+        # MUST be set
+        assert ord.only_nosy is not None
+        if ord.only_nosy and not self.email_only :
+            return
+        if not ord.only_nosy and self.email_only :
+            return
         apr   = gen_pr_approval \
             ( self.db, self.do_create
             , order            = ord.order
@@ -215,7 +230,10 @@ class Approval_Logic :
     def compute_approvals (self) :
         """ Compute approvals for current PR settings
             do_create specifies if the approvals are created or just a
-            would-be list is computed.
+            would-be list is computed. If email_only is specified we
+            return a list of user ids *only* of the approval order
+            entries with the only_nosy flag set. For normal approvals we
+            do *not* return the entries with only_nosy set.
         """
         db = self.db
         pr = self.pr
@@ -242,12 +260,15 @@ class Approval_Logic :
                 (self._ ("Configuration error: No finance roles for this PR"))
         board_approval = False
 
-        assert not self.do_create or pr.organisation
-        assert not self.do_create or pr.pr_currency
+        assert not self.do_create  or pr.organisation
+        assert not self.do_create  or pr.pr_currency
+        assert not self.email_only or pr.organisation
+        assert not self.email_only or pr.pr_currency
         cur = None
         if pr.pr_currency :
             cur = db.pr_currency.getnode (pr.pr_currency)
-        assert not self.do_create or pr.time_project or pr.sap_cc
+        assert not self.do_create  or pr.time_project or pr.sap_cc
+        assert not self.email_only or pr.time_project or pr.sap_cc
         d = None
         pcc = None
         if pr.time_project :
@@ -301,6 +322,10 @@ class Approval_Logic :
                     and pr.organisation not in prc.organisations
                     ) :
                     continue
+                if  (   prc.departments and pr.department
+                    and pr.department not in prc.departments
+                    ) :
+                    continue
                 if  (      prc.amount         is not None and s > prc.amount
                     or (   prc.infosec_amount is not None
                        and s > prc.infosec_amount
@@ -335,6 +360,7 @@ class Approval_Logic :
                         , user             = dep.manager
                         , deputy           = dep.deputy
                         , description      = "Department Head"
+                        , deputy_gets_mail = dep.deputy_gets_mail or False
                         )
                     self._add_approval ((dep.manager, dep.deputy), apr)
         if cur and oisum > cur.min_sum :
@@ -408,6 +434,8 @@ class Approval_Logic :
                 for role in roles :
                     if role not in self.apr_by_role :
                         self.add_approval_with_role (role)
+        if self.email_only :
+            return self.compute_nosy_users ()
         if not self.do_create :
             vals = []
             for k in self.apr_by_r_d :
@@ -416,6 +444,18 @@ class Approval_Logic :
             vals.sort (key = lambda x : x ['order'])
             return vals
     # end def compute_approvals
+
+    def compute_nosy_users (self) :
+        users = set ()
+        for aoid in self.apr_by_role :
+            ao  = self.db.pr_approval_order.getnode (aoid)
+            apr = self.apr_by_role [aoid]
+            assert isinstance (apr, dict)
+            assert ao.only_nosy
+            users.update (ao.users)
+        # We return a set here, can be used to compute new nosy list
+        return users
+    # end def compute_nosy_users
 
     def infosec_level_lowered (self) :
         """ Check if the user specified a lower infosec_level than would be
@@ -528,7 +568,7 @@ pr_justification = \
 
 reject_roles = ('Procurement-Admin', 'Procurement')
 
-def compute_approvals (db, pr, do_create) :
-    al = Approval_Logic (db, pr, do_create)
+def compute_approvals (db, pr, do_create = False, email_only = False) :
+    al = Approval_Logic (db, pr, do_create, email_only)
     return al.compute_approvals ()
 # end def compute_approvals
