@@ -203,13 +203,23 @@ def orig_infosec_level (offer_item) :
 def need_psp (context) :
     if not context or not context.id :
         return True
-    if context.sap_cc :
+    if context.status.id == context._db.pr_status.lookup ('open') :
         return True
-    if not context.psp_element and context.time_project :
-        if context.status.id == context._db.pr_status.lookup ('open') :
+    if context.psp_element :
+        return True
+    has_sap = bool (context.sap_cc)
+    has_tc  = bool (context.time_project)
+    for oi in context.offer_items :
+        if oi.psp_element :
             return True
-        return False
-    return True
+        if oi.sap_cc :
+            has_sap = True
+        if oi.time_project :
+            has_tc = True
+    if not has_tc :
+        assert (has_sap)
+        return True
+    return False
 # end def need_psp
 
 def init (instance) :
