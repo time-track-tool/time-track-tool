@@ -86,7 +86,7 @@ def pretty_att_record (db, dr, ar) :
         ar_pr.append ("%s-%s" % (ar.start, ar.end))
     else :
         wl = db.work_location.getnode (ar.work_location)
-        ar_pr.append ("%s: %s" % (_ ('work_location'), wl.name))
+        ar_pr.append ("%s: %s" % (_ ('work_location'), wl.code))
     return ' '.join (ar_pr)
 # end def pretty_att_record
 
