@@ -484,7 +484,7 @@ def security (db, ** kw) :
         , ("org_location",       ["User"],              [])
         , ("part_of_budget",     ["User"],              [])
         , ("pr_approval_config", ["Procurement"],       ["Procurement-Admin"])
-        , ("pr_approval_order",  ["Procurement"],       ["Procurement-Admin"])
+        , ("pr_approval_order",  ["Procurement", "User"], ["Procurement-Admin"])
         , ("pr_approval",        ["Procurement","PR-View"], [])
         , ("pr_approval_status", ["User"],              [])
         , ("pr_currency",        ["User"],              ["Procurement-Admin"])
@@ -536,9 +536,6 @@ def security (db, ** kw) :
         , ( "sap_cc", "Edit", ["Procurement"]
           , ("deputy_gets_mail",)
           )
-        , ( "pr_approval_order", "View", ["User"]
-          , ("role", "id")
-          )
         ]
 
     schemadef.register_roles             (db, roles)
@@ -585,12 +582,6 @@ def security (db, ** kw) :
     p = db.security.addPermission \
         ( name        = 'Search'
         , klass       = 'pr_offer_item'
-        )
-    db.security.addPermissionToRole ('User', p)
-
-    p = db.security.addPermission \
-        ( name        = 'Search'
-        , klass       = 'pr_approval_order'
         )
     db.security.addPermissionToRole ('User', p)
 
