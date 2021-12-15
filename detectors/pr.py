@@ -188,6 +188,22 @@ def check_io_oi (db, cl, nodeid, new_values) :
             )
 # end def check_io_oi
 
+def check_psp_tc (db, cl, nodeid, new_values) :
+    """ If psp changes, also update tc
+    """
+    node = None
+    if nodeid :
+        node = cl.getnode (nodeid)
+    pspid = new_values.get ('psp_element')
+    if pspid is None and node :
+        pspid = node.psp_element
+    if not pspid :
+        return
+    psp = db.psp_element.getnode (pspid)
+    if 'time_project' in new_values or node and node.time_project is None :
+        new_values ['time_project'] = psp.project
+# end def check_psp_tc
+
 def check_supplier_change (db, cl, nodeid, new_values) :
     """ Allow change of supplier unconditionally if not yet approving
         Later we check that the maximum risk type will not change.
@@ -1396,6 +1412,8 @@ def init (db) :
     db.pr_offer_item.audit      ("set",    check_input_len, priority = 150)
     db.pr_offer_item.audit      ("set",    check_payment_type)
     db.pr_offer_item.audit      ("set",    check_io_oi)
+    db.pr_offer_item.audit      ("create", check_psp_tc, priority = 50)
+    db.pr_offer_item.audit      ("set",    check_psp_tc, priority = 50)
     db.pr_offer_item.react      ("create", send_las_email, priority = 150)
     db.pr_offer_item.react      ("set",    send_las_email, priority = 150)
     db.pr_currency.audit        ("create", check_currency)
