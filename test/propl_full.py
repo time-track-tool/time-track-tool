@@ -155,21 +155,8 @@ properties = \
         , 'name'
         ]
       )
-    , ( 'department'
-      , [ 'deputy'
-        , 'description'
-        , 'doc_num'
-        , 'manager'
-        , 'messages'
-        , 'name'
-        , 'part_of'
-        , 'valid_from'
-        , 'valid_to'
-        ]
-      )
     , ( 'doc'
       , [ 'artefact'
-        , 'department'
         , 'doc_category'
         , 'document_nr'
         , 'files'
@@ -603,7 +590,6 @@ properties = \
         , 'cost_center'
         , 'cost_center_group'
         , 'date'
-        , 'department'
         , 'op_project'
         , 'org_location'
         , 'organisation'
@@ -735,7 +721,6 @@ properties = \
       , [ 'approval_hr'
         , 'approval_required'
         , 'cost_center'
-        , 'department'
         , 'deputy'
         , 'description'
         , 'group_lead'
@@ -826,8 +811,7 @@ properties = \
         ]
       )
     , ( 'timesheet'
-      , [ 'department'
-        , 'first_day'
+      , [ 'first_day'
         , 'last_day'
         , 'supervisor'
         , 'user'
@@ -901,7 +885,6 @@ properties = \
         , 'booking_allowed'
         , 'contract_type'
         , 'daily_worktime'
-        , 'department'
         , 'do_auto_wp'
         , 'durations_allowed'
         , 'exemption'
@@ -967,7 +950,6 @@ properties = \
       , [ 'additional_submitted'
         , 'approved_submissions'
         , 'date'
-        , 'department'
         , 'flexi_max'
         , 'flexi_rem'
         , 'flexi_sub'

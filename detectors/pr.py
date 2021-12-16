@@ -48,13 +48,9 @@ def new_pr (db, cl, nodeid, new_values) :
 def check_psp_cc (db, cl, nodeid, new_values) :
     """ Check concerning psp_element, sap_cc, organisation
     """
-    dep = new_values.get ('department',   None)
     org = new_values.get ('organisation', None)
-    if nodeid :
-        if not dep :
-            dep = cl.get (nodeid, 'department')
-        if not org :
-            org = cl.get (nodeid, 'organisation')
+    if nodeid and not org :
+        org = cl.get (nodeid, 'organisation')
     if new_values.get ('psp_element', None) :
         psp = db.psp_element.getnode (new_values ['psp_element'])
         if  (   not org

@@ -320,8 +320,7 @@ properties = \
         ]
       )
     , ( 'time_project'
-      , [ 'department'
-        , 'deputy'
+      , [ 'deputy'
         , 'deputy_gets_mail'
         , 'description'
         , 'group_lead'

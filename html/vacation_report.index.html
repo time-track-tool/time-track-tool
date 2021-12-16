@@ -12,12 +12,6 @@
        (utils, pdict ['date'])
      , user              = utils.ExtProperty
        (utils, pdict ['user'])
-     , department        = utils.ExtProperty
-       ( utils, pdict ['department']
-       , multiselect   = 1
-       , multi_selonly = 1
-       , filter        = utils.valid_item (now)
-       )
      , supervisor        = utils.ExtProperty
        (utils, pdict ['supervisor'])
      , org_location      = utils.ExtProperty
@@ -92,11 +86,10 @@
          , 'flexi_rem'
          , 'special_leave'
          , 'special_sub'
-         , 'department'
          ]
        ; props python: [myprops [p] for p in sorted (fpkeys)]
        ; propkeys       python:
-         ( 'date', 'user', 'department', 'supervisor', 'org_location'
+         ( 'date', 'user', 'supervisor', 'org_location'
          , 'organisation', 'show_obsolete'
          )
        ; sprops         python: [myprops [p] for p in propkeys]

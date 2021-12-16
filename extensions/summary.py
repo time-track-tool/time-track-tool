@@ -400,17 +400,17 @@ class WP_Container (Comparable_Container, dict) :
         self.organisation_id       = ''
 
         # create i18n names
-        ""'time_wp_id'
-        ""'time_wp_no'
-        ""'time_wp_group_id'
-        ""'time_wp_summary_no_id'
-        ""'cost_center_id'
-        ""'cost_center_group_id'
-        ""'time_project_id'
-        ""'reporting_group_id'
-        ""'product_family_id'
-        ""'project_type_id'
-        ""'organisation_id'
+        dummy = ""'time_wp_id'
+        dummy = ""'time_wp_no'
+        dummy = ""'time_wp_group_id'
+        dummy = ""'time_wp_summary_no_id'
+        dummy = ""'cost_center_id'
+        dummy = ""'cost_center_group_id'
+        dummy = ""'time_project_id'
+        dummy = ""'reporting_group_id'
+        dummy = ""'product_family_id'
+        dummy = ""'project_type_id'
+        dummy = ""'organisation_id'
 
         # defaults for name computation
         self.organisation    = ''
@@ -707,7 +707,7 @@ class Summary_Report (_Report) :
         drecs         = {}
         org_dep_usr   = {}
         dr_containers = []
-        for cl in 'department', 'org_location', 'sap_cc' :
+        for cl in 'org_location', 'sap_cc' :
             spec = dict ((s, 1) for s in filterspec.get (cl, []))
             if spec :
                 olo_or_dept = True
@@ -1379,9 +1379,8 @@ class Staff_Report (_Report) :
         st           = filterspec.get \
             ('summary_type', [db.summary_type.lookup ('range')])
         sum_types    = dict ((db.summary_type.get (i, 'name'), 1) for i in st)
-        # Backwards compatible, all users in department etc having a
-        # valid dyn user record and *end* of reporting period, so we
-        # specify 'end' twice here:
+        # Backwards compatible, all users having a valid dyn user record
+        # and *end* of reporting period, so we specify 'end' twice here:
         users        = sum_common.get_users (db, filterspec, end, end)
         all_in = filterspec.get ('all_in')
         if all_in is not None :
@@ -1587,8 +1586,7 @@ class Staff_Report (_Report) :
 class Vacation_Report (_Report) :
     ''"Vacation Report" # for translation in web-interface
     fields = \
-        ( (""'department',           0)
-        , (""'yearly entitlement',   1)
+        ( (""'yearly entitlement',   1)
         , (""'yearly prorated',      2)
         , (""'carry forward',        3)
         , (""'entitlement total',    4)
@@ -1646,7 +1644,6 @@ class Vacation_Report (_Report) :
             , 'flexi_rem'
             , 'special_leave'
             , 'special_sub'
-            , 'department'
             )
         for k in opt :
             if k not in request.columns :
@@ -1784,14 +1781,9 @@ class Vacation_Report (_Report) :
                     while (dyn and dyn.valid_from < d) :
                         lastdyn = dyn
                         ent [dyn.vacation_yearly] = 1
-                        dep [dyn.department] = True
                         dyn = vacation.vac_next_user_dynamic (db, dyn)
                     container ['is_obsolete'] = self.is_obsolete (dyn, d)
                     v = list (sorted (ent.keys ()))
-                    if 'department' in self.fields :
-                        deps = \
-                            (db.department.get (d, 'name') for d in dep.keys ())
-                        container ['department'] = ', '.join (sorted (deps))
                     # Use '..' as separator to prevent excel from computing
                     # difference if exported to excel
                     if len (v) > 1 :

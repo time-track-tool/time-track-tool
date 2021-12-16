@@ -167,8 +167,7 @@ def security (db, ** kw) :
     #     classname        allowed to view   /  edit
 
     classes = \
-        [ ("department",   ["User"],  ["Controlling"])
-        , ("location",     ["User"],  ["HR"])
+        [ ("location",     ["User"],  ["HR"])
         , ("organisation", ["User"],  ["HR", "Controlling"])
         , ("org_location", ["User"],  ["HR"])
         , ("room",         ["User"],  ["HR", "Office", "Facility"])

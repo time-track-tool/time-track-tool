@@ -313,12 +313,6 @@ _helptext          = \
     , ""'adr_type'                    : [generic_type]
     , ""'affix'                       :
       [""'''Name affix like e.g. "senior" or "MBA"''']
-    , ""'alias'                       :
-      [""'''Email alias''']
-    , ""'alias_to_alias'              :
-      [""'''Other aliases this %(Classname)s maps to''']
-    , ""'alias_to_user'               :
-      [""'''List of users this %(Classname)s maps to''']
     , ""'auto_wp++all_in'             :
       [""'''If selected, create Automatic Workpackages also for all-in users''']
     , ""'all_in'                      :
@@ -582,8 +576,6 @@ _helptext          = \
           '''
       ]
     , ""'daily_record.user.id'        : [help_id]
-    , ""'daily_record.user.department.id'
-                                      : [help_id]
     , ""'daily_record.user.org_location.id'
                                       : [help_id]
     , ""'daily_record.status.id'      : [help_id]
@@ -663,14 +655,6 @@ _helptext          = \
              which don\'t have a work package associated.
              This mechanism works after you press "Save" and will split a
              single time record into two if necessary.
-          '''
-      ]
-    , ""'dns_record_type'             :
-      [ ""'''Type of DNS record generated. If the %(Classname)s points to
-             another %(Classname)s a CNAME is generated, otherwise an
-             A-record is assumed. If no DNS information should be
-             generated, this field should be set to "invalid".
-             This field is auto-generated if left empty.
           '''
       ]
     , ""'do_leave_process'            :
@@ -941,8 +925,6 @@ _helptext          = \
       [""'''%(Property)s to log into firewall''']
     , ""'gapint'                      :
       [""'''Sensor interval for %(Classname)s''']
-    , ""'gid'                         :
-      [""'''Numeric group ID''']
     , ""'group_external'              :
       [""'''Mark yes, if this %(Classname)s is used for persons not a
             member of this corporate
@@ -982,13 +964,6 @@ _helptext          = \
     , ""'infosec_project'             :
       [""'''Automatically set if one of the Time Categories has special
             information security requirements (TISAX).
-         '''
-      ]
-    , ""'infosec_pt'                  :
-      [""'''Set this flag if the %(Classname)s has special information
-            security requirements (TISAX). This flag is automatically
-            set if any of the selected Purchase Types has special
-            information security requirements.
          '''
       ]
     , ""'ingredient'                  :
@@ -1080,8 +1055,6 @@ _helptext          = \
       [""'''Internet protocol address of this %(Classname)s''']
     , ""'ip_subnet'                   :
       [""'''Internet protocol subnet''']
-    , ""'is_alias'                    :
-      [""'''No real user but only an email alias''']
     , ""'is_asset'                    :
       [""'''Select YES for inventory or other asset goods to
             be activated in the company's balance sheet.
@@ -1204,12 +1177,8 @@ _helptext          = \
       [""'''Class for this query''']
     , ""'last_date'                   : [ ""'''Date of last contact''']
     , ""'last_day'                    : [ ""'''Last day of %(Classname)s.''']
-    , ""'last_gid'                    :
-      [""'''Last used gid in this %(Classname)s''']
     , ""'last_sent'                   :
       [""'''Date when an invoice was last sent''']
-    , ""'last_uid'                    :
-      [""'''Last used uid in this %(Classname)s''']
     , ""'lastname'                    : [lastname]
     , ""'ldap_group'                  :
       [""'''Active directory/LDAP group which users must have to get this
@@ -1726,8 +1695,6 @@ _helptext          = \
             request linked to a cost unit.
          '''
       ]
-    , ""'qa_representative'           :
-      [""'''Representative from the QA department for this %(Classname)s''']
     , ""'qso.dxcc_entity.code'        :
       [""'''ARRL code for this %(Classname)s''']
     , ""'qso.dxcc_entity.cq_zone'     :
@@ -2042,11 +2009,6 @@ _helptext          = \
              beginning of 2006 until now would be "2006-01-01;.". If you
              need the sum of the chosen period select Summary Type
              "range".
-          '''
-      ]
-    , ""'summary_report++department'  :
-      [ ""'''Selects the users according to their placement in a
-             department
           '''
       ]
     , ""'summary_report++op_project'  :

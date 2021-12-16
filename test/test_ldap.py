@@ -235,9 +235,6 @@ class _Test_Base :
             , location = self.location1
             , organisation = self.organisation1
             )
-        self.department1 = self.db.department.create \
-            ( name = str ('testdepartment')
-            )
         self.room1 = self.db.room.create \
             ( name = str ('ASD.OIZ.501')
             , location = self.location1
@@ -249,7 +246,6 @@ class _Test_Base :
         self.user_dynamic1_1 = self.db.user_dynamic.create \
             ( user            = self.testuser1
             , org_location    = self.org_location1
-            , department      = self.department1
             , valid_from      = Date (str ('2021-01-01'))
             , vacation_yearly = 25
             )
@@ -265,7 +261,6 @@ class _Test_Base :
         self.user_dynamic2_1 = self.db.user_dynamic.create \
             ( user            = self.testuser2
             , org_location    = self.org_location1
-            , department      = self.department1
             , valid_from      = Date (str ('2021-01-01'))
             , vacation_yearly = 25
             )
@@ -285,7 +280,6 @@ class _Test_Base :
         self.user_dynamic102_1 = self.db.user_dynamic.create \
             ( user            = self.testuser102
             , org_location    = self.org_location1
-            , department      = self.department1
             , valid_from      = Date (str ('2021-01-01'))
             , vacation_yearly = 25
             )
@@ -300,7 +294,6 @@ class _Test_Base :
         self.user_dynamic3_1 = self.db.user_dynamic.create \
             ( user            = self.testuser3
             , org_location    = self.org_location1
-            , department      = self.department1
             , valid_from      = Date (str ('2021-01-01'))
             , vacation_yearly = 25
             )
@@ -681,7 +674,7 @@ class Test_Case_LDAP_Sync (_Test_Base, unittest.TestCase) :
         self.assertEqual \
             (self.ldap_modify_result.keys (), [newdn])
         d = self.ldap_modify_result [newdn]
-        self.assertEqual (len (d), 7)
+        self.assertEqual (len (d), 6)
         for k in d :
             self.assertEqual (len (d [k]), 1)
         self.assertEqual (d ['givenname'][0][0], 'MODIFY_REPLACE')
@@ -696,8 +689,6 @@ class Test_Case_LDAP_Sync (_Test_Base, unittest.TestCase) :
         self.assertEqual (d ['otherTelephone'][0][1], [])
         self.assertEqual (d ['company'][0][0], 'MODIFY_ADD')
         self.assertEqual (d ['company'][0][1][0], 'testorglocation1')
-        self.assertEqual (d ['department'][0][0], 'MODIFY_ADD')
-        self.assertEqual (d ['department'][0][1][0], 'testdepartment')
         self.assertEqual (self.ldap_modify_dn_result.keys (), [olddn])
         changed = self.ldap_modify_dn_result [olddn].lower ()
         self.assertEqual (changed, newcn)
@@ -746,7 +737,7 @@ class Test_Case_LDAP_Sync (_Test_Base, unittest.TestCase) :
         self.assertEqual \
             (self.ldap_modify_result.keys (), [olddn])
         d = self.ldap_modify_result [olddn]
-        self.assertEqual (len (d), 6)
+        self.assertEqual (len (d), 5)
         assert 'displayname' not in d
         self.assertEqual (d ['givenname'][0][0], 'MODIFY_REPLACE')
         self.assertEqual (d ['givenname'][0][1], [u'Test'])
@@ -768,7 +759,7 @@ class Test_Case_LDAP_Sync (_Test_Base, unittest.TestCase) :
         self.ldap_sync.sync_all_users_to_ldap ()
         newdn = 'CN=Test User,OU=internal'
         self.assertEqual (len (self.ldap_modify_result), nusers)
-        self.assertEqual (len (self.ldap_modify_result [newdn]), 7)
+        self.assertEqual (len (self.ldap_modify_result [newdn]), 6)
         msg = 'Synced %s users from roundup to LDAP' % nusers
         self.assertEqual (self.messages [-2][0], msg)
     # end def test_sync_realname_to_ldap_all
@@ -840,7 +831,7 @@ class Test_Case_LDAP_Sync (_Test_Base, unittest.TestCase) :
         self.maxDiff = None
         dn = 'CN=Test2 User2,OU=external'
         self.assertEqual (len (self.ldap_modify_result), 1)
-        self.assertEqual (len (self.ldap_modify_result [dn]), 4)
+        self.assertEqual (len (self.ldap_modify_result [dn]), 3)
         self.assertEqual (self.ldap_modify_dn_result, {})
 
         # override with user external user
@@ -850,7 +841,7 @@ class Test_Case_LDAP_Sync (_Test_Base, unittest.TestCase) :
         cn = 'cn=Test2 NewLastname'
         self.assertEqual (self.ldap_modify_dn_result [dn], cn)
         dn = 'CN=Test2 NewLastname,OU=external'
-        self.assertEqual (len (self.ldap_modify_result [dn]), 6)
+        self.assertEqual (len (self.ldap_modify_result [dn]), 5)
         results = \
             ( ('displayname', 'Test2 NewLastname')
             , ('sn',          'NewLastname')
@@ -912,9 +903,9 @@ class Test_Case_LDAP_Sync (_Test_Base, unittest.TestCase) :
         self.ldap_sync.sync_user_from_ldap ('rcase@ds1.internal')
         self.ldap_sync.sync_user_to_ldap ('rcase@ds1.internal')
         dn = 'CN=Roman Case,OU=internal'
-        new_department = self.ldap_modify_result [dn]['department'][0][1][0]
-        self.assertEqual \
-            (new_department, self.db.department.get (self.department1, 'name'))
+        self.assertIn ('department', self.ldap_modify_result [dn])
+        depentry = self.ldap_modify_result [dn]['department'][0][0]
+        self.assertEqual (depentry, 'MODIFY_DELETE')
 
         # set department_temp and check override
         department_temp_name = 'dep_override'
@@ -1043,7 +1034,6 @@ class Test_Case_LDAP_Sync (_Test_Base, unittest.TestCase) :
         ud = self.db.user_dynamic.create \
             ( user            = self.testuser104
             , org_location    = self.org_location1
-            , department      = self.department1
             , valid_from      = Date (str ('2021-01-01'))
             , valid_to        = Date (str ('2021-01-02'))
             , vacation_yearly = 25
@@ -1080,7 +1070,7 @@ class Test_Case_LDAP_Sync (_Test_Base, unittest.TestCase) :
         self.assertEqual \
             (self.ldap_modify_result.keys (), [newdn])
         d = self.ldap_modify_result [newdn]
-        self.assertEqual (len (d), 8)
+        self.assertEqual (len (d), 7)
         pic = d ['thumbnailPhoto'][0][1][0]
         self.assertEqual (len (pic), 6034)
         # compute md5sum over synced picture to assert that the picture
@@ -1103,7 +1093,7 @@ class Test_Case_LDAP_Sync (_Test_Base, unittest.TestCase) :
         self.assertEqual \
             (self.ldap_modify_result.keys (), [newdn])
         d = self.ldap_modify_result [newdn]
-        self.assertEqual (len (d), 8)
+        self.assertEqual (len (d), 7)
         pic = d ['thumbnailPhoto'][0][1][0]
         self.assertEqual (len (pic), 4663)
         # compute md5sum over synced picture to assert that the picture

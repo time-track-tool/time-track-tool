@@ -36,23 +36,16 @@ from roundup.date import Date
 
 def time_project_viewable (db, userid, itemid) :
     """User may view time category if user is owner or deputy of time
-       category or on nosy list of time category or if user is
-       department manager of time category
+       category or on nosy list of time category
     """
     project = db.time_project.getnode (itemid)
     p_nosy  = {}
     if 'nosy' in db.time_project.properties :
         p_nosy = dict.fromkeys (project.nosy)
-    dep     = None
-    if project.department :
-        dep = db.department.getnode (project.department)
     mgr = None
-    if 'manager' in db.department.properties and dep :
-        mgr = dep.manager
     return \
         (  userid == project.responsible
         or userid == project.deputy
-        or dep and userid == mgr
         or userid in p_nosy
         )
 # end def time_project_viewable
@@ -60,7 +53,6 @@ def time_project_viewable (db, userid, itemid) :
 def time_wp_viewable (db, userid, itemid) :
     """User may view work package if responsible for it, if user is
        owner or deputy of time category or on nosy list of time category
-       or if user is department manager of time category
     """
     wp       = db.time_wp.getnode (itemid)
     return \
@@ -99,38 +91,13 @@ def supervised_users (db, uid = None, use_sv = True) :
     return db.sup_cache [uid]
 # end def supervised_users
 
-def department_users (db, department_id) :
-    """ Find all valid dynamic user records with a given department
-        and return all user ids (not the dynamic user but only the uid)
-    """
-    now = Date ('.')
-    dt  = common.pretty_range (None, now)
-    try :
-        if department_id in db.dep_uid_cache :
-            return db.dep_uid_cache [department_id]
-    except AttributeError :
-        def dep_uid_cache_clear (db) :
-            db.dep_uid_cache = {}
-        db.registerClearCacheCallback (dep_uid_cache_clear, db)
-        db.dep_uid_cache = {}
-    users = {}
-    d = dict (department = department_id, valid_from = dt)
-    for did in db.user_dynamic.filter (None, d) :
-        dyn = db.user_dynamic.getnode (did)
-        if dyn.valid_to and dyn.valid_to < now :
-            continue
-        users [dyn.user] = 1
-    db.dep_uid_cache [department_id] = users
-    return db.dep_uid_cache [department_id]
-# end def department_users
-
 def daily_record_viewable (db, userid, itemid) :
     """User may view a daily_record (and time_records that are attached
        to that daily_record) if the user owns the daily_record or has
        role 'HR' or 'Controlling', or the user is supervisor or
        substitute supervisor of the owner of the daily record (the
-       supervisor relationship is transitive) or the user is the
-       department manager of the owner of the daily record.
+       supervisor relationship is transitive) or the
+       owner of the daily record.
        If user has role HR-Org-Location and is in the same Org-Location
        as the record, it may also be seen.
     """
@@ -141,20 +108,11 @@ def daily_record_viewable (db, userid, itemid) :
         return True
     if user_dynamic.hr_olo_role_for_this_user (db, userid, dr.user, dr.date) :
         return True
-    # find departments managed by userid
-    deps = db.department.filter (None, dict (manager = userid))
-    # find all users which are member of above departments:
-    depusers = {}
-    for depid in deps :
-        depusers.update (department_users (db, depid))
-    return \
-        (  dr.user in depusers
-        or dr.user in supervised_users (db, userid)
-        )
+    return dr.user in supervised_users (db, userid)
 # end def daily_record_viewable
 
 def get_users (db, filterspec, start, end) :
-    """ Get all users in filterspec (including department, organisation,
+    """ Get all users in filterspec (including organisation,
         etc. where the user belongs to the given entity via a valid dyn
         user record between start and end)
     """
@@ -169,7 +127,7 @@ def get_users (db, filterspec, start, end) :
     if 'organisation' in filterspec :
         olo = db.org_location.filter \
             (None, dict (organisation = filterspec ['organisation']))
-    for cl in 'department', 'org_location', 'org' :
+    for cl in 'org_location', 'org' :
         if cl == 'org' :
             cl = 'org_location'
             spec = olo

@@ -57,7 +57,6 @@ def init \
             self.update_properties \
                 ( name                  = String    ()
                 , description           = String    ()
-                , department            = Link      ("department")
                 , responsible           = Link      ("user")
                 , organisation          = Link      ("organisation")
                 , deputy                = Link      ("user")
@@ -150,7 +149,7 @@ def security (db, ** kw) :
 
     prop_perms = \
         [ ( "time_project", "Edit", ["Project"]
-          , ( "cost_center", "deputy", "description", "department", "name"
+          , ( "cost_center", "deputy", "description", "name"
             , "nosy", "organisation", "responsible", "status"
             )
           )

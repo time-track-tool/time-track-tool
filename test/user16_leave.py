@@ -1,6 +1,6 @@
 from roundup import date
 
-def import_data_16 (db, user, dep, olo) :
+def import_data_16 (db, user, olo) :
      sd = dict (months = 0.0, required_overtime = 0, weekly = 1)
      otp = db.overtime_period.filter (None, sd)
      assert len (otp) == 1
@@ -26,7 +26,6 @@ def import_data_16 (db, user, dep, olo) :
          , travel_full        = 1
          , vacation_month     = 1.0
          , hours_sat          = 0.0
-         , department         = dep
          , org_location       = olo
          , overtime_period    = otp
          , user               = user

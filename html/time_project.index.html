@@ -36,15 +36,6 @@
     , ('organisation'
       , dict (searchname = 'organisation.company_code')
       )
-    , ( 'department'
-      , dict
-        ( multiselect = 1
-        , filter      = utils.valid_item (now)
-        )
-      )
-    , ('department'
-      , dict (searchname = 'department.id', searchable  = False)
-      )
     , ('status',             dict (multiselect = 1))
     , ('cost_center',        dict (multiselect = 1))
     , ('cost_center'

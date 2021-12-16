@@ -80,7 +80,7 @@ def init \
     export.update (dict (Department_Class = Department_Class))
 
     class Location_Class (Ext_Class) :
-        """ create a department class with some default attributes
+        """ create a location class with some default attributes
         """
         def __init__ (self, db, classname, ** properties) :
             self.update_properties \

@@ -43,15 +43,6 @@ def init \
     , ** kw
     ) :
 
-    class Ext_Department_Class (Department_Class) :
-        """Add the attribute `doc_num` to the existing Department class."""
-
-        def __init__ (self, db, classname, ** properties) :
-            self.update_properties (doc_num = String ())
-            self.__super.__init__ (db, classname, ** properties)
-        # end def __init__
-    # end class Ext_Department_Class
-
     product_type = Class \
         ( db, "product_type"
         , name                = String    ()
@@ -98,7 +89,6 @@ def init \
         , product_type        = Link      ("product_type", do_journal = 'no')
         , reference           = Link      ("reference",    do_journal = 'no')
         , artefact            = Link      ("artefact",     do_journal = 'no')
-        , department          = Link      ("department",   do_journal = 'no')
         , doc_category        = Link      ("doc_category", do_journal = 'no')
         , status              = Link      ("doc_status",   do_journal = 'no')
         , link                = String    ()
@@ -108,15 +98,13 @@ def init \
     doc.setkey       ("document_nr")
     doc.setlabelprop ("title")
 
-    return dict (Department_Class = Ext_Department_Class)
+    return {}
 # end def init
-
 
 def security (db, ** kw) :
     roles      = ( ("Doc_Admin", "Admin for documents (e.g. QM)")
                  , ("Nosy",      "Allowed on nosy list")
                  )
-    prop_perms = (("department", "Edit", ("Doc_Admin", ), ("doc_num", )), )
     classes    = \
         ( ("doc"          , ("User",), ("Doc_Admin", "User"))
         , ("artefact"     , ("User",), ("Doc_Admin",))
@@ -127,7 +115,7 @@ def security (db, ** kw) :
         )
 
     schemadef.register_roles             (db, roles)
-    schemadef.register_class_permissions (db, classes, prop_perms)
+    schemadef.register_class_permissions (db, classes, ())
     schemadef.register_nosy_classes      (db, ['doc'])
 # end def security
 

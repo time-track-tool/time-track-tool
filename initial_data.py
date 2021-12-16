@@ -32,223 +32,6 @@ from roundup.cgi.TranslationService import get_translation
 
 _ = get_translation (db.config.TRACKER_LANGUAGE, db.config.TRACKER_HOME).gettext
 
-# task_status
-# order, name, abbreviation, transitions, description
-if 'task_status' in db.classes :
-    tasks = [ ("1", "issued"              , "issu", ("started", )
-              , "Waiting to get started")
-            , ("2", "started"             , "star", ("available", "suspended")
-              , "Someone is working on it.")
-            , ("3", "available"           , "avai", ("accepted", "suspended")
-              , "It is ready for review.")
-            , ("4", "accepted"            , "acce", ("accepted-but-defects", )
-              , "It is reviewed and found to be correct.")
-            , ("5", "accepted-but-defects", "acbd", ("accepted", )
-              , "It is accepted, but has defects reported.")
-            , ("6", "suspended"           , "susp", ("issued", )
-              , "We plan to do it later.")
-            , ("7", "closed-obsolete"     , "obso", ()
-              , "We agreed to not do it anymore")
-            ]
-
-    task_status = db.getclass ("task_status")
-    for order, name, abbr, trans, desc in tasks :
-        task_status.create ( name         = name
-                           , order        = order
-                           , description  = desc
-                           , abbreviation = abbr
-                           )
-    for order, name, abbr, trans, desc in tasks :
-        if trans :
-            id        = task_status.lookup (name)
-            trans_ids = [task_status.lookup (t) for t in trans]
-            task_status.set (id, transitions = trans_ids)
-
-if 'document_status' in db.classes :
-    # document_status
-    # order, name, abbr, transitions, description
-    docs = [ ("1", "issued"              , "issu", ("started", )
-             , "Waiting to get started")
-           , ("2", "started"             , "star", ("available")
-             , "Someone is working on it.")
-           , ("3", "available"           , "avai", ("accepted")
-             , "It is ready for review.")
-           , ("4", "accepted"            , "acce", ()
-              , "It is reviewed and found to be correct.")
-           ]
-
-    document_status = db.getclass ("document_status")
-    for order, name, abbr, trans, desc in tasks :
-        document_status.create ( name         = name
-                               , order        = order
-                               , description  = desc
-                               , abbreviation = abbr
-                               )
-    for order, name, abbr, trans, desc in tasks :
-        if trans :
-            id        = document_status.lookup (name)
-            trans_ids = [document_status.lookup (t) for t in trans]
-            document_status.set (id, transitions = trans_ids)
-
-if 'task_kind' in db.classes :
-    # task_kind
-    kinds = [ ("1", "srd"                  , "Software Requirements Document")
-            , ("2", "sdd"                  , "Software Design Document"      )
-            , ("3", "implementation_task"  , "Implementation Task"           )
-            , ("4", "testcase"             , "Testcase"                      )
-            , ("5", "product_documentation", "Product Documentation Task"    )
-            ]
-    task_kind = db.getclass ("task_kind")
-    for order, name, desc in kinds :
-        task_kind.create ( name        = name
-                         , order       = order
-                         , description = desc
-                         )
-
-if 'feature_status' in db.classes :
-    # feature_status
-    # order, name, abbreviation, transitions, description
-    fss = [ ("1", "raised"   , "rais", ("suspended", "rejected") # "open" automatically
-            , "We should start working on it.")
-          , ("2", "open"     , "open", ("suspended", ) # "completed" automatically
-            , "We are currently working on it.")
-          , ("3", "completed", "comp", ("completed-but-defects",)
-            , "It is completed.")
-          , ("4", "completed-but-defects", "cdef", ("completed",)
-            , "It is completed, but has pending defects.")
-          , ("5", "rejected" , "reje", ("raised", )
-            , "We wont do it.")
-          , ("6", "suspended", "susp", ("raised", )
-            , "We will do it later.")
-          ]
-    feature_status = db.getclass ("feature_status")
-    for order, name, abbr, trans, desc in fss :
-        feature_status.create ( name         = name
-                              , order        = order
-                              , description  = desc
-                              , abbreviation = abbr
-                              )
-
-    for order, name, abbr, trans, desc in fss :
-        if trans :
-            id        = feature_status.lookup (name)
-            trans_ids = [feature_status.lookup (t) for t in trans]
-            feature_status.set (id, transitions = trans_ids)
-
-if 'action_item_status' in db.classes :
-    # action_item_status
-    # order, name, description
-    ais = [ ("1", "open"  , "The Action-Item is open"  )
-          , ("2", "closed", "The Action-Item is closed")
-          ]
-    ai = db.getclass ("action_item_status")
-    for order, name, desc in ais :
-        ai.create (name = name, description = desc, order = order)
-
-if 'review_status' in db.classes :
-    # review_status
-    # order, name, description
-    rs = [ ("1", "open"  , "The Review is open"  )
-         , ("2", "closed", "The Review is closed")
-         ]
-    r = db.getclass ("review_status")
-    for order, name, desc in rs :
-        r.create (name = name, description = desc, order = order)
-
-if 'comment_status' in db.classes :
-    # comment_status
-    # order, name, description, transitions
-    cs = [ ("1", "assigned", "The Comment just got reported"
-           , ("resolved", "rejected")
-           )
-         , ("2", "resolved", "The Comment got resolved from the author"
-           , ("accepted", "assigned")
-           )
-         , ("3", "accepted", "The Fix is accepted by the reviewer"
-           , ()
-           )
-         , ("4", "rejected", "The Comment got rejected"
-           , ()
-           )
-         ]
-    comment_status = db.getclass ("comment_status")
-
-    for order, name, desc, trans in cs :
-        comment_status.create (name = name, description = desc, order = order)
-
-    for order, name, desc, trans in cs :
-        id = comment_status.lookup (name)
-        if trans :
-            trans_ids = [comment_status.lookup (t) for t in trans]
-            comment_status.set (id, transitions = trans_ids)
-
-if 'defect_status' in db.classes :
-    # defect_status:
-    # order, name, abbreviation, cert, description, cert_trans, trans
-    dss = [ ("1", "assigned"        , "assi", False
-            , "Has just been reported"
-            , ("analyzed", "closed")
-            , ( "resolved"       , "closed-duplicate"
-              , "closed-mistaken", "suspended"
-              )
-            )
-          , ("2", "analyzed"        , "ana ", True
-            , "We know what caused the defect"
-            , ( "implemented"    , "closed-duplicate"
-              , "closed-rejected", "suspended"
-              )
-            , ()
-            )
-          , ("3", "implemented"     , "impl", True
-            , "The fix is implemented"
-            , ("analyzed", "resolved", "suspended")
-            , ()
-            )
-          , ("4", "resolved"        , "res ", False
-            , "The defect is ready for testing"
-            , ("closed", "suspended")
-            , ("closed", "assigned", "suspended")
-            )
-          , ("5", "closed"          , "clos", False, "Rest in peace"  , (), ())
-          , ("6", "closed-duplicate", "dupl", False, "Is a duplicate" , (), ())
-          , ("7", "closed-mistaken" , "mist", False, "Originator "
-                                                     "misunderstood "
-                                                     "something"      , (), ())
-          , ("8", "closed-rejected" , "rej ", True , "We dont do it"  , (), ())
-          , ("9", "suspended"       , "susp", False
-            , "We will fix this later"
-            , ("assigned", )
-            , ("assigned", )
-            )
-          ]
-    defect_status = db.getclass ("defect_status")
-    for order, name, abbr, cert, desc, c_trans, trans in dss :
-        defect_status.create ( name         = name
-                             , cert         = cert
-                             , order        = order
-                             , description  = desc
-                             , abbreviation = abbr
-                             )
-    for order, name, abbr, cert, desc, c_trans, trans in dss :
-        id        = defect_status.lookup (name)
-        if c_trans :
-            trans_ids = [defect_status.lookup (t) for t in c_trans]
-            defect_status.set (id, cert_transitions = trans_ids)
-        if trans :
-            trans_ids = [defect_status.lookup (t) for t in trans]
-            defect_status.set (id, transitions = trans_ids)
-
-if 'document_type' in db.classes :
-    # document_type
-    # order, name, description
-    dts = [ ("1", "ES" , "Evaluation Sheet"             )
-          , ("2", "CMP", "Configuration Management Plan")
-          , ("3", "HTP", "High-Level Test Plan"         )
-          ]
-    doc_type = db.getclass ("document_type")
-    for order, name, desc in dts :
-        doc_type.create (name = name, description = desc, order = order)
-
 if 'severity' in db.classes :
     # severity
     # order, name
@@ -435,12 +218,6 @@ if 'summary_type' in db.classes :
     summary_type.create (name = "week",  is_staff = True,  order = 2)
     summary_type.create (name = "month", is_staff = True,  order = 3)
     summary_type.create (name = "range", is_staff = True,  order = 4)
-
-if 'dns_record_type' in db.classes :
-    dns_record_type = db.dns_record_type
-    dns_record_type.create (name = "invalid",   description = "don't use")
-    dns_record_type.create (name = "A",         description = "A record")
-    dns_record_type.create (name = "CNAME",     description = "CNAME record")
 
 def gen_status (cls, list) :
     for order, name, desc, trans in list :
@@ -903,14 +680,6 @@ if 'dyndns' in db.classes :
         , default_server = 'members.dyndns.org'
         , description    = "free dynamic DNS service offered by www.dyndns.org"
         )
-# Dead
-#   db.dyndns_protocol.create \
-#       ( name           = 'concont'
-#       , order          = 2
-#       , default_server = 'www.dydns.za.net'
-#       , description    = "used by the free dyndns service Tyrmida "
-#                          "www.dydns.za.net"
-#       )
     db.dyndns_protocol.create \
         ( name           = 'dnspark'
         , order          = 3
@@ -929,13 +698,6 @@ if 'dyndns' in db.classes :
         , default_server = 'members.easydns.com'
         , description    = "for fee DNS service offered by www.easydns.com"
         )
-# Dead
-#   db.dyndns_protocol.create \
-#       ( name           = 'hammernode1'
-#       , order          = 6
-#       , default_server = 'www.hn.org'
-#       , description    = "free dynamic DNS service by Hammernode www.hn.org"
-#       )
     db.dyndns_protocol.create \
         ( name           = 'namecheap'
         , order          = 7

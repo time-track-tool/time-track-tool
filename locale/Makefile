@@ -6,10 +6,9 @@ XPOT ?= xpot
 # xgettext tells us pygettext is obsolete. Seems neiter xgettext nor
 # pygettext support extraction of ''"fancy" ''"""quoting""" where we
 # mark the text with an additional empty set of quotes.
-XGETTEXT ?= xgettext
+XGETTEXT ?= xgettext --from-code=utf-8
 MSGFMT ?= msgfmt
 MSGMERGE ?= msgmerge
-XGETTEXT ?= xgettext
 PYTHON ?= python
 
 TEMPLATE=roundup.pot
@@ -43,7 +42,7 @@ dist:
 	done
 
 template: attr.py
-	${XGETTEXT} -n -o $(TEMPLATE) $(SOURCES) attr.py
+	${XPOT} -n -o $(TEMPLATE) $(SOURCES) attr.py
 	${TAL_GETTEXT} -u $(TEMPLATE) $(HTML)
 	${XGETTEXT} -j -w 80 -F \
 	  --msgid-bugs-address=rsc@runtux.com \

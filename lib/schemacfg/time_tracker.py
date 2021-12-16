@@ -155,7 +155,6 @@ def init \
         , ''"summary_report"
         , date                  = Date      (offset = 0)
         , user                  = Link      ("user")
-        , department            = Link      ("department")
         , supervisor            = Link      ("user")
         , org_location          = Link      ("org_location")
         , organisation          = Link      ("organisation")
@@ -397,7 +396,6 @@ def init \
         , hours_sat             = Number    ()
         , hours_sun             = Number    ()
         , org_location          = Link      ("org_location", do_journal = "no")
-        , department            = Link      ("department",   do_journal = "no")
         , all_in                = Boolean   ()
         , additional_hours      = Number    ()
         , overtime_period       = Link      ( "overtime_period"
@@ -471,7 +469,6 @@ def init \
         , ''"vacation_report"
         , user                  = Link      ("user")
         , supervisor            = Link      ("user")
-        , department            = Link      ("department")
         , organisation          = Link      ("organisation")
         , org_location          = Link      ("org_location")
         , time_project          = Link      ("time_project")
@@ -512,7 +509,6 @@ def init \
         , first_day             = Date      (offset = 0)
         , last_day              = Date      (offset = 0)
         , user                  = Link      ("user")
-        , department            = Link      ("department")
         , supervisor            = Link      ("user")
         )
 
@@ -611,10 +607,6 @@ def init \
     # end class Location_Class
     export.update (dict (Location_Class = Location_Class))
     Location_Class     (db, ''"location")
-
-    # Some classes defined elsewhere which are required (and possibly
-    # extended in several other include files)
-    Department_Class   (db, ''"department")
 
     class Organisation_Class (kw ['Organisation_Class']) :
         """ Add some attributes needed for time tracker
@@ -876,7 +868,7 @@ def security (db, ** kw) :
             )
           )
         , ( "user_dynamic", "View", ["User"]
-          , ( "org_location", "department")
+          , ( "org_location",)
           )
         ]
 

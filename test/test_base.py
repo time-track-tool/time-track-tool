@@ -480,10 +480,6 @@ class _Test_Base_Summary :
             , do_leave_process    = True
             , vac_aliq            = '1'
             )
-        self.dep = self.db.department.create \
-            ( name       = 'Software Development'
-            , valid_from = date.Date ('2004-01-01')
-            )
         roles = 'User,Nosy,HR,controlling,project,ITView,IT'.split (',')
         roles.append ('HR-leave-approval')
         roles.append ('User_View')
@@ -496,12 +492,11 @@ class _Test_Base_Summary :
             , lastname     = 'User0'
             , roles        = roles
             )
-        user_dynamic.user_create_magic (self.db, self.user0, self.olo, self.dep)
+        user_dynamic.user_create_magic (self.db, self.user0, self.olo)
         self.db.user_dynamic.create \
             ( user            = self.user0
             , valid_from      = date.Date ('.')
             , org_location    = self.olo
-            , department      = self.dep
             , vacation_yearly = 25.0
             )
         cts  = self.db.user.get (self.user0, 'contacts')
@@ -520,12 +515,11 @@ class _Test_Base_Summary :
             , firstname    = 'Test'
             , lastname     = 'User1'
             )
-        user_dynamic.user_create_magic (self.db, self.user1, self.olo, self.dep)
+        user_dynamic.user_create_magic (self.db, self.user1, self.olo)
         self.db.user_dynamic.create \
             ( user            = self.user1
             , valid_from      = date.Date ('.')
             , org_location    = self.olo
-            , department      = self.dep
             , vacation_yearly = 25.0
             )
         cts  = self.db.user.get (self.user1, 'contacts')
@@ -550,12 +544,11 @@ class _Test_Base_Summary :
             , lastname     = 'User2'
             , supervisor   = self.user1
             )
-        user_dynamic.user_create_magic (self.db, self.user2, self.olo, self.dep)
+        user_dynamic.user_create_magic (self.db, self.user2, self.olo)
         self.db.user_dynamic.create \
             ( user            = self.user2
             , valid_from      = date.Date ('.')
             , org_location    = self.olo
-            , department      = self.dep
             , vacation_yearly = 25.0
             )
         # create initial dyn_user record for each user
@@ -590,7 +583,6 @@ class _Test_Base_Summary :
             , hours_fri         = 7.5
             , daily_worktime    = 0.0
             , org_location      = self.olo
-            , department        = self.dep
             , supp_weekly_hours = 40
             , overtime_period   = self.db.overtime_period.lookup ('week')
             )
@@ -652,7 +644,6 @@ class _Test_Base_Summary :
             , overtime_reduction = True
             , is_public_holiday  = True
             , responsible        = '1'
-            , department         = self.dep
             , status             = stat_open
             , cost_center        = self.cc
             , approval_required  = False
@@ -667,7 +658,6 @@ class _Test_Base_Summary :
             , no_overtime_day    = True
             , overtime_reduction = True
             , responsible        = '1'
-            , department         = self.dep
             , status             = stat_open
             , cost_center        = self.cc
             , approval_required  = True
@@ -679,7 +669,6 @@ class _Test_Base_Summary :
             , work_location      = wl_trav
             , op_project         = False
             , responsible        = '1'
-            , department         = self.dep
             , status             = stat_open
             , cost_center        = self.cc
             , approval_required  = False
@@ -690,7 +679,6 @@ class _Test_Base_Summary :
             ( name = 'A Project'
             , op_project         = True
             , responsible        = self.user1
-            , department         = self.dep
             , status             = stat_open
             , organisation       = self.org
             , cost_center        = self.cc
@@ -702,7 +690,6 @@ class _Test_Base_Summary :
             ( name = 'Vacation'
             , op_project         = False
             , responsible        = self.user1
-            , department         = self.dep
             , status             = stat_open
             , organisation       = self.org
             , cost_center        = self.cc
@@ -717,7 +704,6 @@ class _Test_Base_Summary :
             ( name = 'Flexi'
             , op_project         = False
             , responsible        = self.user1
-            , department         = self.dep
             , status             = stat_open
             , organisation       = self.org
             , cost_center        = self.cc
@@ -736,7 +722,6 @@ class _Test_Base_Summary :
             , no_overtime_day    = True
             , overtime_reduction = True
             , responsible        = '1'
-            , department         = self.dep
             , status             = stat_open
             , cost_center        = self.cc
             , approval_required  = True
@@ -895,7 +880,6 @@ class Test_Case_Timetracker (_Test_Case_Summary, unittest.TestCase) :
         # Try creating a dynamic user record
         id = self.db.user_dynamic.create \
             ( org_location    = self.olo
-            , department      = self.dep
             , vacation_yearly = 23
             , user            = u
             , valid_from      = date.Date ('.')
@@ -943,13 +927,11 @@ class Test_Case_Timetracker (_Test_Case_Summary, unittest.TestCase) :
             , firstname    = 'Nummer11'
             , lastname     = 'User11'
             )
-        user_dynamic.user_create_magic \
-            (self.db, self.user11, self.olo, self.dep)
+        user_dynamic.user_create_magic (self.db, self.user11, self.olo)
         self.db.user_dynamic.create \
             ( user            = self.user11
             , valid_from      = date.Date ('.')
             , org_location    = self.olo
-            , department      = self.dep
             , vacation_yearly = 25.0
             )
         # create initial dyn_user record for user
@@ -1104,7 +1086,6 @@ class Test_Case_Timetracker (_Test_Case_Summary, unittest.TestCase) :
         self.db.user_dynamic.create \
             ( user              = self.user11
             , org_location      = ud.org_location
-            , department        = ud.department
             , valid_from        = date.Date ('2013-06-05')
             , booking_allowed   = True
             , vacation_yearly   = 25.0
@@ -1122,7 +1103,6 @@ class Test_Case_Timetracker (_Test_Case_Summary, unittest.TestCase) :
         self.db.user_dynamic.create \
             ( user              = self.user11
             , org_location      = ud.org_location
-            , department        = ud.department
             , valid_from        = date.Date ('2013-06-11')
             , booking_allowed   = True
             , vacation_yearly   = 25.0
@@ -1622,7 +1602,7 @@ class Test_Case_Timetracker (_Test_Case_Summary, unittest.TestCase) :
         self.setup_user12 ()
         self.db.close ()
         self.db = self.tracker.open (self.username12)
-        user12_time.import_data_12 (self.db, self.user12, self.dep, self.olo)
+        user12_time.import_data_12 (self.db, self.user12, self.olo)
         self.db.commit ()
         self.db.close ()
         self.db = self.tracker.open (self.username0)
@@ -1673,7 +1653,7 @@ class Test_Case_Timetracker (_Test_Case_Summary, unittest.TestCase) :
         self.db.commit ()
         self.db.close  ()
         self.db = self.tracker.open (self.username13)
-        user13_time.import_data_13 (self.db, self.user13, self.dep, self.olo)
+        user13_time.import_data_13 (self.db, self.user13, self.olo)
         vc = self.db.vacation_correction.filter \
             (None, dict (user = self.user13))
         self.assertEqual (len (vc), 1)
@@ -1749,15 +1729,15 @@ class Test_Case_Timetracker (_Test_Case_Summary, unittest.TestCase) :
         self.db.close  ()
         self.db = self.tracker.open ('admin')
         user15_19_vac.import_data_15 \
-            (self.db, self.uid_by_name ['testuser15'], self.dep, self.olo)
+            (self.db, self.uid_by_name ['testuser15'], self.olo)
         user15_19_vac.import_data_16 \
-            (self.db, self.uid_by_name ['testuser16'], self.dep, self.olo)
+            (self.db, self.uid_by_name ['testuser16'], self.olo)
         user15_19_vac.import_data_17 \
-            (self.db, self.uid_by_name ['testuser17'], self.dep, self.olo)
+            (self.db, self.uid_by_name ['testuser17'], self.olo)
         user15_19_vac.import_data_18 \
-            (self.db, self.uid_by_name ['testuser18'], self.dep, self.olo)
+            (self.db, self.uid_by_name ['testuser18'], self.olo)
         user15_19_vac.import_data_19 \
-            (self.db, self.uid_by_name ['testuser19'], self.dep, self.olo)
+            (self.db, self.uid_by_name ['testuser19'], self.olo)
         self.db.commit ()
         self.db.close  ()
         self.db = self.tracker.open (self.username0)
@@ -2023,7 +2003,7 @@ class Test_Case_Timetracker (_Test_Case_Summary, unittest.TestCase) :
         self.db.commit ()
         self.db.close ()
         self.db = self.tracker.open (self.username14)
-        user14_time.import_data_14 (self.db, self.user14, self.dep, self.olo)
+        user14_time.import_data_14 (self.db, self.user14, self.olo)
         self.db.commit ()
         self.db.close ()
         self.db = self.tracker.open (self.username0)
@@ -2084,7 +2064,7 @@ class Test_Case_Timetracker (_Test_Case_Summary, unittest.TestCase) :
         self.db.commit ()
         self.db.close  ()
         self.db = self.tracker.open (self.username14)
-        user14_time.import_data_14 (self.db, self.user14, self.dep, self.olo)
+        user14_time.import_data_14 (self.db, self.user14, self.olo)
         vc = self.db.vacation_correction.filter \
             (None, dict (user = self.user14))
         self.assertEqual (len (vc), 1)
@@ -3285,13 +3265,11 @@ class Test_Case_Timetracker (_Test_Case_Summary, unittest.TestCase) :
             , firstname    = 'Nummer16'
             , lastname     = 'User16'
             )
-        user_dynamic.user_create_magic \
-            (self.db, self.user16, self.olo, self.dep)
+        user_dynamic.user_create_magic (self.db, self.user16, self.olo)
         self.db.user_dynamic.create \
             ( user            = self.user16
             , valid_from      = date.Date ('.')
             , org_location    = self.olo
-            , department      = self.dep
             , vacation_yearly = 25.0
             )
         ud = self.db.user_dynamic.filter (None, dict (user = self.user16))
@@ -3327,7 +3305,7 @@ class Test_Case_Timetracker (_Test_Case_Summary, unittest.TestCase) :
         self.setup_db ()
         self.setup_user16 ()
         # import user 16, dyn user start at 2018-10-01 and ends at 2019-01-31
-        user16_leave.import_data_16 (self.db, self.user16, self.dep, self.olo)
+        user16_leave.import_data_16 (self.db, self.user16, self.olo)
         self.db.commit ()
         self.db.close ()
         self.db = self.tracker.open (self.username16)
@@ -3488,8 +3466,8 @@ class Test_Case_Timetracker (_Test_Case_Summary, unittest.TestCase) :
         self.db.time_wp.set \
             (self.vacation_wp, bookers = [self.user18, self.user17])
         # import user 17 and 18
-        user17_time.import_data_17 (self.db, self.user17, self.dep, self.olo)
-        user18_time.import_data_18 (self.db, self.user18, self.dep, self.olo)
+        user17_time.import_data_17 (self.db, self.user17, self.olo)
+        user18_time.import_data_18 (self.db, self.user18, self.olo)
         self.db.commit ()
         ud = self.db.user_dynamic.create \
             ( hours_fri          = 1.0
@@ -3512,7 +3490,6 @@ class Test_Case_Timetracker (_Test_Case_Summary, unittest.TestCase) :
             , travel_full        = 0
             , vacation_month     = 1.0
             , hours_sat          = 0.0
-            , department         = self.dep
             , org_location       = self.olo
             , overtime_period    = '1'
             , user               = self.user17
@@ -3546,7 +3523,6 @@ class Test_Case_Timetracker (_Test_Case_Summary, unittest.TestCase) :
             , travel_full        = 0
             , vacation_month     = 1.0
             , hours_sat          = 0.0
-            , department         = self.dep
             , org_location       = self.olo
             , overtime_period    = '1'
             , user               = self.user18
@@ -3574,7 +3550,6 @@ class Test_Case_Timetracker (_Test_Case_Summary, unittest.TestCase) :
             , travel_full        = 0
             , vacation_month     = 1.0
             , hours_sat          = 0.0
-            , department         = self.dep
             , org_location       = self.olo
             , overtime_period    = '1'
             , user               = self.user18
@@ -3667,7 +3642,6 @@ class Test_Case_Timetracker (_Test_Case_Summary, unittest.TestCase) :
             , hours_fri         = 7.5
             , daily_worktime    = 0.0
             , org_location      = self.olo
-            , department        = self.dep
             , supp_weekly_hours = 40
             , overtime_period   = self.db.overtime_period.lookup ('week')
             , do_auto_wp        = True
@@ -3937,12 +3911,11 @@ class Test_Case_Fulltracker (_Test_Case_Summary, unittest.TestCase) :
             , firstname    = 'NochEinTest'
             , lastname     = 'User3'
             )
-        user_dynamic.user_create_magic (self.db, self.user3, self.olo, self.dep)
+        user_dynamic.user_create_magic (self.db, self.user3, self.olo)
         self.db.user_dynamic.create \
             ( user            = self.user3
             , valid_from      = date.Date ('.')
             , org_location    = self.olo
-            , department      = self.dep
             , vacation_yearly = 25.0
             )
         # create initial dyn_user record for user
@@ -3976,12 +3949,11 @@ class Test_Case_Fulltracker (_Test_Case_Summary, unittest.TestCase) :
             , firstname    = 'Nummer4'
             , lastname     = 'User4'
             )
-        user_dynamic.user_create_magic (self.db, self.user4, self.olo, self.dep)
+        user_dynamic.user_create_magic (self.db, self.user4, self.olo)
         self.db.user_dynamic.create \
             ( user            = self.user4
             , valid_from      = date.Date ('.')
             , org_location    = self.olo
-            , department      = self.dep
             , vacation_yearly = 25.0
             )
         # create initial dyn_user record for user
@@ -4020,12 +3992,11 @@ class Test_Case_Fulltracker (_Test_Case_Summary, unittest.TestCase) :
             , firstname    = 'Nummer5'
             , lastname     = 'User5'
             )
-        user_dynamic.user_create_magic (self.db, self.user5, self.olo, self.dep)
+        user_dynamic.user_create_magic (self.db, self.user5, self.olo)
         self.db.user_dynamic.create \
             ( user            = self.user5
             , valid_from      = date.Date ('.')
             , org_location    = self.olo
-            , department      = self.dep
             , vacation_yearly = 25.0
             )
         # public holidays
@@ -4081,7 +4052,6 @@ class Test_Case_Fulltracker (_Test_Case_Summary, unittest.TestCase) :
         self.db.user_dynamic.create \
             ( user              = self.user5
             , org_location      = ud.org_location
-            , department        = ud.department
             , valid_from        = date.Date ('2012-03-15')
             , booking_allowed   = True
             , vacation_yearly   = 25.0
@@ -4098,7 +4068,6 @@ class Test_Case_Fulltracker (_Test_Case_Summary, unittest.TestCase) :
         self.db.user_dynamic.create \
             ( user              = self.user5
             , org_location      = ud.org_location
-            , department        = ud.department
             , valid_from        = date.Date ('2012-06-01')
             , booking_allowed   = True
             , vacation_yearly   = 25.0
@@ -4123,12 +4092,11 @@ class Test_Case_Fulltracker (_Test_Case_Summary, unittest.TestCase) :
             , firstname    = 'Nummer6'
             , lastname     = 'User6'
             )
-        user_dynamic.user_create_magic (self.db, self.user6, self.olo, self.dep)
+        user_dynamic.user_create_magic (self.db, self.user6, self.olo)
         self.db.user_dynamic.create \
             ( user            = self.user6
             , valid_from      = date.Date ('.')
             , org_location    = self.olo
-            , department      = self.dep
             , vacation_yearly = 25.0
             )
         # create initial dyn_user record for user
@@ -4167,12 +4135,11 @@ class Test_Case_Fulltracker (_Test_Case_Summary, unittest.TestCase) :
             , firstname    = 'Nummer7'
             , lastname     = 'User7'
             )
-        user_dynamic.user_create_magic (self.db, self.user7, self.olo, self.dep)
+        user_dynamic.user_create_magic (self.db, self.user7, self.olo)
         self.db.user_dynamic.create \
             ( user            = self.user7
             , valid_from      = date.Date ('.')
             , org_location    = self.olo
-            , department      = self.dep
             , vacation_yearly = 25.0
             )
         # create initial dyn_user record for user
@@ -4212,12 +4179,11 @@ class Test_Case_Fulltracker (_Test_Case_Summary, unittest.TestCase) :
             , firstname    = 'Nummer8'
             , lastname     = 'User8'
             )
-        user_dynamic.user_create_magic (self.db, self.user8, self.olo, self.dep)
+        user_dynamic.user_create_magic (self.db, self.user8, self.olo)
         self.db.user_dynamic.create \
             ( user            = self.user8
             , valid_from      = date.Date ('.')
             , org_location    = self.olo
-            , department      = self.dep
             , vacation_yearly = 25.0
             )
         # create initial dyn_user record for user
@@ -4254,12 +4220,11 @@ class Test_Case_Fulltracker (_Test_Case_Summary, unittest.TestCase) :
             , firstname    = 'Nummer9'
             , lastname     = 'User9'
             )
-        user_dynamic.user_create_magic (self.db, self.user9, self.olo, self.dep)
+        user_dynamic.user_create_magic (self.db, self.user9, self.olo)
         self.db.user_dynamic.create \
             ( user            = self.user9
             , valid_from      = date.Date ('.')
             , org_location    = self.olo
-            , department      = self.dep
             , vacation_yearly = 25.0
             )
         # create initial dyn_user record for user
@@ -4294,13 +4259,11 @@ class Test_Case_Fulltracker (_Test_Case_Summary, unittest.TestCase) :
             , firstname    = 'Nummer10'
             , lastname     = 'User10'
             )
-        user_dynamic.user_create_magic \
-            (self.db, self.user10, self.olo, self.dep)
+        user_dynamic.user_create_magic (self.db, self.user10, self.olo)
         self.db.user_dynamic.create \
             ( user            = self.user10
             , valid_from      = date.Date ('.')
             , org_location    = self.olo
-            , department      = self.dep
             , vacation_yearly = 25.0
             )
         # create initial dyn_user record for user
@@ -4326,7 +4289,6 @@ class Test_Case_Fulltracker (_Test_Case_Summary, unittest.TestCase) :
         self.db.user_dynamic.create \
             ( user              = self.user10
             , org_location      = ud.org_location
-            , department        = ud.department
             , valid_from        = date.Date ('2012-01-01')
             , booking_allowed   = True
             , vacation_yearly   = 25.0
@@ -4371,7 +4333,6 @@ class Test_Case_Fulltracker (_Test_Case_Summary, unittest.TestCase) :
             ( name = 'Another Project'
             , op_project        = True
             , responsible       = self.user1
-            , department        = self.dep
             , organisation      = self.org
             , cost_center       = self.cc
             )
@@ -4774,7 +4735,6 @@ class Test_Case_Fulltracker (_Test_Case_Summary, unittest.TestCase) :
         self.db.user_dynamic.set (ud [0], valid_from = date.Date ('2012-12-24'))
         self.db.user_dynamic.create \
             ( org_location      = self.olo
-            , department        = self.dep
             , user              = self.user8
             , valid_from        = date.Date ('2012-12-17')
             , valid_to          = date.Date ('2012-12-24')
@@ -5282,7 +5242,6 @@ class Test_Case_Concurrency (_Test_Base, _Test_Base_Summary, unittest.TestCase) 
             , hours_fri         = 7.5
             , daily_worktime    = 0.0
             , org_location      = self.olo
-            , department        = self.dep
             , max_flexitime     = 5
             )
         self.db.clearCache ()
@@ -5302,7 +5261,6 @@ class Test_Case_Concurrency (_Test_Base, _Test_Base_Summary, unittest.TestCase) 
             , daily_worktime    = 0.0
             , supp_weekly_hours = 25.
             , org_location      = self.olo
-            , department        = self.dep
             , overtime_period   = self.db.overtime_period.lookup ('week')
             )
         self.db.user_dynamic.create \
@@ -5318,7 +5276,6 @@ class Test_Case_Concurrency (_Test_Base, _Test_Base_Summary, unittest.TestCase) 
             , hours_fri         = 2.0
             , daily_worktime    = 0.0
             , org_location      = self.olo
-            , department        = self.dep
             , max_flexitime     = 5
             )
         self.db.user_dynamic.create \
@@ -5334,7 +5291,6 @@ class Test_Case_Concurrency (_Test_Base, _Test_Base_Summary, unittest.TestCase) 
             , hours_fri         = 2.0
             , daily_worktime    = 0.0
             , org_location      = self.olo
-            , department        = self.dep
             , max_flexitime     = 5
             )
         self.db.commit ()
@@ -5505,7 +5461,6 @@ class Test_Case_Concurrency (_Test_Base, _Test_Base_Summary, unittest.TestCase) 
             , additional_hours  = 38.5
             , overtime_period   = self.db.overtime_period.lookup ('week')
             , org_location      = self.olo
-            , department        = self.dep
             )
         f = self.db.daily_record_freeze.create \
             ( user           = self.user2
@@ -5591,7 +5546,6 @@ class Test_Case_Concurrency (_Test_Base, _Test_Base_Summary, unittest.TestCase) 
             , additional_hours  = 38.5
             , overtime_period   = self.db.overtime_period.lookup ('week')
             , org_location      = self.olo
-            , department        = self.dep
             )
         self.db.clearCache ()
         self.assertEqual (dr1.tr_duration_ok, 7.75)

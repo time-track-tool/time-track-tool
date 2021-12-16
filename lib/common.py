@@ -60,57 +60,6 @@ except (ImportError, SyntaxError) :
 ymd = '%Y-%m-%d'
 day = Interval ('1d')
 
-def update_feature_status (db, cl, nodeid, new_values) :
-    """auditor on feature.set
-
-    update feature's status according to attached tasks/defects status.
-
-    if single task is 'started' -> feature becomes 'open'
-    if all tasks are 'accepted' -> feature becomes 'completed'
-    if all tasks are 'accepted', but feature has open defects ->
-                                   feature becomes 'completed-but-defects'
-    """
-    tasks   = new_values.get ("tasks")   or db.feature.get (nodeid, "tasks")
-    defects = new_values.get ("defects") or db.feature.get (nodeid, "defects")
-    open      = False
-    completed = False
-    task_started  = int (db.task_status.lookup ("started"))
-    task_accepted = int (db.task_status.lookup ("accepted"))
-    for task in tasks :
-        task_status = int (db.task.get (task, "status"))
-        if task_status == task_started :
-            open = True
-            break
-        elif task_status >= task_accepted :
-            completed = True
-        elif task_status < task_started :
-            completed = False
-    if open :
-        status = "open"
-    elif completed :
-        status = "completed"
-    else :
-        status = None
-
-    if status == "completed" :
-        # check if there are pending defects
-        defect_closed = db.defect_status.lookup ("closed")
-        has_defects = False
-        for defect in defects :
-            defect_status = db.defect.get (defect, "status")
-            if defect_status < defect_closed :
-                has_defects = True
-                break
-        if has_defects :
-            status = "completed-but-defects"
-    # set status
-    if status :
-        curr_status = new_values.get ("status") or \
-                      db.feature.get (nodeid, "status")
-        if status != curr_status :
-            new_values ["status"] = db.feature_status.lookup (status)
-# end def update_feature_status
-
 def check_prop_len (_, s, propname = 'name', limit = 25) :
     string_len = 0
     if s:
