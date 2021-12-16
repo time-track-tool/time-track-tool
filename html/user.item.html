@@ -129,6 +129,11 @@
        </tr>
       </tal:block>
      </tal:block>
+     <tr>
+      <th tal:content="structure python:
+          utils.fieldname ('user', 'department_temp')"/>
+      <td tal:content="structure python: context.department_temp.field ()"/>
+     </tr>
      <tr tal:condition="python:'contacts' in props">
       <th tal:content="structure python:utils.fieldname('user', 'contacts')"/>
       <td colspan="3">

@@ -7468,7 +7468,7 @@ msgid "subst_until"
 msgstr "Substitute until"
 
 msgid "department_temp"
-msgstr "Department (temp)"
+msgstr "Department"
 
 msgid "scale_seniority"
 msgstr "Functional Seniority"
@@ -7514,9 +7514,6 @@ msgstr "Identifier"
 
 msgid "ingredients"
 msgstr "Ingredients"
-
-msgid "time_activity_perm"
-msgstr "Activity Permission"
 
 msgid "only_nosy"
 msgstr "Only nosy"
