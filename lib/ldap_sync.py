@@ -17,7 +17,7 @@ from roundup.cgi           import exceptions
 from roundup.exceptions    import Reject
 from roundup.configuration import InvalidOptionError
 from datetime              import datetime
-from PIL                   import Image
+from PIL                   import Image, ImageOps
 
 LDAPCursorError = ldap3.core.exceptions.LDAPCursorError
 LDAPKeyError    = ldap3.core.exceptions.LDAPKeyError
@@ -44,6 +44,9 @@ class Pic :
             sz     = len (picio.getvalue ())
             if not size or sz <= size :
                 return picio.getvalue ()
+        else :
+            # Transpose image according to "orientation" exif tag
+            self.img = ImageOps.exif_transpose (self.img)
 
         #print (self.img.getbbox ())
         x1, y1, x2, y2 = self.img.getbbox ()
