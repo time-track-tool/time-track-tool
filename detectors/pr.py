@@ -58,6 +58,8 @@ def check_psp_cc (db, cl, nodeid, new_values) :
             ) :
             new_values ['organisation'] = org = psp.organisation
         new_values ['time_project'] = psp.project
+    elif 'psp_element' in new_values and new_values ['psp_element'] is None :
+        new_values ['time_project'] = None
     elif new_values.get ('time_project', None) :
         # Change of time_project without psp change
         if not nodeid or not cl.get (nodeid, 'psp_element') :
@@ -193,6 +195,8 @@ def check_psp_tc (db, cl, nodeid, new_values) :
     pspid = new_values.get ('psp_element')
     if pspid is None and node :
         pspid = node.psp_element
+    if 'psp_element' in new_values and new_values ['psp_element'] is None :
+        new_values ['time_project'] = None
     if not pspid :
         return
     psp = db.psp_element.getnode (pspid)
