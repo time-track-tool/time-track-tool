@@ -419,18 +419,18 @@ def check_avc (db, cl, nodeid, new_values) :
     assert len (vcs) <= 1
     if not vcs :
         # Find the next vc backwards and check if it is at the end of
-        # employment
+        # employment, sort negative by date, i.e. newest first
         vcs = db.vacation_correction.filter \
             ( None
             , dict (user = user, date = ';%s' % dt, absolute = True)
-            , sort = ('+', 'date')
+            , sort = ('-', 'date')
             )
         if vcs :
             vc = db.vacation_correction.getnode (vcs [0])
             day = common.day
             # - day because we don't want to find the currently-change dyn
             vcdyn = user_dynamic.last_user_dynamic (db, user, valid_from - day)
-            if not vcdyn.valid_to or vcdyn.valid_to > vc.date :
+            if not vcdyn.valid_to or vcdyn.valid_to > vc.date + day :
                 vcs = []
     if vcs :
         assert db.vacation_correction.get (vcs [0], 'date') <= valid_from
