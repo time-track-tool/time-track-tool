@@ -196,8 +196,7 @@ def check_psp_tc (db, cl, nodeid, new_values) :
     if not pspid :
         return
     psp = db.psp_element.getnode (pspid)
-    if 'time_project' in new_values or node and node.time_project is None :
-        new_values ['time_project'] = psp.project
+    new_values ['time_project'] = psp.project
 # end def check_psp_tc
 
 def check_supplier_change (db, cl, nodeid, new_values) :
