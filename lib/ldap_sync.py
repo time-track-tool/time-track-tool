@@ -45,11 +45,20 @@ class Pic :
             if not size or sz <= size :
                 return picio.getvalue ()
         else :
+            # Remove all exif info *except* 0x0112 "orientation"
+            # We don't need the exif on the image (in fact we're trying
+            # to shrink the image here) and some exif info is
+            # unparseable by Pillow.
+            exif = self.img.getexif ()
+            for k in list (exif) :
+                if k != 0x0112 :
+                    try :
+                        del exif [k]
+                    except KeyError :
+                        pass
+            self.img.info ['exif'] = exif.tobytes ()
             # Transpose image according to "orientation" exif tag
             self.img = ImageOps.exif_transpose (self.img)
-
-        #print (self.img.getbbox ())
-        x1, y1, x2, y2 = self.img.getbbox ()
         #self.img.show ()
         bb = self.img.getbbox ()
         u  = ((bb [2] - bb [0]), (bb [3] - bb [1]))
