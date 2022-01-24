@@ -357,7 +357,7 @@ class LDAP_Roundup_Sync (Log) :
 
     def __init__ \
         ( self, db, update_roundup = None, update_ldap = None, verbose = 0
-        , dry_run_roundup = False, dry_run_ldap = False
+        , dry_run_roundup = False, dry_run_ldap = False, get_groups = True
         , log = None, ldap = None
         ) :
         self.db              = db
@@ -455,15 +455,16 @@ class LDAP_Roundup_Sync (Log) :
         self.ldap_groups     = {}
         # read ldap groups from user_status in Roundup to specify which
         # LDAP groups to look for
-        for id in db.user_status.filter (None, {}, sort = ('+', 'id')) :
-            st = db.user_status.getnode (id)
-            if st.ldap_group :
-                self.info ("Add group '%s' for user lookup" % st.ldap_group)
-                self.status_sync.append (id)
-                self.valid_stati.append (id)
-                self.ldap_stati  [id] = st
-                self.ldap_groups [id] = LDAP_Group \
-                    (self.ldcon, self.base_dn, st.ldap_group, st.ldap_prio)
+        if get_groups :
+            for id in db.user_status.filter (None, {}, sort = ('+', 'id')) :
+                st = db.user_status.getnode (id)
+                if st.ldap_group :
+                    self.info ("Add group '%s' for user lookup" % st.ldap_group)
+                    self.status_sync.append (id)
+                    self.valid_stati.append (id)
+                    self.ldap_stati  [id] = st
+                    self.ldap_groups [id] = LDAP_Group \
+                        (self.ldcon, self.base_dn, st.ldap_group, st.ldap_prio)
         self.contact_types = {}
         # uc_type = user_contact_type
         if 'uc_type' in self.db.classes :
