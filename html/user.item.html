@@ -129,7 +129,7 @@
        </tr>
       </tal:block>
      </tal:block>
-     <tr>
+     <tr tal:condition="python:'department_temp' in props">
       <th tal:content="structure python:
           utils.fieldname ('user', 'department_temp')"/>
       <td tal:content="structure python: context.department_temp.field ()"/>
