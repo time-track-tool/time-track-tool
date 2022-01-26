@@ -36,11 +36,6 @@
     ; tc_filt             python:
         [{}, dict (organisation = context.organisation.id)]
         [bool (context.organisation)]
-    ; psp_filt            python:
-        [ dict (valid = 1)
-        , dict (organisation = context.organisation.id, valid = 1)
-        ]
-        [bool (context.organisation)]
     ; cc_filt             python:
         ['valid=yes', 'valid=yes\x3borganisation=%s' % context.organisation.id]
         [bool (context.organisation)]
@@ -76,10 +71,22 @@
       <tal:block tal:condition="python: utils.need_psp (context)">
        <th tal:content="structure python:utils.fieldname
            (classname, 'psp_element')"/>
-       <td tal:content="structure python:context.psp_element.menu
-           ( additional = ('name',)
-           , ** psp_filt
-           )"/>
+       <td>
+        <span tal:condition="python: context.psp_element.is_edit_ok ()"
+              tal:content="structure python:context.psp_element.field ()"/>
+        <a tal:condition="python: not context.psp_element.is_edit_ok ()"
+           tal:attributes="title python: context.psp_element.name"
+           tal:content="structure python:context.psp_element.plain ()"/>
+        <span tal:condition="python: context.psp_element.is_edit_ok ()"
+              tal:attributes="title python: context.psp_element.name"
+              tal:content="structure python:db.psp_element.classhelp
+              ( 'number,name'
+              , property  = 'psp_element'
+              , inputtype = 'radio'
+              , width     = '800'
+              , filter    = cc_filt
+              )"/>
+       </td>
       </tal:block>
       <tal:block tal:condition="python: not utils.need_psp (context)">
        <th tal:content="structure python:utils.fieldname
@@ -97,13 +104,17 @@
       </tal:block>
       <th tal:content="structure python:utils.fieldname (classname, 'sap_cc')"/>
       <td>
-        <span tal:replace="structure python:context.sap_cc.field ()"/>
         <span tal:condition="python: context.sap_cc.is_edit_ok ()"
-              tal:replace="structure python:db.sap_cc.classhelp
+              tal:content="structure python:context.sap_cc.field ()"/>
+        <a tal:condition="python: not context.sap_cc.is_edit_ok ()"
+           tal:attributes="title python: context.sap_cc.description"
+           tal:content="structure python:context.sap_cc.plain ()"/>
+        <span tal:condition="python: context.sap_cc.is_edit_ok ()"
+              tal:content="structure python:db.sap_cc.classhelp
               ( 'name,description,responsible,deputy'
               , property  = 'sap_cc'
               , inputtype = 'radio'
-              , width     = '600'
+              , width     = '800'
               , filter    = cc_filt
               )"/>
       </td>
@@ -455,9 +466,22 @@
            <td tal:attributes="colspan python:3+cond"/>
           </tr>
           <tr>
-           <td tal:condition="python: utils.need_psp (context)"
-               tal:content="structure python:i.psp_element.menu
-                   (valid = True)"/>
+           <td tal:condition="python: utils.need_psp (context)">
+            <span tal:condition="python: i.psp_element.is_edit_ok ()"
+                  tal:content="structure python:i.psp_element.field ()"/>
+            <a tal:condition="python: not i.psp_element.is_edit_ok ()"
+               tal:attributes="title python: i.psp_element.name"
+               tal:content="structure python:i.psp_element.plain ()"/>
+            <span tal:condition="python: i.psp_element.is_edit_ok ()"
+                  tal:attributes="title python: i.psp_element.name"
+                  tal:content="structure python:db.psp_element.classhelp
+                  ( 'number,name'
+                  , property  = 'pr_offer_item%s@psp_element' % i.id
+                  , inputtype = 'radio'
+                  , width     = '800'
+                  , filter    = cc_filt
+                  )"/>
+           </td>
            <td tal:condition="python: not utils.need_psp (context)">
             <tal:block tal:content="structure python:i.time_project.menu
                 ( sort_on = ('+', 'description')
@@ -469,7 +493,21 @@
                        tal:replace="i/time_project/description"/>
 
            </td>
-           <td tal:content="structure python:i.sap_cc.menu (** tc_filt)"/>
+           <td>
+             <span tal:condition="python: i.sap_cc.is_edit_ok ()"
+                   tal:replace="structure python:i.sap_cc.field ()"/>
+             <a tal:condition="python: not i.sap_cc.is_edit_ok ()"
+                tal:attributes="title python: i.sap_cc.description"
+                tal:content="structure python:i.sap_cc.plain ()"/>
+             <span tal:condition="python: i.sap_cc.is_edit_ok ()"
+                   tal:replace="structure python:db.sap_cc.classhelp
+                   ( 'name,description,responsible,deputy'
+                   , property  = 'pr_offer_item%s@sap_cc' % i.id
+                   , inputtype = 'radio'
+                   , width     = '800'
+                   , filter    = cc_filt
+                   )"/>
+           </td>
            <td tal:content="structure python:i.purchase_type.menu
                (valid = True)"/>
            <td>
@@ -588,12 +626,27 @@
           </tr>
           <tr>
            <td>
-            <tal:block tal:content="structure python:utils.new_property
-             (context, db, 'pr_offer_item', -idx, 'psp_element').menu
-               (valid = True)"/>
+            <span tal:content="structure python:utils.new_property
+                (context, db, 'pr_offer_item', -idx, 'psp_element').field ()"/>
+            <span tal:content="structure python:db.psp_element.classhelp
+                  ( 'number,name'
+                  , property  = 'pr_offer_item-%s@psp_element' % idx
+                  , inputtype = 'radio'
+                  , width     = '800'
+                  , filter    = cc_filt
+                  )"/>
            </td>
-           <td tal:content="structure python:utils.new_property
-               (context, db, 'pr_offer_item', -idx, 'sap_cc').menu ()"/>
+           <td>
+            <span tal:content="structure python:utils.new_property
+                (context, db, 'pr_offer_item', -idx, 'sap_cc').field ()"/>
+            <span tal:content="structure python:db.sap_cc.classhelp
+                  ( 'name,description,responsible,deputy'
+                  , property  = 'pr_offer_item-%s@sap_cc' % idx
+                  , inputtype = 'radio'
+                  , width     = '800'
+                  , filter    = cc_filt
+                  )"/>
+           </td>
            <td tal:content="structure python:utils.new_property
                (context, db, 'pr_offer_item', -idx, 'purchase_type').menu
                   (valid = True)"/>
