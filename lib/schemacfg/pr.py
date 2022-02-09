@@ -415,6 +415,7 @@ def init \
             self.update_properties \
                 ( nosy                  = Multilink ("user")
                 , deputy_gets_mail      = Boolean   ()
+                , no_approval           = Boolean   ()
                 )
             Dep_Ancestor.__init__ (self, db, classname, ** properties)
         # end def __init__

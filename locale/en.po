@@ -7526,3 +7526,6 @@ msgstr "PSP Element"
 
 msgid "quantity"
 msgstr "Quantity"
+
+msgid "no_approval"
+msgstr "No department approval"

@@ -353,16 +353,23 @@ class Approval_Logic :
                 assert not self.do_create or pr.department
                 if pr.department :
                     dep = db.department.getnode (pr.department)
-                    apr = gen_pr_approval \
-                        ( db, self.do_create
-                        , order            = 55
-                        , purchase_request = pr.id
-                        , user             = dep.manager
-                        , deputy           = dep.deputy
-                        , description      = "Department Head"
-                        , deputy_gets_mail = dep.deputy_gets_mail or False
-                        )
-                    self._add_approval ((dep.manager, dep.deputy), apr)
+                    if not dep.no_approval :
+                        if not dep.manager and not dep.deputy :
+                            raise Reject \
+                                (self._ ("Configuration error: No "
+                                         "department manager and deputy"
+                                        )
+                                )
+                        apr = gen_pr_approval \
+                            ( db, self.do_create
+                            , order            = 55
+                            , purchase_request = pr.id
+                            , user             = dep.manager
+                            , deputy           = dep.deputy
+                            , description      = "Department Head"
+                            , deputy_gets_mail = dep.deputy_gets_mail or False
+                            )
+                        self._add_approval ((dep.manager, dep.deputy), apr)
         if cur and oisum > cur.min_sum :
             # Loop over order items and check if any is not on the approved
             # suppliers list
