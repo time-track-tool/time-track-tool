@@ -692,7 +692,7 @@ def security (db, ** kw) :
           , ["HR"]
           )
         , ( "contract_type"
-          , ["HR", "HR-vacation", "HR-leave-approval", "controlling"]
+          , ["HR", "HR-vacation", "HR-leave-approval", "controlling", "user"]
           , ["HR-vacation"]
           )
         , ( "cost_center"
