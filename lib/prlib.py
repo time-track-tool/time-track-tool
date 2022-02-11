@@ -304,6 +304,11 @@ class Approval_Logic :
         max_risk = max_risk_type (db, pr.id)
         prc_ids  = db.pr_approval_config.filter (None, dict (valid = True))
         if cur :
+            assert not self.do_create or pr.part_of_budget
+            if pr.part_of_budget :
+                pob = db.part_of_budget.getnode (pr.part_of_budget)
+            else :
+                pob = None
             s  = pr_offer_item_sum (db, pr.id)
             s  = s * 1.0 / cur.exchange_rate
             for prcid in prc_ids :
@@ -339,13 +344,14 @@ class Approval_Logic :
                        and s > prc.payment_type_amount
                        and need_payment_type_approval (db, pr)
                        )
+                    or (   prc.oob_amount is not None
+                       and pob
+                       and pob.name.lower () == 'no'
+                       and s > prc.oob_amount
+                       )
                     ) :
                     self.add_approval_with_role (prc.role)
                     r = db.pr_approval_order.getnode (prc.role)
-                    # prevent double board-approval if this is also not part
-                    # of budget.
-                    if r.is_board :
-                        board_approval = True
         oisum = pr_offer_item_sum (db, pr.id)
         if cur :
             min_head = self.team_group_head_approval (cur, oisum, pcc)
@@ -381,18 +387,8 @@ class Approval_Logic :
             if pr.safety_critical and not supplier_approved :
                 quality = db.pr_approval_order.lookup ('quality')
                 self.add_approval_with_role (quality)
-            assert not self.do_create or pr.part_of_budget
-            if pr.part_of_budget :
-                pob = db.part_of_budget.getnode (pr.part_of_budget)
-            else :
-                pob = None
-            # Board approval if not part of budget but only if we don't
-            # already *have* a board approval
-            if pob and pob.name.lower () == 'no' and not board_approval :
-                for board in board_roles :
-                    self.add_approval_with_role (board)
-            assert not self.do_create or pr.purchase_type
 
+        assert not self.do_create or pr.purchase_type
         if pr.purchase_type :
             pt    = db.purchase_type.getnode (pr.purchase_type)
             roles = []

@@ -181,6 +181,7 @@ def init \
         , purchase_type         = Multilink ("purchase_type")
         , infosec_amount        = Number    ()
         , payment_type_amount   = Number    ()
+        , oob_amount            = Number    ()
         , departments           = Multilink ("department")
         )
 

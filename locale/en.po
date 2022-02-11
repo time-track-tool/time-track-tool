@@ -7529,3 +7529,6 @@ msgstr "Quantity"
 
 msgid "no_approval"
 msgstr "No department approval"
+
+msgid "oob_amount"
+msgstr "Amount Out of Bugdet"
