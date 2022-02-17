@@ -31,8 +31,8 @@ Role "contact":
  User is allowed to edit contact (Edit for "contact" only)
 Role "controlling":
  User is allowed Edit on (Edit for "daily_record": ('status', 'time_record') only)
- User is allowed Edit on (Edit for "sap_cc": ('group_lead', 'team_lead') only)
- User is allowed Edit on (Edit for "time_project": ('group_lead', 'team_lead') only)
+ User is allowed Edit on (Edit for "sap_cc": ('group_lead', 'nosy', 'team_lead') only)
+ User is allowed Edit on (Edit for "time_project": ('group_lead', 'nosy', 'team_lead') only)
  User is allowed Edit on (Edit for "time_wp": ('project',) only)
  User is allowed View on (View for "user": ('roles',) only)
  User is allowed View on (View for "user_dynamic": ('id', 'sap_cc', 'user', 'valid_from', 'valid_to') only)
@@ -273,8 +273,8 @@ Role "organisation":
 Role "procurement":
   (View for "sap_cc" only)
   (View for "time_project" only)
- User is allowed Edit on (Edit for "sap_cc": ('group_lead', 'purchasing_agents', 'team_lead') only)
- User is allowed Edit on (Edit for "time_project": ('group_lead', 'purchasing_agents', 'team_lead') only)
+ User is allowed Edit on (Edit for "sap_cc": ('group_lead', 'nosy', 'purchasing_agents', 'team_lead') only)
+ User is allowed Edit on (Edit for "time_project": ('group_lead', 'nosy', 'purchasing_agents', 'team_lead') only)
 Role "project":
  User is allowed Edit on (Edit for "time_project": ('cost_center', 'deputy', 'description', 'name', 'nosy', 'organisation', 'responsible', 'status') only)
  User is allowed Edit on (Edit for "time_project": ('infosec_req', 'is_extern', 'max_hours', 'op_project', 'planned_effort', 'product_family', 'project_type', 'reporting_group', 'work_location') only)

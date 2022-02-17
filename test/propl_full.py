@@ -553,6 +553,7 @@ properties = \
         , 'description'
         , 'group_lead'
         , 'name'
+        , 'nosy'
         , 'organisation'
         , 'purchasing_agents'
         , 'responsible'

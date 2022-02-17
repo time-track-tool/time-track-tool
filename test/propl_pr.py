@@ -1,10 +1,15 @@
 properties = \
     [ ( 'department'
       , [ 'deputy'
+        , 'deputy_gets_mail'
         , 'description'
         , 'manager'
         , 'name'
+        , 'no_approval'
+        , 'nosy'
         , 'part_of'
+        , 'valid_from'
+        , 'valid_to'
         ]
       )
     , ( 'domain_permission'
@@ -109,8 +114,10 @@ properties = \
       )
     , ( 'pr_approval_config'
       , [ 'amount'
+        , 'departments'
         , 'if_not_in_las'
         , 'infosec_amount'
+        , 'oob_amount'
         , 'organisations'
         , 'payment_type_amount'
         , 'pr_ext_resource'
@@ -122,6 +129,7 @@ properties = \
     , ( 'pr_approval_order'
       , [ 'is_board'
         , 'is_finance'
+        , 'only_nosy'
         , 'order'
         , 'role'
         , 'users'
@@ -162,6 +170,7 @@ properties = \
         , 'pr_supplier'
         , 'price_per_unit'
         , 'product_group'
+        , 'psp_element'
         , 'purchase_type'
         , 'sap_cc'
         , 'supplier'
@@ -209,6 +218,15 @@ properties = \
         , 'security_req_group'
         ]
       )
+    , ( 'psp_element'
+      , [ 'name'
+        , 'number'
+        , 'organisation'
+        , 'project'
+        , 'project_org'
+        , 'valid'
+        ]
+      )
     , ( 'purchase_request'
       , [ 'approvals'
         , 'continuous_obligation'
@@ -235,6 +253,7 @@ properties = \
         , 'pr_ext_resource'
         , 'pr_justification'
         , 'pr_risks'
+        , 'psp_element'
         , 'purchase_risk_type'
         , 'purchase_type'
         , 'purchasing_agents'
@@ -295,6 +314,7 @@ properties = \
         , 'description'
         , 'group_lead'
         , 'name'
+        , 'nosy'
         , 'organisation'
         , 'purchasing_agents'
         , 'responsible'
@@ -326,6 +346,7 @@ properties = \
         , 'group_lead'
         , 'infosec_req'
         , 'name'
+        , 'nosy'
         , 'organisation'
         , 'purchasing_agents'
         , 'responsible'
