@@ -16,7 +16,7 @@ from roundup.cgi.actions   import LoginAction
 from roundup.cgi           import exceptions
 from roundup.exceptions    import Reject
 from roundup.configuration import InvalidOptionError
-from roundup.anypy.strings import u2s
+from roundup.anypy.strings import u2s, us2u
 from datetime              import datetime
 from PIL                   import Image, ImageOps
 
@@ -1796,6 +1796,9 @@ class LDAP_Roundup_Sync (Log) :
                 if rupattr is not None :
                     if rk == 'pictures' :
                         prupattr = '<suppressed: %s>' % len (rupattr)
+                    else :
+                        rupattr  = us2u (rupattr)
+                        prupattr = rupattr
                 if synccfg.name not in luser :
                     if rupattr :
                         self.info \
@@ -1976,7 +1979,9 @@ class LDAP_Roundup_Sync (Log) :
                 if udprop == 'org_location' and linkprop == 'name' :
                     if not is_current :
                         val = '*' + val
-                if val != ldattr :
+                if val is not None :
+                    val = us2u (val)
+                if val != ldattr.value :
                     if not ldattr :
                         return (ldap3.MODIFY_ADD, lk, val)
                     else :

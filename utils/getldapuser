@@ -1,0 +1,14 @@
+#!/usr/bin/python
+import sys
+import os
+from roundup import instance
+dir     = os.getcwd ()
+tracker = instance.open (dir)
+db      = tracker.open ('admin')
+
+from ldap_sync import LDAP_Roundup_Sync
+
+ld = LDAP_Roundup_Sync (db, verbose = True, get_groups = False)
+lu = ld.get_ldap_user_by_username (sys.argv [1])
+
+print (lu.val)
