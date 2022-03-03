@@ -2120,7 +2120,11 @@ class LDAP_Roundup_Sync (Log) :
                 dom = username.split ('@', 1) [1]
                 if dom not in self.ad_domain :
                     continue
-            self.sync_user_to_ldap (username)
+            try :
+                self.sync_user_to_ldap (username)
+            except Exception :
+                self.error ("Error synchronizing user %s to LDAP" % username)
+                self.log_exception ()
 
         dry = ''
         if not self.update_ldap or self.dry_run_ldap :
