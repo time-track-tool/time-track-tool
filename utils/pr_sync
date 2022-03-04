@@ -25,16 +25,15 @@ class PR_Sync (Requester) :
          , ('sap_cc.purchasing_agents',       'user')
          , ('sap_cc.group_lead',              'user')
          , ('sap_cc.team_lead',               'user')
-         , ('sap_cc.nosy',                    'user')
+         #, ('sap_cc.nosy',                    'user')
          , ('sap_cc.organisation',            'organisation')
          , ('time_project.deputy',            'user')
-         , ('time_project.nosy',              'user')
+         #, ('time_project.nosy',              'user')
          , ('time_project.organisation',      'organisation')
          , ('time_project.responsible',       'user')
          , ('time_project.purchasing_agents', 'user')
          , ('time_project.group_lead',        'user')
          , ('time_project.team_lead',         'user')
-         , ('time_project.nosy',              'user')
          , ('time_project.status',            'time_project_status')
          , ('user.supervisor',                'user')
         ))
@@ -192,7 +191,6 @@ class PR_Sync (Requester) :
             ( 'sap_cc'
             , ( 'name', 'description', 'group_lead', 'responsible', 'deputy'
               , 'purchasing_agents', 'team_lead', 'valid', 'organisation'
-              , 'nosy'
               )
             , required = ('responsible',)
             )
@@ -200,7 +198,7 @@ class PR_Sync (Requester) :
             ( 'time_project'
             , ( 'name', 'deputy', 'description', 'group_lead', 'team_lead'
               , 'organisation', 'responsible', 'status'
-              , 'purchasing_agents', 'infosec_req', 'nosy'
+              , 'purchasing_agents', 'infosec_req'
               )
             , ( 'approval_hr', 'approval_required', 'is_public_holiday'
               , 'is_special_leave', 'is_vacation', 'no_overtime'
