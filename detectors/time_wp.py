@@ -47,6 +47,21 @@ def check_duplicate_field_value (cl, project, field, value) :
         raise Reject, _ ('Duplicate %(field)s "%(value)s"') % locals ()
 # end def check_duplicate_field_value
 
+def check_time_wp_len (cl, nodeid, new_values) :
+    # check wp name length, make exception for auto wp name
+    awp  = new_values.get ('auto_wp')
+    name = new_values.get ('name')
+    if not awp and nodeid :
+        awp = cl.get (nodeid, 'auto_wp')
+    if not name and nodeid :
+        name = cl.get (nodeid, 'name')
+    assert (name)
+    limit = 25
+    if awp :
+        limit = 32
+    common.check_prop_len (_, name, limit=limit)
+# end def check_time_wp_len
+
 def check_time_wp (db, cl, nodeid, new_values) :
     common.require_attributes \
         ( _
@@ -57,16 +72,7 @@ def check_time_wp (db, cl, nodeid, new_values) :
         , 'project'
         , 'is_public'
         )
-    # check wp name length, make exception for auto wp name
-    awp = db.time_wp.get (nodeid, 'auto_wp')
-    if awp :
-        # auto wp = username (20 chars)+ ' -yyyy-mm-dd' (12 chars) = 32
-        common.check_prop_len \
-            (_, new_values.get ('name', cl.get (nodeid, 'name')), limit=32)
-    else:
-        # otherwise default length
-        common.check_prop_len \
-            (_, new_values.get ('name', cl.get (nodeid, 'name')))
+    check_time_wp_len (cl, nodeid, new_values)
     opr  = cl.get (nodeid, 'project')
     oprj = db.time_project.getnode (opr)
     prid = new_values.get ('project', opr)
@@ -135,7 +141,7 @@ def new_time_wp (db, cl, nodeid, new_values) :
         raise Reject, ("You may only create WPs for active projects")
     if 'durations_allowed' not in new_values :
         new_values ['durations_allowed'] = False
-    common.check_prop_len (_, new_values ['name'])
+    check_time_wp_len (cl, nodeid, new_values)
     project = new_values  ['project']
     if 'wp_no' in new_values and not new_values ['wp_no'] :
         del new_values ['wp_no']
