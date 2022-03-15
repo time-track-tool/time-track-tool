@@ -1981,11 +1981,10 @@ class LDAP_Roundup_Sync (Log) :
                         val = '*' + val
                 if val is not None :
                     val = us2u (val)
-                if val != ldattr.value :
-                    if not ldattr :
-                        return (ldap3.MODIFY_ADD, lk, val)
-                    else :
-                        return (ldap3.MODIFY_REPLACE, lk, val)
+                if val and not ldattr :
+                    return (ldap3.MODIFY_ADD, lk, val)
+                if ldattr and val != ldattr.value :
+                    return (ldap3.MODIFY_REPLACE, lk, val)
         if is_empty and ldattr != '' :
             if ldattr is None :
                 return None
