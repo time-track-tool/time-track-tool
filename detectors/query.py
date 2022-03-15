@@ -19,11 +19,11 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-from cgi                            import parse_qs
 try :
-    from urllib.parse import urlencode, unquote_plus
+    from urllib.parse import urlencode, unquote_plus, parse_qs
 except ImportError :
     from urllib import urlencode, unquote_plus
+    from cgi    import parse_qs
 from roundup.cgi.TranslationService import get_translation
 from roundup.exceptions             import Reject
 
