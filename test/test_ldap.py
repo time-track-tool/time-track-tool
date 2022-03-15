@@ -1057,6 +1057,12 @@ class Test_Case_LDAP_Sync (_Test_Base, unittest.TestCase) :
         self.assertEqual (firstname_vie_user, new_firstname)
     # end test_sync_attributes_not_directly_updating_vie_user
 
+    # Expected digests of the jpeg pic
+    digests = set \
+        (( 'c3b3e3bd46d5c7e9c82b71e1d92ad1a1'
+         , '3ee3295b3570234333076afb9943dac8'
+        ))
+
     def test_pic_convert_no_resize (self) :
         # Although the original pic is > 15k in size it will be smaller
         # than the 9k limit after conversion to JPEG.
@@ -1068,14 +1074,15 @@ class Test_Case_LDAP_Sync (_Test_Base, unittest.TestCase) :
         d = self.ldap_modify_result [newdn]
         self.assertEqual (len (d), 7)
         pic = d ['thumbnailPhoto'][0][1][0]
-        self.assertEqual (len (pic), 6034)
+        # This depends on the pillow version
+        assert len (pic) in set ((6034, 6025))
         # compute md5sum over synced picture to assert that the picture
         # conversion is stable and produces same result every time.
         # Otherwise we would produce lots of ldap changes!
-        # Since the picture is not converted, no change to checksum is
-        # expected here.
+        # Since the picture is converted to JPEG this depens on the
+        # implemented JPEG algorithm in different versions of pillow.
         m = md5 (pic)
-        self.assertEqual (m.hexdigest (), 'c3b3e3bd46d5c7e9c82b71e1d92ad1a1')
+        assert m.hexdigest () in self.digests
     # end def test_pic_convert_no_resize
 
     def test_pic_convert_with_resize (self) :

@@ -21,7 +21,7 @@
 
 import prlib
 import common
-import cgi
+from   html import escape
 try :
     from urllib.parse import urlencode
 except ImportError :
@@ -132,8 +132,8 @@ def supplier_approved (db, context, supplier) :
     assert len (r) <= 1
     if len (r) == 1 :
         s = ( 'Rating: %s (<a title="%s" href="pr_supplier_rating%s">Scope</a>)'
-            % ( cgi.escape (str (r [0].rating))
-              , cgi.escape (str (r [0].scope))
+            % ( escape (str (r [0].rating))
+              , escape (str (r [0].scope))
               , r [0].id
               )
             )

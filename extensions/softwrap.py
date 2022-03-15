@@ -30,7 +30,7 @@
 #--
 
 import re
-import cgi
+from html import escape
 from roundup.cgi.templating import StringHTMLProperty
 
 CUTOFF     = re.compile (r"(.*?)(\s+\S+)$")
@@ -76,7 +76,7 @@ def hyperlinked_soft_wrap (content, width = 120) :
         msg.content.hyperlinked.
     """
     s = soft_wrap  (content.plain (), width)
-    s = cgi.escape (s)
+    s = escape (s)
     s = content.hyper_re.sub (content._hyper_repl, s)
     return s
 # end def hyperlinked_soft_wrap

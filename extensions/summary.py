@@ -29,10 +29,10 @@
 
 from __future__ import division
 import csv
-import cgi
 import time
 
-from math                           import ceil
+from math import ceil
+from html import escape
 try :
     from urllib.parse import urlencode
 except ImportError :
@@ -238,7 +238,7 @@ class Container (autosuper) :
     # end def get_plan
 
     def as_html (self) :
-        return cgi.escape (str (self))
+        return escape (str (self))
     # end def as_html
 
     def __getattr__ (self, name) :
@@ -536,9 +536,9 @@ class WP_Container (Comparable_Container, dict) :
 
     def as_html (self) :
         return "%s %s %s" % \
-            ( cgi.escape (_ (self.classname)).replace (' ', '&nbsp;')
-            , cgi.escape (self.name).replace          (' ', '&nbsp;')
-            , cgi.escape (self.verbname).replace      (' ', '&nbsp;')
+            ( escape (_ (self.classname)).replace (' ', '&nbsp;')
+            , escape (self.name).replace          (' ', '&nbsp;')
+            , escape (self.verbname).replace      (' ', '&nbsp;')
             )
 
     def __hash__ (self) :

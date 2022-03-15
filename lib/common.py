@@ -36,7 +36,7 @@
 from __future__ import print_function
 import locale
 import datetime
-import cgi
+from html import escape
 try :
     from urllib.parse import quote as urlquote
 except ImportError :
@@ -92,7 +92,7 @@ def check_unique (_, cl, id, ** kw) :
             for k in kw :
                 v = kw [k]
                 attr = _ (str (k))
-                val  =    cgi.escape (str (v))
+                val  = escape (str (v))
                 r.append ("%(attr)s=%(val)s" % locals ())
             raise Reject \
                 (_ ("Duplicate: %s: %s%s") % (', '.join (r), cl.classname, s))
@@ -1268,9 +1268,6 @@ do_not_add_not_in_range = dict.fromkeys \
      , 'organisation'
     ))
 
-def stresc (x) :
-    return cgi.escape (str (x))
-
 def copy_url (context, attributes = None) :
     """ Create URL for copying (most attributes of) an item """
     cls = context._classname
@@ -1292,7 +1289,7 @@ def copy_url (context, attributes = None) :
                     # Do not add some retired attributes
                     if a in do_not_add_retired :
                         continue
-                    val = stresc (context [a])
+                    val = escape (context [a])
                 else :
                     val = context [a].id
             else :
@@ -1310,7 +1307,7 @@ def copy_url (context, attributes = None) :
                 if vt is not None and vt < now :
                     continue
         else :
-            val = stresc (context [a])
+            val = escape (context [a])
         url.append ('%s=%s' % (a, urlquote (val)))
     if cls == 'purchase_request' and atr == default_attributes [cls] :
         if context.delivery_deadline :
@@ -1323,7 +1320,7 @@ def copy_url (context, attributes = None) :
                 if dd > Date ('.') :
                     url.append \
                         ( 'delivery_deadline=%s'
-                        % stresc (context.delivery_deadline)
+                        % escape (context.delivery_deadline)
                         )
             except ValueError :
                 pass
@@ -1344,7 +1341,7 @@ def copy_url (context, attributes = None) :
                     if ofr [a] and not ofr [a].is_retired () :
                         val = ofr [a].id
                 else :
-                    val = stresc (ofr [a])
+                    val = escape (ofr [a])
                 if val is not None :
                     url.append \
                         ( 'pr_offer_item-%s@%s=%s'
