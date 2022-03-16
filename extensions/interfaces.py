@@ -297,9 +297,10 @@ def u_sorted (vals, keys, fun = str) :
 # end def u_sorted
 
 def weekend_allowed (db, daily_record) :
-    user = daily_record.user
-    date = daily_record.date
-    user = db.user.lookup (user)
+    """ The daily_record is a HTMLItem from the web interface
+    """
+    user = daily_record.user.id
+    date = daily_record.date._value
     dyn  = user_dynamic.get_user_dynamic (db, user, date)
     return dyn and dyn.weekend_allowed
 # end def weekend_allowed
