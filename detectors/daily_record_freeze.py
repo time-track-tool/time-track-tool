@@ -58,11 +58,11 @@ def check_editable (db, cl, nodeid, new_values, date = None) :
 
 def check_thawed_records (db, user, date) :
     cl     = db.daily_record_freeze
-    before = (date - day).pretty (';%Y-%m-%d')
+    before = date.pretty (';%Y-%m-%d')
     thawed = cl.filter (None, dict (user = user, date = before, frozen = False))
     if thawed :
-        raise Reject, \
-            _ ("Thawed freeze records before %(date)s") % locals ()
+        raise Reject \
+            (_ ("Thawed freeze records at or before %(date)s") % locals ())
 # end def check_thawed_records
 
 def min_freeze (db, user, date) :
@@ -76,12 +76,12 @@ def min_freeze (db, user, date) :
     periods = overtime_periods (db, user, start_of_year (date), date)
     freeze  = date
     for s, e, p in periods :
-	x = freeze_date (date, p)
+        x = freeze_date (date, p)
         y = freeze_date (e,    p)
         if y < x :
             continue
-	if x < freeze :
-	    freeze = x
+        if x < freeze :
+            freeze = x
     return freeze
 # end def min_freeze
 
@@ -106,10 +106,10 @@ def new_freeze_record (db, cl, nodeid, new_values) :
     fdate = new_values ['validity_date'] = min_freeze (db, user, date)
     attr = 'balance'
     if attr not in new_values or new_values [attr] is None :
-	balance, achieved = compute_balance (db, user, fdate, not_after = True)
-	new_values [attr] = balance
-	if new_values.get ('achieved_hours', None) is None :
-	    new_values ['achieved_hours'] = achieved
+        balance, achieved = compute_balance (db, user, fdate, not_after = True)
+        new_values [attr] = balance
+        if new_values.get ('achieved_hours', None) is None :
+            new_values ['achieved_hours'] = achieved
 # end def new_freeze_record
 
 def new_overtime (db, cl, nodeid, new_values) :
@@ -177,15 +177,15 @@ def check_freeze_record (db, cl, nodeid, new_values) :
     freezing   = new_frozen != old_frozen and new_frozen
     attr       = 'balance'
     if freezing :
-        check_thawed_records (db, user, date)
-	fdate = new_values ['validity_date'] = min_freeze (db, user, date)
-	balance, achieved = compute_balance (db, user, fdate, not_after = True)
-	new_values [attr] = start_balance = balance
-	new_values ['achieved_hours'] = achieved
+        check_thawed_records (db, user, date - day)
+        fdate = new_values ['validity_date'] = min_freeze (db, user, date)
+        balance, achieved = compute_balance (db, user, fdate, not_after = True)
+        new_values [attr] = start_balance = balance
+        new_values ['achieved_hours'] = achieved
     else :
-	new_values ['validity_date'] = None
-	new_values ['achieved_hours']      = None
-	new_values [attr] = None
+        new_values ['validity_date'] = None
+        new_values ['achieved_hours']      = None
+        new_values [attr] = None
 # end def check_freeze_record
 
 def check_overtime (db, cl, nodeid, new_values) :
