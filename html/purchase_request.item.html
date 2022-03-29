@@ -61,11 +61,14 @@
           (may_purchase = True)"/>
      </tr>
      <tr>
-      <th tal:content="structure python:utils.fieldname (classname, 'purchase_type')"/>
+      <th tal:content="structure python:utils.fieldname
+          (classname, 'purchase_type')"/>
       <td tal:content="structure python:context.purchase_type.menu
           (valid = True)"/>
-      <th tal:content="structure python:utils.fieldname (classname, 'department')"/>
-      <td tal:content="structure python:context.department.menu ()"/>
+      <th tal:content="structure python:utils.fieldname
+          (classname, 'department')"/>
+      <td tal:content="structure python:context.department.menu
+          (**utils.valid_item (now))"/>
      </tr>
      <tr>
       <tal:block tal:condition="python: utils.need_psp (context)">

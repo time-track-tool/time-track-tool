@@ -18,7 +18,11 @@
     , utils.ExtProperty (utils, pdict ['role'], multiselect = 1)
     , utils.ExtProperty (utils, pdict ['purchase_type'], multiselect = 1)
     , utils.ExtProperty (utils, pdict ['organisations'], multiselect = 1)
-    , utils.ExtProperty (utils, pdict ['departments'], multiselect = 1)
+    , utils.ExtProperty
+       ( utils, pdict ['departments']
+       , multiselect = 1
+       , filter      = utils.valid_item (now)
+       )
     , utils.ExtProperty (utils, pdict ['if_not_in_las'])
     , utils.ExtProperty (utils, pdict ['valid'])
     , utils.ExtProperty (utils, pdict ['creation'])
