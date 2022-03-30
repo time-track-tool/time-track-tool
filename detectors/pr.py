@@ -38,11 +38,16 @@ def prjust (db, cl, nodeid, new_values) :
 # end def prjust
 
 def new_pr (db, cl, nodeid, new_values) :
+    uid = db.getuid ()
     if 'requester' not in new_values :
-        new_values ['requester'] = db.getuid ()
+        new_values ['requester'] = uid
     new_values ['status'] = db.pr_status.lookup ('open')
     if 'payment_type' not in new_values :
         new_values ['payment_type'] = '1'
+    if 'nosy' not in new_values :
+        new_values ['nosy'] = [uid]
+    elif uid not in new_values ['nosy'] :
+        new_values ['nosy'].append (uid)
 # end def new_pr
 
 def check_psp_cc (db, cl, nodeid, new_values) :
