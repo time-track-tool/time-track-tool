@@ -194,7 +194,7 @@ def tohex (s) :
     """ Convert to hex, different for py2 and py3
     >>> tohex (b'a')
     '61'
-    >>> tohex (b'\n')
+    >>> tohex (b'\\n')
     '0A'
     """
     return ''.join ('%02X' % bytes_ord (k) for k in s)
