@@ -1113,7 +1113,16 @@ def check_supplier (db, cl, nodeid, new_values) :
             new_values ['pr_supplier'] = prsup
         except KeyError :
             new_values ['pr_supplier'] = None
-            pass
+    elif nodeid :
+        # Need to check if the supplier was added to LAS after creation
+        # of this offer item. In that case we need to update pr_supplier.
+        oi = cl.getnode (nodeid)
+        try :
+            prsup = db.pr_supplier.lookup (oi.supplier)
+            if oi.pr_supplier != prsup :
+                new_values ['pr_supplier'] = prsup
+        except KeyError :
+            new_values ['pr_supplier'] = None
 # end def check_supplier
 
 def check_pr_update (db, cl, nodeid, old_values) :
