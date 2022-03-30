@@ -10,6 +10,7 @@ import io
 from copy                  import copy
 from ldap3.utils.conv      import escape_bytes
 from rsclib.autosuper      import autosuper
+from rsclib.pycompat       import bytes_ord
 from rsclib.execute        import Log
 from roundup.date          import Date
 from roundup.cgi.actions   import LoginAction
@@ -190,7 +191,13 @@ class LDAP_Search_Result (object) :
 # end class LDAP_Search_Result
 
 def tohex (s) :
-    return ''.join ('%02X' % ord (k) for k in s)
+    """ Convert to hex, different for py2 and py3
+    >>> tohex (b'a')
+    '61'
+    >>> tohex (b'\n')
+    '0A'
+    """
+    return ''.join ('%02X' % bytes_ord (k) for k in s)
 # end def tohex
 
 def fromhex (s) :
