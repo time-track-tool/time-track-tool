@@ -666,6 +666,32 @@ def check_att_record (db, cl, nodeid, new_values) :
     wl       = 'work_location'
     location = new_values.get (wl,             cl.get (nodeid, wl))
     check_start_end_duration (date, start, end, duration, new_values)
+    if  (   uid != dr.user
+        and uid != ttby
+        and not common.user_has_role (db, uid, 'controlling', 'admin')
+        and not leave_wp (db, dr, wpid, None, None, duration)
+        and not vacation_wp (db, wpid)
+        ) :
+        raise Reject \
+            ( _ ( "Only %(uname)s, Timetracking by, and Controlling "
+                  "may create time records"
+                )
+            % locals ()
+            )
+    dynamic  = user_dynamic.get_user_dynamic (db, dr.user, dr.date)
+    date     = dr.date.pretty (common.ymd)
+    if not dynamic :
+        if uid != '1' :
+            raise Reject \
+                (_ ("No dynamic user data for %(uname)s, %(date)s") % locals ())
+    else :
+        if not dynamic.booking_allowed and uid != '1' :
+            raise Reject \
+                (_ ("Booking not allowed for %(uname)s, %(date)s") % locals ())
+        if not (dr.weekend_allowed or dynamic.weekend_allowed) and uid != '1' :
+            wday = gmtime (dr.date.timestamp ())[6]
+            if wday in (5, 6) :
+                raise Reject (_ ('No weekend booking allowed'))
 # end def check_att_record
 
 def check_time_record (db, cl, nodeid, new_values) :
