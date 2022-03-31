@@ -254,7 +254,8 @@
              .comment_edit (form='edit_daily_record')"/>
             <td tal:condition="python: not editable and not r.comment"/>
             <td tal:content="structure python: utils.ExtProperty
-             (utils, r.work_location, item = r, editable = editable).menu ()"/>
+             (utils, r.work_location, item = r, editable = editable).menu
+             (is_valid = True)"/>
            </tr>
           </tal:block>
           <tr tal:condition="python: editable and allowed"
@@ -290,7 +291,8 @@
                )">
             </td>
             <td tal:content="structure python:utils.new_property
-               (context, db, 'time_record', -n, 'work_location').menu ()"/>
+               (context, db, 'time_record', -n, 'work_location').menu
+               (is_valid = True)"/>
             <!--<td/>-->
             <td tal:content="python:
                 ['', utils.time_stamp (utils)]

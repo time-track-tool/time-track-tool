@@ -34,7 +34,8 @@
      <tr>
       <th tal:content="structure python:utils.fieldname
           (classname, 'work_location')"/>
-      <td tal:content="structure python:context.work_location.menu ()"/>
+      <td tal:content="structure python:context.work_location.menu
+          (is_valid = True)"/>
      </tr>
     </tal:block>
    </tal:block>
