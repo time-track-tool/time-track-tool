@@ -537,6 +537,8 @@ def init \
         , description           = String    ()
         , durations_allowed     = Boolean   ()
         , travel                = Boolean   ()
+        , is_valid              = Boolean   ()
+        , order                 = Number    ()
         )
     work_location.setkey ("code")
 

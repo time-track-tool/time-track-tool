@@ -151,7 +151,8 @@
      <tal:block tal:condition="python: 'work_location' in bclass.properties">
       <th tal:content="structure python:utils.fieldname
        (classname, 'work_location')"/>
-      <td tal:content="structure python:context.work_location.menu ()"/>
+      <td tal:content="structure python:context.work_location.menu
+          (is_valid = True)"/>
      </tal:block>
      <tal:block tal:condition="python: 'max_hours' in bclass.properties">
       <th tal:content="structure python:utils.fieldname
