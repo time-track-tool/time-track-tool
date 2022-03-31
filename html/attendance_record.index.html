@@ -42,11 +42,16 @@
         , searchname  = 'daily_record.weekend_allowed'
         , searchable  = True
         )
-    , utils.ExtProperty (utils, pdict ['work_location'], multiselect = 1)
+    , utils.ExtProperty
+        ( utils, pdict ['work_location']
+        , multiselect = 1
+        , filter      = dict (is_valid = True)
+        )
     , utils.ExtProperty
         ( utils, pdict ['work_location']
         , searchname  = 'work_location.id'
         , searchable  = False
+        , filter      = dict (is_valid = True)
         )
     , utils.ExtProperty (utils, pdict ['start'])
     , utils.ExtProperty (utils, pdict ['end'])
