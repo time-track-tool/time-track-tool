@@ -55,7 +55,9 @@
       , dict (searchname = 'project_type.id', searchable = False)
       )
     , ('planned_effort',     {})
-    , ('work_location',      dict (multiselect = 1))
+    , ( 'work_location'
+      , dict (multiselect = 1, filter = dict (is_valid = True))
+      )
     , ('max_hours',          {})
     , ('op_project',         {})
     , ('no_overtime',        {})
