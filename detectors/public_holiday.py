@@ -28,9 +28,10 @@
 #    Detectors for 'public_holiday'
 #
 
-from roundup.exceptions             import Reject
+from roundup.exceptions import Reject
 from roundup.cgi.TranslationService import get_translation
-from common                         import require_attributes
+from common    import require_attributes, pretty_range
+from vacation  import try_create_public_holiday, fix_vacation
 
 _      = lambda x : x
 
@@ -44,6 +45,23 @@ def new_public_holiday (db, cl, nodeid, new_values) :
     require_attributes (_, cl, nodeid, new_values, 'name', 'date', 'locations')
 # end def new_public_holiday
 
+def fix_daily_recs (db, cl, nodeid, old_values) :
+    """ If there are existing daily records for this public holiday
+        correct the booked public holiday time
+    """
+    ph = cl.getnode (nodeid)
+    dt = pretty_range (ph.date, ph.date)
+    drs = db.daily_record.filter (None, dict (date = dt))
+    leave = db.daily_record_status.lookup ('leave')
+    for id in drs :
+        dr = db.daily_record.getnode (id)
+        try_create_public_holiday (db, id, dr.date, dr.user)
+        # If this is a leave record, we also fix the vacation on that
+        # date: The amount of vacation hours will have changed.
+        if dr.status == leave :
+            fix_vacation (db, dr.user, dr.date, dr.date)
+# end def fix_daily_recs
+
 def init (db) :
     if 'public_holiday' not in db.classes :
         return
@@ -52,5 +70,7 @@ def init (db) :
         (db.config.TRACKER_LANGUAGE, db.config.TRACKER_HOME).gettext
     db.public_holiday.audit  ("create", new_public_holiday)
     db.public_holiday.audit  ("set",    check_public_holiday)
+    db.public_holiday.react  ("create", fix_daily_recs)
+    db.public_holiday.react  ("set",    fix_daily_recs)
 # end def init
 

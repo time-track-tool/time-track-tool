@@ -546,6 +546,7 @@ def user_dyn_react (db, cl, nodeid, old_values) :
 def try_fix_vacation (db, cl, nodeid, old_values) :
     """ If the working time per day is changed for a user we need to
         correct the already-booked vacations in that time-range.
+        We also need to correct public holidays.
     """
     days  = 'mon tue wed thu fri sat sun'.split ()
     props = list ('hours_' + x for x in days)
@@ -562,6 +563,7 @@ def try_fix_vacation (db, cl, nodeid, old_values) :
     to = item.valid_to
     if to :
         to = to - common.day
+    vacation.update_public_holidays (db, cl.getnode (nodeid))
     vacation.fix_vacation (db, item.user, item.valid_from, to)
 # end def try_fix_vacation
 
