@@ -664,6 +664,8 @@ def check_att_record (db, cl, nodeid, new_values) :
     start    = new_values.get ('start',        cl.get (nodeid, 'start'))
     end      = new_values.get ('end',          cl.get (nodeid, 'end'))
     wl       = 'work_location'
+    uid      = db.getuid ()
+    ttby     = db.user.get (dr.user, 'timetracking_by')
     location = new_values.get (wl,             cl.get (nodeid, wl))
     check_start_end_duration (date, start, end, duration, new_values)
     if  (   uid != dr.user
@@ -717,6 +719,8 @@ def check_time_record (db, cl, nodeid, new_values) :
         raise Reject (_ ("Frozen: %(uname)s, %(date)s") % locals ())
     status   = db.daily_record.get (cl.get (nodeid, 'daily_record'), 'status')
     leave    = db.daily_record_status.lookup ('leave')
+    subm     = db.daily_record_status.lookup ('submitted')
+    accpt    = db.daily_record_status.lookup ('accepted')
     allow    = False
     if dr.status == leave :
         du = vacation.leave_duration (db, user, date, is_ph)
@@ -725,7 +729,14 @@ def check_time_record (db, cl, nodeid, new_values) :
             and cl.get (nodeid, 'duration') != du
             ) :
             allow = True
-    allow    = allow or db.getuid () == '1'
+    elif dr.status in (subm, accpt) and is_ph :
+        du = vacation.leave_duration (db, user, date, is_ph)
+        if (   new_values.keys () == ['duration']
+           and new_values ['duration'] == du
+           and cl.get (nodeid, 'duration') != du
+           ) :
+           allow = True
+    allow = allow or db.getuid () == '1'
     if  (   status != db.daily_record_status.lookup ('open')
         and list (new_values) != ['tr_duration']
         and not allow
@@ -967,6 +978,13 @@ def update_attrec (db, cl, nodeid, old_values) :
         db.attendance_record.set (ar.id, **d)
 # end def update_attrec
 
+def public_holiday (db, cl, nodeid, old_values) :
+    """ Create public holiday if necessary
+    """
+    dr = cl.getnode (nodeid)
+    vacation.try_create_public_holiday (db, nodeid, dr.date, dr.user)
+# end def public_holiday
+
 def init (db) :
     if 'time_record' not in db.classes :
         return
@@ -994,6 +1012,7 @@ def init (db) :
     db.daily_record.audit ("set",    check_metadata)
     db.daily_record.react ("set",    fix_tr_duration, priority = 200)
     db.daily_record.react ("create", fix_tr_duration, priority = 200)
+    db.daily_record.react ("create", public_holiday)
 # end def init
 
 ### __END__ time_record
