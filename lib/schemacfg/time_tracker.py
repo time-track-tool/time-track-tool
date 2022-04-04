@@ -539,6 +539,7 @@ def init \
         , travel                = Boolean   ()
         , is_valid              = Boolean   ()
         , order                 = Number    ()
+        , is_off                = Boolean   ()
         )
     work_location.setkey ("code")
 

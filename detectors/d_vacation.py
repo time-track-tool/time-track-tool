@@ -406,7 +406,7 @@ def handle_accept (db, vs, ars, trs, old_status) :
             warn_ar.append ((dt, wl, st, en))
             db.attendance_record.retire (arid)
         d = vs.first_day
-        off = db.work_location.lookup ('off')
+        off = db.work_location.filter (None, dict (is_off = True)) [0]
         while (d <= vs.last_day) :
             ld = du = vacation.leave_duration (db, vs.user, d)
             dt = common.pretty_range (d, d)
