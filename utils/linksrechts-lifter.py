@@ -36,6 +36,8 @@ for id in db.work_location.getnodeids (retired = False) :
             d ['travel'] = True
         if id == '5' and not wl.durations_allowed :
             d ['durations_allowed'] = True
+        if id == '5' and not wl.is_off :
+            d ['is_off'] = True
         if d :
             db.work_location.set (id, **d)
 db.commit()
