@@ -20,31 +20,12 @@
         , multiselect = 1
         , filter      = utils.valid_item (now)
         )
-    , utils.ExtProperty
-        ( utils, pdict ['responsible']
-        , help_props = ('realname',)
-        , filter     = { 'status.is_nosy' : True }
-        )
-    , utils.ExtProperty
-        ( utils, pdict ['deputy']
-        , help_props = ('realname',)
-        , filter     = { 'status.is_nosy' : True }
-        )
-    , utils.ExtProperty
-        ( utils, pdict ['purchasing_agents']
-        , help_props = ('realname',)
-        , filter     = { 'status.is_nosy' : True }
-        )
-    , utils.ExtProperty
-        ( utils, pdict ['team_lead']
-        , help_props = ('realname',)
-        , filter     = { 'status.is_nosy' : True }
-        )
-    , utils.ExtProperty
-        ( utils, pdict ['group_lead']
-        , help_props = ('realname',)
-        , filter     = { 'status.is_nosy' : True }
-        )
+    , utils.ExtProperty (utils, pdict ['responsible'])
+    , utils.ExtProperty (utils, pdict ['deputy'])
+    , utils.ExtProperty (utils, pdict ['purchasing_agents'])
+    , utils.ExtProperty (utils, pdict ['team_lead'])
+    , utils.ExtProperty (utils, pdict ['group_lead'])
+    , utils.ExtProperty (utils, pdict ['nosy'])
     , utils.ExtProperty (utils, pdict ['valid'])
     );
    "
