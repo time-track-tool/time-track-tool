@@ -87,7 +87,7 @@ class Getter () :
         print ("from roundup import date")
         print ("")
         if self.args.dynuser :
-            print ("def import_data_%s (db, user, dep, olo) :" % userid)
+            print ("def import_data_%s (db, user, olo) :" % userid)
         else :
             print ("def import_data_%s (db, user) :" % userid)
         ind    = '   '
@@ -103,8 +103,9 @@ class Getter () :
                 dstart = dates [0]
                 dend   = None
             d   = dict (user = self.args.user)
-            d ['@sort']    = 'date'
+            d ['@sort']    = 'valid_from'
             d ['@verbose'] = 5
+            #d ['valid_from'] = dstart + ';'
             dyn = self.get ('user_dynamic?' + urlencode (d))
             dyn = dyn ['data']['collection']
             for d in dyn :
@@ -132,6 +133,10 @@ class Getter () :
                     print (ind, "otp = otp [0]")
                 else :
                     print (ind, "otp = None")
+                print (ind, "holo = db.work_location.create \\")
+                print (ind, "    ( code = 'Home-AT'")
+                print (ind, "    , description = 'Home Office Location'")
+                print (ind, "    )")
                 print (ind, "db.user_dynamic.create \\")
                 for n, pname in enumerate (ud) :
                     if isinstance (ud [pname], (type ([]), type ({}))) :
@@ -144,7 +149,6 @@ class Getter () :
                         value = 'date.Date ("%s")' % value
                     print \
                         (" %s    %s %-18s = %s" % (ind, delim, pname, value))
-                print (ind, "    , department         = dep")
                 print (ind, "    , org_location       = olo")
                 print (ind, "    , overtime_period    = otp")
                 print (ind, "    , user               = user")
@@ -217,31 +221,15 @@ class Getter () :
                 for tri in dr ['time_record'] :
                     tr = self.get ('time_record/%s' % tri ['id'])
                     tr = tr ['data']['attributes']
-                    print (ind, "db.time_record.create \\")
+                    print (ind, "tr = db.time_record.create \\")
                     print (ind, "    ( daily_record  = dr")
-                    if tr ['start'] :
-                        print \
-                            ( " %s    , start         = '%s'"
-                            % (ind, tr ['start'])
-                            )
-                        print \
-                            ( " %s    , end           = '%s'"
-                            % (ind, tr ['end'])
-                            )
-                    else :
-                        print \
-                            ( " %s    , duration      = %s"
-                            % (ind, tr ['duration'])
-                            )
+                    print \
+                        (" %s    , duration      = %s" % (ind, tr ['duration']))
                     if tr ['time_activity'] :
                         print \
                             (" %s    , time_activity = '%s'"
                             % (ind, tr ['time_activity'])
                             )
-                    print \
-                        ( " %s    , work_location = '%s'"
-                        % (ind, tr ['work_location']['id'])
-                        )
                     if tr ['wp'] and tr ['wp']['id'] in wpdict :
                         new_wpid = wpdict [tr ['wp']['id']]
                     elif tr ['wp'] is None :
@@ -265,6 +253,30 @@ class Getter () :
                         wpdict [tr ['wp']['id']] = new_wpid
                     if new_wpid :
                         print (ind, "    , wp            = '%s'" % new_wpid)
+                    # FIXME: Here we should iterate over attendance recs
+                    # not create the attendance record from time_record
+                    # data. Must be changed when the attendance record
+                    # changes are rolled out.
+                    print (ind, "    )")
+                    print (ind, "db.attendance_record.create \\")
+                    print (ind, "    ( daily_record  = dr")
+                    print (ind, "    , time_record   = tr")
+                    if tr ['start'] :
+                        print \
+                            ( " %s    , start         = '%s'"
+                            % (ind, tr ['start'])
+                            )
+                        print \
+                            ( " %s    , end           = '%s'"
+                            % (ind, tr ['end'])
+                            )
+                    if tr ['work_location'] :
+                        id = tr ['work_location']['id']
+                        if id == '8' :
+                            id = 'holo'
+                        else :
+                            id = "'%s'" % id
+                        print (" %s    , work_location = '%s'" % (ind, id))
                     print (ind, "    )")
         print (ind, "db.commit ()")
         print ("# end def import_data_%s" % userid)
