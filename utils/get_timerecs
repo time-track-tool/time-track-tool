@@ -103,7 +103,7 @@ class Getter () :
                 dstart = dates [0]
                 dend   = None
             d   = dict (user = self.args.user)
-            d ['@sort']    = 'date'
+            d ['@sort']    = 'valid_from'
             d ['@verbose'] = 5
             dyn = self.get ('user_dynamic?' + urlencode (d))
             dyn = dyn ['data']['collection']
@@ -238,10 +238,11 @@ class Getter () :
                             (" %s    , time_activity = '%s'"
                             % (ind, tr ['time_activity'])
                             )
-                    print \
-                        ( " %s    , work_location = '%s'"
-                        % (ind, tr ['work_location']['id'])
-                        )
+                    if tr ['work_location'] :
+                        print \
+                            ( " %s    , work_location = '%s'"
+                            % (ind, tr ['work_location']['id'])
+                            )
                     if tr ['wp'] and tr ['wp']['id'] in wpdict :
                         new_wpid = wpdict [tr ['wp']['id']]
                     elif tr ['wp'] is None :
