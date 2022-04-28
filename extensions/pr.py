@@ -217,7 +217,7 @@ def need_psp (context) :
         if oi.time_project :
             has_tc = True
     if not has_tc :
-        assert (has_sap)
+        #assert (has_sap)
         return True
     return False
 # end def need_psp
