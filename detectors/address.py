@@ -21,7 +21,6 @@ from roundup.exceptions             import Reject
 from roundup.date                   import Date
 
 from rup_utils                      import translate
-from roundup.cgi.TranslationService import get_translation
 
 import common
 
@@ -77,16 +76,19 @@ def set_adr_defaults (db, cl, nodeid, new_values) :
 
 def require_country (db, cl, nodeid, new_values) :
     if not cl.key :
-        common.require_attributes (_, cl, nodeid, new_values, 'country')
+        common.require_attributes \
+            (db.i18n.gettext, cl, nodeid, new_values, 'country')
 # end def require_country
 
 def check_function (db, cl, nodeid, new_values) :
-    return common.check_attribute_lines (_, new_values, 'function', 2)
+    return common.check_attribute_lines \
+        (db.i18n.gettext, new_values, 'function', 2)
 # end def check_function
 
 def require_cust_supp (db, cl, nodeid, new_values) :
     if 'cust_supp' in cl.properties :
-        common.require_attributes (_, cl, nodeid, new_values, 'cust_supp')
+        common.require_attributes \
+            (db.i18n.gettext, cl, nodeid, new_values, 'cust_supp')
 # end def require_cust_supp
 
 def check_retire (db, cl, nodeid, old_values) :
@@ -100,10 +102,6 @@ def fix_is_valid (db, cl, nodeid, new_values) :
 # end def fix_is_valid
 
 def init (db) :
-    global _
-    _   = get_translation \
-        (db.config.TRACKER_LANGUAGE, db.config.TRACKER_HOME).gettext
-
     adrclass = persclass = None
     if 'address' in db.classes :
         adrclass  = persclass = db.address

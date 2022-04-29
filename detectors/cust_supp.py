@@ -20,10 +20,7 @@
 import operator
 from roundup.exceptions             import Reject
 from roundup.date                   import Date, Interval
-from roundup.cgi.TranslationService import get_translation
 import common
-
-_ = lambda x : x
 
 def update_cust_supp (db, cl, nodeid, new_values) :
     common.auto_retire (db, cl, nodeid, new_values, 'bank_account')
@@ -55,15 +52,12 @@ def new_cust_supp (db, cl, nodeid, new_values) :
 # end def new_cust_supp
 
 def check_name_lines (db, cl, nodeid, new_values) :
-    return common.check_attribute_lines (_, new_values, 'name', 2)
+    return common.check_attribute_lines (db.i18n.gettext, new_values, 'name', 2)
 # end def check_name_lines
 
 def init (db) :
     if 'cust_supp' not in db.classes :
         return
-    global _
-    _   = get_translation \
-        (db.config.TRACKER_LANGUAGE, db.config.TRACKER_HOME).gettext
     db.cust_supp.audit ("set",    update_cust_supp)
     db.cust_supp.audit ("create", new_cust_supp)
     db.cust_supp.audit ("create", check_name_lines)

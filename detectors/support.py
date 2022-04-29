@@ -44,11 +44,11 @@ from itertools                      import chain
 from roundup                        import roundupdb, hyperdb
 from roundup.date                   import Date
 from roundup.exceptions             import Reject
-from roundup.cgi.TranslationService import get_translation
 from roundup.mailgw                 import uidFromAddress
 import common
 
 def new_support (db, cl, nodeid, new_values) :
+    _ = db.i18n.gettext
     closed = db.sup_status.lookup ('closed')
     if 'messages'    not in new_values :
         raise Reject (_ ("New %s requires a message") % _ (cl.classname))
@@ -62,7 +62,7 @@ def new_support (db, cl, nodeid, new_values) :
 
 def check_support (db, cl, nodeid, new_values) :
     common.require_attributes \
-        ( _, cl, nodeid, new_values
+        ( db.i18n.gettext, cl, nodeid, new_values
         , 'title', 'category', 'status', 'prio', 'responsible'
         )
 # end def check_support
@@ -73,6 +73,7 @@ def audit_superseder (db, cl, nodeid, new_values) :
       * ensure that superseder gets not set to itself
       * automatically set status to closed
     """
+    _ = db.i18n.gettext
     new_sup = new_values.get ("superseder", None)
     if new_sup :
         if not nodeid :
@@ -251,6 +252,7 @@ def header_check (db, cl, nodeid, new_values) :
         flag is set *and* account is not a system account, munge
         the headers and add X-ROUNDUP-TO and X-ROUNDUP-CC headers.
     """
+    _ = db.i18n.gettext
     send_to_customer = False
     # Be sure to alway set send_to_customer to False!
     if 'send_to_customer' in new_values :
@@ -387,6 +389,7 @@ def header_check (db, cl, nodeid, new_values) :
 # end def header_check
 
 def check_require_message (db, cl, nodeid, new_values) :
+    _ = db.i18n.gettext
     if 'messages' in new_values :
         return
     for prop in ('responsible',) :
@@ -395,6 +398,7 @@ def check_require_message (db, cl, nodeid, new_values) :
 # end def check_require_message
 
 def check_resp_not_support (db, cl, nodeid, new_values) :
+    _ = db.i18n.gettext
     sup = db.user.lookup ('support')
     rsp = new_values.get ('responsible', cl.get (nodeid, 'responsible'))
     if rsp == sup and ('status' in new_values or 'confidential' in new_values) :
@@ -472,6 +476,7 @@ def check_maildomain (db, cl, nodeid, new_values) :
         Otherwise check that maildomain isn't a duplicate and is
         wellformed.
     """
+    _ = db.i18n.gettext
     ovalid = None
     if nodeid :
         ovalid = cl.get (nodeid, 'is_valid')
@@ -498,7 +503,7 @@ def check_retire (db, cl, nodeid, old_values) :
 # end def check_retire
 
 def check_mailgroup (db, cl, nodeid, new_values) :
-    common.require_attributes (_, cl, nodeid, new_values, 'nosy')
+    common.require_attributes (db.i18n.gettext, cl, nodeid, new_values, 'nosy')
 # end def check_mailgroup
 
 def set_status (db, cl, nodeid, new_values) :
@@ -565,22 +570,26 @@ def check_params (db, cl, nodeid, new_values) :
     st_open = db.sup_status.lookup ('open')
     if 'status' not in new_values or new_values ['status'] == st_open :
         return
-    common.require_attributes (_, cl, nodeid, new_values, 'type')
+    common.require_attributes (db.i18n.gettext, cl, nodeid, new_values, 'type')
     type = new_values.get ('type')
     if not type :
         type = cl.get (nodeid, 'type')
     type     = db.sup_type.get (type, 'name')
     required = mandatory_by_type [type]
     closed   = db.sup_status.lookup ('closed')
-    common.require_attributes (_, cl, nodeid, new_values, * required)
+    common.require_attributes \
+        (db.i18n.gettext, cl, nodeid, new_values, * required)
     if type == 'RMA Issue' and new_values ['status'] == closed :
         common.require_attributes \
-            (_, cl, nodeid, new_values, 'execution', 'classification')
+            ( db.i18n.gettext, cl, nodeid, new_values
+            , 'execution', 'classification'
+            )
 # end def check_params
 
 def check_prodcat (db, cl, nodeid, new_values) :
     """ Check that prodcat level is correct.
     """
+    _ = db.i18n.gettext
     if 'valid' in new_values and not new_values ['valid'] :
         return
     common.require_attributes (_, cl, nodeid, new_values, 'name')
@@ -599,6 +608,7 @@ def check_prodcat (db, cl, nodeid, new_values) :
 # end def check_prodcat
 
 def cust_agree (db, cl, nodeid, new_values) :
+    _ = db.i18n.gettext
     common.require_attributes (_, cl, nodeid, new_values, 'description')
     customer = product = None
     if 'customer' in new_values :
@@ -655,7 +665,8 @@ def check_bu (db, cl, nodeid, new_values) :
                 return
         if new_values ['status'] == open :
             return
-        common.require_attributes (_, cl, nodeid, new_values, 'business_unit')
+        common.require_attributes \
+            (db.i18n.gettext, cl, nodeid, new_values, 'business_unit')
 # end def check_bu
 
 def set_bu (db, cl, nodeid, new_values) :
@@ -675,9 +686,6 @@ def init (db) :
     if 'support' not in db.classes :
         return
     assert (email_ok)
-    global _
-    _   = get_translation \
-        (db.config.TRACKER_LANGUAGE, db.config.TRACKER_HOME).gettext
     db.support.audit   ("set",    check_resp_not_support,   priority = 20)
     db.support.audit   ("create", new_support,              priority = 50)
     db.support.audit   ("set",    check_support,            priority = 40)

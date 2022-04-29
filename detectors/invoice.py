@@ -19,21 +19,17 @@
 
 from roundup.exceptions             import Reject
 from roundup.date                   import Date, Interval
-from roundup.cgi.TranslationService import get_translation
-
 from rup_utils                      import abo_max_invoice
 import common
 
-_ = lambda x : x
-
 def new_invoice (db, cl, nodeid, new_values) :
-    common.require_attributes (_, cl, nodeid, new_values, 'abo')
+    common.require_attributes (db.i18n.gettext, cl, nodeid, new_values, 'abo')
     abo_id    = new_values.get       ('abo', None)
     abo       = db.abo.getnode       (abo_id)
     abo_price = db.abo_price.getnode (abo ['aboprice'])
     abo_type  = db.abo_type.getnode  (abo_price ['abotype'])
     common.reject_attributes \
-        ( _
+        ( db.i18n.gettext
         , new_values
         , 'balance_open'
         , 'n_sent'
@@ -81,6 +77,7 @@ def add_to_abo_payer (db, cl, nodeid, oldvalues) :
 # end def add_to_abo_payer
 
 def check_invoice (db, cl, nodeid, new_values) :
+    _ = db.i18n.gettext
     now = Date ('.')
     common.reject_attributes \
         ( _
@@ -131,7 +128,8 @@ def create_new_invoice (db, cl, nodeid, oldvalues) :
 # end def create_new_invoice
 
 def new_payment (db, cl, nodeid, new_values) :
-    common.require_attributes (_, cl, nodeid, new_values, 'amount', 'invoice')
+    common.require_attributes \
+        (db.i18n.gettext, cl, nodeid, new_values, 'amount', 'invoice')
     inv = db.invoice.getnode (new_values ['invoice'])
     if new_values ['receipt_no'] == 'auto' :
         rnum = inv.invoice_no.replace ('R', 'B')
@@ -151,8 +149,10 @@ def new_payment (db, cl, nodeid, new_values) :
 
 def check_payment (db, cl, nodeid, new_values) :
     common.require_attributes \
-        (_, cl, nodeid, new_values, 'amount', 'date_payed', 'receipt_no')
-    common.reject_attributes (_, new_values, 'invoice')
+        ( db.i18n.gettext, cl, nodeid, new_values
+        , 'amount', 'date_payed', 'receipt_no'
+        )
+    common.reject_attributes (db.i18n.gettext, new_values, 'invoice')
 # end def check_payment
 
 def update_payment (db, cl, nodeid, oldvalues) :
@@ -170,9 +170,6 @@ def update_payment (db, cl, nodeid, oldvalues) :
 def init (db) :
     if 'invoice' not in db.classes :
         return
-    global _
-    _   = get_translation \
-        (db.config.TRACKER_LANGUAGE, db.config.TRACKER_HOME).gettext
     db.invoice.audit ("create", new_invoice)
     db.invoice.react ("create", add_to_abo_payer)
     db.invoice.audit ("set",    check_invoice)

@@ -29,18 +29,15 @@
 #
 
 from roundup.exceptions             import Reject
-from roundup.cgi.TranslationService import get_translation
 
 def new_summary_report (db, cl, nodeid, new_values) :
+    _ = db.i18n.gettext
     raise Reject (_ ("No %s may be created" % _ ('summary_report')))
 # end def new_summary_report
 
 def init (db) :
     if 'summary_report' not in db.classes :
         return
-    global _
-    _   = get_translation \
-        (db.config.TRACKER_LANGUAGE, db.config.TRACKER_HOME).gettext
     db.summary_report.audit  ("create", new_summary_report)
 # end def init
 

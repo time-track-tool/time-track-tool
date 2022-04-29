@@ -17,7 +17,6 @@
 # ****************************************************************************
 
 from roundup.exceptions             import Reject
-from roundup.cgi.TranslationService import get_translation
 import common
 
 prime_increment = 9923
@@ -44,12 +43,13 @@ def set_defaults (db, cl, nodeid, new_values) :
     assert num == '-'
     new_values ['number'] = "%04d" % number
     common.require_attributes \
-        ( _, cl, nodeid, new_values
+        ( db.i18n.gettext, cl, nodeid, new_values
         , 'rc_brand', 'rc_product_type', 'substance', 'number'
         )
 # end def set_defaults
 
 def check_product (db, cl, nodeid, new_values) :
+    _ = db.i18n.gettext
     common.require_attributes \
         ( _, cl, nodeid, new_values
         , 'rc_brand', 'rc_product_type', 'substance', 'number'
@@ -64,7 +64,7 @@ def check_product (db, cl, nodeid, new_values) :
 
 def require_ingr (db, cl, nodeid, new_values) :
     common.require_attributes \
-        ( _, cl, nodeid, new_values
+        ( db.i18n.gettext, cl, nodeid, new_values
         , 'substance', 'ingredient', 'quantity'
         )
 # end def require_ingr
@@ -73,12 +73,12 @@ def subst_default (db, cl, nodeid, new_values) :
     if 'is_raw_material' not in new_values :
         new_values ['is_raw_material'] = True
     common.require_attributes \
-        (_, cl, nodeid, new_values, 'name')
+        (db.i18n.gettext, cl, nodeid, new_values, 'name')
 # end def subst_default
 
 def require_subst (db, cl, nodeid, new_values) :
     common.require_attributes \
-        (_, cl, nodeid, new_values, 'name')
+        (db.i18n.gettext, cl, nodeid, new_values, 'name')
     subst = cl.getnode (nodeid)
     raw = new_values.get ('is_raw_material', subst.is_raw_material)
     if raw and subst.ingredients :
@@ -88,9 +88,6 @@ def require_subst (db, cl, nodeid, new_values) :
 def init (db) :
     if 'substance' not in db.classes :
         return
-    global _
-    _   = get_translation \
-        (db.config.TRACKER_LANGUAGE, db.config.TRACKER_HOME).gettext
     ingr = db.ingredient_used_by_substance
     db.rc_product.audit   ("create", set_defaults)
     db.rc_product.audit   ("set",    check_product)

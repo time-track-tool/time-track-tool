@@ -27,7 +27,6 @@
 #--
 
 from   roundup.exceptions             import Reject
-from   roundup.cgi.TranslationService import get_translation
 from   hamlib                         import fix_qsl_status
 import common
 
@@ -38,6 +37,7 @@ def check_qso_empty (db, cl, nodeid, old_values) :
 # end def check_qso_empty
 
 def check_dupe_qsl_type (db, cl, nodeid, new_values) :
+    _ = db.i18n.gettext
     common.require_attributes (_, cl, nodeid, new_values, 'qsl_type', 'qso')
     type = new_values ['qsl_type']
     qso  = new_values ['qso']
@@ -48,6 +48,7 @@ def check_dupe_qsl_type (db, cl, nodeid, new_values) :
 # end def check_dupe_qsl_type
 
 def check_owner_has_qsos (db, cl, nodeid, new_values) :
+    _ = db.i18n.gettext
     if 'call' not in new_values :
         return
     oldcalls = set (cl.get (nodeid, 'call'))
@@ -80,10 +81,6 @@ def fix_stati_qso (db, cl, nodeid, old_values) :
 def init (db) :
     if 'qso' not in db.classes :
         return
-    global _
-    _   = get_translation \
-        (db.config.TRACKER_LANGUAGE, db.config.TRACKER_HOME).gettext
-
     db.qsl.react  ('set',    check_qso_empty)
     db.qsl.audit  ('create', check_dupe_qsl_type)
     db.qsl.react  ('create', fix_stati_qsl)

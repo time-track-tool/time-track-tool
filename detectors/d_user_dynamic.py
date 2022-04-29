@@ -34,7 +34,6 @@ except ImportError :
     izip = zip
 from roundup.exceptions             import Reject
 from roundup.date                   import Date
-from roundup.cgi.TranslationService import get_translation
 
 import common
 import freeze
@@ -47,6 +46,7 @@ def check_ranges (cl, nodeid, user, valid_from, valid_to, allow_same = False) :
         This results in the record to be retired.
         Of course the caller will set allow_same = False for new records.
     """
+    _ = cl.db.i18n.gettext
     if valid_to :
         valid_to.hour   = valid_to.minute   = valid_to.second   = 0
     valid_from.hour     = valid_from.minute = valid_from.second = 0
@@ -101,6 +101,7 @@ def check_ranges (cl, nodeid, user, valid_from, valid_to, allow_same = False) :
 # end def check_ranges
 
 def check_vacation (db, cl, nodeid, attr, new_values) :
+    _ = db.i18n.gettext
     vacation = None
     if attr in new_values :
         vacation = new_values [attr]
@@ -200,6 +201,7 @@ def distribute_weekly_hours (h) :
 # end def distribute_weekly_hours
 
 def check_overtime_parameters (db, cl, nodeid, new_values) :
+    _ = db.i18n.gettext
     class X : pass
     ov_req = ['additional_hours', 'supp_per_period']
     fields = ov_req + ['weekly_hours', 'overtime_period', 'supp_weekly_hours']
@@ -287,6 +289,7 @@ def check_overtime_parameters (db, cl, nodeid, new_values) :
 # end def check_overtime_parameters
 
 def check_user_dynamic (db, cl, nodeid, new_values) :
+    _ = db.i18n.gettext
     old_ot = cl.get (nodeid, 'overtime_period')
     for i in 'user', :
         if i in new_values and cl.get (nodeid, i) :
@@ -367,6 +370,7 @@ def set_otp_if_all_in (db, cl, nodeid, new_values) :
 # end def set_otp_if_all_in
 
 def max_flexi (db, cl, nodeid, new_values) :
+    _ = db.i18n.gettext
     if 'all_in' in new_values or 'max_flexitime' in new_values :
         ft = new_values.get ('max_flexitime')
         if ft is None and nodeid :
@@ -389,6 +393,7 @@ def check_avc (db, cl, nodeid, new_values) :
         vacation correction if one already exists *and* there is a gap
         in user_dynamic record validity ranges.
     """
+    _ = db.i18n.gettext
     # At least one of the following attributes must be in new_values
     # otherwise we don't have anything to check.
     attrs = ('vac_aliq', 'vacation_yearly', 'valid_from')
@@ -454,6 +459,7 @@ def check_avc (db, cl, nodeid, new_values) :
 # end def check_avc
 
 def new_user_dynamic (db, cl, nodeid, new_values) :
+    _ = db.i18n.gettext
     common.require_attributes \
         ( _, cl, nodeid, new_values
         , 'user'
@@ -500,6 +506,7 @@ def new_user_dynamic (db, cl, nodeid, new_values) :
 # end def new_user_dynamic
 
 def check_weekly_hours (db, cl, nodeid, new_values) :
+    _ = db.i18n.gettext
     spp = new_values.get ('supp_per_period')
     if spp is None and nodeid :
         spp = cl.get (nodeid, 'supp_per_period')
@@ -600,6 +607,7 @@ def close_existing (db, cl, nodeid, old_values) :
 # end def close_existing
 
 def overtime_check (db, cl, nodeid, new_values) :
+    _ = db.i18n.gettext
     if not nodeid and 'required_overtime' not in new_values :
         new_values ['required_overtime'] = False
     common.require_attributes \
@@ -648,6 +656,7 @@ def overtime_check (db, cl, nodeid, new_values) :
 
 def vacation_check (db, cl, nodeid, new_values) :
     """Check correctness of vacation_day/month/yearly entires"""
+    _ = db.i18n.gettext
     mlist = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31]
     # if nothing changed, return
     if  (   new_values.get ('vacation_day') is None
@@ -692,13 +701,15 @@ def olo_check (db, cl, nodeid, new_values) :
     if lp is None and nodeid :
         lp = cl.get (nodeid, 'do_leave_process')
     if lp :
-        common.require_attributes (_, cl, nodeid, new_values, 'vac_aliq')
+        common.require_attributes \
+            (db.i18n.gettext, cl, nodeid, new_values, 'vac_aliq')
 # end def olo_check
 
 def find_existing_leave (db, cl, nodeid, new_values) :
     """ Search for existing leave requests when start/end date changes.
         Reject if valid records are found.
     """
+    _ = db.i18n.gettext
     stati = ('open', 'submitted', 'accepted', 'cancel requested')
     stati = list (db.leave_status.lookup (x) for x in stati)
     if 'valid_to' not in new_values and 'valid_from' not in new_values :
@@ -782,6 +793,7 @@ def find_time_records (db, cl, nodeid, new_values) :
     """ Search for existing time records when start/end date changes.
         Reject if valid records other than public holidays are found.
     """
+    _ = db.i18n.gettext
     if 'valid_to' not in new_values and 'valid_from' not in new_values :
         return
     dyn = cl.getnode (nodeid)
@@ -909,6 +921,7 @@ def auto_wp_magic (db, cl, nodeid, old_values) :
 def auto_wp_check (db, cl, nodeid, new_values) :
     """ Check auto_wp properties
     """
+    _ = db.i18n.gettext
     # These properties must not change:
     props = \
         ( 'contract_type'
@@ -983,9 +996,6 @@ def auto_wp_change_da (db, cl, nodeid, old_values) :
 def init (db) :
     if 'user_dynamic' not in db.classes :
         return
-    global _
-    _   = get_translation \
-        (db.config.TRACKER_LANGUAGE, db.config.TRACKER_HOME).gettext
     db.user_dynamic.audit    ("create", new_user_dynamic)
     db.user_dynamic.audit    ("set",    check_user_dynamic)
     db.user_dynamic.audit    ("create", vacation_check, priority = 120)

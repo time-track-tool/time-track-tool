@@ -31,7 +31,6 @@
 
 from roundup                        import roundupdb, hyperdb
 from roundup.exceptions             import Reject
-from roundup.cgi.TranslationService import get_translation
 
 def check_status (db, cl, nodeid, new_values) :
     """ Check that the status transition is OK (if any). If the class
@@ -43,6 +42,7 @@ def check_status (db, cl, nodeid, new_values) :
         Added: Containers may do invalid state changes -- checked elsewhere
         Added: Allow transition if status field is unset
     """
+    _ = db.i18n.gettext
     oldstatus = cl.get (nodeid, 'status')
     if "status" in new_values and oldstatus :
         status_cl = db.getclass (cl.properties ['status'].classname)
@@ -93,10 +93,6 @@ def check_status (db, cl, nodeid, new_values) :
 # end def check_status
 
 def init (db) :
-    global _
-    _   = get_translation \
-        (db.config.TRACKER_LANGUAGE, db.config.TRACKER_HOME).gettext
-
     status_classes = \
         ['it_issue', 'it_project', 'issue'
         , 'doc', 'support', 'leave_submission'
