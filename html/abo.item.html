@@ -20,34 +20,38 @@
    <tal:block metal:use-macro="templates/page/macros/formatted_class">
     <tal:block metal:fill-slot="formatted_class_content">
      <tr>
-      <th tal:content="structure python:utils.fieldname(classname, 'aboprice')"
-          class="required"/>
+      <th tal:content="structure python:utils.fieldname
+          (db, classname, 'aboprice')" class="required"/>
       <td tal:content="structure python:context.aboprice.menu (valid = True)"
           tal:condition="not:context/id"/>
       <td tal:content="structure python: utils.ExtProperty
           (utils, context.aboprice.name, item = context.aboprice).formatlink ()"
           tal:condition="context/id"/>
-      <th tal:content="structure python:utils.fieldname(classname, 'amount')"/>
+      <th tal:content="structure python:utils.fieldname
+          (db, classname, 'amount')"/>
       <td tal:content="structure python:context.amount.field (6)"/>
      </tr>
      <tr>
-      <th tal:content="structure python:utils.fieldname(classname, 'begin')"/>
+      <th tal:content="structure python:utils.fieldname
+          (db, classname, 'begin')"/>
       <td tal:content="structure context/begin/field"
           tal:condition="not:context/id"/>
       <td tal:content="structure python:context.begin.pretty ('%Y-%m-%d')"
           tal:condition="context/id"/>
-      <th tal:content="structure python:utils.fieldname(classname, 'end')"/>
+      <th tal:content="structure python:utils.fieldname
+          (db, classname, 'end')"/>
       <td tal:content="structure context/end/field"/>
      </tr>
      <tr tal:define="rowspan python:(2, 1)[not context.id]">
       <th tal:content="structure python:utils.fieldname
-          (classname, 'subscriber')"
+          (db, classname, 'subscriber')"
           class="required" tal:attributes="rowspan rowspan"/>
       <td tal:condition="context/is_edit_ok"
           tal:content="structure context/subscriber/field"/>
       <td tal:condition="not:context/is_edit_ok"
           tal:content="structure context/subscriber/id"/>
-      <th tal:content="structure python:utils.fieldname(classname, 'payer')"
+      <th tal:content="structure python:utils.fieldname
+          (db, classname, 'payer')"
           tal:attributes="rowspan rowspan"/>
       <td tal:condition="context/is_edit_ok"
           tal:content="structure context/payer/field"/>

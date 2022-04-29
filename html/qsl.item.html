@@ -26,12 +26,13 @@
     <tal:block metal:fill-slot="formatted_class_content">
      <tr>
       <th tal:content="structure python:utils.fieldname
-          (classname, 'qsl_type')"/>
+          (db, classname, 'qsl_type')"/>
       <td tal:content="structure python:context.qsl_type.plain ()"
           colspan="3"/>
      </tr>
      <tr>
-      <th tal:content="structure python:utils.fieldname (classname, 'qso')"/>
+      <th tal:content="structure python:utils.fieldname
+          (db, classname, 'qso')"/>
       <td colspan="3">
        <span tal:content="structure python:utils.ExtProperty
         (utils, context.qso.call, item=context.qso).formatlink ()"/>
@@ -61,33 +62,34 @@
      </tr>
      <tr>
       <th tal:content="structure python:utils.fieldname
-          (classname, 'qso_time')"/>
+          (db, classname, 'qso_time')"/>
       <td tal:content="structure python:context.qso_time.field (size = 15)"/>
      </tr>
      <tr>
       <th tal:content="structure python:utils.fieldname
-          (classname, 'date_recv')"/>
+          (db, classname, 'date_recv')"/>
       <td tal:content="structure python:context.date_recv.field (size = 15)"/>
       <th tal:content="structure python:utils.fieldname
-          (classname, 'date_sent')"/>
+          (db, classname, 'date_sent')"/>
       <td tal:content="structure python:context.date_sent.field (size = 15)"/>
      </tr>
      <tr>
      <tr>
       <th tal:content="structure python:utils.fieldname
-          (classname, 'gridsquare')"/>
+          (db, classname, 'gridsquare')"/>
       <td tal:content="structure python:context.gridsquare.field (size = 15)"/>
       <th tal:content="structure python:utils.fieldname
-          (classname, 'rst_rcvd')"/>
+          (db, classname, 'rst_rcvd')"/>
       <td tal:content="structure python:context.rst_rcvd.field (size = 15)"/>
      </tr>
      <tr>
       <th tal:content="structure python:utils.fieldname
-          (classname, 'non_std_card')"/>
+          (db, classname, 'non_std_card')"/>
       <td tal:content="structure python:context.non_std_card.field ()"/>
      </tr>
      <tr>
-       <th tal:content="structure python:utils.fieldname(classname, 'files')"/>
+       <th tal:content="structure python:utils.fieldname
+           (db, classname, 'files')"/>
        <td colspan="3">
          <input type="file" name="@file" size="40" multiple="multiple"/>
        </td>

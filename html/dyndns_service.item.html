@@ -29,7 +29,7 @@
       <input type="hidden" name="dyndns"
              tal:attributes="value context/dyndns">
       <th tal:content="structure python:utils.fieldname
-          (classname, 'server')"/>
+          (db, classname, 'server')"/>
       <td tal:content="structure python:context.server.field ()"/>
       <td colspan="2">
       (leave empty for default)
@@ -37,15 +37,15 @@
      </tr>
      <tr>
       <th tal:content="structure python:utils.fieldname
-          (classname, 'protocol')" class="required"/>
+          (db, classname, 'protocol')" class="required"/>
       <td tal:content="structure python:context.protocol.menu ()"/>
      </tr>
      <tr>
       <th tal:content="structure python:utils.fieldname
-          (classname, 'login')" class="required"/>
+          (db, classname, 'login')" class="required"/>
       <td tal:content="structure python:context.login.field ()"/>
       <th tal:content="structure python:utils.fieldname
-          (classname, 'password')" class="required"/>
+          (db, classname, 'password')" class="required"/>
       <td tal:content="structure python:context.password.field
           (type = 'password')"/>
      </tr>
@@ -75,8 +75,8 @@
      </td>
     </tr>
     <tr tal:define="n python:'dyndns_host'">
-     <th tal:content="structure python:utils.fieldname (n, 'hostname')"/>
-     <th tal:content="structure python:utils.fieldname (n, 'description')"/>
+     <th tal:content="structure python:utils.fieldname (db, n, 'hostname')"/>
+     <th tal:content="structure python:utils.fieldname (db, n, 'description')"/>
     </tr>
     <tr tal:repeat="s hosts">
      <td tal:content="structure python:utils.ExtProperty

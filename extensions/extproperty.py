@@ -36,23 +36,13 @@ from roundup.cgi.templating         import MultilinkHTMLProperty     \
                                          , HTMLClass                 \
                                          , HTMLProperty              \
                                          , propclasses, MissingValue
-from roundup.cgi.TranslationService import get_translation
 from xml.sax.saxutils               import quoteattr as quote
 from roundup.hyperdb                import Link, Multilink, Boolean
 from roundup.date                   import Date
 
-_ = None
-
-def propsort (p1, p2) :
-    return cmp (_ (p1._name), _ (p2._name))
-# end def propsort
-
 def sorted_properties (db, context) :
-    global _
-    _ = db._
     props = db [context._classname].properties ()
-    props.sort (propsort)
-    return props
+    return list (sorted (props, key = lambda x: db.i18n.gettext (x._name)))
 # end def sorted_properties
 
 def properties_dict (db, context) :
@@ -156,7 +146,7 @@ class ExtProperty :
             This is the item of which the given prop is a property.
         get_cssclass: optional function for getting css class for
             formatting, takes the HTMLItem as single parameter
-        pretty: optional pretty-printing function (defaults to _)
+        pretty: optional pretty-printing function (defaults to i18n.gettext)
         multiselect: Show property as a multiselect in search-box
             used by html rendering in template
         multi_add: Additional properties to show in menu and search
@@ -250,8 +240,6 @@ class ExtProperty :
         , editparams    = {}
         , text_only     = False
         ) :
-        if not hasattr (prop._db, '_') :
-            prop._db._ = _
         self.db            = prop._db
         self.utils         = utils
         self.prop          = prop
@@ -266,7 +254,7 @@ class ExtProperty :
         self.displayprop   = displayprop
         self.multiselect   = multiselect
         self.is_labelprop  = is_labelprop
-        self.pretty        = pretty or prop._db._
+        self.pretty        = pretty or prop._db.i18n.gettext
         self.get_cssclass  = get_cssclass
         self.editable      = editable
         self.key           = None
@@ -783,9 +771,6 @@ def search_allowed (db, request, classname, propname) :
 # end def search_allowed
 
 def init (instance) :
-    global _
-    _   = get_translation \
-        (instance.config.TRACKER_LANGUAGE, instance.config.TRACKER_HOME).gettext
     instance.registerUtil ('ExtProperty',              ExtProperty)
     instance.registerUtil ('sorted_properties',        sorted_properties)
     instance.registerUtil ('properties_dict',          properties_dict)

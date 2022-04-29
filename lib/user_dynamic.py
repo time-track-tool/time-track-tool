@@ -35,7 +35,6 @@ from bisect       import bisect_left
 from operator     import add
 
 from roundup.date import Date
-from roundup.cgi.TranslationService import get_translation
 
 import freeze
 import common
@@ -1037,8 +1036,7 @@ def user_create_magic (db, uid, olo) :
     org_location = None
     if olo :
         org_location = db.org_location.getnode (olo)
-    _ = get_translation \
-        (db.config.TRACKER_LANGUAGE, db.config.TRACKER_HOME).gettext
+    _ = db.i18n.gettext
 
     update_dict = {}
     if  (   'nickname' in cl.properties and 'firstname' in cl.properties

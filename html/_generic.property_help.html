@@ -43,8 +43,7 @@
            tal:content="python:i18n.gettext (itemkey)" />
        <td class="item">
         <a tal:attributes="name python:itemkey.split ('++')[-1]"
-           tal:content="structure python:
-            utils.helptext (itemkey) % 
+           tal:content="structure python: utils.helptext (db, itemkey) % 
              {'Classname' : Classname, 'Property' : i18n.gettext (itemkey)}" />
        </td>
       </tr>

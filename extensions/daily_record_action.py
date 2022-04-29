@@ -50,15 +50,12 @@ from roundup.exceptions             import Reject
 from roundup.cgi                    import templating
 from roundup.date                   import Date, Interval, Range
 from roundup                        import hyperdb
-from roundup.cgi.TranslationService import get_translation
 
 import common
 import freeze
 import rup_utils
 import user_dynamic
 import vacation
-
-_ = lambda x : x
 
 def prev_week (db, request) :
     try :
@@ -104,10 +101,7 @@ def button_submit_to (db, user, date) :
     if not date :
         return ''
     db = db._db
-    try :
-        _ = db._
-    except AttributeError :
-        pass
+    _  = db.i18n.gettext
     supervisor = db.user.get (user,       'supervisor')
     if not supervisor :
         return ''
@@ -249,12 +243,13 @@ class Daily_Record_Action (Daily_Record_Common) :
     name           = 'daily_record_action'
 
     def handle (self) :
+        _   = self.db.i18n.gettext
         uid = self.db.user.lookup (self.user)
         if not self.db.user.get (uid, 'supervisor') :
-            f_supervisor = self._ ('supervisor')
-            user      = self.user
-            msg       = self._ ("No %(f_supervisor)s for %(user)s") % locals ()
-            url       = 'index?:error_message=' + msg 
+            f_supervisor = _ ('supervisor')
+            user = self.user
+            msg  = _ ("No %(f_supervisor)s for %(user)s") % locals ()
+            url  = 'index?:error_message=' + msg 
             raise Redirect, url
 
         self.create_daily_records ()
@@ -582,20 +577,22 @@ class Freeze_Action (Action, autosuper) :
     user_required_msg = ''"User is required"
     user_invalid_msg  = ''"Invalid User"
     def get_user (self) :
+        _ = self.db.i18n.gettext
         self.request = templating.HTMLRequest (self.client)
         user         = self.request.form ['user'].value
         if not user :
-            raise Reject, self._ (self.user_required_msg)
+            raise Reject, _ (self.user_required_msg)
         try :
             self.user = self.db.user.lookup (user)
         except KeyError :
-            raise Reject, self._ (self.user_invalid_msg)
+            raise Reject, _ (self.user_invalid_msg)
         return self.user
     # end def get_user
 
     def handle (self) :
+        _ = self.db.i18n.gettext
         if not self.request.form ['date'].value :
-            raise Reject, self._ ("Date is required")
+            raise Reject, _ ("Date is required")
         self.date  = Date (self.request.form ['date'].value)
         msg = []
         for u in self.users :
@@ -655,9 +652,10 @@ class Freeze_Action (Action, autosuper) :
 
 class Freeze_All_Action (Freeze_Action) :
     def handle (self) :
+        _ = self.db.i18n.gettext
         self.request = templating.HTMLRequest (self.client)
         if 'user' in self.request.form and self.request.form ['user'].value :
-            raise Reject, self._ ('''Don't specify a user for "Freeze all"''')
+            raise Reject, _ ('''Don't specify a user for "Freeze all"''')
         self.users   = self.db.user.getnodeids ()
         return self.__super.handle ()
     # end def handle
@@ -762,10 +760,6 @@ class SearchActionWithTemplate(SearchAction):
 # end class SearchActionWithTemplate
 
 def init (instance) :
-    global _
-    _   = get_translation \
-        (instance.config.TRACKER_LANGUAGE, instance.config.TRACKER_HOME).gettext
-
     actn = instance.registerAction
     actn ('daily_record_edit_action', Daily_Record_Edit_Action)
     actn ('daily_record_action',      Daily_Record_Action)

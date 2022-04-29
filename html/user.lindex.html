@@ -19,19 +19,19 @@
                 <span class="col_id">
                   <a href="#" class="sort_link active"
                       tal:content="structure python:
-                      utils.fieldlabel ('user', 'id', endswith='')"/>
+                      utils.fieldlabel (db, 'user', 'id', endswith='')"/>
                 </span>
                 <span class="col_name">
                   <a href="#" class="sort_link" tal:content="structure python:
-                      utils.fieldlabel ('user', 'username', endswith='')"/>
+                      utils.fieldlabel (db, 'user', 'username', endswith='')"/>
                 </span>
                 <span class="col_email">
                   <a href="#" class="sort_link" tal:content="structure python:
-                      utils.fieldlabel ('user', 'address', endswith='')"/>
+                      utils.fieldlabel (db, 'user', 'address', endswith='')"/>
                 </span>
                 <span class="col_tz">
                   <a href="#" class="sort_link" tal:content="structure python:
-                      utils.fieldlabel ('user', 'timezone', endswith='')"/>
+                      utils.fieldlabel (db, 'user', 'timezone', endswith='')"/>
                 </span>
               </li>
             </ul>

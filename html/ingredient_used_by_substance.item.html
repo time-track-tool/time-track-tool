@@ -24,7 +24,7 @@
    <tal:block metal:fill-slot="formatted_class_content">
     <tr>
      <th tal:content="structure python:utils.fieldname
-         (classname, 'substance')"/>
+         (db, classname, 'substance')"/>
      <td>
       <span tal:content="structure python:context.substance.field ()"/>
       <span tal:condition="python: context.substance"
@@ -37,7 +37,7 @@
     </tr>
     <tr>
      <th tal:content="structure python:utils.fieldname
-         (classname, 'ingredient')"/>
+         (db, classname, 'ingredient')"/>
      <td>
       <span tal:content="structure python:context.ingredient.field ()"/>
       <span tal:content="structure python:db.substance.classhelp
@@ -49,7 +49,7 @@
     </tr>
     <tr>
      <th tal:content="structure python:utils.fieldname
-         (classname, 'quantity')"/>
+         (db, classname, 'quantity')"/>
      <td tal:content="structure python:context.quantity.field ()"/>
     </tr>
    </tal:block>

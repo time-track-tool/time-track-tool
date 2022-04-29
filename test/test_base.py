@@ -44,6 +44,7 @@ from roundup               import backends
 backends.memorydb = memorydb
 from roundup               import configuration
 from roundup.exceptions    import Reject
+from roundup.i18n          import get_translation
 
 Option = configuration.Option
 
@@ -229,6 +230,7 @@ class _Test_Base :
         config.TRACKER_WEB    = "http://localhost:4711/ttt/"
         config.RDBMS_TEMPLATE = "template0"
         config.MAIL_DEBUG     = "maildebug"
+        config.TRACKER_LANGUAGE = 'en'
         config.init_logging ()
         self.tearDown ()
         srcdir = os.path.join (os.path.dirname (__file__), '..')
@@ -252,6 +254,8 @@ class _Test_Base :
             tracker.nuke ()
         tracker.init (password.Password (self.config.RDBMS_PASSWORD))
         self.tracker = tracker
+        self.tracker.i18n = get_translation \
+            (tracker_home = tracker.tracker_home)
     # end def setup_tracker
 
     def setUp (self) :

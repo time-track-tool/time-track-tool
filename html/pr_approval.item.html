@@ -25,7 +25,7 @@
     <tal:block metal:fill-slot="formatted_class_content">
      <tr>
       <th tal:content="structure python:utils.fieldname
-          (classname, 'user')"/>
+          (db, classname, 'user')"/>
       <td tal:content="structure python:utils.ExtProperty
         ( utils, context.user.username
         , item = context.user
@@ -33,7 +33,7 @@
      </tr>
      <tr>
       <th tal:content="structure python:utils.fieldname
-          (classname, 'by')"/>
+          (db, classname, 'by')"/>
       <td tal:content="structure python:utils.ExtProperty
         ( utils, context.by.username
         , item = context.by
@@ -41,7 +41,7 @@
      </tr>
      <tr>
       <th tal:content="structure python:utils.fieldname
-          (classname, 'deputy')"/>
+          (db, classname, 'deputy')"/>
       <td tal:content="structure python:utils.ExtProperty
         ( utils, context.deputy.username
         , item = context.deputy
@@ -49,27 +49,27 @@
      </tr>
      <tr>
       <th tal:content="structure python:utils.fieldname
-          (classname, 'deputy_gets_mail')"/>
+          (db, classname, 'deputy_gets_mail')"/>
       <td tal:content="structure python:context.deputy_gets_mail.plain ()"/>
      </tr>
      <tr>
       <th tal:content="structure python:utils.fieldname
-          (classname, 'date')"/>
+          (db, classname, 'date')"/>
       <td tal:content="structure python:context.date.plain ()"/>
      </tr>
      <tr>
       <th tal:content="structure python:utils.fieldname
-          (classname, 'description')"/>
+          (db, classname, 'description')"/>
       <td tal:content="structure python:context.description.plain ()"/>
      </tr>
      <tr>
       <th tal:content="structure python:utils.fieldname
-          (classname, 'order')"/>
+          (db, classname, 'order')"/>
       <td tal:content="structure python:context.order.plain ()"/>
      </tr>
      <tr>
       <th tal:content="structure python:utils.fieldname
-          (classname, 'purchase_request')"/>
+          (db, classname, 'purchase_request')"/>
       <td tal:content="structure python:utils.ExtProperty
         ( utils, context.purchase_request.title
         , item = context.purchase_request
@@ -77,12 +77,12 @@
      </tr>
      <tr>
       <th tal:content="structure python:utils.fieldname
-          (classname, 'role')"/>
+          (db, classname, 'role')"/>
       <td tal:content="structure python:context.role.plain ()"/>
      </tr>
      <tr>
       <th tal:content="structure python:utils.fieldname
-          (classname, 'role_id')"/>
+          (db, classname, 'role_id')"/>
       <td tal:content="structure python:utils.ExtProperty
         ( utils, context.role_id.role
         , item = context.role_id
@@ -90,7 +90,7 @@
      </tr>
      <tr>
       <th tal:content="structure python:utils.fieldname
-          (classname, 'status')"/>
+          (db, classname, 'status')"/>
       <td tal:content="structure python:context.status.plain ()"/>
      </tr>
     </tal:block>

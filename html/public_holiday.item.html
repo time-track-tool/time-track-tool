@@ -20,21 +20,23 @@
    <tal:block metal:fill-slot="formatted_class_content">
     <tr>
      <th tal:content="structure python:utils.fieldname
-         (classname, 'description')"/>
+         (db, classname, 'description')"/>
      <td tal:content="structure python:context.description.field (size=60)"
       colspan="3"/>
     </tr>
     <tr>
-     <th tal:content="structure python:utils.fieldname (classname, 'date')"/>
+     <th tal:content="structure python:utils.fieldname
+         (db, classname, 'date')"/>
      <td>
       <span tal:replace="structure context/date/field"/>
      </td>
-     <th tal:content="structure python:utils.fieldname (classname, 'is_half')"/>
+     <th tal:content="structure python:utils.fieldname
+         (db, classname, 'is_half')"/>
      <td tal:content="structure python:context.is_half.field ()"/>
     </tr>
     <tr>
      <th tal:content="structure python:utils.fieldname
-         (classname, 'locations')"/>
+         (db, classname, 'locations')"/>
      <td tal:content="structure python:context.locations.menu
          (height=5, **utils.valid_item (now))"/>
     </tr>

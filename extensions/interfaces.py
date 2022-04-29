@@ -34,7 +34,6 @@ import time
 import os
 import re
 import locale
-from roundup.cgi.TranslationService import get_translation
 from roundup.cgi.templating         import HTMLClass
 from roundup.date                   import Date, Interval
 from roundup.hyperdb                import Database as hyperdb_database

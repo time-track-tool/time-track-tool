@@ -84,7 +84,8 @@
            <th>&nbsp;</th>
            <th style="text-align:right;"
                tal:content="structure
-                   python:utils.fieldname ('daily_record', 'week', endswith = ':')"/>
+                   python:utils.fieldname
+                     (db, 'daily_record', 'week', endswith = ':')"/>
            <th>
              <input type="text" size="7" name="weekno"
               onChange="document.forms.edit_daily_record ['@action'].value =
@@ -93,7 +94,8 @@
            </th>
            <th style="text-align:right;"
             tal:content="structure
-                python: utils.fieldname ('daily_record', 'date', endswith = ':')"/>
+                python: utils.fieldname
+                  (db, 'daily_record', 'date', endswith = ':')"/>
            <th>
             <input type="text" size="22"
              tal:attributes="value python:date.pretty_ids (form_date)
@@ -127,19 +129,19 @@
         tal:define="timestamp python:utils.start_timer (utils)">
         <tr>
          <th tal:content="structure python:utils.fieldname
-             ('time_record', 'start',         endswith = '')" class="nb"/>
+             (db, 'time_record', 'start',         endswith = '')" class="nb"/>
          <th class="nb"/>
          <th tal:content="structure python:utils.fieldname
-             ('time_record', 'end',           endswith = '')"
+             (db, 'time_record', 'end',           endswith = '')"
           style="text-align:right"/>
          <th tal:content="structure python:utils.fieldname
-             ('time_record', 'duration',      endswith = '')" colspan="2"/>
+             (db, 'time_record', 'duration',      endswith = '')" colspan="2"/>
          <th tal:content="structure python:utils.fieldname
-             ('time_record', 'wp',            endswith = '')" colspan="2"/>
+             (db, 'time_record', 'wp',            endswith = '')" colspan="2"/>
          <th tal:content="structure python:utils.fieldname
-             ('time_record', 'time_activity', endswith = '')" colspan="2"/>
+             (db, 'time_record', 'time_activity', endswith = '')" colspan="2"/>
          <th tal:content="structure python:utils.fieldname
-             ('time_record', 'work_location', endswith = '')"/>
+             (db, 'time_record', 'work_location', endswith = '')"/>
         </tr>
         <tal:block tal:repeat="i batch">
          <tal:block

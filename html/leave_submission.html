@@ -152,7 +152,7 @@
    </tal:block>
    <tal:block metal:fill-slot="formatted_class_content">
     <tr tal:condition="show_user">
-     <th tal:content="structure python:utils.fieldname (classname, 'user')"
+     <th tal:content="structure python:utils.fieldname (db, classname, 'user')"
          tal:attributes="class python: ['required',''][bool (context.id)]"/>
      <tal:block tal:condition="python: not context.id">
       <td>
@@ -169,11 +169,11 @@
     </tr>
     <tr>
      <th tal:content="structure python:utils.fieldname
-         (classname, 'first_day')" class="required"/>
+         (db, classname, 'first_day')" class="required"/>
      <td tal:content="structure python:context.first_day.field
          (12, popcal = True, format = utils.ymd)"/>
      <th tal:content="structure python:utils.fieldname
-         (classname, 'last_day')" class="required"/>
+         (db, classname, 'last_day')" class="required"/>
      <td tal:content="structure python:context.last_day.field
          (12, popcal = True, format = utils.ymd)"/>
     </tr>
@@ -188,13 +188,14 @@
     </tr>
     <tr>
      <th tal:content="structure python:utils.fieldname
-         (classname, 'time_wp')"/>
+         (db, classname, 'time_wp')"/>
      <td tal:content="structure python:context.time_wp.menu
         ( additional = ['project']
         , id = utils.valid_leave_wps (db._db, user = user, thawed = True)
         ) "/>
      <th tal:condition="python: context.id"
-         tal:content="structure python:utils.fieldname (classname, 'status')"/>
+         tal:content="structure python:utils.fieldname
+         (db, classname, 'status')"/>
      <td tal:condition="python: context.id"
          tal:content="structure python:context.status.menu ()"/>
      <td tal:condition="python: not context.id"
@@ -206,13 +207,14 @@
        Comment is only required for special leave</td>
     </tr>
     <tr>
-     <th tal:content="structure python:utils.fieldname (classname, 'comment')"/>
+     <th tal:content="structure python:utils.fieldname
+         (db, classname, 'comment')"/>
      <td colspan="3"
          tal:content="structure python:context.comment.field (size=60)"/>
     </tr>
     <tr tal:condition="python: context.id">
      <th tal:content="structure python:utils.fieldname
-         (classname, 'comment_cancel')"/>
+         (db, classname, 'comment_cancel')"/>
      <td colspan="3"
          tal:content="structure python:context.comment_cancel.field (size=60)"/>
     </tr>

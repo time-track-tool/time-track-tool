@@ -23,7 +23,8 @@
    <tal:block metal:use-macro="templates/page/macros/formatted_class">
     <tal:block metal:fill-slot="formatted_class_content">
      <tr>
-      <th tal:content="structure python:utils.fieldname (classname, 'user')"
+      <th tal:content="structure python:utils.fieldname
+          (db, classname, 'user')"
           class="required"/>
       <td tal:condition="context/id"
         tal:content="structure python:utils.ExtProperty
@@ -38,25 +39,26 @@
               (db, property = 'user')"/>
       </td>
 
-      <th tal:content="structure python:utils.fieldname (classname, 'date')"
-          class="required"/>
+      <th tal:content="structure python:utils.fieldname
+          (db, classname, 'date')" class="required"/>
       <td tal:content="structure python:context.date.field ()" />
      </tr>
      <tr>
       <th tal:content="structure python:utils.fieldname
-          (classname, 'contract_type')"/>
+          (db, classname, 'contract_type')"/>
       <td tal:content="structure python:context.contract_type.menu ()" />
       <th tal:content="structure python:utils.fieldname
-          (classname, 'absolute')"/>
+          (db, classname, 'absolute')"/>
       <td tal:content="structure python:context.absolute.field ()" />
      </tr>
      <tr>
       <th tal:content="structure python:utils.fieldname
-          (classname, 'comment')"/>
+          (db, classname, 'comment')"/>
       <td tal:content="structure python:context.comment.field ()" />
      </tr>
      <tr>
-      <th tal:content="structure python:utils.fieldname (classname, 'days')"
+      <th tal:content="structure python:utils.fieldname
+          (db, classname, 'days')"
           class="required"/>
       <td tal:content="structure python:context.days.field ()" />
      </tr>
