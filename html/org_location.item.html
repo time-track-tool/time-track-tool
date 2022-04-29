@@ -21,53 +21,54 @@
    <tal:block metal:fill-slot="formatted_class_content">
     <tr>
      <th tal:content="structure python:utils.fieldname
-         (classname, 'organisation')"/>
+         (db, classname, 'organisation')"/>
      <td tal:content="structure python:context.organisation.menu
          (**utils.valid_item (now))"/>
     </tr>
     <tr>
      <th tal:content="structure python:utils.fieldname
-         (classname, 'location')"/>
+         (db, classname, 'location')"/>
      <td tal:content="structure python:context.location.menu
          (**utils.valid_item (now))"/>
     </tr>
     <tr>
      <th tal:content="structure python:utils.fieldname
-         (classname, 'valid_from')"/>
+         (db, classname, 'valid_from')"/>
      <td tal:content="structure python:context.valid_from.field ()"/>
     </tr>
     <tr>
      <th tal:content="structure python:utils.fieldname
-         (classname, 'valid_to')"/>
+         (db, classname, 'valid_to')"/>
      <td tal:content="structure python:context.valid_to.field ()"/>
     </tr>
     <tr tal:condition="python:'do_leave_process' in bclass.properties">
      <th tal:content="structure python:utils.fieldname
-         (classname, 'do_leave_process')"/>
+         (db, classname, 'do_leave_process')"/>
      <td tal:content="structure python:context.do_leave_process.field ()"/>
     </tr>
     <tr tal:condition="python:'vacation_yearly' in bclass.properties">
      <th tal:content="structure python:utils.fieldname
-         (classname, 'vacation_yearly')"/>
+         (db, classname, 'vacation_yearly')"/>
      <td tal:content="structure python:context.vacation_yearly.field ()"/>
     </tr>
     <tr tal:condition="python:'vacation_legal_year' in bclass.properties">
      <th tal:content="structure python:utils.fieldname
-         (classname, 'vacation_legal_year')"/>
+         (db, classname, 'vacation_legal_year')"/>
      <td tal:content="structure python:context.vacation_legal_year.field ()"/>
     </tr>
     <tr tal:condition="python:'vac_aliq' in bclass.properties">
      <th tal:content="structure python:utils.fieldname
-         (classname, 'vac_aliq')"/>
+         (db, classname, 'vac_aliq')"/>
      <td tal:content="structure python:context.vac_aliq.menu ()"/>
     </tr>
     <tr tal:condition="python:'phone' in bclass.properties">
-     <th tal:content="structure python:utils.fieldname (classname, 'phone')"/>
+     <th tal:content="structure python:utils.fieldname
+         (db, classname, 'phone')"/>
      <td tal:content="structure python:context.phone.field ()"/>
     </tr>
     <tr tal:condition="python:'sap_lifnr' in bclass.properties">
      <th tal:content="structure python:utils.fieldname
-         (classname, 'sap_lifnr')"/>
+         (db, classname, 'sap_lifnr')"/>
      <td tal:content="structure python:context.sap_lifnr.field ()"/>
     </tr>
    </tal:block>

@@ -25,60 +25,60 @@
     <tal:block metal:fill-slot="formatted_class_content">
      <tr>
       <th tal:content="structure python:utils.fieldname
-          (classname, 'amount')"/>
+          (db, classname, 'amount')"/>
       <td tal:content="structure python:context.amount.field ()"/>
      </tr>
      <tr>
       <th tal:content="structure python:utils.fieldname
-          (classname, 'infosec_amount')"/>
+          (db, classname, 'infosec_amount')"/>
       <td tal:content="structure python:context.infosec_amount.field ()"/>
      </tr>
      <tr>
       <th tal:content="structure python:utils.fieldname
-          (classname, 'payment_type_amount')"/>
+          (db, classname, 'payment_type_amount')"/>
       <td tal:content="structure python:context.payment_type_amount.field ()"/>
      </tr>
      <tr>
       <th tal:content="structure python:utils.fieldname
-          (classname, 'oob_amount')"/>
+          (db, classname, 'oob_amount')"/>
       <td tal:content="structure python:context.oob_amount.field ()"/>
      </tr>
      <tr>
       <th tal:content="structure python:utils.fieldname
-          (classname, 'pr_ext_resource')"/>
+          (db, classname, 'pr_ext_resource')"/>
       <td tal:content="structure python:context.pr_ext_resource.menu ()"/>
      </tr>
      <tr>
       <th tal:content="structure python:utils.fieldname
-          (classname, 'role')"/>
+          (db, classname, 'role')"/>
       <td tal:content="structure python:context.role.menu ()"/>
      </tr>
      <tr>
       <th tal:content="structure python:utils.fieldname
-          (classname, 'purchase_type')"/>
+          (db, classname, 'purchase_type')"/>
       <td tal:content="structure python:
           context.purchase_type.menu (height=5, valid=1)"/>
      </tr>
      <tr>
       <th tal:content="structure python:utils.fieldname
-          (classname, 'organisations')"/>
+          (db, classname, 'organisations')"/>
       <td tal:content="structure python:
           context.organisations.menu (height=5, **utils.valid_item (now))"/>
      </tr>
      <tr>
       <th tal:content="structure python:utils.fieldname
-          (classname, 'departments')"/>
+          (db, classname, 'departments')"/>
       <td tal:content="structure python:
           context.departments.menu (height=5, **utils.valid_item (now))"/>
      </tr>
      <tr>
       <th tal:content="structure python:utils.fieldname
-          (classname, 'if_not_in_las')"/>
+          (db, classname, 'if_not_in_las')"/>
       <td tal:content="structure python:context.if_not_in_las.field ()"/>
      </tr>
      <tr>
       <th tal:content="structure python:utils.fieldname
-          (classname, 'valid')"/>
+          (db, classname, 'valid')"/>
       <td tal:content="structure python:context.valid.field ()"/>
      </tr>
     </tal:block>

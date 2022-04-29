@@ -24,7 +24,7 @@
     <tal:block metal:fill-slot="formatted_class_content">
      <tr tal:condition="python:'address' in props">
       <th tal:content="structure python:utils.fieldname
-          (classname, 'address')"/>
+          (db, classname, 'address')"/>
       <td tal:define="fields python:['firstname','lastname','function']">
        <span tal:repeat="i fields"
              tal:content="structure python:utils.ExtProperty
@@ -40,7 +40,8 @@
       </td>
      </tr>
      <tr tal:condition="python:'person' in props and context.person">
-      <th tal:content="structure python:utils.fieldname (classname, 'person')"/>
+      <th tal:content="structure python:utils.fieldname
+          (db, classname, 'person')"/>
       <td tal:define="fields python:['firstname','lastname','function']">
        <span tal:repeat="i fields"
              tal:content="structure python:utils.ExtProperty
@@ -57,27 +58,28 @@
      </tr>
      <tr>
       <th tal:content="structure python:utils.fieldname
-          (classname, 'description')"/>
+          (db, classname, 'description')"/>
       <td tal:content="structure python:context.description.field (size=60)"/>
      </tr>
      <tr tal:condition="python:'order' in props">
-      <th tal:content="structure python:utils.fieldname (classname, 'order')"/>
+      <th tal:content="structure python:utils.fieldname
+          (db, classname, 'order')"/>
       <td tal:content="structure python:context.order.field ()"/>
      </tr>
      <tr>
       <th tal:content="structure python:utils.fieldname
-          (classname, 'contact')"/>
+          (db, classname, 'contact')"/>
       <td tal:content="structure python:context.contact.field ()"/>
      </tr>
      <tr>
       <th tal:content="structure python:utils.fieldname
-          (classname, 'contact_type')"/>
+          (db, classname, 'contact_type')"/>
       <td tal:content="structure python:context.contact_type.menu ()"/>
      </tr>
      <tal:block tal:define="backlink python: utils.contact_backlink (db)">
       <tr tal:condition="python: context.id and context [backlink]">
        <th tal:content="structure python:utils.fieldname
-           (classname, backlink)"/>
+           (db, classname, backlink)"/>
        <td>
         <span tal:condition="python:
               'firstname' in db._db.getclass (backlink).properties"

@@ -25,22 +25,22 @@
     <tal:block metal:fill-slot="formatted_class_content">
      <tr>
       <th class="required" tal:content="structure python:utils.fieldname
-          (classname, 'supplier')"/>
+          (db, classname, 'supplier')"/>
       <td tal:content="structure python:context.supplier.menu ()" />
      </tr>
      <tr>
       <th class="required" tal:content="structure python:utils.fieldname
-          (classname, 'organisation')"/>
+          (db, classname, 'organisation')"/>
       <td tal:content="structure python:context.organisation.menu ()" />
      </tr>
      <tr>
       <th class="required" tal:content="structure python:utils.fieldname
-          (classname, 'rating')"/>
+          (db, classname, 'rating')"/>
       <td tal:content="structure python:context.rating.menu ()" />
      </tr>
      <tr>
       <th class="required" tal:content="structure python:utils.fieldname
-          (classname, 'scope')"/>
+          (db, classname, 'scope')"/>
       <td tal:content="structure python:context.scope.field (size=80)" />
      </tr>
     </tal:block>

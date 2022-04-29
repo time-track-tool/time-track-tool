@@ -46,7 +46,8 @@
    <tal:block metal:use-macro="templates/page/macros/formatted_class">
     <tal:block metal:fill-slot="formatted_class_content">
      <tr>
-      <th tal:content="structure python:utils.fieldname (classname, 'requester')"/>
+      <th tal:content="structure python:utils.fieldname
+          (db, classname, 'requester')"/>
       <td>
        <span tal:content="structure python:context.requester.field ()"/>
        <span tal:condition="context/requester/is_edit_ok"
@@ -56,24 +57,25 @@
                  , exclude_system = True
                  )"/>
       </td>
-      <th tal:content="structure python:utils.fieldname (classname, 'organisation')"/>
+      <th tal:content="structure python:utils.fieldname
+          (db, classname, 'organisation')"/>
       <td tal:content="structure python:context.organisation.menu
           (may_purchase = True)"/>
      </tr>
      <tr>
       <th tal:content="structure python:utils.fieldname
-          (classname, 'purchase_type')"/>
+          (db, classname, 'purchase_type')"/>
       <td tal:content="structure python:context.purchase_type.menu
           (valid = True)"/>
       <th tal:content="structure python:utils.fieldname
-          (classname, 'department')"/>
+          (db, classname, 'department')"/>
       <td tal:content="structure python:context.department.menu
           (**utils.valid_item (now))"/>
      </tr>
      <tr>
       <tal:block tal:condition="python: utils.need_psp (context)">
        <th tal:content="structure python:utils.fieldname
-           (classname, 'psp_element')"/>
+           (db, classname, 'psp_element')"/>
        <td>
         <span tal:condition="python: context.psp_element.is_edit_ok ()"
               tal:content="structure python:context.psp_element.field ()"/>
@@ -93,7 +95,7 @@
       </tal:block>
       <tal:block tal:condition="python: not utils.need_psp (context)">
        <th tal:content="structure python:utils.fieldname
-           (classname, 'time_project')"/>
+           (db, classname, 'time_project')"/>
        <td>
         <tal:block tal:content="structure python:context.time_project.menu
              ( sort_on    = ('+', 'description')
@@ -105,7 +107,8 @@
                    tal:replace="context/time_project/description"/>
        </td>
       </tal:block>
-      <th tal:content="structure python:utils.fieldname (classname, 'sap_cc')"/>
+      <th tal:content="structure python:utils.fieldname
+          (db, classname, 'sap_cc')"/>
       <td>
         <span tal:condition="python: context.sap_cc.is_edit_ok ()"
               tal:content="structure python:context.sap_cc.field ()"/>
@@ -124,7 +127,7 @@
      </tr>
      <tr>
       <th tal:content="structure python:utils.fieldname
-          (classname, 'internal_order')"/>
+          (db, classname, 'internal_order')"/>
       <td>
        <span class="nobreak">
         <span tal:content="structure python:
@@ -141,12 +144,12 @@
        </span>
       </td>
       <th tal:content="structure python:utils.fieldname
-          (classname, 'sap_reference')"/>
+          (db, classname, 'sap_reference')"/>
       <td tal:content="structure python:context.sap_reference.field ()"/>
      <tr>
       <tal:block tal:condition="url_template">
         <th tal:content="structure python:utils.fieldname
-            (classname, 'issue_ids')"/>
+            (db, classname, 'issue_ids')"/>
         <td tal:content="structure python:context.issue_ids.field ()"/>
       </tal:block>
       <tal:block tal:condition="python:not url_template">
@@ -154,7 +157,7 @@
       </tal:block>
       <tal:block tal:condition="python: context.id">
        <th tal:content="structure python:utils.fieldname
-          (classname, 'purchasing_agents')"/>
+          (db, classname, 'purchasing_agents')"/>
        <td>
          <span tal:content="structure
                    python:context.purchasing_agents.field ()"/>
@@ -178,7 +181,8 @@
        </td>
      </tr>
      <tr>
-      <th tal:content="structure python:utils.fieldname (classname, 'part_of_budget')"/>
+      <th tal:content="structure python:utils.fieldname
+          (db, classname, 'part_of_budget')"/>
       <td tal:condition="context/part_of_budget/is_edit_ok"
           tal:define="value context/part_of_budget"><!--
        --><tal:block tal:repeat="choice db/part_of_budget/list"><!--
@@ -191,12 +195,12 @@
       <td tal:condition="not:context/part_of_budget/is_edit_ok"
           tal:content="context/part_of_budget/plain" />
       <th tal:content="structure python:utils.fieldname
-          (classname, 'safety_critical')"/>
+          (db, classname, 'safety_critical')"/>
       <td tal:content="structure python:context.safety_critical.field ()"/>
      </tr>
      <tr>
       <th tal:content="structure python:utils.fieldname
-          (classname, 'terms_conditions')"/>
+          (db, classname, 'terms_conditions')"/>
       <td tal:condition="context/terms_conditions/is_edit_ok"
           tal:define="value context/terms_conditions"><!--
        --><tal:block tal:repeat="choice db/terms_conditions/list"><!--
@@ -209,45 +213,45 @@
       <td tal:condition="not:context/terms_conditions/is_edit_ok"
           tal:content="context/terms_conditions/plain" />
       <th tal:content="structure python:utils.fieldname
-          (classname, 'pr_ext_resource')"/>
+          (db, classname, 'pr_ext_resource')"/>
       <td tal:content="structure python:context.pr_ext_resource.menu ()"/>
      </tr>
      <tr>
       <th rowspan = "2"
           tal:content="structure python:utils.fieldname
-          (classname, 'continuous_obligation')"/>
+          (db, classname, 'continuous_obligation')"/>
       <td rowspan = "2"
           tal:content="structure
           python:context.continuous_obligation.field ()"/>
       <th tal:content="structure python:utils.fieldname
-          (classname, 'contract_term')"/>
+          (db, classname, 'contract_term')"/>
       <td tal:content="structure python:context.contract_term.field ()"/>
      </tr>
      <tr>
       <th tal:content="structure python:utils.fieldname
-          (classname, 'intended_duration')"/>
+          (db, classname, 'intended_duration')"/>
       <td tal:content="structure python:context.intended_duration.field ()"/>
      </tr>
      <tr>
       <th tal:content="structure python:utils.fieldname
-          (classname, 'renegotiations')"/>
+          (db, classname, 'renegotiations')"/>
       <td tal:content="structure python:context.renegotiations.field ()"/>
       <th tal:content="structure python:utils.fieldname
-          (classname, 'delivery_deadline')"/>
+          (db, classname, 'delivery_deadline')"/>
       <td tal:content="structure python:context.delivery_deadline.field ()"/>
      </tr>
      <tr>
       <th tal:content="structure python:utils.fieldname
-          (classname, 'frame_purchase')"/>
+          (db, classname, 'frame_purchase')"/>
       <td tal:content="structure python:context.frame_purchase.field ()"/>
       <th tal:content="structure python:utils.fieldname
-          (classname, 'frame_purchase_end')"/>
+          (db, classname, 'frame_purchase_end')"/>
       <td tal:content="structure python:context.frame_purchase_end.field ()"/>
      </tr>
      <tr>
       <tal:block tal:condition="context/id">
        <th tal:content="structure python:utils.fieldname
-           (classname, 'status')"/>
+           (db, classname, 'status')"/>
        <td tal:content="structure python:context.status.menu
           (** utils.pr_filter_status_transitions (db, context))"/>
       </tal:block>
@@ -255,28 +259,29 @@
        <th/>
        <td/>
       </tal:block>
-      <th tal:content="structure python:utils.fieldname (classname, 'pr_currency')"/>
+      <th tal:content="structure python:utils.fieldname
+          (db, classname, 'pr_currency')"/>
       <td tal:content="structure python:context.pr_currency.menu ()"/>
      </tr>
      <tr>
       <th tal:content="structure python:utils.fieldname
-          (classname, 'date_approved')"/>
+          (db, classname, 'date_approved')"/>
       <td tal:content="structure python:context.date_approved.plain ()"/>
       <th tal:content="structure python:utils.fieldname
-          (classname, 'payment_type')"/>
+          (db, classname, 'payment_type')"/>
       <td tal:content="structure python:context.payment_type.menu ()"/>
      </tr>
      <tr>
       <th tal:content="structure python:utils.fieldname
-          (classname, 'renew_until')"/>
+          (db, classname, 'renew_until')"/>
       <td tal:content="structure python:context.renew_until.field ()"/>
       <th tal:content="structure python:utils.fieldname
-          (classname, 'date_ordered')"/>
+          (db, classname, 'date_ordered')"/>
       <td tal:content="structure python:context.date_ordered.plain ()"/>
      </tr>
      <tr>
       <th tal:content="structure python:utils.fieldname
-          (classname, 'pr_justification')"/>
+          (db, classname, 'pr_justification')"/>
       <td colspan="3" tal:condition="context/pr_justification/is_edit_ok"
           tal:content="structure python:
           context.pr_justification.multiline (rows=6, cols=80)"/>
@@ -287,7 +292,7 @@
      <tr tal:condition="python:
          context.id and context.status != db._db.pr_status.lookup ('open')">
       <th tal:content="structure python:utils.fieldname
-          (classname, 'pr_risks')"/>
+          (db, classname, 'pr_risks')"/>
       <td colspan="3" tal:condition="context/pr_risks/is_edit_ok"
           tal:content="structure python:
           context.pr_risks.multiline (rows=6, cols=80)"/>
@@ -297,7 +302,7 @@
      </tr>
      <tr>
       <th tal:content="structure python:utils.fieldname
-          (classname, 'special_approval')"/>
+          (db, classname, 'special_approval')"/>
       <td>
        <span tal:content="structure python: context.special_approval.field ()"/>
        <span tal:content="structure python:utils.user_classhelp
@@ -312,10 +317,10 @@
      </tr>
      <tr>
       <th tal:content="structure python:utils.fieldname
-          (classname, 'infosec_level')"/>
+          (db, classname, 'infosec_level')"/>
       <td tal:content="structure python:context.infosec_level.plain ()"/>
       <th tal:content="structure python:utils.fieldname
-          (classname, 'purchase_risk_type')"/>
+          (db, classname, 'purchase_risk_type')"/>
       <td tal:content="structure python: context.purchase_risk_type.plain ()"/>
      </tr>
      <tr>
@@ -324,7 +329,7 @@
         <tr>
          <th colspan="5" i18n:translate=""
              tal:content="structure python:utils.fieldname
-                 (classname, 'offer_items')"/>
+             (db, classname, 'offer_items')"/>
         </tr>
        </table>
       </th>
@@ -337,26 +342,26 @@
         <tr>
          <th style="text-align:left"
              tal:content="structure python:utils.fieldname
-             ('pr_offer_item', 'index')"/>
+             (db, 'pr_offer_item', 'index')"/>
          <th style="text-align:left"
              tal:content="structure python:utils.fieldname
-             ('pr_offer_item', 'description')"/>
+             (db, 'pr_offer_item', 'description')"/>
          <th style="text-align:left"
              tal:content="structure python:utils.fieldname
-             ('pr_offer_item', 'supplier')"/>
+             (db, 'pr_offer_item', 'supplier')"/>
          <th style="text-align:left"
              tal:content="structure python:utils.fieldname
-             ('pr_offer_item', 'offer_number')"/>
+             (db, 'pr_offer_item', 'offer_number')"/>
          <th style="text-align:left"
              tal:content="structure python:utils.fieldname
-             ('pr_offer_item', 'units')"/>
+             (db, 'pr_offer_item', 'units')"/>
          <th style="text-align:left"
              tal:content="structure python:utils.fieldname
-             ('pr_offer_item', 'price_per_unit')"/>
+             (db, 'pr_offer_item', 'price_per_unit')"/>
          <th style="text-align:left" i18n:translate="">Net price</th>
          <th style="text-align:left"
              tal:content="structure python:utils.fieldname
-             (context, 'pr_currency')"/>
+             (db, context, 'pr_currency')"/>
          <th style="text-align:left"
              tal:condition="cond" i18n:translate="">
              remove
@@ -369,46 +374,46 @@
          </th>
          <th style="text-align:left"
              tal:content="structure python:utils.fieldname
-             ('pr_offer_item', 'is_asset')"/>
+             (db, 'pr_offer_item', 'is_asset')"/>
          <th/>
          <th style="text-align:right"
              tal:content="structure python:utils.fieldname
-             ('pr_offer_item', 'vat')"/>
+             (db, 'pr_offer_item', 'vat')"/>
         </tr>
         <tr>
          <th/>
          <th style="text-align:left"
              tal:condition="python: utils.need_psp (context)"
              tal:content="structure python:utils.fieldname
-             ('pr_offer_item', 'psp_element')"/>
+             (db, 'pr_offer_item', 'psp_element')"/>
          <th style="text-align:left"
              tal:condition="python: not utils.need_psp (context)"
              tal:content="structure python:utils.fieldname
-             ('pr_offer_item', 'time_project')"/>
+             (db, 'pr_offer_item', 'time_project')"/>
          <th style="text-align:left"
              tal:content="structure python:utils.fieldname
-             ('pr_offer_item', 'sap_cc')"/>
+             (db, 'pr_offer_item', 'sap_cc')"/>
          <th style="text-align:left"
              tal:content="structure python:utils.fieldname
-             ('pr_offer_item', 'purchase_type')"/>
+             (db, 'pr_offer_item', 'purchase_type')"/>
          <th style="text-align:left"
              tal:content="structure python:utils.fieldname
-             ('pr_offer_item', 'internal_order')"/>
+             (db, 'pr_offer_item', 'internal_order')"/>
         </tr>
         <tr>
          <th/>
          <th style="text-align:left"
              tal:content="structure python:utils.fieldname
-             ('pr_offer_item', 'product_group')"/>
+             (db, 'pr_offer_item', 'product_group')"/>
          <th style="text-align:left"
              tal:content="structure python:utils.fieldname
-             ('pr_offer_item', 'infosec_level')"/>
+             (db, 'pr_offer_item', 'infosec_level')"/>
          <th style="text-align:left"
              tal:content="structure python:utils.fieldname
-             (context, 'purchase_security_risk')"/>
+             (db, context, 'purchase_security_risk')"/>
          <th style="text-align:left"
              tal:content="structure python:utils.fieldname
-             (context, 'payment_type')"/>
+             (db, context, 'payment_type')"/>
         </tr>
         <tal:block tal:repeat="i python:sorted
             (context.offer_items, key = lambda x : x.index)">
@@ -710,26 +715,26 @@
      <tr tal:condition="python:
          context.id and context.status.plain () != 'open'">
       <th tal:content="structure python:utils.fieldname
-          (classname, 'pr_approval')"/>
+          (db, classname, 'pr_approval')"/>
       <td colspan="3">
        <table class="form" border="0"
               style="border-spacing:0px;padding-top:0px;padding-left:0px">
         <tr>
          <th style="text-align:left"
              tal:content="structure python:utils.fieldname
-             ('pr_approval', 'status')"/>
+             (db, 'pr_approval', 'status')"/>
          <th style="text-align:left"
              tal:content="structure python:utils.fieldname
-             ('pr_approval', 'date')"/>
+             (db, 'pr_approval', 'date')"/>
          <th style="text-align:left"
              tal:content="structure python:utils.fieldname
-             ('pr_approval', 'role')"/>
+             (db, 'pr_approval', 'role')"/>
          <th style="text-align:left"
              tal:content="structure python:utils.fieldname
-             ('pr_approval', 'by')"/>
+             (db, 'pr_approval', 'by')"/>
          <th style="text-align:left" colspan="3"
              tal:content="structure python:utils.fieldname
-             ('pr_approval', 'description')"/>
+             (db, 'pr_approval', 'description')"/>
         </tr>
         <tal:block tal:define="app python:
              db.pr_approval.filter
@@ -781,7 +786,7 @@
        <tr tal:condition="python:app">
         <th>
          <span tal:content="structure python:utils.fieldname
-            (classname, 'pr_approval')"/>
+            (db, classname, 'pr_approval')"/>
          <span i18n:translate="">
          (Preliminary)
          </span>
@@ -792,13 +797,13 @@
           <tr>
            <th style="text-align:left"
                tal:content="structure python:utils.fieldname
-               ('pr_approval', 'role')"/>
+               (db, 'pr_approval', 'role')"/>
            <th style="text-align:left"
                tal:content="structure python:utils.fieldname
-               ('pr_approval', 'by')"/>
+               (db, 'pr_approval', 'by')"/>
            <th style="text-align:left" colspan="3"
                tal:content="structure python:utils.fieldname
-               ('pr_approval', 'description')"/>
+               (db, 'pr_approval', 'description')"/>
           </tr>
           <tr tal:repeat="i python:app">
            <td tal:content="python:i.get ('role', '')"/>

@@ -23,17 +23,18 @@
    <tal:block metal:use-macro="templates/page/macros/formatted_class">
     <tal:block metal:fill-slot="formatted_class_content">
      <tr>
-      <th tal:content="structure python:utils.fieldname (classname, 'ext_id')"/>
+      <th tal:content="structure python:utils.fieldname
+          (db, classname, 'ext_id')"/>
       <td tal:content="structure python: context.ext_id.plain ()"/>
      </tr>
      <tr>
       <th tal:content="structure python:utils.fieldname
-        (classname, 'ext_tracker')"/>
+          (db, classname, 'ext_tracker')"/>
       <td tal:content="structure python: context.ext_tracker.plain ()"/>
      </tr>
      <tr>
       <th tal:content="structure python:utils.fieldname
-        (classname, 'key')"/>
+          (db, classname, 'key')"/>
       <td tal:content="structure python: context.key.plain ()"/>
      </tr>
     </tal:block>
@@ -41,7 +42,7 @@
      <table class="messages">
       <tr>
        <th colspan="4" class="header" tal:content="structure python:
-           utils.fieldname (classname, 'msg')"/>
+           utils.fieldname (db, classname, 'msg')"/>
       </tr>
       <tr>
        <th>

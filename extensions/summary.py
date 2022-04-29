@@ -40,7 +40,6 @@ except ImportError :
 from roundup.anypy.strings          import StringIO
 from roundup.date                   import Date, Interval
 from roundup.cgi                    import templating
-from roundup.cgi.TranslationService import get_translation
 from roundup.cgi.actions            import Action
 from roundup.configuration          import InvalidOptionError
 from rsclib.autosuper               import autosuper
@@ -186,11 +185,20 @@ class Extended_Time_Record (Extended_Node) :
     # end def __lt__
 # end class Extended_Time_Record
 
+class Dict_Mixin (dict, autosuper) :
+    """ Used to never pass kw to dict constructor
+    """
+    def __init__ (self, *args, **kw) :
+        self.__super.__init__ (*args)
+    # end def __init__
+# end class Dict_Mixin
+
 class Container (autosuper) :
-    def __init__ (self, * args, ** kw) :
+    def __init__ (self, *args, **kw) :
+        self.i18n = kw ['i18n']
         self.sums  = {}
         self.plans = {}
-        self.__super.__init__ (* args, ** kw)
+        self.__super.__init__ (*args, **kw)
     # end def __init__
 
     def add_user_sum (self, other_container, username, sum, do_sum = True) :
@@ -254,8 +262,8 @@ class Time_Container (Container) :
     """ Container for time-ranges: has a start and end date and a hash
         of WP_Container to sum objects.
     """
-    def __init__ (self, start, end) :
-        self.__super.__init__ ()
+    def __init__ (self, start, end, **kw) :
+        self.__super.__init__ (**kw)
         self.start    = start
         self.end      = end
         self.sort_end = end
@@ -295,9 +303,9 @@ class Time_Container (Container) :
 # end class Time_Container
 
 class Day_Container (Time_Container) :
-    def __init__ (self, day) :
+    def __init__ (self, day, **kw) :
         date = Date (day.pretty (ymd))
-        self.__super.__init__ (date, date + Interval ('1d'))
+        self.__super.__init__ (date, date + Interval ('1d'), **kw)
     # end def __init__
 
     def __str__ (self) :
@@ -306,9 +314,9 @@ class Day_Container (Time_Container) :
 # end class Day_Container
 
 class Week_Container (Time_Container) :
-    def __init__ (self, day) :
+    def __init__ (self, day, **kw) :
         start, end = common.week_from_date  (day)
-        self.__super.__init__ (start, end + Interval ('1d'))
+        self.__super.__init__ (start, end + Interval ('1d'), **kw)
     # end def __init__
 
     def __str__ (self) :
@@ -317,7 +325,7 @@ class Week_Container (Time_Container) :
 # end class Week_Container
 
 class Month_Container (Time_Container) :
-    def __init__ (self, day) :
+    def __init__ (self, day, **kw) :
         year   = day.year
         month  = day.month
         nmonth = day.month + 1
@@ -327,7 +335,7 @@ class Month_Container (Time_Container) :
             nyear = year + 1
         fmt = '%4s-%s-01'
         self.__super.__init__ \
-            (Date (fmt % (year, month)), Date (fmt % (nyear, nmonth)))
+            (Date (fmt % (year, month)), Date (fmt % (nyear, nmonth)), **kw)
     # end def __init__
 
     def __str__ (self) :
@@ -337,8 +345,8 @@ class Month_Container (Time_Container) :
 
 class Range_Container (Time_Container) :
     """ Contains the whole selected time-range """
-    def __init__ (self, * args, ** kw) :
-        self.__super.__init__ (* args, ** kw)
+    def __init__ (self, *args, **kw) :
+        self.__super.__init__ (*args, **kw)
         self.sort_end = self.end + Interval ('1m')
     # end def __init__
 
@@ -354,14 +362,19 @@ time_container_classes = \
     , 'range' : Range_Container
     }
 
-class Comparable_Container (Container, dict) :
+class Comparable_Container (Container, Dict_Mixin) :
     sortkey = 50
+
+    def __init__ (self, *args, **kw) :
+        self.__super.__init__ (*args, **kw)
+    # end def __init__
 
     def __str__ (self) :
         return self.name
     # end def __str__
 
     def __cmp__ (self, other) :
+        _ = self.i18n.gettext
         return \
             (  cmp (self.sortkey, other.sortkey) 
             or cmp (_ (self.classname), _ (other.classname))
@@ -370,6 +383,7 @@ class Comparable_Container (Container, dict) :
     # end def __cmp__
 
     def __lt__ (self, other) :
+        _ = self.i18n.gettext
         return \
             (  self.sortkey < other.sortkey
             or self.sortkey == other.sortkey
@@ -382,10 +396,10 @@ class Comparable_Container (Container, dict) :
 
 # end class Comparable_Container
 
-class Sum_Container (Comparable_Container, dict) :
+class Sum_Container (Comparable_Container) :
     sortkey = 100
-    def __init__ (self, name = "Sum", visible = True, * args, ** kw) :
-        self.__super.__init__ (* args, ** kw)
+    def __init__ (self, name = "Sum", visible = True, *args, **kw) :
+        self.__super.__init__ (*args, **kw)
         self.name      = name
         self.visible   = visible
         self.classname = ''
@@ -402,10 +416,10 @@ class Sum_Container (Comparable_Container, dict) :
     # end def __hash__
 # end class Sum_Container
 
-class WP_Container (Comparable_Container, dict) :
+class WP_Container (Comparable_Container) :
     def __init__ \
-        (self, klass, id, visible = True, verbname = '', * args, ** kw) :
-        self.__super.__init__ (* args, ** kw)
+        (self, klass, id, visible = True, verbname = '', *args, **kw) :
+        self.__super.__init__ (*args, **kw)
         self.klass     = klass
         self.classname = klass.classname
         self.id        = id
@@ -529,6 +543,7 @@ class WP_Container (Comparable_Container, dict) :
     # end def __repr__
 
     def __str__ (self) :
+        _ = self.i18n.gettext
         if not self.verbname :
             return "%s %s" % (_ (self.classname), self.name)
         return "%s %s %s" % (_ (self.classname), self.name, self.verbname)
@@ -556,8 +571,8 @@ class WP_Container (Comparable_Container, dict) :
 class DR_Container (Comparable_Container) :
 
     def __init__ \
-        (self, klass, id, visible = True, * args, ** kw) :
-        self.__super.__init__ (* args, ** kw)
+        (self, klass, id, visible = True, *args, **kw) :
+        self.__super.__init__ (*args, **kw)
         self.klass     = klass
         self.classname = klass.classname
         self.id        = id
@@ -573,7 +588,7 @@ class DR_Container (Comparable_Container) :
 
 class _Report (autosuper) :
 
-    def html_item (self, item, ** kw) :
+    def html_item (self, item, **kw) :
         if not item and not isinstance (item, dict) and not item == 0 :
             return "   <td/>"
         if isinstance (item, PM_Value) :
@@ -592,7 +607,7 @@ class _Report (autosuper) :
         return ('  <td>%s</td>' % item.as_html ())
     # end def html_item
 
-    def html_header_item (self, item, ** kw) :
+    def html_header_item (self, item, **kw) :
         cls = kw.get ('cls', '')
         if cls :
             cls = ' class="%s"' % cls
@@ -610,7 +625,7 @@ class _Report (autosuper) :
         self.html_output.extend (items)
     # end def html_line
 
-    def csv_item (self, item, ** kw) :
+    def csv_item (self, item, **kw) :
         if not item and not isinstance (item, dict) and not item == 0 :
             return ''
         if isinstance (item, PM_Value) :
@@ -693,6 +708,7 @@ class Summary_Report (_Report) :
         except AttributeError :
             pass
         self.db         = db
+        _               = db.i18n.gettext
         self.uid        = db.getuid ()
         filterspec      = request.filterspec
         sort_by         = request.sort
@@ -741,7 +757,12 @@ class Summary_Report (_Report) :
                 udrs        = []
                 by_id       = {}
                 for id in spec :
-                    c = DR_Container (db.classes [cl], id, cl in self.columns)
+                    c = DR_Container \
+                        ( db.classes [cl]
+                        , id
+                        , cl in self.columns
+                        , i18n = db.i18n
+                        )
                     dr_containers.append (c)
                     by_id [id] = c
                     
@@ -823,6 +844,7 @@ class Summary_Report (_Report) :
                           or 'project_type.id' in self.columns
                         , ''
                         , [ (x, 1) for x in pwps ]
+                        , i18n = db.i18n
                         )
                     )
             wp.update ((x, 1) for x in pwps)
@@ -843,6 +865,7 @@ class Summary_Report (_Report) :
                           or 'reporting_group.id' in self.columns
                         , ''
                         , [ (x, 1) for x in pwps ]
+                        , i18n = db.i18n
                         )
                     )
             wp.update ((x, 1) for x in pwps)
@@ -863,6 +886,7 @@ class Summary_Report (_Report) :
                           or 'product_family.id' in self.columns
                         , ''
                         , [ (x, 1) for x in pwps ]
+                        , i18n = db.i18n
                         )
                     )
             wp.update ((x, 1) for x in pwps)
@@ -878,6 +902,7 @@ class Summary_Report (_Report) :
                         , 'time_wp_summary_no' in self.columns
                         , ''
                         , [ (x, 1) for x in wps ]
+                        , i18n = db.i18n
                         )
                     )
             wp.update ((x, 1) for x in wps)
@@ -889,6 +914,7 @@ class Summary_Report (_Report) :
                     , 'time_wp_group' in self.columns
                     , ''
                     , [(w, 1) for w in db.time_wp_group.get (wpg, 'wps')]
+                    , i18n = db.i18n
                     )
                 )
             wp.update (wp_containers [-1])
@@ -909,6 +935,7 @@ class Summary_Report (_Report) :
                     , 'time_project' in self.columns
                     , ''
                     , [(w, 1) for w in pwps]
+                    , i18n = db.i18n
                     )
                 )
             db.log_info ("summary_report: wpc: %s" % wp_containers [-1])
@@ -923,6 +950,7 @@ class Summary_Report (_Report) :
                     , 'cost_center' in self.columns
                     , ''
                     , [(w, 1) for w in db.time_wp.find (cost_center = cc)]
+                    , i18n = db.i18n
                     )
                 )
             wp.update (wp_containers [-1])
@@ -936,6 +964,7 @@ class Summary_Report (_Report) :
                 ( WP_Container 
                     ( db.cost_center_group, ccg
                     , 'cost_center_group' in self.columns
+                    , i18n = db.i18n
                     )
                 )
             for cc in ccs :
@@ -1025,6 +1054,7 @@ class Summary_Report (_Report) :
                         )
                       ]['cost_center' in self.columns]
                     , ((w, 1),)
+                    , i18n = db.i18n
                     )
                 )
         db.log_info ("summary_report: filtered wps (%s)"
@@ -1038,11 +1068,18 @@ class Summary_Report (_Report) :
                         , 'time_project' in self.columns
                         , ''
                         , [(w, 1) for w in db.time_wp.find (project = p)]
+                        , i18n = db.i18n
                         )
                     )
                 wp.update (wp_containers [-1])
         wp_containers.append \
-            (Sum_Container (_ ('Sum'), 'summary' in self.columns, wps))
+            ( Sum_Container
+                ( _ ('Sum')
+                , 'summary' in self.columns
+                , wps
+                , i18n = db.i18n
+                )
+            )
 
         # Build time containers
         rep_types  = filterspec.get \
@@ -1054,10 +1091,11 @@ class Summary_Report (_Report) :
             for t in time_containers :
                 cont = time_containers [t]
                 if not cont or cont [-1].end <= d :
-                    try :
-                        cont.append (time_container_classes [t] (d))
-                    except TypeError :
-                        cont.append (time_container_classes [t] (start, end))
+                    ccls = time_container_classes [t]
+                    if t == 'range' :
+                        cont.append (ccls (start, end, i18n = db.i18n))
+                    else :
+                        cont.append (ccls (d, i18n = db.i18n))
             d = d + Interval ('1d')
         db.log_info ("summary_report: time containers (%s)"
             % (time.time () - timestamp))
@@ -1173,6 +1211,7 @@ class Summary_Report (_Report) :
         ]
 
     def header_line (self, formatter) :
+        _ = self.db.i18n.gettext
         line = []
         line.append (formatter (_ ('Container')))
         for k in self.name_attrs :
@@ -1449,8 +1488,9 @@ class Staff_Report (_Report) :
             for period in 'week', 'month', 'range' :
                 if period not in sum_types :
                     continue
+                ccls = time_container_classes [period]
                 if period == 'range' :
-                    container = time_container_classes [period] (start, end)
+                    container = ccls (start, end, i18n = db.i18n)
                     values [u].append   (container)
                     self.fill_container (container, u, dyn, start, end)
                 else :
@@ -1460,7 +1500,7 @@ class Staff_Report (_Report) :
                             (date, period_objects [period])
                         if eop > end :
                             eop = end
-                        container = time_container_classes [period] (date)
+                        container = ccls (date, i18n = db.i18n)
                         values [u].append   (container)
                         self.fill_container (container, u, dyn, date, eop)
                         date = eop + day
@@ -1585,6 +1625,7 @@ class Staff_Report (_Report) :
     # end is_allowed
 
     def header_line (self, formatter) :
+        _ = self.db.i18n.gettext
         line = []
         line.append (formatter (_ ('user')))
         line.append (formatter (_ ('time')))
@@ -1795,7 +1836,7 @@ class Vacation_Report (_Report) :
                     fd = ld
                     if fd.year != d.year :
                         fd = fd + day
-                    container = Day_Container (d)
+                    container = Day_Container (d, i18n = db.i18n)
                     container ['is_obsolete'] = False
                     uname = self.linked_user (u)
                     if not ctype :
@@ -1954,6 +1995,7 @@ class Vacation_Report (_Report) :
     # end def permission_ok
 
     def header_line (self, formatter) :
+        _ = self.db.i18n.gettext
         line = []
         line.append (formatter (_ ('user')))
         line.append (formatter (_ ('time')))
@@ -2038,6 +2080,7 @@ def summary_report_links (db) :
         report link as the only item. To be used in page.html for the
         menu.
     """
+    _ = db.i18n.gettext
     orig = ('summary_report', 'View', 1, ('',''))
     old  = ('summary_report', 'View', 1, (_('Summary Report (old)'),''))
     red  = ('summary_report', 'View', 1, ('','redirect'))
@@ -2052,9 +2095,6 @@ def summary_report_links (db) :
 # end def summary_report_links
 
 def init (instance) :
-    global _
-    _   = get_translation \
-        (instance.config.TRACKER_LANGUAGE, instance.config.TRACKER_HOME).gettext
     util   = instance.registerUtil
     util   ('Summary_Report',       Summary_Report)
     util   ('Staff_Report',         Staff_Report)

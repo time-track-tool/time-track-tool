@@ -16,7 +16,7 @@
     <tal:block metal:fill-slot="formatted_class_content">
      <tr>
       <th class="required" tal:content="structure python:utils.fieldname
-          (classname, 'tmplate_status')"/>
+          (db, classname, 'tmplate_status')"/>
       <td tal:content="structure context/tmplate_status/menu"/>
      </tr>
     </tal:block>

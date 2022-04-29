@@ -28,10 +28,9 @@
 #
 
 # init values
-from roundup.cgi.TranslationService import get_translation
 from roundup.anypy.strings import b2s
 
-_ = get_translation (db.config.TRACKER_LANGUAGE, db.config.TRACKER_HOME).gettext
+_ = db.i18n.gettext
 
 if 'severity' in db.classes :
     # severity

@@ -2,8 +2,7 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN"
                                "http://www.w3.org/TR/html4/strict.dtd">
 <html tal:define="
-   language        python: utils.set_language (request.client, db)
- ; uname           python: str (request.user.username)
+   uname           python: str (request.user.username)
  ; classname       context/_classname|db/user/_classname
  ; listclass       classname
  ; Classname       python: i18n.gettext (classname)
@@ -1112,7 +1111,8 @@
 <tal:block metal:define-macro="responsible">
    <tr tal:condition="has_resp">
     <th tal:attributes="class responsible_required | default"
-     tal:content="structure python:utils.fieldname(classname, 'responsible')">
+        tal:content="structure python:utils.fieldname
+        (db, classname, 'responsible')">
     </th>
     <td>
      <span tal:content="structure python:context.responsible.field ()"/>
@@ -1144,7 +1144,8 @@
    <table tal:attributes="class python:form_class">
     <tr tal:condition="use_labelprop">
      <th tal:attributes="class python: 'required' if use_highlighting else ''"
-      tal:content="structure python:utils.fieldname(classname, labelprop)"/>
+         tal:content="structure python:utils.fieldname
+         (db, classname, labelprop)"/>
      <input tal:condition="python:not context [labelprop].is_edit_ok ()"
       type="hidden" tal:attributes=
        " name  labelprop
@@ -1157,7 +1158,8 @@
     <tal:block metal:define-slot="formatted_class_content"/>
 
     <tr tal:condition="python:has_nosy and context.nosy.is_view_ok ()">
-     <th tal:content="structure python:utils.fieldname(classname, 'nosy')"/>
+     <th tal:content="structure python:utils.fieldname
+         (db, classname, 'nosy')"/>
      <td colspan="3">
       <span tal:replace="structure python:context.nosy.field(70)"/>
       <span tal:condition="context/is_edit_ok"
@@ -1176,7 +1178,8 @@
 
     <tr tal:condition="python:
         has_files and want_files and context.files.is_edit_ok ()">
-     <th tal:content="structure python:utils.fieldname(classname, 'files')"/>
+     <th tal:content="structure python:utils.fieldname
+         (db, classname, 'files')"/>
      <td colspan="3">
        <input type="file" name="@file" size="40" multiple="multiple"/>
        <tal:block tal:condition="python:
@@ -1207,21 +1210,22 @@
     <tr metal:define-slot="formatted_class_listentry"/>
     <tr tal:condition="has_invoices">
      <th style="text-align:left" class="required"
-      tal:content="structure python:utils.fieldname(classname, 'invoices')"
-      tal:condition="context/invoices" />
+         tal:content="structure python:utils.fieldname
+         (db, classname, 'invoices')"
+         tal:condition="context/invoices" />
     </tr>
     <tal:block tal:repeat="inv context/invoices/reverse"
      tal:condition="has_invoices">
      <tr>
       <th tal:content="structure python:
-       utils.fieldname ('invoice','invoice_no')"/>
+       utils.fieldname (db, 'invoice','invoice_no')"/>
       <td tal:content="structure python:''.join
           (( utils.ExtProperty
              (utils, inv.invoice_no, item = inv).as_listentry ()
           ,
           ))"/>
       <th tal:content="structure python:
-       utils.fieldname ('invoice', 'period', 'period_start')"/>
+       utils.fieldname (db, 'invoice', 'period', 'period_start')"/>
       <td tal:content="structure python:''.join
           (( utils.ExtProperty
              (utils, inv.period_start, item = inv).as_listentry ()
@@ -1233,12 +1237,14 @@
     </tal:block>
     <tr tal:condition="python:has_letters and context.letters">
      <th style="text-align:left" class="required"
-      tal:content="structure python:utils.fieldname (classname, 'letters')"/>
+         tal:content="structure python:utils.fieldname
+         (db, classname, 'letters')"/>
     </tr>
     <tal:block tal:repeat="ltr context/letters/reverse"
      tal:condition="has_letters">
      <tr>
-      <th tal:content="structure python:utils.fieldname ('letter','period')"/>
+      <th tal:content="structure python:utils.fieldname
+          (db, 'letter','period')"/>
       <td tal:content="structure python:''.join
           (( utils.ExtProperty
              (utils, ltr.date, item = ltr, is_labelprop = 1).as_listentry ()
@@ -1247,7 +1253,8 @@
            , '&nbsp;'
            , utils.letter_link (request, ltr.id)
           ))"/>
-      <th tal:content="structure python:utils.fieldname ('letter', 'subject')"/>
+      <th tal:content="structure python:utils.fieldname
+          (db, 'letter', 'subject')"/>
       <td tal:content="structure python:''.join
           ((  utils.ExtProperty
              (utils, ltr.subject, item = ltr).as_listentry ()
@@ -1324,7 +1331,8 @@
 
 <tal:block metal:define-macro="message_box">
   <tr tal:condition="python:context.is_edit_ok () and has_msgs">
-   <th tal:content="structure python:utils.fieldname(classname,'msg')" />
+   <th tal:content="structure python:utils.fieldname
+       (db, classname,'msg')" />
    <td colspan="3">
     <textarea tal:content="request/form/@note/value | default"
               tal:attributes="rows msg_box_height"
@@ -1351,7 +1359,7 @@
   <tr>
    <th class="header" tal:attributes="colspan python:3+may_remove_msgs"
        tal:content="structure python:
-           utils.fieldname (classname, 'messages')"/>
+           utils.fieldname (db, classname, 'messages')"/>
   </tr>
   <tal:block tal:repeat="msg context/messages/reverse">
    <tr>
@@ -1664,7 +1672,8 @@
       tal:condition="python:props and not terse">
       <tr>
        <th style="text-align:left;" tal:content="structure python:
-         utils.fieldname (classname, 'VIEW', endswith=':', csscls='header')"/>
+         utils.fieldname
+           (db, classname, 'VIEW', endswith=':', csscls='header')"/>
       </tr>
       <tr>
        <!-- View -->
@@ -1854,20 +1863,20 @@
 <!-- needed vars: property: Multilink to address, button_text -->
 <tal:block metal:define-macro="address_list">
  <tr>
-  <th tal:content="structure python:utils.fieldname (classname, property)"/>
+  <th tal:content="structure python:utils.fieldname (db, classname, property)"/>
   <td colspan="3">
    <table class="form" border="0"
           style="border-spacing:0px;padding-top:0px;padding-left:0px">
     <tr>
      <th style="text-align:left;padding-top:0px">
       <span tal:content="structure python:utils.fieldname
-         ('address', 'firstname')"/>
+         (db, 'address', 'firstname')"/>
       /
       <span tal:content="structure python:utils.fieldname
-         ('address', 'lastname')"/>
+         (db, 'address', 'lastname')"/>
       /
       <span tal:content="structure python:utils.fieldname
-         ('address', 'function')"/>
+         (db, 'address', 'function')"/>
      <th style="text-align:left;padding-top:0px"
          tal:condition="context/is_edit_ok" i18n:translate=""
          style="padding-top:0px">
@@ -1950,16 +1959,17 @@
     <tr tal:condition="persons">
      <th style="text-align:left;padding-top:0px">
       <span tal:content="structure python:utils.fieldname
-         ('person', 'firstname')"/>
+         (db, 'person', 'firstname')"/>
       /
       <span tal:content="structure python:utils.fieldname
-         ('person', 'lastname')"/>
+         (db, 'person', 'lastname')"/>
      </th>
      <th style="text-align:left;padding-top:0px"
-         tal:content="structure python:utils.fieldname ('person', 'function')"/>
+         tal:content="structure python:utils.fieldname
+         (db, 'person', 'function')"/>
      <th style="text-align:left;padding-top:0px"
          tal:content="structure python:utils.fieldname
-         ('person', 'description')"/>
+         (db, 'person', 'description')"/>
      <th style="text-align:left;padding-top:0px" i18n:translate=""
          tal:condition="python:context.is_edit_ok() and remove"
          style="padding-top:0px">
@@ -1998,7 +2008,7 @@
 <tal:block metal:define-macro="perslist">
  <tr tal:define="Name python:i18n.gettext (name)">
   <th tal:attributes="rowspan python:len (persons) or 1"
-      tal:content="structure python:utils.fieldname ('', name)"/>
+      tal:content="structure python:utils.fieldname (db, '', name)"/>
   <td colspan="3">
    <table class="form" border="0"
           style="border-spacing:0px;padding-top:0px;padding-left:0px">

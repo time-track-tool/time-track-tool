@@ -20,11 +20,12 @@
    <tal:block metal:fill-slot="formatted_class_content">
     <tr>
      <th tal:content="structure python:utils.fieldname
-         (classname, 'description')"/>
+         (db, classname, 'description')"/>
      <td tal:content="structure python:context.description.field (size=60)"/>
     </tr>
     <tr>
-     <th tal:content="structure python:utils.fieldname (classname, 'wps')"/>
+     <th tal:content="structure python:utils.fieldname
+         (db, classname, 'wps')"/>
      <td>
       <span tal:replace="structure context/wps/field"/>
       <span tal:condition="context/wps/is_edit_ok"

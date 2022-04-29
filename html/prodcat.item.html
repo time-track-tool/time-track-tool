@@ -23,11 +23,13 @@
    <tal:block metal:use-macro="templates/page/macros/formatted_class">
     <tal:block metal:fill-slot="formatted_class_content">
      <tr>
-      <th tal:content="structure python:utils.fieldname (classname, 'level')"/>
+      <th tal:content="structure python:utils.fieldname
+          (db, classname, 'level')"/>
       <td tal:content="python:context.level.plain ()"/>
      </tr>
      <tr>
-      <th tal:content="structure python:utils.fieldname (classname, 'valid')"/>
+      <th tal:content="structure python:utils.fieldname
+          (db, classname, 'valid')"/>
       <td tal:content="python:context.valid.plain ()"/>
      </tr>
      <tr>
