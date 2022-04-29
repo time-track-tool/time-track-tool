@@ -24,7 +24,6 @@ try :
 except ImportError :
     from urllib import urlencode, unquote_plus
     from cgi    import parse_qs
-from roundup.cgi.TranslationService import get_translation
 from roundup.exceptions             import Reject
 
 import common
@@ -52,6 +51,7 @@ def fix_url_and_template (new_values, url) :
 # end def fix_url_and_template
 
 def check_klass (db, cl, nodeid, new_values) :
+    _ = db.i18n.gettext
     common.require_attributes (_, cl, nodeid, new_values, 'klass')
     klass = new_values.get ('klass')
     if klass :
@@ -72,9 +72,6 @@ def check_query (db, cl, nodeid, new_values) :
 # end def check_query
 
 def init (db) :
-    global _
-    _   = get_translation \
-        (db.config.TRACKER_LANGUAGE, db.config.TRACKER_HOME).gettext
     db.query.audit ("create", new_query)
     db.query.audit ("set",    check_query)
     db.query.audit ("create", check_klass)

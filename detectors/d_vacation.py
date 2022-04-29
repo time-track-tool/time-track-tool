@@ -21,7 +21,6 @@
 
 from roundup.exceptions             import Reject
 from roundup.date                   import Date, Interval
-from roundup.cgi.TranslationService import get_translation
 from roundup.configuration          import InvalidOptionError
 from roundup                        import roundupdb
 
@@ -38,6 +37,7 @@ def check_range (db, nodeid, uid, first_day, last_day) :
         day *and* the last day is larger (new interval is contained in
         existing interval).
     """
+    _ = db.i18n.gettext
     if first_day > last_day :
         raise Reject (_ ("First day may not be after last day"))
     if (last_day - first_day) > Interval ('30d') :
@@ -60,6 +60,7 @@ def check_range (db, nodeid, uid, first_day, last_day) :
 # end def check_range
 
 def check_wp (db, wp_id, user, first_day, last_day, comment) :
+    _ = db.i18n.gettext
     wp = db.time_wp.getnode (wp_id)
     tp = db.time_project.getnode (wp.project)
     if not tp.approval_required :
@@ -82,6 +83,7 @@ def new_submission (db, cl, nodeid, new_values) :
     """ Check that new leave submission is allowed and has sensible
         parameters
     """
+    _ = db.i18n.gettext
     common.reject_attributes (_, new_values, 'approval_hr', 'comment_cancel')
     uid = db.getuid ()
     st_subm = db.leave_status.lookup ('submitted')
@@ -128,6 +130,7 @@ def new_submission (db, cl, nodeid, new_values) :
 # end def new_submission
 
 def check_dyn_user_params (db, user, first_day, last_day) :
+    _ = db.i18n.gettext
     d = first_day
     ctype = -1 # contract_type is either None or a string, can't be numeric
     while d <= last_day :
@@ -166,6 +169,7 @@ def check_submission (db, cl, nodeid, new_values) :
         change is at least possible (although we still have to check the
         role).
     """
+    _ = db.i18n.gettext
     common.reject_attributes (_, new_values, 'user', 'approval_hr')
     old  = cl.getnode (nodeid)
     uid  = db.getuid ()
@@ -261,6 +265,7 @@ def check_submission (db, cl, nodeid, new_values) :
 # end def check_submission
 
 def vac_report (db, cl, nodeid, new_values) :
+    _ = db.i18n.gettext
     raise Reject (_ ("Creation of vacation report is not allowed"))
 # end def vac_report
 
@@ -270,6 +275,7 @@ def daily_recs (db, cl, nodeid, old_values) :
 # end def daily_recs
 
 def check_dr_status (db, user, first_day, last_day, st_name) :
+    _ = db.i18n.gettext
     # All daily records must be in state status
     dt = common.pretty_range (first_day, last_day)
     dr = db.daily_record.filter (None, dict (user = user, date = dt))
@@ -599,6 +605,7 @@ def handle_submit (db, vs) :
 # end def handle_submit
 
 def check_correction (db, cl, nodeid, new_values) :
+    _ = db.i18n.gettext
     common.require_attributes \
         (_, cl, nodeid, new_values, 'user', 'date', 'day')
     if nodeid :
@@ -650,10 +657,6 @@ def check_correction (db, cl, nodeid, new_values) :
 # end def check_correction
 
 def init (db) :
-    global _
-    _   = get_translation \
-        (db.config.TRACKER_LANGUAGE, db.config.TRACKER_HOME).gettext
-
     if 'leave_submission' not in db.classes :
         return
     # Status is checked with prio 200, we come later.

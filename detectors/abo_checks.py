@@ -20,15 +20,12 @@
 from time                           import localtime
 from roundup.date                   import Date, Interval
 from roundup.exceptions             import Reject
-from roundup.cgi.TranslationService import get_translation
 
 from rup_utils                      import abo_max_invoice
 from common                         import ymd, fix_date
 
 month  = Interval ('1m')
 month2 = Interval ('2m')
-
-_ = lambda x : x
 
 errmsgs = \
     { 'closefree' : ""'Restart of subscription only within two months'
@@ -47,7 +44,7 @@ errmsgs = \
     , 'positive'  : ""'"%(attr)s" must be greater or equal to zero'
     }
 
-def err (msg, ** param) :
+def err (_, msg, ** param) :
     d = {}
     for k in param :
         d [k] = _ (param [v])
@@ -57,10 +54,10 @@ def err (msg, ** param) :
 def set_defaults (db, cl, nodeid, new_values) :
     for i in ('aboprice', 'subscriber') :
         if i not in new_values :
-            raise Reject (err ('mandatory', attr = i))
+            raise Reject (err (db.i18n.gettext, 'mandatory', attr = i))
     for i in ('invoices', 'end') :
         if i in new_values :
-            raise Reject (err ('forbidden', attr = i))
+            raise Reject (err (db.i18n.gettext, 'forbidden', attr = i))
     if 'amount' not in new_values :
         new_values ['amount'] = \
             db.abo_price.get (new_values ['aboprice'], 'amount')
@@ -110,12 +107,12 @@ def check_change (db, cl, nodeid, new_values) :
     abo = cl.getnode (nodeid)
     for i in ('aboprice', 'begin') :
         if i in new_values :
-            raise Reject (err ('nochange', attr = i))
+            raise Reject (err (db.i18n.gettext, 'nochange', attr = i))
     if 'amount' in new_values :
         if new_values ['amount'] == 0 and abo ['amount']  > 0 :
-            raise Reject (err ('nonzero',  attr = 'amount'))
+            raise Reject (err (db.i18n.gettext, 'nonzero',  attr = 'amount'))
         if new_values ['amount']  > 0 and abo ['amount'] == 0 :
-            raise Reject (err ('nochange', attr = 'amount'))
+            raise Reject (err (db.i18n.gettext, 'nochange', attr = 'amount'))
     # Changing 'end':
     if  'end' in new_values :
         new_values ['end'] = fix_date (new_values ['end'])
@@ -125,37 +122,38 @@ def check_change (db, cl, nodeid, new_values) :
         invoice = abo_max_invoice (db, abo)
         # Attempt to change error-closed abo (unlinked from address)
         if o_end == abo ['begin'] :
-            raise Reject (err ('openfail'))
+            raise Reject (err (db.i18n.gettext, 'openfail'))
         # Attempt to resurrect a closed abo:
         if  (not n_end and o_end) :
             if invoice :
                 if o_end < now - month2 :
-                    raise Reject (err ('closefree'))
+                    raise Reject (err (db.i18n.gettext, 'closefree'))
         # Attempt to close (or modify close date), check end-date:
         if  (n_end) :
             if n_end < abo ['begin'] :
-                raise Reject (err ('endtime'))
+                raise Reject (err (db.i18n.gettext, 'endtime'))
             if not invoice and (n_end < now - month or n_end > now + month) :
-                raise Reject (err ('month'))
+                raise Reject (err (db.i18n.gettext, 'month'))
             if  (invoice) :
                 if  (  n_end < invoice ['period_start']
                     or n_end > invoice ['period_end']
                     ) :
                     raise Reject \
                         ( err
-                            ( 'period'
+                            ( db.i18n.gettext
+                            , 'period'
                             , ** dict ([(x, invoice [x].pretty ('%Y-%m-%d'))
                                   for x in ('period_start', 'period_end')
                                  ])
                             )
                         )
                 if (invoice.get ('invoice_group')) :
-                    raise Reject (err ('marked'))
+                    raise Reject (err (db.i18n.gettext, 'marked'))
             if n_end == abo ['begin'] :
                 if  (  len (abo ['invoices']) > 1
                     or (invoice and not invoice ['open'])
                     ) :
-                    raise Reject (err ('delete'))
+                    raise Reject (err (db.i18n.gettext, 'delete'))
                 # unlink abo from payer/subscriber addresses
                 for lattr, rattr in \
                     (('payer', 'payed_abos'), ('subscriber', 'abos')) :
@@ -174,7 +172,7 @@ def check_change (db, cl, nodeid, new_values) :
 
 def check_amount (db, cl, nodeid, new_values) :
     if 'amount' in new_values and new_values['amount'] < 0 :
-        raise Reject (err ('positive', {'attr' : 'amount'}))
+        raise Reject (err (db.i18n.gettext, 'positive', {'attr' : 'amount'}))
 # end def check_amount
 
 def update_adr_type_in_address (db, cl, nodeid, oldvalues) :
@@ -203,9 +201,6 @@ def retire_if_zero_period (db, cl, nodeid, oldvalues) :
 def init (db) :
     if 'abo' not in db.classes :
         return
-    global _
-    _   = get_translation \
-        (db.config.TRACKER_LANGUAGE, db.config.TRACKER_HOME).gettext
     db.abo.audit ("create", set_defaults)
     db.abo.audit ("set",    check_change)
     db.abo.audit ("create", check_amount)

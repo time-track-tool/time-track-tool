@@ -30,7 +30,6 @@
 
 from roundup.exceptions             import Reject
 from roundup.date                   import Date
-from roundup.cgi.TranslationService import get_translation
 from freeze                         import freeze_date
 
 import re
@@ -39,9 +38,10 @@ import user_dynamic
 import lib_auto_wp
 
 def check_duplicate_field_value (cl, project, field, value) :
-    ids     = cl.filter (None, {field : value, 'project' : project})
+    _   = cl.db.i18n.gettext
+    ids = cl.filter (None, {field : value, 'project' : project})
     # filter for exact match!
-    ids     = [i for i in ids if cl.get (i, field) == value]
+    ids = [i for i in ids if cl.get (i, field) == value]
     if ids :
         assert (len (ids) == 1)
         raise Reject (_ ('Duplicate %(field)s "%(value)s"') % locals ())
@@ -59,10 +59,11 @@ def check_time_wp_len (cl, nodeid, new_values) :
     limit = 25
     if awp :
         limit = 32
-    common.check_prop_len (_, name, limit=limit)
+    common.check_prop_len (cl.db.i18n.gettext, name, limit=limit)
 # end def check_time_wp_len
 
 def check_time_wp (db, cl, nodeid, new_values) :
+    _ = db.i18n.gettext
     common.require_attributes \
         ( _
         , cl
@@ -104,6 +105,7 @@ def check_time_wp (db, cl, nodeid, new_values) :
 # end def check_time_wp
 
 def new_time_wp (db, cl, nodeid, new_values) :
+    _ = db.i18n.gettext
     if 'is_public' not in new_values :
         new_values ['is_public'] = False
     common.require_attributes \
@@ -171,6 +173,7 @@ def check_expiration (db, cl, nodeid, new_values) :
 
 def check_name (db, cl, nodeid, new_values) :
     """ Ensure that names do not contain certain characters """
+    _ = db.i18n.gettext
     forbidden = ',/"'
     if 'name' in new_values :
         name = new_values ['name']
@@ -182,6 +185,7 @@ def check_name (db, cl, nodeid, new_values) :
 def check_epic_key (db, cl, nodeid, new_values) :
     """ Ensure that the epic_key matches the format of keys in Jira
     """
+    _ = db.i18n.gettext
     if 'epic_key' in new_values :
         r = re.compile (r'^[A-Z][0-9A-Z_]+[0-9A-Z]-[0-9]+$')
         k = new_values ['epic_key']
@@ -209,6 +213,7 @@ def check_travel_flag (db, cl, nodeid, new_values) :
 def wp_check_auto_wp (db, cl, nodeid, new_values) :
     """ Check that modifications to wp that has auto_wp set is ok
     """
+    _ = db.i18n.gettext
     if not nodeid and 'auto_wp' not in new_values :
         return
     if nodeid :
@@ -319,9 +324,6 @@ def wp_check_auto_wp (db, cl, nodeid, new_values) :
 def init (db) :
     if 'time_wp' not in db.classes :
         return
-    global _
-    _   = get_translation \
-        (db.config.TRACKER_LANGUAGE, db.config.TRACKER_HOME).gettext
     db.time_wp.audit  ("create", new_time_wp)
     db.time_wp.audit  ("set",    check_time_wp)
     db.time_wp.audit  ("create", check_expiration, priority = 400)
