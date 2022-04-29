@@ -30,11 +30,10 @@
 #
 
 from roundup.exceptions             import Reject
-from roundup.cgi.TranslationService import get_translation
-
 import common
 
 def check_size (db, cl, nodeid, new_values) :
+    _ = db.i18n.gettext
     if 'content' not in new_values :
         return
     limit = common.Size_Limit (db, 'LIMIT_FILE_SIZE')
@@ -51,9 +50,6 @@ def check_size (db, cl, nodeid, new_values) :
 def init (db) :
     if 'file' not in db.classes :
         return
-    global _
-    _   = get_translation \
-        (db.config.TRACKER_LANGUAGE, db.config.TRACKER_HOME).gettext
     db.file.audit ("create", check_size)
     db.file.audit ("set",    check_size)
 # end def init

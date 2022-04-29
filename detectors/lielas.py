@@ -23,17 +23,12 @@ from roundup.roundupdb              import DetectorError
 from roundup.date                   import Date, Interval
 from roundup.mailer                 import Mailer
 from roundup.mailer                 import MessageSendError
-from roundup.cgi.TranslationService import get_translation
-from roundup.i18n                   import get_translation as mail_translation
 from common                         import reject_attributes, changed_values
 from common                         import require_attributes
 from signal                         import SIGUSR1
 
-_ = lambda x : x
-
-
 def deny_adr (db, cl, nodeid, new_values) :
-    reject_attributes (_, new_values, 'adr')
+    reject_attributes (db.i18n.gettext, new_values, 'adr')
 # end def deny_adr
 
 def update_device_surrogate (db, cl, nodeid, new_values) :
@@ -136,7 +131,7 @@ def set_alarm (db, cl, nodeid, new_values) :
         new_values ['last_triggered'] = None
     if 'is_lower' not in new_values :
         new_values ['is_lower'] = False
-    require_attributes (_, cl, nodeid, new_values, 'sensor')
+    require_attributes (db.i18n.gettext, cl, nodeid, new_values, 'sensor')
 # end def set_alarm
 
 msg = ''"""Channel %(cname)s addr %(cadr)s of device %(dname)s addr %(dadr)s
@@ -145,6 +140,7 @@ Current value is: %(value)s.
 """
 
 def notify (db, alarm, sensor, measurement, timestamp, is_lower) :
+    _ = db.i18n.gettext
     sendto  = []
     for uid in db.user.getnodeids (retired = False) :
         adr = db.user.get (uid, 'address')
@@ -153,7 +149,6 @@ def notify (db, alarm, sensor, measurement, timestamp, is_lower) :
     # do nothing if no addresses to notify
     if not adr :
         return
-    _ = get_mail_translation (db).gettext
     overunder = _ (''"over")
     if is_lower :
         overunder = _ (''"under")
@@ -201,9 +196,6 @@ def check_alarm (db, cl, nodeid, old_values) :
 def init (db) :
     if 'measurement' not in db.classes :
         return
-    global _
-    _   = get_translation \
-        (db.config.TRACKER_LANGUAGE, db.config.TRACKER_HOME).gettext
     db.device.audit      ("set",    deny_adr)
     db.device.audit      ("set",    update_device_surrogate)
     db.device.audit      ("set",    round_sint_mint)

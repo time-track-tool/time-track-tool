@@ -27,10 +27,7 @@ import os
 from tempfile                       import mkstemp
 from socket                         import socket, SOCK_SEQPACKET, AF_UNIX
 from roundup.exceptions             import Reject
-from roundup.cgi.TranslationService import get_translation
 from common                         import require_attributes
-
-_ = lambda x : x
 
 def dyndns_update (db, cl, nodeid, old_values) :
     # Only generate config if at least one host is configured
@@ -93,7 +90,9 @@ def dyndns_update (db, cl, nodeid, old_values) :
 
 def dyndns_service (db, cl, nodeid, new_values) :
     require_attributes \
-        (_, cl, nodeid, new_values, 'protocol', 'login', 'password')
+        ( db.i18n.gettext, cl, nodeid, new_values
+        , 'protocol', 'login', 'password'
+        )
     a = 'server'
     if  (  not nodeid and a not in new_values
         or nodeid and new_values.get (a, cl.get (nodeid, a)) is None
@@ -107,13 +106,10 @@ def dyndns_service (db, cl, nodeid, new_values) :
 
 def dyndns_host (db, cl, nodeid, new_values) :
     require_attributes \
-        (_, cl, nodeid, new_values, 'dyndns_service')
+        (db.i18n.gettext, cl, nodeid, new_values, 'dyndns_service')
 # end def dyndns_host
 
 def init (db) :
-    global _
-    _   = get_translation \
-        (db.config.TRACKER_LANGUAGE, db.config.TRACKER_HOME).gettext
     if 'dyndns_host' in db.classes :
         db.dyndns.react         ("create", dyndns_update)
         db.dyndns.react         ("set",    dyndns_update)

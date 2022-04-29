@@ -18,11 +18,9 @@
 # ****************************************************************************
 
 from roundup.exceptions             import Reject
-from roundup.cgi.TranslationService import get_translation
-
-_ = lambda x : x
 
 def check (db, cl, nodeid, new_values) :
+    _ = db.i18n.gettext
     attr = {}
     for i in 'period', 'adr_type' :
         if i in new_values :
@@ -44,9 +42,6 @@ def check (db, cl, nodeid, new_values) :
 def init (db) :
     if 'abo_type' not in db.classes :
         return
-    global _
-    _   = get_translation \
-        (db.config.TRACKER_LANGUAGE, db.config.TRACKER_HOME).gettext
     db.abo_type.audit     ("create", check)
     db.abo_type.audit     ("set",    check)
 # end def init
