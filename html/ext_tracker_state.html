@@ -1,7 +1,7 @@
 <tal:block metal:define-macro="ext_tracker_display">
        <tr tal:condition="python: classname != 'issue'">
         <th tal:content="structure python:utils.fieldname
-          ('issue', 'title')"/>
+          (db, 'issue', 'title')"/>
         <td>
          <a tal:attributes="href python:'issue%s' % eitem.issue.id"
             tal:content="python: eitem.issue.title"/>
@@ -9,12 +9,12 @@
        </tr>
        <tr>
         <th tal:content="structure python:utils.fieldname
-            (ecls, 'ext_tracker')"/>
+            (db, ecls, 'ext_tracker')"/>
         <td> <span tal:content="python:eitem.ext_tracker"/>
              <span tal:content="python:eitem.ext_tracker.description"/>
         </td>
         <th tal:content="structure python:utils.fieldname
-            (ecls, 'ext_id')"/>
+            (db, ecls, 'ext_id')"/>
         <td tal:condition="python:not eitem.ext_tracker.url_template"
             tal:content="structure python:eitem.ext_id"/>
         <td tal:condition="python:eitem.ext_tracker.url_template">
@@ -25,13 +25,13 @@
        </tr>
        <tr>
         <th tal:content="structure python:utils.fieldname
-            (ecls, 'ext_status')"/>
+            (db, ecls, 'ext_status')"/>
         <td>
          <a tal:attributes="href python:'ext_tracker_state%s' % eitem.id"
             tal:content="python:eitem.ext_status"/>
         </td>
         <th tal:content="structure python:utils.fieldname
-            (ecls, 'ext_attributes')"/>
+            (db, ecls, 'ext_attributes')"/>
         <td>
          <a tal:condition="eitem/ext_attributes"
             href="#" tal:attributes="onclick python: ''.join

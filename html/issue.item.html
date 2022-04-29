@@ -57,7 +57,7 @@
              )
          )">
        <th tal:content="structure python:utils.fieldname
-           ('ext_tracker_state', 'ext_tracker')"/>
+           (db, 'ext_tracker_state', 'ext_tracker')"/>
        <td>
         <span tal:content="structure python: utils.new_property
          (context, db, 'ext_tracker_state', -1, 'ext_tracker').menu
@@ -87,76 +87,76 @@
      <tr tal:condition="python:
         'category' in bclass.properties or 'release' in bclass.properties">
       <th class="required" tal:content="structure python:utils.fieldname
-          (classname, 'category')"/>
+          (db, classname, 'category')"/>
       <td tal:content="structure python:context.category.menu (valid = True)"/>
       <th class="required" tal:content="structure python:utils.fieldname
-          (classname, 'release')"/>
+          (db, classname, 'release')"/>
       <td tal:content="structure python:context.release.field ()"/>
      </tr>
      <tr tal:condition="python:
         'area' in bclass.properties or 'deadline' in bclass.properties">
       <th tal:content="structure python:utils.fieldname
-          (classname, 'area')"/>
+          (db, classname, 'area')"/>
       <td tal:content="structure python:context.area.menu ()"/>
       <th tal:content="structure python:utils.fieldname
-          (classname, 'deadline')"/>
+          (db, classname, 'deadline')"/>
       <td tal:content="structure python:context.deadline.field ()"/>
      </tr>
      <tr tal:condition="python:
         'kind' in bclass.properties or 'earliest_start' in bclass.properties">
       <th tal:content="structure python:utils.fieldname
-          (classname, 'kind')"/>
+          (db, classname, 'kind')"/>
       <td tal:content="structure python:context.kind.menu ()"/>
       <th tal:condition="context/id"
           tal:content="structure python:utils.fieldname
-          (classname, 'earliest_start')"/>
+          (db, classname, 'earliest_start')"/>
       <td tal:condition="context/id"
           tal:content="structure python:context.earliest_start.field ()"/>
      </tr>
      <tr>
       <th tal:content="structure python:utils.fieldname
-          (classname, 'status')"/>
+          (db, classname, 'status')"/>
       <td tal:content="structure python:context.status.menu
           (** utils.filter_status_transitions (context))" />
       <th rowspan="3" tal:content="structure python:utils.fieldname
-          (classname, 'keywords')"/>
+          (db, classname, 'keywords')"/>
       <td rowspan="3"
        tal:content="structure python:context.keywords.menu (height = 4)"/>
      </tr>
      <tr tal:condition="python:'prio' in db._db.classes">
       <th tal:content="structure python:utils.fieldname
-          (classname, 'priority')"/>
+          (db, classname, 'priority')"/>
       <td tal:content="structure python:context.priority.menu ()"/>
      </tr>
      <tr tal:condition="python: 'severity' in bclass.properties">
       <th tal:content="structure python:utils.fieldname
-          (classname, 'severity')"/>
+          (db, classname, 'severity')"/>
       <td tal:content="structure python:context.severity.menu ()"/>
      </tr>
      <tr tal:condition="python:'doc_issue_status' in bclass.properties">
       <th tal:content="structure python:utils.fieldname
-          (classname, 'doc_issue_status')"/>
+          (db, classname, 'doc_issue_status')"/>
       <td tal:content="structure python:context.doc_issue_status.menu ()"/>
      </tr>
      <tr tal:condition="python:'safety_level' in bclass.properties">
       <th tal:content="structure python:utils.fieldname
-          (classname, 'safety_level')"/>
+          (db, classname, 'safety_level')"/>
       <td tal:content="structure python:context.safety_level.menu ()"/>
       <th tal:content="structure python:utils.fieldname
-          (classname, 'test_level')"/>
+          (db, classname, 'test_level')"/>
       <td tal:content="structure python:context.test_level.menu ()"/>
      </tr>
      <tr><td>&nbsp;</td></tr>
      <tr>
       <th tal:content="structure python:utils.fieldname
-          (classname, 'responsible')"/>
+          (db, classname, 'responsible')"/>
       <td>
        <tal:block tal:replace="structure python:context.responsible.field ()"/>
        <tal:block tal:replace="structure python:utils.user_classhelp (db)"/>
       </td>
       <tal:block tal:condition="python: 'effort_hours' in bclass.properties">
        <th tal:content="structure python:utils.fieldname
-           (classname, 'effort_hours')"/>
+           (db, classname, 'effort_hours')"/>
        <td tal:content="structure
            python:context.effort_hours.field (size = 15)"/>
       </tal:block>
@@ -164,20 +164,20 @@
      <tal:block tal:condition="python:'prio' not in db._db.classes">
       <tr tal:condition="context/id">
        <th tal:content="structure python:utils.fieldname
-           (classname, 'priority')"/>
+           (db, classname, 'priority')"/>
        <td>
         <table border=0 cellpadding=0 cellspacing=0>
          <tr>
           <td tal:content="structure python:context.priority.field (size = 7)"/>
           <th tal:content="structure python:utils.fieldname
-             (classname, 'effective_prio')"/>
+             (db, classname, 'effective_prio')"/>
           <td tal:content="context/effective_prio/plain"/>
          </tr>
         </table>
        </td>
        <tal:block tal:condition="python:'planned_begin' in bclass.properties">
         <th tal:content="structure python:utils.fieldname
-            (classname, 'planned_begin')"/>
+            (db, classname, 'planned_begin')"/>
         <td>
          <nobr tal:condition="context/planned_begin/plain"
                tal:content="structure python:'%s .. %s'
@@ -191,7 +191,7 @@
      <tr tal:condition="python:
         'part_of' in bclass.properties or 'cur_est_begin' in bclass.properties">
       <th tal:content="structure python:utils.fieldname
-          (classname, 'part_of')"/>
+          (db, classname, 'part_of')"/>
       <td>
        <tal:block tal:condition="python:
         not context.id or context.part_of.is_view_ok ()">
@@ -204,7 +204,7 @@
       </td>
       <th tal:condition="context/id"
           tal:content="structure python:utils.fieldname
-          (classname, 'cur_est_begin')"/>
+          (db, classname, 'cur_est_begin')"/>
       <td tal:condition="context/id">
        <nobr tal:condition="context/cur_est_begin/plain"
              tal:content="structure python:'%s .. %s'
@@ -228,7 +228,7 @@
      </tr>
      <tr tal:condition="context/id">
       <th tal:content="structure python:utils.fieldname
-          (classname, 'superseder')"/>
+          (db, classname, 'superseder')"/>
       <td>
        <span tal:content="structure python:context.superseder.field ()"/>
        <span tal:condition="context/superseder/plain"
@@ -247,7 +247,7 @@
       </td>
       <tal:block tal:condition="python:'depends' in bclass.properties">
        <th tal:content="structure python:utils.fieldname
-           (classname, 'depends')"/>
+           (db, classname, 'depends')"/>
        <td>
         <span tal:content="structure python:context.depends.field ()"/>
         <span tal:condition="context/depends/plain"
@@ -270,7 +270,7 @@
       <tal:block
        tal:condition="python:'composed_of' in bclass.properties">
        <th tal:content="structure python:utils.fieldname
-           (classname, 'composed_of')"/>
+           (db, classname, 'composed_of')"/>
        <td>
         <tal:block tal:condition="context/composed_of/plain">
          <tal:block tal:define=" text expand_text
@@ -296,7 +296,7 @@
       </tal:block>
       <tal:block tal:condition="python:'needs' in bclass.properties">
        <th tal:content="structure python:utils.fieldname
-           (classname, 'needs')"/>
+           (db, classname, 'needs')"/>
        <td>
         <span tal:content="structure python:context.needs.field ()"/>
         <span tal:condition="context/needs/plain"
@@ -318,19 +318,19 @@
      <tr tal:condition="context/id">
       <tal:block tal:condition="python:'fixed_in' in bclass.properties">
        <th tal:content="structure python:utils.fieldname
-           (classname, 'fixed_in')"/>
+           (db, classname, 'fixed_in')"/>
        <td tal:content="structure python:context.fixed_in.field ()"/>
       </tal:block>
       <tal:block tal:condition="python:'closed' in bclass.properties">
        <th tal:content="structure python:utils.fieldname
-           (classname, 'closed')"/>
+           (db, classname, 'closed')"/>
        <td tal:content="context/closed/plain"/>
       </tal:block>
      </tr>
      <tr tal:condition="python:
          context.id and 'files_affected' in bclass.properties">
       <th tal:content="structure python:utils.fieldname
-          (classname, 'files_affected')"/>
+          (db, classname, 'files_affected')"/>
       <td colspan="3">
        <textarea tal:content="context/files_affected"
         name="files_affected" wrap="hard" rows="2" cols="65"/>
@@ -343,14 +343,14 @@
              ) ">
       <tal:block tal:condition="python:'maturity_index' in bclass.properties">
        <th tal:content="structure python:utils.fieldname
-           (classname, 'maturity_index')"/>
+           (db, classname, 'maturity_index')"/>
        <td tal:content="context/maturity_index/plain" />
       </tal:block>
       <tal:block tal:condition="python:
        'inherit_ext' in bclass.properties and context.inherit_ext.is_view_ok ()
       ">
        <th tal:content="structure python:utils.fieldname
-           (classname, 'inherit_ext')"/>
+           (db, classname, 'inherit_ext')"/>
        <td tal:content="structure context/inherit_ext/field" />
       </tal:block>
      </tr>
@@ -367,7 +367,7 @@
                      , context.external_company._name
                      ) ">
        <th tal:content="structure python:utils.fieldname
-            (classname, 'external_company')"/>
+            (db, classname, 'external_company')"/>
        <td>
         <span tal:content="structure context/external_company/field" />
         <span tal:content="structure python:db.external_company.classhelp
@@ -386,7 +386,7 @@
                               (db._db, request.user.id, 'User')
                      )">
        <th tal:content="structure python:utils.fieldname
-            (classname, 'external_users')"/>
+            (db, classname, 'external_users')"/>
        <td>
         <span tal:content="structure context/external_users/field" />
         <span tal:content="structure python:utils.user_classhelp

@@ -17,17 +17,17 @@
     <tal:block metal:fill-slot="formatted_class_content">
      <tr>
       <th tal:content="structure python:utils.fieldname
-          (classname, 'receipt_no')"/>
+          (db, classname, 'receipt_no')"/>
       <td tal:content="structure context/receipt_no/field"/>
       <th tal:content="structure python:utils.fieldname
-          (classname, 'invoice')"/>
+          (db, classname, 'invoice')"/>
       <td tal:content="structure python: utils.ExtProperty
           (utils, context.invoice.invoice_no, item = context.invoice)
           .formatlink ()"/>
      </tr>
      <tr tal:condition="context/id">
       <th tal:content="structure python:utils.fieldname
-          ('invoice', 'subscriber')"/>
+          (db, 'invoice', 'subscriber')"/>
       <td tal:content="structure python: ' '.join
        (( utils.ExtProperty
           ( utils
@@ -40,7 +40,8 @@
           , item = context.invoice.subscriber
           ).formatlink ()
        ))"/>
-      <th tal:content="structure python:utils.fieldname('invoice', 'payer')"/>
+      <th tal:content="structure python:utils.fieldname
+          (db, 'invoice', 'payer')"/>
       <td tal:content="structure python: ' '.join
        (( utils.ExtProperty
           ( utils
@@ -56,19 +57,20 @@
      </tr>
      <tr>
       <th tal:content="structure python:utils.fieldname
-          ('invoice', 'period_start')"/>
+          (db, 'invoice', 'period_start')"/>
       <td tal:content="structure python:
           context.invoice.period_start.pretty('%Y-%m-%d')"/>
       <th tal:content="structure python:utils.fieldname
-          ('invoice', 'period_end')"/>
+          (db, 'invoice', 'period_end')"/>
       <td tal:content="structure python:
           context.invoice.period_end.pretty('%Y-%m-%d')"/>
      </tr>
      <tr>
       <th tal:content="structure python:utils.fieldname
-          (classname, 'date_payed')"/>
+          (db, classname, 'date_payed')"/>
       <td tal:content="structure context/date_payed/field"/>
-      <th tal:content="structure python:utils.fieldname(classname, 'amount')"/>
+      <th tal:content="structure python:utils.fieldname
+          (db, classname, 'amount')"/>
       <td>
        <span tal:content="structure python:utils.ExtProperty
           (utils, context.amount, item = context, editable = True)

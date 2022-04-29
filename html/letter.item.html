@@ -16,10 +16,12 @@
    <tal:block metal:use-macro="templates/page/macros/formatted_class">
     <tal:block metal:fill-slot="formatted_class_content">
      <tr>
-      <th tal:content="structure python:utils.fieldname(classname, 'subject')"/>
+      <th tal:content="structure python:utils.fieldname
+          (db, classname, 'subject')"/>
       <td tal:content="structure context/subject/field"/>
       <th tal:condition="python: context.id and context.invoice"
-          tal:content="structure python:utils.fieldname(classname, 'invoice')"/>
+          tal:content="structure python:utils.fieldname
+          (db, classname, 'invoice')"/>
       <td tal:condition="python: context.id and context.invoice"
           tal:content="structure python: utils.ExtProperty
           ( utils, context.invoice.invoice_no
@@ -27,12 +29,14 @@
           ).formatlink ()"/>
      </tr>
      <tr>
-      <th tal:content="structure python:utils.fieldname(classname, 'date')"/>
+      <th tal:content="structure python:utils.fieldname
+          (db, classname, 'date')"/>
       <td tal:condition="not:context/id"
           tal:content="structure context/date/field"/>
       <td tal:condition="context/id|nothing"
           tal:content="structure python:context.date.pretty ('%Y-%m-%d')"/>
-      <th tal:content="structure python:utils.fieldname(classname, 'address')"/>
+      <th tal:content="structure python:utils.fieldname
+          (db, classname, 'address')"/>
       <td tal:condition="not:context/id"
           tal:content="structure context/address/field"/>
       <td tal:condition="context/id|nothing">
@@ -43,7 +47,8 @@
       </td>
      </tr>
      <tr tal:condition="context/files">
-      <th tal:content="structure python:utils.fieldname(classname, 'letter')"/>
+      <th tal:content="structure python:utils.fieldname
+          (db, classname, 'letter')"/>
       <td tal:content="structure python:utils.letter_link
           (request, context.id)"/>
      </tr>

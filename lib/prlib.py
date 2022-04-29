@@ -31,8 +31,7 @@
 #
 
 import common
-from   roundup.cgi.TranslationService import get_translation
-from   roundup.exceptions             import Reject
+from   roundup.exceptions import Reject
 
 def pr_offer_item_sum (db, pr) :
     pr    = db.purchase_request.getnode (pr)
@@ -183,8 +182,6 @@ class Approval_Logic :
         self.email_only  = email_only
         self.apr_by_r_d  = {}
         self.apr_by_role = {}
-        self._           = get_translation \
-            (db.config.TRACKER_LANGUAGE, db.config.TRACKER_HOME).gettext
         # These do not go together
         assert not (do_create and email_only)
     # end def __init__
@@ -236,6 +233,7 @@ class Approval_Logic :
             do *not* return the entries with only_nosy set.
         """
         db = self.db
+        _  = db.i18n.gettext
         pr = self.pr
         # Compute board and finance approval configs for this pr
         board_roles   = db.pr_approval_order.filter \
@@ -254,10 +252,10 @@ class Approval_Logic :
 
         if self.do_create and not board_roles :
             raise Reject \
-                (self._ ("Configuration error: No board roles for this PR"))
+                (_ ("Configuration error: No board roles for this PR"))
         if self.do_create and not finance_roles :
             raise Reject \
-                (self._ ("Configuration error: No finance roles for this PR"))
+                (_ ("Configuration error: No finance roles for this PR"))
         board_approval = False
 
         assert not self.do_create  or pr.organisation
@@ -273,12 +271,12 @@ class Approval_Logic :
         pcc = None
         if pr.time_project :
             pcc = db.time_project.getnode (pr.time_project)
-            d   = self._ ('%(tp)s responsible/deputy') \
-                % dict (tp = self._ ('time_project'))
+            d   = _ ('%(tp)s responsible/deputy') \
+                % dict (tp = _ ('time_project'))
         elif pr.sap_cc :
             pcc = db.sap_cc.getnode (pr.sap_cc)
-            d   = self._ ('%(cc)s responsible/deputy') \
-                % dict (cc = self._ ('sap_cc'))
+            d   = _ ('%(cc)s responsible/deputy') \
+                % dict (cc = _ ('sap_cc'))
         if d :
             apr = gen_pr_approval \
                 ( db, self.do_create
@@ -297,7 +295,7 @@ class Approval_Logic :
                 , purchase_request = pr.id
                 , user             = u
                 , deputy           = u
-                , description      = self._ ("Special approval")
+                , description      = _ ("Special approval")
                 )
             self._add_approval ((u, u), apr)
 
@@ -362,9 +360,9 @@ class Approval_Logic :
                     if not dep.no_approval :
                         if not dep.manager and not dep.deputy :
                             raise Reject \
-                                (self._ ("Configuration error: No "
-                                         "department manager and deputy"
-                                        )
+                                (_ ("Configuration error: No "
+                                    "department manager and deputy"
+                                   )
                                 )
                         apr = gen_pr_approval \
                             ( db, self.do_create
@@ -406,12 +404,12 @@ class Approval_Logic :
             pcc = None
             if oi.time_project :
                 pcc = db.time_project.getnode (oi.time_project)
-                d   = self._ ('%(tp)s responsible/deputy') \
-                    % dict (tp = self._ ('time_project'))
+                d   = _ ('%(tp)s responsible/deputy') \
+                    % dict (tp = _ ('time_project'))
             elif oi.sap_cc :
                 pcc = db.sap_cc.getnode (oi.sap_cc)
-                d   = self._ ('%(cc)s responsible/deputy') \
-                        % dict (cc = self._ ('sap_cc'))
+                d   = _ ('%(cc)s responsible/deputy') \
+                    % dict (cc = _ ('sap_cc'))
             if cur :
                 self.team_group_head_approval (cur, oisum, pcc)
             if (   pcc

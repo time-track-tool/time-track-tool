@@ -33,7 +33,6 @@ from roundup.cgi.exceptions         import Redirect
 from roundup.exceptions             import Reject
 from roundup.cgi                    import templating
 from roundup.date                   import Date, Interval, Range
-from roundup.cgi.TranslationService import get_translation
 from roundup.hyperdb                import Multilink
 
 class Create_New_Address (Action) :

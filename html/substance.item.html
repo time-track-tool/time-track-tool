@@ -21,12 +21,12 @@
     <tal:block metal:fill-slot="formatted_class_content">
      <tr>
       <th tal:content="structure python:utils.fieldname
-          (classname, 'name')"/>
+          (db, classname, 'name')"/>
       <td tal:content="structure python:context.name.field ()"/>
      </tr>
      <tr>
       <th tal:content="structure python:utils.fieldname
-          (classname, 'is_raw_material')"/>
+          (db, classname, 'is_raw_material')"/>
       <td tal:content="structure python:context.is_raw_material.field ()"/>
      </tr>
     </tal:block>
@@ -49,13 +49,13 @@
      </tr>
      <tr>
       <th tal:content="structure python:utils.fieldname
-         ('substance', 'id')"/>
+         (db, 'substance', 'id')"/>
       <th style="text-align:right" tal:content="structure python:utils.fieldname
-         (context.ingredients, 'quantity')"/>
+         (db, context.ingredients, 'quantity')"/>
       <th tal:content="structure python:utils.fieldname
-         ('substance', 'identifier')"/>
+         (db, 'substance', 'identifier')"/>
       <th tal:content="structure python:utils.fieldname
-         ('substance', 'name')"/>
+         (db, 'substance', 'name')"/>
      </tr>
      <tr tal:repeat="ing python:context.ingredients">
       <td>

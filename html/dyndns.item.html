@@ -29,7 +29,7 @@
       <input type="hidden" name="local_hostname"
              tal:attributes="value context/local_hostname">
       <th tal:content="structure python:utils.fieldname
-          (classname, 'syslog')"/>
+          (db, classname, 'syslog')"/>
       <td tal:content="structure python:context.syslog.field ()"/>
      </tr>
      <tr><td>&nbsp;</td></tr>
@@ -46,10 +46,10 @@
      </tr>
      <tr>
       <th tal:content="structure python:utils.fieldname
-          (classname, 'interface')"/>
+          (db, classname, 'interface')"/>
       <td tal:content="structure python:context.interface.field ()"/>
       <th tal:content="structure python:utils.fieldname
-          (classname, 'interface_skip')"/>
+          (db, classname, 'interface_skip')"/>
       <td tal:content="structure python:context.interface_skip.field ()"/>
      </tr>
      <tr><td>&nbsp;</td></tr>
@@ -60,10 +60,10 @@
      </tr>
      <tr>
       <th tal:content="structure python:utils.fieldname
-          (classname, 'web_url')"/>
+          (db, classname, 'web_url')"/>
       <td tal:content="structure python:context.web_url.field ()"/>
       <th tal:content="structure python:utils.fieldname
-          (classname, 'web_skip')"/>
+          (db, classname, 'web_skip')"/>
       <td tal:content="structure python:context.web_skip.field ()"/>
      </tr>
      <tr><td>&nbsp;</td></tr>
@@ -73,17 +73,19 @@
       </td>
      </tr>
      <tr>
-      <th tal:content="structure python:utils.fieldname (classname, 'fw_url')"/>
+      <th tal:content="structure python:utils.fieldname
+          (db, classname, 'fw_url')"/>
       <td tal:content="structure python:context.fw_url.field ()"/>
       <th tal:content="structure python:utils.fieldname
-          (classname, 'fw_skip')"/>
+          (db, classname, 'fw_skip')"/>
       <td tal:content="structure python:context.fw_skip.field ()"/>
      </tr>
      <tr>
-      <th tal:content="structure python:utils.fieldname (classname, 'fw_login')"/>
+      <th tal:content="structure python:utils.fieldname
+          (db, classname, 'fw_login')"/>
       <td tal:content="structure python:context.fw_login.field ()"/>
       <th tal:content="structure python:utils.fieldname
-          (classname, 'fw_password')"/>
+          (db, classname, 'fw_password')"/>
       <td tal:content="structure python:context.fw_password.field
           (type = 'password')"/>
      </tr>
@@ -115,9 +117,9 @@
      </td>
     </tr>
     <tr tal:define="n python:'dyndns_service'">
-     <th tal:content="structure python:utils.fieldname (n, 'server')"/>
-     <th tal:content="structure python:utils.fieldname (n, 'protocol')"/>
-     <th tal:content="structure python:utils.fieldname (n, 'login')"/>
+     <th tal:content="structure python:utils.fieldname (db, n, 'server')"/>
+     <th tal:content="structure python:utils.fieldname (db, n, 'protocol')"/>
+     <th tal:content="structure python:utils.fieldname (db, n, 'login')"/>
     </tr>
     <tr tal:repeat="s services">
      <td tal:content="structure python:utils.ExtProperty

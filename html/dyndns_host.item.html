@@ -27,17 +27,17 @@
     <tal:block metal:fill-slot="formatted_class_content">
      <tr>
       <th tal:content="structure python:utils.fieldname
-          (classname, 'hostname')" class="required"/>
+          (db, classname, 'hostname')" class="required"/>
       <td tal:content="structure python:context.hostname.field ()"/>
      </tr>
      <tr>
       <th tal:content="structure python:utils.fieldname
-          (classname, 'description')"/>
+          (db, classname, 'description')"/>
       <td tal:content="structure python:context.description.field ()"/>
      </tr>
      <tr>
       <th tal:content="structure python:utils.fieldname
-          (classname, 'dyndns_service')" class="required"/>
+          (db, classname, 'dyndns_service')" class="required"/>
       <td tal:content="structure python:context.dyndns_service.menu ()"/>
      </tr>
     </tal:block>

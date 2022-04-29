@@ -27,8 +27,6 @@
 #
 #--
 
-from roundup.cgi.TranslationService import get_translation
-
 def get_kpm (db, issue) :
     """ If the issue is a kpm-synchronized issue (this means it has
         ext_tracker set to an external tracker with type KPM)
@@ -63,8 +61,5 @@ def get_kpm (db, issue) :
 # end def get_kpm
 
 def init (instance) :
-    global _
-    _   = get_translation \
-        (instance.config.TRACKER_LANGUAGE, instance.config.TRACKER_HOME).gettext
     instance.registerUtil ('get_kpm',  get_kpm)
 # end def init

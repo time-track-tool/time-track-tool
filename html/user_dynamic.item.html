@@ -50,7 +50,8 @@
       </td>
      </tr>
      <tr>
-      <th tal:content="structure python:utils.fieldname (classname, 'user')"/>
+      <th tal:content="structure python:utils.fieldname
+          (db, classname, 'user')"/>
       <td tal:condition="not:context/id">
        <span tal:content="structure python:context.user.field ()"/>
        <span tal:content="structure python:utils.user_classhelp
@@ -80,35 +81,35 @@
      </tr>
      <tr>
       <th tal:content="structure python:utils.fieldname
-          (classname, 'valid_from')"/>
+          (db, classname, 'valid_from')"/>
       <td>
        <span tal:content="structure python:context.valid_from.field ()"/>
       </td>
       <th tal:content="structure python:utils.fieldname
-          (classname, 'valid_to')"/>
+          (db, classname, 'valid_to')"/>
       <td>
        <span tal:replace="structure python:context.valid_to.field ()"/>
       </td>
      </tr>
      <tr>
       <th tal:content="structure python:utils.fieldname
-          (classname, 'booking_allowed')"/>
+          (db, classname, 'booking_allowed')"/>
       <td tal:content="structure python:context.booking_allowed.field ()"/>
       <th tal:content="structure python:utils.fieldname
-          (classname, 'travel_full')"/>
+          (db, classname, 'travel_full')"/>
       <td tal:content="structure python:context.travel_full.field ()"/>
      </tr>
      <tr>
       <th tal:content="structure python:utils.fieldname
-          (classname, 'durations_allowed')"/>
+          (db, classname, 'durations_allowed')"/>
       <td tal:content="structure python:context.durations_allowed.field ()"/>
       <th tal:content="structure python:utils.fieldname
-          (classname, 'weekend_allowed')"/>
+          (db, classname, 'weekend_allowed')"/>
       <td tal:content="structure python:context.weekend_allowed.field ()"/>
      </tr>
      <tr>
       <th class="required" tal:content="structure python:utils.fieldname
-          (classname, 'vacation_yearly')"/>
+          (db, classname, 'vacation_yearly')"/>
       <td tal:content="structure python:context.vacation_yearly.field ()"/>
       <th><a title="Help for vacation day / month"
              i18n:translate=""
@@ -126,55 +127,55 @@
      </tr>
      <tr>
       <th tal:content="structure python:utils.fieldname
-          (classname, 'vac_aliq')"/>
+          (db, classname, 'vac_aliq')"/>
       <td tal:content="structure python:context.vac_aliq.menu ()"/>
      </tr>
      <tr>
       <th tal:content="structure python:utils.fieldname
-          (classname, 'contract_type')"/>
+          (db, classname, 'contract_type')"/>
       <td tal:content="structure python:context.contract_type.menu ()"/>
       <th tal:content="structure python:utils.fieldname
-          (classname, 'do_auto_wp')"/>
+          (db, classname, 'do_auto_wp')"/>
       <td tal:content="structure python:context.do_auto_wp.field ()"/>
      </tr>
      <tr>
       <th tal:content="structure python:utils.fieldname
-          (classname, 'daily_worktime')"/>
+          (db, classname, 'daily_worktime')"/>
       <td tal:content="structure python:context.daily_worktime.field ()"/>
       <th tal:content="structure python:utils.fieldname
-          (classname, 'overtime_period')"/>
+          (db, classname, 'overtime_period')"/>
       <td tal:content="structure python:context.overtime_period.menu ()"/>
      </tr>
      <tr>
       <th tal:content="structure python:utils.fieldname
-          (classname, 'all_in')"/>
+          (db, classname, 'all_in')"/>
       <td tal:content="structure python:context.all_in.field ()"/>
       <th tal:content="structure python:utils.fieldname
-          (classname, 'supp_per_period')"/>
+          (db, classname, 'supp_per_period')"/>
       <td tal:content="structure python:context.supp_per_period.field ()"/>
      </tr>
      <tr>
       <th tal:content="structure python:utils.fieldname
-          (classname, 'weekly_hours')"/>
+          (db, classname, 'weekly_hours')"/>
       <td tal:content="structure python:
           context.weekly_hours.field (onchange = 'deldays()')"/>
       <th tal:content="structure python:utils.fieldname
-          (classname, 'supp_weekly_hours')"/>
+          (db, classname, 'supp_weekly_hours')"/>
       <td tal:content="structure python:context.supp_weekly_hours.field ()"/>
      </tr>
      <tr>
       <th tal:content="structure python:utils.fieldname
-          (classname, 'additional_hours')"/>
+          (db, classname, 'additional_hours')"/>
       <td tal:content="structure python:context.additional_hours.field ()"/>
       <th tal:condition="python:context and context.all_in"
           tal:content="structure python:utils.fieldname
-          (classname, 'max_flexitime')"/>
+          (db, classname, 'max_flexitime')"/>
       <td tal:condition="python:context and context.all_in"
           tal:content="structure python:context.max_flexitime.field ()"/>
      </tr>
      <tr>
       <th tal:content="structure python:utils.fieldname
-          (classname, 'daily_hours')"/>
+          (db, classname, 'daily_hours')"/>
       <td colspan=3>
        <span tal:repeat="i python:
               [ context.hours_mon
@@ -196,12 +197,13 @@
      </tr>
      <tr>
       <th tal:content="structure python:utils.fieldname
-          (classname, 'org_location')"/>
+          (db, classname, 'org_location')"/>
       <td tal:content="structure python:context.org_location.menu
           (**utils.valid_item (now))"/>
      </tr>
      <tr>
-      <th tal:content="structure python:utils.fieldname (classname, 'sap_cc')"/>
+      <th tal:content="structure python:utils.fieldname
+          (db, classname, 'sap_cc')"/>
       <td>
        <span tal:replace="structure python:context.sap_cc.field ()"/>
        <span tal:replace="structure python:db.sap_cc.classhelp
@@ -214,17 +216,17 @@
      </tr>
      <tr>
       <th tal:content="structure python:utils.fieldname
-          (classname, 'exemption')"/>
+          (db, classname, 'exemption')"/>
       <td tal:content="structure python:context.exemption.field ()"/>
       <th tal:content="structure python:utils.fieldname
-          (classname, 'short_time_work_hours')"/>
+          (db, classname, 'short_time_work_hours')"/>
       <td tal:content="structure python:
           context.short_time_work_hours.field ()"/>
      </tr>
      <!--
      <tr>
       <th tal:content="structure python:utils.fieldname
-          (classname, 'time_activity_perm')"/>
+          (db, classname, 'time_activity_perm')"/>
       <td tal:content="structure python:context.time_activity_perm.menu
           (height = 3)"/>
      </tr>

@@ -27,23 +27,23 @@
     <tal:block metal:fill-slot="formatted_class_content">
      <tr>
       <th class="required" tal:content="structure python:utils.fieldname
-          (classname, 'valid')"/>
+          (db, classname, 'valid')"/>
       <td tal:content="structure python:context.valid.field ()"/>
      </tr>
      <tr>
       <th class="required" tal:content="structure python:utils.fieldname
-          (classname, 'confidential')"/>
+          (db, classname, 'confidential')"/>
       <td tal:content="structure python:context.confidential.field ()"/>
      </tr>
      <tr>
      <tr>
       <th tal:content="structure python:utils.fieldname
-          (classname, 'order')"/>
+          (db, classname, 'order')"/>
       <td tal:content="structure python:context.order.field ()"/>
      </tr>
      <tr>
       <th tal:content="structure python:utils.fieldname
-          (classname, 'description')"/>
+          (db, classname, 'description')"/>
       <td>
        <textarea tal:content="python:context.description.plain () or ''"
                  wrap="soft" rows="10" cols="80" name="description"/>
@@ -51,7 +51,7 @@
      </tr>
      <tr>
       <th tal:content="structure python:utils.fieldname
-          (classname, 'pr_view_roles')"/>
+          (db, classname, 'pr_view_roles')"/>
       <td>
        <span tal:content="structure python:context.pr_view_roles.field ()"/>
        <span tal:content="structure python:db.pr_approval_order.classhelp
@@ -64,7 +64,7 @@
      </tr>
      <tr>
       <th tal:content="structure python:utils.fieldname
-          (classname, 'pr_roles')"/>
+          (db, classname, 'pr_roles')"/>
       <td>
        <span tal:content="structure python:context.pr_roles.field ()"/>
        <span tal:content="structure python:db.pr_approval_order.classhelp
@@ -77,7 +77,7 @@
      </tr>
      <tr>
       <th tal:content="structure python:utils.fieldname
-          (classname, 'pr_forced_roles')"/>
+          (db, classname, 'pr_forced_roles')"/>
       <td>
        <span tal:content="structure python:context.pr_forced_roles.field ()"/>
        <span tal:content="structure python:db.pr_approval_order.classhelp
@@ -90,7 +90,7 @@
      </tr>
      <tr tal:condition="context/id">
       <th tal:content="structure python:utils.fieldname
-          (classname, 'purchasing_agents')"/>
+          (db, classname, 'purchasing_agents')"/>
       <td>
        <span tal:content="structure python:context.purchasing_agents.field ()"/>
        <span tal:content="structure python:utils.user_classhelp

@@ -22,18 +22,20 @@
     <tal:block metal:fill-slot="formatted_class_content">
      <tr>
       <th class="required" tal:content="structure python:utils.fieldname
-          (classname, 'daily_record')"/>
+          (db, classname, 'daily_record')"/>
       <td tal:content="structure context/daily_record/field"/>
      </tr>
      <tr>
-      <th tal:content="structure python:utils.fieldname (classname, 'start')"/>
+      <th tal:content="structure python:utils.fieldname
+          (db, classname, 'start')"/>
       <td tal:content="structure python:context.start.field (size=20)"/>
-      <th tal:content="structure python:utils.fieldname (classname, 'end')"/>
+      <th tal:content="structure python:utils.fieldname
+          (db, classname, 'end')"/>
       <td tal:content="structure python:context.end.field (size=20)"/>
      </tr>
      <tr>
       <th tal:content="structure python:utils.fieldname
-          (classname, 'work_location')"/>
+          (db, classname, 'work_location')"/>
       <td tal:content="structure python:context.work_location.menu
           (is_valid = True)"/>
      </tr>

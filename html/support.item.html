@@ -28,7 +28,8 @@
      <tbody>
       <tr>
        <th class="required"
-        tal:content="structure python:utils.fieldname(classname, labelprop)"/>
+        tal:content="structure python:utils.fieldname
+           (db, classname, labelprop)"/>
        <input tal:condition="python:not context [labelprop].is_edit_ok ()"
         type="hidden" tal:attributes=
          " name  labelprop
@@ -39,12 +40,12 @@
       </tr>
       <tr>
        <th tal:content="structure python:utils.fieldname
-           (classname, 'status')"/>
+           (db, classname, 'status')"/>
        <td tal:content="structure python:context.status.menu (translate=0)"/>
        <th>
         <tal:block tal:condition="context/id"
          tal:content="structure python:utils.fieldname
-           (classname, 'customer')"/>
+           (db, classname, 'customer')"/>
        </th>
        <td>
         <tal:block tal:condition="context/id"
@@ -55,12 +56,13 @@
        </td>
       </tr>
       <tr>
-       <th tal:content="structure python:utils.fieldname (classname, 'prio')"/>
+       <th tal:content="structure python:utils.fieldname
+           (db, classname, 'prio')"/>
        <td tal:content="structure python:context.prio.menu ()"/>
        <th>
         <tal:block tal:condition="context/id"
          tal:content="structure python:utils.fieldname
-           (classname, 'responsible')"/>
+           (db, classname, 'responsible')"/>
        </th>
        <td>
         <tal:block tal:condition="context/id"
@@ -72,29 +74,30 @@
       </tr>
       <tr>
        <th tal:content="structure python:utils.fieldname
-           (classname, 'confidential')"/>
+           (db, classname, 'confidential')"/>
        <td tal:content="structure python:context.confidential.field ()"/>
       </tr>
      </tbody>
      <tbody>
       <tr class="top bottom">
-       <th tal:content="structure python:utils.fieldname (classname, 'type')"/>
+       <th tal:content="structure python:utils.fieldname
+           (db, classname, 'type')"/>
        <td tal:content="structure python:context.type.menu ()"/>
        <th tal:content="structure python:utils.fieldname
-           (classname, 'execution')"/>
+           (db, classname, 'execution')"/>
        <td tal:content="structure python:context.execution.menu ()"/>
       </tr>
       <tr class="top">
        <th tal:content="structure python:utils.fieldname
-           (classname, 'category')"/>
+           (db, classname, 'category')"/>
        <td tal:content="structure python:context.category.menu (valid = True)"/>
        <th tal:content="structure python:utils.fieldname
-           (classname, 'warranty')"/>
+           (db, classname, 'warranty')"/>
        <td tal:content="structure python:context.warranty.field ()"/>
       </tr>
       <tr>
        <th tal:content="structure python:utils.fieldname
-           (classname, 'classification')"/>
+           (db, classname, 'classification')"/>
        <td>
         <tal:block tal:content="structure context/classification/field"/>
         <tal:block tal:replace="structure python:db.sup_classification.classhelp
@@ -107,14 +110,14 @@
              )"/>
        </td>
        <th tal:content="structure python:utils.fieldname
-           (classname, 'numeric_effort')"/>
+           (db, classname, 'numeric_effort')"/>
        <td tal:content="structure python:context.numeric_effort.field ()"/>
       </tr>
      </tbody>
      <tbody>
       <tr>
        <th tal:content="structure python:utils.fieldname
-           (classname, 'product')"/>
+           (db, classname, 'product')"/>
        <td>
         <tal:block tal:content="structure python:context.product.field () "/>
         <tal:block tal:replace="structure python:db.product.classhelp
@@ -127,41 +130,42 @@
              )"/>
        </td>
        <th tal:content="structure python:utils.fieldname
-           (classname, 'prodcat')"/>
+           (db, classname, 'prodcat')"/>
        <td tal:content="structure python:context.prodcat.menu
                (translate=0, level=3, valid=True)"/>
       </tr>
       <tr>
        <th rowspan="3" tal:content="structure python:utils.fieldname
-           (classname, 'serial_number')"/>
+           (db, classname, 'serial_number')"/>
        <td rowspan="3">
         <textarea tal:content="python:context.serial_number or ''"
          rows="4" name="serial_number" wrap="hard" cols="40" />
        </td>
        <th tal:content="structure python:utils.fieldname
-           (classname, 'number_effected')"/>
+           (db, classname, 'number_effected')"/>
        <td tal:content="structure context/number_effected/field"/>
       </tr>
       <tr>
-       <th tal:content="structure python:utils.fieldname (classname, 'lot')"/>
+       <th tal:content="structure python:utils.fieldname
+           (db, classname, 'lot')"/>
        <td tal:content="structure python:context.lot.field () "/>
       </tr>
       <tr>
        <th tal:content="structure python:utils.fieldname
-           (classname, 'release')"/>
+           (db, classname, 'release')"/>
        <td tal:content="structure python:context.release.field ()"/>
       </tr>
       <tr>
        <th tal:content="structure python:utils.fieldname
-           (classname, 'return_type')"/>
+           (db, classname, 'return_type')"/>
        <td tal:content="structure python:context.return_type.menu ()"/>
        <th tal:content="structure python:utils.fieldname
-           (classname, 'analysis_result')"/>
+           (db, classname, 'analysis_result')"/>
        <td tal:content="structure python:context.analysis_result.menu ()"/>
       </tr>
       <tr>
        <th class="required" tal:content="structure python:utils.fieldname
-           (classname, 'business_unit')"/>
+           (db, classname, 'business_unit')"/>
        <td tal:content="structure python:context.business_unit.menu
            (valid = True)"/>
       </tr>
@@ -179,10 +183,10 @@
      <tbody>
       <tr>
        <th tal:content="structure python:utils.fieldname
-           (classname, 'related_issues')"/>
+           (db, classname, 'related_issues')"/>
        <td tal:content="structure python:context.related_issues.field ()"/>
        <th tal:content="structure python:utils.fieldname
-           (classname, 'related_support')"/>
+           (db, classname, 'related_support')"/>
        <td tal:content="structure python:context.related_support.field ()"/>
       </tr>
       <tr>
@@ -212,10 +216,10 @@
       </tr>
       <tr>
        <th tal:content="structure python:utils.fieldname
-           (classname, 'superseder')"/>
+           (db, classname, 'superseder')"/>
        <td tal:content="structure python:context.superseder.field ()"/>
        <th tal:content="structure python:utils.fieldname
-           (classname, 'sap_ref')"/>
+           (db, classname, 'sap_ref')"/>
        <td tal:content="structure python:context.sap_ref.field ()"/>
       </tr>
       <tr tal:repeat="sup context/superseder">
@@ -246,7 +250,7 @@
         </td>
        </tal:block>
        <th tal:content="structure python:utils.fieldname
-           (classname, 'first_reply')"/>
+           (db, classname, 'first_reply')"/>
        <td tal:condition="context/first_reply"
            tal:content="structure context/first_reply/field"/>
        <th tal:condition="python: context.id and not context.first_reply">
@@ -257,18 +261,18 @@
       </tr>
       <tr>
        <th tal:content="structure python:utils.fieldname
-           (classname, 'goods_received')"/>
+           (db, classname, 'goods_received')"/>
        <td tal:content="structure context/goods_received/field"/>
        <th tal:content="structure python:utils.fieldname
-           (classname, 'goods_sent')"/>
+           (db, classname, 'goods_sent')"/>
        <td tal:content="structure context/goods_sent/field"/>
       </tr>
       <tr>
        <th tal:content="structure python:utils.fieldname
-           (classname, 'analysis_start')"/>
+           (db, classname, 'analysis_start')"/>
        <td tal:content="structure context/analysis_start/field"/>
        <th tal:content="structure python:utils.fieldname
-           (classname, 'analysis_end')"/>
+           (db, classname, 'analysis_end')"/>
        <td tal:content="structure context/analysis_end/field"/>
       </tr>
       <tr>
@@ -284,19 +288,19 @@
         </td>
        </tal:block>
        <th tal:content="structure python:utils.fieldname
-           (classname, 'satisfied')"/>
+           (db, classname, 'satisfied')"/>
        <td tal:content="structure context/satisfied/field"/>
       </tr>
       <tr>
        <th tal:content="structure python:utils.fieldname
-           (classname, 'closed')"/>
+           (db, classname, 'closed')"/>
        <td colspan="3" tal:content="context/closed/plain"/>
       </tr>
      </tbody>
      <tbody>
       <tr>
        <th class="required" tal:content="structure python:utils.fieldname
-           (classname, 'customer')"/>
+           (db, classname, 'customer')"/>
        <td>
         <tal:block tal:content="structure python:context.customer.field ()"/>
         <tal:block tal:replace="structure python:db.customer.classhelp
@@ -330,7 +334,7 @@
         <input type="hidden" name="send_to_customer" value="no">
        </td>
        <th tal:content="structure python:utils.fieldname
-           (classname, 'external_ref')"/>
+           (db, classname, 'external_ref')"/>
        <td tal:content="structure python:context.external_ref.field ()"/>
       </tr>
       <tr tal:condition="python: context.id and context.customer"
@@ -355,28 +359,30 @@
       <tr tal:condition="python: context.id and context.customer"
           tal:define="email python:db._db.contact_type.lookup ('Email')">
        <th tal:content="structure python:utils.fieldname
-           (classname, 'emails')"/>
+           (db, classname, 'emails')"/>
        <td tal:content="structure python:context.emails.menu
            (height=4, contact_type=email, customer=context.customer.id)"/>
        <th tal:content="structure python:utils.fieldname
-           (classname, 'cc_emails')"/>
+           (db, classname, 'cc_emails')"/>
        <td tal:content="structure python:context.cc_emails.menu
            (height=4, contact_type=email, customer=context.customer.id)"/>
       </tr>
       <tr>
-       <th tal:content="structure python:utils.fieldname (classname, 'cc')"/>
+       <th tal:content="structure python:utils.fieldname
+           (db, classname, 'cc')"/>
        <td colspan="3"
            tal:content="structure python:context.cc.field (size=70)"/>
       </tr>
       <tr>
-       <th tal:content="structure python:utils.fieldname (classname, 'bcc')"/>
+       <th tal:content="structure python:utils.fieldname
+           (db, classname, 'bcc')"/>
        <td colspan="3"
            tal:content="structure python:context.bcc.field (size=70)"/>
       </tr>
      </tbody>
      <tr>
       <th tal:content="structure python:utils.fieldname
-          (classname, 'responsible')"/>
+          (db, classname, 'responsible')"/>
       <td>
        <tal:block tal:replace="structure python:context.responsible.field ()"/>
        <tal:block tal:replace="structure python:utils.user_classhelp (db)"/>
@@ -405,13 +411,17 @@
         <tal:block>
          <tal:block tal:define="n python:'customer_agreement'">
           <tr>
-           <th tal:content="structure python:utils.fieldname (n, 'id')"/>
-           <th tal:content="structure python:utils.fieldname (n, 'customer')"/>
-           <th tal:content="structure python:utils.fieldname (n, 'product')"/>
+           <th tal:content="structure python:utils.fieldname
+               (db, n, 'id')"/>
+           <th tal:content="structure python:utils.fieldname
+               (db, n, 'customer')"/>
+           <th tal:content="structure python:utils.fieldname
+               (db, n, 'product')"/>
           </tr>
           <tr>
            <th colspan="3"
-            tal:content="structure python:utils.fieldname (n, 'description')"/>
+            tal:content="structure python:utils.fieldname
+               (db, n, 'description')"/>
           </tr>
          </tal:block>
          <tal:block tal:repeat="ca python:sorted

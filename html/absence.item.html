@@ -23,22 +23,22 @@
     <tal:block metal:fill-slot="formatted_class_content">
      <tr>
       <th tal:content="structure python:utils.fieldname
-          (classname, 'absence_type')"/>
+          (db, classname, 'absence_type')"/>
       <td tal:content="structure python:context.absence_type.menu ()"/>
      </tr>
      <tr>
       <th tal:content="structure python:utils.fieldname
-          (classname, 'first_day')"/>
+          (db, classname, 'first_day')"/>
       <td tal:content="structure python:context.first_day.field ()"/>
      </tr>
      <tr>
       <th tal:content="structure python:utils.fieldname
-          (classname, 'last_day')"/>
+          (db, classname, 'last_day')"/>
       <td tal:content="structure python:context.last_day.field ()"/>
      </tr>
      <tr tal:condition="python: context.user">
       <th tal:content="structure python:utils.fieldname
-          (classname, 'user')"/>
+          (db, classname, 'user')"/>
       <td>
        <tal:block tal:condition="python: 'firstname' in db._db.user.properties">
         <span tal:content="structure python:utils.ExtProperty

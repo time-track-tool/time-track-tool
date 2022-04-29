@@ -37,37 +37,37 @@
      <tr tal:condition="python:
         context.id or utils.user_has_role (db._db, request.user.id, 'IT')">
       <th tal:content="structure python:utils.fieldname
-          (classname, 'it_request_type')"/>
+          (db, classname, 'it_request_type')"/>
       <td tal:content="structure python:context.it_request_type.menu ()"/>
      </tr>
      <tr>
       <tal:block tal:condition="python: context.category.is_view_ok ()">
       <th tal:content="structure python:utils.fieldname
-          (classname, 'category')"/>
+          (db, classname, 'category')"/>
       <td tal:content="structure python:context.category.menu (valid = True)"/>
       </tal:block>
       <th tal:content="structure python:utils.fieldname
-          (classname, 'deadline')"/>
+          (db, classname, 'deadline')"/>
       <td tal:content="structure python:context.deadline.field ()"/>
      </tr>
      <tr>
       <th tal:content="structure python:utils.fieldname
-          (classname, 'status')"/>
+          (db, classname, 'status')"/>
       <td tal:content="structure python:context.status.menu ()"/>
       <tal:block tal:condition="python: context.it_prio.is_view_ok ()">
       <th tal:content="structure python:utils.fieldname
-          (classname, 'it_prio')"/>
+          (db, classname, 'it_prio')"/>
       <td tal:content="structure python:context.it_prio.menu ()"/>
       </tal:block>
      </tr>
      <tr>
       <th tal:content="structure python:utils.fieldname
-          (classname, 'confidential')"/>
+          (db, classname, 'confidential')"/>
       <td tal:content="structure python:context.confidential.field ()"/>
       <tal:block tal:condition="
         python: context.id and context.int_prio.is_edit_ok ()">
        <th tal:content="structure python:utils.fieldname
-           (classname, 'int_prio')"/>
+           (db, classname, 'int_prio')"/>
        <td tal:content="structure python:context.int_prio.menu ()"/>
       </tal:block>
      </tr>
@@ -76,7 +76,7 @@
       <tal:block tal:condition="python:
         context.id or utils.user_has_role (db._db, request.user.id, 'IT')">
        <th tal:content="structure python:utils.fieldname
-           (classname, 'responsible')"/>
+           (db, classname, 'responsible')"/>
        <td>
         <tal:block tal:replace="structure python:context.responsible.field ()"/>
         <tal:block tal:replace="structure python:utils.user_classhelp
@@ -84,7 +84,7 @@
        </td>
       </tal:block>
       <th tal:content="structure python:utils.fieldname
-          (classname, 'stakeholder')"/>
+          (db, classname, 'stakeholder')"/>
       <td>
        <span tal:content="structure python:context.stakeholder.field ()"/>
        <span tal:content="structure python:utils.user_classhelp
@@ -95,7 +95,7 @@
      </tr>
      <tr tal:condition="python: context.it_project.is_view_ok ()">
       <th tal:content="structure python:utils.fieldname
-          (classname, 'it_project')"/>
+          (db, classname, 'it_project')"/>
       <td>
        <tal:block tal:content="structure python:context.it_project.field ()"/>
        <tal:block tal:replace="structure python:db.it_project.classhelp
@@ -120,7 +120,7 @@
      </tr>
      <tr tal:condition="python: context.superseder.is_view_ok ()">
       <th tal:content="structure python:utils.fieldname
-          (classname, 'superseder')"/>
+          (db, classname, 'superseder')"/>
       <td tal:content="structure python:context.superseder.field ()"/>
      </tr>
      <tr tal:repeat="sup context/superseder"
@@ -138,7 +138,7 @@
      <tal:block tal:condition="python: 'part_of' in bclass.properties">
       <tr>
        <th tal:content="structure python:utils.fieldname
-           (classname, 'part_of')"/>
+           (db, classname, 'part_of')"/>
        <td>
         <tal:block tal:condition="python:
          not context.id or context.part_of.is_view_ok ()">
@@ -165,7 +165,7 @@
       </tr>
       <tr tal:condition="context/id">
        <th tal:content="structure python:utils.fieldname
-           (classname, 'composed_of')"/>
+           (db, classname, 'composed_of')"/>
        <td>
         <tal:block tal:condition="context/composed_of/plain">
          <tal:block tal:define=" text expand_text

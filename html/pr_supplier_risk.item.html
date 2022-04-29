@@ -26,22 +26,22 @@
     <tal:block metal:fill-slot="formatted_class_content">
      <tr>
       <th class="required" tal:content="structure python:utils.fieldname
-          (classname, 'supplier')"/>
+          (db, classname, 'supplier')"/>
       <td tal:content="structure python:context.supplier.menu ()" />
      </tr>
      <tr>
       <th class="required" tal:content="structure python:utils.fieldname
-          (classname, 'organisation')"/>
+          (db, classname, 'organisation')"/>
       <td tal:content="structure python:context.organisation.menu ()" />
      </tr>
      <tr>
       <th class="required" tal:content="structure python:utils.fieldname
-          (classname, 'security_req_group')"/>
+          (db, classname, 'security_req_group')"/>
       <td tal:content="structure python:context.security_req_group.menu ()" />
      </tr>
      <tr>
       <th class="required" tal:content="structure python:utils.fieldname
-          (classname, 'supplier_risk_category')"/>
+          (db, classname, 'supplier_risk_category')"/>
       <td tal:content="structure python:
           context.supplier_risk_category.menu ()" />
      </tr>
