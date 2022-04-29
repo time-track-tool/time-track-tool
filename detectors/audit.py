@@ -24,7 +24,6 @@ if __name__ != "__main__" :
     from roundup.date import Date
 
 from roundup.exceptions             import Reject
-from roundup.cgi.TranslationService import get_translation
 from common                         import user_has_role
 
 _fixed_in_patterns = \
@@ -63,6 +62,7 @@ def limit_new_entry (db, cl, nodeid, newvalues) :
     """Limit creation of new issues, check on entered fields,
        and correctly complete missing fields.
     """
+    _           = db.i18n.gettext
     title       = newvalues.get    ("title")
     category    = None
     catid       = newvalues.get    ("category")
@@ -171,6 +171,7 @@ def limit_new_entry (db, cl, nodeid, newvalues) :
 def may_not_vanish (db, cl, nodeid, newvalues, new_status_name) :
     """Ensure that certain fields do not vanish.
     """
+    _ = db.i18n.gettext
     for k, except_analyzing in \
         ( ('title',          False)
         , ('category',       False)
@@ -190,6 +191,7 @@ def may_not_vanish (db, cl, nodeid, newvalues, new_status_name) :
 def limit_transitions (db, cl, nodeid, newvalues) :
     """Enforce (i.e. limit) status transitions
     """
+    _               = db.i18n.gettext
     cur_status      = cl.get        (nodeid, "status")
     cur_status_name = db.status.get (cur_status, "name")
     new_status      = newvalues.get ("status", cur_status)
@@ -461,9 +463,6 @@ def set_default_status (db, cl, nodeid, newvalues) :
 # end def set_default_status
 
 def init (db) :
-    global _
-    _   = get_translation \
-        (db.config.TRACKER_LANGUAGE, db.config.TRACKER_HOME).gettext
     if 'issue' in db.classes :
         if 'kind' in db.classes :
             db.issue.audit ("create", limit_new_entry)
