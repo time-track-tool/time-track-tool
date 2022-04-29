@@ -20,7 +20,6 @@
 # SOFTWARE.
 
 
-from roundup.cgi.TranslationService import get_translation
 from roundup.date                   import Date
 from roundup.exceptions             import Reject
 from domain_perm                    import check_domain_permission
@@ -40,6 +39,7 @@ def common_user_checks (db, cl, nodeid, new_values) :
         - email address has no spaces in it
         - roles specified exist
     '''
+    _ = db.i18n.gettext
     if  (   'address' in new_values
         and new_values ['address']
         and ' ' in new_values['address']
@@ -123,7 +123,7 @@ def new_user (db, cl, nodeid, new_values) :
         if 'status' not in new_values :
             new_values ['status'] = valid
     common.require_attributes \
-        ( _
+        ( db.i18n.gettext
         , cl
         , nodeid
         , new_values
@@ -136,7 +136,8 @@ def new_user (db, cl, nodeid, new_values) :
     common_user_checks (db, cl, nodeid, new_values)
 # end def new_user
 
-def audit_user_fields(db, cl, nodeid, new_values):
+def audit_user_fields (db, cl, nodeid, new_values):
+    _ = db.i18n.gettext
     for n in \
         ( 'firstname'
         , 'lastname'
@@ -154,6 +155,7 @@ def audit_user_fields(db, cl, nodeid, new_values):
 # end def audit_user_fields
 
 def check_retire (db, cl, nodeid, old_values) :
+    _ = db.i18n.gettext
     if db.getuid () != '1' :
         raise Reject, _ ("Not allowed to retire a user")
 # end def check_retire
@@ -168,6 +170,7 @@ def obsolete_action (db, cl, nodeid, new_values) :
 # end def obsolete_action
 
 def check_pictures (db, cl, nodeid, new_values) :
+    _ = db.i18n.gettext
     limit = common.Size_Limit (db, 'LIMIT_PICTURE_SIZE')
     if not limit :
         return
@@ -208,12 +211,15 @@ def check_ext_company (db, cl, nodeid, new_values) :
 def check_user_status (db, cl, nodeid, new_values) :
     if 'ldap_group' in new_values and new_values ['ldap_group'] :
         common.check_unique \
-            (_, cl, nodeid, ldap_group = new_values ['ldap_group'])
+            ( db.i18n.gettext, cl, nodeid
+            , ldap_group = new_values ['ldap_group']
+            )
 # end def check_user_status
 
 def deny_system_user (db, cl, nodeid, new_values) :
     """ Deny user creation by system users
     """
+    _ = db.i18n.gettext
     # admin *may* create users
     uid = db.getuid ()
     if int (uid) <= 1 :
@@ -241,6 +247,7 @@ def domain_user_edit (db, cl, nodeid, new_values) :
         modification has the 'Domain-User-Edit' role, we need to perform
         additional checks.
     """
+    _ = db.i18n.gettext
     if not _domain_user_role_check (db) :
         return
     uid = db.getuid ()
@@ -283,6 +290,7 @@ def domain_user_check (db, cl, nodeid, new_values) :
         this only on modify not on creation because user_contact items
         are first created without a user and later added to the user.
     """
+    _ = db.i18n.gettext
     if not _domain_user_role_check (db) :
         return
     uid = new_values.get ('user', None)
@@ -298,6 +306,7 @@ def domain_user_check (db, cl, nodeid, new_values) :
 # end def domain_user_check
 
 def fix_domain_username (db, cl, nodeid, new_values) :
+    _ = db.i18n.gettext
     if 'username' not in new_values and 'ad_domain' not in new_values :
         return
     ad_domain = new_values.get ('ad_domain', None)
@@ -355,6 +364,7 @@ def check_dp_role (db, cl, nodeid, new_values) :
 # end def check_dp_role
 
 def vie_backlink_check (db, cl, nodeid, new_values) :
+    _ = db.i18n.gettext
     if 'vie_user_bl_override' not in new_values :
         return
     # Not allowed on creation!
@@ -393,9 +403,6 @@ def business_responsible_check (db, cl, nodeid, new_values) :
 # end def business_responsible_check
 
 def init (db) :
-    global _
-    _   = get_translation \
-        (db.config.TRACKER_LANGUAGE, db.config.TRACKER_HOME).gettext
     db.user.audit ("set",    audit_user_fields)
     db.user.audit ("create", new_user)
     if 'external_company' in db.classes :

@@ -30,21 +30,21 @@
 #--
 #
 
+import common
 from roundup                        import roundupdb, hyperdb
 from roundup.exceptions             import Reject
-from roundup.cgi.TranslationService import get_translation
-
-import common
 from maturity_index                 import maturity_table
 
 def loopchecks (db, cl, nodeid, new_values) :
     for propname in 'superseder', 'part_of', 'needs', 'depends' :
         if propname in cl.properties and propname in new_values :
             value = new_values [propname]
-            common.check_loop (_, cl, nodeid, propname, value, 'id')
+            common.check_loop \
+                (db.i18n.gettext, cl, nodeid, propname, value, 'id')
 # end def loopchecks
 
 def forbidden_props (db, cl, nodeid, new_values) :
+    _ = db.i18n.gettext
     for prop in 'superseder', :
         if prop in new_values :
             raise Reject, _ ('New issue may not define "%s"') % _ (prop)
@@ -146,6 +146,7 @@ def check_container_status (db, cl, nodeid, new_values) :
         container-children will not be in status closed if they have
         open children.
     """
+    _ = db.i18n.gettext
     status_cls = db.getclass (cl.properties ['status'].classname)
     closed = status_cls.lookup ('closed')
     open   = status_cls.lookup ('open')
@@ -166,6 +167,7 @@ def check_container_status (db, cl, nodeid, new_values) :
 # end def check_container_status
 
 def check_part_of (db, cl, nodeid, new_values) :
+    _ = db.i18n.gettext
     p_id = new_values.get ('part_of')
     if not p_id and nodeid :
         p_id = cl.get (nodeid, 'part_of')
@@ -199,6 +201,7 @@ def no_autoclose_container (db, cl, nodeid, new_values) :
         container obsolete and prevent that anything can be attached to
         it after the fact.
     """
+    _ = db.i18n.gettext
     if not 'kind' in new_values :
         return
     obsolete = db.kind.lookup ('Obsolete')
@@ -301,6 +304,7 @@ def fix_effort (db, cl, nodeid, new_values) :
 # end def fix_effort
 
 def no_numeric_effort (db, cl, nodeid, new_values) :
+    _ = db.i18n.gettext
     if new_values.get ('numeric_effort', None) is not None :
         raise Reject (_ ("Please use new effort_hours field"))
 # end def no_numeric_effort
@@ -309,6 +313,7 @@ def doc_issue_status (db, cl, nodeid, new_values) :
     """ Check if doc_issue_status is set, if no we set it to undecided.
         Don't allow to set this to empty.
     """
+    _ = db.i18n.gettext
     n = 'doc_issue_status'
     old = cl.get (nodeid, n)
     if old :
@@ -351,6 +356,7 @@ def check_ext_user_container (db, cl, nodeid, new_values) :
     """ Check that new responsible of a container isn't an external
         user (role External).
     """
+    _ = db.i18n.gettext
     co = new_values.get ('composed_of', cl.get (nodeid, 'composed_of'))
     u  = new_values.get ('responsible', cl.get (nodeid, 'responsible'))
     if co and common.user_has_role (db, u, 'External') :
@@ -365,6 +371,7 @@ def check_ext_user_container (db, cl, nodeid, new_values) :
 # end def check_ext_user_container
 
 def check_ext_user_part_of (db, cl, nodeid, new_values) :
+    _ = db.i18n.gettext
     if 'part_of' in new_values :
         container = new_values ['part_of']
         if  (not db.security.hasPermission
@@ -392,17 +399,20 @@ def check_ext_user_responsible (db, cl, nodeid, new_values) :
 
 def check_ext_msg (db, cl, nodeid, new_values) :
     common.require_attributes \
-        (_, cl, nodeid, new_values, 'ext_tracker', 'ext_id', 'msg')
+        ( db.i18n.gettext, cl, nodeid, new_values
+        , 'ext_tracker', 'ext_id', 'msg'
+        )
     new_values ['key'] = ':'.join \
         ((new_values ['ext_tracker'], new_values ['ext_id']))
 # end def check_ext_msg
 
 def set_ext_msg (db, cl, nodeid, new_values) :
-    common.reject_attributes (_, new_values, 'ext_tracker', 'key', 'ext_id')
+    common.reject_attributes \
+        (db.i18n.gettext, new_values, 'ext_tracker', 'key', 'ext_id')
 # end def set_ext_msg
 
 def check_kpm (db, cl, nodeid, new_values) :
-    common.require_attributes (_, cl, nodeid, new_values, 'issue')
+    common.require_attributes (db.i18n.gettext, cl, nodeid, new_values, 'issue')
     if new_values.get ('ready_for_sync', None) :
         # required fields only for *new* kpm issue. Issues that were
         # synced *from* KPM have these fields marked non-editable.
@@ -410,19 +420,20 @@ def check_kpm (db, cl, nodeid, new_values) :
         if not iid :
             iid = cl.get (nodeid, 'issue')
         kpmtr = db.ext_tracker.lookup ('KPM')
-        common.require_attributes (_, db.issue, iid, {}, 'release', 'severity')
+        common.require_attributes \
+            (db.i18n.gettext, db.issue, iid, {}, 'release', 'severity')
         ets = db.ext_tracker_state.filter \
             (None, dict (issue = iid, ext_tracker = kpmtr))
         assert len (ets) <= 1
         if not ets :
             common.require_attributes \
-                ( _, cl, nodeid, new_values
+                ( db.i18n.gettext, cl, nodeid, new_values
                 , 'description', 'fault_frequency', 'reproduceable'
                 )
 # end def check_kpm
 
 def check_ext_tracker_state (db, cl, nodeid, new_values) :
-    common.require_attributes (_, cl, nodeid, new_values, 'issue')
+    common.require_attributes (db.i18n.gettext, cl, nodeid, new_values, 'issue')
 # end def check_ext_tracker_state
 
 def inherit_safety_level (db, cl, nodeid, new_values) :
@@ -463,9 +474,6 @@ def forbidden_cat_or_container (db, cl, nodeid, new_values) :
 # end def forbidden_cat_or_container
 
 def init (db) :
-    global _
-    _   = get_translation \
-        (db.config.TRACKER_LANGUAGE, db.config.TRACKER_HOME).gettext
     if 'issue' in db.classes :
         db.issue.audit ("create", forbidden_props)
         db.issue.audit ("create", forbidden_cat_or_container)

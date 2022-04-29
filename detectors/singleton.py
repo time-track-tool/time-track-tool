@@ -20,9 +20,6 @@
 # SOFTWARE.
 
 from roundup.exceptions             import Reject
-from roundup.cgi.TranslationService import get_translation
-
-_ = lambda x : x
 
 def new_singleton (db, cl, nodeid, new_values) :
     """ Note: You probably want to create a singleton during database
@@ -31,15 +28,13 @@ def new_singleton (db, cl, nodeid, new_values) :
         created concurrently. Therefore for *both* concurrent creations
         this auditor will succeed -- resulting in two singletons.
     """
+    _ = db.i18n.gettext
     if cl.getnodeids () :
         n = cl.classname
         raise Reject, _ ('May not create another instance of "%s"') % _ (n)
 # end def new_singleton
 
 def init (db) :
-    global _
-    _   = get_translation \
-        (db.config.TRACKER_LANGUAGE, db.config.TRACKER_HOME).gettext
     singletons = ["dyndns", "transceiver", "umts"]
     for klass in singletons :
         if klass not in db.classes :

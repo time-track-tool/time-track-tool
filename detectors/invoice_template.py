@@ -19,11 +19,9 @@
 
 from roundup.exceptions             import Reject
 from roundup.date                   import Date, Interval
-from roundup.cgi.TranslationService import get_translation
-
-_ = lambda x : x
 
 def new_iv_template (db, cl, nodeid, new_values) :
+    _ = db.i18n.gettext
     for i in ('tmplate', 'invoice_level', 'interval') :
         if not i in new_values :
             raise Reject, _ ('"%(attr)s" must be filled in') % {'attr' : _ (i)}
@@ -32,6 +30,7 @@ def new_iv_template (db, cl, nodeid, new_values) :
 # end def new_iv_template
 
 def iv_template_ok (db, cl, nodeid, new_values) :
+    _ = db.i18n.gettext
     for i in ('tmplate', 'invoice_level', 'interval', 'name') :
         x = new_values.get (i, cl.get (nodeid, i))
         if x is None :
@@ -41,9 +40,6 @@ def iv_template_ok (db, cl, nodeid, new_values) :
 def init (db) :
     if 'invoice_template' not in db.classes :
         return
-    global _
-    _   = get_translation \
-        (db.config.TRACKER_LANGUAGE, db.config.TRACKER_HOME).gettext
     db.invoice_template.audit ("create", new_iv_template)
     db.invoice_template.audit ("set",    iv_template_ok)
 # end def init

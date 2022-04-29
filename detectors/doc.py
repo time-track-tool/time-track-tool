@@ -28,7 +28,6 @@
 #--
 
 from   roundup.exceptions             import Reject
-from   roundup.cgi.TranslationService import get_translation
 import common
 import re
 
@@ -45,13 +44,14 @@ def check_document_required (db, cl, nodeid, newvalues) :
     if nodeid :
         req.append ('document_nr')
         req.append ('responsible')
-    common.require_attributes (_, cl, nodeid, newvalues, * req)
+    common.require_attributes (db.i18n.gettext, cl, nodeid, newvalues, * req)
 # end def check_document_required
 
 def check_document_frozen (db, cl, nodeid, newvalues) :
     if common.user_has_role (db, db.getuid (), 'Doc_Admin') :
         return
 
+    _ = db.i18n.gettext
     action = _ ('modify')
     if nodeid :
         attr_lst = ('product_type', 'reference', 'artefact', 'doc_category')
@@ -71,6 +71,7 @@ def check_document_frozen (db, cl, nodeid, newvalues) :
 
 def check_document_nr (db, cl, nodeid, newvalues) :
     """Check or calculate document number."""
+    _ = db.i18n.gettext
     doc_nr = newvalues.get ('document_nr')
     if doc_nr :
         if not doc_nr_re.match (doc_nr) :
@@ -91,10 +92,11 @@ def check_document_nr (db, cl, nodeid, newvalues) :
 
 def _check_for_description (db, cl, nodeid, newvalues) :
     """Checks that `description` is given and unique."""
-    common.require_attributes (_, cl, nodeid, newvalues, 'description')
+    common.require_attributes \
+        (db.i18n.gettext, cl, nodeid, newvalues, 'description')
     if 'description' in newvalues :
         desc = newvalues ['description']
-        common.check_unique (_, cl, nodeid, description = desc)
+        common.check_unique (db.i18n.gettext, cl, nodeid, description = desc)
 # end def _check_for_description
 
 check_product_type = _check_for_description
@@ -141,6 +143,7 @@ def _next_document_nr (db, cl, prefix) :
 
 def check_name \
     (db, cl, nodeid, newvalues, name = 'name', regex = name_re, txt = name_txt) :
+    _ = db.i18n.gettext
     if name not in newvalues or not newvalues [name] :
         return
     if not regex.match (newvalues [name]) :
@@ -149,7 +152,8 @@ def check_name \
 # end def check_name
 
 def check_doc_category (db, cl, nodeid, newvalues) :
-    common.require_attributes (_, cl, nodeid, newvalues, 'doc_num')
+    common.require_attributes \
+        (db.i18n.gettext, cl, nodeid, newvalues, 'doc_num')
     if 'valid' not in newvalues :
         newvalues ['valid'] = True
     check_name (db, cl, nodeid, newvalues, 'doc_num', num_re, num_txt)
@@ -181,16 +185,13 @@ def check_statechange (db, cl, nodeid, newvalues) :
         newvalues ['state_changed_by'] = db.getuid ()
         st = db.doc_status.getnode (newstate)
         if st.rq_link :
-            common.require_attributes (_, cl, nodeid, newvalues, 'link')
+            common.require_attributes \
+                (db.i18n.gettext, cl, nodeid, newvalues, 'link')
 # end def check_statechange
 
 def init (db) :
     if 'doc' not in db.classes :
         return
-    global _
-    _   = get_translation \
-        (db.config.TRACKER_LANGUAGE, db.config.TRACKER_HOME).gettext
-
     for action in ('create', 'set') :
         db.doc.audit          (action, check_document_required, priority = 110)
         db.doc.audit          (action, check_document_frozen,   priority = 120)

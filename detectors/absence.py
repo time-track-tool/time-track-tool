@@ -20,9 +20,6 @@
 import os
 import common
 from roundup.exceptions             import Reject
-from roundup.cgi.TranslationService import get_translation
-
-_ = lambda x : x
 
 def retire_check (db, cl, nodeid, old_values) :
     item = cl.getnode (nodeid)
@@ -32,16 +29,20 @@ def retire_check (db, cl, nodeid, old_values) :
 
 def check_params (db, cl, nodeid, new_values) :
     common.require_attributes \
-        (_, cl, nodeid, new_values, 'first_day', 'last_day', 'user')
+        ( db.i18n.gettext, cl, nodeid, new_values
+        , 'first_day', 'last_day', 'user'
+        )
 # end def check_params
 
 def no_user_change (db, cl, nodeid, new_values) :
+    _ = db.i18n.gettext
     if 'user' in new_values :
         user = _ ("user")
         raise Reject (_ ("%(user)s may not be changed") % locals ())
 # end def no_user_change
 
 def no_overlap (db, cl, nodeid, new_values) :
+    _ = db.i18n.gettext
     ymd = common.ymd
     if 'first_day' in new_values or 'last_day' in new_values :
         fd = new_values.get ('first_day')
@@ -73,9 +74,6 @@ def no_overlap (db, cl, nodeid, new_values) :
 # end def no_overlap
 
 def init (db) :
-    global _
-    _   = get_translation \
-        (db.config.TRACKER_LANGUAGE, db.config.TRACKER_HOME).gettext
     if 'absence' in db.classes :
         db.absence.audit         ("create", check_params)
         db.absence.audit         ("set",    check_params)

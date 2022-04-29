@@ -22,8 +22,6 @@ from roundup.exceptions             import Reject
 from roundup.date                   import Date
 from roundup.hyperdb                import Link
 
-from roundup.cgi.TranslationService import get_translation
-
 import common
 from   libcontact import cid
 
@@ -91,11 +89,13 @@ def auto_retire_contacts (db, cl, nodeid, new_values) :
 # end def auto_retire_contacts
 
 def check_contact (db, cl, nodeid, new_values) :
-    common.require_attributes (_, cl, nodeid, new_values, 'contact')
+    common.require_attributes \
+        (db.i18n.gettext, cl, nodeid, new_values, 'contact')
     # get correct contact_type class
     tc = db.getclass (cl.properties ['contact_type'].classname)
     if nodeid :
-        common.require_attributes (_, cl, nodeid, new_values, 'contact_type')
+        common.require_attributes \
+            (db.i18n.gettext, cl, nodeid, new_values, 'contact_type')
     if not nodeid and 'contact_type' not in new_values :
         ct = tc.filter (None, {}, sort = [('+', 'order')])
         assert (ct)
@@ -202,10 +202,6 @@ def _get_persclass (db) :
 # end def _get_persclass
 
 def init (db) :
-    global _
-    _   = get_translation \
-        (db.config.TRACKER_LANGUAGE, db.config.TRACKER_HOME).gettext
-
     persclass = _get_persclass (db)
     if persclass :
         persclass.audit  ("set",    auto_retire_contacts)

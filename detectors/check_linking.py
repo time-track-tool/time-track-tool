@@ -24,7 +24,6 @@
 from roundup.exceptions             import Reject
 from roundup.hyperdb                import Multilink, Link
 from linking                        import linkclass_iter
-from roundup.cgi.TranslationService import get_translation
 import common
 
 classprops = {}
@@ -56,6 +55,7 @@ def new_props (cl, prop, new_values) :
 
 def check_linking (db, cl, nodeid, new_values) :
     """ Allow linking to properties only if we created them """
+    _ = db.i18n.gettext
     if db.getuid () == '1' :
         return
     for prop in classprops [cl.classname] :
@@ -72,6 +72,7 @@ def check_linking (db, cl, nodeid, new_values) :
 
 def check_unlinking (db, cl, nodeid, new_values) :
     """ Don't allow unlinking of properties """
+    _ = db.i18n.gettext
     for prop in classprops [cl.classname] :
         if prop not in new_values :
             continue
@@ -108,9 +109,6 @@ def check_unlinking (db, cl, nodeid, new_values) :
 # end def check_unlinking
 
 def init (db) :
-    global _
-    _   = get_translation \
-        (db.config.TRACKER_LANGUAGE, db.config.TRACKER_HOME).gettext
     # certain checks of linking/unlinking of files and messages
     for x in 'msg', 'file' :
         for cl, prop in linkclass_iter (db, x) :

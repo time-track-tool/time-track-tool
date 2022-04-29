@@ -25,9 +25,6 @@
 import os
 from socket                         import socket, SOCK_SEQPACKET, AF_UNIX
 from roundup.exceptions             import Reject
-from roundup.cgi.TranslationService import get_translation
-
-_ = lambda x : x
 
 def umts_update (db, cl, nodeid, old_values) :
     pin = cl.get (nodeid, 'pin')
@@ -39,9 +36,6 @@ def umts_update (db, cl, nodeid, old_values) :
 # end def umts_update
 
 def init (db) :
-    global _
-    _   = get_translation \
-        (db.config.TRACKER_LANGUAGE, db.config.TRACKER_HOME).gettext
     if 'umts' in db.classes :
         db.umts.react         ("set",    umts_update)
 # end def init

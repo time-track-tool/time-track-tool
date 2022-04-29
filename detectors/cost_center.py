@@ -32,11 +32,11 @@
 
 from roundup                        import roundupdb, hyperdb
 from roundup.exceptions             import Reject
-from roundup.cgi.TranslationService import get_translation
 
 import common
 
 def new_cc (db, cl, nodeid, new_values) :
+    _ = db.i18n.gettext
     for i in 'cost_center_group', :
         if i not in new_values :
             raise Reject, _ ("New %(cls)s requires a %(attr)s") \
@@ -49,6 +49,7 @@ def new_cc (db, cl, nodeid, new_values) :
 # end def new_cc
 
 def check_cc (db, cl, nodeid, new_values) :
+    _ = db.i18n.gettext
     for i in 'cost_center_group', 'status' :
         if  (  i in new_values and not new_values [i]
             or not cl.get (nodeid, i) and not i in new_values
@@ -59,9 +60,6 @@ def check_cc (db, cl, nodeid, new_values) :
 def init (db) :
     if 'cost_center' not in db.classes :
         return
-    global _
-    _   = get_translation \
-        (db.config.TRACKER_LANGUAGE, db.config.TRACKER_HOME).gettext
     db.cost_center.audit     ("create", new_cc)
     db.cost_center.audit     ("set",    check_cc)
 # end def init

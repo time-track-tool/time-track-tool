@@ -29,12 +29,12 @@
 #
 
 from roundup.exceptions             import Reject
-from roundup.cgi.TranslationService import get_translation
 from roundup.date                   import Date
 
 import common
 
 def check_time_project (db, cl, nodeid, new_values) :
+    _ = db.i18n.gettext
     for i in 'wp_no', 'project' :
         if i in new_values and cl.get (nodeid, i) :
             raise Reject, "%(attr)s may not be changed" % {'attr' : _ (i)}
@@ -56,21 +56,24 @@ def new_time_project (db, cl, nodeid, new_values) :
         , ('approval_hr',       False)
         , ('op_project',        True)
         )
-    common.require_attributes (_, cl, nodeid, new_values, 'name', 'responsible')
+    common.require_attributes \
+        (db.i18n.gettext, cl, nodeid, new_values, 'name', 'responsible')
     if 'is_extern' in cl.properties and 'is_extern' not in new_values :
         new_values ['is_extern'] = False
     if 'work_location' in cl.properties and 'work_location' not in new_values :
-        common.require_attributes (_, cl, nodeid, new_values, 'organisation')
+        common.require_attributes \
+            (db.i18n.gettext, cl, nodeid, new_values, 'organisation')
     for k, v in defaults :
         if k in cl.properties and k not in new_values :
             new_values [k] = v
-    common.check_prop_len (_, new_values ['name'])
+    common.check_prop_len (db.i18n.gettext, new_values ['name'])
     if 'status' not in new_values :
         try :
             new_values ['status'] = db.time_project_status.lookup ('New')
         except KeyError :
             new_values ['status'] = '1'
-    common.require_attributes (_, cl, nodeid, new_values, 'cost_center')
+    common.require_attributes \
+        (db.i18n.gettext, cl, nodeid, new_values, 'cost_center')
 # end def new_time_project
 
 def fix_wp (db, cl, nodeid, old_values) :
@@ -99,9 +102,6 @@ def fix_wp (db, cl, nodeid, old_values) :
 def init (db) :
     if 'time_project' not in db.classes :
         return
-    global _
-    _   = get_translation \
-        (db.config.TRACKER_LANGUAGE, db.config.TRACKER_HOME).gettext
     db.time_project.audit  ("create", new_time_project)
     db.time_project.audit  ("set",    check_time_project)
     if 'time_wp' in db.classes :

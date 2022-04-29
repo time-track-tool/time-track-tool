@@ -18,11 +18,9 @@
 # ****************************************************************************
 
 from roundup.exceptions             import Reject
-from roundup.cgi.TranslationService import get_translation
-
-_ = lambda x : x
 
 def check (db, cl, nodeid, new_values) :
+    _ = db.i18n.gettext
     if 'code' in new_values and cl.get (nodeid, 'code') == 'ABO' :
         raise Reject, _ \
             ('address type category "ABO" is used by the system '
@@ -31,6 +29,7 @@ def check (db, cl, nodeid, new_values) :
 # end def check
 
 def retire_check (db, cl, nodeid, new_values) :
+    _ = db.i18n.gettext
     if cl.get (nodeid, 'code') == 'ABO' :
         raise Reject, _ \
             ('address type category "ABO" is used by the system '
@@ -46,9 +45,6 @@ def new_adr_type_cat (db, cl, nodeid, new_values) :
 def init (db) :
     if 'adr_type_cat' not in db.classes :
         return
-    global _
-    _   = get_translation \
-        (db.config.TRACKER_LANGUAGE, db.config.TRACKER_HOME).gettext
     db.adr_type_cat.audit ("set",    check)
     db.adr_type_cat.audit ("retire", retire_check)
     db.adr_type_cat.audit ("create", new_adr_type_cat)

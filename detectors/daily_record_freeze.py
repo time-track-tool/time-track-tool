@@ -31,7 +31,6 @@
 
 from roundup                        import roundupdb, hyperdb
 from roundup.exceptions             import Reject
-from roundup.cgi.TranslationService import get_translation
 from roundup.date                   import Date, Interval
 
 from freeze                         import frozen, find_prev_dr_freeze
@@ -44,6 +43,7 @@ from common                         import freeze_date
 day  = Interval ('1d')
 
 def check_editable (db, cl, nodeid, new_values, date = None) :
+    _ = db.i18n.gettext
     if not date :
         date = new_values.get ('date') or cl.get (nodeid, 'date')
     user = new_values.get ('user') or cl.get (nodeid, 'user')
@@ -57,6 +57,7 @@ def check_editable (db, cl, nodeid, new_values, date = None) :
 # end def check_editable
 
 def check_thawed_records (db, user, date) :
+    _      = db.i18n.gettext
     cl     = db.daily_record_freeze
     before = date.pretty (';%Y-%m-%d')
     thawed = cl.filter (None, dict (user = user, date = before, frozen = False))
@@ -88,6 +89,7 @@ def min_freeze (db, user, date) :
 periods = ['week', 'month']
 
 def new_freeze_record (db, cl, nodeid, new_values) :
+    _ = db.i18n.gettext
     for i in ('date', 'user') :
         if i not in new_values :
             raise Reject, _ ("%(attr)s must be set") % {'attr' : _ (i)}
@@ -113,6 +115,7 @@ def new_freeze_record (db, cl, nodeid, new_values) :
 # end def new_freeze_record
 
 def new_overtime (db, cl, nodeid, new_values) :
+    _ = db.i18n.gettext
     for i in ('date', 'user', 'value') :
         if i not in new_values :
             raise Reject, _ ("%(attr)s must be set") % {'attr' : _ (i)}
@@ -133,6 +136,7 @@ def check_freeze_record (db, cl, nodeid, new_values) :
        daily_record date. If that date is already frozen we retire the
        current record.
     """
+    _ = db.i18n.gettext
     for i in ('date', 'user') :
         if i in new_values :
             raise Reject, _ ("%(attr)s must not be changed") % {'attr' : _ (i)}
@@ -189,6 +193,7 @@ def check_freeze_record (db, cl, nodeid, new_values) :
 # end def check_freeze_record
 
 def check_overtime (db, cl, nodeid, new_values) :
+    _ = db.i18n.gettext
     for i in ('user',) :
         if i in new_values :
             raise Reject, _ ("%(attr)s must not be changed") % {'attr' : _ (i)}
@@ -201,9 +206,6 @@ def check_overtime (db, cl, nodeid, new_values) :
 def init (db) :
     if 'daily_record_freeze' not in db.classes :
         return
-    global _
-    _   = get_translation \
-        (db.config.TRACKER_LANGUAGE, db.config.TRACKER_HOME).gettext
     db.daily_record_freeze.audit ("create", new_freeze_record)
     db.daily_record_freeze.audit ("set",    check_freeze_record)
     db.overtime_correction.audit ("create", new_overtime)

@@ -32,14 +32,14 @@
 
 from roundup                        import roundupdb, hyperdb
 from roundup.exceptions             import Reject
-from roundup.cgi.TranslationService import get_translation
 from roundup.date                   import Date
 import common
 import syslog
 import re
 
 def new_it (db, cl, nodeid, new_values) :
-    if 'messages'    not in new_values :
+    _ = db.i18n.gettext
+    if 'messages' not in new_values :
         raise Reject, _ ("New %s requires a message") % _ (cl.classname)
     if  (  'status' not in new_values
         or not common.user_has_role (db, db.getuid (), 'IT')
@@ -77,6 +77,7 @@ def new_it (db, cl, nodeid, new_values) :
 # end def new_it
 
 def check_it (db, cl, nodeid, new_values) :
+    _ = db.i18n.gettext
     for i in 'title', 'category', 'status', 'it_prio', 'responsible' :
         if i in new_values and not new_values [i] :
             raise Reject, _ ("%(attr)s may not be undefined") % {'attr' : _ (i)}
@@ -102,6 +103,7 @@ def audit_superseder (db, cl, nodeid, new_values) :
       * ensure that superseder gets not set to itself
       * automatically set status to closed
     """
+    _ = db.i18n.gettext
     new_sup = new_values.get ("superseder", None)
     if new_sup :
         if not nodeid :
@@ -262,6 +264,7 @@ def add_sec_incident_responsible (db, cl, nodeid, new_values) :
 # end def add_sec_incident_responsible
 
 def stay_closed (db, cl, nodeid, new_values) :
+    _ = db.i18n.gettext
     if 'status' in new_values :
         nst = new_values ['status']
         ost = cl.get (nodeid, 'status')
@@ -281,6 +284,7 @@ def stay_closed (db, cl, nodeid, new_values) :
 def no_creation (db, cl, nodeid, new_values) :
     """ No creation of new it_issue if a certain config item is set
     """
+    _ = db.i18n.gettext
     if getattr (db.config.ext, 'MISC_PREVENT_IT_ISSUE_CREATION', False) :
         raise Reject (_ ("Creation of new it_issue not allowed"))
 # end def no_creation
@@ -288,9 +292,6 @@ def no_creation (db, cl, nodeid, new_values) :
 def init (db) :
     if 'it_issue' not in db.classes :
         return
-    global _
-    _   = get_translation \
-        (db.config.TRACKER_LANGUAGE, db.config.TRACKER_HOME).gettext
     for cls in db.it_issue, db.it_project :
         cls.audit     ("create", new_it, priority = 50)
         cls.audit     ("set",    check_it)

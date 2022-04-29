@@ -21,15 +21,15 @@
 # ****************************************************************************
 
 from roundup.exceptions             import Reject
-from roundup.cgi.TranslationService import get_translation
-
 import common
+
 try :
     import ldap_sync
 except ImportError :
     ldap_sync = None
 
 def check_room (db, cl, nodeid, new_values) :
+    _ = db.i18n.gettext
     common.require_attributes (_, cl, nodeid, new_values, 'location')
     if 'name' in new_values :
         l_id = new_values.get ('location', None)
@@ -49,6 +49,7 @@ def check_retire_room (db, cl, nodeid, new_values) :
         Note that we're searching only for users that have a status !=
         obsolete.
     """
+    _ = db.i18n.gettext
     stati = []
     for sid in db.user_status.getnodeids () :
         if db.user_status.get (sid, 'name') != 'obsolete' :
@@ -80,9 +81,6 @@ def sync_room_to_ldap (db, cl, nodeid, old_values) :
 # end def sync_room_to_ldap
 
 def init (db) :
-    global _
-    _   = get_translation \
-        (db.config.TRACKER_LANGUAGE, db.config.TRACKER_HOME).gettext
     if 'room' in db.classes :
         db.room.audit   ("create", check_room)
         db.room.audit   ("set",    check_room)

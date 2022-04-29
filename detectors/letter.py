@@ -19,11 +19,9 @@
 
 from roundup.exceptions             import Reject
 from roundup.date                   import Date, Interval
-from roundup.cgi.TranslationService import get_translation
-
-_ = lambda x : x
 
 def new_letter (db, cl, nodeid, new_values) :
+    _ = db.i18n.gettext
     for i in ('address', 'subject') :
         if not i in new_values :
             raise Reject, _ ('"%(attr)s" must be filled in') % {'attr' : _ (i)}
@@ -39,6 +37,7 @@ def store_in_address (db, cl, nodeid, old_values) :
 # end def store_in_address
 
 def check_letter (db, cl, nodeid, new_values) :
+    _ = db.i18n.gettext
     for i in ('address', 'invoice') :
         if i in new_values :
             raise Reject, _ ('"%(attr)s" may not be changed') % {'attr' : _ (i)}
@@ -56,9 +55,6 @@ def check_letter (db, cl, nodeid, new_values) :
 def init (db) :
     if 'letter' not in db.classes :
         return
-    global _
-    _   = get_translation \
-        (db.config.TRACKER_LANGUAGE, db.config.TRACKER_HOME).gettext
     db.letter.audit ("create", new_letter)
     db.letter.react ("create", store_in_address)
     db.letter.audit ("set",    check_letter)
