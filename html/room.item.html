@@ -61,14 +61,14 @@
     <tal:block metal:fill-slot="formatted_class_content">
      <tr>
       <th tal:content="structure python:utils.fieldname
-          (classname, 'location')"/>
+          (db, classname, 'location')"/>
       <td tal:content="structure python:context.location.menu
           (**utils.valid_item (now))"/>
 
      </tr>
      <tr>
       <th tal:content="structure python:utils.fieldname
-          (classname, 'description')"/>
+          (db, classname, 'description')"/>
       <td tal:content="structure python:context.description.field ()"/>
      </tr>
     </tal:block>

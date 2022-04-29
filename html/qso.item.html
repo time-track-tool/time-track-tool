@@ -24,7 +24,8 @@
    <tal:block metal:use-macro="templates/page/macros/formatted_class">
     <tal:block metal:fill-slot="formatted_class_content">
      <tr>
-      <th tal:content="structure python:utils.fieldname (classname, 'owner')"/>
+      <th tal:content="structure python:utils.fieldname
+          (db, classname, 'owner')"/>
       <tal:block tal:condition="context/owner">
        <td tal:content="structure python:utils.ExtProperty
         (utils, context.owner.name, item=context.owner).formatlink ()"/>
@@ -35,7 +36,8 @@
        <td tal:content="structure python:context.owner.menu ()"/>
       </tal:block>
       <tal:block tal:condition="context/swl">
-       <th tal:content="structure python:utils.fieldname (classname, 'swl')"/>
+       <th tal:content="structure python:utils.fieldname
+           (db, classname, 'swl')"/>
        <td tal:content="structure python:utils.ExtProperty
         (utils, context.swl.call, item=context.swl).formatlink ()"/>
       </tal:block>
@@ -65,17 +67,20 @@
              tal:attributes="value python: context.swl.id or ''"/>
      </tr>
      <tr>
-      <th tal:content="structure python:utils.fieldname (classname, 'call')"/>
+      <th tal:content="structure python:utils.fieldname
+          (db, classname, 'call')"/>
       <td tal:content="structure python:context.call.field ()"/>
-      <th tal:content="structure python:utils.fieldname (classname, 'name')"/>
+      <th tal:content="structure python:utils.fieldname
+          (db, classname, 'name')"/>
       <td tal:content="structure python:context.name.field ()"/>
      </tr>
      <tr>
       <th tal:content="structure python:utils.fieldname
-          (classname, 'qsl_via')"/>
+          (db, classname, 'qsl_via')"/>
       <td tal:content="structure python:context.qsl_via.field ()"/>
       <tal:block tal:condition="context/qso2">
-       <th tal:content="structure python:utils.fieldname (classname, 'qso2')"/>
+       <th tal:content="structure python:utils.fieldname
+           (db, classname, 'qso2')"/>
        <td tal:content="structure python:utils.ExtProperty
         (utils, context.qso2.call, item=context.qso2).formatlink ()"/>
       </tal:block>
@@ -112,93 +117,101 @@
              tal:attributes="value python: context.qso2.id or ''"/>
      </tr>
      <tr>
-      <th tal:content="structure python:utils.fieldname (classname, 'freq')"/>
+      <th tal:content="structure python:utils.fieldname
+          (db, classname, 'freq')"/>
       <td tal:content="structure python:context.freq.field ()"/>
-      <th tal:content="structure python:utils.fieldname (classname, 'band')"/>
+      <th tal:content="structure python:utils.fieldname
+          (db, classname, 'band')"/>
       <td tal:content="structure python:context.band.menu ()"/>
      </tr>
      <tr>
       <th tal:content="structure python:utils.fieldname
-          (classname, 'qso_start')"/>
+          (db, classname, 'qso_start')"/>
       <td tal:content="structure python:context.qso_start.field ()"/>
       <th tal:content="structure python:utils.fieldname
-          (classname, 'qso_end')"/>
+          (db, classname, 'qso_end')"/>
       <td tal:content="structure python:context.qso_end.field ()"/>
      </tr>
      <tr>
       <th tal:content="structure python:utils.fieldname
-          (classname, 'rst_rcvd')"/>
+          (db, classname, 'rst_rcvd')"/>
       <td tal:content="structure python:context.rst_rcvd.field ()"/>
       <th tal:content="structure python:utils.fieldname
-          (classname, 'rst_sent')"/>
+          (db, classname, 'rst_sent')"/>
       <td tal:content="structure python:context.rst_sent.field ()"/>
      </tr>
      <tr>
-      <th tal:content="structure python:utils.fieldname (classname, 'qth')"/>
+      <th tal:content="structure python:utils.fieldname
+          (db, classname, 'qth')"/>
       <td tal:content="structure python:context.qth.field ()"/>
       <th tal:content="structure python:utils.fieldname
-          (classname, 'country')"/>
+          (db, classname, 'country')"/>
       <td tal:content="structure python:context.country.field ()"/>
      </tr>
      <tr>
       <th tal:content="structure python:utils.fieldname
-          (classname, 'gridsquare')"/>
+          (db, classname, 'gridsquare')"/>
       <td tal:content="structure python:context.gridsquare.field ()"/>
-      <th tal:content="structure python:utils.fieldname (classname, 'state')"/>
+      <th tal:content="structure python:utils.fieldname
+          (db, classname, 'state')"/>
       <td tal:content="structure python:context.state.field ()"/>
      </tr>
      <tr>
-      <th tal:content="structure python:utils.fieldname (classname, 'mode')"/>
+      <th tal:content="structure python:utils.fieldname
+          (db, classname, 'mode')"/>
       <td tal:content="structure python:context.mode.menu ()"/>
-      <th tal:content="structure python:utils.fieldname (classname, 'tx_pwr')"/>
+      <th tal:content="structure python:utils.fieldname
+          (db, classname, 'tx_pwr')"/>
       <td tal:content="structure python:context.tx_pwr.field ()"/>
      </tr>
      <tr>
-      <th tal:content="structure python:utils.fieldname (classname, 'iota')"/>
+      <th tal:content="structure python:utils.fieldname
+          (db, classname, 'iota')"/>
       <td tal:content="structure python:context.iota.field ()"/>
       <th tal:content="structure python:utils.fieldname
-          (classname, 'german_dok')"/>
+          (db, classname, 'german_dok')"/>
       <td tal:content="structure python:context.german_dok.field ()"/>
      </tr>
      <tr>
       <th tal:content="structure python:utils.fieldname
-          (classname, 'cq_zone')"/>
+          (db, classname, 'cq_zone')"/>
       <td tal:content="structure python:context.cq_zone.field ()"/>
       <th tal:content="structure python:utils.fieldname
-          (classname, 'itu_zone')"/>
+          (db, classname, 'itu_zone')"/>
       <td tal:content="structure python:context.itu_zone.field ()"/>
      </tr>
      <tr>
       <th tal:content="structure python:utils.fieldname
-          (classname, 'dxcc_entity')"/>
+          (db, classname, 'dxcc_entity')"/>
       <td tal:content="structure python:context.dxcc_entity.menu ()"/>
       <th tal:content="structure python:utils.fieldname
-          (classname, 'remarks')"/>
+          (db, classname, 'remarks')"/>
       <td tal:content="structure python:context.remarks.field ()"/>
      </tr>
      <tr>
       <th tal:content="structure python:utils.fieldname
-          (classname, 'wont_qsl_via')" rowspan="2"/>
+          (db, classname, 'wont_qsl_via')" rowspan="2"/>
       <td tal:content="structure python:context.wont_qsl_via.menu (height=2)"
           rowspan="2"/>
       <th tal:content="structure python:utils.fieldname
-          (classname, 'antenna')"/>
+          (db, classname, 'antenna')"/>
       <td tal:content="structure python:context.antenna.menu ()"/>
      </tr>
      <tr>
       <th tal:content="structure python:utils.fieldname
-          (classname, 'no_qsl_status')"/>
+          (db, classname, 'no_qsl_status')"/>
       <td tal:content="python:context.no_qsl_status.plain ()"/>
      </tr>
      <tr>
       <th tal:content="structure python:utils.fieldname
-          (classname, 'qsl_r_status')"/>
+          (db, classname, 'qsl_r_status')"/>
       <td tal:content="python:context.qsl_r_status.plain ()"/>
       <th tal:content="structure python:utils.fieldname
-          (classname, 'qsl_s_status')"/>
+          (db, classname, 'qsl_s_status')"/>
       <td tal:content="python:context.qsl_s_status.plain ()"/>
      </tr>
-      <th tal:content="structure python:utils.fieldname (classname, 'reject')"/>
+      <th tal:content="structure python:utils.fieldname
+          (db, classname, 'reject')"/>
       <td tal:content="structure python:context.reject.field ()"/>
      <tr>
      </tr>
@@ -219,15 +232,15 @@
          </tr>
          <tr>
           <td class="header" tal:content="structure python:utils.fieldname
-              ('qsl', 'qsl_type')" class="required"/>
+              (db, 'qsl', 'qsl_type')" class="required"/>
           <td class="header" tal:content="structure python:utils.fieldname
-              ('qsl', 'date_recv')"/>
+              (db, 'qsl', 'date_recv')"/>
           <td class="header" tal:content="structure python:utils.fieldname
-              ('qsl', 'date_sent')"/>
+              (db, 'qsl', 'date_sent')"/>
           <td class="header" tal:content="structure python:utils.fieldname
-              ('qsl', 'gridsquare')"/>
+              (db, 'qsl', 'gridsquare')"/>
           <td class="header" tal:content="structure python:utils.fieldname
-              ('qsl', 'rst_rcvd')"/>
+              (db, 'qsl', 'rst_rcvd')"/>
           <td class="header" tal:condition="cond" i18n:translate="">remove</td>
          </tr>
          <tr tal:repeat="ct python:sorted
@@ -272,9 +285,9 @@
          </tr>
          <tr>
           <td class="header" tal:content="structure python:utils.fieldname
-              ('qso', 'call')"/>
+              (db, 'qso', 'call')"/>
           <td class="header" tal:content="structure python:utils.fieldname
-              ('qso', 'name')"/>
+              (db, 'qso', 'name')"/>
          </tr>
          <tr tal:repeat="ct python:sorted
              (qso2, key = lambda x : (x.call))">
@@ -298,9 +311,9 @@
          </tr>
          <tr>
           <td class="header" tal:content="structure python:utils.fieldname
-              ('qso', 'call')"/>
+              (db, 'qso', 'call')"/>
           <td class="header" tal:content="structure python:utils.fieldname
-              ('qso', 'name')"/>
+              (db, 'qso', 'name')"/>
          </tr>
          <tr tal:repeat="ct python:sorted
              (swl, key = lambda x : (x.call))">

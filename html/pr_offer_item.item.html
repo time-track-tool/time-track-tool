@@ -25,42 +25,42 @@
     <tal:block metal:fill-slot="formatted_class_content">
      <tr>
       <th class="required" tal:content="structure python:utils.fieldname
-          (classname, 'index')"/>
+          (db, classname, 'index')"/>
       <td tal:content="structure python:context.index.field (size=3)"/>
      </tr>
      <tr>
       <th tal:content="structure python:utils.fieldname
-          (classname, 'description')"/>
+          (db, classname, 'description')"/>
       <td tal:content="structure python:context.description.field ()"/>
      </tr>
      <tr>
       <th tal:content="structure python:utils.fieldname
-          (classname, 'supplier')"/>
+          (db, classname, 'supplier')"/>
       <td tal:content="structure python:context.supplier.field ()"/>
      </tr>
      <tr tal:condition="context/pr_supplier">
       <th tal:content="structure python:utils.fieldname
-          (classname, 'pr_supplier')"/>
+          (db, classname, 'pr_supplier')"/>
       <td tal:content="structure python:context.pr_supplier.field ()"/>
      </tr>
      <tr>
       <th tal:content="structure python:utils.fieldname
-          (classname, 'add_to_las')"/>
+          (db, classname, 'add_to_las')"/>
       <td tal:content="structure python:context.add_to_las.field ()"/>
      </tr>
      <tr>
       <th tal:content="structure python:utils.fieldname
-          (classname, 'offer_number')"/>
+          (db, classname, 'offer_number')"/>
       <td tal:content="structure python:context.offer_number.field ()"/>
      </tr>
      <tr>
       <th tal:content="structure python:utils.fieldname
-          (classname, 'units')"/>
+          (db, classname, 'units')"/>
       <td tal:content="structure python:context.units.field ()"/>
      </tr>
      <tr>
       <th tal:content="structure python:utils.fieldname
-          (classname, 'price_per_unit')"/>
+          (db, classname, 'price_per_unit')"/>
       <td tal:content="structure python:context.price_per_unit.field ()"/>
      </tr>
 

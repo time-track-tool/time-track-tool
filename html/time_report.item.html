@@ -25,12 +25,12 @@
     <tal:block metal:fill-slot="formatted_class_content">
      <tr>
       <th tal:content="structure python:utils.fieldname
-          (classname, 'last_updated')"/>
+          (db, classname, 'last_updated')"/>
       <td tal:content="structure python:context.last_updated.field ()"/>
      </tr>
      <tr>
       <th tal:content="structure python:utils.fieldname
-          (classname, 'time_project')"/>
+          (db, classname, 'time_project')"/>
       <td tal:content="structure python:utils.ExtProperty
           ( utils, context.time_project.name
           , item = context.time_project
@@ -38,7 +38,7 @@
      </tr>
      <tr>
       <th tal:content="structure python:utils.fieldname
-          (classname, 'file')"/>
+          (db, classname, 'file')"/>
       <td tal:content="structure python:utils.ExtProperty
           ( utils, context.file.name
           , item = context.file

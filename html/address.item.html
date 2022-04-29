@@ -90,7 +90,7 @@
      </script>
      <tr tal:condition="python:'cust_supp' in props and context.cust_supp">
       <th tal:content="structure python:utils.fieldname
-          (classname, 'cust_supp')"/>
+          (db, classname, 'cust_supp')"/>
       <td tal:define="fields python:['name']">
        <span tal:repeat="i fields"
              tal:content="structure python:utils.ExtProperty
@@ -110,64 +110,64 @@
       </td>
      </tr>
      <tr tal:condition="python:'name' in props">
-      <th tal:content="structure python:utils.fieldname (classname, 'name')"
-          class="required"/>
+      <th tal:content="structure python:utils.fieldname
+          (db, classname, 'name')" class="required"/>
       <td tal:content="structure context/name/field"/>
      </tr>
      <tr tal:condition="python:'is_valid' in props and context.id">
-      <th tal:content="structure python:utils.fieldname (classname, 'is_valid')"
-          class="required"/>
+      <th tal:content="structure python:utils.fieldname
+          (db, classname, 'is_valid')" class="required"/>
       <td tal:content="structure context/is_valid/field"/>
      </tr>
      <tr tal:condition="python:'is_customer' in props">
       <th tal:content="structure python:utils.fieldname
-          (classname, 'is_customer')"/>
+          (db, classname, 'is_customer')"/>
       <td tal:content="structure context/is_customer/field"/>
      </tr>
      <tr tal:condition="python:'is_supplier' in props">
       <th tal:content="structure python:utils.fieldname
-          (classname, 'is_supplier')"/>
+          (db, classname, 'is_supplier')"/>
       <td tal:content="structure context/is_supplier/field"/>
      </tr>
      <tr tal:condition="python:'customer_code' in props">
       <th tal:content="structure python:utils.fieldname
-          (classname, 'customer_code')"/>
+          (db, classname, 'customer_code')"/>
       <td tal:content="structure context/customer_code/field"/>
      </tr>
      <tr tal:condition="python:'maildomain' in props">
       <th tal:content="structure python:utils.fieldname
-               (classname, 'maildomain')" />
+          (db, classname, 'maildomain')" />
       <td tal:content="structure context/maildomain/field"/>
      </tr>
      <tr tal:condition="python:'fromaddress' in props">
       <th tal:content="structure python:utils.fieldname
-               (classname, 'fromaddress')" />
+          (db, classname, 'fromaddress')" />
       <td tal:content="structure context/fromaddress/field"/>
      </tr>
      <tr tal:condition="python:'rmafrom' in props">
       <th tal:content="structure python:utils.fieldname
-               (classname, 'rmafrom')" />
+          (db, classname, 'rmafrom')" />
       <td tal:content="structure context/rmafrom/field"/>
      </tr>
      <tr tal:condition="python:'suppclaimfrom' in props">
       <th tal:content="structure python:utils.fieldname
-               (classname, 'suppclaimfrom')" />
+          (db, classname, 'suppclaimfrom')" />
       <td tal:content="structure context/suppclaimfrom/field"/>
      </tr>
      <tr tal:condition="python:'confidential' in props">
       <th tal:content="structure python:utils.fieldname
-               (classname, 'confidential')" />
+          (db, classname, 'confidential')" />
       <td tal:content="structure context/confidential/field"/>
      </tr>
      <tr tal:condition="python:'business_unit' in props">
       <th tal:content="structure python:utils.fieldname
-               (classname, 'business_unit')" />
+          (db, classname, 'business_unit')" />
       <td tal:content="structure python:context.business_unit.menu
                                  (valid=True)"/>
      </tr>
      <tr tal:condition="python:'responsible' in props">
       <th tal:content="structure python:utils.fieldname
-               (classname, 'responsible')" />
+          (db, classname, 'responsible')" />
       <td>
        <tal:block tal:replace="structure context/responsible/field"/>
        <tal:block tal:replace="structure python:utils.user_classhelp (db)"/>
@@ -175,27 +175,28 @@
      </tr>
      <tr tal:condition="python:'salutation' in props">
       <th tal:content="structure python:utils.fieldname
-          (classname, 'salutation')"/>
+          (db, classname, 'salutation')"/>
       <td tal:content="structure context/salutation/field"/>
       <tal:block tal:condition="python:'birthdate' in props">
        <th tal:content="structure python:utils.fieldname
-           (classname, 'birthdate')"/>
+           (db, classname, 'birthdate')"/>
        <td colspan="2" tal:content="structure context/birthdate/field"/>
       </tal:block>
      </tr>
      <tr tal:condition="python:'title' in props">
-      <th tal:content="structure python:utils.fieldname(classname, 'title')"/>
+      <th tal:content="structure python:utils.fieldname
+          (db, classname, 'title')"/>
       <td tal:content="structure context/title/field"/>
       <th tal:content="structure python:utils.fieldname
-          (classname, 'lettertitle')"/>
+          (db, classname, 'lettertitle')"/>
       <td tal:content="structure context/lettertitle/field" colspan="2"/>
      </tr>
      <tr tal:condition="python:'lastname' in props">
       <th tal:content="structure python:utils.fieldname
-          (classname, 'lastname')"/>
+          (db, classname, 'lastname')"/>
       <td tal:content="structure context/lastname/field"/>
       <th tal:content="structure python:utils.fieldname
-          (classname, 'firstname')"/>
+          (db, classname, 'firstname')"/>
       <td colspan="2">
        <table border="0" cellspacing="0" cellpadding="0">
         <tr>
@@ -206,17 +207,18 @@
       </td>
      </tr>
      <tr tal:condition="python:'affix' in props">
-      <th tal:content="structure python:utils.fieldname(classname, 'affix')"/>
+      <th tal:content="structure python:utils.fieldname
+          (db, classname, 'affix')"/>
       <td tal:content="structure context/affix/field"/>
       <tal:block tal:condition="python:'person_type' in props">
        <th tal:content="structure python:utils.fieldname
-           (classname, 'person_type')"/>
+           (db, classname, 'person_type')"/>
        <td tal:content="structure context/person_type/menu"/>
       </tal:block>
      </tr>
      <tr tal:condition="python:'function' in props">
       <th tal:content="structure python:utils.fieldname
-          (classname, 'function')"/>
+          (db, classname, 'function')"/>
       <td colspan="3">
        <textarea tal:content="context/function/plain"
                  name="function"
@@ -228,13 +230,14 @@
      </tr>
      <tr tal:condition="python:'description' in props">
       <th tal:content="structure python:utils.fieldname
-       (classname, 'description')"/>
+          (db, classname, 'description')"/>
       <td colspan = "3"
        tal:content="structure python:context.description.field (size = 60)"/>
      </tr>
      <tal:block tal:condition="python:'address' in props">
       <tr>
-       <th tal:content="structure python:utils.fieldname('address', 'street')"/>
+       <th tal:content="structure python:utils.fieldname
+           (db, 'address', 'street')"/>
        <tal:block tal:condition="context/address">
         <td tal:content="structure python:utils.ExtProperty
          (utils, context.address.street, item=context.address).formatlink ()"/>
@@ -244,7 +247,8 @@
         <td tal:content="structure python:utils.new_property
             (context, db, 'address', -1, 'street').field (onChange=onch)"/>
        </tal:block>
-       <th tal:content="structure python:utils.fieldname('person', 'address')"/>
+       <th tal:content="structure python:utils.fieldname
+           (db, 'person', 'address')"/>
        <td>
         <select name="address" tal:attributes="onChange clradr"
                 tal:define="adrs python:dict
@@ -261,7 +265,8 @@
        </td>
       </tr>
       <tr>
-       <th tal:content="structure python:utils.fieldname('address', 'country')"
+       <th tal:content="structure python:utils.fieldname
+           (db, 'address', 'country')"
            class="required" tal:attributes="class python:
                ['', 'required']['country' in required_attributes]"/>
        <td tal:condition="context/address">
@@ -273,7 +278,7 @@
          .formatlink ()"/>
         <span class="help"> (<tal:block tal:replace=
             "structure python:utils.fieldname
-               ('address', 'postalcode', endswith = '')"/>)
+               (db, 'address', 'postalcode', endswith = '')"/>)
         </span>
        </td>
        <td tal:condition="not:context/address">
@@ -286,10 +291,11 @@
           (size=10, onChange=onch)"/>
          <span class="help"> (<tal:block tal:replace=
              "structure python:utils.fieldname
-                ('address', 'postalcode', endswith = '')"/>)
+                (db, 'address', 'postalcode', endswith = '')"/>)
          </span>
        </td>
-       <th tal:content="structure python:utils.fieldname('address', 'city')"/>
+       <th tal:content="structure python:utils.fieldname
+           (db, 'address', 'city')"/>
        <td tal:condition="context/address"
            tal:content="structure python:utils.ExtProperty
            (utils, context.address.city, item=context.address).formatlink()"/>
@@ -300,11 +306,13 @@
      </tal:block>
 
      <tr tal:condition="python:'street' in props">
-      <th tal:content="structure python:utils.fieldname(classname, 'street')"/>
+      <th tal:content="structure python:utils.fieldname
+          (db, classname, 'street')"/>
       <td tal:content="structure context/street/field"/>
      </tr>
      <tr tal:condition="python:'country' in props">
-      <th tal:content="structure python:utils.fieldname(classname, 'country')"
+      <th tal:content="structure python:utils.fieldname
+          (db, classname, 'country')"
           class="required" tal:attributes="class python:
               ['', 'required']['country' in required_attributes]"/>
       <td>
@@ -312,18 +320,20 @@
           -
         <span tal:content="structure python:context.postalcode.field(size=10)"/>
         (<tal:block tal:replace="structure python:utils.fieldname
-         (classname, 'postalcode', endswith = '')"/>)
+         (db, classname, 'postalcode', endswith = '')"/>)
       </td>
-      <th tal:content="structure python:utils.fieldname(classname, 'city')"/>
+      <th tal:content="structure python:utils.fieldname
+          (db, classname, 'city')"/>
       <td tal:content="structure context/city/field" colspan="2"/>
      </tr>
      <tr tal:condition="python:'province' in props">
       <th tal:content="structure python:utils.fieldname 
-        (classname, 'province')" />
+          (db, classname, 'province')" />
       <td tal:content="structure context/province/field"/>
      </tr>
      <tr tal:condition="python:'parent' in props">
-      <th tal:content="structure python:utils.fieldname (classname, 'parent')"/>
+      <th tal:content="structure python:utils.fieldname
+          (db, classname, 'parent')"/>
       <td nowrap colspan="3">
        <span tal:content="structure python:context.parent.field (size=4)"/>
        <span tal:content="structure python:utils.ExtProperty
@@ -336,31 +346,32 @@
      </tr>
      <tr tal:condition="python:'adr_type' in props">
       <th tal:content="structure python:utils.fieldname
-          (classname, 'adr_type')"/>
+          (db, classname, 'adr_type')"/>
       <td nowrap>
        <span tal:content="structure context/adr_type/field"/>
        <span tal:replace="structure python:utils.adr_type_classhelp (db)"/>
       </td>
-      <th tal:content="structure python:utils.fieldname(classname, 'valid')"/>
+      <th tal:content="structure python:utils.fieldname
+          (db, classname, 'valid')"/>
       <td tal:content="structure context/valid/menu" colspan="2"/>
      </tr>
      <tr><td>&nbsp;</td></tr>
      <tr>
       <th tal:content="structure python:utils.fieldname
-          (classname, 'contacts')"/>
+          (db, classname, 'contacts')"/>
       <td colspan="3">
        <table class="form" border="0"
               style="border-spacing:0px;padding-top:0px;padding-left:0px">
         <tr tal:condition="python:'contacts' in props">
          <th style="text-align:left"
              tal:content="structure python:utils.fieldname
-             ('contact', 'contact_type')"/>
+             (db, 'contact', 'contact_type')"/>
          <th style="text-align:left"
              tal:content="structure python:utils.fieldname
-             ('contact', 'contact')" class="required"/>
+             (db, 'contact', 'contact')" class="required"/>
          <th style="text-align:left"
              tal:content="structure python:utils.fieldname
-             ('contact', 'description')"/>
+             (db, 'contact', 'description')"/>
          <th/>
          <th style="text-align:left"
              tal:condition="context/contacts/is_edit_ok" i18n:translate="">
@@ -408,7 +419,7 @@
      <tr><td>&nbsp;</td></tr>
      <tr tal:condition="python:'opening_hours' in props">
       <th tal:content="structure python:utils.fieldname
-          (classname, 'opening_hours')"/>
+          (db, classname, 'opening_hours')"/>
       <td colspan="3">
        <table class="form" border="0"
               style="border-spacing:0px;padding-top:0px;padding-left:0px">
@@ -449,7 +460,7 @@
      </tr>
      <tr tal:condition="python:'address' in props and context.address">
       <th tal:content="structure python:utils.fieldname
-          ('address', 'opening_hours')"/>
+          (db, 'address', 'opening_hours')"/>
       <td colspan="3">
        <table class="form" border="0"
               style="border-spacing:0px;padding-top:0px;padding-left:0px">
@@ -474,7 +485,8 @@
      <tr tal:condition="python:context.id and 'abo' in db._db.classes">
       <th>
        <span tal:condition="context/abos"
-             tal:content="structure python:utils.fieldname(classname, 'abos')"/>
+             tal:content="structure python:utils.fieldname
+               (db, classname, 'abos')"/>
       </th>
       <td align="top">
        <table border="0" cellspacing="0" cellpadding="0">
@@ -493,7 +505,7 @@
       <th>
        <span tal:condition="context/payed_abos"
              tal:content="structure python:utils.fieldname
-             (classname, 'payed_abos')"/>
+             (db, classname, 'payed_abos')"/>
       </th>
       <td align="top">
        <table border="0" cellspacing="0" cellpadding="0">
@@ -512,7 +524,7 @@
      </tr>
      <tr tal:condition="python:'nosygroups' in props">
       <th tal:content="structure python:utils.fieldname
-               (classname, 'nosygroups')" />
+          (db, classname, 'nosygroups')" />
       <td tal:content="structure python:context.nosygroups.menu
         (height = 3, translate = False)"/>
      </tr>
@@ -555,11 +567,16 @@
          </td>
         </tr>
         <tr tal:define="n python:'address'">
-         <th tal:content="structure python:utils.fieldname (n, 'id')"/>
-         <th tal:content="structure python:utils.fieldname (n, 'title')"/>
-         <th tal:content="structure python:utils.fieldname (n, 'firstname')"/>
-         <th tal:content="structure python:utils.fieldname (n, 'lastname')"/>
-         <th tal:content="structure python:utils.fieldname (n, 'affix')"/>
+         <th tal:content="structure python:utils.fieldname
+             (db, n, 'id')"/>
+         <th tal:content="structure python:utils.fieldname
+             (db, n, 'title')"/>
+         <th tal:content="structure python:utils.fieldname
+             (db, n, 'firstname')"/>
+         <th tal:content="structure python:utils.fieldname
+             (db, n, 'lastname')"/>
+         <th tal:content="structure python:utils.fieldname
+             (db, n, 'affix')"/>
         </tr>
         <tr tal:repeat="cld chlds">
          <td tal:content="structure python:utils.ExtProperty
@@ -629,12 +646,12 @@
      <tal:block tal:condition="cas">
       <tal:block tal:define="n python:'customer_agreement'">
        <tr>
-        <th tal:content="structure python:utils.fieldname (n, 'id')"/>
-        <th tal:content="structure python:utils.fieldname (n, 'product')"/>
+        <th tal:content="structure python:utils.fieldname (db, n, 'id')"/>
+        <th tal:content="structure python:utils.fieldname (db, n, 'product')"/>
        </tr>
        <tr>
         <th colspan="2"
-         tal:content="structure python:utils.fieldname (n, 'description')"/>
+         tal:content="structure python:utils.fieldname (db, n, 'description')"/>
        </tr>
       </tal:block>
       <tal:block tal:repeat="ca cas">

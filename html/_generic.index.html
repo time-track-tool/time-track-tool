@@ -38,7 +38,7 @@
    <tr>
     <tal:block tal:repeat="prop props">
      <th tal:content="structure python:
-         utils.fieldname (classname, prop._name)"/>
+         utils.fieldname (db, classname, prop._name)"/>
     </tal:block>
    </tr>
    <tr tal:repeat="item items">
@@ -89,21 +89,22 @@
 
    <tr tal:condition="keyprop">
     <th class="required"
-     tal:content="structure python:utils.fieldname (classname, keyprop)"/>
+     tal:content="structure python:utils.fieldname (db, classname, keyprop)"/>
     <td tal:content="structure python:context [keyprop].field ()"/>
    </tr>
    <tal:block tal:repeat="prop props">
     <tr tal:condition="python:
         prop._name not in ('id','date','author') and prop._name != keyprop">
      <th tal:content="structure python:utils.fieldname
-         (classname, prop._name)"/>
+         (db, classname, prop._name)"/>
      <td tal:content="structure python:utils.ExtProperty
          (utils, prop, item = context).menu_or_field ()"/>
     </tr>
    </tal:block>
    <tr metal:use-macro="templates/page/macros/message_box" />
    <tr tal:condition="has_files">
-     <th tal:content="structure python:utils.fieldname (classname, 'files')" />
+     <th tal:content="structure python:utils.fieldname
+         (db, classname, 'files')" />
      <td colspan="3">
       <tal:block metal:use-macro="templates/page/macros/formatted_class_files"/>
      </td>

@@ -4,7 +4,6 @@ import csv
 from argparse import ArgumentParser
 from roundup  import date
 from roundup  import instance
-from roundup.cgi.TranslationService import get_translation
 
 def ldap_sync_type (to_ldap, frm_ldap) :
     if to_ldap and frm_ldap :
@@ -83,7 +82,7 @@ from help      import combined_name
 from ldap_sync import LDAP_Roundup_Sync
 tracker = instance.open (args.directory)
 db      = tracker.open ('admin')
-_ = get_translation (db.config.TRACKER_LANGUAGE, db.config.TRACKER_HOME).gettext
+_       = db.i18n.gettext
 
 if args.as_csv :
     writer = csv.writer (sys.stdout, delimiter = args.delimiter)

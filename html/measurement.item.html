@@ -20,21 +20,27 @@
    <tal:block metal:use-macro="templates/page/macros/formatted_class">
     <tal:block metal:fill-slot="formatted_class_content">
      <tr>
-      <th tal:content="structure python:utils.fieldname ('device', 'adr')"/>
+      <th tal:content="structure python:utils.fieldname
+          (db, 'device', 'adr')"/>
       <td tal:content="structure python:context.sensor.device.adr.plain ()"/>
-      <th tal:content="structure python:utils.fieldname ('device', 'name')"/>
+      <th tal:content="structure python:utils.fieldname
+          (db, 'device', 'name')"/>
       <td tal:content="structure python:context.sensor.device.name.plain ()"/>
      </tr>
      <tr>
-      <th tal:content="structure python:utils.fieldname ('sensor', 'adr')"/>
+      <th tal:content="structure python:utils.fieldname
+          (db, 'sensor', 'adr')"/>
       <td tal:content="structure python:context.sensor.adr.plain ()"/>
-      <th tal:content="structure python:utils.fieldname ('sensor', 'name')"/>
+      <th tal:content="structure python:utils.fieldname
+          (db, 'sensor', 'name')"/>
       <td tal:content="structure python:context.sensor.name.plain ()"/>
      </tr>
      <tr>
-      <th tal:content="structure python:utils.fieldname (classname, 'date')"/>
+      <th tal:content="structure python:utils.fieldname
+          (db, classname, 'date')"/>
       <td tal:content="structure python:context.date.field ()"/>
-      <th tal:content="structure python:utils.fieldname (classname, 'val')"/>
+      <th tal:content="structure python:utils.fieldname
+          (db, classname, 'val')"/>
       <td tal:content="structure python:context.val.field ()"/>
       <td tal:content="structure python:context.sensor.unit.plain ()"/>
      </tr>

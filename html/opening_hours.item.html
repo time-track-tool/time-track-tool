@@ -24,16 +24,16 @@
     <tal:block metal:fill-slot="formatted_class_content">
      <tr>
       <th tal:content="structure python:utils.fieldname
-          (classname, 'weekday')"/>
+          (db, classname, 'weekday')"/>
       <td tal:content="structure python:context.weekday.menu ()" colspan="3"/>
      </tr>
      <tr>
       <th>
        <span tal:content="structure python:utils.fieldname
-          (classname, 'from_hour')"/>
+          (db, classname, 'from_hour')"/>
        /
        <span tal:content="structure python:utils.fieldname
-          (classname, 'from_minute')"/>
+          (db, classname, 'from_minute')"/>
       </th>
       <td>
        <span tal:content="structure python:context.from_hour.field (size=4)"/>
@@ -44,10 +44,10 @@
      <tr>
       <th>
        <span tal:content="structure python:utils.fieldname
-          (classname, 'to_hour')"/>
+          (db, classname, 'to_hour')"/>
        /
        <span tal:content="structure python:utils.fieldname
-          (classname, 'to_minute')"/>
+          (db, classname, 'to_minute')"/>
       </th>
       <td>
        <span tal:content="structure python:context.to_hour.field (size=4)"/>

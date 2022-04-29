@@ -21,27 +21,27 @@
    <tal:block metal:fill-slot="formatted_class_content">
     <tr>
      <th tal:content="structure python:utils.fieldname
-         (classname, 'number')"/>
+         (db, classname, 'number')"/>
      <td tal:content="structure python:context.number.field ()"/>
     </tr>
     <tr>
      <th tal:content="structure python:utils.fieldname
-         (classname, 'name')"/>
+         (db, classname, 'name')"/>
      <td tal:content="structure python:context.name.field ()"/>
     </tr>
     <tr>
      <th tal:content="structure python:utils.fieldname
-         (classname, 'organisation')"/>
+         (db, classname, 'organisation')"/>
      <td tal:content="structure python:context.organisation.menu ()"/>
     </tr>
     <tr>
      <th tal:content="structure python:utils.fieldname
-         (classname, 'project')"/>
+         (db, classname, 'project')"/>
      <td tal:content="structure python:context.project.menu ()"/>
     </tr>
     <tr>
      <th tal:content="structure python:utils.fieldname
-         (classname, 'valid')"/>
+         (db, classname, 'valid')"/>
      <td tal:content="structure python:context.valid.field ()"/>
     </tr>
    </tal:block>

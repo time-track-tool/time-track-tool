@@ -25,7 +25,7 @@
     <tal:block metal:fill-slot="formatted_class_content">
      <tr>
       <th tal:content="structure python:utils.fieldname
-          (classname, 'customer')"/>
+          (db, classname, 'customer')"/>
       <td>
        <tal:block tal:content="structure python:context.customer.field ()"/>
        <tal:block tal:replace="structure python:db.customer.classhelp
@@ -40,7 +40,7 @@
      </tr>
      <tr>
       <th tal:content="structure python:utils.fieldname
-          (classname, 'product')"/>
+          (db, classname, 'product')"/>
       <td>
        <tal:block tal:content="structure python:context.product.field ()"/>
        <tal:block tal:replace="structure python:db.product.classhelp
@@ -62,7 +62,7 @@
      </tr>
      <tr tal:condition="context/product">
       <th tal:content="structure python:utils.fieldname
-        ('product', 'product_family')"/>
+        (db, 'product', 'product_family')"/>
       <td tal:content="structure python:utils.ExtProperty
         ( utils, context.product.product_family.name
         , item = context.product.product_family
@@ -70,7 +70,7 @@
      </tr>
      <tr>
       <th class="required" tal:content="structure python:utils.fieldname
-          (classname, 'description')"/>
+          (db, classname, 'description')"/>
       <td>
        <textarea tal:content="python:context.description or ''"
         rows="4" name="description" wrap="hard" cols="40" />

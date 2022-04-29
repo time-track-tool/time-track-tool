@@ -32,7 +32,7 @@
     <tal:block metal:fill-slot="formatted_class_content">
      <tr>
       <th tal:content="structure python:utils.fieldname
-          (classname, 'name')"/>
+          (db, classname, 'name')"/>
       <td colspan="3">
        <textarea tal:content="context/name/plain"
                  name="name"
@@ -44,7 +44,7 @@
      </tr>
      <tr>
       <th tal:content="structure python:utils.fieldname
-          (classname, 'description')"/>
+          (db, classname, 'description')"/>
       <td tal:content="structure python:context.description.field (size=60)"
           colspan="3"/>
      </tr>
@@ -67,47 +67,48 @@
      -->
      <tr/>
      <tr>
-      <th tal:content="structure python:utils.fieldname (classname, 'tax_id')"/>
+      <th tal:content="structure python:utils.fieldname
+          (db, classname, 'tax_id')"/>
       <td tal:content="structure python:context.tax_id.field ()"/>
       <th tal:content="structure python:utils.fieldname
-          (classname, 'pharma_ref')"/>
+          (db, classname, 'pharma_ref')"/>
       <td tal:content="structure python:context.pharma_ref.menu ()"/>
      </tr>
      <tr>
       <th tal:content="structure python:utils.fieldname
-          (classname, 'dispatch_type')"/>
+          (db, classname, 'dispatch_type')"/>
       <td tal:content="structure python:context.dispatch_type.menu ()"/>
       <th tal:content="structure python:utils.fieldname
-          (classname, 'invoice_dispatch')"/>
+          (db, classname, 'invoice_dispatch')"/>
       <td tal:content="structure python:context.invoice_dispatch.menu ()"/>
      </tr>
      <tr>
       <th class="required" tal:content="structure python:utils.fieldname
-          (classname, 'currency')"/>
+          (db, classname, 'currency')"/>
       <td tal:content="structure python:context.currency.menu ()"/>
      </tr>
      <tr>
       <th tal:content="structure python:utils.fieldname
-          (classname, 'bank_account')"/>
+          (db, classname, 'bank_account')"/>
       <td colspan="3">
        <table class="form" border="0"
               style="border-spacing:0px;padding-top:0px;padding-left:0px">
         <tr>
          <th style="text-align:left;padding-top:0px;padding-left:0px"
              class="required" tal:content="structure python:utils.fieldname
-             (classname, 'bank')"/>
+             (db, classname, 'bank')"/>
          <th style="text-align:left;padding-top:0px"
              tal:content="structure python:utils.fieldname
-             (classname, 'bank_code')"/>
+             (db, classname, 'bank_code')"/>
          <th style="text-align:left;padding-top:0px"
              tal:content="structure python:utils.fieldname
-             (classname, 'act_number')"/>
+             (db, classname, 'act_number')"/>
          <th style="text-align:left;padding-top:0px"
              tal:content="structure python:utils.fieldname
-             (classname, 'bic')"/>
+             (db, classname, 'bic')"/>
          <th style="text-align:left;padding-top:0px"
              tal:content="structure python:utils.fieldname
-             (classname, 'iban')"/>
+             (db, classname, 'iban')"/>
          <th style="text-align:left;padding-top:0px"
              tal:condition="context/is_edit_ok" i18n:translate=""
              style="padding-top:0px">
@@ -148,10 +149,10 @@
      <tr><td>&nbsp;</td></tr>
      <tr>
       <th class="required" tal:content="structure python:utils.fieldname
-          (classname, 'customer_status')"/>
+          (db, classname, 'customer_status')"/>
       <td tal:content="structure python:context.customer_status.menu ()"/>
       <th tal:content="structure python:utils.fieldname
-          (classname, 'customer_type')"/>
+          (db, classname, 'customer_type')"/>
       <td>
        <span tal:content="structure python:context.customer_type.plain ()"/>
        <br/>
@@ -178,7 +179,7 @@
       <!--
       <tr>
        <th tal:content="structure python:utils.fieldname
-           (classname, 'shipping_address')"/>
+           (db, classname, 'shipping_address')"/>
        <td colspan="3">
         <span tal:content="structure python:context.shipping_address.field
               (size=6)"/>
@@ -213,10 +214,10 @@
       -->
       <tr>
        <th tal:content="structure python:utils.fieldname
-           (classname, 'customer_group')"/>
+           (db, classname, 'customer_group')"/>
        <td tal:content="structure python:context.customer_group.menu ()"/>
        <th tal:content="structure python:utils.fieldname
-           (classname, 'attendant')"/>
+           (db, classname, 'attendant')"/>
        <td>
         <tal:block tal:content="structure python:context.attendant.field ()"/>
         <tal:block tal:replace="structure python:utils.user_classhelp
@@ -225,7 +226,7 @@
       </tr>
       <tr>
        <th tal:content="structure python:utils.fieldname
-           (classname, 'credit_limit')"/>
+           (db, classname, 'credit_limit')"/>
        <td>
         <span tal:content="structure python:context.credit_limit.field (10)"/>
         &nbsp;
@@ -234,15 +235,15 @@
       </tr>
       <tr>
        <th tal:content="structure python:utils.fieldname
-           (classname, 'discount_group')"/>
+           (db, classname, 'discount_group')"/>
        <td tal:content="structure python:context.discount_group.menu ()"/>
        <th tal:content="structure python:utils.fieldname
-           (classname, 'sales_conditions')"/>
+           (db, classname, 'sales_conditions')"/>
        <td tal:content="structure python:context.sales_conditions.menu ()"/>
       </tr>
       <tr>
        <th tal:content="structure python:utils.fieldname
-           (classname, 'invoice_text')"/>
+           (db, classname, 'invoice_text')"/>
        <td tal:content="structure python:context.invoice_text.field (size=80)"
            colspan="3"/>
       </tr>
@@ -250,7 +251,7 @@
      <tr><td>&nbsp;</td></tr>
      <tr>
       <th class="required" tal:content="structure python:utils.fieldname
-          (classname, 'supplier_status')"/>
+          (db, classname, 'supplier_status')"/>
       <td tal:content="structure python:context.supplier_status.menu ()"/>
      </tr>
      <tal:block tal:condition="python:
@@ -260,7 +261,7 @@
          )">
       <tr>
        <th tal:content="structure python:utils.fieldname
-           (classname, 'supplier_group')"/>
+           (db, classname, 'supplier_group')"/>
        <td tal:content="structure python:context.supplier_group.menu ()"/>
       </tr>
       <tal:block tal:define="persons p_supp;name string:supply_address;
@@ -274,7 +275,7 @@
       -->
       <tr>
        <th tal:content="structure python:utils.fieldname
-           (classname, 'order_text')"/>
+           (db, classname, 'order_text')"/>
        <td tal:content="structure python:context.order_text.field (size=80)"
            colspan="3"/>
       </tr>

@@ -24,28 +24,28 @@
     <tal:block metal:fill-slot="formatted_class_content">
      <tr>
       <th tal:content="structure python:utils.fieldname
-          (classname, 'description')"/>
+          (db, classname, 'description')"/>
       <td tal:content="structure python:context.description.field (size=60)"/>
      </tr>
      <tr>
       <th tal:content="structure python:utils.fieldname
-          (classname, 'prodcat')"/>
+          (db, classname, 'prodcat')"/>
       <td tal:content="structure python:context.prodcat.menu
           (translate = 0, level = 3, valid = True)"/>
      </tr>
      <tr>
       <th tal:content="structure python:utils.fieldname
-          (classname, 'valid')"/>
+          (db, classname, 'valid')"/>
       <td tal:content="structure python:context.valid.field ()"/>
      </tr>
      <tr>
       <th tal:content="structure python:utils.fieldname
-          (classname, 'cert_sw')"/>
+          (db, classname, 'cert_sw')"/>
       <td tal:content="structure python:context.cert_sw.field ()"/>
      </tr>
      <tr>
       <th tal:content="structure python:utils.fieldname
-          (classname, 'default_part_of')"/>
+          (db, classname, 'default_part_of')"/>
       <td>
        <span tal:condition="context/default_part_of/is_edit_ok"
              tal:content="structure python:context.default_part_of.field ()"/>
@@ -57,7 +57,7 @@
      </tr>
      <tr tal:condition="python:'ext_trackers' in bclass.properties">
       <th tal:content="structure python:utils.fieldname
-          (classname, 'ext_trackers')"/>
+          (db, classname, 'ext_trackers')"/>
       <td tal:content="structure python:context.ext_trackers.menu (height=5)"/>
      </tr>
     </tal:block>

@@ -24,7 +24,8 @@
    <tal:block metal:use-macro="templates/page/macros/formatted_class">
     <tal:block metal:fill-slot="formatted_class_content">
      <tr>
-      <th tal:content="structure python:utils.fieldname (classname, 'author')"/>
+      <th tal:content="structure python:utils.fieldname
+          (db, classname, 'author')"/>
       <td>
        <span tal:content="structure context/author/field"/>
        <tal:block tal:replace="structure python:utils.user_classhelp
@@ -33,41 +34,43 @@
      </tr>
      <tr>
       <th tal:content="structure python:utils.fieldname
-          (classname, 'recipients')"/>
+          (db, classname, 'recipients')"/>
       <td tal:content="context/recipients"/>
      </tr>
      <tr>
-      <th tal:content="structure python:utils.fieldname (classname, 'date')"/>
+      <th tal:content="structure python:utils.fieldname
+          (db, classname, 'date')"/>
       <td tal:content="structure context/date/field"/>
      </tr>
      <tr tal:condition="python:'subject' in bclass.properties">
       <th tal:content="structure python:utils.fieldname
-          (classname, 'subject')"/>
+          (db, classname, 'subject')"/>
       <td tal:content="context/subject"/>
      </tr>
      <tr>
       <th tal:content="structure python:utils.fieldname
-          (classname, 'summary')"/>
+          (db, classname, 'summary')"/>
       <td tal:content="context/summary"/>
      </tr>
      <tr>
       <th tal:content="structure python:utils.fieldname
-          (classname, 'messageid')"/>
+          (db, classname, 'messageid')"/>
       <td tal:content="context/messageid"/>
      </tr>
      <tr>
       <th tal:content="structure python:utils.fieldname
-          (classname, 'inreplyto')"/>
+          (db, classname, 'inreplyto')"/>
       <td tal:content="context/inreplyto"/>
      </tr>
      <tr tal:condition="python:'keywords' in bclass.properties">
       <th tal:content="structure python:utils.fieldname
-          (classname, 'keywords')"/>
+          (db, classname, 'keywords')"/>
       <td tal:content="structure python:context.keywords.menu (height = 5)"/>
      </tr>
 
      <tr tal:condition="python:'header' in bclass.properties">
-      <th tal:content="structure python:utils.fieldname (classname, 'header')"/>
+      <th tal:content="structure python:utils.fieldname
+          (db, classname, 'header')"/>
       <td><pre tal:content="context/header/plain"/></td>
      </tr>
 
@@ -77,7 +80,7 @@
   <table class="messages" tal:condition="context/is_view_ok">
    <tr>
     <th class="header" tal:content="structure python:utils.fieldname
-        (classname, 'content')"/>
+        (db, classname, 'content')"/>
    </tr>
    <tr>
     <td class="content" colspan="2">
