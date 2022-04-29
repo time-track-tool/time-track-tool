@@ -22,7 +22,7 @@
      <tr>
       <tal:block tal:condition="python: context.id">
        <th tal:content="structure python:utils.fieldname
-           (classname, 'number')"/>
+           (db, classname, 'number')"/>
        <td>
         <span tal:content="structure python:context.number.field ()"/>
        </td>
@@ -33,37 +33,37 @@
      </tr>
      <tr>
       <th tal:content="structure python:utils.fieldname
-          (classname, 'rc_brand')"/>
+          (db, classname, 'rc_brand')"/>
       <td tal:content="structure python:context.rc_brand.menu ()"/>
      </tr>
      <tr>
       <th tal:content="structure python:utils.fieldname
-          (classname, 'rc_product_type')"/>
+          (db, classname, 'rc_product_type')"/>
       <td tal:content="structure python:context.rc_product_type.menu ()"/>
      </tr>
      <tr>
       <th tal:content="structure python:utils.fieldname
-          (classname, 'rc_application')"/>
+          (db, classname, 'rc_application')"/>
       <td tal:content="structure python:context.rc_application.menu ()"/>
      </tr>
      <tr>
       <th tal:content="structure python:utils.fieldname
-          (classname, 'rc_substrate')"/>
+          (db, classname, 'rc_substrate')"/>
       <td tal:content="structure python:context.rc_substrate.menu ()"/>
      </tr>
      <tr>
       <th tal:content="structure python:utils.fieldname
-          (classname, 'rc_suitability')"/>
+          (db, classname, 'rc_suitability')"/>
       <td tal:content="structure python:context.rc_suitability.menu ()"/>
      </tr>
      <tr>
       <th tal:content="structure python:utils.fieldname
-          (classname, 'rc_capability')"/>
+          (db, classname, 'rc_capability')"/>
       <td tal:content="structure python:context.rc_capability.menu (height=6)"/>
      </tr>
      <tr>
       <th tal:content="structure python:utils.fieldname
-          (classname, 'substance')"/>
+          (db, classname, 'substance')"/>
       <td>
        <span tal:condition="python: context.is_edit_ok ()"
              tal:content="structure python:context.substance.field ()"/>

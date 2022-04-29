@@ -16,23 +16,24 @@
    <tal:block metal:use-macro="templates/page/macros/formatted_class">
     <tal:block metal:fill-slot="formatted_class_content">
      <tr>
-      <th tal:content="structure python:utils.fieldname(classname, 'lastname')"
-          class="required"/>
+      <th tal:content="structure python:utils.fieldname
+          (db, classname, 'lastname')" class="required"/>
       <td tal:content="structure context/lastname/field"/>
       <th tal:content="structure python:utils.fieldname
-          (classname, 'firstname')"/>
+          (db, classname, 'firstname')"/>
       <td tal:content="structure context/firstname/field"/>
      </tr>
      <tr>
-      <th tal:content="structure python:utils.fieldname(classname, 'born')"/>
+      <th tal:content="structure python:utils.fieldname
+          (db, classname, 'born')"/>
       <td tal:content="structure context/born/field"/>
      </tr>
      <tr>
       <th tal:content="structure python:utils.fieldname
-          (classname, 'first_date')"/>
+          (db, classname, 'first_date')"/>
       <td tal:content="structure context/first_date/field"/>
       <th tal:content="structure python:utils.fieldname
-          (classname, 'last_date')"/>
+          (db, classname, 'last_date')"/>
       <td tal:content="structure context/last_date/field"/>
      </tr>
     </tal:block>

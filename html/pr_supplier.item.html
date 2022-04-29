@@ -25,12 +25,12 @@
     <tal:block metal:fill-slot="formatted_class_content">
      <tr>
       <th class="required" tal:content="structure python:utils.fieldname
-          (classname, 'name')"/>
+          (db, classname, 'name')"/>
       <td tal:content="structure python:context.name.field ()"/>
      </tr>
      <tr>
       <th tal:content="structure python:utils.fieldname
-          (classname, 'sap_ref')"/>
+          (db, classname, 'sap_ref')"/>
       <td tal:content="structure python:context.sap_ref.field ()"/>
      </tr>
     </tal:block>
@@ -63,11 +63,11 @@
       </tr>
       <tr>
        <th tal:content="structure python:
-           utils.fieldname ('pr_supplier_rating', 'organisation')"/>
+           utils.fieldname (db, 'pr_supplier_rating', 'organisation')"/>
        <th tal:content="structure python:
-           utils.fieldname ('pr_supplier_rating', 'rating')"/>
+           utils.fieldname (db, 'pr_supplier_rating', 'rating')"/>
        <th tal:content="structure python:
-           utils.fieldname ('pr_supplier_rating', 'scope')"/>
+           utils.fieldname (db, 'pr_supplier_rating', 'scope')"/>
       </tr>
       <tr tal:repeat="sr srs">
        <td tal:content="structure python:utils.ExtProperty
@@ -108,11 +108,11 @@
       </tr>
       <tr>
        <th tal:content="structure python:
-           utils.fieldname ('pr_supplier_risk', 'organisation')"/>
+           utils.fieldname (db, 'pr_supplier_risk', 'organisation')"/>
        <th tal:content="structure python:
-           utils.fieldname ('pr_supplier_risk', 'security_req_group')"/>
+           utils.fieldname (db, 'pr_supplier_risk', 'security_req_group')"/>
        <th tal:content="structure python:
-           utils.fieldname ('pr_supplier_risk', 'supplier_risk_category')"/>
+           utils.fieldname (db, 'pr_supplier_risk', 'supplier_risk_category')"/>
       </tr>
       <tr tal:repeat="risk risks">
        <td tal:content="structure python:utils.ExtProperty

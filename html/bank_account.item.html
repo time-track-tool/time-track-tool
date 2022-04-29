@@ -20,27 +20,30 @@
    <tal:block metal:use-macro="templates/page/macros/formatted_class">
     <tal:block metal:fill-slot="formatted_class_content">
      <tr>
-      <th tal:content="structure python:utils.fieldname (classname, 'bank')"/>
+      <th tal:content="structure python:utils.fieldname
+          (db, classname, 'bank')"/>
       <td tal:content="structure python:context.bank.field ()" colspan="3"/>
      </tr>
      <tr>
       <th tal:content="structure python:utils.fieldname
-          (classname, 'description')"/>
+          (db, classname, 'description')"/>
       <td tal:content="structure python:context.description.field (size=60)"
           colspan="3"/>
      </tr>
      <tr>
       <th tal:content="structure python:utils.fieldname
-          (classname, 'bank_code')"/>
+          (db, classname, 'bank_code')"/>
       <td tal:content="structure python:context.bank_code.field ()"/>
       <th tal:content="structure python:utils.fieldname
-          (classname, 'act_number')"/>
+          (db, classname, 'act_number')"/>
       <td tal:content="structure python:context.act_number.field ()"/>
      </tr>
      <tr>
-      <th tal:content="structure python:utils.fieldname (classname, 'iban')"/>
+      <th tal:content="structure python:utils.fieldname
+          (db, classname, 'iban')"/>
       <td tal:content="structure python:context.iban.field ()"/>
-      <th tal:content="structure python:utils.fieldname (classname, 'bic')"/>
+      <th tal:content="structure python:utils.fieldname
+          (db, classname, 'bic')"/>
       <td tal:content="structure python:context.bic.field ()"/>
      </tr>
     </tal:block>

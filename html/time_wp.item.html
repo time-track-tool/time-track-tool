@@ -20,14 +20,14 @@
    <tal:block metal:fill-slot="formatted_class_content">
     <tr>
      <th tal:content="structure python:utils.fieldname
-         (classname, 'description')"/>
+         (db, classname, 'description')"/>
      <td tal:content="structure python:context.description.field (size=60)"
       colspan="3"/>
     </tr>
     <tr tal:define="ccs python:db._db.cost_center_status.filter
          (None, dict (active = True))">
      <th tal:content="structure python:utils.fieldname
-         (classname, 'cost_center')"/>
+         (db, classname, 'cost_center')"/>
      <td>
       <!-- maybe one day make this configurable
       <tal:block tal:replace="structure context/cost_center/field"/>
@@ -51,7 +51,8 @@
           ).formatlink()"/>
     </tr>
     <tr>
-     <th tal:content="structure python:utils.fieldname (classname, 'project')"/>
+     <th tal:content="structure python:utils.fieldname
+         (db, classname, 'project')"/>
      <td>
       <span tal:replace="structure context/project/field"/>
       <span tal:condition="context/project/is_edit_ok"
@@ -72,7 +73,7 @@
     </tr>
     <tr tal:condition="python: context.id and context.auto_wp">
      <th tal:content="structure python:
-         utils.fieldname (classname, 'auto_wp')"/>
+         utils.fieldname (db, classname, 'auto_wp')"/>
      <td>
       <span tal:content="structure python:
          utils.ExtProperty
@@ -84,27 +85,28 @@
      </td>
     </tr>
     <tr>
-     <th tal:content="structure python:utils.fieldname (classname, 'wp_no')"/>
+     <th tal:content="structure python:utils.fieldname
+         (db, classname, 'wp_no')"/>
      <td tal:content="structure python:context.wp_no.field ()"/>
     </tr>
     <tr>
      <th tal:content="structure python:utils.fieldname
-         (classname, 'time_start')"/>
+         (db, classname, 'time_start')"/>
      <td>
       <span tal:content="structure python:context.time_start.field ()"/>
      </td>
      <th tal:content="structure python:utils.fieldname
-         (classname, 'time_end')"/>
+         (db, classname, 'time_end')"/>
      <td>
       <span tal:replace="structure python:context.time_end.field ()"/>
      </td>
     </tr>
     <tr>
      <th tal:content="structure python:utils.fieldname
-         (classname, 'is_public')"/>
+         (db, classname, 'is_public')"/>
      <td tal:content="structure python:context.is_public.field ()"/>
      <th tal:content="structure python:utils.fieldname
-         (classname, 'bookers')"/>
+         (db, classname, 'bookers')"/>
      <td>
       <span tal:replace="structure context/bookers/field"/>
       <span tal:condition="context/bookers/is_edit_ok"
@@ -118,15 +120,15 @@
     </tr>
     <tr>
      <th tal:content="structure python:utils.fieldname
-         (classname, 'is_extern')"/>
+         (db, classname, 'is_extern')"/>
      <td tal:content="structure python:context.is_extern.field ()"/>
     </tr>
     <tr>
      <th tal:content="structure python:utils.fieldname
-         (classname, 'planned_effort')"/>
+         (db, classname, 'planned_effort')"/>
      <td tal:content="structure python:context.planned_effort.field ()"/>
      <th tal:content="structure python:utils.fieldname
-         (classname, 'epic_key')"/>
+         (db, classname, 'epic_key')"/>
      <td tal:content="structure python:context.epic_key.field ()"/>
     </tr>
     <!-- Prevent non-authorized person to set durations_allowed by not
@@ -134,7 +136,7 @@
     -->
     <tr tal:condition="python: context.id">
      <th tal:content="structure python:utils.fieldname
-         (classname, 'durations_allowed')"/>
+         (db, classname, 'durations_allowed')"/>
      <td tal:content="structure python:context.durations_allowed.field ()"/>
     </tr>
     <tr>

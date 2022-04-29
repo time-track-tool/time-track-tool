@@ -17,24 +17,26 @@
     <tal:block metal:fill-slot="formatted_class_content">
      <tr>
       <th tal:content="structure python:utils.fieldname
-          (classname, 'abotype')"/>
+          (db, classname, 'abotype')"/>
       <td tal:content="structure python:context.abotype.menu ()"/>
-      <th tal:content="structure python:utils.fieldname(classname, 'valid')"/>
+      <th tal:content="structure python:utils.fieldname
+          (db, classname, 'valid')"/>
       <td tal:content="structure context/valid/field"/>
      </tr>
      <tr>
-      <th tal:content="structure python:utils.fieldname(classname, 'amount')"/>
+      <th tal:content="structure python:utils.fieldname
+          (db, classname, 'amount')"/>
       <td tal:content="structure context/amount/field"/>
       <th tal:content="structure python:utils.fieldname
-          (classname, 'currency')"/>
+          (db, classname, 'currency')"/>
       <td tal:content="structure python:context.currency.menu ()"/>
      </tr>
      <tr>
       <th tal:content="structure python:utils.fieldname
-          (classname, 'invoice_group')"/>
+          (db, classname, 'invoice_group')"/>
       <td tal:content="structure context/invoice_group/menu"/>
       <th tal:content="structure python:utils.fieldname
-          (classname, 'invoice_template')"/>
+          (db, classname, 'invoice_template')"/>
       <td tal:content="structure python:context.invoice_template.menu
                        (height=4)"/>
      </tr>

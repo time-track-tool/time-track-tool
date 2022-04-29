@@ -16,17 +16,18 @@
    <tal:block metal:use-macro="templates/page/macros/formatted_class">
     <tal:block metal:fill-slot="formatted_class_content">
      <tr>
-      <th tal:content="structure python:utils.fieldname(classname, 'code')"
-          class="required"/>
+      <th tal:content="structure python:utils.fieldname
+          (db, classname, 'code')" class="required"/>
       <td tal:content="structure context/code/field"/>
      </tr>
      <tr>
       <th tal:content="structure python:utils.fieldname
-          (classname, 'description')"/>
+          (db, classname, 'description')"/>
       <td tal:content="structure context/description/field"/>
      </tr>
      <tr>
-      <th tal:content="structure python:utils.fieldname(classname, 'typecat')"/>
+      <th tal:content="structure python:utils.fieldname
+          (db, classname, 'typecat')"/>
       <td tal:content="structure context/typecat/menu"/>
      </tr>
     </tal:block>

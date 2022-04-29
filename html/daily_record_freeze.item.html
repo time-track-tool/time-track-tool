@@ -37,7 +37,8 @@
       </td>
      </tr>
      <tr>
-      <th tal:content="structure python:utils.fieldname (classname, 'user')"/>
+      <th tal:content="structure python:utils.fieldname
+          (db, classname, 'user')"/>
       <td tal:condition="context/id"
         tal:content="structure python:utils.ExtProperty
          ( utils, context.user.username
@@ -51,7 +52,8 @@
              (db, property = 'user', exclude_system = True)"/>
       </td>
       <th class="required"
-          tal:content="structure python:utils.fieldname (classname, 'date')"/>
+          tal:content="structure python:utils.fieldname
+            (db, classname, 'date')"/>
       <td tal:content="structure python:utils.ExtProperty
          ( utils, context.date
          , add_hidden = True
@@ -61,20 +63,21 @@
          ).as_listentry (as_link = False)"/>
      <tr tal:condition="python: context.id and context.frozen">
       <th tal:content="structure python:utils.fieldname
-            (classname, 'balance')"/>
+            (db, classname, 'balance')"/>
       <td tal:content="structure python:context.balance.field ()"/>
       <th tal:content="structure python:utils.fieldname
-            (classname, 'validity_date')"/>
+            (db, classname, 'validity_date')"/>
       <td tal:content="structure python:context.validity_date.pretty
             ('%Y-%m-%d')"/>
      </tr>
      <tr tal:condition="python: context.id and context.frozen">
       <th tal:content="structure python:utils.fieldname
-            (classname, 'achieved_hours')"/>
+            (db, classname, 'achieved_hours')"/>
       <td tal:content="structure python:context.achieved_hours.field ()"/>
      </tr>
      <tr>
-      <th tal:content="structure python:utils.fieldname (classname, 'frozen')"/>
+      <th tal:content="structure python:utils.fieldname
+          (db, classname, 'frozen')"/>
       <td tal:content="structure python:context.frozen.field ()"/>
      </tr>
     </tal:block>

@@ -22,19 +22,19 @@
               <div class="settings_row">
                 <div class="settings_title" i18n:translate="">User:</div>
                 <tal:block tal:replace="structure python:utils.fieldlabel
-                     ('user', 'username')" />
+                     (db, 'user', 'username')" />
                 <div class="settings_field"
                      tal:content="structure u/username/field"/>
               </div>
               <div class="settings_row">
                 <tal:block tal:replace="structure python:utils.fieldlabel
-                     ('user', 'password')" />
+                     (db, 'user', 'password')" />
                 <div class="settings_field"
                      tal:content="structure u/password/field"/>
               </div>
               <div class="settings_row">
                 <tal:block tal:replace="structure python:utils.fieldlabel
-                     ('user', 'confirm')" />
+                     (db, 'user', 'confirm')" />
                 <div class="settings_field"
                      tal:content="structure u/password/confirm"/>
               </div>
@@ -44,7 +44,9 @@
                   <div class="settings_title"
                        i18n:translate="">Default Interval:</div>
                   <tal:block tal:replace="structure python:utils.fieldlabel
-                       ('transceiver', 'mint', endswith=i18n.gettext(' (sec):'))" />
+                       ( db, 'transceiver', 'mint'
+                       , endswith=i18n.gettext(' (sec):')
+                       )" />
                   <div tal:attributes="class python:
                        'settings_field'
                        + ['',' settings_pending'][bool(t.mint_pending._value)]"
@@ -52,7 +54,9 @@
                 </div>
                 <div class="settings_row">
                   <tal:block tal:replace="structure python:utils.fieldlabel
-                       ('transceiver', 'sint', endswith=i18n.gettext(' (min):'))" />
+                       ( db, 'transceiver', 'sint'
+                       , endswith=i18n.gettext(' (min):')
+                       )" />
                   <div tal:attributes="class python:
                        'settings_field'
                        + ['',' settings_pending'][bool(t.sint_pending._value)]"
@@ -65,7 +69,7 @@
                   <div class="settings_row">
                     <div class="settings_title" i18n:translate="">DynDNS:</div>
                     <tal:block tal:replace="structure python:utils.fieldlabel
-                         ('dyndns', 'syslog')" />
+                         (db, 'dyndns', 'syslog')" />
                     <input type="hidden" id="syslog" tal:attributes=
                            " value python: d.syslog._value
                            ; name  python: d.syslog._formname
@@ -77,38 +81,38 @@
                   </div>
                   <div class="settings_row">
                     <tal:block tal:replace="structure python:utils.fieldlabel
-                         ('dyndns', 'web_url')" />
+                         (db, 'dyndns', 'web_url')" />
                     <div class="settings_field"
                          tal:content="structure d/web_url/field"/>
                   </div>
                   <div class="settings_row">
                     <tal:block tal:replace="structure python:utils.fieldlabel
-                         ('dyndns_server', 'server')" />
+                         (db, 'dyndns_server', 'server')" />
                     <div class="settings_field"
                          tal:content="structure ds/server/field"/>
                   </div>
                   <div class="settings_row">
                     <tal:block tal:replace="structure python:utils.fieldlabel
-                         ('dyndns_server', 'protocol')" />
+                         (db, 'dyndns_server', 'protocol')" />
                     <div class="settings_field"
                          tal:content="structure ds/protocol/menu"/>
                   </div>
                   <div class="settings_row">
                     <tal:block tal:replace="structure python:utils.fieldlabel
-                         ('dyndns_server', 'login')" />
+                         (db, 'dyndns_server', 'login')" />
                     <div class="settings_field"
                          tal:content="structure ds/login/field"/>
                   </div>
                   <div class="settings_row">
                     <tal:block tal:replace="structure python:utils.fieldlabel
-                         ('dyndns_server', 'password')" />
+                         (db, 'dyndns_server', 'password')" />
                     <div class="settings_field"
                          tal:content="structure python:ds.password.field
                          (type='password')"/>
                   </div>
                   <div class="settings_row">
                     <tal:block tal:replace="structure python:utils.fieldlabel
-                         ('dyndns_server', 'hostname')" />
+                         (db, 'dyndns_server', 'hostname')" />
                     <div class="settings_field"
                          tal:content="structure dh/hostname/field"/>
                   </div>
@@ -119,7 +123,7 @@
                     <div class="settings_title"
                          i18n:translate="">UMTS-Internet-Access:</div>
                     <tal:block tal:replace="structure python:utils.fieldlabel
-                         ('umts', 'pin')" />
+                         (db, 'umts', 'pin')" />
                     <div class="settings_field"
                          tal:content="structure um/pin/field"/>
                   </div>
@@ -130,25 +134,25 @@
                     <div class="settings_title"
                          i18n:translate="">Email:</div>
                     <tal:block tal:replace="structure python:utils.fieldlabel
-                         ('email', 'server')" />
+                         (db, 'email', 'server')" />
                     <div class="settings_field"
                          tal:content="structure em/server/field"/>
                   </div>
                   <div class="settings_row">
                     <tal:block tal:replace="structure python:utils.fieldlabel
-                         ('email', 'sender')" />
+                         (db, 'email', 'sender')" />
                     <div class="settings_field"
                          tal:content="structure em/sender/field"/>
                   </div>
                   <div class="settings_row">
                     <tal:block tal:replace="structure python:utils.fieldlabel
-                         ('email', 'user_name')" />
+                         (db, 'email', 'user_name')" />
                     <div class="settings_field"
                          tal:content="structure em/user_name/field"/>
                   </div>
                   <div class="settings_row">
                     <tal:block tal:replace="structure python:utils.fieldlabel
-                         ('email', 'password')" />
+                         (db, 'email', 'password')" />
                     <div class="settings_field"
                          tal:content="structure python:em.password.field
                          (type='password')"/>

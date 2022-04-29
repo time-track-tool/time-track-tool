@@ -9,11 +9,13 @@
    <tal:block metal:fill-slot="formatted_class_content">
 
     <tr>
-     <th tal:content="structure python:utils.fieldname (classname, 'type')"/>
+     <th tal:content="structure python:utils.fieldname
+         (db, classname, 'type')"/>
      <td tal:content="structure context/type/field"></td>
     </tr>
     <tr>
-     <th tal:content="structure python:utils.fieldname (classname, 'content')"/>
+     <th tal:content="structure python:utils.fieldname
+         (db, classname, 'content')"/>
      <td><input type="file" name="content" size="40"></td>
     </tr>
 

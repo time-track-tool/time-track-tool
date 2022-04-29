@@ -60,7 +60,8 @@
     </tal:block>
     <tal:block metal:fill-slot="formatted_class_content">
      <tr>
-      <th tal:content="structure python:utils.fieldname (classname, 'user')"/>
+      <th tal:content="structure python:utils.fieldname
+          (db, classname, 'user')"/>
       <td>
        <span tal:content="structure python:context.user.field ()"/>
        <span tal:content="structure python:utils.user_classhelp
@@ -71,12 +72,12 @@
      </tr>
      <tr>
       <th tal:content="structure python:utils.fieldname
-          (classname, 'functional_role')"/>
+          (db, classname, 'functional_role')"/>
       <td tal:content="structure python:context.functional_role.menu ()"/>
      </tr>
      <tr>
       <th tal:content="structure python:utils.fieldname
-          (classname, 'ratio')"/>
+          (db, classname, 'ratio')"/>
       <td tal:content="structure python:context.ratio.field (size = 8)"/>
      </tr>
     </tal:block>
