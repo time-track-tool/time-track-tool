@@ -2857,6 +2857,11 @@ class Test_Case_Timetracker (_Test_Case_Summary, unittest.TestCase) :
         self.db.commit ()
         self.db.close ()
         self.db = self.tracker.open (self.username1)
+        # For the change of public holiday, user1 needs role hr (or controlling)
+        # This is because we also change historic time records in the
+        # reactor
+        self.db.user.set (self.user1, roles='user,hr')
+        self.db.commit ()
         for st in (st_open, st_carq, st_canc) :
             self.assertRaises \
                 ( Reject, self.db.leave_submission.set

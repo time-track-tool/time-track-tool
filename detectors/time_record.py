@@ -653,22 +653,21 @@ def check_att_record (db, cl, nodeid, new_values) :
     dr       = db.daily_record.getnode (drec)
     date     = dr.date
     user     = dr.user
-    start    = new_values.get ('start',        cl.get (nodeid, 'start'))
-    end      = new_values.get ('end',          cl.get (nodeid, 'end'))
+    uname    = db.user.get (user, 'username')
+    start    = new_values.get ('start', cl.get (nodeid, 'start'))
+    end      = new_values.get ('end',   cl.get (nodeid, 'end'))
     wl       = 'work_location'
     uid      = db.getuid ()
     ttby     = db.user.get (dr.user, 'timetracking_by')
-    location = new_values.get (wl,             cl.get (nodeid, wl))
+    location = new_values.get (wl, cl.get (nodeid, wl))
     check_start_end_duration (date, start, end, duration, new_values)
     if  (   uid != dr.user
         and uid != ttby
-        and not common.user_has_role (db, uid, 'controlling', 'admin')
-        and not leave_wp (db, dr, wpid, None, None, duration)
-        and not vacation_wp (db, wpid)
+        and not common.user_has_role (db, uid, 'controlling', 'admin', 'hr')
         ) :
         raise Reject, _ \
             ( ("Only %(uname)s, Timetracking by, and Controlling "
-               "may create time records"
+               "may create/change attendance records"
               )
             % locals ()
             )
@@ -948,6 +947,15 @@ def update_attrec (db, cl, nodeid, old_values) :
     """
     tr = cl.getnode (nodeid)
     if not tr.attendance_record :
+        return
+    # Check what changed, do nothing if only tr_duration changed in timerec
+    keys = []
+    for k in old_values :
+        if k in ['activity', 'attendance_record'] :
+            continue
+        if getattr (tr, k) != old_values [k] :
+            keys.append (k)
+    if keys == ['tr_duration'] :
         return
     assert len (tr.attendance_record) == 1
     ar = db.attendance_record.getnode (tr.attendance_record [0])

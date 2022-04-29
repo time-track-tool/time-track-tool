@@ -609,6 +609,9 @@ properties = \
       , [ 'code'
         , 'description'
         , 'durations_allowed'
+        , 'is_off'
+        , 'is_valid'
+        , 'order'
         , 'travel'
         ]
       )

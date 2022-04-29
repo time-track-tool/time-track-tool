@@ -211,6 +211,7 @@ if 'work_location' in db.classes :
         , description = "Abwesend"
         , durations_allowed = True
         , travel            = False
+        , is_off            = True
         )
     work_location.create \
         ( code = "on site"
