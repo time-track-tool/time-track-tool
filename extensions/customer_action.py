@@ -88,9 +88,10 @@ def del_link (classname, id) :
 
 def adress_button (db, adr_property_frm, adr_property_to) :
     """Compute address copy button inscription"""
-    adr_frm = db._ (adr_property_frm)
-    adr_to  = db._ (adr_property_to)
-    return db._ (''"new %(adr_to)s from %(adr_frm)s") % locals ()
+    _ = db.i18n.gettext
+    adr_frm = _ (adr_property_frm)
+    adr_to  = _ (adr_property_to)
+    return _ (''"new %(adr_to)s from %(adr_frm)s") % locals ()
 # end def adress_button
 
 def init (instance) :

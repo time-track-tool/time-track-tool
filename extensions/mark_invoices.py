@@ -55,18 +55,19 @@ class Invoice (Action, autosuper) :
             n_sent for the current invoice.
         """
         db          = self.db
+        _           = db.i18n.gettext
         aboprice    = db.abo.get       (iv ['abo'], 'aboprice')
         iv_tmplates = db.abo_price.get (aboprice, 'invoice_template')
         if not iv_tmplates :
             raise Reject, \
-                ( db._ ('No invoice_template defined for all invoices: %s')
+                ( _ ('No invoice_template defined for all invoices: %s')
                 % iv ['invoice_no']
                 )
         ivts = [db.invoice_template.getnode (i) for i in iv_tmplates]
         ivts = [i for i in ivts if i ['invoice_level'] <= iv ['n_sent']]
         if not ivts :
             raise Reject, \
-                ( db._ ('No matching invoice_template for invoice %s')
+                ( _ ('No matching invoice_template for invoice %s')
                 % iv ['invoice_no']
                 )
         max = ivts [0]
@@ -81,8 +82,9 @@ class Invoice (Action, autosuper) :
         request    = templating.HTMLRequest (self.client)
         filterspec = request.filterspec
 
+        _ = self.db.i18n.gettext
         if request.classname != 'invoice' :
-            raise Reject, self.db._ ('You can only mark invoices')
+            raise Reject (_ ('You can only mark invoices'))
         # get invoice_group -- if existing:
         self.invoice_group = None
         try :
@@ -152,8 +154,9 @@ class Mark_Invoice (Invoice) :
         self.__super.handle ()
         self.now   = Date ('.')
 
+        _ = self.db.i18n.gettext
         if self.marked () :
-            raise Reject, self.db._ ('invoices are already marked')
+            raise Reject (_ ('invoices are already marked'))
 
         invoice = self.db.invoice
         spec = \
@@ -366,8 +369,9 @@ class Download_Letter (Action, autosuper) :
         request    = templating.HTMLRequest (self.client)
         filterspec = request.filterspec
 
+        _ = self.db.i18n.gettext
         if request.classname != 'letter' :
-            raise Reject, self.db._ ('You can only download letters')
+            raise Reject (_ ('You can only download letters'))
         # get id:
         try :
             self.id = request.form ['id'].value
@@ -394,7 +398,7 @@ class Personalized_Template (Download_Letter) :
         request    = templating.HTMLRequest (self.client)
         filterspec = request.filterspec
 
-        _ = self.db._
+        _ = self.db.i18n.gettext
         if request.classname != 'address' :
             raise Reject, _ ('You can only download templates for an address')
         try :

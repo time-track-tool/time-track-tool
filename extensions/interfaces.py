@@ -362,7 +362,8 @@ def welcome (db) :
         return escape (text).replace ('\n\n', '<br>\n')
     except IOError :
         pass
-    return "".join ((db._ (''"Welcome to the "), db.config.TRACKER_NAME, '.'))
+    _ = db.i18n.gettext
+    return "".join ((_ (''"Welcome to the "), db.config.TRACKER_NAME, '.'))
 # end def welcome
 
 def color_duration (tr) :
