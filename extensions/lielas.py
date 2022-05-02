@@ -168,25 +168,26 @@ bodyclass = \
 
 def menu_by_class (db) :
     uok = db.user.is_edit_ok ()
+    _ = db.i18n.gettext
     return \
         ( (x [0], x [1], x [2]) for x in
             ( ( ''
-              , db._ ('Device manager')
+              , _ ('Device manager')
               , 'home'
               , True
               )
             , ( 'device_group'
-              , db._ ('device_group')
+              , _ ('device_group')
               , 'device_group?@template=index'
               , True
               )
             , ( 'user'
-              , db._ ('User')
+              , _ ('User')
               , 'user1?@template=lindex'
               , uok
               )
             , ( 'dyndns'
-              , db._ ('Configuration')
+              , _ ('Configuration')
               , 'dyndns?@template=lindex'
               , True
               )
