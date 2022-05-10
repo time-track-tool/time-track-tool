@@ -26,6 +26,12 @@
     <tal:block metal:fill-slot="formatted_class_content">
      <tr>
       <th tal:content="structure python:utils.fieldname
+          ('qso', 'owner')"/>
+      <td tal:content="structure python:context.qso.owner.plain ()"
+          colspan="3"/>
+     </tr>
+     <tr>
+      <th tal:content="structure python:utils.fieldname
           (classname, 'qsl_type')"/>
       <td tal:content="structure python:context.qsl_type.plain ()"
           colspan="3"/>
