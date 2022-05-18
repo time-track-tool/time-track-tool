@@ -596,7 +596,9 @@ class ExtProperty :
 
     def colonlabel (self, delimiter = ':') :
         return self.utils.fieldname \
-            (self.helpcls, self._helpname, self.label, delimiter, 'header')
+            ( self.db, self.helpcls, self._helpname
+            , self.label, delimiter, 'header'
+            )
     # end def colonlabel
 
     def colonfield (self, item = None) :

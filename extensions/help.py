@@ -2513,7 +2513,11 @@ def fieldname \
     , csscls     = ''
     , label      = None
     ) :
-    _ = db._db.i18n.gettext
+    try :
+        db = db._db
+    except AttributeError :
+        pass
+    _ = db.i18n.gettext
     if not searchname : searchname = name
     prop  = combined_name (cls, name, searchname)
     label1 = label2 = ''
