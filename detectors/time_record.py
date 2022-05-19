@@ -961,6 +961,13 @@ def update_attrec (db, cl, nodeid, old_values) :
     tr = cl.getnode (nodeid)
     if not tr.attendance_record :
         return
+    assert len (tr.attendance_record) == 1
+    arid = tr.attendance_record [0]
+    # Check if time record was retired
+    if cl.is_retired (nodeid) :
+        db.attendance_record.retire (arid)
+        return
+
     # Check what changed, do nothing if only tr_duration changed in timerec
     keys = []
     for k in old_values :
@@ -970,8 +977,7 @@ def update_attrec (db, cl, nodeid, old_values) :
             keys.append (k)
     if keys == ['tr_duration'] :
         return
-    assert len (tr.attendance_record) == 1
-    ar = db.attendance_record.getnode (tr.attendance_record [0])
+    ar = db.attendance_record.getnode (arid)
     dr = db.daily_record.getnode      (tr.daily_record)
     if ar.start is not None and ar.end is not None :
         dstart, dend, sp, ep, dur = check_timestamps \
