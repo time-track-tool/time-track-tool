@@ -1,5 +1,5 @@
 #! /usr/bin/python
-# Copyright (C) 2006-21 Dr. Ralf Schlatterbeck Open Source Consulting.
+# Copyright (C) 2006-22 Dr. Ralf Schlatterbeck Open Source Consulting.
 # 
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -45,7 +45,7 @@ from roundup.date                   import Date
 
 def sorted_properties (db, context) :
     props = db [context._classname].properties ()
-    return list (sorted (props, key = lambda x: db.i18n.gettext (x._name)))
+    return list (sorted (props, key = lambda x: db._db.i18n.gettext (x._name)))
 # end def sorted_properties
 
 def properties_dict (db, context) :
