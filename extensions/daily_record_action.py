@@ -1,5 +1,5 @@
 #! /usr/bin/python
-# Copyright (C) 2006-21 Dr. Ralf Schlatterbeck Open Source Consulting.
+# Copyright (C) 2006-22 Dr. Ralf Schlatterbeck Open Source Consulting.
 # Reichergasse 131, A-3411 Weidling.
 # Web: http://www.runtux.com Email: office@runtux.com
 # All rights reserved
@@ -287,14 +287,135 @@ class Daily_Record_Edit_Action (EditItemAction, Daily_Record_Common) :
     permissionType = 'Edit'
 
     def _editnodes (self, props, links) :
-        # use props.items here, dict is modified
-        for (cl, id), val in list (props.items ()) :
-            if cl == 'time_record' :
-                if int (id) < 0 and list (val) == ['daily_record'] :
-                    del props [(cl, id)]
+        """ Modify the props and links before handing to _editnodes of
+            master class.
+            First we remove all attendance records that have only the
+            daily_record property.
+            Then we remove all new time_records which do not have a
+            corresponding attendance record *and* only have the
+            daily_record as the only property.
+            The we add an 'end' or 'start' property if a duration is
+            given and start or end is missing.
+            Then we do lunchtime processing
+        """
+        hour_format = '%H:%M'
+        newidx = 500 # More than one month with 10 lines each...
+        atrecs = {}
+        # Materialize list: the props are modified during iteration
+        for (cl, id) in list (props) :
+            if cl != 'attendance_record' or int (id) > 0 :
+                continue
+            val = props [(cl, id)]
+            if list (val) == ['daily_record'] :
+                del props [(cl, id)]
+            else :
+                dstart, dend, dur = self.get_start_end (val)
+                atrecs [id] = dur
+
+        # Materialize list: the props are modified during iteration
+        for (cl, id) in list (props) :
+            if cl != 'time_record' or int (id) > 0 :
+                continue
+            val = props [(cl, id)]
+            if  (list (val) == ['daily_record'] and id not in atrecs) :
+                del props [(cl, id)]
+            elif 'duration' not in val and id in atrecs :
+                val ['duration'] = atrecs [id]
+        # Check if start is given but no end, create end from start + duration
+        for (cl, id) in list (props) :
+            if cl != 'attendance_record' or int (id) > 0 :
+                continue
+            if ('time_record', id) not in props :
+                continue
+            aval = props [(cl, id)]
+            tval = props [('time_record', id)]
+            if 'duration' not in tval :
+                continue
+            dstart, dend, dur = self.get_start_end (aval)
+            dur = tval ['duration']
+            hours = int (dur)
+            minutes = int ((dur - hours) * 60)
+            iv = Interval ('%d:%d' % (hours, minutes))
+            if dstart and not dend :
+                aval ['end'] = (dstart + iv).pretty (hour_format)
+            if not dstart and dend :
+                aval ['start'] = (dend - iv).pretty (hour_format)
+        # Check if some duration is > 6h, add lunch if applicable
+        for (cl, id) in list (props) :
+            if cl != 'time_record' or int (id) > 0 :
+                continue
+            val  = props [(cl, id)]
+            aval = props [('attendance_record', id)]
+            travel = False
+            if cl == 'time_record' and val.get ('time_activity') :
+                ta = self.db.time_activity.getnode (val ['time_activity'])
+                travel = travel or ta.travel
+            dstart, dend, dur = self.get_start_end (aval)
+            if travel or not val.get ('duration') :
+                continue
+            dur  = val ['duration']
+            dr   = self.db.daily_record.getnode (val ['daily_record'])
+            user = self.db.user.getnode (dr.user)
+            ls   = Date (user.lunch_start or '12:00')
+            ls.year  = dr.date.year
+            ls.month = dr.date.month
+            ls.day   = dr.date.day
+            ld       = user.lunch_duration or 1
+            hours    = int (ld)
+            minutes  = (ld - hours) * 60
+            le       = ls + Interval ('%d:%d' % (hours, minutes))
+            if dur <= 6 or not dstart or dstart >= ls or dend <= ls :
+                continue
+            newtr = dict (daily_record = dr.id)
+            newar = dict (daily_record = dr.id, start = le.pretty (hour_format))
+            dur1  = (ls - dstart).as_seconds () / 3600.
+            dur2  = dur - dur1 - ld
+            assert dur1 > 0
+            for a in 'wp', 'time_activity' :
+                if a in val and val [a] :
+                    newtr [a] = val [a]
+            if 'work_location' in aval and aval ['work_location'] :
+                newar ['work_location'] = aval ['work_location']
+            newar ['end'] = aval ['end']
+            aval  ['end'] = ls.pretty (hour_format)
+            val ['duration'] = dur1
+            nid = str (-newidx)
+            newidx += 1
+            if dur2 > 0 :
+                newtr ['duration'] = dur2
+                props [('time_record', nid)]       = newtr
+                props [('attendance_record', nid)] = newar
+                links.append \
+                    (( 'attendance_record', nid, 'time_record'
+                     , [('time_record', nid)]
+                    ))
         self.ok_msg = EditItemAction._editnodes (self, props, links)
         return self.ok_msg
     # end def _editnodes
+
+    def get_start_end (self, val) :
+        dstart = dend = dur = None
+        start = val.get ('start')
+        end   = val.get ('end')
+        if start and ':' not in start :
+            start += ':00'
+        if end and ':' not in end :
+            end   += ':00'
+        dr = self.db.daily_record.getnode (val ['daily_record'])
+        if start :
+            dstart = Date (start, offset = 0)
+            dstart.year  = dr.date.year
+            dstart.month = dr.date.month
+            dstart.day   = dr.date.day
+        if end :
+            dend   = Date (end,   offset = 0)
+            dend.year  = dr.date.year
+            dend.month = dr.date.month
+            dend.day   = dr.date.day
+        if start and end :
+            dur = (dend - dstart).as_seconds () / 3600.
+        return dstart, dend, dur
+    # end def get_start_end
 
     def handle (self) :
         self.create_daily_records ()
