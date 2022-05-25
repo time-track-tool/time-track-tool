@@ -1,5 +1,5 @@
 #! /usr/bin/python
-# Copyright (C) 2006-20 Dr. Ralf Schlatterbeck Open Source Consulting.
+# Copyright (C) 2006-22 Dr. Ralf Schlatterbeck Open Source Consulting.
 # Reichergasse 131, A-3411 Weidling.
 # Web: http://www.runtux.com Email: office@runtux.com
 # All rights reserved
@@ -484,8 +484,9 @@ def compute_endtime (start, duration) :
 
 def check_start_end_duration (_, date, start, end, duration, new_values) :
     """ Either duration or both start/end must be set but not both
-        of duration/end, if both are set, duration wins.
-        set end from start/duration if end empty
+        of duration/end, if both are set, duration wins, but only in
+        case of *creation*, not modification.
+        Set end from start/duration if end empty
         Note: We are using naive times (with timezone 0) here, this
         means we can safely use date.pretty for converting back to
         string.
@@ -509,9 +510,11 @@ def check_start_end_duration (_, date, start, end, duration, new_values) :
         if duration is not None :
             check_duration (_, duration, 24)
         if start and 'start' in new_values :
-            t = compute_endtime (start, duration)
+            if duration is None :
+                t = end
+            else :
+                t = compute_endtime (start, duration)
             dstart, dend, sp, ep, dur = check_timestamps (_, start, t, date)
-            assert dur == duration
             new_values ['start'] = sp
             new_values ['end']   = ep
     return dstart, dend
@@ -653,22 +656,26 @@ def check_att_record (db, cl, nodeid, new_values) :
         raise Reject (_ ("%(attr)s may not be changed") % locals ())
     tr       = None
     duration = None
-    trid     = new_values.get ('time_record',  cl.get (nodeid, 'time_record'))
+    ar       = cl.getnode (nodeid)
+    trid     = new_values.get ('time_record',  ar.time_record)
     if trid :
         tr = db.time_record.getnode (trid)
         duration = tr.duration
-    drec     = new_values.get ('daily_record', cl.get (nodeid, 'daily_record'))
+    drec     = new_values.get ('daily_record', ar.daily_record)
     dr       = db.daily_record.getnode (drec)
     date     = dr.date
     user     = dr.user
     uname    = db.user.get (user, 'username')
-    start    = new_values.get ('start', cl.get (nodeid, 'start'))
-    end      = new_values.get ('end',   cl.get (nodeid, 'end'))
-    wl       = 'work_location'
+    start    = new_values.get ('start', ar.start)
+    end      = new_values.get ('end',   ar.end)
     uid      = db.getuid ()
     ttby     = db.user.get (dr.user, 'timetracking_by')
-    location = new_values.get (wl, cl.get (nodeid, wl))
-    check_start_end_duration (_, date, start, end, duration, new_values)
+    location = new_values.get ('work_location', ar.work_location)
+    dur      = duration
+    # Allow change of end independent of existing duration in tr
+    if ar.end :
+        dur = None
+    check_start_end_duration (_, date, start, end, dur, new_values)
     if  (   uid != dr.user
         and uid != ttby
         and not common.user_has_role (db, uid, 'controlling', 'admin', 'hr')
