@@ -693,6 +693,10 @@ def check_att_record (db, cl, nodeid, new_values) :
             wday = gmtime (dr.date.timestamp ())[6]
             if wday in (5, 6) :
                 raise Reject, _ ('No weekend booking allowed')
+    if 'start' in new_values and 'start_generated' not in new_values :
+        new_values ['start_generated'] = False
+    if 'end' in new_values and 'end_generated' not in new_values :
+        new_values ['end_generated'] = False
 # end def check_att_record
 
 def check_time_record (db, cl, nodeid, new_values) :
@@ -939,7 +943,7 @@ def check_obsolete_props (db, cl, nodeid, new_values) :
             raise Reject (_ ('Trying to change obsolete property "%s"') % k)
 # end def check_obsolete_props
 
-def update_timerec (db, cl, nodeid, old_values) :
+def update_arec (db, cl, nodeid, old_values) :
     """ If attendance record is changed *and* has a corresponding
         time_record link, we update the duration if necessary
     """
@@ -952,9 +956,9 @@ def update_timerec (db, cl, nodeid, old_values) :
         (db.i18n.gettext, ar.start, ar.end, dr.date)
     if dur != tr.duration :
         db.time_record.set (tr.id, duration = dur)
-# end def update_timerec
+# end def update_arec
 
-def update_attrec (db, cl, nodeid, old_values) :
+def update_trec (db, cl, nodeid, old_values) :
     """ If time record is changed *and* has a corresponding
         attendance_record backlink, we update "end" if necessary
     """
@@ -996,7 +1000,7 @@ def update_attrec (db, cl, nodeid, old_values) :
             d ['work_location'] = work_location
     if d :
         db.attendance_record.set (ar.id, **d)
-# end def update_attrec
+# end def update_trec
 
 def public_holiday (db, cl, nodeid, old_values) :
     """ Create public holiday if necessary
@@ -1016,12 +1020,12 @@ def init (db) :
     db.time_record.react  ("retire", fix_daily_recs_after_retire)
     db.time_record.audit  ("create", check_obsolete_props, priority = 500)
     db.time_record.audit  ("set",    check_obsolete_props, priority = 500)
-    db.time_record.react  ("set",    update_attrec)
+    db.time_record.react  ("set",    update_trec)
     att = db.attendance_record
     att.audit             ("create", new_attendance_record)
     att.audit             ("set",    check_att_record)
-    att.react             ("create", update_timerec)
-    att.react             ("set",    update_timerec)
+    att.react             ("create", update_arec)
+    att.react             ("set",    update_arec)
     db.daily_record.audit ("create", new_daily_record)
     db.daily_record.audit ("set",    check_daily_record)
     db.daily_record.react ("set",    send_mail_on_deny)
