@@ -286,6 +286,37 @@ class Daily_Record_Edit_Action (EditItemAction, Daily_Record_Common) :
     name           = 'daily_record_edit_action'
     permissionType = 'Edit'
 
+    def set_ar_tr (self, props, ar, tr, trid) :
+        arid = self.db.time_record.get (trid, 'attendance_record')
+        assert len (arid) == 1
+        arid = arid [0]
+        trkey = ('time_record', trid)
+        if trkey in props :
+            props [trkey].update (tr)
+        elif tr :
+            props [trkey] = tr
+        arkey = ('attendance_record', arid)
+        if arkey in props :
+            props [arkey].update (ar)
+        elif ar :
+            props [arkey] = ar
+    # end def set_ar_tr
+
+    def new_ar_tr (self, props, links, newar, newtr) :
+        nid = str (-self.newidx)
+        self.newidx += 1
+        arkey = ('attendance_record', nid)
+        trkey = ('time_record', nid)
+        assert arkey not in props
+        assert trkey not in props
+        props [trkey] = newtr
+        props [arkey] = newar
+        links.append \
+            (( 'attendance_record', nid, 'time_record'
+             , [('time_record', nid)]
+            ))
+    # end def new_ar_tr
+
     def _editnodes (self, props, links) :
         """ Modify the props and links before handing to _editnodes of
             master class.
@@ -298,8 +329,13 @@ class Daily_Record_Edit_Action (EditItemAction, Daily_Record_Common) :
             given and start or end is missing.
             Then we do lunchtime processing
         """
+        _ = self.db.i18n.gettext
         hour_format = '%H:%M'
-        newidx = 500 # More than one month with 10 lines each...
+        clsnames = ('attendance_record', 'time_record')
+        self.newidx = min (int (id) for (cl, id) in props if cl in clsnames)
+        if self.newidx > 0 :
+            self.newidx = 0
+        self.newidx = abs (self.newidx) + 1
         atrecs = {}
         # Materialize list: the props are modified during iteration
         for (cl, id) in list (props) :
@@ -379,16 +415,137 @@ class Daily_Record_Edit_Action (EditItemAction, Daily_Record_Common) :
             newar ['end'] = aval ['end']
             aval  ['end'] = ls.pretty (hour_format)
             val ['duration'] = dur1
-            nid = str (-newidx)
-            newidx += 1
             if dur2 > 0 :
                 newtr ['duration'] = dur2
-                props [('time_record', nid)]       = newtr
-                props [('attendance_record', nid)] = newar
-                links.append \
-                    (( 'attendance_record', nid, 'time_record'
-                     , [('time_record', nid)]
-                    ))
+                self.new_ar_tr (props, links, newar, newtr)
+        # Handle dist
+        for (cl, id) in list (props) :
+            aval = props [(cl, id)]
+            if cl != 'attendance_record' or 'dist' not in aval :
+                continue
+            # Dist is only meaningful for existing records
+            if int (id) < 0 :
+                del props [(cl, id)]['dist']
+                continue
+            dist = aval ['dist']
+            dh   = int (dist)
+            dm   = (dist - dh) * 60
+            dint = Interval ('%d:%d' % (dh, dm))
+            del aval ['dist']
+            ar   = self.db.attendance_record.getnode (id)
+            tr   = self.db.time_record.getnode (ar.time_record)
+            dr   = self.db.daily_record.getnode (ar.daily_record)
+            tval = props.get (('time_record', tr.id), {})
+            wp   = tval.get ('wp', tr.wp)
+            dur  = tval.get ('duration', tr.duration)
+            tact = tval.get ('time_activity', tr.time_activity)
+            comm = tval.get ('comment', tr.comment)
+            loc  = aval.get ('work_location', ar.work_location)
+            strt = aval.get ('start', ar.start)
+            end  = aval.get ('end', ar.end)
+            if not wp :
+                raise Reject (_ ('Distribution: WP must be given'))
+            if not dur :
+                raise Reject (_ ('Distribution: Duration must be given'))
+            if dist < dur :
+                newtr = dict \
+                    ( daily_record  = ar.daily_record
+                    , duration      = dist
+                    , wp            = wp
+                    , time_activity = tact
+                    )
+                newar = dict \
+                    ( work_location = loc
+                    , daily_record  = ar.daily_record
+                    )
+                if comm :
+                    newtr ['comment'] = comm
+                    if 'comment' in tval :
+                        del tval ['comment']
+                sg = aval.get ('start_generated', ar.start_generated)
+                if strt :
+                    newar ['start']           = strt
+                    newar ['end_generated']   = True
+                    newar ['start_generated'] = sg
+                    aval  ['start_generated'] = True
+                    stn = (Date (strt) + dint).pretty (hour_format)
+                    aval  ['start']           = stn
+                self.new_ar_tr (props, links, newar, newtr)
+                # Don't change old values
+                del tval ['wp']
+                if 'time_activity' in tval :
+                    del tval ['time_activity']
+                if 'work_location' in aval :
+                    del aval ['work_location']
+            elif dist > dur : # Nothing to do when dist == dur
+                dist -= dur
+                wstart, wend = common.week_from_date (dr.date)
+                dsearch = common.pretty_range (dr.date, wend)
+                drs = self.db.daily_record.filter \
+                    (None, dict (user = dr.user, date = dsearch))
+                ari = self.db.attendance_record.filter \
+                    (None, dict (daily_record = drs))
+                recs = []
+                for aid in ari :
+                    a = self.db.attendance_record.getnode (aid)
+                    t = self.db.time_record.getnode (a.time_record)
+                    if a.id == id or t.wp :
+                        continue
+                    if a.daily_record == dr.id :
+                        if not strt :
+                            continue
+                        if a.start <= strt :
+                            continue
+                    recs.append ((a, t))
+                if sum (r [1].duration for r in recs) < dist :
+                    m = _ ('Dist must not exceed sum of unassigned times '
+                           'in week'
+                          )
+                    raise Reject (m)
+                drcl = self.db.daily_record
+                for rec in sorted \
+                    ( recs
+                    , key = lambda x :
+                        (drcl.get (x [0].daily_record, 'date'), x [0].start)
+                    ) :
+                    ar = rec [0]
+                    tr = rec [1]
+                    if tr.duration <= dist :
+                        dist -= tr.duration
+                        updar = dict (work_location = loc)
+                        updtr = dict \
+                            ( wp            = wp
+                            , time_activity = tact
+                            )
+                        self.set_ar_tr (props, updar, updtr, tr.id)
+                    else :
+                        updtr   = dict (duration = tr.duration - dist)
+                        updar   = {}
+                        newar   = dict \
+                            ( daily_record  = tr.daily_record
+                            , work_location = loc
+                            )
+                        newtr   = dict \
+                            ( daily_record  = tr.daily_record
+                            , duration      = dist
+                            , wp            = wp
+                            , time_activity = tact
+                            )
+                        if ar.start :
+                            updar ['start_generated'] = True
+                            dstart  = Date (ar.start)
+                            hours   = int (dist)
+                            minutes = (dist - hours) * 60
+                            dstart += Interval ('%d:%d' % (hours, minutes))
+                            updar ['start'] = dstart.pretty (hour_format)
+                            newar ['start'] = ar.start
+                            newar ['end_generated'] = True
+                        self.set_ar_tr (props, updar, updtr, tr.id)
+                        self.new_ar_tr (props, links, newar, newtr)
+                        dist = 0
+                    if not dist :
+                        break
+                assert dist == 0
         self.ok_msg = EditItemAction._editnodes (self, props, links)
         return self.ok_msg
     # end def _editnodes
