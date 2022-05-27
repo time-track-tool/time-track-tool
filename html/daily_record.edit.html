@@ -141,6 +141,9 @@
              (db, 'time_record', 'time_activity', endswith = '')" colspan="2"/>
          <th tal:content="structure python:utils.fieldname
              (db, 'attendance_record', 'work_location', endswith = '')"/>
+         <th tal:condition="python:is_open and edit_ok"
+             tal:content="structure python:utils.fieldname
+             (db, 'attendance_record', 'dist', endswith = '')"/>
         </tr>
         <tal:block tal:repeat="i batch">
          <tal:block
@@ -266,6 +269,12 @@
              <td tal:content="structure python: utils.ExtProperty
               ( utils, ar.work_location, item = ar, editable = editable
               ).menu (is_valid = True)"/>
+             <td tal:condition="python:is_open and edit_ok">
+              <tal:block tal:condition="editable"
+               tal:replace="structure python: utils.ExtProperty
+               ( utils, ar.dist, item = ar, editable = editable, fieldwidth = 5
+               ).as_listentry ()"/>
+            </td>
             </tr>
            </tal:block>
           </tal:block>
