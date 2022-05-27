@@ -579,6 +579,11 @@ _helptext          = \
     , ""'daily_record.status.id'      : [help_id]
     , ""'daily_worktime'              :
       [""'''Maximum time a person may book for a single day.''']
+    , ""'dark_mode'                    :
+      [ ""'''Selects the dark mode style for the new timetracking
+             interface for this user.
+          '''
+      ]
     , ""'defect++superseder'          :
       [superseder]
     , ""'deadline'                    :
@@ -1298,16 +1303,12 @@ _helptext          = \
           '''
       ]
     , ""'needs.id'                    : [help_id]
-    , ""'renegotiations'              :
-      [ ""'''Please state YES, if prices mentioned in the PR are already
-             negotiated with the supplier. If you state NO please
-             comment in message field. Your comments will be used by
-             Approvers as well as Purchasing Agents for decisions or
-             further activities.
-          '''
-      ]
     , ""'netmask'                     :
       [""'''IP net mask for this %(Classname)s, a number (e.g., 16).''']
+    , ""'new_tt_iface'                    :
+      [ ""'''User gets the new timetracking interface.
+          '''
+      ]
     , ""'nickname'                    :
       [""'''Nickname (or short name) for this %(Classname)s, e.g., rsc''']
     , ""'no_overtime'                 :
@@ -1748,6 +1749,14 @@ _helptext          = \
     , ""'remove'                      :
       [ ""'''Remove attached item. Will not remove item from the database,
              it can usually still be downloaded via the History button.
+          '''
+      ]
+    , ""'renegotiations'              :
+      [ ""'''Please state YES, if prices mentioned in the PR are already
+             negotiated with the supplier. If you state NO please
+             comment in message field. Your comments will be used by
+             Approvers as well as Purchasing Agents for decisions or
+             further activities.
           '''
       ]
     , ""'reporting_group'             :
