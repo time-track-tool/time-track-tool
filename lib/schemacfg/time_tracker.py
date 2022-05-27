@@ -605,6 +605,8 @@ def init \
                 , vie_user_bl_override   = Link      ("user")
                 , sync_foreign_key       = String    ()
                 , department_temp        = String    ()
+                , dark_mode              = Boolean   ()
+                , new_tt_iface           = Boolean   ()
                 )
             kw ['User_Class'].__init__ (self, db, classname, ** properties)
         # end def __init__
@@ -947,7 +949,10 @@ def security (db, ** kw) :
     schemadef.register_roles             (db, roles)
     schemadef.register_class_permissions (db, classes, prop_perms)
     schemadef.own_user_detail_permission \
-        (db, 'User', 'View', 'planning_role', 'entry_date')
+        ( db, 'User', 'View'
+        , 'planning_role', 'entry_date', 'dark_mode', 'new_tt_iface'
+        )
+    schemadef.own_user_detail_permission (db, 'User', 'Edit', 'dark_mode')
 
     # Allow retire/restore for Functional-Role
     for perm in 'Retire', 'Restore' :
