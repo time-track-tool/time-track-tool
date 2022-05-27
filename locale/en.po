@@ -7532,3 +7532,9 @@ msgstr "No department approval"
 
 msgid "oob_amount"
 msgstr "Amount Out of Bugdet"
+
+msgid "dark_mode"
+msgstr "Dark Mode"
+
+msgid "new_tt_iface"
+msgstr "New Timetracker"
