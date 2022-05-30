@@ -1,4 +1,4 @@
-#!/usr/bin/python
+#!/usr/bin/python3
 import sys, os
 import csv
 from argparse import ArgumentParser
@@ -92,7 +92,7 @@ if args.as_csv :
         l.extend (('ldap attribute', 'sync direction'))
     writer.writerow (l)
 if args.as_list :
-    print "properties = \\"
+    print ("properties = \\")
 lds = None
 if args.ldap :
     lds = LDAP_Roundup_Sync (db)
@@ -102,20 +102,20 @@ for clcnt, cl in enumerate (sorted (db.getclasses ())) :
         o = ','
         if clcnt == 0 :
             o = '['
-        print "    %s ( '%s'" % (o, cl)
+        print ("    %s ( '%s'" % (o, cl))
     elif args.as_csv :
         writer.writerow ((cl, '', _ (cl)))
     else :
-        print cl
+        print (cl)
     for n, p in enumerate (sorted (klass.properties)) :
         rs = ''
         if args.search :
             rs = '( '
         if args.as_list :
             if n :
-                print "        , %s'%s'" % (rs, p)
+                print ("        , %s'%s'" % (rs, p))
             else :
-                print "      , [ %s'%s'" % (rs, p)
+                print ("      , [ %s'%s'" % (rs, p))
         elif args.as_csv :
             l = ['', p, _ (combined_name (cl, p))]
             if args.ldap and cl in ('user', 'user_contact') :
@@ -144,9 +144,9 @@ for clcnt, cl in enumerate (sorted (db.getclasses ())) :
             if args.verbose :
                 prp = klass.properties [p]
                 typ = prp.__class__.__name__
-                print "    ", p, typ, getattr (prp, 'classname', '')
+                print ("    ", p, typ, getattr (prp, 'classname', ''))
             else :
-                print "    ", p
+                print ("    ", p)
         if args.search :
             roles = []
             for role in sorted (db.security.role) :
@@ -154,21 +154,21 @@ for clcnt, cl in enumerate (sorted (db.getclasses ())) :
                     roles.append (role)
             if args.as_list :
                 r = ', '.join ('"%s"' % r for r in roles)
-                print '          , [%s]' % r
-                print '          )'
+                print ('          , [%s]' % r)
+                print ('          )')
             else :
-                print "        ", ', '.join (roles)
+                print ("        ", ', '.join (roles))
     if args.as_list :
         if not len (db.getclass (cl).properties) :
-            print "      , ["
-        print "        ]"
-        print "      )"
+            print ("      , [")
+        print ("        ]")
+        print ("      )")
 if args.as_list :
-    print "    ]"
-    print
-    print "if __name__ == '__main__' :"
-    print "    for cl, props in properties :"
-    print "        print cl"
-    print "        for p in props :"
-    print "            print '    ', p"
+    print ("    ]")
+    print ()
+    print ("if __name__ == '__main__' :")
+    print ("    for cl, props in properties :")
+    print ("        print cl")
+    print ("        for p in props :")
+    print ("            print '    ', p")
 
