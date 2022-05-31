@@ -230,7 +230,10 @@ class New_Leave_Action (NewItemAction) :
         try :
             NewItemAction.handle (self)
         except Redirect as exc :
-            url = exc.message
+            try :
+                url = exc.message
+            except AttributeError :
+                url = exc.args [0]
         if url :
             up     = url.split  ('?', 1)
             up [0] = self.fixurl.sub ('', up [0])
