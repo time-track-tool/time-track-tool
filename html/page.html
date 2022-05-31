@@ -78,6 +78,7 @@
    , ('adr_type', '')   : '@columns=id,code,description,typecat&'
                           '@sort=code&@filter=typecat&@pagesize=50&'
                           '@startwith=0&typecat=%s' % typecat
+   , ('artefact', '')   : '@columns=name,description,filename_format&@sort=name'
    , ('auto_wp', '')    : '@columns=name,time_project,contract_type,duration&'
                           '@sort=contract_type&@group=org_location&'
                           '@filter=is_valid&'
@@ -271,6 +272,7 @@
    , ('rc_product', '') : '@columns=id,number,rc_product_type,rc_application'
                           ',rc_substrate,rc_brand,rc_suitability&'
                           '@sort=number&@pagesize=20&@startwith=0'
+   , ('reference', '')  : '@columns=name,description&@sort=name'
    , ('room', '')       : '@columns=name,location,description&'
                           '@sort=name&@pagesize=50&@startwith=0'
    , ('sap_cc', '')     : '@columns=deputy,description,id,name,organisation,'

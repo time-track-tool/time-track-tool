@@ -1,5 +1,5 @@
-#! /usr/bin/python
-# Copyright (C) 2004-21 Dr. Ralf Schlatterbeck Open Source Consulting.
+#! /usr/bin/python3
+# Copyright (C) 2004-22 Dr. Ralf Schlatterbeck Open Source Consulting.
 # 
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -22,6 +22,8 @@
 
 import csv
 import re
+import sys
+import codecs
 from io import StringIO
 
 from datetime              import datetime
@@ -425,11 +427,9 @@ class Export_CSV_Names (Action, autosuper) :
             # all done, return a dummy string
             return 'dummy'
 
-        io = outfile
-        if io is None :
-            io = self.client.request.wfile
+        wfile  = self.setup_wfile (outfile)
         writer = self.csv_writer \
-            ( io
+            ( wfile
             , dialect   = 'excel'
             , delimiter = self.delimiter
             , quoting   = self.quoting
@@ -458,6 +458,22 @@ class Export_CSV_Names (Action, autosuper) :
                 )
         return True_Value ('')
     # end def handle
+
+    def setup_wfile (self, outfile) :
+        wfile = outfile
+        if wfile is None :
+            wfile = self.client.request.wfile
+        if sys.version_info [0] > 2 :
+            wfile = codecs.getwriter (self.client.charset) (wfile, 'replace')
+        elif self.client.charset != self.client.STORAGE_CHARSET :
+            wfile = codecs.EncodedFile \
+                ( wfile
+                , self.client.STORAGE_CHARSET
+                , self.client.charset
+                , 'replace'
+                )
+        return wfile
+    # end def setup_wfile
 # end class Export_CSV_Names
 
 class Export_CSV_Addresses (Export_CSV_Names) :
@@ -618,11 +634,9 @@ class Export_CSV_Lielas (Export_CSV_Names, SearchAction) :
         for n, sid in enumerate (sids) :
             index_by_sid [sid] = n + 1
 
-        io = outfile
-        if io is None :
-            io = self.client.request.wfile
+        wfile  = self.setup_wfile (outfile)
         writer = self.csv_writer \
-            ( io
+            ( wfile
             , dialect   = 'excel'
             , delimiter = self.delimiter
             , quoting   = self.quoting
