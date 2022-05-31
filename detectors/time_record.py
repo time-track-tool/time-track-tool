@@ -68,6 +68,8 @@ def check_timestamps (start, end, date) :
 # end def check_timestamps
 
 def check_duration (d, max = 0) :
+    if d is None :
+        raise Reject (_ ("Duration (or Start/End) must be given"))
     if d < 0 :
         raise Reject (_ ("No negative times are allowed"))
     if (d * 3600) % 900 :
@@ -492,7 +494,7 @@ def check_start_end_duration \
                 ds      = Date (start, offset = 0)
                 t = (ds + Interval ('%d:%d' % (hours, minutes))).pretty \
                     (hour_format)
-                if duration > 0 and t == '00:00' :
+                if duration is not None and duration > 0 and t == '00:00' :
                     t = '24:00'
                 dstart, dend, sp, ep, dur = check_timestamps (start, t, date)
                 assert dur == duration
@@ -647,7 +649,13 @@ def new_time_record (db, cl, nodeid, new_values) :
     hours    = int (ld)
     minutes  = (ld - hours) * 60
     le       = ls + Interval ('%d:%d' % (hours, minutes))
-    if not travel and duration > 6 and start and dstart < ls and dend > ls :
+    if  (   not travel
+        and duration is not None
+        and duration > 6
+        and start
+        and dstart < ls
+        and dend > ls
+        ) :
         newrec  = { 'daily_record' : new_values ['daily_record']
                   , 'start'        : le.pretty (hour_format)
                   }
