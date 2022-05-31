@@ -1,5 +1,5 @@
-#! /usr/bin/python
-# Copyright (C) 2006-21 Dr. Ralf Schlatterbeck Open Source Consulting.
+#! /usr/bin/python3
+# Copyright (C) 2006-22 Dr. Ralf Schlatterbeck Open Source Consulting.
 # 
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -22,6 +22,7 @@
 
 from roundup.cgi.TranslationService import get_translation
 from roundup.date                   import Date, Range
+from roundup.anypy.strings          import s2u
 from maturity_index                 import maturity_table
 import os
 import textwrap
@@ -2486,9 +2487,7 @@ def help_properties (klass) :
         pname = combined_name (klass.classname, i)
         if pname in _helptext :
             p.append (pname)
-    p = [(_ (i).decode ('utf-8'), i) for i in p]
-    p.sort ()
-    return [i [1] for i in p]
+    return list (sorted (p, key = lambda x : _ (s2u (x))))
 # end def help_properties
 
 def fieldlabel \
