@@ -572,7 +572,8 @@ def vacation_wp (db, wpid) :
 # end def vacation_wp
 
 def check_open_not_frozen (db, dr, uname) :
-    _ = db.i18n.gettext
+    _   = db.i18n.gettext
+    uid = db.getuid ()
     if dr.status != db.daily_record_status.lookup ('open') and uid != '1' :
         raise Reject, _ ('Editing of time records only for status "open"')
     if frozen (db, dr.user, dr.date) :
@@ -587,7 +588,10 @@ def new_attendance_record (db, cl, nodeid, new_values) :
     dr     = db.daily_record.getnode (new_values ['daily_record'])
     uname  = db.user.get (dr.user, 'username')
     trid   = new_values.get ('time_record', None)
-    check_open_not_frozen (db, dr, uname)
+    # For running lifter script, normally no attendance record is ever
+    # created by admin.
+    if uid != '1' or not trid :
+        check_open_not_frozen (db, dr, uname)
     duration = None
     if trid :
         tr = db.time_record.getnode (trid)
