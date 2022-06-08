@@ -303,6 +303,7 @@ def init \
         , daily_record          = Link      ( "daily_record"
                                             , rev_multilink
                                               = "attendance_record"
+                                            , do_journal = "no"
                                             )
         , start                 = String    (indexme = "no")
         , end                   = String    (indexme = "no")
@@ -313,6 +314,7 @@ def init \
         , time_record           = Link      ( "time_record"
                                             , rev_multilink
                                               = "attendance_record"
+                                            , do_journal = "no"
                                             )
         )
 
