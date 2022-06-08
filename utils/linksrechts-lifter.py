@@ -11,6 +11,11 @@ dir     = os.getcwd ()
 tracker = instance.open (dir)
 db      = tracker.open ('admin')
 
+# Fix work locations for new time tracking interface
+# Also create attendance records for existing time records.
+# To be idempotent the scripts stops when encountering a time record
+# with a non-empty attendence record backlink.
+
 
 wldict = dict \
     (( ('1', ('Office',          10))
@@ -40,4 +45,54 @@ for id in db.work_location.getnodeids (retired = False) :
             d ['is_off'] = True
         if d :
             db.work_location.set (id, **d)
-db.commit()
+
+def interval (duration) :
+    h = int (duration)
+    m = (duration - h) * 60
+    return date.Interval ('%02d:%02d' % (h, m))
+
+do_commit = True
+for id in db.time_record.getnodeids (retired = False) :
+    tr = db.time_record.getnode (id)
+    if tr.attendance_record :
+        do_commit = False
+        break
+    d = dict \
+        ( daily_record = tr.daily_record
+        , time_record  = tr.id
+        )
+    if tr.end :
+        d ['end']   = tr.end
+        if tr.start :
+            d ['start'] = tr.start
+        else :
+            print ("\nW:time_record%s: No start" % tr.id)
+            if not tr.duration :
+                print ("\nE:time_record%s: end but no duration/start" % tr.id)
+                continue
+            h = int (tr.duration)
+            dt = date.Date (d ['end']) - interval (tr.duration)
+            d ['start'] = dt.pretty ('%H:%M')
+    elif tr.start :
+        print ("\nW:time_record%s: No end" % tr.id)
+        if not tr.duration :
+            print ("\nE:time_record%s: end but no duration/start" % tr.id)
+            continue
+        dt = date.Date (d ['start']) + interval (tr.duration)
+        d ['end'] = dt.pretty ('%H:%M')
+
+    if d.get ('start') :
+        if tr.start_generated :
+            d ['start_generated'] = tr.start_generated
+        if tr.end_generated :
+            d ['end_generated'] = tr.end_generated
+    if tr.work_location :
+        d ['work_location'] = tr.work_location
+    arid = db.attendance_record.create (**d)
+    print ("created attendance_record%s" % arid, end = '\r')
+    # Commit every 10000 records, otherwise this gets quadratically slower
+    if int (arid) % 10000 == 0 :
+        print ("\ncommit")
+        db.commit ()
+if do_commit :
+    db.commit()
