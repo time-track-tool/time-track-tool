@@ -1530,6 +1530,7 @@ def security (db, ** kw) :
         ( 'name', 'description', 'responsible', 'deputy'
         , 'status', 'work_location', 'op_project', 'id'
         , 'is_public_holiday', 'is_vacation', 'is_special_leave'
+        , 'max_hours', 'no_overtime', 'no_overtime_day'
         , 'creation', 'creator', 'activity', 'actor'
         , 'overtime_reduction', 'only_hours', 'is_extern', 'nosy'
         , 'wps'
