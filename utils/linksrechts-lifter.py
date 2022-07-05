@@ -55,6 +55,7 @@ do_commit = True
 for id in db.time_record.getnodeids (retired = False) :
     tr = db.time_record.getnode (id)
     if tr.attendance_record :
+        print ("Detected attendance record, not creating records")
         do_commit = False
         break
     d = dict \
