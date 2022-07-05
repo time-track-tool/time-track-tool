@@ -52,10 +52,21 @@ def interval (duration) :
     return date.Interval ('%02d:%02d' % (h, m))
 
 do_commit = True
+try:
+    db.sql \
+        ( 'create index _attendance_record_time_record_idx on '
+          '_attendance_record (_time_record);'
+        )
+except Exception as err:
+    print ("Index creation failed: %s" % err)
+    do_commit = False
 for id in db.time_record.getnodeids (retired = False) :
+    if not do_commit:
+        print ("Not creating attendance records, index creation failed")
+        break
     tr = db.time_record.getnode (id)
     if tr.attendance_record :
-        print ("Detected attendance record, not creating records")
+        print ("Not creating attendance records, detected existing record")
         do_commit = False
         break
     d = dict \
