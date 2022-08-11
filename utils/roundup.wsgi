@@ -1,4 +1,4 @@
-#!/usr/bin/python
+#!/usr/bin/python3
 
 from os.path import dirname, abspath
 from roundup.cgi.wsgi_handler import RequestDispatcher
