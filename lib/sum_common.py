@@ -116,11 +116,11 @@ def get_users (db, filterspec, start, end) :
         etc. where the user belongs to the given entity via a valid dyn
         user record between start and end)
     """
-    users = filterspec.get ('user', [])
+    users = list (filterspec.get ('user', []))
     sv    = dict ((i, 1) for i in filterspec.get ('supervisor', []))
     svu   = []
     if sv :
-        svu = db.user.find (supervisor = sv)
+        svu = list (db.user.find (supervisor = sv))
     users = dict ((u, 1) for u in users + svu)
     found = bool (users)
     olo   = None

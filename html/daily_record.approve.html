@@ -18,7 +18,7 @@
    ; pending python: utils.approvals_pending
              (db, request, users)
    ; users   python:utils.sorted
-             ([db._db.user.getnode (u) for u in pending.keys ()], ('username',))
+             ([db._db.user.getnode (u) for u in pending], ('username',))
    ">
    <table class="list" border="1" tal:condition="pending">
     <tr>
@@ -26,7 +26,7 @@
      <th i18n:translate="">Week</th>
     </tr>
     <tal:block tal:repeat="u python:users">
-     <tr tal:repeat="w python:sorted (pending [u.id].iterkeys ())">
+     <tr tal:repeat="w python:sorted (pending [u.id])">
        <td>
         <a tal:content="python: u.username"
            tal:attributes=

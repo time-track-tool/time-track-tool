@@ -1,4 +1,4 @@
-# Copyright (C) 2010-13 Ralf Schlatterbeck. All rights reserved
+# Copyright (C) 2010-21 Ralf Schlatterbeck. All rights reserved
 # Reichergasse 131, A-3411 Weidling
 # ****************************************************************************
 #
@@ -114,7 +114,8 @@ def check_contact (db, cl, nodeid, new_values) :
 # end def check_contact
 
 def relink_contact (db, cl, nodeid, old_values) :
-    for n, l in cl.properties.iteritems () :
+    for n in cl.properties :
+       l = cl.properties [n]
        if n == 'contact_type' :
           continue
        if isinstance (l, Link) :

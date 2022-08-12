@@ -1,5 +1,5 @@
 #! /usr/bin/python
-# Copyright (c) 2010 Ralf Schlatterbeck (rsc@runtux.com)
+# Copyright (c) 2010-21 Ralf Schlatterbeck (rsc@runtux.com)
 # 
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -33,7 +33,7 @@ def new_singleton (db, cl, nodeid, new_values) :
     """
     if cl.getnodeids () :
         n = cl.classname
-        raise Reject, _ ('May not create another instance of "%s"') % _ (n)
+        raise Reject (_ ('May not create another instance of "%s"') % _ (n))
 # end def new_singleton
 
 def init (db) :

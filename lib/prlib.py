@@ -396,7 +396,7 @@ class Approval_Logic :
                 roles.extend (pt.pr_roles)
             roles.extend (pt.pr_forced_roles)
             # Make them unique
-            roles = dict.fromkeys (roles).keys ()
+            roles = list (set (roles))
             for role in roles :
                 self.add_approval_with_role (role)
         # Loop over offer items and add additional approvals if

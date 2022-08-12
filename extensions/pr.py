@@ -1,5 +1,5 @@
 #! /usr/bin/python
-# Copyright (C) 2015 Dr. Ralf Schlatterbeck Open Source Consulting.
+# Copyright (C) 2015-21 Dr. Ralf Schlatterbeck Open Source Consulting.
 # Reichergasse 131, A-3411 Weidling.
 # Web: http://www.runtux.com Email: office@runtux.com
 # All rights reserved
@@ -21,8 +21,11 @@
 
 import prlib
 import common
-import cgi
-from   urllib                 import urlencode
+from   html import escape
+try :
+    from urllib.parse import urlencode
+except ImportError :
+    from urllib import urlencode
 from   rsclib.autosuper       import autosuper
 from   roundup.cgi.exceptions import Redirect
 from   roundup.cgi.actions    import EditItemAction, NewItemAction, EditCommon
@@ -39,10 +42,10 @@ class PR_Submit (EditCommon, autosuper) :
     def _editnodes (self, props, links) :
         for (cl, id), val in props.items () :
             if cl == 'pr_offer_item' :
-                if int (id) < 0 and val.keys () == ['is_asset'] :
+                if int (id) < 0 and list (val) == ['is_asset'] :
                     del props [(cl, id)]
             if cl == 'pr_approval' :
-                if val.keys () == ['msg'] or val.keys () == [] :
+                if list (val) == ['msg'] or list (val) == [] :
                     del props [(cl, id)]
                     # find it in links
                     for n, (c, i, p, r) in enumerate (links [:]) :
@@ -129,8 +132,8 @@ def supplier_approved (db, context, supplier) :
     assert len (r) <= 1
     if len (r) == 1 :
         s = ( 'Rating: %s (<a title="%s" href="pr_supplier_rating%s">Scope</a>)'
-            % ( cgi.escape (str (r [0].rating))
-              , cgi.escape (str (r [0].scope))
+            % ( escape (str (r [0].rating))
+              , escape (str (r [0].scope))
               , r [0].id
               )
             )

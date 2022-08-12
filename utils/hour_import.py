@@ -163,7 +163,7 @@ class Hour_Updater (object) :
         # may use non-numeric ids here. The fields shown are all required,
         # additional fields may be present.
 
-	js = dict (system_name = 'WTIS', levels = [])
+        js = dict (system_name = 'WTIS', levels = [])
         lvl1 = dict \
             ( level = 1
             , level_name = 'Project or whatever your first level is called'

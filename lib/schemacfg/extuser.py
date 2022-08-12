@@ -1,6 +1,6 @@
 #! /usr/bin/python
 # -*- coding: iso-8859-1 -*-
-# Copyright (C) 2012-13 Dr. Ralf Schlatterbeck Open Source Consulting.
+# Copyright (C) 2012-21 Dr. Ralf Schlatterbeck Open Source Consulting.
 # Reichergasse 131, A-3411 Weidling.
 # Web: http://www.runtux.com Email: office@runtux.com
 # All rights reserved
@@ -98,9 +98,7 @@ def security (db, ** kw) :
     # don't allow external_company or External for some issue attributes
     exceptions = dict.fromkeys \
         (('external_company', 'confidential', 'external_users', 'inherit_ext'))
-    issue_props = [p for p in db.issue.getprops ().iterkeys ()
-                   if p not in exceptions
-                  ]
+    issue_props = [p for p in db.issue.getprops () if p not in exceptions]
 
     if 'external_company' in db.issue.properties :
         def ext_company_access (db, userid, itemid) :

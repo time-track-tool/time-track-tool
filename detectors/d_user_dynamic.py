@@ -1,5 +1,5 @@
 #! /usr/bin/python
-# Copyright (C) 2006-14 Dr. Ralf Schlatterbeck Open Source Consulting.
+# Copyright (C) 2006-21 Dr. Ralf Schlatterbeck Open Source Consulting.
 # Reichergasse 131, A-3411 Weidling.
 # Web: http://www.runtux.com Email: office@runtux.com
 # All rights reserved
@@ -28,7 +28,10 @@
 #    Detectors for 'user_dynamic'
 #
 
-from itertools                      import izip
+try :
+    from itertools import izip
+except ImportError :
+    izip = zip
 from roundup.exceptions             import Reject
 from roundup.date                   import Date
 from roundup.cgi.TranslationService import get_translation
@@ -302,7 +305,7 @@ def check_user_dynamic (db, cl, nodeid, new_values) :
     # the user_dynamic record. So when checking for frozen status we
     # can allow exactly the valid_to date.
     otw = common.overtime_period_week (db)
-    nvk = list (sorted (new_values.keys ()))
+    nvk = list (sorted (new_values))
     old_flexmax = cl.get (nodeid, 'max_flexitime')
     vac_all  = ('vacation_day', 'vacation_month', 'vacation_yearly', 'vac_aliq')
     vac_aliq = cl.get (nodeid, 'vac_aliq')
@@ -312,14 +315,14 @@ def check_user_dynamic (db, cl, nodeid, new_values) :
         and db.getuid () == '1'
         )
     flexi_fix = \
-        new_values.keys () == ['max_flexitime'] and old_flexmax is None
+        list (new_values) == ['max_flexitime'] and old_flexmax is None
     exemption = \
-        (   list (new_values.keys ()) == ['exemption']
+        (   list (new_values) == ['exemption']
         and new_values ['exemption'] == False
         and db.getuid () == '1'
         )
     if  (   freeze.frozen (db, user, old_from)
-        and (  new_values.keys () != ['valid_to']
+        and (  list (new_values) != ['valid_to']
             or not val_to
             or freeze.frozen (db, user, val_to)
             )

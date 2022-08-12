@@ -68,7 +68,7 @@ for i in issues :
               )
             )
         adrs = dict.fromkeys (x.address for x in (u1, u2, uc))
-        for e in adrs.iterkeys () :
+        for e in adrs :
             if e not in emails :
                 emails [e] = []
             emails [e].append (s)
@@ -83,7 +83,8 @@ if opt.send_email :
          , 'Content-Transfer-Encoding: 8bit'
         ))
 
-for e, m in emails.iteritems () :
+for e in emails :
+    m = emails [e]
     if opt.send_email :
         to  = "To: %s" % e
         frm = "From: %s" % db.config.ADMIN_EMAIL

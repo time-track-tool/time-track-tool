@@ -1,5 +1,5 @@
 #! /usr/bin/python
-# Copyright (C) 2006-10 Dr. Ralf Schlatterbeck Open Source Consulting.
+# Copyright (C) 2006-21 Dr. Ralf Schlatterbeck Open Source Consulting.
 # Reichergasse 131, A-3411 Weidling.
 # Web: http://www.runtux.com Email: office@runtux.com
 # All rights reserved
@@ -32,15 +32,6 @@ _fixed_in_patterns = \
     , re.compile (r"^\s*0\.0(\.0)?\s*$")
     , re.compile (r"[bB][rR][aA][nN][cC][hH]")
     ]
-
-def union (* lists) :
-    """Compute the union of lists.
-    """
-    tab = {}
-    for l in lists :
-        map (lambda x, tab = tab : tab.update  ({x : 1}), l)
-    return tab.keys ()
-# end def union
 
 def initial_status_ok (db, status_id, cat_id, is_simple) :
     """ Allow "escalated" when submitting new issue. This is allowed in
@@ -118,17 +109,24 @@ def limit_new_entry (db, cl, nodeid, newvalues) :
     if not severity :
         severity = newvalues ['severity'] = db.severity.lookup ('Minor')
     if not title :
-        raise Reject, _ ('You must enter a "title".')
+        raise Reject (_ ('You must enter a "title".'))
     if not msg :
         field = _ ('msg')
-        raise Reject, _ ("A detailed description must be given in %(field)s") \
-                        % locals ()
+        raise Reject \
+            ( _ ("A detailed description must be given in %(field)s")
+            % locals ()
+            )
     if kindid == bug and 'release' not in newvalues :
-        raise Reject, _ ("For a %(bugname)s you have to specify the release") \
-                        % locals ()
+        raise Reject \
+            ( _ ("For a %(bugname)s you have to specify the release")
+            % locals ()
+            )
     if not kind.simple and status != analyzing and not effort :
-        raise Reject, \
-            _ ("An effort estimation is required for issues to skip analyzing")
+        raise Reject \
+            (_ ("An effort estimation is required for "
+                "issues to skip analyzing"
+               )
+            )
 
     # Set `part_of` to the category default if not given.
     if not part_of :
@@ -138,7 +136,8 @@ def limit_new_entry (db, cl, nodeid, newvalues) :
     if not responsible :
         responsible = category.responsible
         if not responsible :
-            raise Reject, _('No responsible for category "%s"') % category.name
+            raise Reject \
+                (_ ('No responsible for category "%s"') % category.name)
         newvalues ["responsible"] = responsible
 
     if not user_has_role (db, responsible, 'Nosy') :
@@ -152,19 +151,21 @@ def limit_new_entry (db, cl, nodeid, newvalues) :
     nosy     = newvalues.get   ("nosy", [])
     cat_nosy = category.nosy
     cat_resp = category.responsible
-    creator  = newvalues.get   ("creator")
-    addnosy  = [creator, responsible]
+    addnosy  = []
+    if responsible :
+        addnosy.append (responsible)
     if cat_resp :
         addnosy.append (cat_resp)
-    nosy     = union (nosy, cat_nosy, addnosy)
-    newvalues ["nosy"] = filter (None, nosy)
+    nosy     = list (set (nosy).union (cat_nosy).union (addnosy))
+    newvalues ["nosy"] = nosy
 
     # It is meaningless to create obsolete or mistaken issues.
     if kind.name in ["Mistaken", "Obsolete"] :
-        raise Reject, ( '[%s] It is stupid to create a new issue with a '
-                        'kind of "Mistaken" or "Obsolete".'
-                      % nodeid
-                      )
+        raise Reject \
+            ( '[%s] It is stupid to create a new issue with a '
+              'kind of "Mistaken" or "Obsolete".'
+            % nodeid
+            )
 # end def limit_new_entry
 
 def may_not_vanish (db, cl, nodeid, newvalues, new_status_name) :
@@ -183,7 +184,7 @@ def may_not_vanish (db, cl, nodeid, newvalues, new_status_name) :
         new = newvalues.get (k, old)
         if new != old and (new is None or new == '') :
             if not (except_analyzing and new_status_name == "analyzing") :
-                raise Reject, _ ('The field "%s" must remain filled.') % _ (k)
+                raise Reject (_ ('The field "%s" must remain filled.') % _ (k))
 # end def may_not_vanish
 
 def limit_transitions (db, cl, nodeid, newvalues) :
@@ -231,11 +232,11 @@ def limit_transitions (db, cl, nodeid, newvalues) :
             if  (   newvalues.get ('kind')
                 and kind_name in ["Mistaken", "Obsolete"]
                 ) :
-                raise Reject, \
-                    "A container may not be set to Mistaken or Obsolete."
+                raise Reject \
+                    ("A container may not be set to Mistaken or Obsolete.")
             if newvalues.get ('superseder') :
-                raise Reject, \
-                    "A container may not be a duplicate of another issue."
+                raise Reject \
+                    ("A container may not be a duplicate of another issue.")
         new_status_name = "closed"
         newvalues ["status"] = new_status = db.status.lookup (new_status_name)
 
@@ -267,15 +268,15 @@ def limit_transitions (db, cl, nodeid, newvalues) :
                or superseder
                or is_container
                ) :
-            raise Reject, ( "[%s] To close this issue, kind must be set to "
-                            "`Mistaken` or `Obsolete`, <br>or this issue must "
-                            "be a duplicate of another issue or a container."
-                          % nodeid
-                          )
+            raise Reject \
+                ( "[%s] To close this issue, kind must be set to "
+                  "`Mistaken` or `Obsolete`, <br>or this issue must "
+                  "be a duplicate of another issue or a container."
+                % nodeid
+                )
         if (kind_name in ["Mistaken", "Obsolete"] or superseder) and not msg :
-            raise Reject, ( "[%s] A reason in `message` must be given here."
-                          % nodeid
-                          )
+            raise Reject \
+                ("[%s] A reason in `message` must be given here." % nodeid)
 
     # Don't allow state change if doc_issue_status doesn't allow it
     if  (   dis_name in db.classes and dis_name in cl.properties
@@ -288,7 +289,7 @@ def limit_transitions (db, cl, nodeid, newvalues) :
         ) :
             dis_name_l = _ (dis_name)
             st         = di_status.name
-            raise Reject, \
+            raise Reject \
                 ( "[%(nodeid)s] %(dis_name_l)s = %(st)s "
                   "doesn't allow state change to %(new_status_name)s"
                 % locals ()
@@ -301,12 +302,12 @@ def limit_transitions (db, cl, nodeid, newvalues) :
         ) :
         if new_status_name != 'closed' :
             if not kind :
-                raise Reject, "Kind must be filled in for status change"
+                raise Reject ("Kind must be filled in for status change")
             if effort is None :
-                raise Reject, "Effort must be filled in for status change"
+                raise Reject ("Effort must be filled in for status change")
         if new_status_name == "open" and category.cert_sw :
             if kind_name == 'Change-Request' :
-                raise Reject, "No State-change to open for Change-Request"
+                raise Reject ("No State-change to open for Change-Request")
             max_effort = int (getattr (db.config.ext, 'LIMIT_EFFORT', 8))
             if effort > max_effort :
                 raise Reject \
@@ -319,10 +320,11 @@ def limit_transitions (db, cl, nodeid, newvalues) :
     # A `message` must be given whenever `responsible` changes.
     if old_responsible != new_responsible :
         if not msg :
-            raise Reject, ( "[%s] A reason in `message` must be given to "
-                            "change the `responsible`."
-                          % nodeid
-                          )
+            raise Reject \
+                ( "[%s] A reason in `message` must be given to "
+                  "change the `responsible`."
+                % nodeid
+                )
         if not user_has_role (db, new_responsible, 'Nosy') :
             raise Reject \
                 ( _ ("'%s' is not a valid user (need 'Nosy' role)!")
@@ -338,27 +340,28 @@ def limit_transitions (db, cl, nodeid, newvalues) :
         # Check if the `fixed_in` field is filled in when moving to
         # `testing` or `closed`.
         if not fixed and new_status_name in ("testing", "closed") :
-            raise Reject, ( "[%s] The 'fixed_in' field must be set for "
-                            "a transition to 'testing' or 'closed'."
-                          % nodeid
-                          )
+            raise Reject \
+                ( "[%s] The 'fixed_in' field must be set for "
+                  "a transition to 'testing' or 'closed'."
+                % nodeid
+                )
         if not severity :
-            raise Reject, ( "[%s] The 'severity' field must be set for "
-                            "this transition"
-                          % nodeid
-                          )
+            raise Reject \
+                ( "[%s] The 'severity' field must be set for this transition"
+                % nodeid
+                )
         if category.name == 'pending' :
-            raise Reject, ( "[%s] No status change for category 'pending'"
-                          % nodeid
-                          )
+            raise Reject \
+                ("[%s] No status change for category 'pending'" % nodeid)
 
     # Check that fixed_in does not contain illegal pattern
     if 'fixed_in' in newvalues and fixed :
         for p in _fixed_in_patterns :
             if p.search (fixed) :
-                raise Reject, ( "[%s] %s is not allowed for the fixed_in field"
-                              % (nodeid, fixed)
-                              )
+                raise Reject \
+                    ( "[%s] %s is not allowed for the fixed_in field"
+                    % (nodeid, fixed)
+                    )
 
     # Ensure `files_affected` to be filled on certifyable products.
     if (   (  cur_status_name == "testing" and new_status_name == "closed"
@@ -367,10 +370,11 @@ def limit_transitions (db, cl, nodeid, newvalues) :
        and category.cert_sw
        and not affected
        ) :
-        raise Reject, ( "[%s] The `files_affected` field must be (or remain) "
-                        "set for certified software."
-                      % nodeid
-                      )
+        raise Reject \
+            ( "[%s] The `files_affected` field must be (or remain) "
+              "set for certified software."
+            % nodeid
+            )
 
     if  (   not is_container
         and (new_status_name != cur_status_name or 'severity' in newvalues)
@@ -399,7 +403,7 @@ def part_of_changed (db, cl, nodeid, newvalues) :
     """Remove this issue from the old `part_of`.`composed_of` and
        check the old/new `part_of`.`composed_of` for consistency.
     """
-    if newvalues.has_key ("part_of"):
+    if "part_of" in newvalues :
         old_part_of_id = cl.get (nodeid, "part_of")
         new_part_of_id = newvalues.get ("part_of")
         if old_part_of_id != new_part_of_id :
@@ -407,19 +411,19 @@ def part_of_changed (db, cl, nodeid, newvalues) :
             if 'maturity_index' in cl.properties :
                 newvalues ['maturity_index'] = None
             if new_part_of_id == nodeid :
-                raise Reject, ( "[%s] `Part of` cannot point to itself."
-                              % nodeid
-                              )
+                raise Reject \
+                    ("[%s] `Part of` cannot point to itself." % nodeid)
             if new_part_of_id in cl.get (nodeid, "composed_of") :
-                raise Reject, ( "[%s] `Part of` cannot be set to an item "
-                                "already in this issue's `Composed of`."
-                              % nodeid
-                              )
+                raise Reject \
+                    ( "[%s] `Part of` cannot be set to an item "
+                      "already in this issue's `Composed of`."
+                    % nodeid
+                    )
             if old_part_of_id :
                 # remove this issue from old_part_of's composed_of
                 parts = cl.get (old_part_of_id, "composed_of")
                 # remove multiples
-                parts = filter (lambda x: x != nodeid, parts)
+                parts = [x for x in parts if x != nodeid]
                 cl.set (old_part_of_id, composed_of = parts)
                 validate_composed_of (db, cl, old_part_of_id)
             if new_part_of_id :

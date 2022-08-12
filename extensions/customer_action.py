@@ -1,5 +1,5 @@
 #! /usr/bin/python
-# Copyright (C) 2006 Dr. Ralf Schlatterbeck Open Source Consulting.
+# Copyright (C) 2006-21 Dr. Ralf Schlatterbeck Open Source Consulting.
 # Reichergasse 131, A-3411 Weidling.
 # Web: http://www.runtux.com Email: office@runtux.com
 # All rights reserved
@@ -72,10 +72,10 @@ class Create_New_Address (Action) :
         if isinstance (klass.properties [attr], Multilink) :
             newvalue = klass.get (id, attr) [:]
             newvalue.append (newid)
-            newvalue = dict.fromkeys (newvalue).keys ()
+            newvalue = list (set (newvalue))
         klass.set (id, ** {attr : newvalue})
         self.db.commit ()
-        raise Redirect, "%s%s" % (self.request.classname, id)
+        raise Redirect ("%s%s" % (self.request.classname, id))
     # end def handle
 # end class Create_New_Address
 

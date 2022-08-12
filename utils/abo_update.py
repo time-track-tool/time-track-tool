@@ -21,7 +21,7 @@ storno_abos   = db.abo.filter (None, {'end' : now.pretty (';%Y-%m-%d')})
 for abo in valid_abos + storno_abos :
     adr [db.abo.get (abo, 'subscriber')] = 1
 
-for a in adr.iterkeys () :
+for a in adr :
     # May seem like a noop -- leave the correct updating to the auditor.
     db.address.set (a, adr_type = db.address.get (a, 'adr_type'))
 db.commit ()

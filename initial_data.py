@@ -1,5 +1,5 @@
 #! /usr/bin/python
-# Copyright (C) 2004-20 Dr. Ralf Schlatterbeck Open Source Consulting.
+# Copyright (C) 2004-21 Dr. Ralf Schlatterbeck Open Source Consulting.
 # Reichergasse 131, A-3411 Weidling.
 # Web: http://www.runtux.com Email: office@runtux.com
 # All rights reserved
@@ -29,6 +29,7 @@
 
 # init values
 from roundup.cgi.TranslationService import get_translation
+from roundup.anypy.strings import b2s
 
 _ = get_translation (db.config.TRACKER_LANGUAGE, db.config.TRACKER_HOME).gettext
 
@@ -348,7 +349,8 @@ if 'status' in db.classes and 'status_transition' in db.classes :
     for order, (name, desc, x) in enumerate (status_lst) :
         db.status.create (name = name, order = str (order), description = desc)
 
-    for name, tgt, msg, resp in trans_lst.itervalues () :
+    for k in trans_lst :
+        name, tgt, msg, resp = trans_lst [k]
         db.status_transition.create \
             ( name                = name
             , target              = tgt
@@ -449,8 +451,8 @@ if 'currency' in db.classes :
 if 'valid' in db.classes :
     valid = db.getclass ('valid')
     valid.create \
-        ( name = b'g\xc3\xbcltig'
-        , description = b'G\xc3\xbcltige Adresse'
+        ( name = b2s (b'g\xc3\xbcltig')
+        , description = b2s (b'G\xc3\xbcltige Adresse')
         )
 
 if 'adr_type_cat' in db.classes :
@@ -486,13 +488,13 @@ if 'contact_type' in db.classes :
         )
 if 'customer_status' in db.classes :
     db.customer_status.create \
-        ( name         = b'g\xc3\xbcltig'
-        , description  = b'G\xc3\xbcltiger Kunde'
+        ( name         = b2s (b'g\xc3\xbcltig')
+        , description  = b2s (b'G\xc3\xbcltiger Kunde')
         , order        = 1
         , valid        = True
         )
     db.customer_status.create \
-        ( name         = b'ung\xc3\xbcltig'
+        ( name         = b2s (b'ung\xc3\xbcltig')
         , description  = 'Kein Kunde'
         , order        = 2
         , valid        = False
@@ -500,13 +502,13 @@ if 'customer_status' in db.classes :
 
 if 'supplier_status' in db.classes :
     db.supplier_status.create \
-        ( name         = b'g\xc3\xbcltig'
-        , description  = b'G\xc3\xbcltiger Lieferant'
+        ( name         = b2s (b'g\xc3\xbcltig')
+        , description  = b2s (b'G\xc3\xbcltiger Lieferant')
         , order        = 1
         , valid        = True
         )
     db.supplier_status.create \
-        ( name         = b'ung\xc3\xbcltig'
+        ( name         = b2s (b'ung\xc3\xbcltig')
         , description  = 'Kein Lieferant'
         , order        = 2
         , valid        = False
@@ -514,14 +516,14 @@ if 'supplier_status' in db.classes :
 
 if 'product_status' in db.classes :
     db.product_status.create \
-        ( name         = b'g\xc3\xbcltig'
-        , description  = b'G\xc3\xbcltiger Artikel'
+        ( name         = b2s (b'g\xc3\xbcltig')
+        , description  = b2s (b'G\xc3\xbcltiger Artikel')
         , order        = 1
         , valid        = True
         )
     db.product_status.create \
-        ( name         = b'ung\xc3\xbcltig'
-        , description  = b'Kein g\xc3\xbcltiger Artikel'
+        ( name         = b2s (b'ung\xc3\xbcltig')
+        , description  = b2s (b'Kein g\xc3\xbcltiger Artikel')
         , order        = 2
         , valid        = False
         )
@@ -552,19 +554,19 @@ if 'tmplate_status' in db.classes :
     db.tmplate_status.create \
         ( name            = 'Brief'
         , order           = 1
-        , description     = b'Vorlage f\xc3\xbcr Briefe'
+        , description     = b2s (b'Vorlage f\xc3\xbcr Briefe')
         , use_for_invoice = False
         , use_for_letter  = True
         )
     db.tmplate_status.create \
         ( name            = 'Rechnung'
         , order           = 2
-        , description     = b'Vorlage f\xc3\xbcr Rechnungen'
+        , description     = b2s (b'Vorlage f\xc3\xbcr Rechnungen')
         , use_for_invoice = True
         , use_for_letter  = False
         )
     db.tmplate_status.create \
-        ( name            = b'Ung\xc3\xbcltig'
+        ( name            = b2s (b'Ung\xc3\xbcltig')
         , order           = 1
         , description     = 'Vorlage derzeit nicht in Verwendung'
         , use_for_invoice = False

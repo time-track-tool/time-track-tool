@@ -1,5 +1,5 @@
 #! /usr/bin/python
-# Copyright (C) 2006 Dr. Ralf Schlatterbeck Open Source Consulting.
+# Copyright (C) 2006-21 Dr. Ralf Schlatterbeck Open Source Consulting.
 # Reichergasse 131, A-3411 Weidling.
 # Web: http://www.runtux.com Email: office@runtux.com
 # All rights reserved
@@ -23,11 +23,11 @@
 def add_files (db, cl, nodeid, newvalues) :
     """Link files of new messages to files of issue
     """
-    if not newvalues.has_key ("messages") :
+    if "messages" not in newvalues :
         return
     files = {}
     issuefiles = []
-    if newvalues.has_key ("files") :
+    if "files" in newvalues :
         issuefiles = newvalues ["files"]
     elif nodeid :
         issuefiles = cl.get (nodeid, "files", cache = 0)
@@ -36,7 +36,7 @@ def add_files (db, cl, nodeid, newvalues) :
     for msg_id in newvalues ["messages"] :
         for f in db.msg.get (msg_id, "files") :
             files [f] = 1
-    newvalues ["files"] = files.keys ()
+    newvalues ["files"] = list (files)
 
 def init (db) :
     if 'issue' not in db.classes :

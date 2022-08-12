@@ -1,4 +1,4 @@
-# Copyright (C) 2010 Ralf Schlatterbeck. All rights reserved
+# Copyright (C) 2010-21 Ralf Schlatterbeck. All rights reserved
 # Reichergasse 131, A-3411 Weidling
 # ****************************************************************************
 #
@@ -169,8 +169,8 @@ def notify (db, alarm, sensor, measurement, timestamp, is_lower) :
     subject = _ (''"Sensor alert")
     try :
         mailer.standard_message (sendto, subject, m)
-    except MessageSendError, err :
-        raise DetectorError, err
+    except MessageSendError as err :
+        raise DetectorError (err)
     db.alarm.set (alarm.id, last_triggered = timestamp)
 # end def notify
 

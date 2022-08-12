@@ -1,6 +1,5 @@
 #! /usr/bin/python
-# -*- coding: iso-8859-1 -*-
-# Copyright (C) 2012 Dr. Ralf Schlatterbeck Open Source Consulting.
+# Copyright (C) 2012-22 Dr. Ralf Schlatterbeck Open Source Consulting.
 # Reichergasse 131, A-3411 Weidling.
 # Web: http://www.runtux.com Email: office@runtux.com
 # All rights reserved
@@ -34,9 +33,10 @@ class True_Value (type ("")) :
         We use this as return value from a handle routine where the
         output happend to the file descriptor
     """
-    def __nonzero__ (self) :
+    def __bool__ (self) :
         return True
-    # end def __nonzero__
+    # end def __bool__
+    __nonzero__ = __bool__
 # end class True_Value
 
 ### __END__

@@ -1,5 +1,5 @@
 #! /usr/bin/python
-# Copyright (C) 2006 Dr. Ralf Schlatterbeck Open Source Consulting.
+# Copyright (C) 2006-21 Dr. Ralf Schlatterbeck Open Source Consulting.
 # Reichergasse 131, A-3411 Weidling.
 # Web: http://www.runtux.com Email: office@runtux.com
 # All rights reserved
@@ -51,9 +51,9 @@ def check_editable (db, cl, nodeid, new_values, date = None) :
     if cl == db.daily_record_freeze :
         fr = [f for f in fr if f != nodeid]
     if fr :
-        raise Reject, _ ("Already frozen: %(date)s") % locals ()
+        raise Reject (_ ("Already frozen: %(date)s") % locals ())
     if not get_user_dynamic (db, user, date) :
-        raise Reject, _ ("No dyn. user rec for %(user)s %(date)s") % locals ()
+        raise Reject (_ ("No dyn. user rec for %(user)s %(date)s") % locals ())
 # end def check_editable
 
 def check_thawed_records (db, user, date) :
@@ -90,13 +90,13 @@ periods = ['week', 'month']
 def new_freeze_record (db, cl, nodeid, new_values) :
     for i in ('date', 'user') :
         if i not in new_values :
-            raise Reject, _ ("%(attr)s must be set") % {'attr' : _ (i)}
+            raise Reject (_ ("%(attr)s must be set") % {'attr' : _ (i)})
     date = new_values ['date']
     user = new_values ['user']
     days = getattr (db.config.ext, 'TTT_FREEZE_DAYS', '10')
     if date >= Date ('.-%sd' % days) :
-        raise Reject, _ \
-            ("Freezing only for dates >= %s days in the past" % days)
+        raise Reject \
+            (_ ("Freezing only for dates >= %s days in the past" % days))
     date.hour = date.minute = date.second = 0
     if 'frozen' not in new_values :
         new_values ['frozen'] = True
@@ -115,7 +115,7 @@ def new_freeze_record (db, cl, nodeid, new_values) :
 def new_overtime (db, cl, nodeid, new_values) :
     for i in ('date', 'user', 'value') :
         if i not in new_values :
-            raise Reject, _ ("%(attr)s must be set") % {'attr' : _ (i)}
+            raise Reject (_ ("%(attr)s must be set") % {'attr' : _ (i)})
     date = new_values ['date']
     date.hour = date.minute = date.second = 0
     check_editable (db, cl, nodeid, new_values)
@@ -135,18 +135,18 @@ def check_freeze_record (db, cl, nodeid, new_values) :
     """
     for i in ('date', 'user') :
         if i in new_values :
-            raise Reject, _ ("%(attr)s must not be changed") % {'attr' : _ (i)}
+            raise Reject (_ ("%(attr)s must not be changed") % {'attr' : _ (i)})
     date = cl.get (nodeid, 'date')
     user = cl.get (nodeid, 'user')
     # special cases for fixing existing freeze records:
     if  (   db.getuid () == '1'
-        and new_values.keys () == ['validity_date']
+        and list (new_values) == ['validity_date']
         and new_values ['validity_date'] == date
         and cl.get (nodeid, 'validity_date') is None
         ) :
         return
     if  (   db.getuid () == '1'
-        and new_values.keys () == ['achieved_hours']
+        and list (new_values) == ['achieved_hours']
         and new_values ['achieved_hours'] == 0
         and cl.get (nodeid, 'achieved_hours') is None
         ) :
@@ -163,9 +163,9 @@ def check_freeze_record (db, cl, nodeid, new_values) :
         if prev :
             prev = db.daily_record_freeze.getnode (prev [0])
         assert (dyn.valid_to)
-        # already frozen??
+        # already frozen?? dict modified during iter
         if prev and prev.date >= dyn.valid_to - day :
-            for k in new_values.keys () :
+            for k in list (new_values) :
                 del new_values [k]
             cl.retire (nodeid)
             return
@@ -191,10 +191,10 @@ def check_freeze_record (db, cl, nodeid, new_values) :
 def check_overtime (db, cl, nodeid, new_values) :
     for i in ('user',) :
         if i in new_values :
-            raise Reject, _ ("%(attr)s must not be changed") % {'attr' : _ (i)}
+            raise Reject (_ ("%(attr)s must not be changed") % {'attr' : _ (i)})
     for i in ('date', 'value') :
         if i in new_values and new_values [i] is None :
-            raise Reject, _ ("%(attr)s must remain filled") % {'attr' : _ (i)}
+            raise Reject (_ ("%(attr)s must remain filled") % {'attr' : _ (i)})
     check_editable (db, cl, nodeid, new_values)
 # end def check_overtime
 

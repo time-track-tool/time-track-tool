@@ -233,12 +233,12 @@ class Vacation_Setup (object) :
             users = dict.fromkeys (wpfrm.bookers)
             if uid in users :
                 del users [uid]
-                db.time_wp.set (wpfrm.id, bookers = users.keys ())
+                db.time_wp.set (wpfrm.id, bookers = list (users))
                 print "User %s removed from WP %s" % (username, wpfrm.id)
             users = dict.fromkeys (wpto.bookers)
             if uid not in users :
                 users [uid] = 1
-                db.time_wp.set (wpto.id, bookers = users.keys ())
+                db.time_wp.set (wpto.id, bookers = list (users))
                 print "User %s added to WP %s" % (username, wpto.id)
 
             self.freeze (uid)

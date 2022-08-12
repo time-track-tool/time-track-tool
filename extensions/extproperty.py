@@ -1,5 +1,5 @@
 #! /usr/bin/python
-# Copyright (C) 2006-10 Dr. Ralf Schlatterbeck Open Source Consulting.
+# Copyright (C) 2006-21 Dr. Ralf Schlatterbeck Open Source Consulting.
 # 
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -27,7 +27,10 @@
 #
 #--
 
-from urllib                         import quote as urlquote
+try :
+    from urllib.parse import quote as urlquote
+except ImportError :
+    from urllib import quote as urlquote
 from roundup.cgi.templating         import MultilinkHTMLProperty     \
                                          , BooleanHTMLProperty       \
                                          , DateHTMLProperty          \
@@ -43,16 +46,11 @@ from roundup.date                   import Date
 
 _ = None
 
-def propsort (p1, p2) :
-    return cmp (_ (p1._name), _ (p2._name))
-# end def propsort
-
 def sorted_properties (db, context) :
     global _
     _ = db._
     props = db [context._classname].properties ()
-    props.sort (propsort)
-    return props
+    return list (sorted (props, key = lambda x: _ (x._name)))
 # end def sorted_properties
 
 def properties_dict (db, context) :
@@ -312,7 +310,8 @@ class ExtProperty :
             self.filter = {}
         if not self.help_filter and self.filter :
             f = []
-            for k, v in self.filter.iteritems () :
+            for k in self.filter :
+                v = self.filter [k]
                 if isinstance (v, list) :
                     v = ','.join (str (k) for k in v)
                 f.append ((k, v))

@@ -1,5 +1,5 @@
 #! /usr/bin/python
-# Copyright (C) 2011-13 Dr. Ralf Schlatterbeck Open Source Consulting.
+# Copyright (C) 2011-21 Dr. Ralf Schlatterbeck Open Source Consulting.
 # Reichergasse 131, A-3411 Weidling.
 # Web: http://www.runtux.com Email: office@runtux.com
 # All rights reserved
@@ -87,9 +87,10 @@ def serials (db, node) :
         )
     serials = (s.strip () for s in str (node.serial_number).split ('\n'))
     sns     = dict ((s, serial (db, node, s)) for s in serials if s)
-    serials = dict ((s, len (v)) for s, v in sns.iteritems ())
+    serials = dict ((s, len (sns [s])) for s in sns)
     r   = []
-    for s, l in serials.iteritems () :
+    for s in serials :
+        l = serials [s]
         if not l :
             continue
         r.append \

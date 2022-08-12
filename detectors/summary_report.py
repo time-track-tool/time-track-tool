@@ -1,5 +1,5 @@
 #! /usr/bin/python
-# Copyright (C) 2006 Dr. Ralf Schlatterbeck Open Source Consulting.
+# Copyright (C) 2006-21 Dr. Ralf Schlatterbeck Open Source Consulting.
 # Reichergasse 131, A-3411 Weidling.
 # Web: http://www.runtux.com Email: office@runtux.com
 # All rights reserved
@@ -32,7 +32,7 @@ from roundup.exceptions             import Reject
 from roundup.cgi.TranslationService import get_translation
 
 def new_summary_report (db, cl, nodeid, new_values) :
-    raise Reject, _ ("No %s may be created" % _ ('summary_report'))
+    raise Reject (_ ("No %s may be created" % _ ('summary_report')))
 # end def new_summary_report
 
 def init (db) :

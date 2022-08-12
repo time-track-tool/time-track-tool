@@ -1,5 +1,5 @@
-#! /usr/bin/python
-# Copyright (C) 2006-10 Dr. Ralf Schlatterbeck Open Source Consulting.
+#! /usr/bin/python3
+# Copyright (C) 2006-22 Dr. Ralf Schlatterbeck Open Source Consulting.
 # 
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -22,6 +22,7 @@
 
 from roundup.cgi.TranslationService import get_translation
 from roundup.date                   import Date, Range
+from roundup.anypy.strings          import s2u
 from maturity_index                 import maturity_table
 import os
 import textwrap
@@ -118,8 +119,8 @@ maturity_index_table = Structured_Text \
     + "%20s  %20s  %20s  \n" % ("Severity", "Status", "Value")
     + ('=' * 20 + '  ') * 3 + '\n'
     + '\n'.join
-        ( "%20s  %20s  %20s  \n" % (k [0], k [1], v)
-          for k, v in sorted (maturity_table.iteritems ())
+        ( "%20s  %20s  %20s  \n" % (k [0], k [1], maturity_table [k])
+          for k in sorted (maturity_table)
         )
     + ('=' * 20 + '  ') * 3 + '\n'
     )
@@ -2482,13 +2483,11 @@ def help_properties (klass) :
         p.append (v)
     else :
         p.append ('VIEW')
-    for i in properties.iterkeys () :
+    for i in properties :
         pname = combined_name (klass.classname, i)
         if pname in _helptext :
             p.append (pname)
-    p = [(_ (i).decode ('utf-8'), i) for i in p]
-    p.sort ()
-    return [i [1] for i in p]
+    return list (sorted (p, key = lambda x : _ (s2u (x))))
 # end def help_properties
 
 def fieldlabel \
@@ -2543,7 +2542,7 @@ def permdict (perm) :
     """From a permission object compute a localized version of the dict.
        We also put a quote into the dict for the web-interface.
     """
-    d = dict (perm.__dict__.iteritems ())
+    d = dict (perm.__dict__)
     d ['quote'] = '"'
     if d ['klass'] :
         d ['klass'] = _ (d ['klass'])

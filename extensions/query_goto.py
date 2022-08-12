@@ -1,5 +1,5 @@
 #! /usr/bin/python
-# Copyright (C) 2004-2011 Dr. Ralf Schlatterbeck Open Source Consulting.
+# Copyright (C) 2004-21 Dr. Ralf Schlatterbeck Open Source Consulting.
 # 
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -46,8 +46,10 @@ class Query_Goto (Action) :
         assert (request.classname == 'query')
         id         = self.client.nodeid
         query = klass.getnode (id)
-        raise Redirect, "%s?%s&@old-queryname=%s&@queryname=%s" \
+        raise Redirect \
+            ("%s?%s&@old-queryname=%s&@queryname=%s"
             % (query.klass, query.url, query.name, query.name)
+            )
     # end def handle
 
 # end class Query_Goto

@@ -16,7 +16,7 @@
 
      <table class="otherinfo"
        tal:define="items python:utils.ext_attributes (context)">
-      <tr tal:repeat="item python:sorted (items.iteritems ())">
+      <tr tal:repeat="item python:sorted (items.items ())">
        <th class="header2" nowrap
            tal:content="python: item [0]" />
        <td class="item">

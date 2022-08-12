@@ -43,14 +43,15 @@ for uid in db.user.getnodeids () :
         continue
     roles  = dict.fromkeys (r.strip () for r in u.roles.split (','))
     change = False
-    for r in roles.keys () :
+    # dict modified during iteration
+    for r in list (roles) :
         rl = r.lower ()
         if rl not in db.security.role :
             change = True
             del roles [r]
             print "User %s: delete role: %s" % (u.username, r)
     if change :
-        db.user.set (uid, roles = ','.join (roles.iterkeys ()))
+        db.user.set (uid, roles = ','.join (roles))
 
 if opt.update :
     db.commit()

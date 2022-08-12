@@ -1,4 +1,4 @@
-# Copyright (C) 2004 Ralf Schlatterbeck. All rights reserved
+# Copyright (C) 2004-21 Ralf Schlatterbeck. All rights reserved
 # Reichergasse 131, A-3411 Weidling
 # ****************************************************************************
 #
@@ -26,7 +26,7 @@ _ = lambda x : x
 def new_iv_template (db, cl, nodeid, new_values) :
     for i in ('tmplate', 'invoice_level', 'interval') :
         if not i in new_values :
-            raise Reject, _ ('"%(attr)s" must be filled in') % {'attr' : _ (i)}
+            raise Reject (_ ('"%(attr)s" must be filled in') % {'attr' : _ (i)})
     if not 'name' in new_values :
         new_values ['name'] = db.tmplate.get (new_values ['tmplate'], 'name')
 # end def new_iv_template
@@ -35,7 +35,8 @@ def iv_template_ok (db, cl, nodeid, new_values) :
     for i in ('tmplate', 'invoice_level', 'interval', 'name') :
         x = new_values.get (i, cl.get (nodeid, i))
         if x is None :
-            raise Reject, _ ('"%(attr)s" may not be deleted') % {'attr' : _ (i)}
+            raise Reject \
+                (_ ('"%(attr)s" may not be deleted') % {'attr' : _ (i)})
 # end def iv_template_ok
 
 def init (db) :

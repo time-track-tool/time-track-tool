@@ -1,4 +1,4 @@
-# Copyright (C) 2010 Ralf Schlatterbeck. All rights reserved
+# Copyright (C) 2010-21 Ralf Schlatterbeck. All rights reserved
 # Reichergasse 131, A-3411 Weidling
 # ****************************************************************************
 #
@@ -75,7 +75,7 @@ class Delete_Something (Action, autosuper) :
                 p = ','.join (a for k in g)
                 self.db.sql (sql  + w  % p, g)
                 self.db.sql (sqlj + wj % p, g)
-            p = ','.join (a for k in xrange (l))
+            p = ','.join (a for k in range (l))
             g = ids [-l:]
             if g :
                 self.db.sql (sql  + w  % p, g)

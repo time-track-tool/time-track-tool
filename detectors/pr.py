@@ -123,7 +123,7 @@ def reopen (db, cl, nodeid, new_values) :
         Note that we ignore some attribute changes that do *not* cause a
         reopen of an issue.
     """
-    changed   = set (new_values.keys ())
+    changed   = set (new_values)
     no_reopen = set (('messages', 'nosy'))
     if not (changed - no_reopen) :
         return
@@ -804,7 +804,7 @@ def change_pr_approval (db, cl, nodeid, new_values) :
             new_values ['date'] = Date ('.')
             approvals = cl.filter (None, dict (purchase_request = pr.id))
             assert nodeid in approvals
-    elif new_values.keys () == ['role_id'] :
+    elif list (new_values) == ['role_id'] :
         n = db.pr_approval_order.get (new_values ['role_id'], 'role')
         if cl.get (nodeid, 'role') != n :
             raise Reject ("Inconsistent role_id")
@@ -1012,9 +1012,9 @@ def approved_pr_approval (db, cl, nodeid, old_values) :
                 # get a reject due to missing msg later on.
                 if msg in prm :
                     del prm [msg]
-                    db.purchase_request.set (pr.id, messages = prm.keys ())
+                    db.purchase_request.set (pr.id, messages = list (prm))
                 prm [msg] = 1
-                d ['messages'] = prm.keys ()
+                d ['messages'] = list (prm)
             db.purchase_request.set (pr.id, ** d)
 # end def approved_pr_approval
 
@@ -1298,7 +1298,7 @@ def check_psr (db, cl, nodeid, new_values) :
 # end def check_psr
 
 def check_no_change (db, cl, nodeid, new_values) :
-    if new_values and new_values.keys () != ['name'] :
+    if new_values and list (new_values) != ['name'] :
         classname = cl.classname
         raise Reject (_ ("%(classname)s may not be changed" % locals ()))
 # end def check_no_change

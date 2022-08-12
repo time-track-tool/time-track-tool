@@ -602,10 +602,9 @@ class Test_Case_LDAP_Sync (_Test_Base, unittest.TestCase) :
         self.assertEqual (user.guid,      '31')
         self.assertEqual (user.ad_domain, 'ds1.internal')
         self.assertEqual (user.contacts,  ['3', '4'])
-        ct = self.db.user_contact.getnode ('3')
-        self.assertEqual (ct.contact, '0815')
-        ct = self.db.user_contact.getnode ('4')
-        self.assertEqual (ct.contact, 'testuser1@example.com')
+        cts = [self.db.user_contact.get (x, 'contact') for x in user.contacts]
+        cts.sort ()
+        self.assertEqual (cts, ['0815', 'testuser1@example.com'])
     # end def test_sync_contact_to_roundup
 
     def test_sync_new_user_to_roundup (self) :
@@ -671,8 +670,7 @@ class Test_Case_LDAP_Sync (_Test_Base, unittest.TestCase) :
         olddn = 'CN=Test Middlename Usernameold,OU=internal'
         newdn = 'CN=Test User,OU=internal'
         newcn = newdn.split (',') [0].lower ()
-        self.assertEqual \
-            (self.ldap_modify_result.keys (), [newdn])
+        self.assertEqual (list (self.ldap_modify_result), [newdn])
         d = self.ldap_modify_result [newdn]
         self.assertEqual (len (d), 6)
         for k in d :
@@ -689,7 +687,7 @@ class Test_Case_LDAP_Sync (_Test_Base, unittest.TestCase) :
         self.assertEqual (d ['otherTelephone'][0][1], [])
         self.assertEqual (d ['company'][0][0], 'MODIFY_ADD')
         self.assertEqual (d ['company'][0][1][0], 'testorglocation1')
-        self.assertEqual (self.ldap_modify_dn_result.keys (), [olddn])
+        self.assertEqual (list (self.ldap_modify_dn_result), [olddn])
         changed = self.ldap_modify_dn_result [olddn].lower ()
         self.assertEqual (changed, newcn)
     # end def test_sync_realname_to_ldap
@@ -700,11 +698,10 @@ class Test_Case_LDAP_Sync (_Test_Base, unittest.TestCase) :
         self.db.user_dynamic.retire (self.user_dynamic1_1)
         self.ldap_sync.sync_user_to_ldap ('testuser1@ds1.internal')
         olddn = 'CN=Test Middlename Usernameold,OU=internal'
-        self.assertEqual \
-            (self.ldap_modify_result.keys (), [olddn])
+        self.assertEqual (list (self.ldap_modify_result), [olddn])
         d = self.ldap_modify_result [olddn]
         self.assertEqual (len (d), 4)
-        self.assertEqual (self.ldap_modify_dn_result.keys (), [])
+        self.assertEqual (list (self.ldap_modify_dn_result), [])
         msg = 'Not syncing "realname"->"cn": no valid dyn. user for'
         self.assertTrue (self.messages [-1][0].startswith (msg))
     # end def test_dont_sync_cn_if_no_dynuser
@@ -718,13 +715,12 @@ class Test_Case_LDAP_Sync (_Test_Base, unittest.TestCase) :
         newdn = 'CN=Test User,OU=internal'
         olddn = 'CN=Test Middlename Usernameold,OU=internal'
         newcn = newdn.split (',') [0].lower ()
-        self.assertEqual \
-            (self.ldap_modify_result.keys (), [newdn])
+        self.assertEqual (list (self.ldap_modify_result), [newdn])
         d = self.ldap_modify_result [newdn]
         # The number differs from the test_sync_realname_to_ldap above
         # because we've retired the dynamic user record
         self.assertEqual (len (d), 5)
-        self.assertEqual (self.ldap_modify_dn_result.keys (), [olddn])
+        self.assertEqual (list (self.ldap_modify_dn_result), [olddn])
         changed = self.ldap_modify_dn_result [olddn].lower ()
         self.assertEqual (changed, newcn)
     # end def test_sync_cn_if_no_dynuser_but_system
@@ -734,8 +730,7 @@ class Test_Case_LDAP_Sync (_Test_Base, unittest.TestCase) :
         self.setup_ldap ()
         self.ldap_sync.sync_user_to_ldap ('testuser1@ds1.internal')
         olddn = 'CN=Test Middlename Usernameold,OU=internal'
-        self.assertEqual \
-            (self.ldap_modify_result.keys (), [olddn])
+        self.assertEqual (list (self.ldap_modify_result), [olddn])
         d = self.ldap_modify_result [olddn]
         self.assertEqual (len (d), 5)
         assert 'displayname' not in d
@@ -754,7 +749,7 @@ class Test_Case_LDAP_Sync (_Test_Base, unittest.TestCase) :
 
     def test_sync_realname_to_ldap_all (self) :
         self.setup_ldap ()
-        nusers = len (self.db.user.filter (None, {})) / 2 - 1
+        nusers = len (self.db.user.filter (None, {})) // 2 - 1
         self.log.info = self.mock_log
         self.ldap_sync.sync_all_users_to_ldap ()
         newdn = 'CN=Test User,OU=internal'
@@ -767,7 +762,7 @@ class Test_Case_LDAP_Sync (_Test_Base, unittest.TestCase) :
     def test_sync_realname_to_ldap_all_dryrun (self) :
         self.aux_ldap_parameters ['dry_run_ldap'] = True
         self.setup_ldap ()
-        nusers = len (self.db.user.filter (None, {})) / 2 - 1
+        nusers = len (self.db.user.filter (None, {})) // 2 - 1
         self.log.info = self.mock_log
         self.ldap_sync.sync_all_users_to_ldap ()
         self.assertEqual (len (self.ldap_modify_result), 0)
@@ -777,7 +772,7 @@ class Test_Case_LDAP_Sync (_Test_Base, unittest.TestCase) :
 
     def test_sync_realname_to_ldap_all_limit (self) :
         self.setup_ldap ()
-        nusers = len (self.db.user.filter (None, {})) / 2 - 1
+        nusers = len (self.db.user.filter (None, {})) // 2 - 1
         self.log.error = self.mock_log
         self.ldap_sync.sync_all_users_to_ldap (max_changes = 0)
         self.assertEqual (len (self.ldap_modify_result), 0)
@@ -965,7 +960,9 @@ class Test_Case_LDAP_Sync (_Test_Base, unittest.TestCase) :
         self.assertEqual \
             (new_extAttr3, self.db.sap_cc.get (self.sap_cc1, 'name'))
         self.assertEqual \
-            (new_extAttr4, self.db.sap_cc.get (self.sap_cc1, 'description'))
+            ( new_extAttr4
+            , self.db.sap_cc.get (self.sap_cc1, 'description')
+            )
 
         # change sap_cc name
         new_sap_cc_name = 'new_org_sap_cc_name'
@@ -1060,6 +1057,12 @@ class Test_Case_LDAP_Sync (_Test_Base, unittest.TestCase) :
         self.assertEqual (firstname_vie_user, new_firstname)
     # end test_sync_attributes_not_directly_updating_vie_user
 
+    # Expected digests of the jpeg pic
+    digests = set \
+        (( 'c3b3e3bd46d5c7e9c82b71e1d92ad1a1'
+         , '3ee3295b3570234333076afb9943dac8'
+        ))
+
     def test_pic_convert_no_resize (self) :
         # Although the original pic is > 15k in size it will be smaller
         # than the 9k limit after conversion to JPEG.
@@ -1067,18 +1070,19 @@ class Test_Case_LDAP_Sync (_Test_Base, unittest.TestCase) :
         self.set_testuser1_testpic ()
         self.ldap_sync.sync_user_to_ldap ('testuser1@ds1.internal')
         newdn = 'CN=Test User,OU=internal'
-        self.assertEqual \
-            (self.ldap_modify_result.keys (), [newdn])
+        self.assertEqual (list (self.ldap_modify_result), [newdn])
         d = self.ldap_modify_result [newdn]
         self.assertEqual (len (d), 7)
         pic = d ['thumbnailPhoto'][0][1][0]
-        self.assertEqual (len (pic), 6034)
+        # This depends on the pillow version
+        assert len (pic) in set ((6034, 6025))
         # compute md5sum over synced picture to assert that the picture
         # conversion is stable and produces same result every time.
         # Otherwise we would produce lots of ldap changes!
-        # This *may* change for different versions of PIL.
+        # Since the picture is converted to JPEG this depens on the
+        # implemented JPEG algorithm in different versions of pillow.
         m = md5 (pic)
-        self.assertEqual (m.hexdigest (), 'c3b3e3bd46d5c7e9c82b71e1d92ad1a1')
+        assert m.hexdigest () in self.digests
     # end def test_pic_convert_no_resize
 
     def test_pic_convert_with_resize (self) :
@@ -1090,18 +1094,22 @@ class Test_Case_LDAP_Sync (_Test_Base, unittest.TestCase) :
         self.db.config.ext ['LIMIT_PICTURE_SYNC_SIZE'] = '5000'
         self.ldap_sync.sync_user_to_ldap ('testuser1@ds1.internal')
         newdn = 'CN=Test User,OU=internal'
-        self.assertEqual \
-            (self.ldap_modify_result.keys (), [newdn])
+        self.assertEqual (list (self.ldap_modify_result), [newdn])
         d = self.ldap_modify_result [newdn]
         self.assertEqual (len (d), 7)
         pic = d ['thumbnailPhoto'][0][1][0]
-        self.assertEqual (len (pic), 4663)
+        self.assertLess (len (pic), 4664)
         # compute md5sum over synced picture to assert that the picture
         # conversion is stable and produces same result every time.
         # Otherwise we would produce lots of ldap changes!
         # This *may* change for different versions of PIL.
-        m = md5 (pic)
-        self.assertEqual (m.hexdigest (), '6d339cc744579e0349da05c78a2f1026')
+        expected = dict \
+            (( ('6d339cc744579e0349da05c78a2f1026', True)
+            ,  ('85ab090236aee7becbecca031e63ffda', True)
+            ))
+        m = md5 (pic).hexdigest ()
+        r = expected.get (m, None)
+        self.assertNotEqual (m, None)
     # end def test_pic_convert_with_resize
 
 # end class Test_Case_LDAP_Sync

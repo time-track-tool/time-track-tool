@@ -1,6 +1,6 @@
 #
 # Copyright (c) 2001 Bizar Software Pty Ltd (http://www.bizarsoftware.com.au/)
-# Copyright (c) 2004-10 Dr. Ralf Schlatterbeck Open Source Consulting.
+# Copyright (c) 2004-21 Dr. Ralf Schlatterbeck Open Source Consulting.
 #                       Web: http://www.runtux.com Email: office@runtux.com
 # This module is free software, and you may redistribute it and/or modify
 # under the same terms as Python, so long as this copyright message and
@@ -151,8 +151,8 @@ def nosyreaction(db, cl, nodeid, oldvalues) :
             if to_emails or cc_emails :
                 send_non_roundup_mail \
                     (db, cl, nodeid, msgid, to_emails, cc_emails, bcc_mails)
-        except roundupdb.MessageSendError, message :
-            raise roundupdb.DetectorError, message
+        except roundupdb.MessageSendError as message :
+            raise roundupdb.DetectorError (message)
 
 def determineNewMessages(cl, nodeid, oldvalues):
     ''' Figure a list of the messages that are being added to the given
@@ -162,7 +162,7 @@ def determineNewMessages(cl, nodeid, oldvalues):
     if oldvalues is None:
         # the action was a create, so use all the messages in the create
         messages = cl.get(nodeid, 'messages')
-    elif oldvalues.has_key('messages'):
+    elif 'messages' in oldvalues :
         # the action was a set (so adding new messages to an existing issue)
         m = {}
         for msgid in oldvalues['messages']:
@@ -170,7 +170,7 @@ def determineNewMessages(cl, nodeid, oldvalues):
         messages = []
         # figure which of the messages now on the issue weren't there before
         for msgid in cl.get(nodeid, 'messages'):
-            if not m.has_key(msgid):
+            if msgid not in m :
                 messages.append(msgid)
     return messages
 
@@ -187,18 +187,18 @@ def updatenosy(db, cl, nodeid, newvalues):
         # old node, get the current values from the node if they haven't
         # changed
         oldnosy = cl.get(nodeid, 'nosy')
-        if not newvalues.has_key('nosy'):
+        if 'nosy' not in newvalues :
             nosy    = cl.get(nodeid, 'nosy')
             current = dict.fromkeys (nosy)
     oldnosy.sort ()
 
     # if the nosy list changed in this transaction, init from the new value
-    if newvalues.has_key('nosy'):
+    if 'nosy' in newvalues :
         nosy = newvalues.get('nosy', [])
         for value in nosy:
             if not db.hasnode('user', value):
                 continue
-            if not current.has_key(value):
+            if value not in current :
                 current[value] = 1
 
     # check if doc_issue_status changed and has a nosy list
@@ -224,12 +224,12 @@ def updatenosy(db, cl, nodeid, newvalues):
             elif isinstance(props [k], hyperdb.Multilink):
                 assignedto_ids = item
             for assignedto_id in assignedto_ids:
-                if not current.has_key (assignedto_id) :
+                if assignedto_id not in current :
                     current [assignedto_id] = 1
 
     # see if there's any new messages - if so, possibly add the author and
     # recipient to the nosy
-    if newvalues.has_key ('messages'):
+    if 'messages' in newvalues :
         if nodeid is None:
             ok = ('new', 'yes')
             messages = newvalues ['messages']
@@ -268,7 +268,7 @@ def updatenosy(db, cl, nodeid, newvalues):
     # that's it, save off the new nosy list -- filter out those users
     # that do not have the 'Nosy' permission.
     newnosy = \
-        [ x for x in current.keys ()
+        [ x for x in current
             if db.security.hasPermission ('Nosy', x, cl.classname)
         ]
     newnosy.sort ()

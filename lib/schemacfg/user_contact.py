@@ -103,7 +103,7 @@ def security (db, ** kw) :
         """User is allowed to view contact if he's the owner of the contact
            or the contact is marked visible
         """
-        if not itemid or itemid < 1 :
+        if not itemid or int (itemid) < 1 :
             return False
         c = db.user_contact.getnode (itemid)
         if userid == c.user :

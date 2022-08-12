@@ -47,17 +47,17 @@ class IT_Report (object) :
                 (fmt2 % (self.db.config.TRACKER_WEB + i.cl.classname + i.id))
             self.messages [key].append ('')
         formatted_messages = {}
-        for u, v in self.messages.iteritems () :
-            formatted_messages [u] = '\n'.join (v)
+        for u in self.messages :
+            formatted_messages [u] = '\n'.join (self.messages [u])
         self.messages = formatted_messages
     # end def build_mails
 
     def output (self, fp) :
-        for uid, m in sorted (self.messages.iteritems ()) :
+        for uid in sorted (self.messages) :
             assert (uid)
             user = self.db.user.getnode (uid)
             print ("IT-Issues for %s:" % user.username, file = fp)
-            print (m, file = fp)
+            print (self.messages [uid], file = fp)
             print ("", file = fp)
     # end def output
 
@@ -79,7 +79,8 @@ class IT_Report (object) :
             frm = '@'.join ((frm, self.db.config.MAIL_DOMAIN))
         hfrm = "From: %s" % formataddr (('Do not reply', frm))
 
-        for uid, m in sorted (self.messages.iteritems ()) :
+        for uid in sorted (self.messages) :
+            m = self.messages [u]
             assert (uid)
             user = self.db.user.getnode (uid)
             addr = user.address

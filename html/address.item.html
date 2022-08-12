@@ -250,7 +250,7 @@
                 tal:define="adrs python:dict
                 ((x.address.id, x.address) for x in db.person.filter
                   (None, dict (cust_supp = context.cust_supp.id))
-                  if x.address).itervalues()">
+                  if x.address).values()">
          <option tal:attributes="selected not:context/address" value="-1"
                  i18n:translate="">- no selection -</option>
          <option tal:repeat="a adrs" tal:content=

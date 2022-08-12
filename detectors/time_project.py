@@ -1,5 +1,5 @@
 #! /usr/bin/python
-# Copyright (C) 2006-15 Dr. Ralf Schlatterbeck Open Source Consulting.
+# Copyright (C) 2006-21 Dr. Ralf Schlatterbeck Open Source Consulting.
 # Reichergasse 131, A-3411 Weidling.
 # Web: http://www.runtux.com Email: office@runtux.com
 # All rights reserved
@@ -37,7 +37,7 @@ import common
 def check_time_project (db, cl, nodeid, new_values) :
     for i in 'wp_no', 'project' :
         if i in new_values and cl.get (nodeid, i) :
-            raise Reject, "%(attr)s may not be changed" % {'attr' : _ (i)}
+            raise Reject ("%(attr)s may not be changed" % {'attr' : _ (i)})
     common.check_prop_len (_, new_values.get ('name', cl.get (nodeid, 'name')))
     if 'work_location' in cl.properties :
         wl  = new_values.get ('work_location', cl.get (nodeid, 'work_location'))

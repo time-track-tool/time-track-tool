@@ -1,4 +1,4 @@
-# Copyright (C) 2004 Ralf Schlatterbeck. All rights reserved
+# Copyright (C) 2004-21 Ralf Schlatterbeck. All rights reserved
 # Reichergasse 131, A-3411 Weidling
 # ****************************************************************************
 #
@@ -99,25 +99,25 @@ def check_invoice (db, cl, nodeid, new_values) :
     invoice = db.invoice.getnode (nodeid)
     amount  = new_values.get ('amount', cl.get (nodeid, 'amount'))
     if amount is None :
-        raise Reject, _ ('"amount": only numbers allowed')
+        raise Reject (_ ('"amount": only numbers allowed'))
     if 'amount' in new_values and payment :
-        raise Reject, _ ('amount may not be changed after payment')
+        raise Reject (_ ('amount may not be changed after payment'))
     if 'payment' in new_values :
         payment = dict.fromkeys (new_values.get ('payment'))
-        new_values ['payment'] = payment = sorted (payment.keys ())
+        new_values ['payment'] = payment = list (sorted (payment))
         payed   = sum (db.payment.get (i, 'amount') for i in payment)
         new_values ['amount_payed'] = payed
         balance = new_values ['balance_open'] = amount - payed
         if balance <  0 :
-            raise Reject, _ ('payment may not exceed the open balance')
+            raise Reject (_ ('payment may not exceed the open balance'))
         if balance == 0 :
             new_values ['open'] = False
         else :
             new_values ['open'] = True
     inv_no  = cl.get (nodeid, 'invoice_no')
     abo     = db.abo.getnode (cl.get (nodeid, 'abo'))
-    if abo ['end'] and new_values.keys () != ['invoice_group'] :
-        raise Reject, _ ('no change of closed subscription')
+    if abo ['end'] and list (new_values) != ['invoice_group'] :
+        raise Reject (_ ('no change of closed subscription'))
     common.auto_retire (db, cl, nodeid, new_values, 'payment')
 # end def check_invoice
 
@@ -178,7 +178,7 @@ def init (db) :
     db.invoice.audit ("set",    check_invoice)
     db.invoice.react ("set",    create_new_invoice)
     if 'payment' in db.classes :
-	    db.payment.audit ("create", new_payment)
-	    db.payment.audit ("set",    check_payment)
-	    db.payment.react ("set",    update_payment)
+        db.payment.audit ("create", new_payment)
+        db.payment.audit ("set",    check_payment)
+        db.payment.react ("set",    update_payment)
 # end def init

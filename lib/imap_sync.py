@@ -49,7 +49,7 @@ class IMAP_Roundup_Sync (object) :
         try :
             self.imap.login (username, password)
             return True
-        except IMAP4.error, e :
+        except IMAP4.error as e :
             print >> sys.stderr, e
             pass
         return None

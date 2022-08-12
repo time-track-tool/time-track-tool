@@ -1,5 +1,5 @@
 #! /usr/bin/python
-# Copyright (C) 2014-15 Dr. Ralf Schlatterbeck Open Source Consulting.
+# Copyright (C) 2014-21 Dr. Ralf Schlatterbeck Open Source Consulting.
 # Reichergasse 131, A-3411 Weidling.
 # Web: http://www.runtux.com Email: office@runtux.com
 # All rights reserved
@@ -22,7 +22,10 @@
 
 from   math   import ceil
 from   time   import gmtime
-from   urllib import urlencode
+try :
+    from urllib.parse import urlencode
+except ImportError :
+    from urllib import urlencode
 import re
 import common
 import user_dynamic
@@ -51,7 +54,7 @@ def approval_stati (db) :
 def approve_leave_submissions (db, utils, context) :
     uid = db._db.getuid ()
     d   = approval_stati (db)
-    d ['user'] = utils.approval_for (db, True).keys ()
+    d ['user'] = list (utils.approval_for (db, True))
     ls  = db.leave_submission.filter (None, d)
     return ls
 # end def approve_leave_submissions
@@ -226,8 +229,11 @@ class New_Leave_Action (NewItemAction) :
         url = None
         try :
             NewItemAction.handle (self)
-        except Redirect, exc :
-            url = exc.message
+        except Redirect as exc :
+            try :
+                url = exc.message
+            except AttributeError :
+                url = exc.args [0]
         if url :
             up     = url.split  ('?', 1)
             up [0] = self.fixurl.sub ('', up [0])
@@ -330,7 +336,7 @@ class Leave_Display (object) :
         lvlast   = db.leave_submission.filter \
             (None, dict (last_day = dt, user = users, status = acc))
         lvperiod = db.leave_submission.filter (None, flt)
-        lvs = dict.fromkeys (lvfirst + lvlast + lvperiod).keys ()
+        lvs = list (set (lvfirst + lvlast + lvperiod))
         # Put them in a dict by user-id
         self.lvdict = {}
         for id in lvs :
@@ -347,7 +353,7 @@ class Leave_Display (object) :
         ablast   = db.absence.filter \
             (None, dict (last_day  = dt, user = users))
         abperiod = db.absence.filter (None, flt)
-        abs = dict.fromkeys (abfirst + ablast + abperiod).keys ()
+        abs = list (set (abfirst + ablast + abperiod))
         # Put them in a dict by user-id
         self.abdict = {}
         for id in abs :

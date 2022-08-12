@@ -1,5 +1,5 @@
 #! /usr/bin/python
-# Copyright (C) 2006-10 Dr. Ralf Schlatterbeck Open Source Consulting.
+# Copyright (C) 2006-21 Dr. Ralf Schlatterbeck Open Source Consulting.
 # 
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -26,7 +26,7 @@ from roundup.date   import Date
 def summarygenerator (db, cl, nodeid, newvalues) :
     ''' If the message doesn't have a summary, make one for it.
     '''
-    if newvalues.has_key ('summary') or not newvalues.has_key ('content') :
+    if 'summary' in newvalues or 'content' not in newvalues :
         return
 
     summary, content = parseContent (newvalues ['content'], 1, 1)

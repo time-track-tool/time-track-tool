@@ -1,5 +1,5 @@
 #! /usr/bin/python
-# Copyright (C) 2006-20 Dr. Ralf Schlatterbeck Open Source Consulting.
+# Copyright (C) 2006-21 Dr. Ralf Schlatterbeck Open Source Consulting.
 # Reichergasse 131, A-3411 Weidling.
 # Web: http://www.runtux.com Email: office@runtux.com
 # All rights reserved
@@ -56,9 +56,9 @@ def check_timestamps (start, end, date) :
         dend += common.day
         dend.hours = dend.seconds = dend.minutes = 0
     if dstart > dend :
-        raise Reject, _ ("start and end must be on same day and start <= end.")
+        raise Reject (_ ("start and end must be on same day and start <= end."))
     if dstart.timestamp () % 900 or dend.timestamp () % 900 :
-        raise Reject, _ ("Times must be given in quarters of an hour")
+        raise Reject (_ ("Times must be given in quarters of an hour"))
     dur = (dend - dstart).as_seconds () / 3600.
     ep  = dend.pretty (hour_format)
     if end == '24:00' :
@@ -68,12 +68,14 @@ def check_timestamps (start, end, date) :
 # end def check_timestamps
 
 def check_duration (d, max = 0) :
+    if d is None :
+        raise Reject (_ ("Duration (or Start/End) must be given"))
     if d < 0 :
-        raise Reject, _ ("No negative times are allowed")
+        raise Reject (_ ("No negative times are allowed"))
     if (d * 3600) % 900 :
-        raise Reject, _ ("Times must be given in quarters of an hour")
+        raise Reject (_ ("Times must be given in quarters of an hour"))
     if max and d > max :
-        raise Reject, _ ("Duration must not exceed %s hours" % max)
+        raise Reject (_ ("Duration must not exceed %s hours" % max))
 # end def check_duration
 
 hour_format = '%H:%M'
@@ -118,9 +120,10 @@ def time_records_consistent (db, cl, nodeid) :
     msgs     = []
     dynamic  = user_dynamic.get_user_dynamic (db, uid, date)
     if not dynamic :
-        raise Reject, "No dynamic user data for %(uname)s, %(date)s" % locals ()
+        raise Reject \
+            ("No dynamic user data for %(uname)s, %(date)s" % locals ())
     if not dynamic.booking_allowed :
-        raise Reject, "Booking not allowed for %(uname)s, %(date)s" % locals ()
+        raise Reject ("Booking not allowed for %(uname)s, %(date)s" % locals ())
     trec     = \
         [db.time_record.getnode (i) for i in db.time_record.filter
          (None, dict (daily_record = nodeid), sort = ('+', 'start'))
@@ -216,7 +219,7 @@ def time_records_consistent (db, cl, nodeid) :
             % locals ()
             )
     if dynamic.daily_worktime :
-        work = reduce (add, [t.duration for t in trec_notravel], 0)
+        work = sum (t.duration for t in trec_notravel)
         if work > dynamic.daily_worktime :
             dwt = dynamic.daily_worktime
             msgs.append \
@@ -243,7 +246,7 @@ def time_records_consistent (db, cl, nodeid) :
 
     if msgs :
         msgs.sort ()
-        raise Reject, '\n'.join ([_ (i) for i in msgs])
+        raise Reject ('\n'.join ([_ (i) for i in msgs]))
     return True
 # end def time_records_consistent
 
@@ -263,15 +266,17 @@ def check_daily_record (db, cl, nodeid, new_values) :
     """
     for i in 'user', 'date' :
         if i in new_values and db.getuid () != '1' :
-            raise Reject, _ ("%(attr)s may not be changed") % {'attr' : _ (i)}
+            raise Reject (_ ("%(attr)s may not be changed") % {'attr' : _ (i)})
     if i in ('status',) :
         if i in new_values and not new_values [i] :
-            raise Reject, _ ("%(attr)s must be set") % {'attr' : _ (i)}
+            raise Reject (_ ("%(attr)s must be set") % {'attr' : _ (i)})
     user       = cl.get (nodeid, 'user')
     date       = cl.get (nodeid, 'date')
-    if frozen (db, user, date) and new_values.keys () != ['tr_duration_ok'] :
+    if  (  frozen (db, user, date)
+        and list (new_values) != ['tr_duration_ok']
+        ) :
         uname = db.user.get (user, 'username')
-        raise Reject, _ ("Frozen: %(uname)s, %(date)s") % locals ()
+        raise Reject (_ ("Frozen: %(uname)s, %(date)s") % locals ())
     uid        = db.getuid ()
     is_hr      = common.user_has_role (db, uid, 'hr')
     old_status = cl.get (nodeid, 'status')
@@ -359,7 +364,7 @@ def check_daily_record (db, cl, nodeid, new_values) :
                 elif status == 'open' :
                     if not is_hr and user != uid and not may_give_clearance :
                         msg = _ ("Permission denied")
-            raise Reject, \
+            raise Reject \
                 ( _ ("Denied state change: %(old_status)s->%(status)s: %(msg)s")
                 % locals ()
                 )
@@ -378,8 +383,7 @@ def update_timerecs (db, time_record_id, set_it) :
         trecs [id] = 1
     elif id in trecs :
         del trecs [id]
-    trecs   = trecs.keys ()
-    trecs.sort ()
+    trecs = list (sorted (trecs))
     if trecs != trecs_o :
         dr = db.daily_record.getnode (drec_id)
         db.daily_record.set \
@@ -416,9 +420,10 @@ def new_daily_record (db, cl, nodeid, new_values) :
         and uid != ttby
         and not common.user_has_role (db, uid, 'controlling', 'admin')
         ) :
-        raise Reject, _ \
-            ("Only user, Timetracking by user, "
-             "and Controlling may create daily records"
+        raise Reject \
+            ( _ ("Only user, Timetracking by user, "
+                "and Controlling may create daily records"
+                )
             )
     common.reject_attributes (_, new_values, 'time_record')
     # the following is allowed for the admin (import!)
@@ -429,17 +434,19 @@ def new_daily_record (db, cl, nodeid, new_values) :
     new_values ['date'] = date
     dyn  = user_dynamic.get_user_dynamic (db, user, date)
     if not dyn and uid != '1' :
-        raise Reject, \
-            _ ("No dynamic user data for %(uname)s, %(date)s") % locals ()
+        raise Reject \
+            (_ ("No dynamic user data for %(uname)s, %(date)s") % locals ())
     if uid != '1' and not dyn.booking_allowed :
-        raise Reject, _ \
-            ("Booking not allowed for %(uname)s, %(date)s") % locals ()
+        raise Reject \
+            (_ ("Booking not allowed for %(uname)s, %(date)s") % locals ())
     if frozen (db, user, date) :
-        raise Reject, _ ("Frozen: %(uname)s, %(date)s") % locals ()
+        raise Reject (_ ("Frozen: %(uname)s, %(date)s") % locals ())
     if db.daily_record.filter \
         (None, {'date' : date.pretty ('%Y-%m-%d'), 'user' : user}) :
-        raise Reject, _ ("Duplicate record: date = %(date)s, user = %(user)s") \
+        raise Reject \
+            ( _ ("Duplicate record: date = %(date)s, user = %(user)s")
             % new_values
+            )
     new_values ['time_record'] = []
     if 'status' not in new_values :
         new_values ['status']  = db.daily_record_status.lookup ('open')
@@ -467,9 +474,9 @@ def check_start_end_duration \
     if 'end' in new_values :
         if not start :
             attr = _ ('start')
-            raise Reject, _ (''"%(attr)s must be specified") % locals ()
+            raise Reject (_ (''"%(attr)s must be specified") % locals ())
         if 'duration' in new_values :
-            raise Reject, _ (''"Either specify duration or start/end")
+            raise Reject (_ (''"Either specify duration or start/end"))
         dstart, dend, sp, ep, dur = check_timestamps (start, end, date)
         duration                = dur
         new_values ['duration'] = duration
@@ -487,7 +494,7 @@ def check_start_end_duration \
                 ds      = Date (start, offset = 0)
                 t = (ds + Interval ('%d:%d' % (hours, minutes))).pretty \
                     (hour_format)
-                if duration > 0 and t == '00:00' :
+                if duration is not None and duration > 0 and t == '00:00' :
                     t = '24:00'
                 dstart, dend, sp, ep, dur = check_timestamps (start, t, date)
                 assert dur == duration
@@ -587,10 +594,10 @@ def new_time_record (db, cl, nodeid, new_values) :
     dr       = db.daily_record.getnode (new_values ['daily_record'])
     uname    = db.user.get (dr.user, 'username')
     if dr.status != db.daily_record_status.lookup ('open') and uid != '1' :
-        raise Reject, _ ('Editing of time records only for status "open"')
+        raise Reject (_ ('Editing of time records only for status "open"'))
     if frozen (db, dr.user, dr.date) :
         date = dr.date
-        raise Reject, _ ("Frozen: %(uname)s, %(date)s") % locals ()
+        raise Reject (_ ("Frozen: %(uname)s, %(date)s") % locals ())
     start    = new_values.get ('start',    None)
     end      = new_values.get ('end',      None)
     duration = new_values.get ('duration', None)
@@ -602,26 +609,26 @@ def new_time_record (db, cl, nodeid, new_values) :
         and not leave_wp (db, dr, wpid, start, end, duration)
         and not vacation_wp (db, wpid)
         ) :
-        raise Reject, _ \
-            ( ("Only %(uname)s, Timetracking by, and Controlling "
-               "may create time records"
-              )
+        raise Reject \
+            (_ ("Only %(uname)s, Timetracking by, and Controlling "
+                "may create time records"
+               )
             % locals ()
             )
     dynamic  = user_dynamic.get_user_dynamic (db, dr.user, dr.date)
     date     = dr.date.pretty (common.ymd)
     if not dynamic :
         if uid != '1' :
-            raise Reject, _ \
-                ("No dynamic user data for %(uname)s, %(date)s") % locals ()
+            raise Reject \
+                (_ ("No dynamic user data for %(uname)s, %(date)s") % locals ())
     else :
         if not dynamic.booking_allowed and uid != '1' :
-            raise Reject, _ \
-                ("Booking not allowed for %(uname)s, %(date)s") % locals ()
+            raise Reject \
+                (_ ("Booking not allowed for %(uname)s, %(date)s") % locals ())
         if not (dr.weekend_allowed or dynamic.weekend_allowed) and uid != '1' :
             wday = gmtime (dr.date.timestamp ())[6]
             if wday in (5, 6) :
-                raise Reject, _ ('No weekend booking allowed')
+                raise Reject (_ ('No weekend booking allowed'))
     dstart, dend = check_start_end_duration \
         (dr.date, start, end, duration, new_values)
     # set default values according to selected work package
@@ -642,7 +649,13 @@ def new_time_record (db, cl, nodeid, new_values) :
     hours    = int (ld)
     minutes  = (ld - hours) * 60
     le       = ls + Interval ('%d:%d' % (hours, minutes))
-    if not travel and duration > 6 and start and dstart < ls and dend > ls :
+    if  (   not travel
+        and duration is not None
+        and duration > 6
+        and start
+        and dstart < ls
+        and dend > ls
+        ) :
         newrec  = { 'daily_record' : new_values ['daily_record']
                   , 'start'        : le.pretty (hour_format)
                   }
@@ -664,7 +677,7 @@ def new_time_record (db, cl, nodeid, new_values) :
 def check_time_record (db, cl, nodeid, new_values) :
     for i in 'daily_record', :
         if i in new_values :
-            raise Reject, _ ("%(attr)s may not be changed") % {'attr' : _ (i)}
+            raise Reject (_ ("%(attr)s may not be changed") % {'attr' : _ (i)})
     drec     = new_values.get ('daily_record', cl.get (nodeid, 'daily_record'))
     dr       = db.daily_record.getnode (drec)
     date     = dr.date
@@ -678,32 +691,32 @@ def check_time_record (db, cl, nodeid, new_values) :
         tp = db.time_project.getnode (wp.project)
         is_ph = tp.is_public_holiday
     if  (   frozen (db, user, date)
-        and new_values.keys () != ['tr_duration']
+        and list (new_values) != ['tr_duration']
         ) :
         uname = db.user.get (user, 'username')
-        raise Reject, _ ("Frozen: %(uname)s, %(date)s") % locals ()
+        raise Reject (_ ("Frozen: %(uname)s, %(date)s") % locals ())
     status   = db.daily_record.get (cl.get (nodeid, 'daily_record'), 'status')
     leave    = db.daily_record_status.lookup ('leave')
     allow    = False
     if dr.status == leave :
         du = vacation.leave_duration (db, user, date, is_ph)
-        if  (   new_values.keys () == ['duration']
+        if  (   list (new_values) == ['duration']
             and new_values ['duration'] == du
             and cl.get (nodeid, 'duration') != du
             ) :
             allow = True
     allow    = allow or db.getuid () == '1'
     if  (   status != db.daily_record_status.lookup ('open')
-        and new_values.keys () != ['tr_duration']
+        and list (new_values) != ['tr_duration']
         and not allow
         ) :
-        raise Reject, _ ('Editing of time records only for status "open"')
+        raise Reject (_ ('Editing of time records only for status "open"'))
     # allow empty duration to delete record
     if 'duration' in new_values and new_values ['duration'] is None :
-        keys = dict.fromkeys (new_values.iterkeys ())
+        keys = dict.fromkeys (new_values)
         del keys ['duration']
         if len (keys) > 0 :
-            raise Reject, \
+            raise Reject \
                 ( _ ('%(date)s: No duration means "delete record" but '
                      'you entered new value for %(attr)s'
                     )
@@ -726,7 +739,7 @@ def check_time_record (db, cl, nodeid, new_values) :
     check_start_end_duration \
         (date, start, end, duration, new_values, dist = dist)
     if dist and not wp :
-        raise Reject, _ ("Distribution: WP must be given")
+        raise Reject (_ ("Distribution: WP must be given"))
     if dist :
         if dist < duration :
             newrec = dict \
@@ -777,10 +790,10 @@ def check_time_record (db, cl, nodeid, new_values) :
                   ]
             trs.sort ()
             trs = [tr [2] for tr in trs]
-            sum = reduce (add, [t.duration for t in trs], 0)
-            if sum < dist :
-                raise Reject, _ \
-                    ("dist must not exceed sum of unassigned times in week")
+            s   = sum (t.duration for t in trs)
+            if s < dist :
+                raise Reject \
+                    (_ ("dist must not exceed sum of unassigned times in week"))
             for tr in trs :
                 if tr.duration <= dist :
                     dist -= tr.duration
@@ -917,8 +930,8 @@ def send_mail_on_deny (db, cl, nodeid, old_values) :
             )
         try :
             mailer.standard_message ((email,), subject, content, sender)
-        except roundupdb.MessageSendError, message :
-            raise roundupdb.DetectorError, message
+        except roundupdb.MessageSendError as message :
+            raise roundupdb.DetectorError (message)
 # end def send_mail_on_deny
 
 def check_metadata (db, cl, nodeid, new_values) :

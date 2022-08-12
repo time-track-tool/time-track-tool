@@ -10,12 +10,14 @@ import io
 from copy                  import copy
 from ldap3.utils.conv      import escape_bytes
 from rsclib.autosuper      import autosuper
+from rsclib.pycompat       import bytes_ord
 from rsclib.execute        import Log
 from roundup.date          import Date
 from roundup.cgi.actions   import LoginAction
 from roundup.cgi           import exceptions
 from roundup.exceptions    import Reject
 from roundup.configuration import InvalidOptionError
+from roundup.anypy.strings import u2s, us2u
 from datetime              import datetime
 from PIL                   import Image, ImageOps
 
@@ -189,7 +191,13 @@ class LDAP_Search_Result (object) :
 # end class LDAP_Search_Result
 
 def tohex (s) :
-    return ''.join ('%02X' % ord (k) for k in s)
+    """ Convert to hex, different for py2 and py3
+    >>> tohex (b'a')
+    '61'
+    >>> tohex (b'\\n')
+    '0A'
+    """
+    return ''.join ('%02X' % bytes_ord (k) for k in s)
 # end def tohex
 
 def fromhex (s) :
@@ -654,7 +662,7 @@ class LDAP_Roundup_Sync (Log) :
             dontsync_rup = {}
         self.info \
             ( "Exclude the following Roundup attributes from sync: %s"
-            % dontsync_rup.keys ()
+            % list (dontsync_rup)
             )
         self.dontsync_rup = dontsync_rup
         name = 'LDAP_DO_NOT_SYNC_LDAP_PROPERTIES'
@@ -665,7 +673,7 @@ class LDAP_Roundup_Sync (Log) :
             dontsync_ldap = {}
         self.info \
             ( "Exclude the following LDAP attributes from sync: %s"
-            % dontsync_ldap.keys ()
+            % list (dontsync_ldap)
             )
         self.dontsync_ldap = dontsync_ldap
         attr_map = self.attr_map = dict ()
@@ -1023,11 +1031,10 @@ class LDAP_Roundup_Sync (Log) :
                 n = '(Dry Run): '
             self.info \
                 ( "%sUpdate Roundup: %s alternate_addresses = %s" \
-                % (n, user.username, ','.join (aa.iterkeys ()))
+                % (n, user.username, ','.join (aa))
                 )
             if self.update_roundup and not self.dry_run_roundup :
-                self.db.user.set \
-                    (uid, alternate_addresses = '\n'.join (aa.iterkeys ()))
+                self.db.user.set (uid, alternate_addresses = '\n'.join (aa))
         return mail
     # end def set_roundup_email_address
 
@@ -1212,10 +1219,10 @@ class LDAP_Roundup_Sync (Log) :
              for i in self.db.uc_type.getnodeids ()
             )
         oldmap = dict \
-            (((ctypes [n.contact_type], n.contact), n)
-             for n in oct.itervalues ()
+            (((ctypes [oct [k].contact_type], oct [k].contact), oct [k])
+             for k in oct
             )
-        self.debug (3, 'old contacts: %s' % oldmap.keys ())
+        self.debug (3, 'old contacts: %s' % list (oldmap))
         found = {}
         new_contacts = []
         for typ in self.attr_map ['user_contact'] :
@@ -1330,7 +1337,8 @@ class LDAP_Roundup_Sync (Log) :
             order_by_ct [n.contact_type] += 1
             new_contacts.append (n.id)
             del oldmap [k]
-        for n in oldmap.itervalues () :
+        for k in oldmap :
+            n = oldmap [k]
             self.info \
                 ( "%sUpdate Roundup: %s retire contact%s"
                 % (dry, uname, n.id)
@@ -1338,7 +1346,7 @@ class LDAP_Roundup_Sync (Log) :
             if self.update_roundup and not self.dry_run_roundup :
                 self.db.user_contact.retire (n.id)
                 changed = True
-        oct = list (sorted (oct.iterkeys ()))
+        oct = list (sorted (oct))
         new_contacts.sort ()
         if new_contacts != oct :
             udict ['contacts'] = new_contacts
@@ -1424,9 +1432,8 @@ class LDAP_Roundup_Sync (Log) :
                 for synccfg in self.attr_map ['user'][k] :
                     if synccfg.to_roundup :
                         v = synccfg.to_roundup (luser, synccfg.name)
-                        # FIXME: This must change for python3
-                        if isinstance (v, unicode) :
-                            v = v.encode ('utf-8')
+                        if v is not None :
+                            v = u2s (v)
                         if v or synccfg.empty_allowed :
                             if  (  synccfg.creation_only
                                 and ( not synccfg.write_vie_user
@@ -1457,7 +1464,7 @@ class LDAP_Roundup_Sync (Log) :
             if user :
                 assert (user.status in self.status_sync)
                 # dict changes during iteration, use items here
-                for k, v in d.items () :
+                for k, v in list (d.items ()) :
                     if user [k] == v :
                         del d [k]
                 if user.status != new_status_id :
@@ -1796,9 +1803,9 @@ class LDAP_Roundup_Sync (Log) :
                 if rupattr is not None :
                     if rk == 'pictures' :
                         prupattr = '<suppressed: %s>' % len (rupattr)
-                    # FIXME: No longer necessary in python3
-                    elif isinstance (rupattr, str) :
-                        rupattr = rupattr.decode ('utf-8')
+                    else :
+                        rupattr  = us2u (rupattr)
+                        prupattr = rupattr
                 if synccfg.name not in luser :
                     if rupattr :
                         self.info \
@@ -1979,14 +1986,12 @@ class LDAP_Roundup_Sync (Log) :
                 if udprop == 'org_location' and linkprop == 'name' :
                     if not is_current :
                         val = '*' + val
-                # FIXME: Not needed in python3
-                if isinstance (val, str) :
-                    val = val.decode ('utf-8')
-                if val != ldattr :
-                    if not ldattr :
-                        return (ldap3.MODIFY_ADD, lk, val)
-                    else :
-                        return (ldap3.MODIFY_REPLACE, lk, val)
+                if val is not None :
+                    val = us2u (val)
+                if val and not ldattr :
+                    return (ldap3.MODIFY_ADD, lk, val)
+                if ldattr and val != ldattr.value :
+                    return (ldap3.MODIFY_REPLACE, lk, val)
         if is_empty and ldattr != '' :
             if ldattr is None :
                 return None

@@ -1,5 +1,5 @@
 #! /usr/bin/python
-# Copyright (C) 2013 Dr. Ralf Schlatterbeck Open Source Consulting.
+# Copyright (C) 2013-21 Dr. Ralf Schlatterbeck Open Source Consulting.
 # Reichergasse 131, A-3411 Weidling.
 # Web: http://www.runtux.com Email: office@runtux.com
 # All rights reserved
@@ -44,8 +44,8 @@ def check_size (db, cl, nodeid, new_values) :
         return
     length = len (new_values ['content'] or '')
     if length > limit.limit :
-        raise Reject, _ \
-            ("Maximum file size %(limit)s exceeded: %(length)s") % locals ()
+        raise Reject \
+            (_ ("Maximum file size %(limit)s exceeded: %(length)s") % locals ())
 # end def check_size
 
 def init (db) :

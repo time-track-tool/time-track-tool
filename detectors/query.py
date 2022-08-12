@@ -1,5 +1,5 @@
 #! /usr/bin/python
-# Copyright (c) 2007-13 Ralf Schlatterbeck (rsc@runtux.com)
+# Copyright (c) 2007-21 Ralf Schlatterbeck (rsc@runtux.com)
 # 
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -19,8 +19,11 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-from cgi                            import parse_qs
-from urllib                         import urlencode, unquote_plus
+try :
+    from urllib.parse import urlencode, unquote_plus, parse_qs
+except ImportError :
+    from urllib import urlencode, unquote_plus
+    from cgi    import parse_qs
 from roundup.cgi.TranslationService import get_translation
 from roundup.exceptions             import Reject
 
@@ -40,8 +43,8 @@ def fix_url_and_template (new_values, url) :
                 del urldict [key]
                 deleted = True
         if deleted :
-            for k, v in urldict.iteritems () :
-                urldict [k] = ','.join (v)
+            for k in urldict :
+                urldict [k] = ','.join (urldict [k])
             new_values ['url'] = unquote_plus (urlencode (urldict))
             #print "url after:", new_values ['url']
     #print "tmplate:", tmplate or 'index'

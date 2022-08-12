@@ -1,5 +1,5 @@
 #! /usr/bin/python
-# Copyright (C) 2010-14 Dr. Ralf Schlatterbeck Open Source Consulting.
+# Copyright (C) 2010-21 Dr. Ralf Schlatterbeck Open Source Consulting.
 # Reichergasse 131, A-3411 Weidling.
 # Web: http://www.runtux.com Email: office@runtux.com
 # All rights reserved
@@ -51,7 +51,7 @@ import common
 def new_support (db, cl, nodeid, new_values) :
     closed = db.sup_status.lookup ('closed')
     if 'messages'    not in new_values :
-        raise Reject, _ ("New %s requires a message") % _ (cl.classname)
+        raise Reject (_ ("New %s requires a message") % _ (cl.classname))
     if  ('status' not in new_values or new_values ['status'] == closed) :
         new_values ['status'] = db.sup_status.lookup ('open')
     if 'category'     not in new_values :
@@ -76,10 +76,10 @@ def audit_superseder (db, cl, nodeid, new_values) :
     new_sup = new_values.get ("superseder", None)
     if new_sup :
         if not nodeid :
-            raise Reject, _ ("May not set %s on new issue") % _ ('superseder')
+            raise Reject (_ ("May not set %s on new issue") % _ ('superseder'))
         for sup in new_sup :
             if sup == nodeid :
-                raise Reject, _ ("Can't set %s to yourself") % _ ('superseder')
+                raise Reject (_ ("Can't set %s to yourself") % _ ('superseder'))
         new_values ["status"] = db.sup_status.lookup ('closed')
 # end def audit_superseder
 
@@ -335,7 +335,7 @@ def header_check (db, cl, nodeid, new_values) :
                         else :
                             cc [mail.lower ()] = 1
                 if cc :
-                    new_values ['cc'] = ', '.join (cc.keys ())
+                    new_values ['cc'] = ', '.join (cc)
         else :
             if send_to_customer :
                 mails = []
@@ -364,10 +364,10 @@ def header_check (db, cl, nodeid, new_values) :
                 else :
                     mc = cc
                 if not m and not mc :
-                    raise Reject, \
-                        _ ("Trying to send to customer with empty CC and "
+                    raise Reject \
+                        (_ ("Trying to send to customer with empty CC and "
                            "without configured contact-email for customer"
-                          )
+                        ) )
                 if m :
                     h.add_header ('X-ROUNDUP-TO', m)
                 if mc :
@@ -391,14 +391,14 @@ def check_require_message (db, cl, nodeid, new_values) :
         return
     for prop in ('responsible',) :
         if prop in new_values :
-            raise Reject, _ ("Change of %s requires a message") % _ (prop)
+            raise Reject (_ ("Change of %s requires a message") % _ (prop))
 # end def check_require_message
 
 def check_resp_not_support (db, cl, nodeid, new_values) :
     sup = db.user.lookup ('support')
     rsp = new_values.get ('responsible', cl.get (nodeid, 'responsible'))
     if rsp == sup and ('status' in new_values or 'confidential' in new_values) :
-        raise Reject, _ ("Requires change of user (support not allowed)")
+        raise Reject (_ ("Requires change of user (support not allowed)"))
 # end def check_resp_not_support
 
 def remove_support_from_nosy (db, cl, nodeid, new_values) :
@@ -410,7 +410,7 @@ def remove_support_from_nosy (db, cl, nodeid, new_values) :
     sup = db.user.lookup ('support')
     if conf and sup in nosy :
         del nosy [sup]
-        new_values ['nosy'] = nosy.keys ()
+        new_values ['nosy'] = list (nosy)
 # end def remove_support_from_nosy
 
 def initial_props (db, cl, nodeid, new_values) :
@@ -436,7 +436,7 @@ def initial_props (db, cl, nodeid, new_values) :
             grp = db.mailgroup.getnode (g)
             for k in grp.nosy :
                 nosy [k] = 1
-    new_values ['nosy'] = nosy.keys ()
+    new_values ['nosy'] = list (nosy)
     if 'confidential' not in new_values :
         if cust.confidential :
             new_values ['confidential'] = True
@@ -482,11 +482,12 @@ def check_maildomain (db, cl, nodeid, new_values) :
     if not md :
         return
     if '.' not in md :
-        raise Reject, \
-            _ ('Toplevel domain "%(maildomain)s" not allowed, '
-               'must contain "."'
-              ) \
+        raise Reject \
+            ( _ ('Toplevel domain "%(maildomain)s" not allowed, '
+                'must contain "."'
+                )
             % dict (maildomain = _ ('maildomain'))
+            )
     md = new_values ['maildomain'] = md.lower ()
     common.check_unique (_, cl, nodeid, maildomain = md)
 # end def check_maildomain
@@ -594,7 +595,7 @@ def check_prodcat (db, cl, nodeid, new_values) :
     if not level :
         new_values ['level'] = 1
     if level > 4 :
-        raise Reject, _ ('Max. %s is ') % _ ('level')
+        raise Reject (_ ('Max. %s is ') % _ ('level'))
 # end def check_prodcat
 
 def cust_agree (db, cl, nodeid, new_values) :

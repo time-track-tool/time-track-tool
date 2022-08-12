@@ -1,5 +1,5 @@
 #! /usr/bin/python
-# Copyright (C) 2006-19 Dr. Ralf Schlatterbeck Open Source Consulting.
+# Copyright (C) 2006-21 Dr. Ralf Schlatterbeck Open Source Consulting.
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -44,7 +44,7 @@ def common_user_checks (db, cl, nodeid, new_values) :
         and new_values ['address']
         and ' ' in new_values['address']
         ) :
-        raise ValueError, 'Email address must not contain spaces'
+        raise ValueError ('Email address must not contain spaces')
     common.check_roles (db, cl, nodeid, new_values)
     # automatic setting of realname
     if 'firstname' in cl.properties :
@@ -52,20 +52,18 @@ def common_user_checks (db, cl, nodeid, new_values) :
         fn = new_values.get (n, None) or cl.get (nodeid, n) or ''
         n = 'lastname'
         ln = new_values.get (n, None) or cl.get (nodeid, n) or ''
-        if  (  new_values.has_key ("firstname")
-            or new_values.has_key ("lastname")
-            ) :
+        if  "firstname" in new_values or "lastname" in new_values :
             realname = " ".join ((fn, ln))
             new_values ["realname"] = realname
     if 'lunch_duration' in new_values :
         ld = new_values ['lunch_duration']
         if ld * 3600 % 900 :
-            raise Reject, _ ("Times must be given in quarters of an hour")
+            raise Reject (_ ("Times must be given in quarters of an hour"))
         new_values ['lunch_duration'] = int (ld * 4) / 4.
         if ld > 8 :
-            raise Reject, _ ("Lunchbreak of more than 8 hours? Sure?")
+            raise Reject (_ ("Lunchbreak of more than 8 hours? Sure?"))
         if ld < .5 :
-            raise Reject, _ ("Lunchbreak must be at least half an hour.")
+            raise Reject (_ ("Lunchbreak must be at least half an hour."))
     if 'lunch_start' in new_values :
         ls = new_values ['lunch_start']
         ls = Date (ls) # trigger date-spec error if this fails.
@@ -149,13 +147,13 @@ def audit_user_fields(db, cl, nodeid, new_values):
         , 'uid'
         ) :
         if n in new_values and new_values [n] is None and cl.get (nodeid, n) :
-            raise Reject, "%(attr)s may not be undefined" % {'attr' : _ (n)}
+            raise Reject ("%(attr)s may not be undefined" % {'attr' : _ (n)})
     common_user_checks (db, cl, nodeid, new_values)
 # end def audit_user_fields
 
 def check_retire (db, cl, nodeid, old_values) :
     if db.getuid () != '1' :
-        raise Reject, _ ("Not allowed to retire a user")
+        raise Reject (_ ("Not allowed to retire a user"))
 # end def check_retire
 
 def obsolete_action (db, cl, nodeid, new_values) :
@@ -182,8 +180,10 @@ def check_pictures (db, cl, nodeid, new_values) :
     pict = db.file.getnode (p)
     length = len (pict.content)
     if length > limit.limit :
-        raise Reject, _ \
-            ("Maximum picture size %(limit)s exceeded: %(length)s") % locals ()
+        raise Reject \
+            ( _ ("Maximum picture size %(limit)s exceeded: %(length)s")
+            % locals ()
+            )
 # end def check_pictures
 
 def check_ext_company (db, cl, nodeid, new_values) :
@@ -221,7 +221,7 @@ def deny_system_user (db, cl, nodeid, new_values) :
     system = db.user_status.lookup ('system')
     status = db.user.get (uid, 'status')
     if status == system :
-        raise Reject, _ ("System users may not create users")
+        raise Reject (_ ("System users may not create users"))
 # end def deny_system_user
 
 def _domain_user_role_check (db) :

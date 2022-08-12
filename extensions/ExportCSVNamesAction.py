@@ -1,5 +1,5 @@
-#! /usr/bin/python
-# Copyright (C) 2004-2010 Dr. Ralf Schlatterbeck Open Source Consulting.
+#! /usr/bin/python3
+# Copyright (C) 2004-22 Dr. Ralf Schlatterbeck Open Source Consulting.
 # 
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -22,10 +22,9 @@
 
 import csv
 import re
-try :
-    from cStringIO import StringIO
-except ImportError :
-    from StringIO  import StringIO
+import sys
+import codecs
+from io import StringIO
 
 from datetime              import datetime
 from roundup.cgi.actions   import Action, SearchAction
@@ -43,8 +42,7 @@ from request_util          import True_Value
 locale = None
 
 def charsetconv (x) :
-    # FIXME: This should be utf-8 at some point
-    return str (x).decode ('utf-8').encode ('latin1', 'replace')
+    return x
 # end def charsetconv
 
 class Repr_Str (autosuper) :
@@ -276,7 +274,7 @@ class Export_CSV_Names (Action, autosuper) :
     def _setup (self) :
         columns    = self.request.columns
         if not columns :
-            columns = self.props.keys ()
+            columns = list (self.props)
             columns.sort ()
         # full-text search
         if self.request.search_text :
@@ -320,29 +318,29 @@ class Export_CSV_Names (Action, autosuper) :
         # end def repr_extprop
 
         if 'contact_type' in self.db.classes :
-		cts = self.db.contact_type.getnodeids (retired = False)
-		cts = dict \
+                cts = self.db.contact_type.getnodeids (retired = False)
+                cts = dict \
                     ((i, self.db.contact_type.get (i, 'name')) for i in cts)
-		class Repr_Contact (Repr_Str) :
-		    def __call__ (self, itemid, col) :
-			type = col.split ('.') [1]
-			ccls = self.klass.db.contact
-			contacts = self.klass.get (itemid, 'contacts') or []
-			cnames = []
-			for c in contacts :
-			    co = ccls.getnode (c)
-			    ct = cts [co.contact_type]
-			    if type == 'Telefon' :
-				if ct != type and ct != 'Mobiltelefon' :
-				    continue
-			    else :
-				if ct != type :
-				    continue
-			    cnames.append (co.contact)
-			x = ', '.join (cnames)
-			return self.conv (x)
-		    # end def __call__
-		# end class Repr_Contact
+                class Repr_Contact (Repr_Str) :
+                    def __call__ (self, itemid, col) :
+                        type = col.split ('.') [1]
+                        ccls = self.klass.db.contact
+                        contacts = self.klass.get (itemid, 'contacts') or []
+                        cnames = []
+                        for c in contacts :
+                            co = ccls.getnode (c)
+                            ct = cts [co.contact_type]
+                            if type == 'Telefon' :
+                                if ct != type and ct != 'Mobiltelefon' :
+                                    continue
+                            else :
+                                if ct != type :
+                                    continue
+                            cnames.append (co.contact)
+                        x = ', '.join (cnames)
+                        return self.conv (x)
+                    # end def __call__
+                # end class Repr_Contact
 
         for col in self.columns :
             self.represent [col] = repr_str
@@ -429,11 +427,9 @@ class Export_CSV_Names (Action, autosuper) :
             # all done, return a dummy string
             return 'dummy'
 
-        io = outfile
-        if io is None :
-            io = self.client.request.wfile
+        wfile  = self.setup_wfile (outfile)
         writer = self.csv_writer \
-            ( io
+            ( wfile
             , dialect   = 'excel'
             , delimiter = self.delimiter
             , quoting   = self.quoting
@@ -462,6 +458,22 @@ class Export_CSV_Names (Action, autosuper) :
                 )
         return True_Value ('')
     # end def handle
+
+    def setup_wfile (self, outfile) :
+        wfile = outfile
+        if wfile is None :
+            wfile = self.client.request.wfile
+        if sys.version_info [0] > 2 :
+            wfile = codecs.getwriter (self.client.charset) (wfile, 'replace')
+        elif self.client.charset != self.client.STORAGE_CHARSET :
+            wfile = codecs.EncodedFile \
+                ( wfile
+                , self.client.STORAGE_CHARSET
+                , self.client.charset
+                , 'replace'
+                )
+        return wfile
+    # end def setup_wfile
 # end class Export_CSV_Names
 
 class Export_CSV_Addresses (Export_CSV_Names) :
@@ -575,7 +587,8 @@ class Export_CSV_Lielas (Export_CSV_Names, SearchAction) :
             return 'dummy'
 
         sensorspec = {}
-        for k, v in self.filterspec.iteritems () :
+        for k in self.filterspec :
+            v = self.filterspec [k]
             if k.startswith ('sensor.') :
                 sensorspec [k [7:]] = v
             if k == 'sensor' :
@@ -621,11 +634,9 @@ class Export_CSV_Lielas (Export_CSV_Names, SearchAction) :
         for n, sid in enumerate (sids) :
             index_by_sid [sid] = n + 1
 
-        io = outfile
-        if io is None :
-            io = self.client.request.wfile
+        wfile  = self.setup_wfile (outfile)
         writer = self.csv_writer \
-            ( io
+            ( wfile
             , dialect   = 'excel'
             , delimiter = self.delimiter
             , quoting   = self.quoting

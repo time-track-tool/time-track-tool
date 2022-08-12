@@ -1,5 +1,5 @@
 # Copyright (C) 2007 Philipp Gortan <gortan@tttech.com>
-# Copyright (C) 2009 Dr. Ralf Schlatterbeck Open Source Consulting.
+# Copyright (C) 2009-21 Dr. Ralf Schlatterbeck Open Source Consulting.
 # Reichergasse 131, A-3411 Weidling.
 # Web: http://www.runtux.com Email: office@runtux.com
 # All rights reserved
@@ -63,8 +63,8 @@ def check_document_frozen (db, cl, nodeid, newvalues) :
 
     attrs = ", ".join (_ (a) for a in attr_lst if a in newvalues)
     if attrs :
-        raise Reject, _ \
-            ('You are not allowed to %(action)s: %(attrs)s'
+        raise Reject \
+            ( _ ('You are not allowed to %(action)s: %(attrs)s')
             % locals ()
             )
 # end def check_document_frozen
@@ -144,8 +144,10 @@ def check_name \
     if name not in newvalues or not newvalues [name] :
         return
     if not regex.match (newvalues [name]) :
-        raise Reject, _ ('Malformed %(attr)s: Only %(name)s allowed') \
+        raise Reject \
+            ( _ ('Malformed %(attr)s: Only %(name)s allowed')
             % dict (attr = _ (name), name = txt)
+            )
 # end def check_name
 
 def check_doc_category (db, cl, nodeid, newvalues) :
@@ -176,7 +178,7 @@ def check_statechange (db, cl, nodeid, newvalues) :
         for u in db.user.getnodeids () :
             if common.user_has_role (db, u, 'Doc_Admin') :
                 nosy [u] = True
-        newvalues ['nosy'] = nosy.keys ()
+        newvalues ['nosy'] = list (nosy)
     if newstate != oldstate :
         newvalues ['state_changed_by'] = db.getuid ()
         st = db.doc_status.getnode (newstate)

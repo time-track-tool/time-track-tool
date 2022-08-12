@@ -1,5 +1,5 @@
 #! /usr/bin/python
-# Copyright (C) 2006 Dr. Ralf Schlatterbeck Open Source Consulting.
+# Copyright (C) 2006-21 Dr. Ralf Schlatterbeck Open Source Consulting.
 # Reichergasse 131, A-3411 Weidling.
 # Web: http://www.runtux.com Email: office@runtux.com
 # All rights reserved
@@ -40,7 +40,7 @@ import re
 
 def new_it (db, cl, nodeid, new_values) :
     if 'messages'    not in new_values :
-        raise Reject, _ ("New %s requires a message") % _ (cl.classname)
+        raise Reject (_ ("New %s requires a message") % _ (cl.classname))
     if  (  'status' not in new_values
         or not common.user_has_role (db, db.getuid (), 'IT')
         ) :
@@ -55,7 +55,7 @@ def new_it (db, cl, nodeid, new_values) :
             new_values ['responsible'] = cat.responsible
     if cat.nosy :
         nosy.update (dict.fromkeys (cat.nosy))
-    new_values ['nosy'] = nosy.keys ()
+    new_values ['nosy'] = list (nosy)
     if 'responsible'  not in new_values :
         new_values ['responsible'] = db.user.lookup ('helpdesk')
     if 'stakeholder'  not in new_values :
@@ -79,21 +79,24 @@ def new_it (db, cl, nodeid, new_values) :
 def check_it (db, cl, nodeid, new_values) :
     for i in 'title', 'category', 'status', 'it_prio', 'responsible' :
         if i in new_values and not new_values [i] :
-            raise Reject, _ ("%(attr)s may not be undefined") % {'attr' : _ (i)}
+            raise Reject \
+                (_ ("%(attr)s may not be undefined") % {'attr' : _ (i)})
     if new_values.get ('responsible', None) == db.user.lookup ('helpdesk') :
-        raise Reject, _ ("User may not be set to helpdesk")
+        raise Reject (_ ("User may not be set to helpdesk"))
 
     if 'status' in new_values :
-	st   = new_values ['status']
-	rsp  = new_values.get ('responsible', cl.get (nodeid, 'responsible'))
-	if not db.it_issue_status.get (st, 'relaxed') :
-	    if rsp  == db.user.lookup ('helpdesk') :
-		raise Reject, _ ('Must change user, "helpdesk" is not allowed')
-	    prio = new_values.get ('it_prio',     cl.get (nodeid, 'it_prio'))
+        st   = new_values ['status']
+        rsp  = new_values.get ('responsible', cl.get (nodeid, 'responsible'))
+        if not db.it_issue_status.get (st, 'relaxed') :
+            if rsp  == db.user.lookup ('helpdesk') :
+                raise Reject (_ ('Must change user, "helpdesk" is not allowed'))
+            prio = new_values.get ('it_prio',     cl.get (nodeid, 'it_prio'))
             prio = db.it_prio.getnode (prio)
-	    if prio.must_change :
-		raise Reject, _ ('Must change %s, "%s" is not allowed') \
-		    % (_ ('it_prio'), prio.name)
+            if prio.must_change :
+                raise Reject \
+                    (_ ('Must change %s, "%s" is not allowed')
+                    % (_ ('it_prio'), prio.name)
+                    )
 # end def check_it
 
 def audit_superseder (db, cl, nodeid, new_values) :
@@ -125,9 +128,9 @@ def audit_superseder (db, cl, nodeid, new_values) :
             rsp = new_values.get ('responsible', cl.get (nodeid, 'responsible'))
             if db.user.get (rsp, 'username') == 'helpdesk' :
                 new_values ['responsible'] = db.getuid ()
-	    prio = new_values.get ('it_prio',    cl.get (nodeid, 'it_prio'))
+            prio = new_values.get ('it_prio',    cl.get (nodeid, 'it_prio'))
             prio = db.it_prio.getnode (prio)
-	    if prio.must_change :
+            if prio.must_change :
                 prios = db.it_prio.filter (None, {}, sort = ('+', 'order'))
                 p = None
                 if len (prios) > 1 :

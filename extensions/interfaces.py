@@ -1,5 +1,5 @@
 #! /usr/bin/python
-# Copyright (C) 2006 Dr. Ralf Schlatterbeck Open Source Consulting.
+# Copyright (C) 2006-21 Dr. Ralf Schlatterbeck Open Source Consulting.
 # Reichergasse 131, A-3411 Weidling.
 # Web: http://www.runtux.com Email: office@runtux.com
 # All rights reserved
@@ -297,9 +297,11 @@ def u_sorted (vals, keys, fun = str) :
 # end def u_sorted
 
 def weekend_allowed (db, daily_record) :
-    user, date = [str (daily_record [i]) for i in 'user', 'date']
-    user = db.user.lookup (user)
-    dyn = user_dynamic.get_user_dynamic (db, user, date)
+    """ The daily_record is a HTMLItem from the web interface
+    """
+    user = daily_record.user.id
+    date = daily_record.date._value
+    dyn  = user_dynamic.get_user_dynamic (db, user, date)
     return dyn and dyn.weekend_allowed
 # end def weekend_allowed
 
@@ -337,7 +339,8 @@ def approval_for (db, valid_only = False) :
              if x != d_a ['status']
             )
         invalid = dict.fromkeys (db.user.filter (None, d), 1)
-        for u in invalid.keys () :
+        # dict modified during iteration
+        for u in list (invalid) :
             if u in approve_for :
                 del invalid [u]
                 continue
@@ -359,7 +362,7 @@ def approval_for (db, valid_only = False) :
 def welcome (db) :
     fname = os.path.join (db.config.TRACKER_HOME, 'Welcome-Info.txt')
     try :
-        text = file (fname, 'rU').read ()
+        text = open (fname, 'rU').read ()
         return escape (text).replace ('\n\n', '<br>\n')
     except IOError :
         pass
@@ -392,8 +395,8 @@ def until_now () :
 def get_from_form (request, name) :
     try :
         for key in ('@' + name, ':' + name):
-            if request.form.has_key (key):
-                return request.form [key].value.strip()
+            if key in request.form :
+                return request.form [key].value.strip ()
     except TypeError:
         pass
     return ''
@@ -405,12 +408,10 @@ def user_props (db) :
     except AttributeError :
         pass
     props = dict (username = 0, firstname = 2, lastname = 3, address = 6)
-    props = dict \
-        ((k, v) for k, v in props.iteritems () if k in db.user.properties)
+    props = dict ((k, props [k]) for k in props if k in db.user.properties)
     if 'firstname' not in props :
         props ['realname'] = 5
-    return ','.join \
-        (x [0] for x in sorted (props.iteritems (), key = lambda x : x [1]))
+    return ','.join (x for x in sorted (props, key = lambda k : props [k]))
 # end def user_props
 
 def user_classhelp \
@@ -469,7 +470,7 @@ def indexargs_dict (nav, form) :
     d = {}
     if nav :
         d = {':startwith' : nav.first, ':pagesize' : nav.size}
-    if form.has_key (':nosearch') :
+    if ':nosearch' in form :
         d [':nosearch'] = 1
     return d
 # end def indexargs_dict

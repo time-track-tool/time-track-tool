@@ -45,7 +45,7 @@ def fix_adr_type (db, cl, nodeid, new_values) :
                 adrtype = db.abo_type.get  (abotype, 'adr_type')
                 assert (adrtype)
                 adr_type_dict [adrtype] = 1
-        new_values ['adr_type'] = adr_type_dict.keys ()
+        new_values ['adr_type'] = list (adr_type_dict)
 # end def fix_adr_type
 
 def check_retire_address (db, cl, nodeid, old_values) :

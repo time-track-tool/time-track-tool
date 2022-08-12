@@ -1,5 +1,5 @@
 #! /usr/bin/python
-# Copyright (C) 2005 Dr. Ralf Schlatterbeck Open Source Consulting.
+# Copyright (C) 2005-21 Dr. Ralf Schlatterbeck Open Source Consulting.
 # Reichergasse 131, A-3411 Weidling.
 # Web: http://www.runtux.com Email: office@runtux.com
 # All rights reserved
@@ -20,7 +20,7 @@
 # Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 # ****************************************************************************
 
-from cStringIO                      import StringIO
+from io                             import StringIO
 from os.path                        import splitext
 
 from roundup.cgi.actions            import Action, EditItemAction
@@ -58,14 +58,14 @@ class Invoice (Action, autosuper) :
         aboprice    = db.abo.get       (iv ['abo'], 'aboprice')
         iv_tmplates = db.abo_price.get (aboprice, 'invoice_template')
         if not iv_tmplates :
-            raise Reject, \
+            raise Reject \
                 ( db._ ('No invoice_template defined for all invoices: %s')
                 % iv ['invoice_no']
                 )
         ivts = [db.invoice_template.getnode (i) for i in iv_tmplates]
         ivts = [i for i in ivts if i ['invoice_level'] <= iv ['n_sent']]
         if not ivts :
-            raise Reject, \
+            raise Reject \
                 ( db._ ('No matching invoice_template for invoice %s')
                 % iv ['invoice_no']
                 )
@@ -82,7 +82,7 @@ class Invoice (Action, autosuper) :
         filterspec = request.filterspec
 
         if request.classname != 'invoice' :
-            raise Reject, self.db._ ('You can only mark invoices')
+            raise Reject (self.db._ ('You can only mark invoices'))
         # get invoice_group -- if existing:
         self.invoice_group = None
         try :
@@ -100,7 +100,7 @@ class Invoice (Action, autosuper) :
     def redirect (self) :
         url = templating.HTMLRequest (self.client).indexargs_url \
             ('' , { '@template'  : 'send' })
-        raise Redirect, url
+        raise Redirect (url)
     # end def redirect
 
 # end class Invoice
@@ -153,7 +153,7 @@ class Mark_Invoice (Invoice) :
         self.now   = Date ('.')
 
         if self.marked () :
-            raise Reject, self.db._ ('invoices are already marked')
+            raise Reject (self.db._ ('invoices are already marked'))
 
         invoice = self.db.invoice
         spec = \
@@ -195,7 +195,7 @@ class OOoPy_Invoice_Wrapper (autosuper) :
         names = name.split ('.')
         x  = self.items [names [0]]
         if not x :
-            raise KeyError, names [0]
+            raise KeyError (names [0])
         for i in names [1:] :
             p = x.cl.properties [i]
             if isinstance (p, hyperdb.Link) :
@@ -210,15 +210,13 @@ class OOoPy_Invoice_Wrapper (autosuper) :
         return self._pretty (self._deref (name))
     # end def __getitem__
 
-    def has_key (self, name) :
+    def __contains__ (self, name) :
         try :
             self._deref (name)
         except KeyError :
             return False
         return True
-    # end def has_key
-
-    __contains__ = has_key
+    # end def __contains__
 
 # end class OOoPy_Invoice_Wrapper
 
@@ -239,7 +237,8 @@ class Generate_Invoice (Invoice) :
                 tp_by_tid [tid] = i [0]
             iv_by_tid [tid].append (OOoPy_Invoice_Wrapper (self.db, i [1]))
         sio = {}
-        for tid, tp in tp_by_tid.iteritems () :
+        for tid in tp_by_tid :
+            tp = tp_by_tid [tid]
             sio [tid] = StringIO ()
             fileid    = self.db.tmplate.get (tp ['tmplate'], 'files')[-1]
             file      = StringIO (self.db.file.get (fileid, 'content'))
@@ -341,7 +340,7 @@ class Download_Letter (Action, autosuper) :
                 )
             and splitext (file.name) [1] not in ('.sxw', '.odt')
             ) :
-            raise Redirect, 'file%s/%s' % (file.id, file.name)
+            raise Redirect ('file%s/%s' % (file.id, file.name))
         out = StringIO ()
         o   = OOoPy (infile = StringIO (file.content), outfile = out)
         t   = Transformer \
@@ -367,7 +366,7 @@ class Download_Letter (Action, autosuper) :
         filterspec = request.filterspec
 
         if request.classname != 'letter' :
-            raise Reject, self.db._ ('You can only download letters')
+            raise Reject (self.db._ ('You can only download letters'))
         # get id:
         try :
             self.id = request.form ['id'].value
@@ -376,7 +375,7 @@ class Download_Letter (Action, autosuper) :
         letter = self.db.letter.getnode (str (self.id))
         files  = letter.files
         if not files :
-            raise Redirect, 'letter%s' % self.id
+            raise Redirect ('letter%s' % self.id)
         invoice = letter.invoice
         if invoice :
             invoice = self.db.invoice.getnode (invoice)
@@ -396,7 +395,7 @@ class Personalized_Template (Download_Letter) :
 
         _ = self.db._
         if request.classname != 'address' :
-            raise Reject, _ ('You can only download templates for an address')
+            raise Reject (_ ('You can only download templates for an address'))
         try :
             template = request.form ['tmplate'].value
         except KeyError :
@@ -405,7 +404,7 @@ class Personalized_Template (Download_Letter) :
         address  = self.db.address.getnode (self.context ['context'].id)
         files    = template.files
         if not files :
-            raise Reject, _ ('No files for %(tmplate)s' % template.name)
+            raise Reject (_ ('No files for %(tmplate)s' % template.name))
         return self.create_file \
             ( self.db.file.getnode (files [0])
             , None
@@ -421,12 +420,11 @@ class Edit_Payment_Action (EditItemAction, autosuper) :
         like for EditItemAction.
     """
     def _editnodes (self, props, links) :
-        # use props.items here, with iteritems we get a RuntimeError
-        # "dictionary changed size during iteration"
-        for (cl, id), val in props.items () :
+        # use props.items here, dict is modified
+        for (cl, id), val in list (props.items ()) :
             if (   cl == 'payment'
                and int (id) < 0
-               and sorted (val.keys ()) == ['invoice', 'receipt_no']
+               and sorted (list (val)) == ['invoice', 'receipt_no']
                and val ['receipt_no'] == 'auto'
                ) :
                del props [(cl, id)]

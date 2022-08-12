@@ -1,5 +1,5 @@
 #! /usr/bin/python
-# Copyright (C) 2006 Dr. Ralf Schlatterbeck Open Source Consulting.
+# Copyright (C) 2006-21 Dr. Ralf Schlatterbeck Open Source Consulting.
 # Reichergasse 131, A-3411 Weidling.
 # Web: http://www.runtux.com Email: office@runtux.com
 # All rights reserved
@@ -37,7 +37,7 @@ _      = lambda x : x
 def check_public_holiday (db, cl, nodeid, new_values) :
     for i in 'name', 'date', 'locations' :
         if i in new_values and not new_values [i] :
-            raise Reject, "%(attr)s may not be deleted" % {'attr' : _ (i)}
+            raise Reject ("%(attr)s may not be deleted" % {'attr' : _ (i)})
 # end def check_public_holiday
 
 def new_public_holiday (db, cl, nodeid, new_values) :

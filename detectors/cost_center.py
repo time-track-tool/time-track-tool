@@ -1,5 +1,5 @@
 #! /usr/bin/python
-# Copyright (C) 2006 Dr. Ralf Schlatterbeck Open Source Consulting.
+# Copyright (C) 2006-21 Dr. Ralf Schlatterbeck Open Source Consulting.
 # Reichergasse 131, A-3411 Weidling.
 # Web: http://www.runtux.com Email: office@runtux.com
 # All rights reserved
@@ -39,8 +39,10 @@ import common
 def new_cc (db, cl, nodeid, new_values) :
     for i in 'cost_center_group', :
         if i not in new_values :
-            raise Reject, _ ("New %(cls)s requires a %(attr)s") \
+            raise Reject \
+                ( _ ("New %(cls)s requires a %(attr)s") \
                 % dict (cls = _ (cl.classname), attr = _ (i))
+                )
     if 'status' not in new_values :
         try :
             new_values ['status'] = db.cost_center_status.lookup ('New')
@@ -53,7 +55,7 @@ def check_cc (db, cl, nodeid, new_values) :
         if  (  i in new_values and not new_values [i]
             or not cl.get (nodeid, i) and not i in new_values
             ) :
-            raise Reject, _ ("%(attr)s may not be undefined") % {'attr' : _ (i)}
+            raise Reject (_ ("%(attr)s may not be undefined") % {'attr': _ (i)})
 # end def check_cc
 
 def init (db) :

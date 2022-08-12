@@ -1,4 +1,4 @@
-# Copyright (C) 2009 Ralf Schlatterbeck. All rights reserved
+# Copyright (C) 2009-21 Ralf Schlatterbeck. All rights reserved
 # Reichergasse 131, A-3411 Weidling
 # ****************************************************************************
 # Permission is hereby granted, free of charge, to any person obtaining
@@ -66,8 +66,8 @@ def check_linking (db, cl, nodeid, new_values) :
         for id in new_props (cl, prop, new_values) :
             if id not in old and klass.get (id, 'creator') != db.getuid () :
                 cls  = _ (klass.classname)
-                raise Reject, \
-                    _ ("You may link only to your own %(cls)s") % locals ()
+                raise Reject \
+                    (_ ("You may link only to your own %(cls)s") % locals ())
 # end def check_linking
 
 def check_unlinking (db, cl, nodeid, new_values) :
@@ -103,8 +103,8 @@ def check_unlinking (db, cl, nodeid, new_values) :
                 # Allow IT and admin roles
                 if common.user_has_role (db, db.getuid (), 'it', 'admin') :
                     continue
-                raise Reject, \
-                    _ ("You may not unlink %(cls)s from %(name)s") % locals ()
+                raise Reject \
+                    (_ ("You may not unlink %(cls)s from %(name)s") % locals ())
 # end def check_unlinking
 
 def init (db) :

@@ -62,7 +62,8 @@ class Support_Report (object) :
             users [customer.responsible] = None
         if self.sowner in users :
             del users [self.sowner]
-        for u in users.keys () :
+        # Dict modified during iteration
+        for u in list (users) :
             status = self.db.user.get (u, 'status')
             if not self.db.user_status.get (status, 'is_nosy') :
                 del users [u]
@@ -97,12 +98,13 @@ class Support_Report (object) :
             nn.append ('Customers without valid responsible or nosy:')
             nn.append ('ID    Customer Name')
             for c in sorted \
-                ( self.nonosy_customers.itervalues ()
+                ( self.nonosy_customers.values ()
                 , key = lambda x : int (x.id)
                 ) :
                 nn.append ('%5s %-73s' % (c.id, c.name))
-        for u, v in self.raw_messages.iteritems () :
-            for idx in xrange (len (v) - 1) :
+        for u in self.raw_messages :
+            v = self.raw_messages [u]
+            for idx in range (len (v) - 1) :
                 if v [idx] and v [idx + 1] :
                     v [idx].append ('')
             parts = ['\n'.join (x) for x in v if x]
@@ -130,13 +132,13 @@ class Support_Report (object) :
     # end def pretty_issue
 
     def output (self, fp) :
-        for uid, m in sorted (self.formatted_messages.iteritems ()) :
+        for uid in sorted (self.formatted_messages) :
             if uid :
                 user = self.db.user.getnode (uid)
                 print ("Support-Issues for %s:" % user.username, file = fp)
             else :
                 print ("All Support-Issues:", file = fp)
-            print (m, file = fp)
+            print (self.formatted_messages [uid], file = fp)
             print ("", file = fp)
     # end def output
 
@@ -154,7 +156,8 @@ class Support_Report (object) :
             ))
         frm = "From: %s" % self.db.config.ADMIN_EMAIL
 
-        for uid, m in sorted (self.formatted_messages.iteritems ()) :
+        for uid in sorted (self.formatted_messages) :
+            m = self.formatted_messages [uid]
             if uid :
                 if not opt.mail :
                     continue
