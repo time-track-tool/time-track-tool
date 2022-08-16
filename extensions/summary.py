@@ -2012,7 +2012,7 @@ class CSV_Report (Action, autosuper) :
         if io is None :
             io = self.client.request.wfile
         report = self.report_class (self.db, request, self.utils, is_csv = True)
-        print >> io, report.as_csv ()
+        io.write (report.as_csv ().encode ('utf-8'))
         return request_util.True_Value ()
     # end def handle
 # end class CSV_Report
