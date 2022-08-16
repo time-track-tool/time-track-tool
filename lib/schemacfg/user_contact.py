@@ -114,7 +114,7 @@ def security (db, ** kw) :
     def contact_visible_editable (db, userid, itemid) :
         """User is allowed to edit if he's the owner of the contact
         """
-        if not itemid or itemid < 1 :
+        if not itemid or int (itemid) < 1 :
             return False
         c = db.user_contact.getnode (itemid)
         if userid == c.user :

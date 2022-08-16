@@ -596,7 +596,7 @@ def security (db, ** kw) :
         """ Users are allowed if they have one of the view roles
             of the purchase type or one of the (forced) approval roles.
         """
-        if not itemid or itemid < 1 :
+        if not itemid or int (itemid) < 1 :
             return False
         pr = db.purchase_request.getnode (itemid)
         if not pr.purchase_type :
@@ -713,7 +713,7 @@ def security (db, ** kw) :
         """ Approvers are allowed if not finance and PR not yet approved
             by finance.
         """
-        if not itemid or itemid < 1 :
+        if not itemid or int (itemid) < 1 :
             return False
         # User may not change
         if own_pr (db, userid, itemid) :
@@ -769,7 +769,7 @@ def security (db, ** kw) :
         """ User is allowed permission on their own PRs if either creator or
             requester or supervisor of requester.
         """
-        if not itemid or itemid < 1 :
+        if not itemid or int (itemid) < 1 :
             return False
         pr = db.purchase_request.getnode (itemid)
         if pr.creator == userid or pr.requester == userid :
@@ -940,7 +940,7 @@ def security (db, ** kw) :
         """ Users are allowed if an approval from them is
             linked to the PR.
         """
-        if not itemid or itemid < 1 :
+        if not itemid or int (itemid) < 1 :
             return False
         pr = db.purchase_request.getnode (itemid)
         ap = db.pr_approval.filter (None, dict (purchase_request = itemid))
@@ -1005,7 +1005,7 @@ def security (db, ** kw) :
     def linked_to_pr (db, userid, itemid) :
         """ Users are allowed to view if approval is linked to viewable PR.
         """
-        if not itemid or itemid < 1 :
+        if not itemid or int (itemid) < 1 :
             return False
         ap = db.pr_approval.getnode (itemid)
         pr = ap.purchase_request
@@ -1035,7 +1035,7 @@ def security (db, ** kw) :
             several approvals in a single mask and one of that approvals
             changed the PR to rejected before the others were processed.
         """
-        if not itemid or itemid < 1 :
+        if not itemid or int (itemid) < 1 :
             return False
         ap           = db.pr_approval.getnode (itemid)
         pr           = db.purchase_request.getnode (ap.purchase_request)
@@ -1074,7 +1074,7 @@ def security (db, ** kw) :
     def linked_from_pr (db, userid, itemid) :
         """ Users are allowed to view if offer is linked from PR.
         """
-        if not itemid or itemid < 1 :
+        if not itemid or int (itemid) < 1 :
             return True
         off = db.pr_offer_item.getnode (itemid)
         pr  = get_pr_from_offer_item (db, itemid)
@@ -1122,7 +1122,7 @@ def security (db, ** kw) :
         """ Users are allowed to edit if offer is linked from PR and PR
             is editable.
         """
-        if not itemid or itemid < 1 :
+        if not itemid or int (itemid) < 1 :
             return True
         if not linked_from_pr (db, userid, itemid) :
             return False
@@ -1213,7 +1213,7 @@ def security (db, ** kw) :
     def user_on_nosy_offer (db, userid, itemid) :
         """ User is allowed if on the nosy list of the PR
         """
-        if not itemid or itemid < 1 :
+        if not itemid or int (itemid) < 1 :
             return True
         prs = db.purchase_request.filter (None, dict (offer_items = itemid))
         assert len (prs) <= 1
