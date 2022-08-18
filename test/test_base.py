@@ -3989,7 +3989,7 @@ class Test_Case_Timetracker (_Test_Case_Summary, unittest.TestCase) :
             , weekend_allowed    = 0
             , weekly_hours       = 38.5
             )
-	assert dynid == '7'
+        assert dynid == '7'
         dyn = self.db.user_dynamic.getnode ('6')
         assert dyn.valid_to.pretty ('%Y-%m-%d') == '2022-04-01'
         self.db.user_dynamic.set \
