@@ -26,6 +26,7 @@ import unittest
 import logging
 import csv
 import re
+from io import BytesIO
 
 from . import user1_time, user2_time, user3_time, user4_time, user5_time
 from . import user6_time, user7_time, user8_time, user10_time, user11_time
@@ -1952,9 +1953,13 @@ class Test_Case_Timetracker (_Test_Case_Summary, unittest.TestCase) :
         cli.classname = 'user_dynamic'
         cls = self.tracker.cgi_actions ['export_csv_names']
         exp = cls (cli)
-        io = StringIO ()
+        io = BytesIO ()
         exp.handle (outfile = io)
-        lines = tuple (csv.reader (StringIO (io.getvalue()), delimiter = '\t'))
+        # A way to test for python3
+        v = io.getvalue ()
+        if isinstance (u'', str) :
+            v = v.decode ('utf-8')
+        lines = tuple (csv.reader (StringIO (v), delimiter = '\t'))
         self.assertEqual (len (lines), 4)
         self.assertEqual (len (lines [0]), 7)
         self.assertEqual (lines  [0] [0], 'id')
@@ -2030,9 +2035,12 @@ class Test_Case_Timetracker (_Test_Case_Summary, unittest.TestCase) :
         cli.classname = 'time_record'
         cls = self.tracker.cgi_actions ['export_csv_names']
         exp = cls (cli)
-        io = StringIO ()
+        io = BytesIO ()
         exp.handle (outfile = io)
-        lines = tuple (csv.reader (StringIO (io.getvalue()), delimiter = '\t'))
+        v = io.getvalue ()
+        if isinstance (u'', str):
+            v = v.decode ('utf-8')
+        lines = tuple (csv.reader (StringIO (v), delimiter = '\t'))
         self.assertEqual (len (lines), 2)
         self.assertEqual (len (lines [0]), 10)
         self.assertEqual (lines  [0] [0], 'daily_record.user')
@@ -4036,7 +4044,7 @@ class Test_Case_Timetracker (_Test_Case_Summary, unittest.TestCase) :
         self.assertEqual (lines  [6] [6], '198.25')
         self.assertEqual (lines  [6] [7], '177.25')
         self.assertEqual (lines  [6] [8], '192.25')
-        self.assertEqual (lines  [6] [9], '0')
+        self.assertEqual (lines  [6] [9], '0.00')
         self.assertEqual (lines  [6][11], '42.08')
         self.assertEqual (lines  [7] [2], '42.08')
         self.assertEqual (lines  [7] [6], '4.50')
