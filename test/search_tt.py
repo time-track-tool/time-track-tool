@@ -880,16 +880,16 @@ properties = \
           , ['admin', 'cc-permission', 'controlling', 'doc_admin', 'dom-user-edit-facility', 'dom-user-edit-gtt', 'dom-user-edit-hr', 'dom-user-edit-office', 'facility', 'functional-role', 'hr', 'hr-leave-approval', 'hr-vacation', 'it', 'office', 'organisation', 'pgp', 'procurement', 'project', 'project_view', 'summary_view', 'time-report', 'user', 'user_view', 'vacation-report']
           )
         , ( 'max_hours'
-          , ['admin', 'controlling', 'procurement', 'project', 'project_view']
+          , ['admin', 'cc-permission', 'controlling', 'doc_admin', 'dom-user-edit-facility', 'dom-user-edit-gtt', 'dom-user-edit-hr', 'dom-user-edit-office', 'facility', 'functional-role', 'hr', 'hr-leave-approval', 'hr-vacation', 'it', 'office', 'organisation', 'pgp', 'procurement', 'project', 'project_view', 'summary_view', 'time-report', 'user', 'user_view', 'vacation-report']
           )
         , ( 'name'
           , ['admin', 'cc-permission', 'controlling', 'doc_admin', 'dom-user-edit-facility', 'dom-user-edit-gtt', 'dom-user-edit-hr', 'dom-user-edit-office', 'facility', 'functional-role', 'hr', 'hr-leave-approval', 'hr-vacation', 'it', 'office', 'organisation', 'pgp', 'procurement', 'project', 'project_view', 'summary_view', 'time-report', 'user', 'user_view', 'vacation-report']
           )
         , ( 'no_overtime'
-          , ['admin', 'controlling', 'procurement', 'project', 'project_view']
+          , ['admin', 'cc-permission', 'controlling', 'doc_admin', 'dom-user-edit-facility', 'dom-user-edit-gtt', 'dom-user-edit-hr', 'dom-user-edit-office', 'facility', 'functional-role', 'hr', 'hr-leave-approval', 'hr-vacation', 'it', 'office', 'organisation', 'pgp', 'procurement', 'project', 'project_view', 'summary_view', 'time-report', 'user', 'user_view', 'vacation-report']
           )
         , ( 'no_overtime_day'
-          , ['admin', 'controlling', 'procurement', 'project', 'project_view']
+          , ['admin', 'cc-permission', 'controlling', 'doc_admin', 'dom-user-edit-facility', 'dom-user-edit-gtt', 'dom-user-edit-hr', 'dom-user-edit-office', 'facility', 'functional-role', 'hr', 'hr-leave-approval', 'hr-vacation', 'it', 'office', 'organisation', 'pgp', 'procurement', 'project', 'project_view', 'summary_view', 'time-report', 'user', 'user_view', 'vacation-report']
           )
         , ( 'nosy'
           , ['admin', 'cc-permission', 'controlling', 'doc_admin', 'dom-user-edit-facility', 'dom-user-edit-gtt', 'dom-user-edit-hr', 'dom-user-edit-office', 'facility', 'functional-role', 'hr', 'hr-leave-approval', 'hr-vacation', 'it', 'office', 'organisation', 'pgp', 'procurement', 'project', 'project_view', 'summary_view', 'time-report', 'user', 'user_view', 'vacation-report']
@@ -1137,6 +1137,9 @@ properties = \
         , ( 'csv_delimiter'
           , ['admin', 'user_view']
           )
+        , ( 'dark_mode'
+          , ['admin', 'user_view']
+          )
         , ( 'department_temp'
           , ['admin', 'cc-permission', 'controlling', 'doc_admin', 'dom-user-edit-facility', 'dom-user-edit-gtt', 'dom-user-edit-hr', 'dom-user-edit-office', 'facility', 'functional-role', 'hr', 'hr-leave-approval', 'hr-vacation', 'it', 'office', 'organisation', 'pgp', 'procurement', 'project', 'project_view', 'summary_view', 'time-report', 'user', 'user_view', 'vacation-report']
           )
@@ -1163,6 +1166,9 @@ properties = \
           )
         , ( 'lunch_start'
           , ['admin', 'cc-permission', 'controlling', 'doc_admin', 'dom-user-edit-facility', 'dom-user-edit-gtt', 'dom-user-edit-hr', 'dom-user-edit-office', 'facility', 'functional-role', 'hr', 'hr-leave-approval', 'hr-vacation', 'it', 'office', 'organisation', 'pgp', 'procurement', 'project', 'project_view', 'summary_view', 'time-report', 'user', 'user_view', 'vacation-report']
+          )
+        , ( 'new_tt_iface'
+          , ['admin', 'user_view']
           )
         , ( 'nickname'
           , ['admin', 'cc-permission', 'controlling', 'doc_admin', 'dom-user-edit-facility', 'dom-user-edit-gtt', 'dom-user-edit-hr', 'dom-user-edit-office', 'facility', 'functional-role', 'hr', 'hr-leave-approval', 'hr-vacation', 'it', 'office', 'organisation', 'pgp', 'procurement', 'project', 'project_view', 'summary_view', 'time-report', 'user', 'user_view', 'vacation-report']
