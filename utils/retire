@@ -1,0 +1,52 @@
+#!/usr/bin/python3
+
+from   requester import Requester
+from   argparse  import ArgumentParser
+
+class Retire (Requester):
+
+    def retire (self):
+        for item in self.args.item:
+            #print (item)
+            #print (self.url + item)
+            r = self.get (item)
+            #print (r)
+            self.delete (item, etag = r ['data']['@etag'])
+    # end def retire
+
+# end class Retire
+
+def main ():
+    cmd = ArgumentParser ()
+    cmd.add_argument \
+        ( 'url'
+        , help = 'REST-API URL of remote tracker'
+        )
+    cmd.add_argument \
+        ( 'item'
+        , help  = 'Item(s) to retire'
+        , nargs = '+'
+        )
+    cmd.add_argument \
+        ( "-C", "--disable-cert-check-warning"
+        , help    = "Disable certificate check warning for https connection"
+        , default = False
+        , action  = 'store_true'
+        )
+    cmd.add_argument \
+        ( "-P", "--password"
+        , help    = "Password, better use .netrc"
+        )
+    cmd.add_argument \
+        ( "-r", "--remote-user"
+        , dest    = 'username' # For compat with Requester base class
+        , help    = "Remote API user"
+        , default = 'schlatterbeck@DS1.INTERNAL'
+        )
+    args = cmd.parse_args ()
+    rt = Retire (args)
+    rt.retire ()
+# end def main
+
+if __name__ == '__main__':
+    main ()
