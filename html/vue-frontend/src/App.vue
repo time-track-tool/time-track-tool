@@ -1,6 +1,9 @@
 <template>
   <div id="app">
-    <div class="border-b p-d-flex p-p-3 p-jc-between" v-if="theme_set === true">
+    <div
+      class="border-b p-d-flex p-p-3 p-jc-between"
+      v-if="theme_set === true && this.new_tt_iface === true"
+    >
       <Button
         type="button"
         label="Back to Roundup issue tracker"
@@ -10,7 +13,16 @@
       />
       <div></div>
       <div class="p-ml-auto">
-        <InputSwitch v-model="my_dark_mode" />
+        <SelectButton
+          v-model="my_dark_mode"
+          :options="dark_mode_options"
+          dataKey="value"
+          optionValue="value"
+        >
+          <template #option="slotProps">
+            <i :class="slotProps.option.icon"></i>
+          </template>
+        </SelectButton>
       </div>
     </div>
     <router-view />
@@ -26,6 +38,10 @@ export default {
     return {
       my_dark_mode: null,
       theme_set: false,
+      dark_mode_options: [
+        { icon: "pi pi-sun", value: false },
+        { icon: "pi pi-moon", value: true },
+      ],
     };
   },
   components: {
@@ -59,12 +75,14 @@ export default {
       "error",
       "user_dynamic",
       "dark_mode",
+      "new_tt_iface",
       "user_etag",
     ]),
     ...mapGetters(["debug", "user_id"]),
   },
   methods: {
     ...mapActions("rest", [
+      "get_new_tt_iface",
       "get_dark_mode",
       "set_dark_mode",
     ]),
@@ -91,10 +109,18 @@ export default {
   created: function () {
     // for later versions of primevue
     // this.$primevue.config.locale.firstDayOfWeek = 1;
-    this.get_dark_mode({
+    this.get_new_tt_iface({
       params: { user_id: this.$route.params.user_id },
     }).then(() => {
-      this.my_dark_mode = this.dark_mode;
+      if (this.new_tt_iface === false) {
+        this.goto_tracker();
+      } else {
+        this.get_dark_mode({
+          params: { user_id: this.$route.params.user_id },
+        }).then(() => {
+          this.my_dark_mode = this.dark_mode;
+        });
+      }
     });
   },
 };

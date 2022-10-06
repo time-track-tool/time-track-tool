@@ -89,6 +89,7 @@ import Skeleton from "primevue/skeleton";
 import BlockUI from "primevue/blockui";
 import Tag from "primevue/tag";
 import RadioButton from "primevue/radiobutton";
+import SelectButton from "primevue/selectbutton";
 
 //import "primevue/resources/themes/saga-blue/theme.css";
 import "primevue/resources/primevue.min.css";
@@ -133,5 +134,6 @@ Vue.component("Skeleton", Skeleton);
 Vue.component("BlockUI", BlockUI);
 Vue.component("Tag", Tag);
 Vue.component("RadioButton", RadioButton);
+Vue.component("SelectButton", SelectButton);
 
 app.$mount("#app");
