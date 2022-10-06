@@ -418,6 +418,7 @@ export default {
       }
       // to refresh the etag header
       this.fetch_daily_record({ params: { id: this.daily_record_id } });
+      this.$emit("att_sum_changed", { day: this.day, sum: this.att_sum });
     },
     tr_sum_changed: function (tr_sum) {
       this.tr_sum = tr_sum;
