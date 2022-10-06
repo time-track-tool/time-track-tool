@@ -79,6 +79,7 @@
       v-on:copy_day_to_week="copy_day_to_week"
       v-on:copy_day_to_month="copy_day_to_month"
       v-on:copy_from_last_week="copy_from_last_week"
+      v-on:att_sum_changed="att_sum_changed"
       @percent_loaded="day_percent_loaded"
       @status="register_daily_record_status"
     />
@@ -107,6 +108,12 @@ msg: {{ api_error.error.response.data.error.msg }}
 
     <div class="border p-p-3 p-d-flex p-jc-between">
       <Button :label="'v' + version" class="p-mr-2 p-button-info" disabled />
+      <Button
+        v-if="$route.params.range === 'week'"
+        :label="'Total: ' + att_sum_for_days + 'h'"
+        class="p-mr-2 p-button-info"
+        disabled
+      />
       <div>
         <Button
           label="Submit all"
@@ -154,6 +161,8 @@ export default {
     return {
       show_days: [], // days we want to show
       days: [], // days we already have loaded
+      att_sums: {},
+      att_sum_for_days: 0,
       value: "",
       start_date: null,
       end_date: null,
@@ -248,6 +257,16 @@ export default {
       "fetch_attendance_record",
       "fetch_time_record",
     ]),
+    att_sum_changed: function (data) {
+      this.att_sums[data.day] = data.sum;
+      let sum = 0;
+      for (let key in this.att_sums) {
+        sum += this.att_sums[key].on;
+        sum += this.att_sums[key].off;
+        sum += this.att_sums[key].travel;
+      }
+      this.att_sum_for_days = sum;
+    },
     register_daily_record_status: function (data) {
       this.daily_record_status[data.key] = data.data;
       let enable_submit_all = false;

@@ -28,6 +28,7 @@ export default new Vapi({
     vacation_correction: {},
     dark_mode: false,
     user_etag: "",
+    new_tt_iface: false,
   },
 })
   .post({
@@ -55,6 +56,24 @@ export default new Vapi({
     onError: (state) => {
       state.logged_in = false;
       state.daily_records = [];
+    },
+  })
+  .get({
+    action: "get_new_tt_iface",
+    property: "new_tt_iface",
+    path: ({ user_id }) => `rest/data/user/${user_id}?@fields=new_tt_iface`,
+    onSuccess: (state, payload) => {
+      console.log(payload);
+      if (payload.data.data.attributes.new_tt_iface === 1) {
+        state.new_tt_iface = true;
+      } else {
+        state.new_tt_iface = false;
+      }
+      state.user_etag = payload.data.data["@etag"];
+    },
+    // eslint-disable-next-line no-unused-vars
+    onError: (state, error, axios, { params, data }) => {
+      state.api_error = { who: "get_new_tt_iface", error: error };
     },
   })
   .get({
