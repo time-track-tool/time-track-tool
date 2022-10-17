@@ -1,4 +1,4 @@
-<tal:block tal:define="ld python:utils.Leave_Display (db, request)">
+<tal:block tal:define="ld python:utils.Leave_Display.from_request(db, request)">
  <tal:block metal:use-macro="templates/page/macros/icing">
   <tal:block metal:fill-slot="create_or_query">
    <script>
