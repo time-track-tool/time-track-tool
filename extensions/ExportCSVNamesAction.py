@@ -132,11 +132,12 @@ class Repr_Type (Repr_Str) :
 # end class Repr_Type
 
 class Repr_Date (Repr_Str) :
+    fulldate = 'measurement', 'usage', 'event', 'event_day'
     def conv (self, x) :
         if x :
             tz = self.props [self.col].offset (self.klass.db)
             d  = x.local (tz)
-            if self.klass.classname == 'measurement' :
+            if self.klass.classname in self.fulldate :
                 return \
                     ( '%2d.%02d.%04d %02d:%02d:%02d'
                     % (d.day, d.month, d.year, d.hour, d.minute, d.second)
@@ -474,6 +475,7 @@ class Export_CSV_Names (Action, autosuper) :
                 )
         return wfile
     # end def setup_wfile
+
 # end class Export_CSV_Names
 
 class Export_CSV_Addresses (Export_CSV_Names) :
