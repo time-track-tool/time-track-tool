@@ -1321,7 +1321,7 @@ def copy_url (context, attributes = None):
                 if dd > Date ('.'):
                     url.append \
                         ( 'delivery_deadline=%s'
-                        % escape (context.delivery_deadline)
+                        % escape (context.delivery_deadline.plain ())
                         )
             except ValueError:
                 pass
