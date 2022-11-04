@@ -211,8 +211,13 @@ class Product_Sync (object) :
             pattern. We sort these by name (the date format above is
             sortable) and return the latest and greatest.
         """
-        page = requests.get (self.url).text
-        soup = BeautifulSoup (page, 'html.parser')
+        ans  = requests.get (self.url)
+        if not (200 <= ans.status_code <= 299) :
+            raise RuntimeError \
+                ( 'Invalid get result: %s: %s\n    %s'
+                , (ans.status_code, ans.reason, ans.text)
+                )
+        soup = BeautifulSoup (ans.text, 'html.parser')
         res  = []
         for a in soup.find_all ('a') :
             href = a.get ('href')
