@@ -28,7 +28,7 @@
      <th tal:content="structure python:utils.fieldname (classname, 'city')"/>
      <td tal:content="structure python:context.city.field ()"/>
     </tr>
-    <tr>
+    <tr tal:condition="python: 'address' in bclass.properties">
      <th tal:content="structure python:utils.fieldname
          (classname, 'address')"/>
      <td tal:content="structure python:context.address.field ()"/>
@@ -48,12 +48,12 @@
          (classname, 'weekly_hours_fte')"/>
      <td tal:content="structure python:context.weekly_hours_fte.field ()"/>
     </tr>
-    <tr>
+    <tr tal:condition="python: 'room_prefix' in bclass.properties">
      <th tal:content="structure python:utils.fieldname
          (classname, 'room_prefix')"/>
      <td tal:content="structure python:context.room_prefix.field ()"/>
     </tr>
-    <tr>
+    <tr tal:condition="python: 'domain_part' in bclass.properties">
      <th tal:content="structure python:utils.fieldname
          (classname, 'domain_part')"/>
      <td tal:content="structure python:context.domain_part.field ()"/>
