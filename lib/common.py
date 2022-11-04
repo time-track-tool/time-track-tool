@@ -1303,9 +1303,9 @@ def copy_url (context, attributes = None):
                 now = Date ('.')
                 vf = context [a].valid_from._value
                 vt = context [a].valid_to._value
-                if vf is not None and now < vf:
+                if vf and now < vf:
                     continue
-                if vt is not None and vt < now:
+                if vt and vt < now:
                     continue
         else:
             val = escape (context [a].plain ())
