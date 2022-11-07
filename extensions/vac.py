@@ -590,6 +590,7 @@ class Leave_Display (object):
         t  = "%s: %s" % (loc.name, str (holiday.name))
         if holiday.description:
             t = '%s (%s)' % (t, holiday.description)
+        ret = []
         ret.append ('  <td class="holiday">')
         ret.append ('   <a title="%s">&nbsp;</a>' % t)
         ret.append ('  </td>')
