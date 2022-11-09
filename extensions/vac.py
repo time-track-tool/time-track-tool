@@ -455,7 +455,7 @@ class Leave_Display (object):
         retval ['@total_size'] = len (result)
         retval ['collection'] = result
 
-        rest_instance.client.setHeader ('X-Count-Total', len (result))
+        rest_instance.client.setHeader ('X-Count-Total', str (len (result)))
         rest_instance.client.setHeader ("Allow", "OPTIONS, GET")
 
         return 200, retval
