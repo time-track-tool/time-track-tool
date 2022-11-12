@@ -279,12 +279,15 @@ def month_name (date):
 
 class Leave_Display (object):
 
-    def __init__ (self, db, user, supervisor, dt):
+    def __init__ (self, db, user, supervisor, dt, types = None, lim_dt = True):
         self.db = db
         try:
             self.db = db = db._db
         except AttributeError:
             pass
+        if types is None:
+            types = 'absence holiday homeoffice inoffice weekend'.split ()
+        self.types = set (types)
         now        = self.now = Date ('.')
         if not dt:
             som = common.start_of_month (now)
@@ -297,9 +300,10 @@ class Leave_Display (object):
         self.fdd   = fdd = Date (fd)
         self.ldd   = ldd = Date (ld)
         self.month = month_name (self.fdd)
-        if common.start_of_month (fdd) != common.start_of_month (ldd):
-            self.ldd = ldd = common.end_of_month (fdd)
-            dt = common.pretty_range (fdd, ldd)
+        if lim_dt:
+            if common.start_of_month (fdd) != common.start_of_month (ldd):
+                self.ldd = ldd = common.end_of_month (fdd)
+                dt = common.pretty_range (fdd, ldd)
         srt        = [('+', a) for a in ('lastname', 'firstname')]
         self.users = users = []
         valid = db.user_status.filter (None, dict (name = 'valid'))
@@ -387,24 +391,27 @@ class Leave_Display (object):
         return obj
     # end def from_request
 
-    def as_dict_entry (self, type = None, abs = None, **kw):
+    def as_dict_entry (self, typ = None, abs = None, **kw):
+        """ Return a dictionary for use with the REST API
+            The typ is an absence_type
+        """
         d = {}
         if abs:
             if abs.absence_type:
-                type = self.db.absence_type.getnode (abs.absence_type)
+                typ = self.db.absence_type.getnode (abs.absence_type)
             else:
                 d.update (type = 'absence')
-        if type:
+        if typ:
             t = dict \
-                ( id          = type.id
-                , description = type.description
-                , code        = type.code
-                , cssclass    = type.cssclass
+                ( id          = typ.id
+                , description = typ.description
+                , code        = typ.code
+                , cssclass    = typ.cssclass
                 )
             d.update (absence_type = t, type = 'absence')
-            if type.cssclass == 'inoffice':
+            if typ.cssclass == 'inoffice':
                 d.update (type = 'inoffice')
-            if type.cssclass == 'homeoffice':
+            if typ.cssclass == 'homeoffice':
                 d.update (type = 'homeoffice')
         if 'holiday' in kw:
             h  = kw ['holiday']
@@ -441,14 +448,13 @@ class Leave_Display (object):
                 dt = d.pretty (common.ymd)
                 if gmtime (d.timestamp ()) [6] in [5, 6]:
                     r = dict (type = 'weekend')
-                    rec ['date'][dt] = r
                 else:
                     r = (  self.get_holiday_entry (d, holidays, loc, fmt = fmt)
                         or self.get_absence_entry (user, d, fmt = fmt)
                         or self.get_leave_entry   (user, d, fmt = fmt)
                         )
-                    if r:
-                        rec ['date'][dt] = r
+                if r and r ['type'] in self.types:
+                    rec ['date'][dt] = r
                 d += common.day
             result.append (rec)
         retval = {}
@@ -544,13 +550,13 @@ class Leave_Display (object):
         return ret
     # end def header_line
 
-    def formatlink (self, type = None, date = None, user = None, abs = None):
+    def formatlink (self, typ = None, date = None, user = None, abs = None):
         code = cls = title = a = href = ''
         if self.has_permission ():
             href = 'href="%s"' % self._helpwin ('absence?%s')
         urlp = {'@template' : 'item'}
-        if type:
-            urlp ['absence_type'] = type.id
+        if typ:
+            urlp ['absence_type'] = typ.id
         if user:
             urlp ['user'] = user
         if date:
@@ -560,14 +566,14 @@ class Leave_Display (object):
             href = href % urlencode (urlp)
         if abs:
             if abs.absence_type:
-                type = self.db.absence_type.getnode (abs.absence_type)
+                typ = self.db.absence_type.getnode (abs.absence_type)
             if self.has_permission ('Edit'):
                 href  = 'href="%s"' % self._helpwin ('absence%s' % abs.id)
             urlp  = ''
-        if type:
-            cls   = 'class="%s"' % type.cssclass
-            code  = type.code
-            title = 'title="%s"' % type.description
+        if typ:
+            cls   = 'class="%s"' % typ.cssclass
+            code  = typ.code
+            title = 'title="%s"' % typ.description
             a     = '<a %s %s>%s</a>' % (title, href, code)
         if not a and href:
             a = '<a %s>&nbsp;</a>' % href
@@ -711,14 +717,17 @@ class Rest_Request (RestfulInstance):
     @Routing.route ("/aux/timesheet", 'GET')
     @_data_decorator
     def timesheet (self, input, *args, **kw):
-        supervisor = user = date = None
+        supervisor = user = date = types = None
         if 'supervisor' in input:
             supervisor = lookup_users (self.db, input ['supervisor'].value)
         if 'user' in input:
             user = lookup_users (self.db, input ['user'].value)
         if 'date' in input:
             date = input ['date'].value
-        ld = Leave_Display (self.db, user, supervisor, date)
+        if 'type' in input:
+            types = [x.strip () for x in input ['type'].value.split (',')]
+        ld = Leave_Display \
+            (self.db, user, supervisor, date, types = types, lim_dt = False)
         return ld.as_dict (self)
     # end def timesheet
 
