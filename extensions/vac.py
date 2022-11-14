@@ -404,6 +404,7 @@ class Leave_Display (object):
         if typ:
             t = dict \
                 ( id          = typ.id
+                , link        = self.data_path + 'absence_type/' + typ.id
                 , description = typ.description
                 , code        = typ.code
                 , cssclass    = typ.cssclass
@@ -415,18 +416,29 @@ class Leave_Display (object):
                 d.update (type = 'homeoffice')
         if 'holiday' in kw:
             h  = kw ['holiday']
-            hd = dict (description = h.description, name = h.name, id = h.id)
+            hd = dict \
+                ( description = h.description
+                , name        = h.name
+                , id          = h.id
+                , link        = self.data_path + 'public_holiday/' + h.id
+                )
             d.update (holiday = hd, type = 'holiday')
         if 'loc' in kw:
             loc = kw ['loc']
-            d.update (location = dict (id = loc.id, name = loc.name))
+            lid = dict \
+                ( id   = loc.id
+                , name = loc.name
+                , link = self.data_path + 'location/' + loc.id
+                )
+            d.update (location = lid)
         return d
     # end def as_dict_entry
 
-    def as_dict (self, rest_instance):
+    def as_dict (self, rest_instance, path):
         """ GET request for timesheet
         """
 
+        self.data_path = path
         uid = self.db.getuid ()
         if not self.db.security.hasPermission ('View', uid, 'timesheet'):
             raise Unauthorised ('Permission to view timesheet denied')
@@ -436,6 +448,7 @@ class Leave_Display (object):
             rec = {}
             rec ['user'] = dict \
                 ( id        = user.id
+                , link      = self.data_path + 'user/' + user.id
                 , lastname  = user.lastname
                 , firstname = user.firstname
                 , username  = user.username
@@ -728,7 +741,8 @@ class Rest_Request (RestfulInstance):
             types = [x.strip () for x in input ['type'].value.split (',')]
         ld = Leave_Display \
             (self.db, user, supervisor, date, types = types, lim_dt = False)
-        return ld.as_dict (self)
+        path = '%s/' % (self.data_path)
+        return ld.as_dict (self, path = path)
     # end def timesheet
 
 # end class Rest_Request
