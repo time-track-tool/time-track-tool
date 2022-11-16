@@ -9,7 +9,6 @@ import io
 
 from copy                  import copy
 from ldap3.utils.conv      import escape_bytes
-from ldap3.core.exceptions import LDAPInvalidDnError
 from rsclib.autosuper      import autosuper
 from rsclib.pycompat       import bytes_ord
 from rsclib.execute        import Log
@@ -22,8 +21,9 @@ from roundup.anypy.strings import u2s, us2u
 from datetime              import datetime
 from PIL                   import Image, ImageOps
 
-LDAPCursorError = ldap3.core.exceptions.LDAPCursorError
-LDAPKeyError    = ldap3.core.exceptions.LDAPKeyError
+LDAPCursorError    = ldap3.core.exceptions.LDAPCursorError
+LDAPKeyError       = ldap3.core.exceptions.LDAPKeyError
+LDAPInvalidDnError = ldap3.core.exceptions.LDAPInvalidDnError
 
 class Pic:
 
@@ -156,7 +156,11 @@ class LDAP_Search_Result (object):
     # end def raw_value
 
     def value (self, name):
-        return getattr (self.val [name], 'value', self.val [name])
+        try:
+            v = self.val [name]
+        except (KeyError, LDAPCursorError, LDAPKeyError):
+            v = ''
+        return getattr (v, 'value', v)
     # end def value
 
     def get (self, name, default = None):
