@@ -1,17 +1,17 @@
-#!/usr/bin/python
+#!/usr/bin/python3
 
 from __future__ import print_function
 from __future__ import absolute_import
 
 import os
 import sys
-import xmlrpclib
-from   datetime          import datetime
-from   argparse          import ArgumentParser
-from   rsclib.pycompat   import text_type
-from   roundup           import instance
-from   roundup.date      import Date
-from   requester         import Requester, urlencode
+from   datetime              import datetime
+from   argparse              import ArgumentParser
+from   rsclib.pycompat       import text_type
+from   roundup               import instance
+from   roundup.date          import Date
+from   roundup.anypy.strings import u2s
+from   requester             import Requester, urlencode
 
 class PR_Sync (Requester) :
     """ Sync Time-Tracker data from remote time tracker vie XMLRPC.
@@ -130,7 +130,7 @@ class PR_Sync (Requester) :
 
     def fix_prop (self, value) :
         if isinstance (value, text_type) :
-            return value.encode ('utf-8')
+            return u2s (value)
         return value
     # end def fix_prop
 
