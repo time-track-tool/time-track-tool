@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 
 from __future__ import print_function
 import os
@@ -94,9 +94,9 @@ class Importer (object) :
             self.tcs_active [tcsid] = tcs.active
 
         for line in r :
-            pspno = line ['PRPS~POSID'].decode (self.args.encoding)
-            name  = line ['PRPS~POST1'].decode (self.args.encoding)
-            ccode = line ['PRPS~PBUKR'].decode (self.args.encoding)
+            pspno = line ['PRPS~POSID']
+            name  = line ['PRPS~POST1']
+            ccode = line ['PRPS~PBUKR']
             spt = pspno.split ('-')
             #print (pspno, ccode)
             if len (spt) < 3 :
@@ -173,13 +173,15 @@ class Importer (object) :
     # end importer
 
     def open (self) :
+        enc = self.args.encoding
         if self.args.file :
-            self.f_in = open (self.args.file, 'r')
+            self.f_in = open (self.args.file, 'r', encoding = enc)
         else :
             fn  = self.get_latest_export_url ()
             url = '/'.join ((self.url, fn))
-            gr  = requests.get (url, verify = self.chk)
-            self.f_in = gr.iter_lines ()
+            gr  = requests.get (url, verify = self.chk, stream = True)
+            gr.encoding = enc
+            self.f_in = gr.iter_lines (decode_unicode = True)
     # end def open
 
     def run (self) :
