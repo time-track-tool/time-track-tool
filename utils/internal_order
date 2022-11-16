@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 
 from __future__ import print_function
 import os
@@ -65,21 +65,20 @@ class Importer (object) :
         st = 'Internal Order: Statistical orders'
 
         for line in r :
-            if line ['T003P~TXT'].decode (self.args.encoding) != st :
+            if line ['T003P~TXT'] != st :
                 continue
             if line ['AUFK~AUFNR'] :
-                num  = str \
-                    (int (line ['AUFK~AUFNR'].decode (self.args.encoding)))
-                name = line ['AUFK~KTEXT'].decode (self.args.encoding)
+                num  = str (int (line ['AUFK~AUFNR']))
+                name = line ['AUFK~KTEXT']
 
                 try :
-                    id = self.db.internal_order.lookup (num.encode ('utf-8'))
+                    id = self.db.internal_order.lookup (num)
                     io = self.db.internal_order.getnode (id)
                     d  = {}
                     if not io.valid :
                         d ['valid'] = True
-                    if name and io.name != name.encode ('utf-8') :
-                        d ['name'] = name.encode ('utf-8')
+                    if name and io.name != name :
+                        d ['name'] = name
                     if d :
                         if self.args.update :
                             self.db.internal_order.set (id, **d)
@@ -90,8 +89,8 @@ class Importer (object) :
                 except KeyError :
                     if self.args.update :
                         self.db.internal_order.create \
-                            ( order_number = num.encode ('utf-8')
-                            , name         = name.encode ('utf-8')
+                            ( order_number = num
+                            , name         = name
                             , valid        = True
                             )
                     if self.args.verbose :
@@ -102,13 +101,15 @@ class Importer (object) :
     # end importer
 
     def open (self) :
+        enc = self.args.encoding
         if self.args.file :
-            self.f_in = open (self.args.file, 'r')
+            self.f_in = open (self.args.file, 'r', encoding = enc)
         else :
             fn  = self.get_latest_export_url ()
             url = '/'.join ((self.url, fn))
-            gr  = requests.get (url, verify = self.chk)
-            self.f_in = gr.iter_lines ()
+            gr  = requests.get (url, verify = self.chk, stream = True)
+            gr.encoding = enc
+            self.f_in = gr.iter_lines (decode_unicode = True)
     # end def open
 
     def run (self) :
