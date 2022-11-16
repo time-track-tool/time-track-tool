@@ -1,13 +1,11 @@
-#!/usr/bin/python
-# -*- coding: iso-8859-1 -*-
+#!/usr/bin/python3
 import sys
 import os
 from roundup           import instance
 from roundup.date      import Date
 from argparse          import ArgumentParser
-from email.Utils       import formatdate, formataddr
+from email.utils       import formatdate, formataddr
 from email.mime.text   import MIMEText
-from email.Charset     import Charset, QP
 from smtplib           import SMTP, SMTPRecipientsRefused
 
 class Renew_Reminder (object) :
@@ -38,7 +36,7 @@ class Renew_Reminder (object) :
     def print_reminder (self) :
         for uid in self.reminder_by_user :
             user = self.db.user.getnode (uid)
-            print "User: %s" % formataddr ((user.realname, user.address))
+            print ("User: %s" % formataddr ((user.realname, user.address)))
             for prid in self.reminder_by_user [uid] :
                 pr = self.reminder_by_user [uid][prid]
                 print (self.format_reminder (pr))
@@ -65,17 +63,17 @@ class Renew_Reminder (object) :
         for prid in prs :
             pr = db.purchase_request.getnode (prid)
             if self.args.verbose > 3 :
-                print 'purchase_request%s' % pr.id
+                print ('purchase_request%s' % pr.id)
             # get users to notify for each pr
             users = []
             users.extend (self.get_agents (pr))
             users.append (db.user.getnode (pr.requester))
             users = [u for u in users if not u.want_no_messages]
             if self.args.verbose :
-                print "purchase_request%s Notify:" % pr.id,
+                print ("purchase_request%s Notify:" % pr.id, end = ' ')
                 for u in users :
-                    print u.username,
-                print "renew until: %s" % (pr.renew_until.pretty (common.ymd))
+                    print (u.username, end = ' ')
+                print ("renew until: %s" % (pr.renew_until.pretty (common.ymd)))
             for u in users :
                 if u.id not in self.reminder_by_user :
                     self.reminder_by_user [u.id] = {}
@@ -87,11 +85,8 @@ class Renew_Reminder (object) :
     # end def remind
 
     def send_mail (self) :
-        utf8 = Charset ('utf-8')
-        utf8.header_encoding = QP
-        utf8.body_encoding   = QP
         message = MIMEText ('', 'plain', 'utf-8')
-        message.set_charset (utf8)
+        message.set_charset ('utf-8')
         smtp = SMTP (self.args.mailhost)
         message ['Subject'] = 'Purchase Requests need renewal'
         message ['Date'] = formatdate ()
@@ -112,7 +107,7 @@ class Renew_Reminder (object) :
             body.append ('')
             body.append ('Best regards from your friendly reminder service')
             body.append ('')
-            message.set_payload ('\n'.join (body), utf8)
+            message.set_payload ('\n'.join (body), 'utf-8')
             smtp.sendmail (frm, to, message.as_string ())
     # end def send_mail
 
@@ -156,9 +151,10 @@ def main () :
         )
     cmd.add_argument \
         ( '-v', '--verbose'
-        , dest   = 'verbose'
-        , help   = 'Verbose output'
-        , action = 'count'
+        , dest    = 'verbose'
+        , help    = 'Verbose output'
+        , action  = 'count'
+        , default = 0
         )
     args = cmd.parse_args ()
     remind  = Renew_Reminder (args)

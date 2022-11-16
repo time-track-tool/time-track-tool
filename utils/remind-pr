@@ -1,13 +1,11 @@
-#!/usr/bin/python
-# -*- coding: iso-8859-1 -*-
+#!/usr/bin/python3
 import sys
 import os
 from roundup           import instance
 from roundup.date      import Date
 from argparse          import ArgumentParser
-from email.Utils       import formatdate, formataddr
+from email.utils       import formatdate, formataddr
 from email.mime.text   import MIMEText
-from email.Charset     import Charset, QP
 from smtplib           import SMTP, SMTPRecipientsRefused
 
 class PR_Reminder (object) :
@@ -26,10 +24,11 @@ class PR_Reminder (object) :
     def print_reminder (self) :
         for uid in self.reminder_by_user :
             user = self.db.user.getnode (uid)
-            print "User: %s" % formataddr ((user.realname, user.address))
+            print ("User: %s" % formataddr ((user.realname, user.address)))
             for prid in self.reminder_by_user [uid] :
                 pr, pend = self.reminder_by_user [uid][prid]
-                print "    purchase_request%s: Pending %s days" % (pr.id, pend)
+                print \
+                    ("    purchase_request%s: Pending %s days" % (pr.id, pend))
     # end def print_reminder
 
     def get_agents (self, pr) :
@@ -59,7 +58,7 @@ class PR_Reminder (object) :
             pr = db.purchase_request.getnode (prid)
             date = pr.creation
             if self.args.verbose > 3 :
-                print 'purchase_request%s' % pr.id
+                print ('purchase_request%s' % pr.id)
             # get approvals in order
             if pr.status == status_apv :
                 srt = ('+', 'order')
@@ -72,7 +71,7 @@ class PR_Reminder (object) :
                         #if date < ap.date :
                         #    date = ap.date
                         if self.args.verbose > 3 :
-                            print "pr_approval%s: date=%s" % (ap.id, ap.date)
+                            print ("pr_approval%s: date=%s" % (ap.id, ap.date))
                     else :
                         break
                 else :
@@ -100,12 +99,12 @@ class PR_Reminder (object) :
                 users.append (db.user.getnode (pr.requester))
             pend = (self.now - date).day
             if self.args.verbose :
-                print "purchase_request%s Responsible:" % pr.id,
+                print ("purchase_request%s Responsible:" % pr.id, end = ' ')
                 for u in users :
-                    print u.username,
+                    print (u.username, end = ' ')
                 if self.args.verbose > 1 :
-                    print "date: %s" % date.pretty (common.ymd),
-                print "pending: %s" % (pend)
+                    print ("date: %s" % date.pretty (common.ymd), end = ' ')
+                print ("pending: %s" % (pend))
             if pend >= self.args.first_reminder :
                 if  (  pend == self.args.first_reminder
                     or ( (pend - self.args.first_reminder) \
@@ -123,11 +122,8 @@ class PR_Reminder (object) :
     # end def remind
 
     def send_mail (self) :
-        utf8 = Charset ('utf-8')
-        utf8.header_encoding = QP
-        utf8.body_encoding   = QP
         message = MIMEText ('', 'plain', 'utf-8')
-        message.set_charset (utf8)
+        message.set_charset ('utf-8')
         url  = self.tracker.config.TRACKER_WEB
         smtp = SMTP (self.args.mailhost)
         message ['Subject'] = 'Purchase Requests need your attention'
@@ -152,7 +148,7 @@ class PR_Reminder (object) :
             body.append ('')
             body.append ('Best regards from your friendly reminder service')
             body.append ('')
-            message.set_payload ('\n'.join (body), utf8)
+            message.set_payload ('\n'.join (body), 'utf-8')
             smtp.sendmail (frm, to, message.as_string ())
     # end def send_mail
 
@@ -203,9 +199,10 @@ def main () :
         )
     cmd.add_argument \
         ( '-v', '--verbose'
-        , dest   = 'verbose'
-        , help   = 'Verbose output'
-        , action = 'count'
+        , dest    = 'verbose'
+        , help    = 'Verbose output'
+        , action  = 'count'
+        , default = 0
         )
     args = cmd.parse_args ()
     prr  = PR_Reminder (args)
