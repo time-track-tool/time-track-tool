@@ -8,9 +8,9 @@ from email.utils       import formatdate, formataddr
 from email.mime.text   import MIMEText
 from smtplib           import SMTP, SMTPRecipientsRefused
 
-class Renew_Reminder (object) :
+class Renew_Reminder (object):
 
-    def __init__ (self, args) :
+    def __init__ (self, args):
         self.args    = args
         self.tracker = instance.open (args.dir)
         self.db      = self.tracker.open (args.user)
@@ -21,7 +21,7 @@ class Renew_Reminder (object) :
         import common
     # end def __init__
 
-    def format_reminder (self, pr) :
+    def format_reminder (self, pr):
         url = self.tracker.config.TRACKER_WEB
         r   = []
         r.append \
@@ -33,74 +33,74 @@ class Renew_Reminder (object) :
         return '\n'.join (r)
     # end def format_reminder
 
-    def print_reminder (self) :
-        for uid in self.reminder_by_user :
+    def print_reminder (self):
+        for uid in self.reminder_by_user:
             user = self.db.user.getnode (uid)
             print ("User: %s" % formataddr ((user.realname, user.address)))
-            for prid in self.reminder_by_user [uid] :
+            for prid in self.reminder_by_user [uid]:
                 pr = self.reminder_by_user [uid][prid]
                 print (self.format_reminder (pr))
     # end def print_reminder
 
-    def get_agents (self, pr) :
-        if pr.purchasing_agents :
+    def get_agents (self, pr):
+        if pr.purchasing_agents:
             return [self.db.user.getnode (u) for u in pr.purchasing_agents]
         prop = None
-        if pr.sap_cc :
+        if pr.sap_cc:
             prop = self.db.sap_cc.getnode (pr.sap_cc)
-        elif pr.time_project :
+        elif pr.time_project:
             prop = self.db.time_project.getnode (pr.time_project)
-        if prop :
+        if prop:
             return [self.db.user.getnode (u) for u in prop.purchasing_agents]
         return []
     # end def get_agents
 
-    def remind (self) :
+    def remind (self):
         db = self.db
         # get all PRs where renew-until is less than given days in the future
         period = ';%sd' % self.args.reminder_days
         prs = db.purchase_request.filter (None, dict (renew_until = period))
-        for prid in prs :
+        for prid in prs:
             pr = db.purchase_request.getnode (prid)
-            if self.args.verbose > 3 :
+            if self.args.verbose > 3:
                 print ('purchase_request%s' % pr.id)
             # get users to notify for each pr
             users = []
             users.extend (self.get_agents (pr))
             users.append (db.user.getnode (pr.requester))
             users = [u for u in users if not u.want_no_messages]
-            if self.args.verbose :
+            if self.args.verbose:
                 print ("purchase_request%s Notify:" % pr.id, end = ' ')
-                for u in users :
+                for u in users:
                     print (u.username, end = ' ')
                 print ("renew until: %s" % (pr.renew_until.pretty (common.ymd)))
-            for u in users :
-                if u.id not in self.reminder_by_user :
+            for u in users:
+                if u.id not in self.reminder_by_user:
                     self.reminder_by_user [u.id] = {}
                 self.reminder_by_user [u.id][pr.id] = pr
-        if self.args.mail :
+        if self.args.mail:
             self.send_mail ()
-        else :
+        else:
             self.print_reminder ()
     # end def remind
 
-    def send_mail (self) :
+    def send_mail (self):
         message = MIMEText ('', 'plain', 'utf-8')
         message.set_charset ('utf-8')
         smtp = SMTP (self.args.mailhost)
         message ['Subject'] = 'Purchase Requests need renewal'
         message ['Date'] = formatdate ()
         frm = self.args.frm
-        if '@' not in self.args.frm :
+        if '@' not in self.args.frm:
             frm = '@'.join ((frm, self.tracker.config.MAIL_DOMAIN))
         message ['From'] = formataddr (('Do not reply', frm))
-        for uid in self.reminder_by_user :
+        for uid in self.reminder_by_user:
             del message ['Content-Transfer-Encoding']
             del message ['To']
             user = self.db.user.getnode (uid)
             message ['To'] = to = formataddr ((user.realname, user.address))
             body = []
-            for prid in self.reminder_by_user [uid] :
+            for prid in self.reminder_by_user [uid]:
                 pr = self.reminder_by_user [uid][prid]
                 body.append (self.format_reminder (pr))
                 body.append ('')
@@ -113,7 +113,7 @@ class Renew_Reminder (object) :
 
 # end class PR_Reminder
 
-def main () :
+def main ():
     cmd = ArgumentParser ()
     cmd.add_argument \
         ( '-D', '--reminder-days'
@@ -161,5 +161,5 @@ def main () :
     remind.remind ()
 # end def main
 
-if __name__ == '__main__' :
+if __name__ == '__main__':
     main ()

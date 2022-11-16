@@ -8,9 +8,9 @@ from email.utils       import formatdate, formataddr
 from email.mime.text   import MIMEText
 from smtplib           import SMTP, SMTPRecipientsRefused
 
-class PR_Reminder (object) :
+class PR_Reminder (object):
 
-    def __init__ (self, args) :
+    def __init__ (self, args):
         self.args    = args
         self.tracker = instance.open (args.dir)
         self.db      = self.tracker.open (args.user)
@@ -21,30 +21,30 @@ class PR_Reminder (object) :
         import common
     # end def __init__
 
-    def print_reminder (self) :
-        for uid in self.reminder_by_user :
+    def print_reminder (self):
+        for uid in self.reminder_by_user:
             user = self.db.user.getnode (uid)
             print ("User: %s" % formataddr ((user.realname, user.address)))
-            for prid in self.reminder_by_user [uid] :
+            for prid in self.reminder_by_user [uid]:
                 pr, pend = self.reminder_by_user [uid][prid]
                 print \
                     ("    purchase_request%s: Pending %s days" % (pr.id, pend))
     # end def print_reminder
 
-    def get_agents (self, pr) :
-        if pr.purchasing_agents :
+    def get_agents (self, pr):
+        if pr.purchasing_agents:
             return [self.db.user.getnode (u) for u in pr.purchasing_agents]
         prop = None
-        if pr.sap_cc :
+        if pr.sap_cc:
             prop = self.db.sap_cc.getnode (pr.sap_cc)
-        elif pr.time_project :
+        elif pr.time_project:
             prop = self.db.time_project.getnode (pr.time_project)
-        if prop :
+        if prop:
             return [self.db.user.getnode (u) for u in prop.purchasing_agents]
         return []
     # end def get_agents
 
-    def remind (self) :
+    def remind (self):
         db = self.db
         status_apv = db.pr_status.lookup ('approving')
         status_opn = db.pr_status.lookup ('open')
@@ -54,74 +54,74 @@ class PR_Reminder (object) :
         apr_st_und = db.pr_approval_status.lookup ('undecided')
         # get all PRs with one of stati
         prs = db.purchase_request.filter (None, dict (status = stati))
-        for prid in prs :
+        for prid in prs:
             pr = db.purchase_request.getnode (prid)
             date = pr.creation
-            if self.args.verbose > 3 :
+            if self.args.verbose > 3:
                 print ('purchase_request%s' % pr.id)
             # get approvals in order
-            if pr.status == status_apv :
+            if pr.status == status_apv:
                 srt = ('+', 'order')
                 aps = db.pr_approval.filter \
                     (None, dict (purchase_request = prid), sort = srt)
-                for apid in aps :
+                for apid in aps:
                     ap = db.pr_approval.getnode (apid)
                     assert ap.status in (apr_st_app, apr_st_und)
-                    if ap.status == apr_st_app :
-                        #if date < ap.date :
+                    if ap.status == apr_st_app:
+                        #if date < ap.date:
                         #    date = ap.date
-                        if self.args.verbose > 3 :
+                        if self.args.verbose > 3:
                             print ("pr_approval%s: date=%s" % (ap.id, ap.date))
-                    else :
+                    else:
                         break
-                else :
+                else:
                     assert 0
-                if ap.user :
+                if ap.user:
                     u1 = common.approval_by (db, ap.user, only_subs = True)
                     u2 = []
-                    if ap.deputy :
+                    if ap.deputy:
                         u2 = common.approval_by \
                             (db, ap.deputy, only_subs = True)
                     users = [db.user.getnode (u) for u in u1 + u2]
-                else :
+                else:
                     r = db.pr_approval_order.getnode (ap.role_id)
                     users = []
-                    if not r.want_no_messages :
-                        for ru in r.users :
+                    if not r.want_no_messages:
+                        for ru in r.users:
                             u1 = common.approval_by (db, ru, only_subs = True)
                             users.extend (db.user.getnode (u) for u in u1)
-            else :
+            else:
                 users = []
             users = [u for u in users if not u.want_no_messages]
             users.extend (self.get_agents (pr))
             # Requester gets the reminder only if status != approved
-            if pr.status != status_apr :
+            if pr.status != status_apr:
                 users.append (db.user.getnode (pr.requester))
             pend = (self.now - date).day
-            if self.args.verbose :
+            if self.args.verbose:
                 print ("purchase_request%s Responsible:" % pr.id, end = ' ')
-                for u in users :
+                for u in users:
                     print (u.username, end = ' ')
-                if self.args.verbose > 1 :
+                if self.args.verbose > 1:
                     print ("date: %s" % date.pretty (common.ymd), end = ' ')
                 print ("pending: %s" % (pend))
-            if pend >= self.args.first_reminder :
+            if pend >= self.args.first_reminder:
                 if  (  pend == self.args.first_reminder
                     or ( (pend - self.args.first_reminder) \
                        % self.args.next_reminder
                        ) == 0
-                    ) :
-                    for u in users :
-                        if u.id not in self.reminder_by_user :
+                    ):
+                    for u in users:
+                        if u.id not in self.reminder_by_user:
                             self.reminder_by_user [u.id] = {}
                         self.reminder_by_user [u.id][pr.id] = (pr, pend)
-        if self.args.mail :
+        if self.args.mail:
             self.send_mail ()
-        else :
+        else:
             self.print_reminder ()
     # end def remind
 
-    def send_mail (self) :
+    def send_mail (self):
         message = MIMEText ('', 'plain', 'utf-8')
         message.set_charset ('utf-8')
         url  = self.tracker.config.TRACKER_WEB
@@ -129,16 +129,16 @@ class PR_Reminder (object) :
         message ['Subject'] = 'Purchase Requests need your attention'
         message ['Date'] = formatdate ()
         frm = self.args.frm
-        if '@' not in self.args.frm :
+        if '@' not in self.args.frm:
             frm = '@'.join ((frm, self.tracker.config.MAIL_DOMAIN))
         message ['From'] = formataddr (('Do not reply', frm))
-        for uid in self.reminder_by_user :
+        for uid in self.reminder_by_user:
             del message ['Content-Transfer-Encoding']
             del message ['To']
             user = self.db.user.getnode (uid)
             message ['To'] = to = formataddr ((user.realname, user.address))
             body = []
-            for prid in self.reminder_by_user [uid] :
+            for prid in self.reminder_by_user [uid]:
                 pr, pend = self.reminder_by_user [uid][prid]
                 body.append \
                     ("purchase_request%s: Pending %s days" % (pr.id, pend))
@@ -154,7 +154,7 @@ class PR_Reminder (object) :
 
 # end class PR_Reminder
 
-def main () :
+def main ():
     cmd = ArgumentParser ()
     cmd.add_argument \
         ( '-1', '--first-reminder-days'
@@ -209,5 +209,5 @@ def main () :
     prr.remind ()
 # end def main
 
-if __name__ == '__main__' :
+if __name__ == '__main__':
     main ()
