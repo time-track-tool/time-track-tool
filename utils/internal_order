@@ -12,26 +12,26 @@ from argparse import ArgumentParser
 from netrc    import netrc
 from bs4      import BeautifulSoup
 
-try :
+try:
     from urllib.parse import urlunparse, quote
-except ImportError :
+except ImportError:
     from urlparse import urlunparse
     from urllib   import quote
 
-class Importer (object) :
+class Importer (object):
 
-    def __init__ (self, args) :
+    def __init__ (self, args):
         self.args = args
         self._url = None
         tracker   = instance.open (args.dir)
         self.db   = tracker.open (args.user)
         self.f_in = None
         self.chk  = not self.args.no_check_certificate
-        if not self.chk :
+        if not self.chk:
             requests.packages.urllib3.disable_warnings(InsecureRequestWarning)
     # end def __init__
 
-    def get_latest_export_url (self) :
+    def get_latest_export_url (self):
         """ The URL given is a directory url of an apache directory listing.
             We search through all files in that directory and return the URL
             which contains the latest file. The format of the filenames we
@@ -41,70 +41,70 @@ class Importer (object) :
             sortable) and return the latest and greatest.
         """
         ans  = requests.get (self.url, verify = self.chk)
-        if not (200 <= ans.status_code <= 299) :
+        if not (200 <= ans.status_code <= 299):
             raise RuntimeError \
                 ( 'Invalid get result: %s: %s\n    %s'
                 , (ans.status_code, ans.reason, ans.text)
                 )
         soup = BeautifulSoup (ans.text, 'html.parser')
         res  = []
-        for a in soup.find_all ('a') :
+        for a in soup.find_all ('a'):
             href = a.get ('href')
-            if not href.startswith (self.args.prefix) :
+            if not href.startswith (self.args.prefix):
                 continue
-            if not href.endswith (self.args.suffix) :
+            if not href.endswith (self.args.suffix):
                 continue
             res.append (href)
         res.sort ()
-        if res :
+        if res:
             return res [-1]
     # end def get_latest_export_url
 
-    def importer (self) :
+    def importer (self):
         r  = DictReader (self.f_in, delimiter = self.args.delimiter)
         st = 'Internal Order: Statistical orders'
 
-        for line in r :
-            if line ['T003P~TXT'] != st :
+        for line in r:
+            if line ['T003P~TXT'] != st:
                 continue
-            if line ['AUFK~AUFNR'] :
+            if line ['AUFK~AUFNR']:
                 num  = str (int (line ['AUFK~AUFNR']))
                 name = line ['AUFK~KTEXT']
 
-                try :
+                try:
                     id = self.db.internal_order.lookup (num)
                     io = self.db.internal_order.getnode (id)
                     d  = {}
-                    if not io.valid :
+                    if not io.valid:
                         d ['valid'] = True
-                    if name and io.name != name :
+                    if name and io.name != name:
                         d ['name'] = name
-                    if d :
-                        if self.args.update :
+                    if d:
+                        if self.args.update:
                             self.db.internal_order.set (id, **d)
-                        if self.args.verbose :
+                        if self.args.verbose:
                             print ( "Updating internal_order%s (%s): %s"
                                   % (id, io.order_number, d)
                                   )
-                except KeyError :
-                    if self.args.update :
+                except KeyError:
+                    if self.args.update:
                         self.db.internal_order.create \
                             ( order_number = num
                             , name         = name
                             , valid        = True
                             )
-                    if self.args.verbose :
+                    if self.args.verbose:
                         print ("Creating %s: %s" % (num, name))
 
-        if self.args.update :
+        if self.args.update:
             self.db.commit ()
     # end importer
 
-    def open (self) :
+    def open (self):
         enc = self.args.encoding
-        if self.args.file :
+        if self.args.file:
             self.f_in = open (self.args.file, 'r', encoding = enc)
-        else :
+        else:
             fn  = self.get_latest_export_url ()
             url = '/'.join ((self.url, fn))
             gr  = requests.get (url, verify = self.chk, stream = True)
@@ -112,41 +112,41 @@ class Importer (object) :
             self.f_in = gr.iter_lines (decode_unicode = True)
     # end def open
 
-    def run (self) :
+    def run (self):
         self.open     ()
         self.importer ()
     # end def run
 
     @property
-    def url (self) :
-        if self._url :
+    def url (self):
+        if self._url:
             return self._url
         username = ''
         password = ''
         a = n = None
-        try :
+        try:
             n = netrc ()
-        except IOError :
+        except IOError:
             pass
-        if n and self.args.hostname :
+        if n and self.args.hostname:
             a = n.authenticators (self.args.hostname)
-        if a :
+        if a:
             un, d, pw = a
             username = un
             password = pw
         un = ''
-        if username :
+        if username:
             un = [username]
-            if password :
+            if password:
                 un.append (':')
                 un.append (quote (password))
             un.append ('@')
             un = ''.join (un)
         netloc = []
-        if un :
+        if un:
             netloc.append (un)
         netloc.append (self.args.hostname)
-        if self.args.port :
+        if self.args.port:
             netloc.append (':')
             netloc.append (self.args.port)
         netloc = ''.join (netloc)
@@ -157,7 +157,7 @@ class Importer (object) :
 
 # end class Importer
 
-def main () :
+def main ():
     cmd = ArgumentParser ()
     cmd.add_argument \
         ( '-d', '--directory'
@@ -243,5 +243,5 @@ def main () :
 
 # end def main
 
-if __name__ == '__main__' :
+if __name__ == '__main__':
     main ()
