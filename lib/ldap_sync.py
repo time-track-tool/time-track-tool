@@ -9,6 +9,7 @@ import io
 
 from copy                  import copy
 from ldap3.utils.conv      import escape_bytes
+from ldap3.core.exceptions import LDAPInvalidDnError
 from rsclib.autosuper      import autosuper
 from rsclib.pycompat       import bytes_ord
 from rsclib.execute        import Log
@@ -1199,7 +1200,10 @@ class LDAP_Roundup_Sync (Log) :
             d ['attributes'] = attrs
         res = ps (self.base_dn, filter, **d)
         for r in res :
-            yield (LDAP_Search_Result (r))
+            try:
+                yield (LDAP_Search_Result (r))
+            except (ValueError, LDAPInvalidDnError):
+                continue
     # end def paged_search_iter
 
     def sync_contacts_from_ldap (self, luser, user, udict) :
