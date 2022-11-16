@@ -492,9 +492,11 @@ class LDAP_Roundup_Sync (Log):
     # info messages, too.
     def debug (self, prio, *args, **kw):
         """ Note that normal verbose logging (prio = 1) should not
-            include debug logs. So prio should be at least 2.
+            include debug logs. So we increment prio to be at least 2.
+            This means that the debug prio starts with 1 and is one less
+            than the overall verbosity level.
         """
-        if self.verbose >= prio:
+        if self.verbose >= prio + 1:
             self.log.debug (*args, **kw)
     # end debug
 
@@ -1374,7 +1376,8 @@ class LDAP_Roundup_Sync (Log):
         n = ''
         if not self.update_roundup or self.dry_run_roundup:
             n = '(Dry Run): '
-        self.info ("%sProcessing user '%s' for sync from LDAP" % (n, username))
+        self.debug \
+            (1, "%sProcessing user '%s' for sync from LDAP" % (n, username))
         luser = self.get_ldap_user_by_username (username)
         self.debug (3, 'User by username')
         if luser:
@@ -1489,8 +1492,8 @@ class LDAP_Roundup_Sync (Log):
                         changed = True
                     self.debug (3, 'After Roundup update')
                 else:
-                    self.info \
-                        ("%sUpdate Roundup: %s: No Changes" % (n, username))
+                    self.debug \
+                        (1, "%sUpdate Roundup: %s: No Changes" % (n, username))
             else:
                 d.update (c)
                 assert (d)
@@ -1721,7 +1724,8 @@ class LDAP_Roundup_Sync (Log):
         n = ''
         if not self.update_ldap or self.dry_run_ldap:
             n = '(Dry Run): '
-        self.info ("%sProcessing user '%s' for sync to LDAP" % (n, username))
+        self.debug \
+            (1, "%sProcessing user '%s' for sync to LDAP" % (n, username))
         if update is not None:
             self.update_ldap = update
         allow_empty = False
@@ -1922,7 +1926,7 @@ class LDAP_Roundup_Sync (Log):
             # Can produce *huge* output if a picture is updated:
             self.debug (4, 'Update LDAP%s: %s %s' % (n, user.username, modlist))
         if not modlist:
-            self.info ('%sUpdate LDAP: %s: No changes' % (n, user.username))
+            self.debug (1, '%sUpdate LDAP: %s: No changes' % (n, user.username))
         if modlist and self.update_ldap and not self.dry_run_ldap:
             # Make a dictionary from modlist as required by ldap3
             moddict = {}
