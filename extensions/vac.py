@@ -1,5 +1,5 @@
 #! /usr/bin/python
-# Copyright (C) 2014-21 Dr. Ralf Schlatterbeck Open Source Consulting.
+# Copyright (C) 2014-22 Dr. Ralf Schlatterbeck Open Source Consulting.
 # Reichergasse 131, A-3411 Weidling.
 # Web: http://www.runtux.com Email: office@runtux.com
 # All rights reserved
@@ -279,7 +279,10 @@ def month_name (date):
 
 class Leave_Display (object):
 
-    def __init__ (self, db, user, supervisor, dt, types = None, lim_dt = True):
+    def __init__ \
+        ( self, db, user, supervisor, dt
+        , types = None, lim_dt = True, all_user_fallback = True
+        ):
         self.db = db
         try:
             self.db = db = db._db
@@ -315,7 +318,9 @@ class Leave_Display (object):
             d.update (supervisor = supervisor)
             u = db.user.filter (None, d, sort = srt)
             users.extend (u)
-        if not self.users:
+        use_all_users = \
+            not self.users and (not (user or supervisor) or all_user_fallback)
+        if use_all_users:
             self.users = users = db.user.filter (None, vstatus, sort = srt)
         else:
             self.users = users = db.user.filter (users, vstatus, sort = srt)
@@ -740,7 +745,9 @@ class Rest_Request (RestfulInstance):
         if 'type' in input:
             types = [x.strip () for x in input ['type'].value.split (',')]
         ld = Leave_Display \
-            (self.db, user, supervisor, date, types = types, lim_dt = False)
+            ( self.db, user, supervisor, date
+            , types = types, lim_dt = False, all_user_fallback = False
+            )
         path = '%s/' % (self.data_path)
         return ld.as_dict (self, path = path)
     # end def timesheet
