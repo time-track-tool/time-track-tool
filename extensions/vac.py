@@ -386,6 +386,8 @@ class Leave_Display (object):
         if request.filterspec:
             if 'date' in request.filterspec:
                 dt = request.filterspec ['date']
+            if 'first_day' in request.filterspec:
+                dt = request.filterspec ['first_day']
             if 'user' in request.filterspec:
                 user = request.filterspec ['user']
             if 'supervisor' in request.filterspec:
