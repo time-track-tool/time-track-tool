@@ -40,7 +40,8 @@ class PR_Submit (EditCommon, autosuper) :
     """
 
     def _editnodes (self, props, links) :
-        for (cl, id), val in props.items () :
+        for (cl, id) in list (props) :
+            val = props [(cl, id)]
             if cl == 'pr_offer_item' :
                 if int (id) < 0 and list (val) == ['is_asset'] :
                     del props [(cl, id)]
