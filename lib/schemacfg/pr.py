@@ -1,5 +1,5 @@
 # -*- coding: iso-8859-1 -*-
-# Copyright (C) 2015-18 Dr. Ralf Schlatterbeck Open Source Consulting.
+# Copyright (C) 2015-22 Dr. Ralf Schlatterbeck Open Source Consulting.
 # Reichergasse 131, A-3411 Weidling.
 # Web: http://www.runtux.com Email: office@runtux.com
 # All rights reserved
@@ -227,6 +227,7 @@ def init \
                                             , try_id_parsing = 'no'
                                             , do_journal     = 'no'
                                             )
+        , nominal_account       = String    ()
         )
 
     pr_status = Class \
@@ -379,6 +380,13 @@ def init \
                 , date_ordered          = Date      ()
                 , renew_until           = Date      ()
                 , payment_type          = Link      ( "payment_type"
+                                                    , do_journal = 'no'
+                                                    )
+                , nominal_account       = String    ()
+                , charge_to             = Multilink ('organisation'
+                                                    , do_journal = 'no'
+                                                    )
+                , delivery_address      = Link      ('location'
                                                     , do_journal = 'no'
                                                     )
                 )

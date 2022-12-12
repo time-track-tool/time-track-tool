@@ -7532,3 +7532,12 @@ msgstr "No department approval"
 
 msgid "oob_amount"
 msgstr "Amount Out of Bugdet"
+
+msgid "nominal_account"
+msgstr "Nominal account"
+
+msgid "charge_to"
+msgstr "Charge to"
+
+msgid "delivery_address"
+msgstr "Delivery address"

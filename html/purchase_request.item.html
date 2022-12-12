@@ -276,6 +276,46 @@
      </tr>
      <tr>
       <th tal:content="structure python:utils.fieldname
+          (classname, 'nominal_account')"/>
+      <td tal:content="structure python:context.nominal_account.field ()"/>
+      <th tal:content="structure python:utils.fieldname
+          (classname, 'delivery_address')"/>
+      <td>
+       <span tal:content="structure python:context.delivery_address.menu
+        (valid_from = ';.,-', valid_to = '.;,-')"/>
+       <span tal:condition="python: context.id and context.delivery_address"
+             tal:content="python:' '.join
+             (( context.delivery_address.city.plain ()
+              , context.delivery_address.address.plain ()
+             ))" />
+      </td>
+     </tr>
+     <tr>
+      <th tal:content="structure python:utils.fieldname
+          (classname, 'charge_to')"/>
+      <td tal:content="structure python:context.charge_to.menu
+        (valid_from = ';.,-', valid_to = '.;,-')"/>
+      <!--
+      <td>
+       <tal:block tal:repeat="org python:
+            db.organisation.filter
+                ( None
+                , dict (valid_from = ';.,-', valid_to = '.;,-')
+                , sort = ('+', 'name')
+                )">
+        <input type="checkbox" name="charge_to" tal:attributes=
+            " id python:'org-' + org.id
+            ; value python: org.name
+            ; checked python: org.id in context.charge_to
+            ">
+        <label tal:attributes="for python:'org-' + org.id;"
+               tal:content="python: org.name" />
+       </tal:block>
+      </td>
+      -->
+     </tr>
+     <tr>
+      <th tal:content="structure python:utils.fieldname
           (classname, 'pr_justification')"/>
       <td colspan="3" tal:condition="context/pr_justification/is_edit_ok"
           tal:content="structure python:
