@@ -1326,6 +1326,11 @@ _helptext          = \
              has booked hours on this %(Classname)s
           '''
       ]
+    , ""'nominal_account'             :
+      [""'''Nominal account (german: Sachkonto), please ask Controlling
+            for details if unsure
+          '''
+      ]
     , ""'nosy'                        :
       [""'''People receiving announcements (messages) for %(Classname)s''']
     , ""'nosygroups'                  :

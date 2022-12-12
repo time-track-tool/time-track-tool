@@ -280,9 +280,10 @@
       <td tal:content="structure python:context.nominal_account.field ()"/>
       <th tal:content="structure python:utils.fieldname
           (classname, 'delivery_address')"/>
-      <td>
+      <td rowspan="2">
        <span tal:content="structure python:context.delivery_address.menu
         (valid_from = ';.,-', valid_to = '.;,-')"/>
+       <br>
        <span tal:condition="python: context.id and context.delivery_address"
              tal:content="python:' '.join
              (( context.delivery_address.city.plain ()
@@ -434,6 +435,9 @@
          <th style="text-align:left"
              tal:content="structure python:utils.fieldname
              ('pr_offer_item', 'internal_order')"/>
+         <th style="text-align:left" colspan="2"
+             tal:content="structure python:utils.fieldname
+             ('pr_offer_item', 'nominal_account')"/>
         </tr>
         <tr>
          <th/>
@@ -569,6 +573,8 @@
                         )"/>
             </span>
            </td>
+           <td colspan="2" tal:content="structure python:
+               i.nominal_account.field ()"/>
            <td/>
            <td/>
           </tr>
@@ -709,6 +715,9 @@
                         )"/>
             </span>
            </td>
+           <td colspan="2" tal:content="structure python:utils.new_property
+               (context, db, 'pr_offer_item', -idx, 'nominal_account')
+               .field ()"/>
            <td/>
            <td/>
            <td/>
