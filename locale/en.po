@@ -7541,3 +7541,6 @@ msgstr "Charge to"
 
 msgid "delivery_address"
 msgstr "Delivery address"
+
+msgid "allow_gl_account"
+msgstr "Allow G/L account"

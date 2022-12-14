@@ -288,6 +288,8 @@ def check_input_len (db, cl, nodeid, new_values):
 # end def check_input_len
 
 def get_pr_from_offer_item (db, nodeid):
+    if not nodeid:
+        return None
     ids = db.purchase_request.filter (None, dict (offer_items = nodeid))
     # Happens on retire or unlink
     if len (ids) < 1:
@@ -1382,6 +1384,45 @@ def check_psp (db, cl, nodeid, new_values):
         new_values ['valid'] = True
 # end def check_psp
 
+def fix_gl_account (db, cl, nodeid, new_values):
+    if 'purchase_type' in new_values:
+        pt = db.purchase_type.getnode (new_values ['purchase_type'])
+        if not pt.allow_gl_account:
+            if nodeid:
+                new_values ['gl_account'] = None
+            elif 'gl_account' in new_values:
+                del new_values ['gl_account']
+            return
+    if 'offer_items' in new_values:
+        for oiid in new_values ['offer_items']:
+            oi = db.pr_offer_item.getnode (oiid)
+            if oi.is_asset:
+                if nodeid:
+                    new_values ['gl_account'] = None
+                elif 'gl_account' in new_values:
+                    del new_values ['gl_account']
+                break
+# end def fix_gl_account
+
+def fix_gl_account_oi (db, cl, nodeid, new_values):
+    if 'is_asset' not in new_values:
+        return
+    pr = get_pr_from_offer_item (db, nodeid)
+    if new_values ['is_asset']:
+        if nodeid:
+            new_values ['gl_account'] = None
+        elif 'gl_account' in new_values:
+            del new_values ['gl_account']
+        if pr:
+            db.purchase_request.set (pr.id, gl_account = None)
+    elif pr:
+        for id in pr.offer_items:
+            oi = db.pr_offer_item.getnode (id)
+            if oi.is_asset:
+                db.purchase_request.set (pr.id, gl_account = None)
+                break
+# end def fix_gl_account_oi
+
 def init (db):
     global _
     _   = get_translation \
@@ -1411,6 +1452,8 @@ def init (db):
     db.purchase_request.audit   ("create", check_issue_nums)
     db.purchase_request.audit   ("set",    check_issue_nums)
     db.purchase_request.audit   ("set",    pr_check_payment_type)
+    db.purchase_request.audit   ("set",    fix_gl_account)
+    db.purchase_request.audit   ("create", fix_gl_account)
     db.pr_approval.audit        ("create", new_pr_approval)
     db.pr_approval.audit        ("set",    change_pr_approval)
     db.pr_approval.audit        ("set",    set_approval_pr, priority = 90)
@@ -1431,6 +1474,8 @@ def init (db):
     db.pr_offer_item.audit      ("set",    check_psp_tc, priority = 50)
     db.pr_offer_item.react      ("create", send_las_email, priority = 150)
     db.pr_offer_item.react      ("set",    send_las_email, priority = 150)
+    db.pr_offer_item.audit      ("set",    fix_gl_account_oi)
+    db.pr_offer_item.audit      ("create", fix_gl_account_oi)
     db.pr_currency.audit        ("create", check_currency)
     db.pr_currency.audit        ("set",    check_currency)
     db.pr_approval_order.audit  ("create", pao_check_roles)

@@ -275,9 +275,25 @@
       <td tal:content="structure python:context.date_ordered.plain ()"/>
      </tr>
      <tr>
-      <th tal:content="structure python:utils.fieldname
-          (classname, 'gl_account')"/>
-      <td tal:content="structure python:context.gl_account.field ()"/>
+      <tal:block tal:condition="python:
+           (   not utils.has_asset (context)
+           and (not context.purchase_type
+               or  context.purchase_type.allow_gl_account
+               )
+           )">
+       <th tal:content="structure python:utils.fieldname
+           (classname, 'gl_account')"/>
+       <td tal:content="structure python:context.gl_account.field ()"/>
+      </tal:block>
+      <tal:block tal:condition="python:
+           not (   not utils.has_asset (context)
+               and (not context.purchase_type
+                   or  context.purchase_type.allow_gl_account
+                   )
+               )">
+       <th/>
+       <td/>
+      </tal:block>
       <th tal:content="structure python:utils.fieldname
           (classname, 'delivery_address')"/>
       <td rowspan="2">
@@ -573,9 +589,20 @@
                         )"/>
             </span>
            </td>
-           <td colspan="2" tal:content="structure python:
-               i.gl_account.field ()"/>
-           <td/>
+           <td colspan="2"
+               tal:content="structure python: i.gl_account.field ()"
+               tal:condition="python:
+                   (   not i.is_asset
+                   and (  not context.purchase_type
+                       or context.purchase_type.allow_gl_account
+                       )
+                   )"/>
+           <td tal:condition="python:
+               not (   not i.is_asset
+                   and (  not context.purchase_type
+                       or context.purchase_type.allow_gl_account
+                       )
+                   )"/>
            <td/>
           </tr>
           <tr>

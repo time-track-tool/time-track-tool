@@ -276,6 +276,7 @@ def init \
         , pr_view_roles         = Multilink ("pr_approval_order")
         , nosy                  = Multilink ("user")
         , purchasing_agents     = Multilink ("user")
+        , allow_gl_account      = Boolean   ()
         )
     purchase_type.setkey ('name')
 
