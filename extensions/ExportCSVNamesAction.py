@@ -285,8 +285,8 @@ class Export_CSV_Names (Action, autosuper) :
                 )
         else :
             matches        = None
-        self.columns       = columns
-        self.print_columns = columns
+        self.columns       = [c for c in columns if c in self.klass.getprops ()]
+        self.print_columns = self.columns
         self.matches       = matches
     # end def _setup
 
@@ -454,7 +454,7 @@ class Export_CSV_Names (Action, autosuper) :
                         , property  = col
                         )
                     ]
-                   for col in self.columns]
+                   for col in self.columns if col in self.klass.getprops ()]
                   )
                 )
         return True_Value ('')
