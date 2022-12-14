@@ -926,6 +926,11 @@ _helptext          = \
       [""'''%(Property)s to log into firewall''']
     , ""'gapint'                      :
       [""'''Sensor interval for %(Classname)s''']
+    , ""'gl_account'             :
+      [""'''General ledger account (german: Sachkonto), please ask Controlling
+            for details if unsure
+          '''
+      ]
     , ""'group_external'              :
       [""'''Mark yes, if this %(Classname)s is used for persons not a
             member of this corporate
@@ -1324,11 +1329,6 @@ _helptext          = \
       [ ""'''This flag makes sure that not more than the employee\'s
              normal working time can be registered for this day if user
              has booked hours on this %(Classname)s
-          '''
-      ]
-    , ""'nominal_account'             :
-      [""'''Nominal account (german: Sachkonto), please ask Controlling
-            for details if unsure
           '''
       ]
     , ""'nosy'                        :

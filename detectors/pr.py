@@ -1,4 +1,4 @@
-# Copyright (C) 2015-18 Ralf Schlatterbeck. All rights reserved
+# Copyright (C) 2015-22 Ralf Schlatterbeck. All rights reserved
 # Reichergasse 131, A-3411 Weidling
 # ****************************************************************************
 #
@@ -488,6 +488,7 @@ def change_pr (db, cl, nodeid, new_values) :
                 , 'offer_items', 'delivery_deadline', 'purchase_type'
                 , 'part_of_budget', 'terms_conditions', 'frame_purchase'
                 , 'pr_currency', 'purchasing_agents', 'pr_ext_resource'
+                , 'delivery_address'
                 )
             org = new_values.get \
                 ('organisation', cl.get (nodeid, 'organisation'))

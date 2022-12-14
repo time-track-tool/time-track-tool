@@ -7533,8 +7533,8 @@ msgstr "No department approval"
 msgid "oob_amount"
 msgstr "Amount Out of Bugdet"
 
-msgid "nominal_account"
-msgstr "Nominal account"
+msgid "gl_account"
+msgstr "G/L account"
 
 msgid "charge_to"
 msgstr "Charge to"

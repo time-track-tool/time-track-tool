@@ -227,7 +227,7 @@ def init \
                                             , try_id_parsing = 'no'
                                             , do_journal     = 'no'
                                             )
-        , nominal_account       = String    ()
+        , gl_account            = String    ()
         )
 
     pr_status = Class \
@@ -382,8 +382,8 @@ def init \
                 , payment_type          = Link      ( "payment_type"
                                                     , do_journal = 'no'
                                                     )
-                , nominal_account       = String    ()
-                , charge_to             = Multilink ('organisation'
+                , gl_account            = String    ()
+                , charge_to             = Link      ('organisation'
                                                     , do_journal = 'no'
                                                     )
                 , delivery_address      = Link      ('location'
@@ -813,6 +813,23 @@ def security (db, ** kw) :
             return True
         return False
     # end def open_or_approving
+
+    def open_approving_approved (db, userid, itemid):
+        if open_or_approving (db, userid, itemid):
+            return True
+        pr          = db.purchase_request.getnode (itemid)
+        st_approved = db.pr_status.lookup ('approved')
+        if pr.status == st_approved:
+            return True
+        return False
+    # end def open_approving_approved
+
+    def open_approving_approved_oi (db, userid, itemid):
+        pr  = get_pr_from_offer_item (db, itemid)
+        if pr is None :
+            return False
+        return open_approving_approved (db, userid, pr.id)
+    # def open_approving_approved_oi
 
     def cancel_own_pr (db, userid, itemid) :
         """ User is allowed to cancel their own PR.
@@ -1292,5 +1309,45 @@ def security (db, ** kw) :
         , properties  = ('supervisor', 'clearance_by', 'want_no_messages')
         )
     db.security.addPermissionToRole ('User', p)
+
+    def not_ordered_and_purchasing (db, userid, itemid):
+        st = open_approving_approved (db, userid, itemid)
+        if not st:
+            return False
+        return pr_pt_role (db, userid, itemid)
+    # end def not_ordered_and_purchasing
+
+    def not_ordered_and_purchasing_oi (db, userid, itemid):
+        pr  = get_pr_from_offer_item (db, itemid)
+        if pr is None:
+            return False
+        return not_ordered_and_purchasing (db, userid, pr.id)
+    # end def not_ordered_and_purchasing_oi
+
+    p = db.security.addPermission \
+        ( name        = 'Edit'
+        , klass       = 'purchase_request'
+        , check       = not_ordered_and_purchasing
+        , description = "Allowed to edit until ordered"
+        , properties  = ('gl_account',)
+        )
+    db.security.addPermissionToRole ('User', p)
+
+    p = db.security.addPermission \
+        ( name        = 'Edit'
+        , klass       = 'purchase_request'
+        , check       = open_approving_approved
+        , description = "Allowed to edit until ordered"
+        , properties  = ('gl_account',)
+        )
+    db.security.addPermissionToRole ('Controlling', p)
+    p = db.security.addPermission \
+        ( name        = 'Edit'
+        , klass       = 'pr_offer_item'
+        , check       = open_approving_approved_oi
+        , description = "Allowed to edit until ordered"
+        , properties  = ('gl_account',)
+        )
+    db.security.addPermissionToRole ('Controlling', p)
 
 # end def security
