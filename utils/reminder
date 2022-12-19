@@ -1,5 +1,5 @@
-#!/usr/bin/python
-# Copyright (C) 2003-16 TTTech Computertechnik GmbH. All rights reserved
+#!/usr/bin/python3
+# Copyright (C) 2003-22 TTTech Computertechnik GmbH. All rights reserved
 # Schoenbrunnerstrasse 7, A--1040 Wien, Austria. office@@tttech.com
 # ****************************************************************************
 # 
@@ -23,9 +23,10 @@ import os
 import sys
 import time
 import argparse
-from email.Utils        import formatdate, formataddr
-from smtplib            import SMTP, SMTPRecipientsRefused
-from roundup            import instance
+from email.utils     import formatdate, formataddr
+from email.mime.text import MIMEText
+from smtplib         import SMTP, SMTPRecipientsRefused
+from roundup         import instance
 
 #                 Minimum prio to warn
 type_prio    = { 'Day' : 91,      'Week' : 40,       'Month' : 0 }
@@ -68,36 +69,36 @@ format = \
     + "%(status)-9s %(effective_prio)4.4s %(title)-40.40s"
     )
 
-class user_report :
+class user_report:
     heading = {"missing_effort" : " ", "effective_prio" : "priority"}
-    for i in ['id','category','status','title'] :
+    for i in ['id','category','status','title']:
         heading [i] = i
 
-    def __init__ (self, user, report_lines, lonely_lines, eff_msg) :
+    def __init__ (self, user, report_lines, lonely_lines, eff_msg):
         self.user         = user
         self.report_lines = report_lines
         self.lonely_lines = lonely_lines
         self.eff_msg      = eff_msg
 
-    def report (self) :
+    def report (self):
         raise NotImplementedError
 
-    def __str__ (self) :
+    def __str__ (self):
         s = []
-        if self.report_lines :
+        if self.report_lines:
             s.append ("%s\n%s\n" % (self.eff_msg, format % self.heading))
-            for l in self.report_lines :
+            for l in self.report_lines:
                 s.append ("%s\n" % l)
             s.append ("\n")
-        if self.lonely_lines :
+        if self.lonely_lines:
             s.append ("Please attach the following reports to a container:\n")
             s.append (format % self.heading)
             s.append ("\n")
-            for l in self.lonely_lines :
+            for l in self.lonely_lines:
                 s.append ("%s\n" % l)
         return "".join (s)
 
-    def mail (self, smtp, header, frm) :
+    def mail (self, smtp, subject, frm):
         to    = "To: %s" % self.user
         fm    = "From: %s" % formataddr (frm)
         date  = "Date: %s" % formatdate (time.time (), True)
@@ -106,29 +107,25 @@ class user_report :
             , 'Content-Type: text/plain; charset=UTF-8'
             , 'Content-Transfer-Encoding: 8bit'
             ]
-        smtp.sendmail \
-            ( frm [-1]
-            , self.user
-            , '\n'.join \
-                ( header
-                + [to, fm, date, "X-" + date]
-                + mime
-                + ["\n", str (self)]
-                )
-            )
+        msg = MIMEText (str (self), 'plain', 'utf-8')
+        msg ['Subject'] = subject
+        msg ['To']      = self.user
+        msg ['Date']    = formatdate (time.time (), True)
+        msg ['From']    = formataddr (frm)
+        smtp.sendmail (frm [-1], self.user, msg.as_string ())
 # end class user_report
 
-def print_results (user_reports) :
-    for user, report in user_reports.iteritems () :
+def print_results (user_reports):
+    for user, report in user_reports.items ():
         print ("%s:\n" % user, str (report))
 
-class Fake_Smtp (object) :
+class Fake_Smtp (object):
 
-    def __init__ (self, hostname) :
+    def __init__ (self, hostname):
         self.hostname = hostname
     # end def __init__
 
-    def sendmail (self, frm, to, content) :
+    def sendmail (self, frm, to, content):
         print ("SENDING VIA: %s" % self.hostname)
         print ('Envelope-from: %s' % frm)
         print ('Envelope-to: %s'   % to)
@@ -138,23 +135,21 @@ class Fake_Smtp (object) :
 # end class Fake_Smtp
 
 
-def mail_results (user_reports) :
+def mail_results (user_reports):
     global admin_email, admin_name
     global args
     frm = (admin_name, admin_email)
     smtpclass = SMTP
-    if args.debug_smtp :
+    if args.debug_smtp:
         smtpclass = Fake_Smtp
     smtp = smtpclass (args.hostname)
-    header = \
-        [ "Subject: %s Summary of pending bug reports"
-        % subject_type [args.report_type]
-        ]
-    for report in user_reports.values () :
-        try :
-            report.mail (smtp, header, frm)
-        except SMTPRecipientsRefused, cause :
-            print >> sys.stderr, cause
+    subject = "Subject: %s Summary of pending bug reports" \
+            % subject_type [args.report_type]
+    for report in user_reports.values ():
+        try:
+            report.mail (smtp, subject, frm)
+        except SMTPRecipientsRefused as cause:
+            print (cause, file = sys.stderr)
 # end def mail_results
 
 cmd     = argparse.ArgumentParser ()
@@ -192,9 +187,9 @@ cmd.add_argument \
 args = cmd.parse_args ()
 
 out_fun = print_results
-if args.mail :
+if args.mail:
     out_fun = mail_results
-if args.report_type not in type_prio :
+if args.report_type not in type_prio:
     print ('Wrong type: "%s"', file = sys.stderr)
     cmd.usage ()
 
@@ -215,7 +210,7 @@ status_filter = ['suspended', 'closed']
 stati = [id for id in db.status.getnodeids ()
          if db.status.get (id, 'name') not in status_filter
         ]
-for user in  db.user.list () :
+for user in  db.user.list ():
     report_lines = []
     lonely_lines = []
     eff_msg      = ""
@@ -224,20 +219,21 @@ for user in  db.user.list () :
        , 'status'      : stati
        }
     for issue_id in db.issue.filter \
-        (None, filterspec, sort = ('+','id'), group = ('-', 'effective_prio')) :
+        (None, filterspec, sort = ('+','id'), group = ('-', 'effective_prio')):
         issue = db.issue.getnode (issue_id)
         pretty = prettynode (issue)
-        if not issue.part_of and not top_level_containers.has_key (issue.id) :
+        if not issue.part_of and issue.id not in top_level_containers:
             lonely_lines.append (format % pretty)
-        if issue.composed_of and args.report_type == "Day" : continue
+        if issue.composed_of and args.report_type == "Day": continue
         prio = pretty ["priority"] or 0
-        if pretty ["effective_prio"] is not None :
+        if pretty ["effective_prio"] is not None:
             prio = pretty ["effective_prio"]
-        if int (prio) < minprio : continue
+        if int (prio) < minprio:
+            continue
         report_lines.append (format % pretty)
-        if pretty ["missing_effort"] :
+        if pretty ["missing_effort"]:
             eff_msg = 'Please estimate effort for issues marked with "*".'
-    if report_lines or lonely_lines :
+    if report_lines or lonely_lines:
         adr = db.user.get (user, 'address')
         user_reports [adr] = user_report \
             (adr, report_lines, lonely_lines, eff_msg)
