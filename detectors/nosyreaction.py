@@ -1,6 +1,6 @@
 #
 # Copyright (c) 2001 Bizar Software Pty Ltd (http://www.bizarsoftware.com.au/)
-# Copyright (c) 2004-21 Dr. Ralf Schlatterbeck Open Source Consulting.
+# Copyright (c) 2004-22 Dr. Ralf Schlatterbeck Open Source Consulting.
 #                       Web: http://www.runtux.com Email: office@runtux.com
 # This module is free software, and you may redistribute it and/or modify
 # under the same terms as Python, so long as this copyright message and
@@ -74,7 +74,7 @@ def send_non_roundup_mail (db, cls, issueid, msgid, sendto, cc = [], bcc = []) :
 
     m = ['']
     m.append (msg.content or '')
-    body = unicode ('\n'.join (m), 'utf-8').encode (charset)
+    body = '\n'.join (m).encode (charset)
 
     mailer  = Mailer (db.config)
     message = mailer.get_standard_message (multipart = bool (msg.files))

@@ -1,5 +1,5 @@
 #! /usr/bin/python
-# Copyright (C) 2010-21 Dr. Ralf Schlatterbeck Open Source Consulting.
+# Copyright (C) 2010-22 Dr. Ralf Schlatterbeck Open Source Consulting.
 # Reichergasse 131, A-3411 Weidling.
 # Web: http://www.runtux.com Email: office@runtux.com
 # All rights reserved
@@ -143,17 +143,20 @@ def check_dates (db, cl, nodeid, new_values) :
         new_values ["satisfied"] = None
 # end def check_dates
 
-def header_utf8 (header) :
+def header_str (header) :
     parts = decode_header (header)
     result = []
     for txt, coding in parts :
         if not coding :
             # might be 8 bit
-            result.append (txt.decode ('latin1'))
+            if isinstance (txt, bytes):
+                result.append (txt.decode ('latin1'))
+            else:
+                result.append (txt)
         else :
             result.append (txt.decode (coding))
-    return (''.join (result)).encode ('utf-8')
-# end def header_utf8
+    return (''.join (result))
+# end def header_str
 
 def find_or_create_contact \
     (db, mail, rn, customer = None, frm = None, subject = None) :
@@ -216,7 +219,7 @@ def find_or_create_contact \
         md = md.split ('.', 1) [1]
     if customer and not customer_found :
         return None
-    rn = header_utf8 (rn)
+    rn = header_str (rn)
     if not customer :
         customer = db.customer.create \
             ( name        = ' '.join ((rn, mail))
@@ -275,7 +278,7 @@ def header_check (db, cl, nodeid, new_values) :
             h = Message ()
         if db.user.get (msg.author, 'status') == system :
             frm  = fix_emails (h.get_all ('From'))
-            subj = header_utf8 (h.get_all ('Subject') [0])
+            subj = header_str (h.get_all ('Subject') [0])
             if  (   frm
                 and 'customer' not in new_values
                 and 'emails' not in new_values
