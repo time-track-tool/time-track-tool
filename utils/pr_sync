@@ -13,7 +13,7 @@ from   roundup.date          import Date
 from   roundup.anypy.strings import u2s
 from   requester             import Requester, urlencode
 
-class PR_Sync (Requester) :
+class PR_Sync (Requester):
     """ Sync Time-Tracker data from remote time tracker vie XMLRPC.
     """
 
@@ -38,7 +38,7 @@ class PR_Sync (Requester) :
          , ('user.supervisor',                'user')
         ))
 
-    def __init__ (self, args) :
+    def __init__ (self, args):
         self.__super.__init__ (args)
         tracker        = instance.open (args.database_directory)
         self.db        = tracker.open (args.user)
@@ -58,18 +58,18 @@ class PR_Sync (Requester) :
     # end def __init__
 
     # Check methods that check if a class item is valid
-    def check_organisation (self, item) :
+    def check_organisation (self, item):
         d = item ['valid_to']
-        if d :
-            if isinstance (d, text_type) :
+        if d:
+            if isinstance (d, text_type):
                 d = str (d)
             d = Date (d)
         return not d or d > self.now
     # end def check_organisation
     check_department = check_organisation
 
-    def check_time_project (self, item) :
-        if item ['status']['id'] not in self.tc_active :
+    def check_time_project (self, item):
+        if item ['status']['id'] not in self.tc_active:
             return False
         return bool \
             (   not item ['approval_hr']
@@ -83,82 +83,82 @@ class PR_Sync (Requester) :
             )
     # end def check_time_project
 
-    def fix_time_project (self, item, id) :
+    def fix_time_project (self, item, id):
         """ Add org_id-id as description
             Add default purchasing_agents if missing.
         """
         orgid = ''
-        if item ['organisation'] :
+        if item ['organisation']:
             orgid = item ['organisation']['id']
         item ['description'] = '-'.join ((orgid, id))
-        if self.args.purchasing_agent and not item ['purchasing_agents'] :
+        if self.args.purchasing_agent and not item ['purchasing_agents']:
             item ['purchasing_agents'] = \
                 [dict (id = self.args.purchasing_agent)]
     # end def fix_time_project
 
-    def fix_sap_cc (self, item, id) :
+    def fix_sap_cc (self, item, id):
         """ Add default purchasing_agent if missing.
         """
-        if self.args.purchasing_agent and not item ['purchasing_agents'] :
+        if self.args.purchasing_agent and not item ['purchasing_agents']:
             item ['purchasing_agents'] = \
                 [dict (id = self.args.purchasing_agent)]
     # end def fix_sap_cc
 
-    def check_user (self, user) :
-        if user ['username'] in ('admin', 'anonymous') :
+    def check_user (self, user):
+        if user ['username'] in ('admin', 'anonymous'):
             return True
-        if not self.uvalid :
+        if not self.uvalid:
             r = self.get ('user_status?name:=valid-ad')
             assert len (r ['data']['collection']) == 1
             self.uvalid = r ['data']['collection'][0]['id']
         return user ['status']['id'] == self.uvalid
     # end def check_user
 
-    def search_time_project (self, item, id) :
+    def search_time_project (self, item, id):
         """ Try to find local time_project by description which contains
             the *original* id.
         """
         d = item ['description']
-        if not d :
+        if not d:
             return None
         items = self.db.time_project.filter (None, dict (description = d))
-        for it in items :
-            if self.db.time_project.get (it, 'description') == d :
+        for it in items:
+            if self.db.time_project.get (it, 'description') == d:
                 return it
         return None
     # end def search_time_project
 
-    def fix_prop (self, value) :
-        if isinstance (value, text_type) :
+    def fix_prop (self, value):
+        if isinstance (value, text_type):
             return u2s (value)
         return value
     # end def fix_prop
 
-    def getpropclass (self, prop) :
+    def getpropclass (self, prop):
         cn = self.classname
         return self.property_classes.get ('%s.%s' % (cn, prop), None)
     # end def getpropclass
 
-    def map_id (self, prop, value) :
-        if value is None or isinstance (value, type ([])) and not value :
+    def map_id (self, prop, value):
+        if value is None or isinstance (value, type ([])) and not value:
             return None
         idm = self.idmap [self.getpropclass (prop)]
-        if isinstance (value, type ([])) :
+        if isinstance (value, type ([])):
             v = []
-            for x in value :
-                if isinstance (x, dict) :
+            for x in value:
+                if isinstance (x, dict):
                     x = x ['id']
-                if x in idm :
+                if x in idm:
                     v.append (idm [x])
-            if v :
+            if v:
                 return v
             return None
-        if isinstance (value, dict) :
+        if isinstance (value, dict):
             return idm [value ['id']]
         return idm [value]
     # end def map_id
 
-    def sync (self) :
+    def sync (self):
         self.sync_class \
             ( 'organisation'
             , ('name', 'description', 'may_purchase', 'company_code')
@@ -208,7 +208,7 @@ class PR_Sync (Requester) :
             )
 
         self.sync_pending ()
-        if self.update :
+        if self.update:
             self.db.commit ()
     # end def sync
 
@@ -222,10 +222,10 @@ class PR_Sync (Requester) :
         , dont_sync  = {}
         , update     = True
         , **default
-        ) :
+        ):
         self.verbose ('Syncing: %s (upd=%s)' % (classname, update))
         assert key in propnames
-        for r in required :
+        for r in required:
             assert r in propnames
         self.classname = classname
         cls = self.db.getclass (classname)
@@ -233,211 +233,211 @@ class PR_Sync (Requester) :
         mapped     = {}
         nonmapped  = {}
         pending    = {}
-        for p in propnames :
+        for p in propnames:
             pkey = self.getpropclass (p)
-            if pkey :
-                if pkey in self.idmap and pkey != classname :
+            if pkey:
+                if pkey in self.idmap and pkey != classname:
                     mapped [p] = 1
-                else :
+                else:
                     pending [p] = 1
-            else :
+            else:
                 nonmapped [p] = 1
-        if pending and update :
+        if pending and update:
             self.pendmap [classname] = {}
         found = {}
         d    = {}
         d ['@fields'] = ','.join (propnames + additional)
         coll = self.get (classname + '?' + urlencode (d)) ['data']['collection']
-        for item in coll :
+        for item in coll:
             id  = item ['id']
             lid = None
-            if id in dont_sync :
+            if id in dont_sync:
                 lid = cls.lookup (self.fix_prop (item [key]))
                 found [lid] = True
                 continue
             valid = True
             check = getattr (self, 'check_' + classname, None)
-            if check :
+            if check:
                 valid = check (item)
             fixer = getattr (self, 'fix_' + classname, None)
-            if fixer :
+            if fixer:
                 fixer (item, id)
             propsearch = getattr (self, 'search_' + classname, None)
             lid = None
-            if 'sync_id' in cls.properties :
+            if 'sync_id' in cls.properties:
                 lids = cls.stringFind (sync_id = id)
                 assert len (lids) <= 1
-                if lids :
+                if lids:
                     lid = lids [0]
                     self.verbose \
                         ( "Found via sync_id: %s%s->%s%s"
                         % (classname, id, classname, lid)
                         , level = 3
                         )
-            if lid is None :
-                try :
+            if lid is None:
+                try:
                     lid = cls.lookup (self.fix_prop (item [key]))
-                except KeyError :
-                    if propsearch :
+                except KeyError:
+                    if propsearch:
                         lid = propsearch (item, id)
-            if valid :
+            if valid:
                 self.verbose \
                     ("Syncing: %s%s %s" % (classname, id, item), level = 3)
-                if not lid :
+                if not lid:
                     params = dict (default)
                     params.update \
                         ( (k, self.fix_prop (item [k]))
                           for k in nonmapped if item [k] is not None
                         )
-                    if 'sync_id' in cls.properties :
+                    if 'sync_id' in cls.properties:
                         params ['sync_id'] = id
-                    for k in mapped :
+                    for k in mapped:
                         itemid = item [k]
-                        if isinstance (itemid, dict) :
+                        if isinstance (itemid, dict):
                             itemid = itemid ['id']
-                        try :
+                        try:
                             v = self.map_id (k, itemid)
-                        except KeyError :
-                            if k in item :
+                        except KeyError:
+                            if k in item:
                                 print \
                                     ( "WARN: Not in map: %s%s %s:%s"
                                     % (classname, id, k, itemid)
                                     )
-                            else :
+                            else:
                                 print \
                                     ( "WARN: Not in class: %s %s"
                                     % (classname, k)
                                     )
                             v = None
-                        if v is None :
+                        if v is None:
                             continue
                         params [k] = v
-                    for r in required :
-                        if r not in params :
+                    for r in required:
+                        if r not in params:
                             print \
                                 ( 'WARN: Not in params: "%s" -- '
                                   'not converting %s%s'
                                 % (r, classname, id)
                                 )
                             break
-                    else :
+                    else:
                         self.verbose \
                             ("Create: %s %s" % (classname, params), level = 2)
-                        if self.update and update :
+                        if self.update and update:
                             lid = cls.create (** params)
                             found [lid] = True
-                else :
+                else:
                     found [lid] = True
                     litem = cls.getnode (lid)
                     d = {}
-                    for p in default :
+                    for p in default:
                         ritem = self.fix_prop (default [p])
-                        if litem [p] is None :
+                        if litem [p] is None:
                             d [p] = ritem
-                    if 'roles' in default and 'roles' not in d :
+                    if 'roles' in default and 'roles' not in d:
                         roles = dict.fromkeys (common.role_list (litem.roles))
                         roles_old = dict (roles)
-                        for r in common.role_list (default ['roles']) :
-                            if r not in roles :
+                        for r in common.role_list (default ['roles']):
+                            if r not in roles:
                                 roles [r] = 1
-                        if roles != roles_old :
+                        if roles != roles_old:
                             d ['roles'] = ','.join (roles.keys ())
-                    if 'sync_id' in cls.properties and litem.sync_id != id :
+                    if 'sync_id' in cls.properties and litem.sync_id != id:
                         d ['sync_id'] = id
-                    for p in nonmapped :
+                    for p in nonmapped:
                         ritem = self.fix_prop (item [p])
-                        if ritem != litem [p] :
+                        if ritem != litem [p]:
                             d [p] = ritem
-                    for p in mapped :
+                    for p in mapped:
                         itemid = item [p]
-                        if isinstance (itemid, dict) :
+                        if isinstance (itemid, dict):
                             itemid = itemid ['id']
-                        try :
+                        try:
                             v = self.map_id (p, itemid)
-                        except KeyError :
+                        except KeyError:
                             print \
                                 ( "WARN: Not in map: %s%s %s:%s"
                                 % (classname, id, p, itemid)
                                 )
                             v = None
-                        if v is None :
+                        if v is None:
                             continue
-                        if v != litem [p] :
+                        if v != litem [p]:
                             d [p] = v
-                    if (d) :
+                    if (d):
                         self.verbose \
                             ( "Set: %s%s->%s%s %s"
                             % (classname, id, classname, lid, d)
                             , level = 2
                             )
-                        if self.update and update :
+                        if self.update and update:
                             cls.set (lid, ** d)
                 self.idmap [classname][id] = lid
-                if pending and update :
+                if pending and update:
                     self.pendmap [classname][lid] = {}
-                    for k in pending :
-                        if item [k] is not None :
+                    for k in pending:
+                        if item [k] is not None:
                             it = item [k]
-                            if isinstance (it, dict) :
+                            if isinstance (it, dict):
                                 it = it ['id']
                             self.pendmap [classname][lid][k] = it
-            elif lid :
-                if classname != 'user' :
+            elif lid:
+                if classname != 'user':
                     self.verbose ("Retire: %s%s" % (classname, lid), level = 2)
-                    if self.update and update :
+                    if self.update and update:
                         cls.retire (lid)
-                else :
-                    if not self.obsolete :
+                else:
+                    if not self.obsolete:
                         self.obsolete = self.db.user_status.lookup ('obsolete')
-                    if item ['status'] != self.obsolete :
+                    if item ['status'] != self.obsolete:
                         self.verbose \
                             ("Marking obsolete: user%s" % lid, level = 2)
-                        if self.update and update :
+                        if self.update and update:
                             cls.set (lid, status = self.obsolete)
-        for lid in cls.getnodeids (retired = False) :
+        for lid in cls.getnodeids (retired = False):
             node = cls.getnode (lid)
-            if classname == 'user' and node.status == self.obsolete :
+            if classname == 'user' and node.status == self.obsolete:
                 continue
-            if lid not in found :
-                if classname == 'user' :
+            if lid not in found:
+                if classname == 'user':
                     self.verbose ("MARKING obsolete: user%s" % lid, level = 2)
-                    if self.update and update :
+                    if self.update and update:
                         cls.set (lid, status = self.obsolete)
-                else :
+                else:
                     self.verbose ("RETIRE: %s%s" % (classname, lid), level = 2)
-                    if self.update and update :
+                    if self.update and update:
                         cls.retire (lid)
 
-        if self.update and update :
+        if self.update and update:
             self.db.commit ()
     # end def sync_class
 
-    def sync_pending (self) :
-        for cn in self.pendmap :
+    def sync_pending (self):
+        for cn in self.pendmap:
             self.classname = cn
             cls = self.db.getclass (cn)
-            for lid, props in self.pendmap [cn].iteritems () :
+            for lid, props in self.pendmap [cn].iteritems ():
                 litem = cls.getnode (lid)
                 d = {}
-                for k, v in props.iteritems () :
+                for k, v in props.iteritems ():
                     lv = self.map_id (k, v)
-                    if lv != litem [k] :
+                    if lv != litem [k]:
                         d [k] = lv
-                if d :
+                if d:
                     self.verbose ("Set: %s%s %s" % (cn, lid, d), level = 2)
-                    if self.update :
+                    if self.update:
                         cls.set (lid, ** d)
         self.pendmap = {}
     # end def sync_pending
 
-    def verbose (self, msg, level = 1, * args) :
-        if self.args.verbose >= level :
+    def verbose (self, msg, level = 1, * args):
+        if (self.args.verbose or 0) >= level:
             print (msg, *args)
     # end def verbose
 
 # end class PR_Sync
 
-def main () :
+def main ():
     cmd = ArgumentParser ()
     cmd.add_argument \
         ( 'url'
@@ -500,5 +500,5 @@ def main () :
     sync.sync ()
 # end def main
 
-if __name__ == '__main__' :
+if __name__ == '__main__':
     main ()
