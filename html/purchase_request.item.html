@@ -443,9 +443,10 @@
                   i.price_per_unit.plain () and i.units.plain ()
                   and i.price_per_unit.is_view_ok () and i.units.is_view_ok ()">
              <tal:block tal:replace=
-                 "structure python:
-                   float (i.price_per_unit.plain ()) *
-                   float (i.units.plain ())"/>
+                 "python: '%.2f' %
+                   ( float (i.price_per_unit.plain ())
+                   * float (i.units.plain ())
+                   )"/>
             </span>
            </td>
            <td tal:content="python:context.pr_currency.plain ()"/>
@@ -700,7 +701,8 @@
          <td i18n:translate="">Sum</td>
          <td/>
          <td style="text-align:right"
-             tal:content="python:utils.pr_offer_item_sum (db._db, context.id)"/>
+             tal:content="python:
+                 '%.2f' % utils.pr_offer_item_sum (db._db, context.id)"/>
          <td tal:content="python: context.pr_currency"/>
          <td tal:condition="cond"/>
         </tr>
