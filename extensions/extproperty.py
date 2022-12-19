@@ -403,6 +403,8 @@ class ExtProperty :
                 return str (self.prop)
             return self.prop.pretty (format)
         if self.format :
+            if not self.item [self.name].plain ():
+                return self.item [self.name].plain ()
             return self.format % self.item [self.name]
         if isinstance (self.prop, type ('')) :
             return self.prop
