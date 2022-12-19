@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 import time
 import os
 import sys
@@ -9,21 +9,22 @@ lockfile_path = '/var/run/roundup'
 normpath = os.path.normpath
 options  = []
 l        = len (sys.argv)
-if l < 3 :
-    print >> sys.stderr \
-          , "Usage: %s <tracker> <user:password@server> [lockfile] [options]" \
+if l < 3:
+    print ( "Usage: %s <tracker> <user:password@server> [lockfile] [options]"
           % sys.argv [0]
+          , file = sys.stderr
+          )
     sys.exit (23)
-if l > 4 :
+if l > 4:
     options = sys.argv [4:]
 
 lockfile = normpath (os.path.join (lockfile_path, 'mailgw.lock'))
-if l > 3 :
+if l > 3:
     lockfile = sys.argv [3]
-else :
-    try :
+else:
+    try:
         os.mkdir (lockfile_path)
-    except IOError :
+    except IOError:
         pass
 tracker  = sys.argv [1]
 server   = sys.argv [2]
@@ -34,10 +35,11 @@ mailgw   = "/usr/local/bin/roundup-mailgw %s '%s' imaps '%s'" % \
 # at the same time. Under normal circumstances (called via cron once a
 # minute) locking should work with this simple approach.
 
-try :
+try:
     mtime = os.stat (lockfile)[stat.ST_MTIME]
-except OSError, cause :
-    if cause.errno != 2 : raise
+except OSError as cause:
+    if cause.errno != 2:
+        raise
     # no lockfile
     open (lockfile, "w").close ()
     os.system (mailgw)
@@ -45,6 +47,6 @@ except OSError, cause :
     sys.exit (0)
 
 
-if mtime < time.time () - 3600 * 24 :
-    print "Roundup-mailgw: Locked for more than 24 hours!!"
+if mtime < time.time () - 3600 * 24:
+    print ("Roundup-mailgw: Locked for more than 24 hours!!")
     sys.exit (1)
