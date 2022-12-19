@@ -1290,7 +1290,7 @@ def copy_url (context, attributes = None):
                     # Do not add some retired attributes
                     if a in do_not_add_retired:
                         continue
-                    val = escape (context [a])
+                    val = escape (context [a].plain ())
                 else:
                     val = context [a].id
             else:
