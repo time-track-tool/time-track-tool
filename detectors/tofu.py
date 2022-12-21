@@ -1,5 +1,5 @@
 #! /usr/bin/python
-# Copyright (C) 2006-21 Dr. Ralf Schlatterbeck Open Source Consulting.
+# Copyright (C) 2006-22 Dr. Ralf Schlatterbeck Open Source Consulting.
 # Reichergasse 131, A-3411 Weidling.
 # Web: http://www.runtux.com Email: office@runtux.com
 # All rights reserved
@@ -89,7 +89,7 @@ def title_check (db, cl, nodeid, newvalues) :
     title_create_check (db, cl, nodeid, newvalues)
     if "title" not in newvalues :
         return
-    if nasty_chars.search (newvalues ["title"].decode ('utf-8')) :
+    if nasty_chars.search (newvalues ["title"]) :
         raise ValueError (Nasty_msg % "title")
 
 def msg_check (db, cl, nodeid, newvalues) :
