@@ -281,7 +281,10 @@ class Leave_Display (object):
 
     def __init__ \
         ( self, db, user, supervisor, dt
-        , types = None, lim_dt = True, all_user_fallback = True
+        , types             = None
+        , lim_dt            = True
+        , all_user_fallback = True
+        , absence_type      = None
         ):
         self.db = db
         try:
@@ -350,10 +353,14 @@ class Leave_Display (object):
         # Get all absence records in the given time range, same algo as for
         if 'status' in flt:
             del flt ['status']
-        abfirst  = db.absence.filter \
-            (None, dict (first_day = dt, user = users))
-        ablast   = db.absence.filter \
-            (None, dict (last_day  = dt, user = users))
+        fifi = dict (first_day = dt, user = users)
+        lafi = dict (last_day  = dt, user = users)
+        if absence_type:
+            fifi.update (absence_type = absence_type)
+            lafi.update (absence_type = absence_type)
+            flt.update  (absence_type = absence_type)
+        abfirst  = db.absence.filter (None, fifi)
+        ablast   = db.absence.filter (None, lafi)
         abperiod = db.absence.filter (None, flt)
         abs = list (set (abfirst + ablast + abperiod))
         # Put them in a dict by user-id
@@ -737,7 +744,7 @@ class Rest_Request (RestfulInstance):
     @Routing.route ("/aux/timesheet", 'GET')
     @_data_decorator
     def timesheet (self, input, *args, **kw):
-        supervisor = user = date = types = None
+        supervisor = user = date = types = abstypes = None
         if 'supervisor' in input:
             supervisor = lookup_users (self.db, input ['supervisor'].value)
         if 'user' in input:
@@ -746,9 +753,15 @@ class Rest_Request (RestfulInstance):
             date = input ['date'].value
         if 'type' in input:
             types = [x.strip () for x in input ['type'].value.split (',')]
+        if 'absence_type' in input:
+            abt = input ['absence_type']
+            abstypes = [x.strip () for x in abt.value.split (',')]
         ld = Leave_Display \
             ( self.db, user, supervisor, date
-            , types = types, lim_dt = False, all_user_fallback = False
+            , types = types
+            , lim_dt = False
+            , all_user_fallback = False
+            , absence_type = abstypes
             )
         path = '%s/' % (self.data_path)
         return ld.as_dict (self, path = path)
