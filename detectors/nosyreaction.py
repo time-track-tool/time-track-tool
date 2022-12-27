@@ -108,7 +108,7 @@ def send_non_roundup_mail (db, cls, issueid, msgid, sendto, cc = [], bcc = []) :
         cd = 'Content-Disposition'
         part [cd] = 'attachment;\n filename="%s"' % file.name
         message.attach (part)
-    mailer.smtp_send (sendto + cc + bcc, message.as_string ())
+    mailer.smtp_send (sendto + cc + bcc, message.as_string (), fromaddr)
 # end def send_non_roundup_mail
 
 def nosyreaction(db, cl, nodeid, oldvalues) :
