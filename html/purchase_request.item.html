@@ -298,7 +298,7 @@
           (classname, 'delivery_address')"/>
       <td rowspan="2">
        <span tal:content="structure python:context.delivery_address.menu
-        (valid_from = ';.,-', valid_to = '.;,-')"/>
+        (valid_from = ';.,-', valid_to = '.;,-', sort_on = ('+', 'order'))"/>
        <br>
        <span tal:condition="python: context.id and context.delivery_address"
              tal:content="python:' '.join
