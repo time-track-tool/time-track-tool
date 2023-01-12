@@ -490,7 +490,7 @@ def security (db, ** kw) :
     classes = \
         [ ("department",         ["User"],              [])
         , ("infosec_level",      ["User"],              ["Procurement-Admin"])
-        , ("location",           ["User"],              [])
+        , ("location",           ["User"],              ["Procurement-Admin"])
         , ("organisation",       ["User"],              [])
         , ("org_location",       ["User"],              [])
         , ("part_of_budget",     ["User"],              [])
@@ -637,6 +637,7 @@ def security (db, ** kw) :
             ( 'sap_reference', 'terms_conditions', 'frame_purchase'
             , 'frame_purchase_end', 'nosy', 'messages', 'purchasing_agents'
             , 'internal_order', 'special_approval', 'payment_type'
+            , 'delivery_address'
             )
         )
     db.security.addPermissionToRole ('User', p)
