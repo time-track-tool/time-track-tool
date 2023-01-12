@@ -1344,6 +1344,14 @@ def security (db, ** kw):
         , properties  = ('gl_account',)
         )
     db.security.addPermissionToRole ('User', p)
+    p = db.security.addPermission \
+        ( name        = 'Edit'
+        , klass       = 'pr_offer_item'
+        , check       = not_ordered_and_purchasing_oi
+        , description = "Allowed to edit until ordered"
+        , properties  = ('gl_account',)
+        )
+    db.security.addPermissionToRole ('User', p)
 
     p = db.security.addPermission \
         ( name        = 'Edit'
