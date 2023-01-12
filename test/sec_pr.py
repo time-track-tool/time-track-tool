@@ -25,13 +25,9 @@ Role "ciso":
 Role "controlling":
  Allowed to edit until ordered (Edit for "pr_offer_item": ('gl_account',) only)
  Allowed to edit until ordered (Edit for "purchase_request": ('gl_account',) only)
- User is allowed Edit on (Edit for "sap_cc": ('group_lead', 'nosy', 'team_lead') only)
- User is allowed Edit on (Edit for "time_project": ('group_lead', 'nosy', 'team_lead') only)
  User is allowed to access query (View for "query" only)
  User is allowed to access time_project (View for "time_project" only)
- User is allowed to create organisation (Create for "organisation" only)
  User is allowed to create query (Create for "query" only)
- User is allowed to edit organisation (Edit for "organisation" only)
  User is allowed to edit query (Edit for "query" only)
 Role "dom-user-edit-facility":
  Users may view/edit user records for ad_domain for which they are in the domain_permission for the user (Edit for "user": ['room'] only)

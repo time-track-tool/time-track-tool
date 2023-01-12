@@ -711,6 +711,10 @@ def security (db, ** kw) :
           , ["HR", "HR-vacation", "HR-leave-approval", "controlling"]
           , ["HR-vacation"]
           )
+        , ("organisation"
+          , ["User"]
+          , ["Controlling"]
+          )
         , ( "overtime_correction"
           , ["HR", "Controlling"]
           , []
@@ -834,6 +838,12 @@ def security (db, ** kw) :
           )
         , ( "leave_submission", "Edit", ["HR-leave-approval"]
           , ("status",)
+          )
+        , ( "sap_cc", "Edit", ["Controlling"]
+          , ("group_lead", "team_lead", "nosy")
+          )
+        , ( "time_project", "Edit", ["Controlling"]
+          , ("group_lead", "team_lead", "nosy")
           )
         , ( "time_project", "Edit", ["Project"]
           , ( "max_hours", "op_project", "planned_effort"

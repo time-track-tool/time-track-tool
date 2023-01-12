@@ -128,13 +128,11 @@ def security (db, ** kw) :
 
     #     classname        allowed to view   /  edit
 
-    classes = \
-        [ ("organisation", ["User"],  ["Controlling"])
-        ]
-
+    classes = []
     prop_perms = []
 
     schemadef.register_roles             (db, roles)
-    schemadef.register_class_permissions (db, classes, prop_perms)
+    # Currently not needed as long as classes and prop_perms are empty
+    #schemadef.register_class_permissions (db, classes, prop_perms)
 
 # end def security
