@@ -926,6 +926,11 @@ _helptext          = \
       [""'''%(Property)s to log into firewall''']
     , ""'gapint'                      :
       [""'''Sensor interval for %(Classname)s''']
+    , ""'gl_account'             :
+      [""'''General ledger account (german: Sachkonto), please ask Controlling
+            for details if unsure
+          '''
+      ]
     , ""'group_external'              :
       [""'''Mark yes, if this %(Classname)s is used for persons not a
             member of this corporate

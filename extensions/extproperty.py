@@ -315,7 +315,10 @@ class ExtProperty :
                 if isinstance (v, list) :
                     v = ','.join (str (k) for k in v)
                 f.append ((k, v))
-            self.help_filter = ' '.join ('%s=%s' % (k, v) for k, v in f)
+            # This doesn't work if v contains ';', a limitation of
+            # roundup's classhelp
+            self.help_filter = ';'.join \
+                ('%s=%s' % (k, str (v)) for k, v in f)
         self.lnkcls = None
 
         self.helpcls   = self.classname

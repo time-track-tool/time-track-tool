@@ -1,5 +1,5 @@
 # -*- coding: iso-8859-1 -*-
-# Copyright (C) 2006-21 Dr. Ralf Schlatterbeck Open Source Consulting.
+# Copyright (C) 2006-22 Dr. Ralf Schlatterbeck Open Source Consulting.
 # Reichergasse 131, A-3411 Weidling.
 # Web: http://www.runtux.com Email: office@runtux.com
 # All rights reserved
@@ -81,8 +81,7 @@ def init \
         """
         def __init__ (self, db, classname, ** properties) :
             self.update_properties \
-                ( address               = String    ()
-                , domain_part           = String    ()
+                ( domain_part           = String    ()
                 , room_prefix           = String    ()
                 )
             Loc_Ancestor.__init__ (self, db, classname, ** properties)

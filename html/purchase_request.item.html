@@ -275,6 +275,63 @@
       <td tal:content="structure python:context.date_ordered.plain ()"/>
      </tr>
      <tr>
+      <tal:block tal:condition="python:
+           (   not utils.has_asset (context)
+           and (not context.purchase_type
+               or  context.purchase_type.allow_gl_account
+               )
+           )">
+       <th tal:content="structure python:utils.fieldname
+           (classname, 'gl_account')"/>
+       <td tal:content="structure python:context.gl_account.field ()"/>
+      </tal:block>
+      <tal:block tal:condition="python:
+           not (   not utils.has_asset (context)
+               and (not context.purchase_type
+                   or  context.purchase_type.allow_gl_account
+                   )
+               )">
+       <th/>
+       <td/>
+      </tal:block>
+      <th tal:content="structure python:utils.fieldname
+          (classname, 'delivery_address')"/>
+      <td rowspan="2">
+       <span tal:content="structure python:context.delivery_address.menu
+        (valid_from = ';.,-', valid_to = '.;,-')"/>
+       <br>
+       <span tal:condition="python: context.id and context.delivery_address"
+             tal:content="python:' '.join
+             (( context.delivery_address.city.plain ()
+              , context.delivery_address.address.plain ()
+             ))" />
+      </td>
+     </tr>
+     <tr>
+      <th tal:content="structure python:utils.fieldname
+          (classname, 'charge_to')"/>
+      <td tal:content="structure python:context.charge_to.menu
+        (valid_from = ';.,-', valid_to = '.;,-')"/>
+      <!--
+      <td>
+       <tal:block tal:repeat="org python:
+            db.organisation.filter
+                ( None
+                , dict (valid_from = ';.,-', valid_to = '.;,-')
+                , sort = ('+', 'name')
+                )">
+        <input type="checkbox" name="charge_to" tal:attributes=
+            " id python:'org-' + org.id
+            ; value python: org.name
+            ; checked python: org.id in context.charge_to
+            ">
+        <label tal:attributes="for python:'org-' + org.id;"
+               tal:content="python: org.name" />
+       </tal:block>
+      </td>
+      -->
+     </tr>
+     <tr>
       <th tal:content="structure python:utils.fieldname
           (classname, 'pr_justification')"/>
       <td colspan="3" tal:condition="context/pr_justification/is_edit_ok"
@@ -394,6 +451,9 @@
          <th style="text-align:left"
              tal:content="structure python:utils.fieldname
              ('pr_offer_item', 'internal_order')"/>
+         <th style="text-align:left" colspan="2"
+             tal:content="structure python:utils.fieldname
+             ('pr_offer_item', 'gl_account')"/>
         </tr>
         <tr>
          <th/>
@@ -529,7 +589,20 @@
                         )"/>
             </span>
            </td>
-           <td/>
+           <td colspan="2"
+               tal:content="structure python: i.gl_account.field ()"
+               tal:condition="python:
+                   (   not i.is_asset
+                   and (  not context.purchase_type
+                       or context.purchase_type.allow_gl_account
+                       )
+                   )"/>
+           <td tal:condition="python:
+               not (   not i.is_asset
+                   and (  not context.purchase_type
+                       or context.purchase_type.allow_gl_account
+                       )
+                   )"/>
            <td/>
           </tr>
           <tr>
@@ -669,6 +742,9 @@
                         )"/>
             </span>
            </td>
+           <td colspan="2" tal:content="structure python:utils.new_property
+               (context, db, 'pr_offer_item', -idx, 'gl_account')
+               .field ()"/>
            <td/>
            <td/>
            <td/>

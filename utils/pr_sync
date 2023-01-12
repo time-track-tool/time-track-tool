@@ -18,9 +18,8 @@ class PR_Sync (Requester):
     """
 
     property_classes = dict \
-        (( ('org_location.organisation',      'organisation')
-         , ('org_location.location',          'location')
-         , ('sap_cc.deputy',                  'user')
+        (
+         ( ('sap_cc.deputy',                  'user')
          , ('sap_cc.responsible',             'user')
          , ('sap_cc.purchasing_agents',       'user')
          , ('sap_cc.group_lead',              'user')
@@ -164,8 +163,6 @@ class PR_Sync (Requester):
             , ('name', 'description', 'may_purchase', 'company_code')
             , ('valid_to',)
             )
-        self.sync_class ('location',     ('name', 'country'))
-        self.sync_class ('org_location', ('name', 'location', 'organisation'))
         self.sync_pending ()
         self.sync_class \
             ('time_project_status', ('name', 'description', 'active'))

@@ -1,5 +1,5 @@
 #! /usr/bin/python
-# Copyright (C) 2015-21 Dr. Ralf Schlatterbeck Open Source Consulting.
+# Copyright (C) 2015-22 Dr. Ralf Schlatterbeck Open Source Consulting.
 # Reichergasse 131, A-3411 Weidling.
 # Web: http://www.runtux.com Email: office@runtux.com
 # All rights reserved
@@ -226,6 +226,16 @@ def need_psp (context):
     return False
 # end def need_psp
 
+def has_asset (context):
+    """ Check if a PR (in the variable context) has at least one offer
+        item with is_asset set.
+    """
+    for oi in context.offer_items:
+        if oi.is_asset:
+            return True
+    return False
+# end def has_asset
+
 def init (instance):
     act = instance.registerAction
     act ('pr_sign', Sign_Purchase_Request)
@@ -242,4 +252,5 @@ def init (instance):
     reg ('risk_type',                    risk_type)
     reg ('orig_infosec_level',           orig_infosec_level)
     reg ('need_psp',                     need_psp)
+    reg ('has_asset',                    has_asset)
 # end def init

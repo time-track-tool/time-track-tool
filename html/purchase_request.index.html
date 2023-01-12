@@ -68,6 +68,18 @@
     , utils.ExtProperty (utils, pdict ['pr_currency'])
     , utils.ExtProperty (utils, pdict ['pr_justification'])
     , utils.ExtProperty (utils, pdict ['pr_risks'])
+    , utils.ExtProperty (utils, pdict ['gl_account'])
+    , utils.ExtProperty
+        ( utils, pdict ['charge_to']
+        , multiselect = 1
+        , filter = utils.valid_item (now)
+        )
+    , utils.ExtProperty
+        ( utils, pdict ['delivery_address']
+        , help_props  = ['city', 'address']
+        , multiselect = 1
+        , filter      = utils.valid_item (now)
+        )
     , utils.ExtProperty (utils, pdict ['creation'])
     , utils.ExtProperty
         ( utils, pdict ['creator']
