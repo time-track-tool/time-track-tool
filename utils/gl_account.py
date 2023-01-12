@@ -29,6 +29,13 @@ with open (sys.argv [1], 'r') as f:
             loc.name
         except IndexError:
             print ("Warning: location%s not existing" % rec ['id'])
+            db.location.create \
+                ( name       = rec ['name']
+                , country    = rec ['country']
+                , city       = rec ['city']
+                , address    = rec ['address']
+                , valid_from = Date ('2022-12-12')
+                )
             continue
         if not rec ['city']:
             if not loc.valid_to:
