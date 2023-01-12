@@ -58,6 +58,11 @@
          (classname, 'domain_part')"/>
      <td tal:content="structure python:context.domain_part.field ()"/>
     </tr>
+    <tr tal:condition="python: 'order' in bclass.properties">
+     <th tal:content="structure python:utils.fieldname
+         (classname, 'order')"/>
+     <td tal:content="structure python:context.order.field ()"/>
+    </tr>
    </tal:block>
   </tal:block>
  </tal:block>
