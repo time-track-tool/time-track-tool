@@ -21,20 +21,26 @@ for ptid in db.purchase_type.getnodeids (retired = False):
         db.purchase_type.set (ptid, **d)
 
 # Fix locations
+
+attrs = ('name', 'country', 'city', 'address', 'valid_from', 'order')
 with open (sys.argv [1], 'r') as f:
     dr = csv.DictReader (f, delimiter = ';')
-    for rec in dr:
+    for nr, rec in enumerate (dr):
+        order = (nr + 1) * 10
         try:
             loc = db.location.getnode (rec ['id'])
             loc.name
         except IndexError:
             print ("Warning: location%s not existing" % rec ['id'])
+            if not rec ['city']:
+                continue
             db.location.create \
                 ( name       = rec ['name']
                 , country    = rec ['country']
                 , city       = rec ['city']
                 , address    = rec ['address']
                 , valid_from = Date ('2022-12-12')
+                , order      = order
                 )
             continue
         if not rec ['city']:
@@ -44,8 +50,11 @@ with open (sys.argv [1], 'r') as f:
             assert rec ['address']
             assert not rec ['valid_to']
             d = {}
-            for a in 'name', 'country', 'city', 'address', 'valid_from':
-                v = rec [a]
+            for a in attrs:
+                if a == 'order':
+                    v = order
+                else:
+                    v = rec [a]
                 if a == 'valid_from':
                     v = Date (v)
                 if loc [a] != v:
