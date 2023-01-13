@@ -97,7 +97,13 @@ class Importer (object):
             pspno = line ['PRPS~POSID']
             name  = line ['PRPS~POST1']
             ccode = line ['PRPS~PBUKR']
+            stat  = line ['JEST~STATUS']
             spt = pspno.split ('-')
+            statflags = stat.split ()
+            # 'LD' Locked means this is obsolete, 'SPER' is german
+            if 'LKD' in statflags or 'SPER' in statflags:
+                self.warn ('%s: locked, not syncing' % pspno)
+                continue
             #print (pspno, ccode)
             if len (spt) < 3:
                 self.warn ("%s: Unknown PSP name format" % pspno)
