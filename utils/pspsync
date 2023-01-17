@@ -63,6 +63,16 @@ class Importer (object):
             return res [-1]
     # end def get_latest_export_url
 
+    def debug (self, s):
+        if self.args.debug:
+            print ("DEBUG: %s" % s, file = sys.stderr)
+    # end def debug
+
+    def verbose (self, s):
+        if self.args.verbose:
+            print ("VERBOSE: %s" % s, file = sys.stderr)
+    # end def verbose
+
     def warn (self, s):
         print ("WARN: %s" % s, file = sys.stderr)
     # end def warn
@@ -104,13 +114,14 @@ class Importer (object):
             if 'LKD' in statflags or 'SPER' in statflags:
                 self.warn ('%s: locked, not syncing' % pspno)
                 continue
-            #print (pspno, ccode)
+            self.debug ("pspno: %s ccode: %s" % (pspno, ccode))
             if len (spt) < 3:
                 self.warn ("%s: Unknown PSP name format" % pspno)
                 continue
             tcno  = spt [-2].lstrip ('0')
             if not tcno:
                 assert pspno not in self.psp_by_number
+                self.debug ("No tcno: %s" % pspno)
                 continue
             if spt [-1] != ccode:
                 self.warn \
@@ -124,13 +135,14 @@ class Importer (object):
             for tcid in tcs:
                 tc = self.db.time_project.getnode (tcid)
                 if tc.description.endswith ('-' + tcno):
+                    self.debug ('Found TC for pspno %s' % pspno)
                     break
             else:
-                self.warn ("TC %s not found" % tcno)
+                self.warn ("TC %s not found for pspno %s" % (tcno, pspno))
                 continue
             # TC active?
             if not self.tcs_active [tc.status]:
-                self.warn ("TC %s not active" % tcno)
+                self.warn ("TC %s not active for pspno %s" % (tcno, pspno))
                 continue
             if pspno in self.psp_by_number:
                 d = {}
@@ -146,17 +158,18 @@ class Importer (object):
                 if d:
                     if self.args.update:
                         self.db.psp_element.set (psp.id, **d)
-                    if self.args.verbose:
-                        print ( "Update psp_element%s (%s): %s"
-                              % (psp.id, psp.number, d)
-                              )
+                    self.verbose \
+                        ( "Update psp_element%s (%s): %s"
+                        % (psp.id, psp.number, d)
+                        )
+                self.debug ('Deleting pspno from by_number: %s' % pspno)
                 del self.psp_by_number [pspno]
             else:
+                self.debug ('Not in by_number pspno: %s' % pspno)
                 if ccode not in self.org_by_company_code:
                     self.warn ("No org found for %s" % pspno)
                     continue
-                if self.args.verbose:
-                    print ("Creating %s: %s" % (pspno, name))
+                self.verbose ("Creating %s: %s" % (pspno, name))
                 if self.args.update:
                     self.db.psp_element.create \
                         ( number       = u2s (pspno)
@@ -170,8 +183,7 @@ class Importer (object):
         # Mark psp elements that were not found as invalid
         for pspno in self.psp_by_number:
             psp = self.psp_by_number [pspno]
-            if self.args.verbose:
-                print ("Marking invalid %s: %s" % (pspno, psp.name))
+            self.verbose ("Marking invalid %s: %s" % (pspno, psp.name))
             if self.args.update:
                 self.db.psp_element.set (psp.id, valid = False)
         if self.args.update:
@@ -253,6 +265,11 @@ def main ():
         , dest    = 'delimiter'
         , help    = 'CSV delimiter character default: "%(default)s"'
         , default = ';'
+        )
+    cmd.add_argument \
+        ( '--debug'
+        , help    = 'Turn on debug output'
+        , action  = 'store_true'
         )
     cmd.add_argument \
         ( '-E', '--encoding'
