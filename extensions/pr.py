@@ -1,4 +1,4 @@
-#! /usr/bin/python
+#! /usr/bin/python3
 # Copyright (C) 2015-22 Dr. Ralf Schlatterbeck Open Source Consulting.
 # Reichergasse 131, A-3411 Weidling.
 # Web: http://www.runtux.com Email: office@runtux.com
@@ -236,6 +236,15 @@ def has_asset (context):
     return False
 # end def has_asset
 
+def oi_key (offer_item):
+    """ Sorting of offer items in web interface """
+    if not isinstance (offer_item, _HTMLItem):
+        return 0.0
+    if not offer_item.index:
+        return 0.0
+    return offer_item.index
+# end def oi_key
+
 def init (instance):
     act = instance.registerAction
     act ('pr_sign', Sign_Purchase_Request)
@@ -253,4 +262,5 @@ def init (instance):
     reg ('orig_infosec_level',           orig_infosec_level)
     reg ('need_psp',                     need_psp)
     reg ('has_asset',                    has_asset)
+    reg ('oi_key',                       oi_key)
 # end def init

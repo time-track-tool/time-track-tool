@@ -471,7 +471,7 @@
              (context, 'payment_type')"/>
         </tr>
         <tal:block tal:repeat="i python:sorted
-            (context.offer_items, key = lambda x : (x.index or 0.0))">
+            (context.offer_items, key = utils.oi_key)">
          <tbody>
           <tr>
            <td rowspan="4"

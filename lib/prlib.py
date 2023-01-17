@@ -355,7 +355,7 @@ class Approval_Logic :
         oisum = pr_offer_item_sum (db, pr.id)
         if cur :
             min_head = self.team_group_head_approval (cur, oisum, pcc)
-            if oisum > min_head :
+            if min_head is not None and oisum > min_head :
                 assert not self.do_create or pr.department
                 if pr.department :
                     dep = db.department.getnode (pr.department)
