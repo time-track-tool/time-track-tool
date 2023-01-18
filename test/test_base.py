@@ -27,11 +27,14 @@ import logging
 import csv
 import re
 from io import BytesIO
+# For monkey-patching:
+import inspect
+import ast
 
 from . import user1_time, user2_time, user3_time, user4_time, user5_time
 from . import user6_time, user7_time, user8_time, user10_time, user11_time
 from . import user12_time, user13_time, user14_time, user15_19_vac, user16_leave
-from . import user17_time, user18_time, user20_time
+from . import user17_time, user18_time, user20_time, user21_time
 
 from operator     import mul
 from email.parser import Parser
@@ -4055,6 +4058,44 @@ class Test_Case_Timetracker (_Test_Case_Summary, unittest.TestCase) :
 
         self.db.close ()
     # end def test_user20
+
+    def setup_user21 (self) :
+        self.username21 = 'testuser21'
+        self.user21 = self.db.user.create \
+            ( username     = self.username21
+            , firstname    = 'Nummer21'
+            , lastname     = 'User21'
+            )
+        self.db.time_wp.set (self.vacation_wp, bookers = [self.user21])
+        self.db.commit ()
+    # end def setup_user21
+
+    def test_user21 (self) :
+        self.log.debug ('test_user21')
+        self.setup_db ()
+        self.setup_user21 ()
+        self.db.close ()
+        self.db = self.tracker.open (self.username21)
+        user21_time.import_data_21 (self.db, self.user21, self.olo)
+        self.db.commit ()
+        self.db.close ()
+        self.db = self.tracker.open (self.username0)
+        # monkey-patch avg_hours_per_week_this_year
+        n   = 'avg_hours_per_week_this_year'
+        fun = getattr (vacation, n)
+        txt = inspect.getsource (fun)
+        now = date.Date ('2023-01-18.16:00')
+        d = dict \
+            ( Date         = lambda x: now
+            , common       = common
+            , user_dynamic = user_dynamic
+            )
+        mod = ast.parse (txt)
+        exec (compile (mod, '<string>', 'exec'), d)
+        # This calls the newly-compiled function
+        v = d [n] (self.db, self.user21, now)
+        assert "%.2f" % v == "40.64"
+    # end def test_user21
 
 # end class Test_Case_Timetracker
 

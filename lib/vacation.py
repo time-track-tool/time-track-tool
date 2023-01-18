@@ -885,7 +885,7 @@ def avg_hours_per_week_this_year (db, user, date_in_year) :
             dr  = db.daily_record.getnode (drid)
             dur = user_dynamic.update_tr_duration (db, dr)
             hours += dur
-    days = dsecs / ds
+    days = dsecs // ds
     assert days <= 366
     if not days :
         return 0

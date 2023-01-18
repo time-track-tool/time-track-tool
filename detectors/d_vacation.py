@@ -65,7 +65,7 @@ def check_wp (db, wp_id, user, first_day, last_day, comment) :
     if not tp.approval_required :
         raise Reject (_ ("No approval required for work package"))
     if not wp.is_public and user not in wp.bookers :
-        raise Reject (_ ("User may not book on work package"))
+        raise Reject (_ ("User may not book on work package %s") % wp_id)
     if first_day < wp.time_start or wp.time_end and last_day > wp.time_end :
         raise Reject (_ ("Work package not valid during vacation time"))
     if tp.is_special_leave and not comment :

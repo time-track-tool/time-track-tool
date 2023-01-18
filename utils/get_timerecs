@@ -1,5 +1,4 @@
-#!/usr/bin/python
-# -*- coding: iso-8859-1 -*-
+#!/usr/bin/python3
 from __future__ import print_function
 import sys
 import os
@@ -7,15 +6,15 @@ import requests
 from argparse import ArgumentParser
 from getpass  import getpass
 from netrc    import netrc
-try :
+try:
     from urllib.parse import urlparse, urlencode
 except ImportError:
     from urlparse import urlparse
     from urllib   import urlencode
 
-class Getter () :
+class Getter ():
     
-    def __init__ (self, args) :
+    def __init__ (self, args):
         self._pw      = None
         self.session  = requests.session ()
         self.args     = args
@@ -23,9 +22,9 @@ class Getter () :
         self.username = args.username
         self.password = args.password
         self.session.auth = (self.username, self.get_pw ())
-        if self.url.endswith ('/') :
+        if self.url.endswith ('/'):
             orig = self.url.rstrip ('/')
-        else :
+        else:
             orig = self.url
             self.url += '/'
         self.headers = dict \
@@ -36,38 +35,38 @@ class Getter () :
         self.url += 'rest/data/'
     # end def __init__
 
-    def get (self, s, as_text=False) :
+    def get (self, s, as_text=False):
         r = self.session.get (self.url + s, headers = self.headers)
-        if not (200 <= r.status_code <= 299) :
+        if not (200 <= r.status_code <= 299):
             raise RuntimeError \
                 ( 'Invalid get result: %s: %s\n    %s'
                 % (r.status_code, r.reason, r.text)
                 )
-        if as_text :
+        if as_text:
             return r.text
         return r.json ()
     # end def get
 
-    def get_pw (self) :
+    def get_pw (self):
         """ Password given as option takes precedence.
             Next we try password via .netrc. If that doesn't work we ask.
         """
-        if self._pw :
+        if self._pw:
             return self._pw
-        if self.password :
+        if self.password:
             self._pw = self.password
             return self.password
         a = n = None
-        try :
+        try:
             n = netrc ()
-        except IOError :
+        except IOError:
             pass
-        if n :
+        if n:
             t = urlparse (self.url)
             a = n.authenticators (t.netloc)
-        if a :
+        if a:
             un, d, pw = a
-            if un != self.username :
+            if un != self.username:
                 raise ValueError ("Netrc username doesn't match")
             self._pw = pw
             return pw
@@ -76,8 +75,8 @@ class Getter () :
         return pw
     # end def get_pw
 
-    def print_timerecs (self) :
-        j = self.get ('user?' + urlencode ({'username:' : self.args.user}))
+    def print_timerecs (self):
+        j = self.get ('user?' + urlencode ({'username:': self.args.user}))
         j = j ['data']['collection']
         assert len (j) == 1
         userid = j [0]['id']
@@ -86,19 +85,19 @@ class Getter () :
 
         print ("from roundup import date")
         print ("")
-        if self.args.dynuser :
-            print ("def import_data_%s (db, user, dep, olo) :" % userid)
-        else :
-            print ("def import_data_%s (db, user) :" % userid)
+        if self.args.dynuser:
+            print ("def import_data_%s (db, user, olo):" % userid)
+        else:
+            print ("def import_data_%s (db, user):" % userid)
         ind    = '   '
         filter = dict (user = self.args.user, date = self.args.daterange)
         # Loop over dynamic user records sorted by date and output those
         # that intersect with the range.
-        if self.args.dynuser :
+        if self.args.dynuser:
             dates = self.args.daterange.split (';')
-            if len (dates) == 2 :
+            if len (dates) == 2:
                 dstart, dend = dates
-            else :
+            else:
                 assert len (dates) == 1
                 dstart = dates [0]
                 dend   = None
@@ -107,15 +106,15 @@ class Getter () :
             d ['@verbose'] = 5
             dyn = self.get ('user_dynamic?' + urlencode (d))
             dyn = dyn ['data']['collection']
-            for d in dyn :
+            for d in dyn:
                 ud = self.get ('user_dynamic/%s' % d ['id'])
                 ud = ud ['data']['attributes']
-                if dend and ud ['valid_from'] > dend :
+                if dend and ud ['valid_from'] > dend:
                     break
-                if ud ['valid_to'] and ud ['valid_to'] <= dstart :
+                if ud ['valid_to'] and ud ['valid_to'] <= dstart:
                     continue
                 otp = ud ['overtime_period']
-                if otp :
+                if otp:
                     otp = self.get ('overtime_period/%s' % otp ['id'])
                     otp = otp ['data']['attributes']
                     print \
@@ -130,21 +129,22 @@ class Getter () :
                     print (ind, "otp = db.overtime_period.filter (None, sd)")
                     print (ind, "assert len (otp) == 1")
                     print (ind, "otp = otp [0]")
-                else :
+                else:
                     print (ind, "otp = None")
                 print (ind, "db.user_dynamic.create \\")
-                for n, pname in enumerate (ud) :
-                    if isinstance (ud [pname], (type ([]), type ({}))) :
+                n = 0
+                for pname in ud:
+                    if isinstance (ud [pname], (type ([]), type ({}))):
                         continue
                     delim = ['(', ','][bool (n)]
                     value = ud [pname]
-                    if value is None :
+                    if value is None:
                         continue
-                    if pname.startswith ('valid_') :
+                    if pname.startswith ('valid_'):
                         value = 'date.Date ("%s")' % value
                     print \
                         (" %s    %s %-18s = %s" % (ind, delim, pname, value))
-                print (ind, "    , department         = dep")
+                    n += 1
                 print (ind, "    , org_location       = olo")
                 print (ind, "    , overtime_period    = otp")
                 print (ind, "    , user               = user")
@@ -153,7 +153,7 @@ class Getter () :
                     % (ind, ud ['vac_aliq']['id'])
                     )
                 print (ind, "    )")
-        if self.args.vcorr :
+        if self.args.vcorr:
             d   = dict (absolute = True)
             d ['@page_size'] = 1
             vcabs = self.get ('vacation_correction?' + urlencode (d))
@@ -163,7 +163,7 @@ class Getter () :
             d ['absolute'] = False
             vcs = self.get ('vacation_correction?' + urlencode (filter))
             vcs = vcs ['data']['collection']
-            for v in vcabs + vcs :
+            for v in vcabs + vcs:
                 vc = self.get ('vacation_correction/%s' % v ['id'])
                 vc = vc ['data']['attributes']
                 print (ind, "vcorr = db.vacation_correction.create \\")
@@ -172,13 +172,13 @@ class Getter () :
                 print (ind, "    , absolute = %s" % vc ['absolute'])
                 print (ind, "    , days     = %s" % vc ['days'])
                 print (ind, "    )")
-        if self.args.leaves :
+        if self.args.leaves:
             leave_filter = dict \
                 (user = self.args.user, first_day = self.args.daterange)
             leave_filter ['@sort'] = 'first_day'
             lvs = self.get ('leave_submission?' + urlencode (leave_filter))
             lvs = lvs ['data']['collection']
-            for lv in lvs :
+            for lv in lvs:
                 l = self.get ('leave_submission/%s' % lv ['id'])
                 l = l ['data']['attributes']
                 print (ind, "ls = db.leave_submission.create \\")
@@ -194,11 +194,11 @@ class Getter () :
                 print (ind, "    , status    = '%s'" % l ['status']['id'])
                 print (ind, "    , time_wp   = '44'")
                 print (ind, "    )")
-        if self.args.do_timerecs :
+        if self.args.do_timerecs:
             filter ['@sort'] = 'date'
             drs = self.get ('daily_record?' + urlencode (filter))
             drs = drs ['data']['collection']
-            for drr in drs :
+            for drr in drs:
                 dr = self.get ('daily_record/%s' % drr ['id'])
                 dr = dr ['data']['attributes']
                 print (ind, "dr = db.daily_record.create \\")
@@ -214,12 +214,12 @@ class Getter () :
                     % (ind, dr ['required_overtime'])
                     )
                 print (ind, "    )")
-                for tri in dr ['time_record'] :
+                for tri in dr ['time_record']:
                     tr = self.get ('time_record/%s' % tri ['id'])
                     tr = tr ['data']['attributes']
                     print (ind, "db.time_record.create \\")
                     print (ind, "    ( daily_record  = dr")
-                    if tr ['start'] :
+                    if tr ['start']:
                         print \
                             ( " %s    , start         = '%s'"
                             % (ind, tr ['start'])
@@ -228,43 +228,43 @@ class Getter () :
                             ( " %s    , end           = '%s'"
                             % (ind, tr ['end'])
                             )
-                    else :
+                    else:
                         print \
                             ( " %s    , duration      = %s"
                             % (ind, tr ['duration'])
                             )
-                    if tr ['time_activity'] :
+                    if tr ['time_activity']:
                         print \
                             (" %s    , time_activity = '%s'"
                             % (ind, tr ['time_activity'])
                             )
-                    if tr ['work_location'] :
+                    if tr ['work_location']:
                         print \
                             ( " %s    , work_location = '%s'"
                             % (ind, tr ['work_location']['id'])
                             )
-                    if tr ['wp'] and tr ['wp']['id'] in wpdict :
+                    if tr ['wp'] and tr ['wp']['id'] in wpdict:
                         new_wpid = wpdict [tr ['wp']['id']]
-                    elif tr ['wp'] is None :
+                    elif tr ['wp'] is None:
                         new_wpid = None
-                    else :
+                    else:
                         wp = self.get ('time_wp/%s' % tr ['wp']['id'])
                         wp = wp ['data']['attributes']
                         tp = self.get ('time_project/%s' % wp ['project']['id'])
                         tp = tp ['data']['attributes']
-                        if wp ['travel'] :
+                        if wp ['travel']:
                             new_wpid = 3
-                        elif tp ['is_public_holiday'] :
+                        elif tp ['is_public_holiday']:
                             new_wpid = 1
-                        elif tp ['is_vacation'] :
+                        elif tp ['is_vacation']:
                             new_wpid = 44
-                        elif tp ['no_overtime'] :
+                        elif tp ['no_overtime']:
                             new_wpid = 2
-                        else :
+                        else:
                             wpmax += 1
                             new_wpid = wpmax
                         wpdict [tr ['wp']['id']] = new_wpid
-                    if new_wpid :
+                    if new_wpid:
                         print (ind, "    , wp            = '%s'" % new_wpid)
                     print (ind, "    )")
         print (ind, "db.commit ()")
@@ -274,7 +274,7 @@ class Getter () :
 
 # end class Getter
 
-def main () :
+def main ():
     dir = os.getcwd ()
     cmd = ArgumentParser ()
     cmd.add_argument \
@@ -328,5 +328,5 @@ def main () :
     g.print_timerecs ()
 # end def main
 
-if __name__ == '__main__' :
+if __name__ == '__main__':
     main ()
