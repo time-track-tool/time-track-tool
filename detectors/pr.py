@@ -1,4 +1,4 @@
-# Copyright (C) 2015-22 Ralf Schlatterbeck. All rights reserved
+# Copyright (C) 2015-23 Ralf Schlatterbeck. All rights reserved
 # Reichergasse 131, A-3411 Weidling
 # ****************************************************************************
 #
@@ -405,7 +405,7 @@ def check_psp_cc_consistency (db, cl, nodeid, new_values, org = None):
             raise Reject \
                 (_ ("Non-active %(psp_element)s: %(pspn)s or "
                     "%(time_project)s: %(name)s"
-                   ) % locals ()
+                   ) % d
                 )
     else:
         node = db.sap_cc.getnode (cc)
