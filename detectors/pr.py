@@ -399,7 +399,7 @@ def check_psp_cc_consistency (db, cl, nodeid, new_values, org = None):
             d = dict \
             ( psp_element  = _ ('psp_element')
             , time_project = _ ('time_project')
-            , name = tc.name + ' ' + tc.description
+            , name = tp.name + ' ' + tp.description
             , pspn = node.name
             )
             raise Reject \
