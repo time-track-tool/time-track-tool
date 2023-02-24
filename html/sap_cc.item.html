@@ -56,6 +56,11 @@
     </tr>
     <tr>
      <th tal:content="structure python:utils.fieldname
+         (classname, 'sap_cc_category')"/>
+     <td tal:content="structure python:context.sap_cc_category.menu ()"/>
+    </tr>
+    <tr>
+     <th tal:content="structure python:utils.fieldname
          (classname, 'purchasing_agents')"/>
      <td>
       <span tal:content="structure python:context.purchasing_agents.field ()"/>

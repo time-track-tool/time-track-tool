@@ -21,6 +21,8 @@
         (utils, pdict ['status'],            multiselect = 1)
     , utils.ExtProperty
         (utils, pdict ['cost_center_group'], multiselect = 1)
+    , utils.ExtProperty
+        (utils, pdict ['cc_bu_category'],    multiselect = 1)
     );
    "
   tal:condition="context/is_view_ok">

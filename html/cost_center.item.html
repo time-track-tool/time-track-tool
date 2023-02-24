@@ -49,6 +49,11 @@
          (classname, 'cost_center_group')"/>
      <td tal:content="structure python:context.cost_center_group.menu ()"/>
     </tr>
+    <tr>
+     <th tal:content="structure python:utils.fieldname
+         (classname, 'cc_bu_category')"/>
+     <td tal:content="structure python:context.cc_bu_category.menu ()"/>
+    </tr>
    </tal:block>
   </tal:block>
  </tal:block>

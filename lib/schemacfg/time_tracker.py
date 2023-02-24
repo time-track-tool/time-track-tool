@@ -1,4 +1,4 @@
-# Copyright (C) 2006-20 Dr. Ralf Schlatterbeck Open Source Consulting.
+# Copyright (C) 2006-23 Dr. Ralf Schlatterbeck Open Source Consulting.
 # Reichergasse 131, A-3411 Weidling.
 # Web: http://www.runtux.com Email: office@runtux.com
 # All rights reserved
@@ -49,10 +49,18 @@ def init \
     , Interval
     , Department_Class
     , Time_Project_Status_Class
-    , SAP_CC_Class
     , ** kw
     ) :
     export = {}
+
+    cc_bu_category = Class \
+        ( db
+        , ''"cc_bu_category"
+        , name                  = String    ()
+        , description           = String    ()
+        )
+    cc_bu_category.setkey ("name")
+
     cost_center = Class \
         ( db
         , ''"cost_center"
@@ -60,6 +68,7 @@ def init \
         , description           = String    ()
         , status                = Link      ("cost_center_status")
         , cost_center_group     = Link      ("cost_center_group")
+        , cc_bu_category        = Link      ("cc_bu_category")
         )
     cost_center.setkey ("name")
 
@@ -277,6 +286,24 @@ def init \
 
     Time_Project_Status_Class (db, ''"time_project_status")
 
+    sap_cc_category = Class \
+        ( db
+        , ''"sap_cc_category"
+        , name                  = String    ()
+        , description           = String    ()
+        )
+    sap_cc_category.setkey ("name")
+
+    class SAP_CC_Class (kw ['SAP_CC_Class']) :
+        """Add attributes to existing SAP_CC_Class class."""
+
+        def __init__ (self, db, classname, ** properties) :
+            self.update_properties \
+                ( sap_cc_category = Link ("sap_cc_category")
+                )
+            self.__super.__init__ (db, classname, ** properties)
+        # end def __init__
+    # end class SAP_CC_Class
     SAP_CC_Class (db, ''"sap_cc")
 
     time_record = Class \

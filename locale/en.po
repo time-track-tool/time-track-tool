@@ -7544,3 +7544,9 @@ msgstr "Delivery address"
 
 msgid "allow_gl_account"
 msgstr "Allow G/L account"
+
+msgid "sap_cc_category"
+msgstr "SAP Cost Center Category"
+
+msgid "cc_bu_category"
+msgstr "Productivity BU Category"
