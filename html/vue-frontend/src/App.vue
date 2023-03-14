@@ -50,6 +50,12 @@
           :class="$route.params.user_id == '2300' ? 'p-button-success' : ''"
           @click="switch_user(2300)"
         />
+        <Button
+          v-if="dev"
+          label="4712"
+          :class="$route.params.user_id == '4712' ? 'p-button-success' : ''"
+          @click="switch_user(4712)"
+        />
       </div>
     </div>
     <!-- <AppConfig />
@@ -78,6 +84,7 @@ export default {
         9: { name: "benesch@ds1.internal", pw: "a" },
         2300: { name: "caban@ds1.internal", pw: "a" },
         1528: { name: "georgiev@ds1.internal", pw: "a" },
+        4712: { name: "mcneilly@ds1.internal", pw: "daspasswort" },
       },
       dev: process.env.NODE_ENV === "development",
       my_dark_mode: null,

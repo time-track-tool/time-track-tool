@@ -468,8 +468,15 @@ export default {
       "time_activities",
       "time_records",
       "attendance_records",
+      "vacation_correction",
     ]),
     ...mapState(["debug"]),
+    date_string: function () {
+      return format(this.date, "yyyy-MM-dd");
+    },
+    has_vacation_correction: function () {
+      return this.vacation_correction[this.date_string];
+    },
     is_empty: function () {
       return (
         this.my_tr.comment === "" &&
@@ -533,9 +540,15 @@ export default {
     },
     searchWP(event) {
       console.log(event);
+      let vacation_correction = this.vacation_correction[this.date_string];
       this.filtered_wps = this.wps.filter(
         (value) =>
           value.is_public_holiday === 0 &&
+          (vacation_correction === false ||
+            (vacation_correction === true &&
+              value.is_vacation === false &&
+              value.is_special_leave === false &&
+              value.max_hours !== 0)) &&
           value.name.toLowerCase().indexOf(event.query) >= 0
       );
     },

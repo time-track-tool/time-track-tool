@@ -45,7 +45,7 @@
           />
         </div>
       </div>
-      <div class="p-field">
+      <!-- <div class="p-field">
         <div class="p-inputgroup">
           <span class="p-inputgroup-addon"> Range: </span>
           <Calendar
@@ -59,7 +59,7 @@
             showIcon
           />
         </div>
-      </div>
+      </div> -->
     </div>
 
     <ProgressBar
@@ -534,6 +534,8 @@ export default {
   watch: {
     $route: function () {
       console.log("route changed ... fetch data for", this.$route.params);
+      this.att_sums = {};
+      this.att_sum_for_days = 0;
       this.update_range();
     },
   },
