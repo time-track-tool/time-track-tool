@@ -715,6 +715,7 @@ export default {
             on: this.att_sum,
             off: this.att_off_sum,
             travel: this.att_travel_sum,
+            refetch_daily_record: false,
           });
         } else {
           this.$emit("valid", false);
@@ -863,6 +864,7 @@ export default {
           on: this.att_sum,
           off: this.att_off_sum,
           travel: this.att_travel_sum,
+          refetch_daily_record: true,
         });
         this.$emit("valid", true);
       } else {
