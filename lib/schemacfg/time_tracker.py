@@ -698,6 +698,10 @@ def security (db, ** kw) :
           , ["HR"]
           , ["HR"]
           )
+        , ( "cc_bu_category"
+          , ["User"]
+          , ["Controlling"]
+          )
         , ( "contract_type"
           , ["HR", "HR-vacation", "HR-leave-approval", "controlling"]
           , ["HR-vacation"]
@@ -767,6 +771,10 @@ def security (db, ** kw) :
           , ["HR", "Controlling"]
           )
         , ( "sap_cc"
+          , ["User"]
+          , ["HR", "Controlling"]
+          )
+        , ( "sap_cc_category"
           , ["User"]
           , ["HR", "Controlling"]
           )
