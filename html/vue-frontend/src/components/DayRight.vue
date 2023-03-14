@@ -176,6 +176,7 @@ export default {
           off: this.tr_off_sum,
           off_no_durations_allowed: this.tr_off_no_durations_allowed_sum,
           travel: this.tr_travel_sum,
+          refetch_daily_record: false,
         });
       }
     },
@@ -225,14 +226,12 @@ export default {
       this.loaded_tr_ids = [];
       this.animate = false;
       this.error_messages = {};
-      let date_string = format(this.date, "yyyy-MM-dd");
       let wps = [];
       let off_wps = [];
       this.fetch_my_time_wps({
         params: {
           user_id: this.user_id,
           date_str: format(this.date, "yyyy-MM-dd"),
-          exclude_is_vacation: this.vacation_correction[date_string],
         },
       }).then((resp) => {
         if (resp.status === 200) {
@@ -244,7 +243,9 @@ export default {
               wp_name: element.name,
               name: element["project.name"] + " - " + element.name,
               is_public_holiday: element["project.is_public_holiday"],
+              is_vacation: element["project.is_vacation"] === 1,
               is_off: element["project.work_location.is_off"] === 1,
+              is_special_leave: element["project.is_special_leave"] === 1,
               no_overtime_day: element["project.no_overtime_day"] === 1,
               max_hours: element["project.max_hours"],
               durations_allowed: element["durations_allowed"],
@@ -260,7 +261,6 @@ export default {
           this.fetch_public_time_wps({
             params: {
               date_str: format(this.date, "yyyy-MM-dd"),
-              exclude_is_vacation: this.vacation_correction[date_string],
             },
           }).then((resp) => {
             resp.data.data.collection.forEach((element) => {
@@ -271,7 +271,9 @@ export default {
                 wp_name: element.name,
                 name: element["project.name"] + " - " + element.name,
                 is_public_holiday: element["project.is_public_holiday"],
+                is_vacation: element["project.is_vacation"] === 1,
                 is_off: element["project.work_location.is_off"] === 1,
+                is_special_leave: element["project.is_special_leave"] === 1,
                 no_overtime_day: element["project.no_overtime_day"] === 1,
                 max_hours: element["project.max_hours"],
                 durations_allowed: element["durations_allowed"],
@@ -346,6 +348,7 @@ export default {
         off: this.tr_off_sum,
         off_no_durations_allowed: this.tr_off_no_durations_allowed_sum,
         travel: this.tr_travel_sum,
+        refetch_daily_record: true,
       });
     },
     last_is_empty: function () {
@@ -388,6 +391,7 @@ export default {
         off: this.tr_off_sum,
         off_no_durations_allowed: this.tr_off_no_durations_allowed_sum,
         travel: this.tr_travel_sum,
+        refetch_daily_record: true,
       });
     },
     update_sum: function () {

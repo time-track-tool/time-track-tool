@@ -307,12 +307,8 @@ export default new Vapi({
   .get({
     action: "fetch_my_time_wps",
     property: "fetch_my_time_wps",
-    path: ({ user_id, date_str, exclude_is_vacation }) => {
-      if (exclude_is_vacation) {
-        return `rest/data/time_wp?@verbose=0&@sort=project.name,name&bookers=${user_id}&time_start=;${date_str}&time_end=-,${date_str};&project.status.active=1&project.is_vacation=0&@fields=name,project.name,project.id,project.is_public_holiday,time_start,time_end,project.work_location.is_off,project.no_overtime_day,project.max_hours,durations_allowed`;
-      } else {
-        return `rest/data/time_wp?@verbose=0&@sort=project.name,name&bookers=${user_id}&time_start=;${date_str}&time_end=-,${date_str};&project.status.active=1&@fields=name,project.name,project.is_public_holiday,project.id,time_start,time_end,project.work_location.is_off,project.no_overtime_day,project.max_hours,durations_allowed`;
-      }
+    path: ({ user_id, date_str }) => {
+      return `rest/data/time_wp?@verbose=0&@sort=project.name,name&bookers=${user_id}&time_start=;${date_str}&time_end=-,${date_str};&project.status.active=1&@fields=name,project.name,project.is_public_holiday,project.id,time_start,time_end,project.work_location.is_off,project.no_overtime_day,project.max_hours,durations_allowed,project.is_vacation,project.is_special_leave`;
     },
     // eslint-disable-next-line no-unused-vars
     onError: (state, error, axios, { params, data }) => {
@@ -323,12 +319,8 @@ export default new Vapi({
   .get({
     action: "fetch_public_time_wps",
     property: "fetch_public_time_wps",
-    path: ({ date_str, exclude_is_vacation }) => {
-      if (exclude_is_vacation) {
-        return `rest/data/time_wp?@verbose=0&@sort=project.name,name&bookers=-1&is_public=1&time_start=;${date_str}&time_end=-,${date_str};&project.status.active=1&project.is_vacation=0&@fields=name,project.name,project.id,project.is_public_holiday,time_start,time_end,project.work_location.is_off,project.no_overtime_day,project.max_hours,durations_allowed`;
-      } else {
-        return `rest/data/time_wp?@verbose=0&@sort=project.name,name&bookers=-1&is_public=1&time_start=;${date_str}&time_end=-,${date_str};&project.status.active=1&@fields=name,project.name,project.is_public_holiday,project.id,time_start,time_end,project.work_location.is_off,project.no_overtime_day,project.max_hours,durations_allowed`;
-      }
+    path: ({ date_str }) => {
+      return `rest/data/time_wp?@verbose=0&@sort=project.name,name&bookers=-1&is_public=1&time_start=;${date_str}&time_end=-,${date_str};&project.status.active=1&@fields=name,project.name,project.is_public_holiday,project.id,time_start,time_end,project.work_location.is_off,project.no_overtime_day,project.max_hours,durations_allowed,project.is_vacation,project.is_special_leave`;
     },
     // eslint-disable-next-line no-unused-vars
     onError: (state, error, axios, { params, data }) => {

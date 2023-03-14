@@ -417,8 +417,15 @@ export default {
         }
       }
       // to refresh the etag header
-      this.fetch_daily_record({ params: { id: this.daily_record_id } });
-      this.$emit("att_sum_changed", { day: this.day, sum: this.att_sum });
+      if (att_sum.refetch_daily_record) {
+        this.fetch_daily_record({ params: { id: this.daily_record_id } }).then(
+          () => {
+            this.$emit("att_sum_changed", { day: this.day, sum: this.att_sum });
+          }
+        );
+      } else {
+        this.$emit("att_sum_changed", { day: this.day, sum: this.att_sum });
+      }
     },
     tr_sum_changed: function (tr_sum) {
       this.tr_sum = tr_sum;
@@ -429,7 +436,9 @@ export default {
           }
         }
       }
-      this.fetch_daily_record({ params: { id: this.daily_record_id } });
+      if (tr_sum.refetch_daily_record) {
+        this.fetch_daily_record({ params: { id: this.daily_record_id } });
+      }
     },
     valid_from_atts: function (validity) {
       this.atts_valid = validity;
@@ -552,14 +561,13 @@ export default {
       return user_dynamic["hours_" + format(this.day, "E").toLowerCase()];
     },
     sums_equal: function () {
-      return (
-        (this.att_sum.on > 0 &&
-          this.att_sum.on === this.tr_sum.on &&
-          this.off_time_correct()) ||
-        (this.att_sum.on === 0 &&
-          this.tr_sum.off > 0 &&
-          this.off_time_correct())
-      );
+      if (this.att_sum.on > 0 || this.tr_sum.on > 0) {
+        return this.att_sum.on === this.tr_sum.on && this.off_time_correct();
+      } else if (this.att_sum.on === 0 && this.tr_sum.off > 0) {
+        return this.off_time_correct();
+      } else {
+        return false;
+      }
     },
     sums_empty: function () {
       return (

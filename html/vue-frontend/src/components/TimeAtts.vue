@@ -251,7 +251,7 @@ export default {
         start_time: "",
         end_time: "",
         duration: "",
-        work_location: "2",
+        work_location: "1",
         generated: false,
         created: false,
       };
