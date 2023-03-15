@@ -16,7 +16,10 @@
   </tal:block> 
 
  <tal:block metal:fill-slot="content">
-  <tal:block tal:define="use_labelprop python:False">
+  <tal:block tal:define=
+       " use_labelprop       python:False
+       ; required_attributes python:'cost_center_group,cc_bu_category'
+       ">
   <tal:block metal:use-macro="templates/page/macros/formatted_class">
    <tal:block metal:fill-slot="formatted_class_content">
     <tr tal:condition="python:
