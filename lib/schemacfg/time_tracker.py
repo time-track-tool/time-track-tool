@@ -1308,6 +1308,14 @@ def security (db, ** kw):
             (db, userid, df.user, df.date)
     # end def dr_freeze_visible_for_hr_olo
 
+    def dr_freeze_visible_for_user (db, userid, itemid):
+        """User is allowed to view freeze information if he/she
+           matches the user of the freeze record.
+        """
+        df = db.daily_record_freeze.getnode (itemid)
+        return df.user == userid
+    # end def dr_freeze_visible_for_user
+
     def time_report_visible (db, userid, itemid):
         """ User may see time report if reponsible or deputy of time
             project or on nosy list of time project.
@@ -1689,6 +1697,13 @@ def security (db, ** kw):
         , description = fixdoc (dr_freeze_visible_for_hr_olo.__doc__)
         )
     db.security.addPermissionToRole ('HR-Org-Location', p)
+    p = db.security.addPermission \
+        ( name        = 'View'
+        , klass       = 'daily_record_freeze'
+        , check       = dr_freeze_visible_for_user
+        , description = fixdoc (dr_freeze_visible_for_user.__doc__)
+        )
+    db.security.addPermissionToRole ('User', p)
     p = db.security.addPermission \
         ( name        = 'Search'
         , klass       = 'daily_record_freeze'
