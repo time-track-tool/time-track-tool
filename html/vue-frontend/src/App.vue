@@ -18,6 +18,7 @@
           :options="dark_mode_options"
           dataKey="value"
           optionValue="value"
+          :disabled="disable_darkmode_switch"
         >
           <template #option="slotProps">
             <i :class="slotProps.option.icon"></i>
@@ -38,6 +39,7 @@ export default {
     return {
       my_dark_mode: null,
       theme_set: false,
+      disable_darkmode_switch: false,
       dark_mode_options: [
         { icon: "pi pi-sun", value: false },
         { icon: "pi pi-moon", value: true },
@@ -50,6 +52,7 @@ export default {
   watch: {
     my_dark_mode: function () {
       if (this.my_dark_mode !== this.dark_mode) {
+        this.disable_darkmode_switch = true;
         this.set_dark_mode({
           params: { user_id: this.user_id },
           data: {
@@ -57,7 +60,9 @@ export default {
             "@etag": this.user_etag,
           },
         }).then(() =>
-          this.get_dark_mode({ params: { user_id: this.user_id } })
+          this.get_dark_mode({ params: { user_id: this.user_id } }).then(() => {
+            this.disable_darkmode_switch = false;
+          })
         );
       }
       if (this.my_dark_mode === true) {
