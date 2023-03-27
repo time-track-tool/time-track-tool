@@ -60,14 +60,24 @@
           class="p-button-success p-mr-3 p-button-outlined"
           @click="$emit('editagain')"
         />
-        <Button
-          v-else
-          type="button"
-          style="text-transform: capitalize"
-          :label="daily_record.attributes.status.name"
-          class="p-button-info p-mr-3"
-          disabled
-        />
+        <template v-else>
+          <Button
+            v-if="is_frozen"
+            type="button"
+            style="text-transform: capitalize"
+            label="Frozen"
+            class="p-button-info p-mr-3"
+            disabled
+          />
+          <Button
+            v-else
+            type="button"
+            style="text-transform: capitalize"
+            :label="daily_record.attributes.status.name"
+            class="p-button-info p-mr-3"
+            disabled
+          />
+        </template>
       </div>
     </div>
     <TimeRecs
@@ -480,7 +490,14 @@ export default {
   },
   computed: {
     ...mapState(["user_id"]),
-    ...mapState("rest", ["vacation_correction", "time_activities"]),
+    ...mapState("rest", [
+      "vacation_correction",
+      "time_activities",
+      "frozen_until",
+    ]),
+    is_frozen: function () {
+      return this.date <= this.frozen_until;
+    },
     all_trs_loaded: function () {
       for (let id in this.tr_ids) {
         if (this.loaded_tr_ids.indexOf(this.tr_ids[id]) === -1) {
@@ -505,7 +522,7 @@ export default {
     dr_is_status_submitted: function () {
       return (
         this.daily_record.attributes.status.id ===
-        defines.daily_record_status.submitted
+          defines.daily_record_status.submitted && !this.is_frozen
       );
     },
     date: function () {
