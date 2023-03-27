@@ -1705,6 +1705,7 @@ def security (db, ** kw):
         , klass       = 'daily_record_freeze'
         )
     db.security.addPermissionToRole ('HR-Org-Location', p)
+    db.security.addPermissionToRole ('User', p)
     p = db.security.addPermission \
         ( name        = 'View'
         , klass       = 'daily_record'
