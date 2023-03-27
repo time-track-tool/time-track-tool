@@ -211,42 +211,46 @@ export default {
   created: function () {
     // load and display current week
     this.$store.commit("setUserId", this.$route.params.user_id);
-    this.fetch_time_activities().then(() => {
-      this.fetch_work_locations().then(() => {
-        if (
-          this.$route.params.range === "week" &&
-          this.$route.params.interval === undefined
-        ) {
-          this.$router.push(
-            "/" +
-              this.$route.params.user_id +
+    this.fetch_frozen_until({
+      params: { user_id: this.$route.params.user_id },
+    }).then(() =>
+      this.fetch_time_activities().then(() => {
+        this.fetch_work_locations().then(() => {
+          if (
+            this.$route.params.range === "week" &&
+            this.$route.params.interval === undefined
+          ) {
+            this.$router.push(
               "/" +
-              this.$route.params.range +
+                this.$route.params.user_id +
+                "/" +
+                this.$route.params.range +
+                "/" +
+                this.$route.params.year +
+                "/" +
+                format(new Date(), "I")
+            );
+          } else if (
+            this.$route.params.range === "month" &&
+            this.$route.params.interval === undefined
+          ) {
+            this.$router.push(
               "/" +
-              this.$route.params.year +
-              "/" +
-              format(new Date(), "I")
-          );
-        } else if (
-          this.$route.params.range === "month" &&
-          this.$route.params.interval === undefined
-        ) {
-          this.$router.push(
-            "/" +
-              this.$route.params.user_id +
-              "/" +
-              this.$route.params.range +
-              "/" +
-              this.$route.params.year +
-              "/" +
-              format(new Date(), "M")
-          );
-        } else {
-          console.log("fetch data for", this.$route.params);
-          this.update_range();
-        }
-      });
-    });
+                this.$route.params.user_id +
+                "/" +
+                this.$route.params.range +
+                "/" +
+                this.$route.params.year +
+                "/" +
+                format(new Date(), "M")
+            );
+          } else {
+            console.log("fetch data for", this.$route.params);
+            this.update_range();
+          }
+        });
+      })
+    );
   },
   methods: {
     ...mapActions("rest", [
@@ -256,6 +260,7 @@ export default {
       "fetch_daily_record",
       "fetch_attendance_record",
       "fetch_time_record",
+      "fetch_frozen_until",
     ]),
     att_sum_changed: function (data) {
       this.att_sums[data.day] = data.sum;
@@ -276,7 +281,7 @@ export default {
         if (status.submittable === true) {
           enable_submit_all = true;
         }
-        if (status.submitted === true) {
+        if (status.submitted === true && !status.is_frozen) {
           enable_edit_again_all = true;
         }
       }

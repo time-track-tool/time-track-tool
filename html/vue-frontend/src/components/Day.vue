@@ -528,6 +528,7 @@ export default {
           submitted:
             this.daily_record.attributes.status.id ===
             defines.daily_record_status.submitted,
+          is_frozen: this.is_frozen,
         },
       });
     },
@@ -552,7 +553,11 @@ export default {
       "user_dynamic_id_for_date",
       "attendance_records",
       "time_records",
+      "frozen_until",
     ]),
+    is_frozen: function () {
+      return this.day <= this.frozen_until;
+    },
     daily_record: function () {
       return this.daily_records[this.daily_record_id];
     },
@@ -612,7 +617,8 @@ export default {
         this.submit_from_above === true &&
         this.submit_enabled === true &&
         this.daily_record.attributes.status.id ===
-          defines.daily_record_status.open
+          defines.daily_record_status.open &&
+        !this.is_frozen
       ) {
         this.submit_day();
       }
@@ -621,7 +627,8 @@ export default {
       if (
         this.edit_again_from_above === true &&
         this.daily_record.attributes.status.id ===
-          defines.daily_record_status.submitted
+          defines.daily_record_status.submitted &&
+        !this.is_frozen
       ) {
         this.edit_again();
       }

@@ -1,6 +1,7 @@
 import Vapi from "vuex-rest-api";
 import axios from "axios";
 import Vue from "vue";
+import { parseISO } from "date-fns";
 
 let baseUrl =
   process.env.NODE_ENV === "production" ? "" : "http://localhost:8080/t/";
@@ -29,6 +30,7 @@ export default new Vapi({
     dark_mode: false,
     user_etag: "",
     new_tt_iface: false,
+    frozen_until: null,
   },
 })
   .post({
@@ -415,6 +417,23 @@ export default new Vapi({
     onError: (state, error, axios, { params, data }) => {
       state.api_error = { who: "search_vacation_correction", error: error };
       Vue.set(state.vacation_correction, params.date_str, null);
+    },
+  })
+  .get({
+    action: "fetch_frozen_until",
+    property: "frozen_until",
+    path: ({ user_id }) =>
+      `rest/data/daily_record_freeze?user=${user_id}&@page_size=1&@fields=date&@sort=-date`,
+    // eslint-disable-next-line no-unused-vars
+    onSuccess: (state, payload, axios, { params, data }) => {
+      state.frozen_until = parseISO(
+        payload.data.data.collection[0].date.split(".")[0]
+      );
+    },
+    // eslint-disable-next-line no-unused-vars
+    onError: (state, error, axios, { params, data }) => {
+      state.api_error = { who: "fetch_frozen_until", error: error };
+      state.frozen_until = null;
     },
   })
   .getStore({
