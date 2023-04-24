@@ -20,7 +20,7 @@
           @click="toggle_menu"
           icon="pi pi-copy"
           class="p-button-text"
-          :disabled="!enabled"
+          disabled
         />
         <Menu
           class="p-button-success p-button-text t5-menu"
@@ -506,22 +506,6 @@ export default {
           label: "Everything",
           items: [
             {
-              label: "day to whole month",
-              icon: "pi pi-angle-right",
-              command: () => {
-                this.$emit("copy_day_to_month", {
-                  copy_atts: true,
-                  copy_trs: true,
-                });
-                this.$toast.add({
-                  severity: "success",
-                  summary: "Day to month copied",
-                  detail: "",
-                  life: 3000,
-                });
-              },
-            },
-            {
               label: "from last day",
               icon: "pi pi-angle-right",
               command: () => {
@@ -543,22 +527,6 @@ export default {
           label: "Attendance only",
           items: [
             {
-              label: "day to whole month",
-              icon: "pi pi-angle-right",
-              command: () => {
-                this.$emit("copy_day_to_month", {
-                  copy_atts: true,
-                  copy_trs: false,
-                });
-                this.$toast.add({
-                  severity: "success",
-                  summary: "Day to month copied",
-                  detail: "",
-                  life: 3000,
-                });
-              },
-            },
-            {
               label: "from last day",
               icon: "pi pi-angle-right",
               command: () => {
@@ -579,22 +547,6 @@ export default {
         {
           label: "Project Effort only",
           items: [
-            {
-              label: "day to whole month",
-              icon: "pi pi-angle-right",
-              command: () => {
-                this.$emit("copy_day_to_month", {
-                  copy_atts: false,
-                  copy_trs: true,
-                });
-                this.$toast.add({
-                  severity: "success",
-                  summary: "Day to month copied",
-                  detail: "",
-                  life: 3000,
-                });
-              },
-            },
             {
               label: "from last day",
               icon: "pi pi-angle-right",
