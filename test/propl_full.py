@@ -56,6 +56,11 @@ properties = \
         , 'valid'
         ]
       )
+    , ( 'cc_bu_category'
+      , [ 'description'
+        , 'name'
+        ]
+      )
     , ( 'contact'
       , [ 'contact'
         , 'contact_type'
@@ -78,7 +83,8 @@ properties = \
         ]
       )
     , ( 'cost_center'
-      , [ 'cost_center_group'
+      , [ 'cc_bu_category'
+        , 'cost_center_group'
         , 'description'
         , 'name'
         , 'status'
@@ -557,8 +563,14 @@ properties = \
         , 'organisation'
         , 'purchasing_agents'
         , 'responsible'
+        , 'sap_cc_category'
         , 'team_lead'
         , 'valid'
+        ]
+      )
+    , ( 'sap_cc_category'
+      , [ 'description'
+        , 'name'
         ]
       )
     , ( 'severity'
