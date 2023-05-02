@@ -1497,6 +1497,10 @@ def security (db, ** kw) :
         , klass       = 'time_record'
         )
     db.security.addPermissionToRole ('HR-Org-Location', p)
+    # Also allow user search permission to role User. They can only see
+    # their own records anyway and it will be *much* faster if we do not
+    # return *all* records and filter them in python.
+    db.security.addPermissionToRole ('User', p)
     p = db.security.addPermission \
         ( name        = 'View'
         , klass       = 'user_dynamic'
