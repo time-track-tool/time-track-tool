@@ -857,7 +857,7 @@ def flexi_alliquot (db, user, date_in_year, ctype):
     return ceil (flex / days)
 # end def flexi_alliquot
 
-def avg_hours_per_week_this_year (db, user, date_in_year):
+def avg_hours_per_week_this_year (db, user, date_in_year, enddate = None):
     """ Loop over all dyn records in this year and use only those with
         all-in set. For those we count the hours and compute the
         average over all all-in days.
@@ -867,6 +867,8 @@ def avg_hours_per_week_this_year (db, user, date_in_year):
     now   = Date ('.')
     if eoy > now:
         eoy = now
+    if enddate is not None and enddate > y and eoy > enddate:
+        eoy = enddate
     hours = 0.0
     dsecs = 0.0
     ds    = 24 * 60 * 60
@@ -881,8 +883,8 @@ def avg_hours_per_week_this_year (db, user, date_in_year):
             vt = eoy + common.day
         assert (vt - vf).as_seconds () > 0
         dsecs += (vt - vf).as_seconds ()
-        drs = db.daily_record.filter \
-            (None, dict (date = common.pretty_range (vf, vt), user = user))
+        rng = common.pretty_range (vf, vt - common.day)
+        drs = db.daily_record.filter (None, dict (date = rng, user = user))
         for drid in drs:
             dr  = db.daily_record.getnode (drid)
             dur = user_dynamic.update_tr_duration (db, dr)
