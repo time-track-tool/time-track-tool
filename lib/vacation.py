@@ -1,6 +1,5 @@
 #! /usr/bin/python
-# -*- coding: iso-8859-1 -*-
-# Copyright (C) 2014-21 Dr. Ralf Schlatterbeck Open Source Consulting.
+# Copyright (C) 2014-23 Dr. Ralf Schlatterbeck Open Source Consulting.
 # Reichergasse 131, A-3411 Weidling.
 # Web: http://www.runtux.com Email: office@runtux.com
 # All rights reserved
@@ -839,7 +838,7 @@ def flexi_alliquot (db, user, date_in_year, ctype):
     dsecs = 0.0
     ds    = 24 * 60 * 60
     for dyn in user_dynamic.user_dynamic_year_iter (db, user, y):
-        if not dyn.all_in or dyn.contract_type != ctype:
+        if not dyn.all_in or dyn.contract_type != ctype or dyn.valid_from > eoy:
             continue
         vf = dyn.valid_from
         if vf < y:
@@ -847,6 +846,7 @@ def flexi_alliquot (db, user, date_in_year, ctype):
         vt = dyn.valid_to
         if not vt or vt > eoy + common.day:
             vt = eoy + common.day
+        assert (vt - vf).as_seconds () > 0
         flex  += (vt - vf).as_seconds () * (dyn.max_flexitime or 0)
         dsecs += (vt - vf).as_seconds ()
     assert dsecs / ds <= 366
@@ -871,7 +871,7 @@ def avg_hours_per_week_this_year (db, user, date_in_year):
     dsecs = 0.0
     ds    = 24 * 60 * 60
     for dyn in user_dynamic.user_dynamic_year_iter (db, user, y):
-        if not dyn.all_in:
+        if not dyn.all_in or dyn.valid_from > eoy:
             continue
         vf = dyn.valid_from
         if vf < y:
@@ -879,6 +879,7 @@ def avg_hours_per_week_this_year (db, user, date_in_year):
         vt = dyn.valid_to
         if not vt or vt > eoy + common.day:
             vt = eoy + common.day
+        assert (vt - vf).as_seconds () > 0
         dsecs += (vt - vf).as_seconds ()
         drs = db.daily_record.filter \
             (None, dict (date = common.pretty_range (vf, vt), user = user))
