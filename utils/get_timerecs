@@ -76,6 +76,8 @@ class Getter ():
     # end def get_pw
 
     def print_timerecs (self):
+        h_done  = False
+        tp_done = False
         j = self.get ('user?' + urlencode ({'username:': self.args.user}))
         j = j ['data']['collection']
         assert len (j) == 1
@@ -132,10 +134,12 @@ class Getter ():
                     print (ind, "otp = otp [0]")
                 else:
                     print (ind, "otp = None")
-                print (ind, "holo = db.work_location.create \\")
-                print (ind, "    ( code = 'Home-AT'")
-                print (ind, "    , description = 'Home Office Location'")
-                print (ind, "    )")
+                if not h_done:
+                    print (ind, "holo = db.work_location.create \\")
+                    print (ind, "    ( code = 'Home-AT'")
+                    print (ind, "    , description = 'Home Office Location'")
+                    print (ind, "    )")
+                    h_done = True
                 print (ind, "db.user_dynamic.create \\")
                 n = 0
                 for pname in ud:
@@ -222,15 +226,20 @@ class Getter ():
                 for tri in dr ['time_record']:
                     tr = self.get ('time_record/%s' % tri ['id'])
                     tr = tr ['data']['attributes']
+                    tact = 'time_activity'
+                    if tr [tact] and tr [tact]['id'] == '10' and not tp_done:
+                        print (ind, 'tatp = db.time_activity.create \\')
+                        print (ind, "    ( name     = 'Travel passive'")
+                        print (ind, "    , travel   = 1")
+                        print (ind, "    , is_valid = True")
+                        print (ind, "    )")
+                        tp_done = True
                     print (ind, "tr = db.time_record.create \\")
                     print (ind, "    ( daily_record  = dr")
                     print \
                         (" %s    , duration      = %s" % (ind, tr ['duration']))
-                    if tr ['time_activity']:
-                        print \
-                            (" %s    , time_activity = '%s'"
-                            % (ind, tr ['time_activity'])
-                            )
+                    if tr [tact] and tr [tact]['id'] == '10':
+                        print (ind, "    , time_activity = tatp")
                     if tr ['wp'] and tr ['wp']['id'] in wpdict:
                         new_wpid = wpdict [tr ['wp']['id']]
                     elif tr ['wp'] is None:
@@ -262,7 +271,7 @@ class Getter ():
                     print (ind, "db.attendance_record.create \\")
                     print (ind, "    ( daily_record  = dr")
                     print (ind, "    , time_record   = tr")
-                    if tr ['start'] :
+                    if tr ['start']:
                         print \
                             ( " %s    , start         = '%s'"
                             % (ind, tr ['start'])
@@ -271,13 +280,13 @@ class Getter ():
                             ( " %s    , end           = '%s'"
                             % (ind, tr ['end'])
                             )
-                    if tr ['work_location'] :
+                    if tr ['work_location']:
                         id = tr ['work_location']['id']
-                        if id == '8' :
+                        if id == '8':
                             id = 'holo'
-                        else :
+                        else:
                             id = "'%s'" % id
-                        print (" %s    , work_location = '%s'" % (ind, id))
+                        print (" %s    , work_location = %s" % (ind, id))
                     print (ind, "    )")
         print (ind, "db.commit ()")
         print ("# end def import_data_%s" % userid)
