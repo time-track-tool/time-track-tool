@@ -277,6 +277,7 @@ Role "time-report":
  User is allowed to edit time_report (Edit for "time_report" only)
  User may edit own file (file created by user) (Edit for "file" only)
 Role "user":
+  (Search for "daily_record_freeze" only)
   (Search for "time_project": ('activity', 'actor', 'creation', 'creator', 'deputy', 'description', 'id', 'is_extern', 'is_public_holiday', 'is_special_leave', 'is_vacation', 'max_hours', 'name', 'no_overtime', 'no_overtime_day', 'nosy', 'only_hours', 'op_project', 'overtime_reduction', 'responsible', 'status', 'work_location', 'wps') only)
   (Search for "time_record" only)
   (Search for "time_wp": ('activity', 'actor', 'auto_wp', 'bookers', 'cost_center', 'creation', 'creator', 'description', 'durations_allowed', 'epic_key', 'has_expiration_date', 'id', 'is_extern', 'is_public', 'name', 'project', 'responsible', 'time_end', 'time_start', 'time_wp_summary_no', 'wp_no') only)
@@ -367,6 +368,7 @@ Role "user":
  User is allowed to see time record if he is allowed to see all details on work package or User may view a daily_record (and time_records that are attached to that daily_record) if the user owns the daily_record or has role \'HR\' or \'Controlling\', or the user is supervisor or substitute supervisor of the owner of the daily record (the supervisor relationship is transitive) or the owner of the daily record. If user has role HR-Org-Location and is in the same Org-Location as the record, it may also be seen (View for "time_record" only)
  User is allowed to view (some of) their own user details (View for "user": ('dark_mode', 'entry_date', 'new_tt_iface', 'planning_role') only)
  User is allowed to view contact if he's the owner of the contact or the contact is marked visible (View for "user_contact" only)
+ User is allowed to view freeze information if he/she matches the user of the freeze record (View for "daily_record_freeze" only)
  User is allowed to view leave submission if he is the supervisor or the person to whom approvals are delegated (Edit for "leave_submission": ('status',) only)
  User is allowed to view leave submission if he is the supervisor or the person to whom approvals are delegated (View for "leave_submission" only)
  User is allowed to view record if he is the supervisor or the person to whom approvals are delegated (View for "attendance_record" only)
