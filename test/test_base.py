@@ -4095,6 +4095,10 @@ class Test_Case_Timetracker (_Test_Case_Summary, unittest.TestCase) :
         # This calls the newly-compiled function
         v = d [n] (self.db, self.user21, now)
         assert "%.2f" % v == "40.64"
+        # No longer necessary to monkey-patch with optional enddate
+        v = vacation.avg_hours_per_week_this_year \
+            (self.db, self.user21, now, enddate = date.Date ('2023-03-15'))
+        assert "%.2f" % v == "40.13"
     # end def test_user21
 
 # end class Test_Case_Timetracker
