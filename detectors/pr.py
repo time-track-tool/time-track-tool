@@ -22,12 +22,12 @@ import common
 import prlib
 from   roundup.date                   import Date, Interval
 from   roundup.exceptions             import Reject
-from   roundup.cgi.TranslationService import get_translation
 from   roundup                        import roundupdb
 
 def prjust (db, cl, nodeid, new_values):
     """ Field pr_justification must be edited when signing
     """
+    _   = db.i18n.gettext
     pjn = 'pr_justification'
     fn  = _ (pjn)
     pj  = new_values.get (pjn, cl.get (nodeid, pjn))
@@ -53,6 +53,7 @@ def new_pr (db, cl, nodeid, new_values):
 def check_psp_cc (db, cl, nodeid, new_values):
     """ Check concerning psp_element, sap_cc, organisation
     """
+    _ = db.i18n.gettext
     org = new_values.get ('organisation', None)
     if nodeid and not org:
         org = cl.get (nodeid, 'organisation')
@@ -114,7 +115,7 @@ def create_pr_approval (db, cl, nodeid, old_values):
 
 def check_requester (db, cl, nodeid, new_values):
     common.require_attributes \
-        (_, cl, nodeid, new_values, 'requester')
+        (db.i18n.gettext, cl, nodeid, new_values, 'requester')
 # end def check_requester
 
 def reopen (db, cl, nodeid, new_values):
@@ -144,6 +145,7 @@ def check_io_pr (db, cl, nodeid, new_values):
         category and psp_element, but only if the PR isn't in status
         open (not yet submitted with sign&send).
     """
+    _  = db.i18n.gettext
     st = new_values.get ('status', cl.get (nodeid, 'status'))
     if st == db.pr_status.lookup ('open'):
         return
@@ -164,6 +166,7 @@ def check_io_pr (db, cl, nodeid, new_values):
 # end def check_io_pr
 
 def check_io_oi (db, cl, nodeid, new_values):
+    _   = db.i18n.gettext
     pr  = get_pr_from_offer_item (db, nodeid)
     if not pr:
         return
@@ -217,6 +220,7 @@ def check_supplier_change (db, cl, nodeid, new_values):
         If this is below the computed maximum risk type we allow the
         change.
     """
+    _ = db.i18n.gettext
     if 'supplier' not in new_values:
         return
     pr  = get_pr_from_offer_item (db, nodeid)
@@ -283,6 +287,7 @@ def check_supplier_change (db, cl, nodeid, new_values):
 def check_input_len (db, cl, nodeid, new_values):
     """ Check that some fields don't become too long
     """
+    _ = db.i18n.gettext
     if len (new_values.get ('supplier', '') or '') > 55:
         raise Reject (_ ("Supplier too long (max 55)"))
 # end def check_input_len
@@ -328,6 +333,7 @@ def check_payment_type (db, cl, nodeid, new_values):
         - Do not allow if in state >= approved
         - If already approving, check if we need to add new approval
     """
+    _ = db.i18n.gettext
     if 'payment_type' not in new_values:
         return
     pr  = get_pr_from_offer_item (db, nodeid)
@@ -352,6 +358,7 @@ def check_payment_type (db, cl, nodeid, new_values):
 # end def check_payment_type
 
 def pr_check_payment_type (db, cl, nodeid, new_values):
+    _ = db.i18n.gettext
     if 'payment_type' not in new_values:
         return
     pr  = cl.getnode (nodeid)
@@ -371,6 +378,7 @@ def pr_check_payment_type (db, cl, nodeid, new_values):
 def namelen (db, cl, nodeid, new_values):
     """ Check that name field doesn't become too long
     """
+    _ = db.i18n.gettext
     if len (new_values.get ('name', '') or '') > 55:
         raise Reject (_ ("Supplier name too long (max 55)"))
 # end def namelen
@@ -381,6 +389,7 @@ def check_psp_cc_consistency (db, cl, nodeid, new_values, org = None):
         Also check that the psp or cc is valid.
         Note: This is called with a valid nodeid.
     """
+    _    = db.i18n.gettext
     proi = cl.getnode (nodeid) # Can be offer item or pr
     tc   = new_values.get ('time_project', proi.time_project)
     psp  = new_values.get ('psp_element', proi.psp_element)
@@ -445,6 +454,7 @@ def update_nosy (db, cl, nodeid, new_values):
 # end def update_nosy
 
 def change_pr (db, cl, nodeid, new_values):
+    _         = db.i18n.gettext
     oitems    = new_values.get ('offer_items', cl.get (nodeid, 'offer_items'))
     approvals = db.pr_approval.filter (None, dict (purchase_request = nodeid))
     approvals = [db.pr_approval.getnode (a) for a in approvals]
@@ -723,6 +733,7 @@ def set_agents (db, cl, nodeid, new_values):
 # end def set_agents
 
 def approvalchange (db, cl, nodeid, new_values):
+    _ = db.i18n.gettext
     if 'special_approval' not in new_values:
         return
     status = new_values.get ('status', cl.get (nodeid, 'status'))
@@ -754,14 +765,14 @@ def check_late_changes (db, cl, nodeid, new_values):
         co = new_values ['continuous_obligation']
         if co:
             common.require_attributes \
-                ( _, cl, nodeid, new_values
+                ( db.i18n.gettext, cl, nodeid, new_values
                 , 'contract_term', 'intended_duration'
                 )
     if 'frame_purchase' in new_values:
         fp = new_values ['frame_purchase']
         if fp:
             common.require_attributes \
-                (_, cl, nodeid, new_values, 'frame_purchase_end')
+                (db.i18n.gettext, cl, nodeid, new_values, 'frame_purchase_end')
 # end def check_late_changes
 
 def changed_pr (db, cl, nodeid, old_values):
@@ -775,6 +786,7 @@ def changed_pr (db, cl, nodeid, old_values):
 # end def changed_pr
 
 def new_pr_approval (db, cl, nodeid, new_values):
+    _ = db.i18n.gettext
     common.require_attributes \
         (_, cl, nodeid, new_values, 'purchase_request', 'order')
     if  (   not new_values.get ('user', None)
@@ -787,6 +799,7 @@ def new_pr_approval (db, cl, nodeid, new_values):
 # end def new_pr_approval
 
 def change_pr_approval (db, cl, nodeid, new_values):
+    _ = db.i18n.gettext
     common.require_attributes \
         (_, cl, nodeid, new_values, 'purchase_request', 'order')
     app = cl.getnode (nodeid)
@@ -822,6 +835,7 @@ def set_approval_pr (db, cl, nodeid, new_values):
     """ Do not allow change of PR, but we *need* to allow this input in
         the web-interface for ordering actions.
     """
+    _ = db.i18n.gettext
     common.require_attributes \
         (_, cl, nodeid, new_values, 'purchase_request')
 
@@ -905,6 +919,7 @@ def set_infosec (db, cl, nodeid, new_values):
     """ When going from open->approving, set the infosec attributes on
         the PR
     """
+    _   = db.i18n.gettext
     apr = db.pr_status.lookup ('approving')
     opn = db.pr_status.lookup ('open')
     ost = cl.get (nodeid, 'status')
@@ -1030,7 +1045,7 @@ def new_pr_offer_item (db, cl, nodeid, new_values):
 
 def check_pr_offer_item (db, cl, nodeid, new_values):
     common.require_attributes \
-        ( _, cl, nodeid, new_values, 'units'
+        ( db.i18n.gettext, cl, nodeid, new_values, 'units'
         , 'price_per_unit', 'product_group', 'supplier'
         )
     units = new_values.get ('units', None)
@@ -1156,6 +1171,7 @@ def check_agent_change (db, cl, nodeid, old_values):
 # end def check_agent_change
 
 def check_currency (db, cl, nodeid, new_values):
+    _ = db.i18n.gettext
     common.require_attributes \
         (_, cl, nodeid, new_values, 'min_sum', 'order', 'exchange_rate')
     if new_values.get ('key_currency'):
@@ -1180,6 +1196,7 @@ def check_currency (db, cl, nodeid, new_values):
 # end def check_currency
 
 def requester_chg (db, cl, nodeid, new_values):
+    _ = db.i18n.gettext
     if 'requester' in new_values:
         st_rej  = db.pr_status.lookup ('rejected')
         st_open = db.pr_status.lookup ('open')
@@ -1189,6 +1206,7 @@ def requester_chg (db, cl, nodeid, new_values):
 # end def requester_chg
 
 def pt_check_roles (db, cl, nodeid, new_values):
+    _ = db.i18n.gettext
     common.check_roles (db, cl, nodeid, new_values)
     common.check_roles (db, cl, nodeid, new_values, 'view_roles')
     common.check_roles (db, cl, nodeid, new_values, 'forced_roles')
@@ -1212,6 +1230,7 @@ def pao_check_roles (db, cl, nodeid, new_values):
     """ Now allow the role-name to not be a roundup role anymore
         Also check that only_nosy is set to a boolean value.
     """
+    _ = db.i18n.gettext
     if 'role' in new_values and ',' in new_values ['role']:
         raise Reject (_ ("No commas allowed in role name"))
     nosyflag   = new_values.get ('only_nosy')
@@ -1234,7 +1253,7 @@ def check_supplier_rating (db, cl, nodeid, new_values):
     """ Check ratings of supplier: each organisation may occur only once
     """
     common.require_attributes \
-        ( _, cl, nodeid, new_values
+        ( db.i18n.gettext, cl, nodeid, new_values
         , 'rating', 'organisation', 'supplier', 'scope'
         )
     org = new_values.get ('organisation')
@@ -1244,7 +1263,7 @@ def check_supplier_rating (db, cl, nodeid, new_values):
     if not sup:
         sup = cl.get (nodeid, 'supplier')
     common.check_unique \
-        ( _, cl, nodeid
+        ( db.i18n.gettext, cl, nodeid
         , supplier     = sup
         , organisation = org
         )
@@ -1255,7 +1274,7 @@ def check_supplier_risk (db, cl, nodeid, new_values):
         organisation+security_req_group may occur only once
     """
     common.require_attributes \
-        ( _, cl, nodeid, new_values
+        ( db.i18n.gettext, cl, nodeid, new_values
         , 'organisation'
         , 'supplier'
         , 'security_req_group'
@@ -1271,7 +1290,7 @@ def check_supplier_risk (db, cl, nodeid, new_values):
     if not srg:
         srg = cl.get (nodeid, 'security_req_group')
     common.check_unique \
-        ( _, cl, nodeid
+        ( db.i18n.gettext, cl, nodeid
         , supplier           = sup
         , organisation       = org
         , security_req_group = srg
@@ -1283,7 +1302,7 @@ def check_psr (db, cl, nodeid, new_values):
         infosec_level+supplier_risk_category may occur only once
     """
     common.require_attributes \
-        ( _, cl, nodeid, new_values
+        ( db.i18n.gettext, cl, nodeid, new_values
         , 'infosec_level'
         , 'purchase_risk_type'
         )
@@ -1294,19 +1313,21 @@ def check_psr (db, cl, nodeid, new_values):
     if not src and nodeid:
         src = cl.get (nodeid, 'supplier_risk_category')
     common.check_unique \
-        ( _, cl, nodeid
+        ( db.i18n.gettext, cl, nodeid
         , infosec_level          = il
         , supplier_risk_category = src
         )
 # end def check_psr
 
 def check_no_change (db, cl, nodeid, new_values):
+    _ = db.i18n.gettext
     if new_values and list (new_values) != ['name']:
         classname = cl.classname
         raise Reject (_ ("%(classname)s may not be changed" % locals ()))
 # end def check_no_change
 
 def check_dd (db, cl, nodeid, new_values):
+    _ = db.i18n.gettext
     if 'delivery_deadline' in new_values:
         now = Date ('.')
         if new_values ['delivery_deadline'] < now:
@@ -1315,6 +1336,7 @@ def check_dd (db, cl, nodeid, new_values):
 # end def check_dd
 
 def check_issue_nums (db, cl, nodeid, new_values):
+    _         = db.i18n.gettext
     issue_ids = new_values.get ('issue_ids', None)
     # Allow empty value, also exits if not changed
     if issue_ids is None:
@@ -1329,11 +1351,12 @@ def check_issue_nums (db, cl, nodeid, new_values):
 
 def check_pg (db, cl, nodeid, new_values):
     common.require_attributes \
-        (_, cl, nodeid, new_values, 'sap_ref', 'pg_category')
+        (db.i18n.gettext, cl, nodeid, new_values, 'sap_ref', 'pg_category')
 # end def check_pg
 
 def check_pgc (db, cl, nodeid, new_values):
-    common.require_attributes (_, cl, nodeid, new_values, 'sap_ref')
+    common.require_attributes \
+        (db.i18n.gettext, cl, nodeid, new_values, 'sap_ref')
 # end def check_pgc
 
 def send_las_email (db, cl, nodeid, old_values):
@@ -1379,7 +1402,9 @@ def send_las_email (db, cl, nodeid, old_values):
 
 def check_psp (db, cl, nodeid, new_values):
     common.require_attributes \
-        (_, cl, nodeid, new_values, 'name', 'number', 'organisation', 'project')
+        ( db.i18n.gettext, cl, nodeid, new_values
+        , 'name', 'number', 'organisation', 'project'
+        )
     if not nodeid and 'valid' not in new_values:
         new_values ['valid'] = True
 # end def check_psp
@@ -1424,9 +1449,6 @@ def fix_gl_account_oi (db, cl, nodeid, new_values):
 # end def fix_gl_account_oi
 
 def init (db):
-    global _
-    _   = get_translation \
-        (db.config.TRACKER_LANGUAGE, db.config.TRACKER_HOME).gettext
     if 'purchase_request' not in db.classes:
         return
     db.purchase_type.audit      ("create", pt_check_roles)

@@ -1,5 +1,5 @@
 #! /usr/bin/python
-# Copyright (C) 2006-21 Dr. Ralf Schlatterbeck Open Source Consulting.
+# Copyright (C) 2006-22 Dr. Ralf Schlatterbeck Open Source Consulting.
 # Reichergasse 131, A-3411 Weidling.
 # Web: http://www.runtux.com Email: office@runtux.com
 # All rights reserved
@@ -32,7 +32,6 @@
 from roundup                        import roundupdb, hyperdb
 from roundup.exceptions             import Reject
 from roundup.date                   import Date, Interval
-from roundup.cgi.TranslationService import get_translation
 from operator                       import add
 from time                           import gmtime
 
@@ -43,7 +42,9 @@ import common
 import user_dynamic
 import vacation
 
-def check_timestamps (start, end, date) :
+hour_format = '%H:%M'
+
+def check_timestamps (_, start, end, date) :
     t = end
     if end == '24:00' :
         t = '00:00'
@@ -67,7 +68,7 @@ def check_timestamps (start, end, date) :
     return dstart, dend, dstart.pretty (hour_format), ep, dur
 # end def check_timestamps
 
-def check_duration (d, max = 0) :
+def check_duration (_, d, max = 0) :
     if d is None :
         raise Reject (_ ("Duration (or Start/End) must be given"))
     if d < 0 :
@@ -78,82 +79,144 @@ def check_duration (d, max = 0) :
         raise Reject (_ ("Duration must not exceed %s hours" % max))
 # end def check_duration
 
-hour_format = '%H:%M'
-
-def pretty_time_record (tr, sdate, user) :
-    tr_pr = ["%(user)s, %(sdate)s" % locals ()]
-    if tr.start :
-        tr_pr.append ("%s-%s" % (tr.start, tr.end))
+def pretty_att_record (db, dr, ar) :
+    _     = db.i18n.gettext
+    sdate = dr.date.pretty (common.ymd)
+    user  = db.user.get (dr.user, 'username')
+    ar_pr = ["%(user)s, %(sdate)s" % locals ()]
+    if ar.start :
+        ar_pr.append ("%s-%s" % (ar.start, ar.end))
     else :
-        tr_pr.append ("%sh" % tr.duration)
+        wl = db.work_location.getnode (ar.work_location)
+        ar_pr.append ("%s: %s" % (_ ('work_location'), wl.code))
+    return ' '.join (ar_pr)
+# end def pretty_att_record
+
+def pretty_time_record (db, dr, tr) :
+    sdate = dr.date.pretty (common.ymd)
+    user  = db.user.get (dr.user, 'username')
+    tr_pr = ["%(user)s, %(sdate)s" % locals ()]
+    tr_pr.append ("%sh" % tr.duration)
     return ' '.join (tr_pr)
 # end def pretty_time_record
 
-def time_records_consistent (db, cl, nodeid) :
-    """ Check if all time records for this daily record are consistent
+def get_and_check_dyn (db, dr) :
+    dynamic = user_dynamic.get_user_dynamic (db, dr.user, dr.date)
+    uname   = db.user.get (dr.user, 'username')
+    date    = dr.date
+    if not dynamic :
+        raise Reject \
+            ("No dynamic user data for %(uname)s, %(date)s" % locals ())
+    if not dynamic.booking_allowed :
+        raise Reject ("Booking not allowed for %(uname)s, %(date)s" % locals ())
+    return dynamic
+# end def get_and_check_dyn
 
-        + check that each record contains a wp
+def att_records_consistent (db, dr) :
+    """ Check if all attendance records for this daily record are consistent
+        Performed when dr.status changes open->submitted
         + check that each record contains a work_location
         + check that a start_time exists unless durations_allowed
+          -> only done if there is a time_record link?
         + check that there are no overlapping work hours
           - get all records with a start time
           - sort by start time
           - check pairwise for overlap
-        + check that sum of work-time does not exceed 10 hours -- if user
-          may not work more than 10 hours
         + check that there is a lunch break of at least .5 hours if user
           worked for more than 6 hours and durations_allowed is not
           specified
-        + Travel times (either wp has travel flag or time_activity has
-          travel flag) are excempt from work-time and lunch break checks
+        + Travel times (if time_activity has travel flag) are excempt
+          from lunch break checks
+    """
+    _        = db.i18n.gettext
+    msgs     = []
+    uname    = db.user.get (dr.user, 'username')
+    dyn      = get_and_check_dyn (db, dr)
+    arec     = [db.attendance_record.getnode (i) for i in dr.attendance_record]
+    last_ar  = None
+    need_break_recs = []
+    for ar in sorted (arec, key = lambda a: a.start) :
+        ar_pr  = pretty_att_record (db, dr, ar)
+        wl     = None
+        if ar.work_location :
+            wl = db.work_location.getnode (ar.work_location)
+        if not ar.work_location :
+            msgs.append ("%(ar_pr)s: No work location" % locals ())
+        durations_allowed = dyn.durations_allowed
+        if wl and wl.durations_allowed :
+            durations_allowed = True
+        if not durations_allowed and not ar.start :
+            msgs.append ("%(ar_pr)s: Need Start/End" % locals ())
+        if ar.start and wl and not wl.travel :
+            need_break_recs.append (ar)
+        if last_ar and last_ar.start :
+            ars = [last_ar, ar]
+            start = [a.start for a in ars]
+            end   = [a.end   for a in ars]
+            ar_pr = ', '.join ([pretty_att_record (db, dr, a) for a in ars])
+            if not (start [0] >= end [1] or start [1] >= end [0]) :
+                msgs.append ("%(tr_pr)s overlap" % locals ())
+        last_ar = ar
+    if not dyn.durations_allowed :
+        nobreak  = 0.0
+        last_end = None
+        for ar in need_break_recs :
+            start   = Date (ar.start, offset = 0)
+            s, e, ds, de, duration = check_timestamps \
+                (_, ar.start, ar.end, dr.date)
+            if last_end and (start - last_end).as_seconds () >= 30 * 60 :
+                nobreak  = duration
+            else :
+                nobreak += duration
+            last_end = Date (ar.end,  offset = 0)
+            if nobreak > 6 :
+                msgs.append \
+                    ("%(ar_pr)s More than 6 hours "
+                     "without a break of at least half an hour"
+                    % locals ()
+                    )
+                break
+    if msgs :
+        msgs.sort ()
+        raise Reject ('\n'.join ([_ (i) for i in msgs]))
+    return True
+# end def att_records_consistent
+
+def time_records_consistent (db, dr) :
+    """ Check if all time records for this daily record are consistent
+        Performed when dr.status changes open->submitted
+        + check that each record contains a wp
+        + check that sum of work-time does not exceed 10 hours -- if user
+          may not work more than 10 hours
+        + Travel times (if time_activity has travel flag) are excempt
+          from work-time checks
         + no_overtime flag in time_project: check if really no overtime
           booked
         + Check that all WP are bookable
           + User is on bookers list
           + WP is valid
     """
-    date     = cl.get (nodeid, 'date')
-    dtp      = date.pretty (common.ymd)
-    sdate    = date.pretty (common.ymd)
-    uid      = cl.get (nodeid, 'user')
-    uname    = db.user.get (uid, 'username')
+    _        = db.i18n.gettext
+    dtp      = dr.date.pretty (common.ymd)
+    uname    = db.user.get (dr.user, 'username')
     msgs     = []
-    dynamic  = user_dynamic.get_user_dynamic (db, uid, date)
-    if not dynamic :
-        raise Reject \
-            ("No dynamic user data for %(uname)s, %(date)s" % locals ())
-    if not dynamic.booking_allowed :
-        raise Reject ("Booking not allowed for %(uname)s, %(date)s" % locals ())
-    trec     = \
-        [db.time_record.getnode (i) for i in db.time_record.filter
-         (None, dict (daily_record = nodeid), sort = ('+', 'start'))
-        ]
+    dyn      = get_and_check_dyn (db, dr)
+    trec     = [db.time_record.getnode (i) for i in dr.time_record]
     trec_notravel   = []
-    need_break_recs = []
     noover_sum      = 0
     noover_sum_day  = 0
     no_over_wp      = None
-    daily_hours     = user_dynamic.day_work_hours (dynamic, date)
+    daily_hours     = user_dynamic.day_work_hours (dyn, dr.date)
     for tr in trec :
-        tr_pr  = pretty_time_record (tr, date, uname)
+        tr_pr  = pretty_time_record (db, dr, tr)
         act    = tr.time_activity
         wp     = tr.wp
-        travel = \
-            (  act and db.time_activity.get (act, 'travel')
-            or wp  and db.time_wp.get       (wp,  'travel')
-            )
+        travel = act and db.time_activity.get (act, 'travel')
         if not travel :
             trec_notravel.append (tr)
-        if not tr.work_location :
-            msgs.append ("%(tr_pr)s: No work location" % locals ())
         if not tr.wp :
             msgs.append ("%(tr_pr)s: No work package" % locals ())
-            durations_allowed = dynamic.durations_allowed
         else :
-            durations_allowed = \
-                (  dynamic.durations_allowed
-                or db.time_wp.get (tr.wp, 'durations_allowed')
-                )
             wp        = db.time_wp.getnode  (tr.wp)
             pr        = db.time_project.getnode (wp.project)
             prname    = pr.name
@@ -176,36 +239,25 @@ def time_records_consistent (db, cl, nodeid) :
                         % locals ()
                         )
             noover_sum_day += tr.duration
-            if not wp.is_public and uid not in wp.bookers :
+            if not wp.is_public and dr.user not in wp.bookers :
                 msgs.append \
                     ( "User %(uname)s may not book on work package "
                       "%(prname)s.%(wpname)s"
                     % locals ()
                     )
-            if date < wp.time_start :
+            if dr.date < wp.time_start :
                 msgs.append \
                     ( "Work package %(prname)s.%(wpname)s not yet valid "
                       "for date %(dtp)s"
                     % locals ()
                     )
-            if wp.has_expiration_date and date > wp.time_end :
+            if wp.has_expiration_date and dr.date > wp.time_end :
                 msgs.append \
                     ( "Work package %(prname)s.%(wpname)s no longer valid "
                       "for date %(dtp)s"
                     % locals ()
                     )
-        if not durations_allowed and not tr.start :
-            msgs.append ("%(tr_pr)s: No durations allowed" % locals ())
-        if tr.start and not travel :
-            need_break_recs.append (tr)
-    for i in range (len (need_break_recs) - 1) :
-        tr    = (need_break_recs [i], need_break_recs [i + 1])
-        start = [t.start for t in tr]
-        end   = [t.end   for t in tr]
-        tr_pr = ', '.join ([pretty_time_record (t, date, uname) for t in tr])
-        if not (start [0] >= end [1] or start [1] >= end [0]) :
-            msgs.append ("%(tr_pr)s overlap" % locals ())
-    tr_pr = "%s, %s:" % (uname, sdate)
+    tr_pr = "%s, %s:" % (uname, dtp)
     if noover_sum > daily_hours :
         msgs.append \
             ( "%(tr_pr)s: Sum of no-overtime WPs "
@@ -218,32 +270,14 @@ def time_records_consistent (db, cl, nodeid) :
               "time must not exceed %(daily_hours)s"
             % locals ()
             )
-    if dynamic.daily_worktime :
+    if dyn.daily_worktime :
         work = sum (t.duration for t in trec_notravel)
-        if work > dynamic.daily_worktime :
-            dwt = dynamic.daily_worktime
+        if work > dyn.daily_worktime :
+            dwt = dyn.daily_worktime
             msgs.append \
                 ( "%(tr_pr)s Work-time more than %(dwt)s hours: %(work)s"
                 % locals ()
                 )
-    if not dynamic.durations_allowed :
-        nobreak  = 0
-        last_end = None
-        for tr in need_break_recs :
-            start   = Date (tr.start, offset = 0)
-            if last_end and (start - last_end).as_seconds () >= 30 * 60 :
-                nobreak  = tr.duration
-            else :
-                nobreak += tr.duration
-            last_end = Date (tr.end,  offset = 0)
-            if nobreak > 6 :
-                msgs.append \
-                    ("%(tr_pr)s More than 6 hours "
-                     "without a break of at least half an hour"
-                    % locals ()
-                    )
-                break
-
     if msgs :
         msgs.sort ()
         raise Reject ('\n'.join ([_ (i) for i in msgs]))
@@ -252,7 +286,6 @@ def time_records_consistent (db, cl, nodeid) :
 
 def check_daily_record (db, cl, nodeid, new_values) :
     """ Check that status changes are OK. Allowed changes:
-
          - From open to submitted by user or by HR
            But only if no leave submission in state 'submitted',
            'approved', 'cancel requested' exists
@@ -264,6 +297,7 @@ def check_daily_record (db, cl, nodeid, new_values) :
          - From leave to open if leave_submissions exist which are *all*
            in state cancel
     """
+    _ = db.i18n.gettext
     for i in 'user', 'date' :
         if i in new_values and db.getuid () != '1' :
             raise Reject (_ ("%(attr)s may not be changed") % {'attr' : _ (i)})
@@ -304,7 +338,10 @@ def check_daily_record (db, cl, nodeid, new_values) :
                 vs_cancelled = False
                 break
     vs_has_valid  = False
+    vs_has_open   = False
     for v in vs :
+        if v.status == op :
+            vs_has_open = True
         if v.status == op or v.status == cn or v.status == dc :
             continue
         vs_has_valid = True
@@ -317,11 +354,14 @@ def check_daily_record (db, cl, nodeid, new_values) :
     old_status, status = \
         [db.daily_record_status.get (i, 'name') for i in [old_status, status]]
     ttby = db.user.get (user, 'timetracking_by')
+    dr = cl.getnode (nodeid)
     if status != old_status :
         if not (  (   status == 'submitted' and old_status == 'open'
                   and (is_hr or user == uid or ttby == uid)
-                  and time_records_consistent (db, cl, nodeid)
+                  and time_records_consistent (db, dr)
+                  and att_records_consistent (db, dr)
                   and not vs_has_valid
+                  # FIXME: We may want to check vs_has_open
                   )
                or (   status == 'accepted'  and old_status == 'submitted'
                   and (is_hr or may_give_clearance)
@@ -345,9 +385,11 @@ def check_daily_record (db, cl, nodeid, new_values) :
                 if 'status' == 'submitted' :
                     if not is_hr and user != uid :
                         msg = _ ("Permission denied")
-                    elif not time_records_consistent (db, cl, nodeid) :
+                    elif not time_records_consistent (db, dr) :
                         msg = _ ("Inkonsistent time records")
-                    elif vs_has_valid :
+                    elif not att_records_consistent (db, dr) :
+                        msg = _ ("Inkonsistent attendance records")
+                    elif vs_has_valid or vs_has_open :
                         msg = _ ("Leave submission exists")
                 elif 'status' == 'leave' :
                     msg = _ ("No accepted leave submission")
@@ -370,37 +412,22 @@ def check_daily_record (db, cl, nodeid, new_values) :
                 )
 # end def check_daily_record
 
-def update_timerecs (db, time_record_id, set_it) :
-    """ Update list of time_records with the given time_record_id
-        if do_reset is specified, we *remove* the given id from the
-        list, otherwise we *add* it.
+def invalidate_tr_duration_in_dr (db, time_record_id) :
+    """ Invalidate tr duration, this used to also set the list of
+        time_records in the daily record which is now an automatic
+        backlink.
     """
-    id      = int (time_record_id)
     drec_id = db.time_record.get (time_record_id, 'daily_record')
-    trecs_o = [int (i) for i in db.daily_record.get (drec_id, 'time_record')]
-    trecs   = dict ([(i, 1) for i in trecs_o])
-    if set_it :
-        trecs [id] = 1
-    elif id in trecs :
-        del trecs [id]
-    trecs = list (sorted (trecs))
-    if trecs != trecs_o :
-        dr = db.daily_record.getnode (drec_id)
-        db.daily_record.set \
-            ( drec_id
-            , time_record    = [str (i) for i in trecs]
-            , tr_duration_ok = None
-            )
-        user_dynamic.invalidate_tr_duration (db, dr.user, dr.date, dr.date)
-# end def update_timerecs
+    dr      = db.daily_record.getnode (drec_id)
+    user_dynamic.invalidate_tr_duration (db, dr.user, dr.date, dr.date)
+# end def invalidate_tr_duration_in_dr
 
-def update_time_record_in_daily_record (db, cl, nodeid, old_values) :
-    update_timerecs (db, nodeid, True)
-# end def update_time_record_in_daily_record
+def compute_tr_duration (db, cl, nodeid, old_values) :
+    invalidate_tr_duration_in_dr (db, nodeid)
+# end def compute_tr_duration
 
 def new_daily_record (db, cl, nodeid, new_values) :
-    """
-        Only create a daily_record if a user_dynamic record exists for
+    """ Only create a daily_record if a user_dynamic record exists for
         the user.
         If a new daily_record is created, we check the date provided:
         If hours, minutes, seconds are all zero we think the time was
@@ -411,6 +438,7 @@ def new_daily_record (db, cl, nodeid, new_values) :
         After that, we check that there is no duplicate daily_record
         with the same date for this user.
     """
+    _   = db.i18n.gettext
     uid = db.getuid ()
     common.require_attributes (_, cl, nodeid, new_values, 'user', 'date')
     user  = new_values ['user']
@@ -425,7 +453,6 @@ def new_daily_record (db, cl, nodeid, new_values) :
                 "and Controlling may create daily records"
                 )
             )
-    common.reject_attributes (_, new_values, 'time_record')
     # the following is allowed for the admin (import!)
     if uid != '1' :
         common.reject_attributes (_, new_values, 'status')
@@ -447,26 +474,34 @@ def new_daily_record (db, cl, nodeid, new_values) :
             ( _ ("Duplicate record: date = %(date)s, user = %(user)s")
             % new_values
             )
-    new_values ['time_record'] = []
     if 'status' not in new_values :
         new_values ['status']  = db.daily_record_status.lookup ('open')
     new_values ['tr_duration_ok'] = None
 # end def new_daily_record
 
-def check_start_end_duration \
-    (date, start, end, duration, new_values, dist = 0) :
-    """
-        either duration or both start/end must be set but not both
-        of duration/end
-        set duration from start/end if duration empty
-        set end from start/duration if end empty
+def compute_endtime (start, duration) :
+    minutes = duration * 60
+    hours   = int (duration % 60)
+    minutes = minutes - hours * 60
+    ds      = Date (start, offset = 0)
+    t = (ds + Interval ('%d:%d' % (hours, minutes))).pretty (hour_format)
+    if duration > 0 and t == '00:00' :
+        t = '24:00'
+    return t
+# end def compute_endtime
+
+def check_start_end_duration (_, date, start, end, duration, new_values) :
+    """ Either duration or both start/end must be set but not both
+        of duration/end, if both are set, duration wins, but only in
+        case of *creation*, not modification.
+        Set end from start/duration if end empty
         Note: We are using naive times (with timezone 0) here, this
         means we can safely use date.pretty for converting back to
         string.
+        Note2: This only works (and is only called) for legacy-interface
+        where time_record and attendance_record are linked.
     """
     dstart = dend = None
-    if dist :
-        check_duration (dist)
     if start and ":" not in start :
         start = start + ":00"
     if end   and ":" not in end :
@@ -475,62 +510,23 @@ def check_start_end_duration \
         if not start :
             attr = _ ('start')
             raise Reject (_ (''"%(attr)s must be specified") % locals ())
-        if 'duration' in new_values :
-            raise Reject (_ (''"Either specify duration or start/end"))
-        dstart, dend, sp, ep, dur = check_timestamps (start, end, date)
+        dstart, dend, sp, ep, dur = check_timestamps (_, start, end, date)
         duration                = dur
-        new_values ['duration'] = duration
         new_values ['start']    = sp
         new_values ['end']      = ep
     else :
-        check_duration (duration, 24)
-        if 'duration' in new_values :
-            new_values ['duration'] = duration
-        if start :
-            if 'start' in new_values or 'duration' in new_values :
-                minutes = duration * 60
-                hours   = int (duration % 60)
-                minutes = minutes - hours * 60
-                ds      = Date (start, offset = 0)
-                t = (ds + Interval ('%d:%d' % (hours, minutes))).pretty \
-                    (hour_format)
-                if duration is not None and duration > 0 and t == '00:00' :
-                    t = '24:00'
-                dstart, dend, sp, ep, dur = check_timestamps (start, t, date)
-                assert dur == duration
-                new_values ['start'] = sp
-                new_values ['end']   = ep
-    if dist and dist < duration :
-        duration -= dist
-        if start :
-            hours   = int (dist)
-            minutes = (dist - hours) * 60
-            if not dstart :
-                dstart = Date (start, offset = 0)
-            dstart = dstart + Interval ('%d:%d' % (hours, minutes))
-            new_values ['start'] = dstart.pretty (hour_format)
-        new_values ['duration']  = duration
+        if duration is not None :
+            check_duration (_, duration, 24)
+        if start and 'start' in new_values :
+            if duration is None :
+                t = end
+            else :
+                t = compute_endtime (start, duration)
+            dstart, dend, sp, ep, dur = check_timestamps (_, start, t, date)
+            new_values ['start'] = sp
+            new_values ['end']   = ep
     return dstart, dend
 # end def check_start_end_duration
-
-def correct_work_location (db, wp, new_values) :
-    project_id    = db.time_wp.get      (wp,         'project')
-    work_location = db.time_project.get (project_id, 'work_location')
-    if work_location :
-        new_values ['work_location'] = work_location
-# end def correct_work_location
-
-def check_generated (new_values) :
-    if 'start' in new_values and 'start_generated' not in new_values :
-        new_values ['start_generated'] = False
-    if (   (  'start'    in new_values
-           or 'end'      in new_values
-           or 'duration' in new_values
-           )
-       and 'end_generated' not in new_values
-       ) :
-        new_values   ['end_generated'] = False
-# end def check_generated
 
 def leave_wp (db, dr, wp, start, end, duration) :
     if not wp :
@@ -583,30 +579,59 @@ def vacation_wp (db, wpid) :
     return False
 # end def vacation_wp
 
-def new_time_record (db, cl, nodeid, new_values) :
-    """ auditor on time_record
-    """
-    uid    = db.getuid ()
-    travel = False
-    common.require_attributes (_, cl, nodeid, new_values, 'daily_record')
-    common.reject_attributes  (_, new_values, 'dist', 'tr_duration')
-    check_generated (new_values)
-    dr       = db.daily_record.getnode (new_values ['daily_record'])
-    uname    = db.user.get (dr.user, 'username')
+def check_open_not_frozen (db, dr, uname) :
+    _   = db.i18n.gettext
+    uid = db.getuid ()
     if dr.status != db.daily_record_status.lookup ('open') and uid != '1' :
         raise Reject (_ ('Editing of time records only for status "open"'))
     if frozen (db, dr.user, dr.date) :
         date = dr.date
         raise Reject (_ ("Frozen: %(uname)s, %(date)s") % locals ())
-    start    = new_values.get ('start',    None)
-    end      = new_values.get ('end',      None)
+# end def check_open_not_frozen
+
+def new_attendance_record (db, cl, nodeid, new_values) :
+    _      = db.i18n.gettext
+    uid    = db.getuid ()
+    common.require_attributes (_, cl, nodeid, new_values, 'daily_record')
+    dr     = db.daily_record.getnode (new_values ['daily_record'])
+    uname  = db.user.get (dr.user, 'username')
+    trid   = new_values.get ('time_record', None)
+    # For running lifter script, normally no attendance record is ever
+    # created by admin.
+    if uid != '1' or not trid :
+        check_open_not_frozen (db, dr, uname)
+    duration = None
+    if trid :
+        tr = db.time_record.getnode (trid)
+        # Allow only one attendance_record link to a tr
+        if tr.attendance_record :
+            raise Reject (_ ("Only one link to a time record allowed"))
+        duration = tr.duration
+    start = new_values.get ('start')
+    end   = new_values.get ('end')
+    check_start_end_duration (_, dr.date, start, end, duration, new_values)
+# end def new_attendance_record
+
+def new_time_record (db, cl, nodeid, new_values) :
+    """ auditor on time_record
+    """
+    _      = db.i18n.gettext
+    uid    = db.getuid ()
+    travel = False
+    common.require_attributes \
+        (_, cl, nodeid, new_values, 'daily_record', 'duration')
+    common.reject_attributes  (_, new_values, 'tr_duration')
+    dr       = db.daily_record.getnode (new_values ['daily_record'])
+    uname    = db.user.get (dr.user, 'username')
+    check_open_not_frozen (db, dr, uname)
     duration = new_values.get ('duration', None)
+    check_duration (_, duration, 24)
     wpid     = new_values.get ('wp')
     ttby     = db.user.get (dr.user, 'timetracking_by')
     if  (   uid != dr.user
         and uid != ttby
         and not common.user_has_role (db, uid, 'controlling', 'admin')
-        and not leave_wp (db, dr, wpid, start, end, duration)
+        and not leave_wp (db, dr, wpid, None, None, duration)
         and not vacation_wp (db, wpid)
         ) :
         raise Reject \
@@ -629,52 +654,72 @@ def new_time_record (db, cl, nodeid, new_values) :
             wday = gmtime (dr.date.timestamp ())[6]
             if wday in (5, 6) :
                 raise Reject (_ ('No weekend booking allowed'))
-    dstart, dend = check_start_end_duration \
-        (dr.date, start, end, duration, new_values)
-    # set default values according to selected work package
-    if 'wp' in new_values and new_values ['wp'] :
-        wp = new_values ['wp']
-        # overwrite work location default if default specified in time category
-        correct_work_location (db, wp, new_values)
-        travel = travel or db.time_wp.get (wp, 'travel')
-    if 'time_activity' in new_values and new_values ['time_activity'] :
-        act    = new_values ['time_activity']
-        travel = travel or db.time_activity.get (act, 'travel')
-    duration = new_values.get ('duration', None)
-    ls       = Date (db.user.get (dr.user, 'lunch_start') or '12:00')
-    ls.year  = dr.date.year
-    ls.month = dr.date.month
-    ls.day   = dr.date.day
-    ld       = db.user.get (dr.user, 'lunch_duration') or 1
-    hours    = int (ld)
-    minutes  = (ld - hours) * 60
-    le       = ls + Interval ('%d:%d' % (hours, minutes))
-    if  (   not travel
-        and duration is not None
-        and duration > 6
-        and start
-        and dstart < ls
-        and dend > ls
-        ) :
-        newrec  = { 'daily_record' : new_values ['daily_record']
-                  , 'start'        : le.pretty (hour_format)
-                  }
-
-        dur1    = (ls - dstart).as_seconds () / 3600.
-        dur2    = duration - dur1
-        if end :
-            dur2 -= ld
-        newrec ['duration']     = dur2
-        for attr in 'wp', 'time_activity', 'work_location' :
-            if attr in new_values and new_values [attr] :
-                newrec [attr] = new_values [attr]
-        new_values ['end']      = ls.pretty (hour_format)
-        new_values ['duration'] = dur1
-        if dur2 > 0 :
-            db.time_record.create (** newrec)
 # end def new_time_record
 
+def check_att_record (db, cl, nodeid, new_values) :
+    _ = db.i18n.gettext
+    for i in 'daily_record', :
+        if i in new_values :
+            raise Reject (_ ("%(attr)s may not be changed") % {'attr' : _ (i)})
+    # time_record may not be changed to *another* time_record
+    # But *may* become empty if new interface is used
+    if new_values.get ('time_record', None) :
+        attr = _ ('time_record')
+        raise Reject (_ ("%(attr)s may not be changed") % locals ())
+    tr       = None
+    duration = None
+    ar       = cl.getnode (nodeid)
+    trid     = new_values.get ('time_record',  ar.time_record)
+    if trid :
+        tr = db.time_record.getnode (trid)
+        duration = tr.duration
+    drec     = new_values.get ('daily_record', ar.daily_record)
+    dr       = db.daily_record.getnode (drec)
+    date     = dr.date
+    user     = dr.user
+    uname    = db.user.get (user, 'username')
+    start    = new_values.get ('start', ar.start)
+    end      = new_values.get ('end',   ar.end)
+    uid      = db.getuid ()
+    ttby     = db.user.get (dr.user, 'timetracking_by')
+    location = new_values.get ('work_location', ar.work_location)
+    dur      = duration
+    # Allow change of end independent of existing duration in tr
+    if ar.end :
+        dur = None
+    check_start_end_duration (_, date, start, end, dur, new_values)
+    if  (   uid != dr.user
+        and uid != ttby
+        and not common.user_has_role (db, uid, 'controlling', 'admin', 'hr')
+        ) :
+        raise Reject \
+            (_ ( "Only %(uname)s, Timetracking by, and Controlling "
+                 "may create/change attendance records"
+               )
+            % locals ()
+            )
+    dynamic  = user_dynamic.get_user_dynamic (db, dr.user, dr.date)
+    date     = dr.date.pretty (common.ymd)
+    if not dynamic :
+        if uid != '1' :
+            raise Reject \
+                (_ ("No dynamic user data for %(uname)s, %(date)s") % locals ())
+    else :
+        if not dynamic.booking_allowed and uid != '1' :
+            raise Reject \
+                (_ ("Booking not allowed for %(uname)s, %(date)s") % locals ())
+        if not (dr.weekend_allowed or dynamic.weekend_allowed) and uid != '1' :
+            wday = gmtime (dr.date.timestamp ())[6]
+            if wday in (5, 6) :
+                raise Reject (_ ('No weekend booking allowed'))
+    if 'start' in new_values and 'start_generated' not in new_values :
+        new_values ['start_generated'] = False
+    if 'end' in new_values and 'end_generated' not in new_values :
+        new_values ['end_generated'] = False
+# end def check_att_record
+
 def check_time_record (db, cl, nodeid, new_values) :
+    _ = db.i18n.gettext
     for i in 'daily_record', :
         if i in new_values :
             raise Reject (_ ("%(attr)s may not be changed") % {'attr' : _ (i)})
@@ -697,6 +742,8 @@ def check_time_record (db, cl, nodeid, new_values) :
         raise Reject (_ ("Frozen: %(uname)s, %(date)s") % locals ())
     status   = db.daily_record.get (cl.get (nodeid, 'daily_record'), 'status')
     leave    = db.daily_record_status.lookup ('leave')
+    subm     = db.daily_record_status.lookup ('submitted')
+    accpt    = db.daily_record_status.lookup ('accepted')
     allow    = False
     if dr.status == leave :
         du = vacation.leave_duration (db, user, date, is_ph)
@@ -705,7 +752,14 @@ def check_time_record (db, cl, nodeid, new_values) :
             and cl.get (nodeid, 'duration') != du
             ) :
             allow = True
-    allow    = allow or db.getuid () == '1'
+    elif dr.status in (subm, accpt) and is_ph :
+        du = vacation.leave_duration (db, user, date, is_ph)
+        if (   new_values.keys () == ['duration']
+           and new_values ['duration'] == du
+           and cl.get (nodeid, 'duration') != du
+           ) :
+           allow = True
+    allow = allow or db.getuid () == '1'
     if  (   status != db.daily_record_status.lookup ('open')
         and list (new_values) != ['tr_duration']
         and not allow
@@ -725,113 +779,11 @@ def check_time_record (db, cl, nodeid, new_values) :
                        )
                 )
         return
-    check_generated (new_values)
-    start    = new_values.get ('start',        cl.get (nodeid, 'start'))
-    end      = new_values.get ('end',          cl.get (nodeid, 'end'))
     duration = new_values.get ('duration',     cl.get (nodeid, 'duration'))
-    dist     = new_values.get ('dist',         cl.get (nodeid, 'dist'))
     wp       = new_values.get ('wp',           cl.get (nodeid, 'wp'))
-    wl       = 'work_location'
     ta       = 'time_activity'
-    location = new_values.get (wl,             cl.get (nodeid, wl))
     activity = new_values.get (ta,             cl.get (nodeid, ta))
     comment  = new_values.get ('comment',      cl.get (nodeid, 'comment'))
-    check_start_end_duration \
-        (date, start, end, duration, new_values, dist = dist)
-    if dist and not wp :
-        raise Reject (_ ("Distribution: WP must be given"))
-    if dist :
-        if dist < duration :
-            newrec = dict \
-                ( daily_record  = drec
-                , duration      = dist
-                , wp            = wp
-                , time_activity = activity
-                , work_location = location
-                )
-            if comment :
-                newrec ['comment'] = comment
-            start_generated = new_values.get \
-                ('start_generated', cl.get (nodeid, 'start_generated'))
-            if (start) :
-                newrec     ['start']           = start
-                newrec     ['end_generated']   = True
-                newrec     ['start_generated'] = start_generated
-                new_values ['start_generated'] = True
-            cl.create (** newrec)
-            for attr in 'wp', 'time_activity', 'work_location', 'comment' :
-                if attr in new_values :
-                    del new_values [attr]
-            wp = cl.get (nodeid, 'wp')
-        elif dist == duration :
-            # Nothing to do -- just set new wp
-            pass
-        else :
-            dist -= duration
-            wstart, wend = common.week_from_date (date)
-            dsearch = common.pretty_range (date, wend)
-            drs = db.daily_record.filter \
-                (None, dict (user = user, date = dsearch))
-            trs = db.time_record.filter  \
-                (None, {'daily_record' : drs})
-            trs = [db.time_record.getnode (t) for t in trs]
-            trs = [t for t in trs
-                   if  (   not t.wp
-                       and t.id != nodeid
-                       and (   t.daily_record != drec
-                           or (  start and t.start > start
-                              or not start
-                              )
-                           )
-                       )
-                  ]
-            trs = [(db.daily_record.get (tr.daily_record, 'date'), tr.start, tr)
-                   for tr in trs
-                  ]
-            trs.sort ()
-            trs = [tr [2] for tr in trs]
-            s   = sum (t.duration for t in trs)
-            if s < dist :
-                raise Reject \
-                    (_ ("dist must not exceed sum of unassigned times in week"))
-            for tr in trs :
-                if tr.duration <= dist :
-                    dist -= tr.duration
-                    db.time_record.set \
-                        ( tr.id
-                        , wp            = wp
-                        , time_activity = activity
-                        , work_location = location
-                        )
-                else :
-                    param = dict (duration = tr.duration - dist)
-                    newrec = dict \
-                        ( daily_record  = tr.daily_record
-                        , duration      = dist
-                        , wp            = wp
-                        , time_activity = activity
-                        , work_location = location
-                        )
-                    if tr.start :
-                        param ['start_generated'] = True
-                        dstart  = Date (tr.start)
-                        hours   = int (dist)
-                        minutes = (dist - hours) * 60
-                        dstart += Interval ('%d:%d' % (hours, minutes))
-                        param ['start'] = dstart.pretty (hour_format)
-                        newrec ['start']           = tr.start
-                        newrec ['end_generated']   = True
-                    cl.create          (** newrec)
-                    # warning side-effect, calling set will change
-                    # values in current tr!
-                    db.time_record.set (tr.id, **param)
-                    dist = 0
-                if not dist :
-                    break
-            assert (dist == 0)
-        del new_values ['dist']
-    if wp :
-        correct_work_location (db, wp, new_values)
     if 'tr_duration' not in new_values :
         new_values ['tr_duration'] = None
 # end def check_time_record
@@ -849,11 +801,12 @@ def check_for_retire_and_duration (db, cl, nodeid, old_values) :
 # end def check_for_retire_and_duration
 
 def fix_daily_recs_after_retire (db, cl, nodeid, dummy) :
-    """ remove ourselves from the daily record """
-    update_timerecs (db, nodeid, False)
+    """ Update the tr_duration in daily record """
+    invalidate_tr_duration_in_dr (db, nodeid)
 # end def fix_daily_recs_after_retire
 
 def check_retire (db, cl, nodeid, new_values) :
+    _ = db.i18n.gettext
     assert not new_values
     uid      = db.getuid ()
     st_open  = db.daily_record_status.lookup ('open')
@@ -954,6 +907,7 @@ def check_metadata (db, cl, nodeid, new_values) :
         may use non-numeric ids here. The fields shown are all required,
         additional fields may be present.
     """
+    _ = db.i18n.gettext
     if 'metadata' not in new_values :
         return
     metadata = new_values ['metadata']
@@ -995,18 +949,102 @@ def fix_tr_duration (db, cl, nodeid, old_values) :
         user_dynamic.update_tr_duration (db, dr)
 # end def fix_tr_duration
 
+def check_obsolete_props (db, cl, nodeid, new_values) :
+    """ Check no-longer-valid properties of time-record
+        We cannot get rid of these properties yet (because we need to
+        copy things to attendance records) but we make sure here that
+        they are no longer used (at least not changed).
+    """
+    _ = db.i18n.gettext
+    v = 'end end_generated start start_generated work_location'
+    for k in v.split () :
+        if k in new_values :
+            raise Reject (_ ('Trying to change obsolete property "%s"') % k)
+# end def check_obsolete_props
+
+def update_arec (db, cl, nodeid, old_values) :
+    """ If attendance record is changed *and* has a corresponding
+        time_record link, we update the duration if necessary
+    """
+    ar = cl.getnode (nodeid)
+    if not ar.time_record or not ar.start :
+        return
+    tr = db.time_record.getnode  (ar.time_record)
+    dr = db.daily_record.getnode (ar.daily_record)
+    dstart, dend, sp, ep, dur = check_timestamps \
+        (db.i18n.gettext, ar.start, ar.end, dr.date)
+    if dur != tr.duration :
+        db.time_record.set (tr.id, duration = dur)
+# end def update_arec
+
+def update_trec (db, cl, nodeid, old_values) :
+    """ If time record is changed *and* has a corresponding
+        attendance_record backlink, we update "end" if necessary
+    """
+    tr = cl.getnode (nodeid)
+    if not tr.attendance_record :
+        return
+    assert len (tr.attendance_record) == 1
+    arid = tr.attendance_record [0]
+    # Check if time record was retired
+    if cl.is_retired (nodeid) :
+        db.attendance_record.retire (arid)
+        return
+
+    # Check what changed, do nothing if only tr_duration changed in timerec
+    keys = []
+    for k in old_values :
+        if k in ['activity', 'attendance_record'] :
+            continue
+        if getattr (tr, k) != old_values [k] :
+            keys.append (k)
+    if keys == ['tr_duration'] :
+        return
+    ar = db.attendance_record.getnode (arid)
+    dr = db.daily_record.getnode      (tr.daily_record)
+    if ar.start is not None and ar.end is not None :
+        dstart, dend, sp, ep, dur = check_timestamps \
+            (db.i18n.gettext, ar.start, ar.end, dr.date)
+    else :
+        sp  = ar.start
+        ep  = ar.end
+        dur = None
+    d = {}
+    if dur and dur != tr.duration :
+        d ['end'] = compute_endtime (sp, tr.duration)
+    if tr.wp :
+        wp = db.time_wp.getnode (tr.wp)
+        work_location = db.time_project.get (wp.project, 'work_location')
+        if work_location :
+            d ['work_location'] = work_location
+    if d :
+        db.attendance_record.set (ar.id, **d)
+# end def update_trec
+
+def public_holiday (db, cl, nodeid, old_values) :
+    """ Create public holiday if necessary
+    """
+    dr = cl.getnode (nodeid)
+    vacation.try_create_public_holiday (db, nodeid, dr.date, dr.user)
+# end def public_holiday
+
 def init (db) :
     if 'time_record' not in db.classes :
         return
-    global _
-    _   = get_translation \
-        (db.config.TRACKER_LANGUAGE, db.config.TRACKER_HOME).gettext
     db.time_record.audit  ("create", new_time_record)
     db.time_record.audit  ("set",    check_time_record)
-    db.time_record.react  ("create", update_time_record_in_daily_record)
+    db.time_record.react  ("create", compute_tr_duration)
     db.time_record.react  ("set",    check_for_retire_and_duration)
     db.time_record.audit  ("retire", check_retire)
     db.time_record.react  ("retire", fix_daily_recs_after_retire)
+    db.time_record.audit  ("create", check_obsolete_props, priority = 500)
+    db.time_record.audit  ("set",    check_obsolete_props, priority = 500)
+    db.time_record.react  ("set",    update_trec)
+    att = db.attendance_record
+    att.audit             ("create", new_attendance_record)
+    att.audit             ("set",    check_att_record)
+    att.react             ("create", update_arec)
+    att.react             ("set",    update_arec)
     db.daily_record.audit ("create", new_daily_record)
     db.daily_record.audit ("set",    check_daily_record)
     db.daily_record.react ("set",    send_mail_on_deny)
@@ -1014,6 +1052,7 @@ def init (db) :
     db.daily_record.audit ("set",    check_metadata)
     db.daily_record.react ("set",    fix_tr_duration, priority = 200)
     db.daily_record.react ("create", fix_tr_duration, priority = 200)
+    db.daily_record.react ("create", public_holiday)
 # end def init
 
 ### __END__ time_record

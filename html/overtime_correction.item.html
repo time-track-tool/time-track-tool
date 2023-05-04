@@ -22,7 +22,8 @@
     <tal:block metal:fill-slot="formatted_class_content">
      <tr>
       <th class="required"
-          tal:content="structure python:utils.fieldname (classname, 'user')"/>
+          tal:content="structure python:utils.fieldname
+          (db, classname, 'user')"/>
       <td tal:condition="context/id"
         tal:content="structure python:utils.ExtProperty
          ( utils, context.user.username
@@ -39,17 +40,19 @@
              )"/>
       </td>
       <th class="required"
-          tal:content="structure python:utils.fieldname (classname, 'date')"/>
+          tal:content="structure python:utils.fieldname
+          (db, classname, 'date')"/>
       <td tal:content="structure python:context.date.field (size=20)"/>
      </tr>
      <tr>
       <th class="required"
-          tal:content="structure python:utils.fieldname (classname, 'value')"/>
+          tal:content="structure python:utils.fieldname
+          (db, classname, 'value')"/>
       <td tal:content="structure python:context.value.field ()"/>
      </tr>
      <tr>
       <th tal:content="structure python:utils.fieldname
-              (classname, 'comment')"/>
+              (db, classname, 'comment')"/>
       <td colspan="3"
           tal:content="structure python:context.comment.field (size=60)"/>
      </tr>

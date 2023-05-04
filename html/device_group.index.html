@@ -19,21 +19,22 @@
               <li>
                 <span class="col_id">
                   <a href="#" class="sort_link" tal:content="structure python:
-                      utils.fieldlabel ('device_group', 'id', endswith='')"/>
+                     utils.fieldlabel (db, 'device_group', 'id', endswith='')"/>
                 </span>
                 <span class="col_name">
                   <a href="#" class="sort_link" tal:content="structure python:
-                      utils.fieldlabel ('device_group', 'name', endswith='')"/>
+                     utils.fieldlabel
+                       (db, 'device_group', 'name', endswith='')"/>
                 </span>
                 <span class="col_desc">
                   <a href="#" class="sort_link" tal:content="structure python:
                       utils.fieldlabel
-                        ('device_group', 'description', endswith='')"/>
+                        (db, 'device_group', 'description', endswith='')"/>
                 </span>
                 <span class="col_order">
                   <a href="#" class="sort_link active"
                      tal:content="structure python: utils.fieldlabel
-                        ('device_group', 'order', endswith='')"/>
+                        (db, 'device_group', 'order', endswith='')"/>
                 </span>
               </li>
             </ul>

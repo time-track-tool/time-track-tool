@@ -20,33 +20,35 @@
    <tal:block metal:use-macro="templates/page/macros/formatted_class">
     <tal:block metal:fill-slot="formatted_class_content">
      <tr>
-      <th tal:content="structure python:utils.fieldname (classname, 'user')"/>
+      <th tal:content="structure python:utils.fieldname
+          (db, classname, 'user')"/>
       <td>
        <span tal:replace="structure context/user/field"/>
        <span tal:replace="structure python:utils.user_classhelp
              (db, property = 'user', exclude_system = True)"/>
       </td>
-      <th tal:content="structure python:utils.fieldname (classname, 'date')"/>
+      <th tal:content="structure python:utils.fieldname
+          (db, classname, 'date')"/>
       <td tal:content="structure python:context.date.field (size=20)"/>
      </tr>
      <tr>
       <th tal:content="structure python:utils.fieldname
-          (classname, 'required_overtime')"/>
+          (db, classname, 'required_overtime')"/>
       <td tal:content="structure python:context.required_overtime.field ()"/>
      </tr>
      <tr tal:condition="python:context.date.pretty ('%a') in ('Sat','Sun')">
       <th tal:content="structure python:utils.fieldname
-          (classname, 'weekend_allowed')"/>
+          (db, classname, 'weekend_allowed')"/>
       <td tal:content="structure python:context.weekend_allowed.field ()"/>
      </tr>
      <tr>
       <th tal:content="structure python:utils.fieldname
-          (classname, 'status')"/>
+          (db, classname, 'status')"/>
       <td tal:content="structure python:context.status.menu ()" colspan="3"/>
      </tr>
      <tr tal:condition="python: True or db._db.getuid () == 1">
       <th tal:content="structure python:utils.fieldname
-          (classname, 'tr_duration_ok')"/>
+          (db, classname, 'tr_duration_ok')"/>
       <td tal:content="structure python:context.tr_duration_ok.field ()"
           colspan="3"/>
      </tr>

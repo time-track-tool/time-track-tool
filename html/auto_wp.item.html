@@ -24,18 +24,18 @@
      <tr>
       <th class="required"
           tal:content="structure python:utils.fieldname
-              (classname, 'org_location')"/>
+              (db, classname, 'org_location')"/>
       <td tal:content="structure python:context.org_location.menu ()"/>
      </tr>
      <tr>
       <th tal:content="structure python:utils.fieldname
-              (classname, 'contract_type')"/>
+              (db, classname, 'contract_type')"/>
       <td tal:content="structure python:context.contract_type.menu ()"/>
      </tr>
      <tr>
       <th class="required"
           tal:content="structure python:utils.fieldname
-              (classname, 'time_project')"/>
+              (db, classname, 'time_project')"/>
       <td>
        <span tal:replace="structure context/time_project/field"/>
        <span tal:condition="context/time_project/is_edit_ok"
@@ -51,21 +51,22 @@
      </tr>
      <tr>
       <th tal:content="structure python:utils.fieldname
-              (classname, 'duration')"/>
+          (db, classname, 'duration')"/>
       <td tal:content="structure python:context.duration.field ()"/>
      </tr>
      <tr>
       <th tal:content="structure python:utils.fieldname
-              (classname, 'durations_allowed')"/>
+          (db, classname, 'durations_allowed')"/>
       <td tal:content="structure python:context.durations_allowed.field ()"/>
      </tr>
      <tr>
-      <th tal:content="structure python:utils.fieldname (classname, 'all_in')"/>
+      <th tal:content="structure python:utils.fieldname
+          (db, classname, 'all_in')"/>
       <td tal:content="structure python:context.all_in.field ()"/>
      </tr>
      <tr>
       <th tal:content="structure python:utils.fieldname
-              (classname, 'is_valid')"/>
+          (db, classname, 'is_valid')"/>
       <td tal:content="structure python:context.is_valid.field ()"/>
      </tr>
     </tal:block>

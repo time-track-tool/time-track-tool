@@ -50,7 +50,7 @@ def init \
     , Department_Class
     , Time_Project_Status_Class
     , ** kw
-    ) :
+    ):
     export = {}
 
     cc_bu_category = Class \
@@ -111,7 +111,6 @@ def init \
                                             )
         , required_overtime     = Boolean   ()
         , weekend_allowed       = Boolean   ()
-        , time_record           = Multilink ("time_record",   do_journal = "no")
         , tr_duration_ok        = Number    ()
         )
     daily_record.setlabelprop ('date')
@@ -254,10 +253,10 @@ def init \
     # is_extern flag is used when an external system (e.g. Jira) manages
     # the time records, no WP from this time_project will be visible in
     # the normal time tracker gui, access only via API.
-    class Time_Project_Class (kw ['Time_Project_Class']) :
+    class Time_Project_Class (kw ['Time_Project_Class']):
         """Add attributes to existing Time_Project_Class class."""
 
-        def __init__ (self, db, classname, ** properties) :
+        def __init__ (self, db, classname, ** properties):
             self.update_properties \
                 ( approval_hr           = Boolean   ()
                 , approval_required     = Boolean   ()
@@ -307,21 +306,43 @@ def init \
     SAP_CC_Class (db, ''"sap_cc")
 
     time_record = Class \
-        ( db
-        , ''"time_record"
-        , daily_record          = Link      ("daily_record",  do_journal = "no")
-        , start                 = String    (indexme = "no")
-        , end                   = String    (indexme = "no")
-        , start_generated       = Boolean   ()
-        , end_generated         = Boolean   ()
+        ( db, ''"time_record"
+        , daily_record          = Link      ( "daily_record"
+                                            , do_journal = "no"
+                                            , rev_multilink = "time_record"
+                                            )
         , duration              = Number    ()
         , tr_duration           = Number    ()
         , wp                    = Link      ("time_wp",       do_journal = "no")
         , time_activity         = Link      ("time_activity", do_journal = "no")
-        , work_location         = Link      ("work_location", do_journal = "no")
         , comment               = String    (indexme = "no")
-        , dist                  = Number    ()
         , metadata              = String    ()
+        # Fields to be deleted (see attendance_record)
+        , start                 = String    (indexme = "no")
+        , end                   = String    (indexme = "no")
+        , start_generated       = Boolean   ()
+        , end_generated         = Boolean   ()
+        , work_location         = Link      ("work_location", do_journal = "no")
+        )
+
+    attendance_record = Class \
+        ( db, ''"attendance_record"
+        , daily_record          = Link      ( "daily_record"
+                                            , rev_multilink
+                                              = "attendance_record"
+                                            , do_journal = "no"
+                                            )
+        , start                 = String    (indexme = "no")
+        , end                   = String    (indexme = "no")
+        , start_generated       = Boolean   ()
+        , end_generated         = Boolean   ()
+        , work_location         = Link      ("work_location", do_journal = "no")
+        , dist                  = Number    ()
+        , time_record           = Link      ( "time_record"
+                                            , rev_multilink
+                                              = "attendance_record"
+                                            , do_journal = "no"
+                                            )
         )
 
     time_wp = Class \
@@ -340,7 +361,6 @@ def init \
         , bookers               = Multilink ("user")
         , durations_allowed     = Boolean   ()
         , cost_center           = Link      ("cost_center")
-        , travel                = Boolean   ()
         , is_public             = Boolean   ()
         , has_expiration_date   = Boolean   ()
         , time_wp_summary_no    = Link      ("time_wp_summary_no")
@@ -544,6 +564,11 @@ def init \
         , ''"work_location"
         , code                  = String    ()
         , description           = String    ()
+        , durations_allowed     = Boolean   ()
+        , travel                = Boolean   ()
+        , is_valid              = Boolean   ()
+        , order                 = Number    ()
+        , is_off                = Boolean   ()
         )
     work_location.setkey ("code")
 
@@ -566,10 +591,10 @@ def init \
         )
     user_functional_role.setlabelprop ("functional_role")
 
-    class User_Class (kw ['User_Class']) :
+    class User_Class (kw ['User_Class']):
         """ add some attrs to user class
         """
-        def __init__ (self, db, classname, ** properties) :
+        def __init__ (self, db, classname, ** properties):
             self.update_properties \
                 ( timing_info            = Boolean   ()
                 , timetracking_by        = Link      ("user")
@@ -582,6 +607,8 @@ def init \
                 , vie_user_bl_override   = Link      ("user")
                 , sync_foreign_key       = String    ()
                 , department_temp        = String    ()
+                , dark_mode              = Boolean   ()
+                , new_tt_iface           = Boolean   ()
                 )
             kw ['User_Class'].__init__ (self, db, classname, ** properties)
         # end def __init__
@@ -589,10 +616,10 @@ def init \
     export.update (dict (User_Class = User_Class))
 
     User_Status_Ancestor = kw ['User_Status_Class']
-    class User_Status_Class_TT (User_Status_Ancestor) :
+    class User_Status_Class_TT (User_Status_Ancestor):
         """ Add attribute(s) to User_Status_Class.
         """
-        def __init__ (self, db, classname, ** properties) :
+        def __init__ (self, db, classname, ** properties):
             self.update_properties \
                 ( timetracking_allowed  = Boolean   ()
                 )
@@ -602,10 +629,10 @@ def init \
     # end class User_Status_Class_TT
     export.update (dict (User_Status_Class = User_Status_Class_TT))
 
-    class Org_Location_Class (kw ['Org_Location_Class']) :
+    class Org_Location_Class (kw ['Org_Location_Class']):
         """ Add some attributes needed for time tracker
         """
-        def __init__ (self, db, classname, ** properties) :
+        def __init__ (self, db, classname, ** properties):
             ancestor = kw ['Org_Location_Class']
             self.update_properties \
                 ( vacation_legal_year        = Boolean   ()
@@ -621,10 +648,10 @@ def init \
     export.update (dict (Org_Location_Class = Org_Location_Class))
     Org_Location_Class (db, ''"org_location")
 
-    class Location_Class (kw ['Location_Class']) :
+    class Location_Class (kw ['Location_Class']):
         """ Add some attributes needed for time tracker
         """
-        def __init__ (self, db, classname, ** properties) :
+        def __init__ (self, db, classname, ** properties):
             ancestor = kw ['Location_Class']
             self.update_properties \
                 ( weekly_hours_fte           = Number    ()
@@ -635,10 +662,10 @@ def init \
     export.update (dict (Location_Class = Location_Class))
     Location_Class     (db, ''"location")
 
-    class Organisation_Class (kw ['Organisation_Class']) :
+    class Organisation_Class (kw ['Organisation_Class']):
         """ Add some attributes needed for time tracker
         """
-        def __init__ (self, db, classname, ** properties) :
+        def __init__ (self, db, classname, ** properties):
             ancestor = kw ['Organisation_Class']
             self.update_properties \
                 ( org_group                  = Link      ("org_group")
@@ -664,7 +691,7 @@ def init \
     # See the configuration and customisation document for information
     # about security setup.
 
-def security (db, ** kw) :
+def security (db, ** kw):
     roles = \
         [ ("Project",           "Project Office")
         , ("Project_View",      "May view project data")
@@ -703,7 +730,7 @@ def security (db, ** kw) :
           , ["Controlling"]
           )
         , ( "contract_type"
-          , ["HR", "HR-vacation", "HR-leave-approval", "controlling"]
+          , ["HR", "HR-vacation", "HR-leave-approval", "controlling", "user"]
           , ["HR-vacation"]
           )
         , ( "cost_center"
@@ -798,6 +825,10 @@ def security (db, ** kw) :
           , ["HR", "Controlling"]
           , ["HR", "Controlling"]
           )
+        , ( "attendance_record"
+          , ["HR", "Controlling"]
+          , ["HR", "Controlling"]
+          )
         , ( "time_wp_group"
           , ["User"]
           , ["Project"]
@@ -866,7 +897,7 @@ def security (db, ** kw) :
 
     prop_perms = \
         [ ( "daily_record", "Edit", ["HR", "Controlling"]
-          , ("status", "time_record")
+          , ("status", "time_record", "attendance_record")
           )
         , ( "daily_record", "Edit", ["HR"]
           , ("required_overtime", "weekend_allowed")
@@ -920,10 +951,13 @@ def security (db, ** kw) :
     schemadef.register_roles             (db, roles)
     schemadef.register_class_permissions (db, classes, prop_perms)
     schemadef.own_user_detail_permission \
-        (db, 'User', 'View', 'planning_role', 'entry_date')
+        ( db, 'User', 'View'
+        , 'planning_role', 'entry_date', 'dark_mode', 'new_tt_iface'
+        )
+    schemadef.own_user_detail_permission (db, 'User', 'Edit', 'dark_mode')
 
     # Allow retire/restore for Functional-Role
-    for perm in 'Retire', 'Restore' :
+    for perm in 'Retire', 'Restore':
         p = db.security.addPermission \
             ( name        = perm
             , klass       = 'user_functional_role'
@@ -931,32 +965,34 @@ def security (db, ** kw) :
         db.security.addPermissionToRole ('Functional-Role', p)
 
     # For the following the use is regulated by auditors.
+    db.security.addPermissionToRole ('User', 'Create', 'attendance_record')
     db.security.addPermissionToRole ('User', 'Create', 'time_record')
     db.security.addPermissionToRole ('User', 'Create', 'daily_record')
     db.security.addPermissionToRole ('User', 'Create', 'leave_submission')
     schemadef.add_search_permission (db, 'leave_submission', 'User')
     schemadef.add_search_permission (db, 'daily_record', 'User')
     schemadef.add_search_permission (db, 'time_record', 'User')
+    schemadef.add_search_permission (db, 'attendance_record', 'User')
 
     fixdoc = schemadef.security_doc_from_docstring
 
-    def approver_daily_record (db, userid, itemid) :
+    def approver_daily_record (db, userid, itemid):
         """User is allowed to edit daily record if he is supervisor.
 
            A negative itemid indicates that the record doesn't exist
            yet -- we allow creation in this case. Modification is only
            allowed by the supervisor.
         """
-        if int (itemid) < 0 : # allow creation
+        if int (itemid) < 0: # allow creation
             return True
         ownerid   = db.daily_record.get (itemid, 'user')
-        if not ownerid :
+        if not ownerid:
             return False
         clearance = tt_clearance_by (db, ownerid)
         return userid in clearance
     # end def approver_daily_record
 
-    def ok_daily_record (db, userid, itemid) :
+    def ok_daily_record (db, userid, itemid):
         """User is allowed to access daily record if he is owner or
            supervisor or timetracking-by user.
 
@@ -967,44 +1003,72 @@ def security (db, ** kw) :
         """
         ownerid   = db.daily_record.get (itemid, 'user')
         ttby      = db.user.get (ownerid, 'timetracking_by')
-        if userid == ttby :
+        if userid == ttby:
             return True
         return userid == ownerid or approver_daily_record (db, userid, itemid)
     # end def ok_daily_record
 
-    def own_time_record (db, userid, itemid) :
-        """User or Timetracking by user may edit time_records owned by user.
+    def own_record (db, cl, userid, itemid):
+        """User or Timetracking by user may edit records owned by user.
 
            Determine if the user owns the daily record, a negative itemid
            indicates that the record doesn't exist yet -- we allow creation
            in this case.
         """
-        if int (itemid) < 0 : # allow creation
+        if int (itemid) < 0: # allow creation
             return True
-        dr      = db.time_record.get  (itemid, 'daily_record')
+        dr      = cl.get  (itemid, 'daily_record')
         ownerid = db.daily_record.get (dr, 'user')
         owner   = db.user.getnode (ownerid)
-        if owner.timetracking_by :
+        if owner.timetracking_by:
             return owner.timetracking_by == userid
         return userid == ownerid
-    # end def own_time_record
+    # end def own_record
 
-    def own_user_functional_role (db, userid, itemid) :
+    def own_time_record (db, userid, itemid):
+        return own_record (db, db.time_record, userid, itemid)
+    # end def own_time_record
+    own_time_record.__doc__ = own_record.__doc__
+
+    def own_attendance_record (db, userid, itemid):
+        return own_record (db, db.attendance_record, userid, itemid)
+    # end def own_attendance_record
+    own_attendance_record.__doc__ = own_record.__doc__
+
+    def own_user_functional_role (db, userid, itemid):
         """User may view their own user functional role
         """
-        if int (itemid) < 0 :
+        if int (itemid) < 0:
             return True
         ownerid = db.user_functional_role.get (itemid, 'user')
         return userid == ownerid
     # end def own_user_functional_role
 
-    def own_leave_submission (db, userid, itemid) :
+    def own_user_dynamic (db, userid, itemid):
+        """User may view their own user dynamic
+        """
+        if int (itemid) < 0:
+            return True
+        ownerid = db.user_dynamic.get (itemid, 'user')
+        return userid == ownerid
+    # end def own_user_dynamic
+
+    def own_vacation_correction (db, userid, itemid):
+        """User may view their own vacation corrections
+        """
+        if int (itemid) < 0:
+            return False
+        ownerid = db.vacation_correction.get (itemid, 'user')
+        return userid == ownerid
+    # end def own_vacation_correction
+
+    def own_leave_submission (db, userid, itemid):
         """ User may edit own leave submissions. """
         ownerid = db.leave_submission.get (itemid, 'user')
         return userid == ownerid
     # end def own_leave_submission
 
-    def approval_for_leave_submission (db, userid, itemid) :
+    def approval_for_leave_submission (db, userid, itemid):
         """User is allowed to view leave submission if he is the supervisor
            or the person to whom approvals are delegated.
 
@@ -1016,7 +1080,7 @@ def security (db, ** kw) :
         return userid in clearance
     # end def approval_for_leave_submission
 
-    def may_see_time_record (db, userid, itemid) :
+    def may_see_time_record (db, userid, itemid):
         # docstring is used to create composite doc for given check
         # function it is intended that it ends with "or"
         """User is allowed to see time record if he is allowed to see
@@ -1024,55 +1088,68 @@ def security (db, ** kw) :
         """
         dr = db.time_record.get (itemid, 'daily_record')
         wp = db.time_record.get (itemid, 'wp')
-        if sum_common.daily_record_viewable (db, userid, dr) :
+        if sum_common.daily_record_viewable (db, userid, dr):
             return True
-        if wp is None :
+        if wp is None:
             return False
         return sum_common.time_wp_viewable (db, userid, wp)
     # end def may_see_time_record
 
-    def may_see_daily_record (db, userid, itemid) :
+    def may_see_attendance_record (db, userid, itemid):
+        # docstring is used to create composite doc for given check
+        # function it is intended that it ends with "if"
+        """User is allowed to see time record if
+        """
+        dr = db.attendance_record.get (itemid, 'daily_record')
+        if sum_common.daily_record_viewable (db, userid, dr):
+            return True
+    # end def may_see_attendance_record
+
+    def may_see_daily_record (db, userid, itemid):
         """ Users may see daily record if they may see one of the
             time_records for that day.
         """
-        if int (itemid) < 0 :
+        if int (itemid) < 0:
             return False
-        trs = db.time_record.filter (None, dict (daily_record = itemid))
-        for tr in trs :
-            if may_see_time_record (db, userid, tr) :
+        dr = db.daily_record.getnode (itemid)
+        # Not necessary to do the same check for attendance_record since
+        # the check there only checks view permission on the same
+        # daily_record.
+        for tr in dr.time_record:
+            if may_see_time_record (db, userid, tr):
                 return True
         return False
     # end def may_see_daily_record
 
-    def is_project_owner_or_deputy (db, userid, itemid) :
+    def is_project_owner_or_deputy (db, userid, itemid):
         """User is allowed to edit workpackage if he is time category
            owner or deputy.
         """
-        if int (itemid) < 0 :
+        if int (itemid) < 0:
             return False
         prid    = db.time_wp.get (itemid, 'project')
         project = db.time_project.getnode (prid)
         return userid == project.responsible or userid == project.deputy
     # end def is_project_owner_of_wp
 
-    def ok_work_package (db, userid, itemid) :
+    def ok_work_package (db, userid, itemid):
         """User is allowed to view/edit workpackage if he is owner or project
            responsible/deputy.
 
            Check if user is responsible for wp or if user is responsible
            for project or is the deputy for project
         """
-        if int (itemid) < 0 :
+        if int (itemid) < 0:
             return False
         ownerid = db.time_wp.get (itemid, 'responsible')
-        if ownerid == userid :
+        if ownerid == userid:
             return True
         prid    = db.time_wp.get (itemid, 'project')
         project = db.time_project.getnode (prid)
         return userid == project.responsible or userid == project.deputy
     # end def ok_work_package
 
-    def time_project_responsible_and_open (db, userid, itemid) :
+    def time_project_responsible_and_open (db, userid, itemid):
         """ User is allowed to edit time category if the status is
             "Open" and he is responsible for the time category.
 
@@ -1080,30 +1157,40 @@ def security (db, ** kw) :
             if yes *and* the time_project is in status open, the user
             may edit several fields.
         """
-        if int (itemid) < 0 :
+        if int (itemid) < 0:
             return False
         ownerid = db.time_project.get (itemid, 'responsible')
         open    = db.time_project_status.lookup ('Open')
         status  = db.time_project.get (itemid, 'status')
-        if ownerid == userid and status == open :
+        if ownerid == userid and status == open:
             return True
         return False
     # end def time_project_responsible_and_open
 
-    def approval_for_time_record (db, userid, itemid) :
-        """User is allowed to view time record if he is the supervisor
+    def approval_for_record (db, cl, userid, itemid):
+        """User is allowed to view record if he is the supervisor
            or the person to whom approvals are delegated.
 
            Viewing is allowed by the supervisor or the person to whom
            approvals are delegated.
         """
-        dr        = db.time_record.get  (itemid, 'daily_record')
+        dr        = cl.get (itemid, 'daily_record')
         ownerid   = db.daily_record.get (dr, 'user')
         clearance = tt_clearance_by (db, ownerid)
         return userid in clearance
-    # end def approval_for_time_record
+    # end def approval_for_record
 
-    def overtime_thawed (db, userid, itemid) :
+    def approval_for_time_record (db, userid, itemid):
+        return approval_for_record (db, db.time_record, userid, itemid)
+    # end def approval_for_time_record
+    approval_for_time_record.__doc__ = approval_for_record.__doc__
+
+    def approval_for_attendance_record (db, userid, itemid):
+        return approval_for_record (db, db.attendance_record, userid, itemid)
+    # end def approval_for_attendance_record
+    approval_for_attendance_record.__doc__ = approval_for_record.__doc__
+
+    def overtime_thawed (db, userid, itemid):
         """User is allowed to edit overtime correction if the overtime
            correction is not frozen.
 
@@ -1113,7 +1200,7 @@ def security (db, ** kw) :
         return not frozen (db, oc.user, oc.date)
     # end def overtime_thawed
 
-    def dr_freeze_last_frozen (db, userid, itemid) :
+    def dr_freeze_last_frozen (db, userid, itemid):
         """User is allowed to edit freeze record if not frozen at the
            given date.
 
@@ -1123,7 +1210,7 @@ def security (db, ** kw) :
         return not frozen (db, df.user, df.date + date.Interval ('1d'))
     # end def dr_freeze_last_frozen
 
-    def dynuser_thawed (db, userid, itemid) :
+    def dynuser_thawed (db, userid, itemid):
         """User is allowed to edit dynamic user data if not frozen in
            validity span of dynamic user record
         """
@@ -1131,48 +1218,60 @@ def security (db, ** kw) :
         return not frozen (db, dyn.user, dyn.valid_from)
     # end def dynuser_thawed
 
-    def wp_admitted (db, userid, itemid) :
+    def wp_admitted (db, userid, itemid):
         """User is allowed to view selected fields in work package if
            booking is allowed for this user (also applies to
            timetracking by, supervisor and approval delegated)
         """
         wp = db.time_wp.getnode (itemid)
-        if wp.is_public or userid in wp.bookers :
+        if wp.is_public or userid in wp.bookers:
             return True
         # Get all users for which *this* user is in timetracking_by
         users = db.user.filter (None, dict (timetracking_by = userid))
-        for u in users :
-            if u in wp.bookers :
+        for u in users:
+            if u in wp.bookers:
                 return True
         # Get all users for which *this* user is in clearance_by or a
         # substitute
-        for b in wp.bookers :
-            for u in common.tt_clearance_by (db, b) :
-                if u == userid :
+        for b in wp.bookers:
+            for u in common.tt_clearance_by (db, b):
+                if u == userid:
                     return True
         return False
     # end def wp_admitted
 
-    def project_or_wp_name_visible (db, userid, itemid) :
+    def project_or_wp_name_visible (db, userid, itemid):
         """User is allowed to view work package and time category names
            if he/she has role HR or HR-Org-Location.
         """
-        if common.user_has_role (db, userid, 'HR', 'HR-Org-Location') :
+        if common.user_has_role (db, userid, 'HR', 'HR-Org-Location'):
             return True
     # end def project_or_wp_name_visible
 
-    def time_record_visible_for_hr_olo (db, userid, itemid) :
-        """User is allowed to view time record data if he/she
+    def record_visible_for_hr_olo (db, cl, userid, itemid):
+        """User is allowed to view record data if he/she
            is in group HR-Org-Location and in the same Org-Location as
            the given user
         """
-        did = db.time_record.get (itemid, 'daily_record')
+        did = cl.get (itemid, 'daily_record')
         dr  = db.daily_record.getnode (did)
         return user_dynamic.hr_olo_role_for_this_user \
             (db, userid, dr.user, dr.date)
-    # end def time_record_visible_for_hr_olo
+    # end def record_visible_for_hr_olo
 
-    def user_dynamic_visible_for_hr_olo (db, userid, itemid) :
+    def time_record_visible_for_hr_olo (db, userid, itemid):
+        return record_visible_for_hr_olo (db, db.time_record, userid, itemid)
+    # end def time_record_visible_for_hr_olo
+    time_record_visible_for_hr_olo.__doc__ = record_visible_for_hr_olo.__doc__
+
+    def attendance_record_visible_for_hr_olo (db, userid, itemid):
+        return record_visible_for_hr_olo \
+            (db, db.attendance_record, userid, itemid)
+    # end def attendance_record_visible_for_hr_olo
+    attendance_record_visible_for_hr_olo.__doc__ = \
+        record_visible_for_hr_olo.__doc__
+
+    def user_dynamic_visible_for_hr_olo (db, userid, itemid):
         """User is allowed to view dynamic user data if he/she
            is in group HR-Org-Location and in the same Org-Location as
            the given user
@@ -1181,7 +1280,7 @@ def security (db, ** kw) :
         return user_dynamic.hr_olo_role_for_this_user_dyn (db, userid, dyn)
     # end def user_dynamic_visible_for_hr_olo
 
-    def overtime_corr_visible_for_hr_olo (db, userid, itemid) :
+    def overtime_corr_visible_for_hr_olo (db, userid, itemid):
         """User is allowed to view overtime information if he/she
            is in group HR-Org-Location and in the same Org-Location as
            the given user
@@ -1191,15 +1290,15 @@ def security (db, ** kw) :
             (db, userid, ot.user, ot.date)
     # end def overtime_corr_visible_for_hr_olo
 
-    def overtime_corr_visible_for_user (db, userid, itemid) :
+    def overtime_corr_visible_for_user (db, userid, itemid):
         """User is allowed to view their own overtime information
         """
         ot = db.overtime_correction.getnode (itemid)
-        if ot.user == userid :
+        if ot.user == userid:
             return True
     # end def overtime_corr_visible_for_user
 
-    def dr_freeze_visible_for_hr_olo (db, userid, itemid) :
+    def dr_freeze_visible_for_hr_olo (db, userid, itemid):
         """User is allowed to view freeze information if he/she
            is in group HR-Org-Location and in the same Org-Location as
            the given user
@@ -1209,26 +1308,34 @@ def security (db, ** kw) :
             (db, userid, df.user, df.date)
     # end def dr_freeze_visible_for_hr_olo
 
-    def time_report_visible (db, userid, itemid) :
+    def dr_freeze_visible_for_user (db, userid, itemid):
+        """User is allowed to view freeze information if he/she
+           matches the user of the freeze record.
+        """
+        df = db.daily_record_freeze.getnode (itemid)
+        return df.user == userid
+    # end def dr_freeze_visible_for_user
+
+    def time_report_visible (db, userid, itemid):
         """ User may see time report if reponsible or deputy of time
             project or on nosy list of time project.
         """
         trep = db.time_report.getnode (itemid)
-        if not trep.time_project :
+        if not trep.time_project:
             return False
         tp   = db.time_project.getnode (trep.time_project)
-        if userid == tp.responsible or userid == tp.deputy :
+        if userid == tp.responsible or userid == tp.deputy:
             return True
-        if userid in tp.nosy :
+        if userid in tp.nosy:
             return True
         return False
     # end def time_report_visible
 
-    def own_file (db, userid, itemid) :
+    def own_file (db, userid, itemid):
         """ User may edit own file (file created by user)
         """
         f = db.file.getnode (itemid)
-        if userid == f.creator :
+        if userid == f.creator:
             return True
         return False
     # end def own_file
@@ -1288,7 +1395,7 @@ def security (db, ** kw) :
         , klass       = 'daily_record'
         , check       = ok_daily_record
         , description = fixdoc (ok_daily_record.__doc__)
-        , properties  = ('status', 'time_record')
+        , properties  = ('status', 'time_record', 'attendance_record')
         )
     db.security.addPermissionToRole ('User', p)
 
@@ -1300,7 +1407,7 @@ def security (db, ** kw) :
         )
     db.security.addPermissionToRole ('User', p)
 
-    for perm in 'View', 'Edit' :
+    for perm in 'View', 'Edit':
 
         p = db.security.addPermission \
             ( name        = perm
@@ -1321,6 +1428,14 @@ def security (db, ** kw) :
 
         p = db.security.addPermission \
             ( name        = perm
+            , klass       = 'attendance_record'
+            , check       = own_attendance_record
+            , description = fixdoc (own_attendance_record.__doc__)
+            )
+        db.security.addPermissionToRole ('User', p)
+
+        p = db.security.addPermission \
+            ( name        = perm
             , klass       = 'leave_submission'
             , check       = own_leave_submission
             , description = fixdoc (own_leave_submission.__doc__)
@@ -1331,8 +1446,9 @@ def security (db, ** kw) :
             )
         db.security.addPermissionToRole ('User', p)
 
-    # Allow retire and restore for own (or timetracking_by) timerecs
-    for perm in 'Retire', 'Restore' :
+    # Allow retire and restore for own (or timetracking_by) timerecs and
+    # attendance records
+    for perm in 'Retire', 'Restore':
         p = db.security.addPermission \
             ( name        = perm
             , klass       = 'time_record'
@@ -1340,7 +1456,13 @@ def security (db, ** kw) :
             , description = fixdoc (own_time_record.__doc__)
             )
         db.security.addPermissionToRole ('User', p)
-
+        p = db.security.addPermission \
+            ( name        = perm
+            , klass       = 'attendance_record'
+            , check       = own_attendance_record
+            , description = fixdoc (own_attendance_record.__doc__)
+            )
+        db.security.addPermissionToRole ('User', p)
 
     p = db.security.addPermission \
         ( name        = 'View'
@@ -1368,6 +1490,13 @@ def security (db, ** kw) :
     db.security.addPermissionToRole ('User', p)
     p = db.security.addPermission \
         ( name        = 'View'
+        , klass       = 'attendance_record'
+        , check       = approval_for_attendance_record
+        , description = fixdoc (approval_for_attendance_record.__doc__)
+        )
+    db.security.addPermissionToRole ('User', p)
+    p = db.security.addPermission \
+        ( name        = 'View'
         , klass       = 'daily_record'
         , check       = sum_common.daily_record_viewable
         , description = fixdoc (sum_common.daily_record_viewable.__doc__)
@@ -1383,7 +1512,18 @@ def security (db, ** kw) :
             ))
         )
     db.security.addPermissionToRole ('User', p)
+    p = db.security.addPermission \
+        ( name        = 'View'
+        , klass       = 'attendance_record'
+        , check       = may_see_attendance_record
+        , description = ' '.join
+            (( fixdoc (may_see_attendance_record.__doc__)
+             , fixdoc (sum_common.daily_record_viewable.__doc__)
+            ))
+        )
+    db.security.addPermissionToRole ('User', p)
     schemadef.add_search_permission (db, 'time_record', 'User')
+    schemadef.add_search_permission (db, 'attendance_record', 'User')
     p = db.security.addPermission \
         ( name        = 'Edit'
         , klass       = 'overtime_correction'
@@ -1411,7 +1551,7 @@ def security (db, ** kw) :
     db.security.addPermissionToRole ('HR', 'Create', 'user_dynamic')
     wp_properties = \
         ( 'name', 'wp_no', 'description', 'responsible', 'project'
-        , 'time_start', 'time_end', 'durations_allowed', 'travel'
+        , 'time_start', 'time_end', 'durations_allowed'
         , 'cost_center', 'creation', 'creator', 'activity', 'actor', 'id'
         , 'has_expiration_date', 'time_wp_summary_no', 'epic_key'
         , 'is_public', 'is_extern'
@@ -1443,6 +1583,7 @@ def security (db, ** kw) :
         ( 'name', 'description', 'responsible', 'deputy'
         , 'status', 'work_location', 'op_project', 'id'
         , 'is_public_holiday', 'is_vacation', 'is_special_leave'
+        , 'max_hours', 'no_overtime', 'no_overtime_day'
         , 'creation', 'creator', 'activity', 'actor'
         , 'overtime_reduction', 'only_hours', 'is_extern', 'nosy'
         , 'wps'
@@ -1493,6 +1634,13 @@ def security (db, ** kw) :
         )
     db.security.addPermissionToRole ('HR-Org-Location', p)
     p = db.security.addPermission \
+        ( name        = 'View'
+        , klass       = 'attendance_record'
+        , check       = attendance_record_visible_for_hr_olo
+        , description = fixdoc (attendance_record_visible_for_hr_olo.__doc__)
+        )
+    db.security.addPermissionToRole ('HR-Org-Location', p)
+    p = db.security.addPermission \
         ( name        = 'Search'
         , klass       = 'time_record'
         )
@@ -1501,6 +1649,11 @@ def security (db, ** kw) :
     # their own records anyway and it will be *much* faster if we do not
     # return *all* records and filter them in python.
     db.security.addPermissionToRole ('User', p)
+    p = db.security.addPermission \
+        ( name        = 'Search'
+        , klass       = 'attendance_record'
+        )
+    db.security.addPermissionToRole ('HR-Org-Location', p)
     p = db.security.addPermission \
         ( name        = 'View'
         , klass       = 'user_dynamic'
@@ -1545,10 +1698,18 @@ def security (db, ** kw) :
         )
     db.security.addPermissionToRole ('HR-Org-Location', p)
     p = db.security.addPermission \
+        ( name        = 'View'
+        , klass       = 'daily_record_freeze'
+        , check       = dr_freeze_visible_for_user
+        , description = fixdoc (dr_freeze_visible_for_user.__doc__)
+        )
+    db.security.addPermissionToRole ('User', p)
+    p = db.security.addPermission \
         ( name        = 'Search'
         , klass       = 'daily_record_freeze'
         )
     db.security.addPermissionToRole ('HR-Org-Location', p)
+    db.security.addPermissionToRole ('User', p)
     p = db.security.addPermission \
         ( name        = 'View'
         , klass       = 'daily_record'
@@ -1571,8 +1732,36 @@ def security (db, ** kw) :
         )
     db.security.addPermissionToRole ('User', p)
 
+    p = db.security.addPermission \
+        ( name        = 'Search'
+        , klass       = 'user_dynamic'
+        )
+    db.security.addPermissionToRole ('User', p)
+
+    p = db.security.addPermission \
+        ( name        = 'View'
+        , klass       = 'user_dynamic'
+        , check       = own_user_dynamic
+        , description = fixdoc (own_user_dynamic.__doc__)
+        )
+    db.security.addPermissionToRole ('User', p)
+
+    p = db.security.addPermission \
+        ( name        = 'Search'
+        , klass       = 'vacation_correction'
+        )
+    db.security.addPermissionToRole ('User', p)
+
+    p = db.security.addPermission \
+        ( name        = 'View'
+        , klass       = 'vacation_correction'
+        , check       = own_vacation_correction
+        , description = fixdoc (own_vacation_correction.__doc__)
+        )
+    db.security.addPermissionToRole ('User', p)
+
     # Allow retire/restore for cost_center_permission_group
-    for perm in 'Retire', 'Restore' :
+    for perm in 'Retire', 'Restore':
         p = db.security.addPermission \
             ( name        = perm
             , klass       = 'cost_center_permission_group'

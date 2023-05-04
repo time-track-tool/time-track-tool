@@ -40,6 +40,17 @@ properties = \
         , 'name'
         ]
       )
+    , ( 'attendance_record'
+      , [ 'daily_record'
+        , 'dist'
+        , 'end'
+        , 'end_generated'
+        , 'start'
+        , 'start_generated'
+        , 'time_record'
+        , 'work_location'
+        ]
+      )
     , ( 'auto_wp'
       , [ 'all_in'
         , 'contract_type'
@@ -168,7 +179,8 @@ properties = \
         ]
       )
     , ( 'daily_record'
-      , [ 'date'
+      , [ 'attendance_record'
+        , 'date'
         , 'required_overtime'
         , 'status'
         , 'time_record'
@@ -791,9 +803,9 @@ properties = \
         ]
       )
     , ( 'time_record'
-      , [ 'comment'
+      , [ 'attendance_record'
+        , 'comment'
         , 'daily_record'
-        , 'dist'
         , 'duration'
         , 'end'
         , 'end_generated'
@@ -829,7 +841,6 @@ properties = \
         , 'time_end'
         , 'time_start'
         , 'time_wp_summary_no'
-        , 'travel'
         , 'wp_no'
         ]
       )
@@ -856,6 +867,7 @@ properties = \
         , 'alternate_addresses'
         , 'business_responsible'
         , 'clearance_by'
+        , 'dark_mode'
         , 'department_temp'
         , 'entry_date'
         , 'firstname'
@@ -863,6 +875,7 @@ properties = \
         , 'lastname'
         , 'lunch_duration'
         , 'lunch_start'
+        , 'new_tt_iface'
         , 'nickname'
         , 'password'
         , 'pictures'
@@ -980,6 +993,11 @@ properties = \
     , ( 'work_location'
       , [ 'code'
         , 'description'
+        , 'durations_allowed'
+        , 'is_off'
+        , 'is_valid'
+        , 'order'
+        , 'travel'
         ]
       )
     ]

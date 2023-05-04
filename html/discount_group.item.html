@@ -20,27 +20,27 @@
    <tal:block metal:fill-slot="formatted_class_content">
     <tr>
      <th tal:content="structure python:utils.fieldname
-         (classname, 'description')"/>
+         (db, classname, 'description')"/>
      <td tal:content="structure python:context.description.field (size=60)"
       colspan="3"/>
     </tr>
     <tr>
      <th class="required" tal:content="structure python:utils.fieldname
-         (classname, 'currency')"/>
+         (db, classname, 'currency')"/>
      <td tal:content="structure python:context.currency.menu ()"/>
     </tr>
     <tr>
      <th tal:content="structure python:utils.fieldname
-         (classname, 'group_discount')"/>
+         (db, classname, 'group_discount')"/>
      <td>
       <table class="form" border="0" style="border-spacing:0px;padding-top:0px">
        <tr>
         <th style="text-align:left;padding-top:0px"
             tal:content="structure python:utils.fieldname
-            ('group_discount', 'product_group')"/>
+            (db, 'group_discount', 'product_group')"/>
         <th style="text-align:left;padding-top:0px"
             tal:content="structure python:utils.fieldname
-            ('group_discount', 'discount')" colspan="2"/>
+            (db, 'group_discount', 'discount')" colspan="2"/>
         <th tal:condition="context/is_edit_ok" i18n:translate=""
             style="padding-top:0px">
          remove
@@ -69,16 +69,16 @@
      </td>
     <tr>
      <th tal:content="structure python:utils.fieldname
-         (classname, 'overall_discount')"/>
+         (db, classname, 'overall_discount')"/>
      <td>
       <table class="form" border="0" style="border-spacing:0px;padding-top:0px">
        <tr>
         <th style="text-align:left;padding-top:0px"
             tal:content="structure python:utils.fieldname
-            ('overall_discount', 'price')"/>
+            (db, 'overall_discount', 'price')"/>
         <th style="text-align:left;padding-top:0px"
             tal:content="structure python:utils.fieldname
-            ('overall_discount', 'discount')" colspan="2"/>
+            (db, 'overall_discount', 'discount')" colspan="2"/>
         <th tal:condition="context/is_edit_ok" i18n:translate=""
             style="padding-top:0px">
          remove

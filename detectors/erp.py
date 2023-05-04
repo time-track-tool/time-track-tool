@@ -29,11 +29,11 @@
 #
 
 from roundup.exceptions             import Reject
-from roundup.cgi.TranslationService import get_translation
 
 import common
 
 def check_group_discount (db, new_values) :
+    _ = db.i18n.gettext
     if 'group_discount' not in new_values :
         return
     grp  = _ (''"product_group")
@@ -52,6 +52,7 @@ def check_group_discount (db, new_values) :
 # end def check_group_discount
 
 def check_overall_discount (db, new_values) :
+    _ = db.i18n.gettext
     if 'overall_discount' not in new_values :
         return
     ods = [db.overall_discount.getnode (i)
@@ -84,14 +85,16 @@ def new_discount_group (db, cl, nodeid, new_values) :
 # end def new_discount_group
 
 def check_bank_account (db, cl, nodeid, new_values) :
-    common.require_attributes (_, cl, nodeid, new_values, 'bank')
+    common.require_attributes (db.i18n.gettext, cl, nodeid, new_values, 'bank')
 # end def check_bank_account
 
 def new_product_price (db, cl, nodeid, new_values) :
-    common.require_attributes (_, cl, nodeid, new_values, 'price', 'currency')
+    common.require_attributes \
+        (db.i18n.gettext, cl, nodeid, new_values, 'price', 'currency')
 # end def new_product_price
 
 def check_product_price (db, cl, nodeid, new_values) :
+    _ = db.i18n.gettext
     common.require_attributes (_, cl, nodeid, new_values, 'price', 'currency')
     if  (   'currency' in new_values
         and cl.get (nodeid, 'currency') != new_values ['currency']
@@ -110,9 +113,6 @@ def check_product (db, cl, nodeid, new_values) :
 def init (db) :
     if 'discount_group' not in db.classes :
         return
-    global _
-    _   = get_translation \
-        (db.config.TRACKER_LANGUAGE, db.config.TRACKER_HOME).gettext
     db.discount_group.audit  ("set",    check_discount_group)
     db.bank_account.audit    ("create", check_bank_account)
     db.bank_account.audit    ("set",    check_bank_account)

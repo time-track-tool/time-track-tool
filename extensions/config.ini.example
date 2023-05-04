@@ -143,8 +143,10 @@ leave_user_accept_text =
  $(nl)s
  This is an automatically generated message.
  Responses to this address are not possible.
-leave_user_accept_recs_text =
+leave_user_accept_timerecs_text =
  The following existing time records have been deleted:
+leave_user_accept_attrecs_text =
+ The following existing attendance records have been deleted:
 
 # To user on decline of leave request
 leave_user_decline_subject = Leave "$(tp_name)s/$(wp_name)s"

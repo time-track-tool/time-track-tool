@@ -33,23 +33,24 @@
       ))"/>
     </tr>
     <tr>
-     <th tal:content="structure python:utils.fieldname (classname, 'name')"/>
+     <th tal:content="structure python:utils.fieldname
+         (db, classname, 'name')"/>
      <td tal:content="structure python:context.name.field ()" colspan="3"/>
     </tr>
     <tr>
      <th tal:content="structure python:utils.fieldname
-         (classname, 'description')"/>
+         (db, classname, 'description')"/>
      <td tal:content="structure python:context.description.field (size=60)"
       colspan="3"/>
     </tr>
     <tr>
      <th tal:content="structure python:utils.fieldname
-         (classname, 'status')"/>
+         (db, classname, 'status')"/>
      <td tal:content="structure python:context.status.menu ()"/>
     </tr>
     <tr>
      <th tal:content="structure python:utils.fieldname
-         (classname, 'cost_center_group')"/>
+         (db, classname, 'cost_center_group')"/>
      <td tal:content="structure python:context.cost_center_group.menu ()"/>
     </tr>
     <tr>

@@ -20,7 +20,6 @@
 # SOFTWARE.
 
 
-from roundup.cgi.TranslationService import get_translation
 from roundup.date                   import Date, Range
 from roundup.anypy.strings          import s2u
 from maturity_index                 import maturity_table
@@ -30,8 +29,6 @@ try :
     from docutils.core import publish_parts
 except ImportError :
     publish_parts = None
-
-_ = None
 
 if not publish_parts :
     def publish_parts (text, writer_name = 'html') :
@@ -582,6 +579,11 @@ _helptext          = \
     , ""'daily_record.status.id'      : [help_id]
     , ""'daily_worktime'              :
       [""'''Maximum time a person may book for a single day.''']
+    , ""'dark_mode'                    :
+      [ ""'''Selects the dark mode style for the new timetracking
+             interface for this user.
+          '''
+      ]
     , ""'defect++superseder'          :
       [superseder]
     , ""'deadline'                    :
@@ -1306,16 +1308,12 @@ _helptext          = \
           '''
       ]
     , ""'needs.id'                    : [help_id]
-    , ""'renegotiations'              :
-      [ ""'''Please state YES, if prices mentioned in the PR are already
-             negotiated with the supplier. If you state NO please
-             comment in message field. Your comments will be used by
-             Approvers as well as Purchasing Agents for decisions or
-             further activities.
-          '''
-      ]
     , ""'netmask'                     :
       [""'''IP net mask for this %(Classname)s, a number (e.g., 16).''']
+    , ""'new_tt_iface'                    :
+      [ ""'''User gets the new timetracking interface.
+          '''
+      ]
     , ""'nickname'                    :
       [""'''Nickname (or short name) for this %(Classname)s, e.g., rsc''']
     , ""'no_overtime'                 :
@@ -1756,6 +1754,14 @@ _helptext          = \
     , ""'remove'                      :
       [ ""'''Remove attached item. Will not remove item from the database,
              it can usually still be downloaded via the History button.
+          '''
+      ]
+    , ""'renegotiations'              :
+      [ ""'''Please state YES, if prices mentioned in the PR are already
+             negotiated with the supplier. If you state NO please
+             comment in message field. Your comments will be used by
+             Approvers as well as Purchasing Agents for decisions or
+             further activities.
           '''
       ]
     , ""'reporting_group'             :
@@ -2463,6 +2469,7 @@ def help_properties (klass) :
        should be displayed (e.g., "message" which describes the message
        window). The parameter klass is a html klass.
     """
+    _ = klass._klass.db.i18n.gettext
     p = []
     properties = klass._klass.getprops ()
     if 'messages' in properties :
@@ -2496,13 +2503,15 @@ def help_properties (klass) :
 # end def help_properties
 
 def fieldlabel \
-    ( cls
+    ( db
+    , cls
     , name
     , searchname = None
     , csscls     = 'desc'
     , startswith = ''
     , endswith   = ':'
     ) :
+    _ = db._db.i18n.gettext
     if not searchname : searchname = name
     prop  = combined_name (cls, name, searchname)
     if csscls :
@@ -2511,12 +2520,17 @@ def fieldlabel \
 # end def fieldlabel
 
 def fieldname \
-    ( cls, name
+    ( db, cls, name
     , searchname = None
     , endswith   = '&nbsp;'
     , csscls     = ''
     , label      = None
     ) :
+    try :
+        db = db._db
+    except AttributeError :
+        pass
+    _ = db.i18n.gettext
     if not searchname : searchname = name
     prop  = combined_name (cls, name, searchname)
     label1 = label2 = ''
@@ -2539,14 +2553,16 @@ def fieldname \
            )
 # end def fieldname
 
-def helptext (key) :
+def helptext (db, key) :
+    _ = db._db.i18n.gettext
     return ' '.join (_ (h) for h in _helptext [key])
 # end def helptext
 
-def permdict (perm) :
+def permdict (db, perm) :
     """From a permission object compute a localized version of the dict.
        We also put a quote into the dict for the web-interface.
     """
+    _ = db._db.i18n.gettext
     d = dict (perm.__dict__)
     d ['quote'] = '"'
     if d ['klass'] :
@@ -2555,17 +2571,6 @@ def permdict (perm) :
         d ['properties'] = [_ (x) for x in d ['properties']]
     return d
 # end def permdict
-
-def set_language (client, db) :
-    global _
-    language = client.language
-    if not language :
-        language = db.config.TRACKER_LANGUAGE
-    db.translator = db._db.translator = client.translator
-    _ = db._db._ = db._ = db.translator.gettext
-    init_purchase_type (db._db)
-    return language
-# end def set_language
 
 def user_manual_ok (db) :
     return bool (user_manual (db))
@@ -2616,9 +2621,6 @@ def init_purchase_type (db) :
 # end def init_purchase_type
 
 def init (instance) :
-    global _
-    _   = get_translation \
-        (instance.config.TRACKER_LANGUAGE, instance.tracker_home).gettext
     reg = instance.registerUtil
     reg ('helptext',        helptext)
     reg ('help_properties', help_properties)
@@ -2626,7 +2628,6 @@ def init (instance) :
     reg ('fieldlabel',      fieldlabel)
     reg ('combined_name',   combined_name)
     reg ('permdict',        permdict)
-    reg ('set_language',    set_language)
     reg ('user_manual',     user_manual)
     reg ('user_manual_ok',  user_manual_ok)
     reg ('aux_links',       aux_links)

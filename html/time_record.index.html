@@ -69,14 +69,6 @@
         , searchname  = 'time_activity.id'
         , searchable  = False
         )
-    , utils.ExtProperty (utils, pdict ['work_location'], multiselect = 1)
-    , utils.ExtProperty
-        ( utils, pdict ['work_location']
-        , searchname  = 'work_location.id'
-        , searchable  = False
-        )
-    , utils.ExtProperty (utils, pdict ['start'])
-    , utils.ExtProperty (utils, pdict ['end'])
     , utils.ExtProperty
         ( utils, pdict ['duration']
         , get_cssclass = utils.color_duration

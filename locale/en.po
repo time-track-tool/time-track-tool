@@ -7550,3 +7550,9 @@ msgstr "SAP Cost Center Category"
 
 msgid "cc_bu_category"
 msgstr "Productivity BU Category"
+
+msgid "dark_mode"
+msgstr "Dark Mode"
+
+msgid "new_tt_iface"
+msgstr "New Timetracker"

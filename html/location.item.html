@@ -21,41 +21,42 @@
    <tal:block metal:fill-slot="formatted_class_content">
     <tr>
      <th tal:content="structure python:utils.fieldname
-         (classname, 'country')"/>
+         (db, classname, 'country')"/>
      <td tal:content="structure python:context.country.field ()"/>
     </tr>
     <tr tal:condition="python: 'city' in bclass.properties">
-     <th tal:content="structure python:utils.fieldname (classname, 'city')"/>
+     <th tal:content="structure python:utils.fieldname
+         (db, classname, 'city')"/>
      <td tal:content="structure python:context.city.field ()"/>
     </tr>
     <tr tal:condition="python: 'address' in bclass.properties">
      <th tal:content="structure python:utils.fieldname
-         (classname, 'address')"/>
+         (db, classname, 'address')"/>
      <td tal:content="structure python:context.address.field ()"/>
     </tr>
     <tr>
      <th tal:content="structure python:utils.fieldname
-         (classname, 'valid_from')"/>
+         (db, classname, 'valid_from')"/>
      <td tal:content="structure python:context.valid_from.field ()"/>
     </tr>
     <tr>
      <th tal:content="structure python:utils.fieldname
-         (classname, 'valid_to')"/>
+         (db, classname, 'valid_to')"/>
      <td tal:content="structure python:context.valid_to.field ()"/>
     </tr>
     <tr tal:condition="python: 'weekly_hours_fte' in bclass.properties">
      <th tal:content="structure python:utils.fieldname
-         (classname, 'weekly_hours_fte')"/>
+         (db, classname, 'weekly_hours_fte')"/>
      <td tal:content="structure python:context.weekly_hours_fte.field ()"/>
     </tr>
     <tr tal:condition="python: 'room_prefix' in bclass.properties">
      <th tal:content="structure python:utils.fieldname
-         (classname, 'room_prefix')"/>
+         (db, classname, 'room_prefix')"/>
      <td tal:content="structure python:context.room_prefix.field ()"/>
     </tr>
     <tr tal:condition="python: 'domain_part' in bclass.properties">
      <th tal:content="structure python:utils.fieldname
-         (classname, 'domain_part')"/>
+         (db, classname, 'domain_part')"/>
      <td tal:content="structure python:context.domain_part.field ()"/>
     </tr>
     <tr tal:condition="python: 'order' in bclass.properties">

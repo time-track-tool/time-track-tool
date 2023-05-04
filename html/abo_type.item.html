@@ -17,19 +17,21 @@
     <tal:block metal:fill-slot="formatted_class_content">
      <tr>
       <th tal:content="structure python:utils.fieldname
-          (classname, 'description')"/>
+          (db, classname, 'description')"/>
       <td colspan="3"
           tal:content="structure python:context.description.field (size=60)"/>
      </tr>
      <tr>
-      <th tal:content="structure python:utils.fieldname(classname, 'period')"/>
+      <th tal:content="structure python:utils.fieldname
+          (db, classname, 'period')"/>
       <td tal:content="structure context/period/field"/>
-      <th tal:content="structure python:utils.fieldname(classname, 'order')"/>
+      <th tal:content="structure python:utils.fieldname
+          (db, classname, 'order')"/>
       <td tal:content="structure context/order/field"/>
      </tr>
      <tr tal:define="tc python:db._db.adr_type_cat.lookup ('ABO')">
       <th tal:content="structure python:utils.fieldname
-          (classname, 'adr_type')"/>
+          (db, classname, 'adr_type')"/>
       <td tal:content="structure python:context.adr_type.menu (typecat = tc)"/>
      </tr>
     </tal:block>

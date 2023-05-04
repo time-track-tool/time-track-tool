@@ -1,5 +1,5 @@
 #! /usr/bin/python
-# Copyright (C) 2006-21 Dr. Ralf Schlatterbeck Open Source Consulting.
+# Copyright (C) 2006-22 Dr. Ralf Schlatterbeck Open Source Consulting.
 # Reichergasse 131, A-3411 Weidling.
 # Web: http://www.runtux.com Email: office@runtux.com
 # All rights reserved
@@ -53,15 +53,12 @@ from roundup.exceptions             import Reject
 from roundup.cgi                    import templating
 from roundup.date                   import Date, Interval, Range
 from roundup                        import hyperdb
-from roundup.cgi.TranslationService import get_translation
 
 import common
 import freeze
 import rup_utils
 import user_dynamic
 import vacation
-
-_ = lambda x : x
 
 def prev_week (db, request) :
     try :
@@ -107,10 +104,7 @@ def button_submit_to (db, user, date) :
     if not date :
         return ''
     db = db._db
-    try :
-        _ = db._
-    except AttributeError :
-        pass
+    _  = db.i18n.gettext
     supervisor = db.user.get (user,       'supervisor')
     if not supervisor :
         return ''
@@ -252,12 +246,13 @@ class Daily_Record_Action (Daily_Record_Common) :
     name           = 'daily_record_action'
 
     def handle (self) :
+        _   = self.db.i18n.gettext
         uid = self.db.user.lookup (self.user)
         if not self.db.user.get (uid, 'supervisor') :
-            f_supervisor = self._ ('supervisor')
-            user      = self.user
-            msg       = self._ ("No %(f_supervisor)s for %(user)s") % locals ()
-            url       = 'index?:error_message=' + msg 
+            f_supervisor = _ ('supervisor')
+            user = self.user
+            msg  = _ ("No %(f_supervisor)s for %(user)s") % locals ()
+            url  = 'index?:error_message=' + msg 
             raise Redirect (url)
 
         self.create_daily_records ()
@@ -291,15 +286,293 @@ class Daily_Record_Edit_Action (EditItemAction, Daily_Record_Common) :
     name           = 'daily_record_edit_action'
     permissionType = 'Edit'
 
+    def set_ar_tr (self, props, ar, tr, trid) :
+        arid = self.db.time_record.get (trid, 'attendance_record')
+        assert len (arid) == 1
+        arid = arid [0]
+        trkey = ('time_record', trid)
+        if trkey in props :
+            props [trkey].update (tr)
+        elif tr :
+            props [trkey] = tr
+        arkey = ('attendance_record', arid)
+        if arkey in props :
+            props [arkey].update (ar)
+        elif ar :
+            props [arkey] = ar
+    # end def set_ar_tr
+
+    def new_ar_tr (self, props, links, newar, newtr) :
+        nid = str (-self.newidx)
+        self.newidx += 1
+        arkey = ('attendance_record', nid)
+        trkey = ('time_record', nid)
+        assert arkey not in props
+        assert trkey not in props
+        props [trkey] = newtr
+        props [arkey] = newar
+        links.append \
+            (( 'attendance_record', nid, 'time_record'
+             , [('time_record', nid)]
+            ))
+    # end def new_ar_tr
+
     def _editnodes (self, props, links) :
-        # use props.items here, dict is modified
-        for (cl, id), val in list (props.items ()) :
-            if cl == 'time_record' :
-                if int (id) < 0 and list (val) == ['daily_record'] :
-                    del props [(cl, id)]
+        """ Modify the props and links before handing to _editnodes of
+            master class.
+            First we remove all attendance records that have only the
+            daily_record property.
+            Then we remove all new time_records which do not have a
+            corresponding attendance record *and* only have the
+            daily_record as the only property.
+            The we add an 'end' or 'start' property if a duration is
+            given and start or end is missing.
+            Then we do lunchtime processing
+        """
+        _ = self.db.i18n.gettext
+        hour_format = '%H:%M'
+        clsnames = ('attendance_record', 'time_record')
+        self.newidx = min (int (id) for (cl, id) in props if cl in clsnames)
+        if self.newidx > 0 :
+            self.newidx = 0
+        self.newidx = abs (self.newidx) + 1
+        atrecs = {}
+        # Materialize list: the props are modified during iteration
+        for (cl, id) in list (props) :
+            if cl != 'attendance_record' or int (id) > 0 :
+                continue
+            val = props [(cl, id)]
+            if list (val) == ['daily_record'] :
+                del props [(cl, id)]
+            else :
+                dstart, dend, dur = self.get_start_end (val)
+                atrecs [id] = dur
+
+        # Materialize list: the props are modified during iteration
+        for (cl, id) in list (props) :
+            if cl != 'time_record' or int (id) > 0 :
+                continue
+            val = props [(cl, id)]
+            if  (list (val) == ['daily_record'] and id not in atrecs) :
+                del props [(cl, id)]
+            elif 'duration' not in val and id in atrecs :
+                val ['duration'] = atrecs [id]
+        # Check if start is given but no end, create end from start + duration
+        for (cl, id) in list (props) :
+            if cl != 'attendance_record' or int (id) > 0 :
+                continue
+            if ('time_record', id) not in props :
+                continue
+            aval = props [(cl, id)]
+            tval = props [('time_record', id)]
+            if 'duration' not in tval :
+                continue
+            dstart, dend, dur = self.get_start_end (aval)
+            dur = tval ['duration']
+            hours = int (dur)
+            minutes = int ((dur - hours) * 60)
+            iv = Interval ('%d:%d' % (hours, minutes))
+            if dstart and not dend :
+                aval ['end'] = (dstart + iv).pretty (hour_format)
+            if not dstart and dend :
+                aval ['start'] = (dend - iv).pretty (hour_format)
+        # Check if some duration is > 6h, add lunch if applicable
+        for (cl, id) in list (props) :
+            if cl != 'time_record' or int (id) > 0 :
+                continue
+            val  = props [(cl, id)]
+            aval = props [('attendance_record', id)]
+            travel = False
+            if cl == 'time_record' and val.get ('time_activity') :
+                ta = self.db.time_activity.getnode (val ['time_activity'])
+                travel = travel or ta.travel
+            dstart, dend, dur = self.get_start_end (aval)
+            if travel or not val.get ('duration') :
+                continue
+            dur  = val ['duration']
+            dr   = self.db.daily_record.getnode (val ['daily_record'])
+            user = self.db.user.getnode (dr.user)
+            ls   = Date (user.lunch_start or '12:00')
+            ls.year  = dr.date.year
+            ls.month = dr.date.month
+            ls.day   = dr.date.day
+            ld       = user.lunch_duration or 1
+            hours    = int (ld)
+            minutes  = (ld - hours) * 60
+            le       = ls + Interval ('%d:%d' % (hours, minutes))
+            if dur <= 6 or not dstart or dstart >= ls or dend <= ls :
+                continue
+            newtr = dict (daily_record = dr.id)
+            newar = dict (daily_record = dr.id, start = le.pretty (hour_format))
+            dur1  = (ls - dstart).as_seconds () / 3600.
+            dur2  = dur - dur1 - ld
+            assert dur1 > 0
+            for a in 'wp', 'time_activity' :
+                if a in val and val [a] :
+                    newtr [a] = val [a]
+            if 'work_location' in aval and aval ['work_location'] :
+                newar ['work_location'] = aval ['work_location']
+            newar ['end'] = aval ['end']
+            aval  ['end'] = ls.pretty (hour_format)
+            val ['duration'] = dur1
+            if dur2 > 0 :
+                newtr ['duration'] = dur2
+                self.new_ar_tr (props, links, newar, newtr)
+        # Handle dist
+        for (cl, id) in list (props) :
+            aval = props [(cl, id)]
+            if cl != 'attendance_record' or 'dist' not in aval :
+                continue
+            # Dist is only meaningful for existing records
+            if int (id) < 0 :
+                del props [(cl, id)]['dist']
+                continue
+            dist = aval ['dist']
+            dh   = int (dist)
+            dm   = (dist - dh) * 60
+            dint = Interval ('%d:%d' % (dh, dm))
+            del aval ['dist']
+            ar   = self.db.attendance_record.getnode (id)
+            tr   = self.db.time_record.getnode (ar.time_record)
+            dr   = self.db.daily_record.getnode (ar.daily_record)
+            tval = props.get (('time_record', tr.id), {})
+            wp   = tval.get ('wp', tr.wp)
+            dur  = tval.get ('duration', tr.duration)
+            tact = tval.get ('time_activity', tr.time_activity)
+            comm = tval.get ('comment', tr.comment)
+            loc  = aval.get ('work_location', ar.work_location)
+            strt = aval.get ('start', ar.start)
+            end  = aval.get ('end', ar.end)
+            if not wp :
+                raise Reject (_ ('Distribution: WP must be given'))
+            if not dur :
+                raise Reject (_ ('Distribution: Duration must be given'))
+            if dist < dur :
+                newtr = dict \
+                    ( daily_record  = ar.daily_record
+                    , duration      = dist
+                    , wp            = wp
+                    , time_activity = tact
+                    )
+                newar = dict \
+                    ( work_location = loc
+                    , daily_record  = ar.daily_record
+                    )
+                if comm :
+                    newtr ['comment'] = comm
+                    if 'comment' in tval :
+                        del tval ['comment']
+                sg = aval.get ('start_generated', ar.start_generated)
+                if strt :
+                    newar ['start']           = strt
+                    newar ['end_generated']   = True
+                    newar ['start_generated'] = sg
+                    aval  ['start_generated'] = True
+                    stn = (Date (strt) + dint).pretty (hour_format)
+                    aval  ['start']           = stn
+                self.new_ar_tr (props, links, newar, newtr)
+                # Don't change old values
+                del tval ['wp']
+                if 'time_activity' in tval :
+                    del tval ['time_activity']
+                if 'work_location' in aval :
+                    del aval ['work_location']
+            elif dist > dur : # Nothing to do when dist == dur
+                dist -= dur
+                wstart, wend = common.week_from_date (dr.date)
+                dsearch = common.pretty_range (dr.date, wend)
+                drs = self.db.daily_record.filter \
+                    (None, dict (user = dr.user, date = dsearch))
+                ari = self.db.attendance_record.filter \
+                    (None, dict (daily_record = drs))
+                recs = []
+                for aid in ari :
+                    a = self.db.attendance_record.getnode (aid)
+                    t = self.db.time_record.getnode (a.time_record)
+                    if a.id == id or t.wp :
+                        continue
+                    if a.daily_record == dr.id :
+                        if not strt :
+                            continue
+                        if a.start <= strt :
+                            continue
+                    recs.append ((a, t))
+                if sum (r [1].duration for r in recs) < dist :
+                    m = _ ('Dist must not exceed sum of unassigned times '
+                           'in week'
+                          )
+                    raise Reject (m)
+                drcl = self.db.daily_record
+                for rec in sorted \
+                    ( recs
+                    , key = lambda x :
+                        (drcl.get (x [0].daily_record, 'date'), x [0].start)
+                    ) :
+                    ar = rec [0]
+                    tr = rec [1]
+                    if tr.duration <= dist :
+                        dist -= tr.duration
+                        updar = dict (work_location = loc)
+                        updtr = dict \
+                            ( wp            = wp
+                            , time_activity = tact
+                            )
+                        self.set_ar_tr (props, updar, updtr, tr.id)
+                    else :
+                        updtr   = dict (duration = tr.duration - dist)
+                        updar   = {}
+                        newar   = dict \
+                            ( daily_record  = tr.daily_record
+                            , work_location = loc
+                            )
+                        newtr   = dict \
+                            ( daily_record  = tr.daily_record
+                            , duration      = dist
+                            , wp            = wp
+                            , time_activity = tact
+                            )
+                        if ar.start :
+                            updar ['start_generated'] = True
+                            dstart  = Date (ar.start)
+                            hours   = int (dist)
+                            minutes = (dist - hours) * 60
+                            dstart += Interval ('%d:%d' % (hours, minutes))
+                            updar ['start'] = dstart.pretty (hour_format)
+                            newar ['start'] = ar.start
+                            newar ['end_generated'] = True
+                        self.set_ar_tr (props, updar, updtr, tr.id)
+                        self.new_ar_tr (props, links, newar, newtr)
+                        dist = 0
+                    if not dist :
+                        break
+                assert dist == 0
         self.ok_msg = EditItemAction._editnodes (self, props, links)
         return self.ok_msg
     # end def _editnodes
+
+    def get_start_end (self, val) :
+        dstart = dend = dur = None
+        start = val.get ('start')
+        end   = val.get ('end')
+        if start and ':' not in start :
+            start += ':00'
+        if end and ':' not in end :
+            end   += ':00'
+        dr = self.db.daily_record.getnode (val ['daily_record'])
+        if start :
+            dstart = Date (start, offset = 0)
+            dstart.year  = dr.date.year
+            dstart.month = dr.date.month
+            dstart.day   = dr.date.day
+        if end :
+            dend   = Date (end,   offset = 0)
+            dend.year  = dr.date.year
+            dend.month = dr.date.month
+            dend.day   = dr.date.day
+        if start and end :
+            dur = (dend - dstart).as_seconds () / 3600.
+        return dstart, dend, dur
+    # end def get_start_end
 
     def handle (self) :
         self.create_daily_records ()
@@ -584,20 +857,22 @@ class Freeze_Action (Action, autosuper) :
     user_required_msg = ''"User is required"
     user_invalid_msg  = ''"Invalid User"
     def get_user (self) :
+        _ = self.db.i18n.gettext
         self.request = templating.HTMLRequest (self.client)
         user         = self.request.form ['user'].value
         if not user :
-            raise Reject (self._ (self.user_required_msg))
+            raise Reject (_ (self.user_required_msg))
         try :
             self.user = self.db.user.lookup (user)
         except KeyError :
-            raise Reject (self._ (self.user_invalid_msg))
+            raise Reject (_ (self.user_invalid_msg))
         return self.user
     # end def get_user
 
     def handle (self) :
+        _ = self.db.i18n.gettext
         if not self.request.form ['date'].value :
-            raise Reject (self._ ("Date is required"))
+            raise Reject (_ ("Date is required"))
         self.date  = Date (self.request.form ['date'].value)
         msg = []
         for u in self.users :
@@ -657,9 +932,10 @@ class Freeze_Action (Action, autosuper) :
 
 class Freeze_All_Action (Freeze_Action) :
     def handle (self) :
+        _ = self.db.i18n.gettext
         self.request = templating.HTMLRequest (self.client)
         if 'user' in self.request.form and self.request.form ['user'].value :
-            raise Reject (self._ ('''Don't specify a user for "Freeze all"'''))
+            raise Reject (_ ('''Don't specify a user for "Freeze all"'''))
         self.users   = self.db.user.getnodeids ()
         return self.__super.handle ()
     # end def handle
@@ -764,10 +1040,6 @@ class SearchActionWithTemplate(SearchAction):
 # end class SearchActionWithTemplate
 
 def init (instance) :
-    global _
-    _   = get_translation \
-        (instance.config.TRACKER_LANGUAGE, instance.config.TRACKER_HOME).gettext
-
     actn = instance.registerAction
     actn ('daily_record_edit_action', Daily_Record_Edit_Action)
     actn ('daily_record_action',      Daily_Record_Action)

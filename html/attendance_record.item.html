@@ -1,0 +1,47 @@
+<tal:block metal:use-macro="templates/page/macros/icing">
+ <title metal:fill-slot="head_title">
+  <tal:block tal:condition="context/id" i18n:translate="">
+   <span tal:replace="string:${Classname}: ${context/id}"
+    i18n:name="classname_id"/>
+   created by
+   <span tal:replace="context/creator" i18n:name="creator"/>
+  </tal:block>
+  <tal:block tal:condition="not:context/id" i18n:translate="">New
+   <span tal:replace="Classname" i18n:name="Classname" />
+  </tal:block>
+ </title>
+  <tal:block metal:fill-slot="create_or_query">
+    <tal:block 
+     metal:use-macro="templates/page/macros/create_or_query_new_tracker_item"/>
+  </tal:block> 
+
+ <tal:block metal:fill-slot="content">
+  <tal:block tal:define="use_labelprop python:0
+                        ;required_attributes string:daily_record">
+   <tal:block metal:use-macro="templates/page/macros/formatted_class">
+    <tal:block metal:fill-slot="formatted_class_content">
+     <tr>
+      <th class="required" tal:content="structure python:utils.fieldname
+          (db, classname, 'daily_record')"/>
+      <td tal:content="structure context/daily_record/field"/>
+     </tr>
+     <tr>
+      <th tal:content="structure python:utils.fieldname
+          (db, classname, 'start')"/>
+      <td tal:content="structure python:context.start.field (size=20)"/>
+      <th tal:content="structure python:utils.fieldname
+          (db, classname, 'end')"/>
+      <td tal:content="structure python:context.end.field (size=20)"/>
+     </tr>
+     <tr>
+      <th tal:content="structure python:utils.fieldname
+          (db, classname, 'work_location')"/>
+      <td tal:content="structure python:context.work_location.menu
+          (is_valid = True)"/>
+     </tr>
+    </tal:block>
+   </tal:block>
+  </tal:block>
+ </tal:block>
+
+</tal:block>

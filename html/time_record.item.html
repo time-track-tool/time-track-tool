@@ -22,21 +22,15 @@
     <tal:block metal:fill-slot="formatted_class_content">
      <tr>
       <th class="required" tal:content="structure python:utils.fieldname
-          (classname, 'daily_record')"/>
+          (db, classname, 'daily_record')"/>
       <td tal:content="structure context/daily_record/field"/>
       <th tal:content="structure python:utils.fieldname
-          (classname, 'duration')"/>
+          (db, classname, 'duration')"/>
       <td tal:content="structure python:context.duration.field (size=20)"/>
      </tr>
      <tr>
-      <th tal:content="structure python:utils.fieldname (classname, 'start')"/>
-      <td tal:content="structure python:context.start.field (size=20)"/>
-      <th tal:content="structure python:utils.fieldname (classname, 'end')"/>
-      <td tal:content="structure python:context.end.field (size=20)"/>
-     </tr>
-     <tr>
       <th tal:content="structure python:utils.fieldname
-          (classname, 'time_wp')"/>
+          (db, classname, 'time_wp')"/>
       <td colspan="3">
        <span tal:replace="structure context/wp/field"/>
        <span tal:replace="structure python:db.time_wp.classhelp
@@ -50,15 +44,12 @@
      </tr>
      <tr>
       <th tal:content="structure python:utils.fieldname
-          (classname, 'time_activity')"/>
+          (db, classname, 'time_activity')"/>
       <td tal:content="structure python:context.time_activity.menu ()"/>
-      <th tal:content="structure python:utils.fieldname
-          (classname, 'work_location')"/>
-      <td tal:content="structure python:context.work_location.menu ()"/>
      </tr>
      <tr>
       <th tal:content="structure python:utils.fieldname
-          (classname, 'comment')"/>
+          (db, classname, 'comment')"/>
       <td tal:content="structure python:context.comment.multiline (cols=60)"
           colspan="3"/>
      </tr>

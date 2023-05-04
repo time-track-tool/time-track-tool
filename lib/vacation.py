@@ -59,12 +59,20 @@ def public_holiday_wp (db, user, date):
             return wpid
 # end def public_holiday_wp
 
+def get_public_holiday (db, dyn, date):
+    loc = db.org_location.get (dyn.org_location, 'location')
+    dt  = common.pretty_range (date, date)
+    hol = db.public_holiday.filter (None, dict (date = dt, locations = loc))
+    if hol:
+        assert len (hol) == 1
+        holiday = db.public_holiday.getnode (hol [0])
+        return holiday
+    return None
+# end def get_public_holiday
+
 def try_create_public_holiday (db, daily_record, date, user):
-    st_open = db.daily_record_status.lookup ('open')
+    # Change even if status is not open
     wp      = public_holiday_wp (db, user, date)
-    # Don't change anything if status not open
-    if db.daily_record.get (daily_record, 'status') != st_open:
-        return
     # Only perform public holiday processing if user has a public
     # holiday wp to book on.
     if not wp:
@@ -72,15 +80,8 @@ def try_create_public_holiday (db, daily_record, date, user):
     dyn = user_dynamic.get_user_dynamic (db, user, date)
     wh  = user_dynamic.day_work_hours   (dyn, date)
     if wh:
-        loc = db.org_location.get (dyn.org_location, 'location')
-        hol = db.public_holiday.filter \
-            ( None
-            , { 'date'      : common.pretty_range (date, date)
-              , 'locations' : loc
-              }
-            )
-        if hol and wh:
-            holiday = db.public_holiday.getnode (hol [0])
+        holiday = get_public_holiday (db, dyn, date)
+        if holiday and wh:
             if holiday.is_half:
                 wh = wh / 2.
             wh = user_dynamic.round_daily_work_hours (wh)
@@ -106,14 +107,37 @@ def try_create_public_holiday (db, daily_record, date, user):
             comment = holiday.name
             if holiday.description:
                 comment = '\n'.join ((holiday.name, holiday.description))
-            db.time_record.create \
+            trn = db.time_record.create \
                 ( daily_record  = daily_record
                 , duration      = wh
                 , wp            = wp
                 , comment       = comment
-                , work_location = db.work_location.lookup ('off')
+                )
+            off = db.work_location.filter (None, dict (is_off = True)) [0]
+            db.attendance_record.create \
+                ( daily_record  = daily_record
+                , time_record   = trn
+                , work_location = off
                 )
 # end def try_create_public_holiday
+
+def update_public_holidays (db, dyn):
+    loc = db.org_location.get (dyn.org_location, 'location')
+    dt  = common.pretty_range (dyn.valid_from)
+    if dyn.valid_to:
+        dt = common.pretty_range (dyn.valid_from, dyn.valid_to - common.day)
+    d   = dict (date = dt, locations = loc)
+    hols = db.public_holiday.filter (None, d)
+    for h in hols:
+        hol = db.public_holiday.getnode (h)
+        dat = common.pretty_range (hol.date, hol.date)
+        d   = dict (date = dat, user = dyn.user)
+        dr  = db.daily_record.filter (None, d)
+        assert len (dr) <= 1
+        if dr:
+            # This updats the public holiday if necessary
+            try_create_public_holiday (db, dr [0], hol.date, dyn.user)
+# end def update_public_holidays
 
 def create_daily_recs (db, user, first_day, last_day):
     d = first_day
@@ -176,10 +200,22 @@ def leave_duration (db, user, date, ignore_public_holiday = False):
     dt  = common.pretty_range (date, date)
     dr  = db.daily_record.filter (None, dict (user = user, date = dt))
     assert len (dr) == 1
-    try_create_public_holiday (db, dr [0], date, user)
+    # This is no longer needed: Done when creating daily_record or
+    # updating something that changes the hours
+    #try_create_public_holiday (db, dr [0], date, user)
     trs = db.time_record.filter (None, dict (daily_record = dr [0]))
     bk  = 0.0
-    if not ignore_public_holiday:
+    # If ignore_public_holiday is set we do not subtract public holiday
+    # But instead we return the work hours wh halved if the public
+    # holiday has set the is_half flag
+    if ignore_public_holiday:
+        hol = get_public_holiday (db, dyn, date)
+        if not hol:
+            return 0.0
+        if hol.is_half:
+            wh = wh / 2.
+            wh = user_dynamic.round_daily_work_hours (wh)
+    else:
         for trid in trs:
             tr = db.time_record.getnode (trid)
             if not tr.wp:

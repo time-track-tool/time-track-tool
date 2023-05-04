@@ -23,14 +23,15 @@
    <tal:block metal:use-macro="templates/page/macros/formatted_class">
     <tal:block metal:fill-slot="formatted_class_content">
      <tr>
-      <th tal:content="structure python:utils.fieldname (classname, 'price')"
+      <th tal:content="structure python:utils.fieldname
+          (db, classname, 'price')"
           class="required"/>
       <td tal:content="structure python:context.price.field (size=10)"/>
       <th tal:content="structure python:utils.fieldname
-          (classname, 'vat_percent')"/>
+          (db, classname, 'vat_percent')"/>
       <td tal:content="structure python:context.vat_percent.field (size=4)"/>
       <th tal:content="structure python:utils.fieldname
-          (classname, 'currency')"/>
+          (db, classname, 'currency')"/>
       <td tal:content="structure python:context.currency.plain ()"/>
      </tr>
     </tal:block>

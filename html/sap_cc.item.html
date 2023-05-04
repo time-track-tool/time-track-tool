@@ -25,7 +25,7 @@
    <tal:block metal:fill-slot="formatted_class_content">
     <tr>
      <th tal:content="structure python:utils.fieldname
-         (classname, 'responsible')"/>
+         (db, classname, 'responsible')"/>
      <td>
       <span tal:content="structure python:context.responsible.field ()"/>
       <span tal:content="structure python:utils.user_classhelp
@@ -37,7 +37,7 @@
     </tr>
     <tr>
      <th tal:content="structure python:utils.fieldname
-         (classname, 'deputy')"/>
+         (db, classname, 'deputy')"/>
      <td>
       <span tal:content="structure python:context.deputy.field ()"/>
       <span tal:content="structure python:utils.user_classhelp
@@ -49,23 +49,23 @@
     </tr>
     <tr>
      <th tal:content="structure python:utils.fieldname
-         (classname, 'description')"/>
+         (db, classname, 'description')"/>
      <td tal:content="structure python:context.description.field ()"/>
     </tr>
     <tr>
      <th tal:content="structure python:utils.fieldname
-         (classname, 'organisation')"/>
+         (db, classname, 'organisation')"/>
      <td tal:content="structure python:context.organisation.menu
          (**utils.valid_item (now))"/>
     </tr>
     <tr>
      <th tal:content="structure python:utils.fieldname
-         (classname, 'sap_cc_category')"/>
+         (db, classname, 'sap_cc_category')"/>
      <td tal:content="structure python:context.sap_cc_category.menu ()"/>
     </tr>
     <tr>
      <th tal:content="structure python:utils.fieldname
-         (classname, 'purchasing_agents')"/>
+         (db, classname, 'purchasing_agents')"/>
      <td>
       <span tal:content="structure python:context.purchasing_agents.field ()"/>
       <span tal:content="structure python:utils.user_classhelp
@@ -77,7 +77,7 @@
     </tr>
     <tr>
      <th tal:content="structure python:utils.fieldname
-         (classname, 'team_lead')"/>
+         (db, classname, 'team_lead')"/>
      <td>
       <span tal:content="structure python:context.team_lead.field ()"/>
       <span tal:content="structure python:utils.user_classhelp
@@ -89,7 +89,7 @@
     </tr>
     <tr>
      <th tal:content="structure python:utils.fieldname
-         (classname, 'group_lead')"/>
+         (db, classname, 'group_lead')"/>
      <td>
       <span tal:content="structure python:context.group_lead.field ()"/>
       <span tal:content="structure python:utils.user_classhelp
@@ -100,7 +100,8 @@
      </td>
     </tr>
     <tr>
-     <th tal:content="structure python:utils.fieldname (classname, 'valid')"/>
+     <th tal:content="structure python:utils.fieldname
+         (db, classname, 'valid')"/>
      <td tal:content="structure python:context.valid.field ()"/>
     </tr>
    </tal:block>

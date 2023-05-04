@@ -25,35 +25,35 @@
     <tal:block metal:fill-slot="formatted_class_content">
      <tr>
       <th tal:content="structure python:utils.fieldname
-          (classname, 'category')"/>
+          (db, classname, 'category')"/>
       <td tal:content="structure python:context.category.menu ()"/>
       <th tal:content="structure python:utils.fieldname
-          (classname, 'deadline')"/>
+          (db, classname, 'deadline')"/>
       <td tal:content="structure python:context.deadline.field ()"/>
      </tr>
      <tr>
       <th tal:content="structure python:utils.fieldname
-          (classname, 'status')"/>
+          (db, classname, 'status')"/>
       <td tal:content="structure python:context.status.menu ()"/>
       <th tal:content="structure python:utils.fieldname
-          (classname, 'it_prio')"/>
+          (db, classname, 'it_prio')"/>
       <td tal:content="structure python:context.it_prio.menu ()"/>
      </tr>
      <tr>
       <th tal:content="structure python:utils.fieldname
-          (classname, 'confidential')"/>
+          (db, classname, 'confidential')"/>
       <td tal:content="structure python:context.confidential.field ()"/>
      </tr>
      <tr><td>&nbsp;</td></tr>
      <tr>
       <th tal:content="structure python:utils.fieldname
-          (classname, 'responsible')"/>
+          (db, classname, 'responsible')"/>
       <td>
        <tal:block tal:replace="structure python:context.responsible.field ()"/>
        <tal:block tal:replace="structure python:utils.user_classhelp (db)"/>
       </td>
       <th tal:content="structure python:utils.fieldname
-          (classname, 'stakeholder')"/>
+          (db, classname, 'stakeholder')"/>
       <td>
        <span tal:content="structure python:context.stakeholder.field ()"/>
        <span tal:content="structure python:utils.user_classhelp
@@ -95,9 +95,9 @@
      </td>
     </tr>
     <tr tal:define="n python:'it_issue'">
-     <th tal:content="structure python:utils.fieldname (n, 'id')"/>
-     <th tal:content="structure python:utils.fieldname (n, 'responsible')"/>
-     <th tal:content="structure python:utils.fieldname (n, 'title')"/>
+     <th tal:content="structure python:utils.fieldname (db, n, 'id')"/>
+     <th tal:content="structure python:utils.fieldname (db, n, 'responsible')"/>
+     <th tal:content="structure python:utils.fieldname (db, n, 'title')"/>
     </tr>
     <tr tal:repeat="it its">
      <td tal:content="structure python:utils.ExtProperty

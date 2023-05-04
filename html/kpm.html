@@ -6,7 +6,7 @@
   <tal:block tal:define="es python: ess [0]; ro python: bool (es.ext_id)">
          <tr tal:condition="python: classname != 'issue'">
           <th tal:content="structure python:utils.fieldname
-            ('issue', 'title')"/>
+            (db, 'issue', 'title')"/>
           <td>
            <a tal:attributes="href python:'issue%s' % kpm.issue.id"
               tal:content="python: kpm.issue.title"/>
@@ -14,7 +14,7 @@
          </tr>
          <tr>
           <th tal:content="structure python:utils.fieldname
-            ('kpm', 'kpm_function')"/>
+            (db, 'kpm', 'kpm_function')"/>
           <td tal:condition="not:ro">
            <span tal:content="structure python: kpm.kpm_function.field ()"/>
            <span tal:content="structure python:db.kpm_function.classhelp
@@ -28,7 +28,7 @@
           <td tal:condition="ro" tal:content="python:
               kpm.kpm_function.plain ()" />
           <th tal:content="structure python:utils.fieldname
-            ('kpm', 'hardware_version')"/>
+            (db, 'kpm', 'hardware_version')"/>
           <td tal:condition="not:ro" tal:content="structure python:
             kpm.hardware_version.field ()"/>
           <td tal:condition="ro"     tal:content="python:
@@ -36,13 +36,13 @@
          </tr>
          <tr>
           <th tal:content="structure python:utils.fieldname
-            ('kpm', 'reproduceable')"/>
+            (db, 'kpm', 'reproduceable')"/>
           <td tal:condition="not:ro" tal:content="structure python:
             kpm.reproduceable.field ()"/>
           <td tal:condition="ro"     tal:content="python:
             kpm.reproduceable.plain ()"/>
           <th tal:content="structure python:utils.fieldname
-            ('kpm', 'fault_frequency')"/>
+            (db, 'kpm', 'fault_frequency')"/>
           <td tal:condition="not:ro" tal:content="structure python:
             kpm.fault_frequency.menu ()"/>
           <td tal:condition="ro"     tal:content="python:
@@ -50,12 +50,12 @@
          </tr>
          <tr>
           <th tal:content="structure python:utils.fieldname
-            ('kpm', 'is_known_limitation')"/>
+            (db, 'kpm', 'is_known_limitation')"/>
           <td tal:content="structure python: kpm.is_known_limitation.field ()"/>
          </tr>
          <tr>
           <th tal:content="structure python:utils.fieldname
-            ('kpm', 'problem_description')"/>
+            (db, 'kpm', 'problem_description')"/>
           <td>
            <textarea
             tal:content="python:kpm.problem_description.content.plain() or ''"
@@ -66,7 +66,7 @@
          </tr>
          <tr>
           <th tal:content="structure python:utils.fieldname
-            ('kpm', 'customer_effect')"/>
+            (db, 'kpm', 'customer_effect')"/>
           <td>
            <textarea
             tal:content="python:kpm.customer_effect.content.plain() or ''"
@@ -75,7 +75,7 @@
              name python:'kpm%s@link@customer_effect' % kpm.id"/>
           </td>
           <th tal:content="structure python:utils.fieldname
-            ('kpm', 'analysis')"/>
+            (db, 'kpm', 'analysis')"/>
           <td>
            <textarea tal:content="python:kpm.analysis.content.plain() or ''"
             wrap="soft" cols="60" rows="3" name="msg-2@content"
@@ -86,7 +86,7 @@
          </tr>
          <tr>
           <th tal:content="structure python:utils.fieldname
-            ('kpm', 'workaround')"/>
+            (db, 'kpm', 'workaround')"/>
           <td>
            <textarea tal:content="python:kpm.workaround.content.plain() or ''"
             wrap="soft" cols="50" rows="3" name="msg-6@content"/>
@@ -94,7 +94,7 @@
              name python:'kpm%s@link@workaround' % kpm.id"/>
           </td>
           <th tal:content="structure python:utils.fieldname
-            ('kpm', 'description')"/>
+            (db, 'kpm', 'description')"/>
           <td>
            <textarea tal:content="python:kpm.description.content.plain() or ''"
             wrap="soft" cols="60" rows="3" name="msg-3@content"
@@ -105,7 +105,7 @@
          </tr>
          <tr>
           <th tal:content="structure python:utils.fieldname
-            ('kpm', 'problem_solution')"/>
+            (db, 'kpm', 'problem_solution')"/>
           <td>
            <textarea tal:content="python:
             kpm.problem_solution.content.plain() or ''"
@@ -114,7 +114,7 @@
              name python:'kpm%s@link@problem_solution' % kpm.id"/>
           </td>
           <th tal:content="structure python:utils.fieldname
-            ('kpm', 'supplier_answer')"/>
+            (db, 'kpm', 'supplier_answer')"/>
           <td>
            <textarea tal:content="python:
             kpm.supplier_answer.content.plain() or ''"
@@ -125,33 +125,33 @@
          </tr>
          <tr>
           <th tal:content="structure python:utils.fieldname
-            ('kpm', 'kpm_occurrence')"/>
+            (db, 'kpm', 'kpm_occurrence')"/>
           <td tal:content="structure python: kpm.kpm_occurrence.menu ()"/>
           <th tal:content="structure python:utils.fieldname
-            ('kpm', 'safety_relevant')"/>
+            (db, 'kpm', 'safety_relevant')"/>
           <td tal:content="structure python: kpm.safety_relevant.field ()"/>
          </tr>
          <tr>
           <th tal:content="structure python:utils.fieldname
-            ('kpm', 'kpm_hw_variant')"/>
+            (db, 'kpm', 'kpm_hw_variant')"/>
           <td tal:content="structure python: kpm.kpm_hw_variant.menu ()"/>
           <th tal:content="structure python:utils.fieldname
-            ('kpm', 'kpm_tag')"/>
+            (db, 'kpm', 'kpm_tag')"/>
           <td tal:content="structure python: kpm.kpm_tag.menu (valid = True)"/>
          </tr>
          <tr>
           <th tal:content="structure python:utils.fieldname
-            ('kpm', 'planned_correction')"/>
+            (db, 'kpm', 'planned_correction')"/>
           <td tal:content="structure python: kpm.planned_correction.menu
               (valid = True)"/>
           <th tal:content="structure python:utils.fieldname
-            ('kpm', 'tested_with')"/>
+            (db, 'kpm', 'tested_with')"/>
           <td tal:content="structure python: kpm.tested_with.menu
               (valid = True)"/>
          </tr>
          <tr>
           <th tal:content="structure python:utils.fieldname
-            ('kpm', 'ready_for_sync')"/>
+            (db, 'kpm', 'ready_for_sync')"/>
           <td tal:content="structure python: kpm.ready_for_sync.field ()"/>
          </tr>
          <tr tal:condition="python: classname == 'issue'"

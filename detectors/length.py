@@ -24,14 +24,13 @@
 # Directory -- we sync some fields to AD (see lib/ldap_sync.py)
 
 from roundup.exceptions             import Reject
-from roundup.cgi.TranslationService import get_translation
-
 import common
 
 def check_proplen (db, cl, nodeid, new_values, limit = 64) :
     pname = cl.getkey ()
     if pname in new_values :
-        common.check_prop_len (_, new_values [pname], pname, limit = 64)
+        common.check_prop_len \
+            (db.i18n.gettext, new_values [pname], pname, limit = 64)
 # end def check_proplen
 
 def check_proplen_128 (db, cl, nodeid, new_values) :
@@ -52,13 +51,10 @@ def check_contact_len (db, cl, nodeid, new_values) :
         if ct and ct == mail :
             limit = 256
         common.check_prop_len \
-            (_, new_values ['contact'], 'contact', limit = limit)
+            (db.i18n.gettext, new_values ['contact'], 'contact', limit = limit)
 # end def check_contact_len
 
 def init (db) :
-    global _
-    _   = get_translation \
-        (db.config.TRACKER_LANGUAGE, db.config.TRACKER_HOME).gettext
     if 'department' in db.classes :
         db.department.audit   ("create", check_proplen)
         db.department.audit   ("set",    check_proplen)

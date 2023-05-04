@@ -34,7 +34,6 @@ import time
 import os
 import re
 import locale
-from roundup.cgi.TranslationService import get_translation
 from roundup.cgi.templating         import HTMLClass
 from roundup.date                   import Date, Interval
 from roundup.hyperdb                import Database as hyperdb_database
@@ -366,7 +365,8 @@ def welcome (db) :
         return escape (text).replace ('\n\n', '<br>\n')
     except IOError :
         pass
-    return "".join ((db._ (''"Welcome to the "), db.config.TRACKER_NAME, '.'))
+    _ = db.i18n.gettext
+    return "".join ((_ (''"Welcome to the "), db.config.TRACKER_NAME, '.'))
 # end def welcome
 
 def color_duration (tr) :

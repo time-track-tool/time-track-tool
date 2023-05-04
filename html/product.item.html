@@ -24,27 +24,27 @@
     <tal:block metal:fill-slot="formatted_class_content">
      <tr tal:condition="python: 'sap_material' in bclass.properties">
       <th tal:content="structure python:utils.fieldname
-          (classname, 'sap_material')"/>
+          (db, classname, 'sap_material')"/>
       <td tal:content="structure python:context.sap_material.plain ()"/>
      </tr>
      <tr tal:condition="python: 'business_unit' in bclass.properties">
       <th tal:content="structure python:utils.fieldname
-          (classname, 'business_unit')"/>
+          (db, classname, 'business_unit')"/>
       <td tal:content="structure python:context.business_unit.plain ()"/>
      </tr>
      <tr tal:condition="python: 'is_series' in bclass.properties">
       <th tal:content="structure python:utils.fieldname
-          (classname, 'is_series')"/>
+          (db, classname, 'is_series')"/>
       <td tal:content="structure python:context.is_series.plain ()"/>
      </tr>
      <tr tal:condition="python: 'valid' in bclass.properties">
       <th tal:content="structure python:utils.fieldname
-          (classname, 'valid')"/>
+          (db, classname, 'valid')"/>
       <td tal:content="structure python:context.valid.plain ()"/>
      </tr>
      <tr tal:condition="python: 'prodcat' in bclass.properties">
       <th tal:content="structure python:utils.fieldname
-          (classname, 'prodcat')"/>
+          (db, classname, 'prodcat')"/>
       <td colspan="3">
        <tal:block tal:content="structure python:utils.prodcat_parents
             (db, utils, context.prodcat)"/>
@@ -52,7 +52,7 @@
      </tr>
      <tr tal:condition="python: 'product_family' in bclass.properties">
       <th tal:content="structure python:utils.fieldname
-          (classname, 'product_family')"/>
+          (db, classname, 'product_family')"/>
       <td colspan="3">
        <tal:block tal:content="structure python:utils.prodcat_parents
             (db, utils, context.product_family)"/>
@@ -60,7 +60,7 @@
      </tr>
      <tr tal:condition="python: 'product_use_case' in bclass.properties">
       <th tal:content="structure python:utils.fieldname
-          (classname, 'product_use_case')"/>
+          (db, classname, 'product_use_case')"/>
       <td colspan="3">
        <tal:block tal:content="structure python:utils.prodcat_parents
             (db, utils, context.product_use_case)"/>
@@ -68,7 +68,7 @@
      </tr>
      <tr tal:condition="python: 'product_line' in bclass.properties">
       <th tal:content="structure python:utils.fieldname
-          (classname, 'product_line')"/>
+          (db, classname, 'product_line')"/>
       <td colspan="3">
        <tal:block tal:content="structure python:utils.prodcat_parents
             (db, utils, context.product_line)"/>
@@ -76,57 +76,58 @@
      </tr>
      <tr tal:condition="python: 'description' in bclass.properties">
       <th tal:content="structure python:utils.fieldname
-          (classname, 'description')"/>
+          (db, classname, 'description')"/>
       <td tal:content="structure python:context.description.field (size=60)"
        colspan="3"/>
      </tr>
      <tr tal:condition="python: 'status' in bclass.properties">
-      <th tal:content="structure python:utils.fieldname (classname, 'status')"/>
+      <th tal:content="structure python:utils.fieldname
+          (db, classname, 'status')"/>
       <td tal:content="structure python:context.status.menu ()"/>
       <th tal:content="structure python:utils.fieldname
-          (classname, 'product_group')"/>
+          (db, classname, 'product_group')"/>
       <td tal:content="structure python:context.product_group.menu ()"/>
      </tr>
      <tr tal:condition="python: 'measuring_unit' in bclass.properties">
       <th tal:content="structure python:utils.fieldname
-          (classname, 'measuring_unit')"/>
+          (db, classname, 'measuring_unit')"/>
       <td tal:content="structure python:context.measuring_unit.menu ()"/>
       <th tal:content="structure python:utils.fieldname
-          (classname, 'packaging_unit')"/>
+          (db, classname, 'packaging_unit')"/>
       <td tal:content="structure python:context.packaging_unit.menu ()"/>
      </tr>
      <tr tal:condition="python: 'minimum_inventory' in bclass.properties">
       <th tal:content="structure python:utils.fieldname
-          (classname, 'minimum_inventory')"/>
+          (db, classname, 'minimum_inventory')"/>
       <td tal:content="structure python:context.minimum_inventory.field ()"/>
       <th tal:content="structure python:utils.fieldname
-          (classname, 'shelf_life_code')"/>
+          (db, classname, 'shelf_life_code')"/>
       <td tal:content="structure python:context.shelf_life_code.menu ()"/>
      </tr>
      <tr tal:condition="python: 'use_lot' in bclass.properties">
       <th tal:content="structure python:utils.fieldname
-          (classname, 'use_lot')"/>
+          (db, classname, 'use_lot')"/>
       <td tal:content="structure python:context.use_lot.field ()"/>
       <th tal:content="structure python:utils.fieldname
-          (classname, 'proceeds_group')"/>
+          (db, classname, 'proceeds_group')"/>
       <td tal:content="structure python:context.proceeds_group.menu ()"/>
      </tr>
      <tr tal:condition="python: 'product_price' in bclass.properties">
       <th tal:content="structure python:utils.fieldname
-          (classname, 'product_price')"/>
+          (db, classname, 'product_price')"/>
       <td colspan="3">
        <table class="form" border="0"
               style="border-spacing:0px;padding-top:0px;padding-left:0px">
         <tr>
          <th style="text-align:left;padding-top:0px;padding-left:0px"
              class="required" tal:content="structure python:utils.fieldname
-             ('product_price', 'price')"/>
+             (db, 'product_price', 'price')"/>
          <th style="text-align:left;padding-top:0px"
              tal:content="structure python:utils.fieldname
-             ('product_price', 'vat_percent')"/>
+             (db, 'product_price', 'vat_percent')"/>
          <th style="text-align:left;padding-top:0px"
              class="required" tal:content="structure python:utils.fieldname
-             ('product_price', 'currency')"/>
+             (db, 'product_price', 'currency')"/>
          <th style="text-align:left;padding-top:0px"
              tal:condition="context/is_edit_ok" i18n:translate=""
              style="padding-top:0px">
@@ -185,12 +186,12 @@
     <tal:block tal:condition="cas">
      <tal:block tal:define="n python:'customer_agreement'">
       <tr>
-       <th tal:content="structure python:utils.fieldname (n, 'id')"/>
-       <th tal:content="structure python:utils.fieldname (n, 'customer')"/>
+       <th tal:content="structure python:utils.fieldname (db, n, 'id')"/>
+       <th tal:content="structure python:utils.fieldname (db, n, 'customer')"/>
       </tr>
       <tr>
        <th colspan="2"
-        tal:content="structure python:utils.fieldname (n, 'description')"/>
+        tal:content="structure python:utils.fieldname (db, n, 'description')"/>
       </tr>
      </tal:block>
      <tal:block tal:repeat="ca cas">
