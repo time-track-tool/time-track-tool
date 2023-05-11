@@ -144,6 +144,13 @@ if 'daily_record' in db.classes and hasattr (db, 'sql') :
     db.sql ('create index _daily_record_date_idx on _daily_record ( _date );')
     db.sql ('create index _daily_record_user_idx on _daily_record ( _user );')
 
+if 'attendance_record' in db.classes and hasattr (db, 'sql'):
+    db.sql ('create index _attendance_record_daily_record_idx '
+            'on _attendance_record (_daily_record);'
+           )
+    db.sql ('create index _attendance_record_time_record_idx '
+            'on _attendance_record (_time_record);'
+           )
 if 'time_record' in db.classes and hasattr (db, 'sql') :
     db.sql ('create index _time_record_wp_idx on _time_record (_wp);')
     db.sql ('create index _time_record_daily_record_idx '

@@ -57,6 +57,10 @@ try:
         ( 'create index _attendance_record_time_record_idx on '
           '_attendance_record (_time_record);'
         )
+    db.sql \
+        ( 'create index _attendance_record_daily_record_idx '
+          'on _attendance_record (_daily_record);'
+        )
 except Exception as err:
     print ("Index creation failed: %s" % err)
     do_commit = False
