@@ -472,7 +472,8 @@ class Daily_Record_Edit_Action (EditItemAction, Daily_Record_Common) :
                     aval  ['start']           = stn
                 self.new_ar_tr (props, links, newar, newtr)
                 # Don't change old values
-                del tval ['wp']
+                if 'wp' in tval:
+                    del tval ['wp']
                 if 'time_activity' in tval :
                     del tval ['time_activity']
                 if 'work_location' in aval :
