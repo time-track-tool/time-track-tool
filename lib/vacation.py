@@ -882,7 +882,7 @@ def flexi_alliquot (db, user, date_in_year, ctype):
         vt = dyn.valid_to
         if not vt or vt > eoy + common.day:
             vt = eoy + common.day
-        assert (vt - vf).as_seconds () > 0
+        assert (vt - vf).as_seconds () >= 0
         flex  += (vt - vf).as_seconds () * (dyn.max_flexitime or 0)
         dsecs += (vt - vf).as_seconds ()
     assert dsecs / ds <= 366
@@ -917,7 +917,7 @@ def avg_hours_per_week_this_year (db, user, date_in_year, enddate = None):
         vt = dyn.valid_to
         if not vt or vt > eoy + common.day:
             vt = eoy + common.day
-        assert (vt - vf).as_seconds () > 0
+        assert (vt - vf).as_seconds () >= 0
         dsecs += (vt - vf).as_seconds ()
         rng = common.pretty_range (vf, vt - common.day)
         drs = db.daily_record.filter (None, dict (date = rng, user = user))
