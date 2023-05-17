@@ -1,5 +1,5 @@
 #! /usr/bin/python
-# Copyright (C) 2006-21 Dr. Ralf Schlatterbeck Open Source Consulting.
+# Copyright (C) 2006-23 Dr. Ralf Schlatterbeck Open Source Consulting.
 # Reichergasse 131, A-3411 Weidling.
 # Web: http://www.runtux.com Email: office@runtux.com
 # All rights reserved
@@ -550,6 +550,7 @@ class WP_Container (Comparable_Container):
     # end def __str__
 
     def as_html (self):
+        _ = self.i18n.gettext
         return "%s %s %s" % \
             ( escape (_ (self.classname)).replace (' ', '&nbsp;')
             , escape (self.name).replace          (' ', '&nbsp;')
