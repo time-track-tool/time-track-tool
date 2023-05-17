@@ -40,9 +40,9 @@
 from time                           import gmtime
 from copy                           import copy
 from operator                       import add
-try :
+try:
     from urllib.parse import quote as urlquote
-except ImportError :
+except ImportError:
     from urllib import quote as urlquote
 
 from rsclib.autosuper               import autosuper
@@ -60,10 +60,10 @@ import rup_utils
 import user_dynamic
 import vacation
 
-def prev_week (db, request) :
-    try :
+def prev_week (db, request):
+    try:
         db  = db._db
-    except AttributeError :
+    except AttributeError:
         pass
     start, end = common.date_range (db, request.filterspec)
     n_end   = start - Interval ('1d')
@@ -78,10 +78,10 @@ def prev_week (db, request) :
         ''' % date
 # end def prev_week
 
-def next_week (db, request) :
-    try :
+def next_week (db, request):
+    try:
         db  = db._db
-    except AttributeError :
+    except AttributeError:
         pass
     start, end = common.date_range (db, request.filterspec)
     n_start = end     + Interval ('1d')
@@ -96,17 +96,17 @@ def next_week (db, request) :
         ''' % date
 # end def next_week
 
-def button_submit_to (db, user, date) :
+def button_submit_to (db, user, date):
     """ Create the submit_to button for time tracking submissions. We
         get the supervisor of the user and check if clearance is
         delegated.
     """
-    if not date :
+    if not date:
         return ''
     db = db._db
     _  = db.i18n.gettext
     supervisor = db.user.get (user,       'supervisor')
-    if not supervisor :
+    if not supervisor:
         return ''
     clearance  = db.user.get (supervisor, 'clearance_by') or supervisor
     clearer    = db.user.getnode (clearance)
@@ -124,10 +124,10 @@ def button_submit_to (db, user, date) :
         ''' % (_ ("Submit"), date)
 # end def button_submit_to
 
-def button_action (date, action, value) :
+def button_action (date, action, value):
     """ Create a button for time-tracking actions """
     ''"approve", ''"deny", ''"edit again"
-    if not date :
+    if not date:
         return ''
     return \
         '''<input type="button" value="%s"
@@ -142,7 +142,7 @@ def button_action (date, action, value) :
         ''' % (value, action, date)
 # end def button_action
 
-def freeze_all_script () :
+def freeze_all_script ():
      return \
         '''javascript:if(submit_once()){
             document.forms.itemSynopsis ['@action'].value = 'freeze_all';
@@ -151,7 +151,7 @@ def freeze_all_script () :
         '''
 # end def freeze_all_script
 
-def freeze_supervisor_script () :
+def freeze_supervisor_script ():
      return \
         '''javascript:if(submit_once()){
             document.forms.itemSynopsis ['@action'].value = 'freeze_supervisor';
@@ -160,7 +160,7 @@ def freeze_supervisor_script () :
         '''
 # end def freeze_supervisor_script
 
-def freeze_user_script () :
+def freeze_user_script ():
      return \
         '''javascript:if(submit_once()){
             document.forms.itemSynopsis ['@action'].value = 'freeze_user';
@@ -169,11 +169,11 @@ def freeze_user_script () :
         '''
 # end def freeze_user_script
 
-def time_url (request, classname) :
+def time_url (request, classname):
     url = 'daily_record?:action=daily_record_action&:template=edit'
     if  (   classname == 'daily_record'
         and request.template not in ('approve', 'edit')
-        ) :
+        ):
         url = str \
             ( request.indexargs_url 
               (classname, {'@action':'daily_record_action', '@template':'edit'})
@@ -187,18 +187,18 @@ def time_url (request, classname) :
         """ % locals ()
 # end def time_url
 
-class Daily_Record_Common (Action, autosuper) :
+class Daily_Record_Common (Action, autosuper):
     """ Methods for creation of daily records that do not yet exist """
 
     permissionType = 'View'
 
-    def set_request (self) :
+    def set_request (self):
         """ figure the request """
-        if not hasattr (self, 'request') :
+        if not hasattr (self, 'request'):
             self.request = templating.HTMLRequest (self.client)
     # end def set_request
 
-    def create_daily_records (self) :
+    def create_daily_records (self):
         self.set_request ()
         request         = self.request
         filterspec      = request.filterspec
@@ -208,7 +208,7 @@ class Daily_Record_Common (Action, autosuper) :
         self.start      = start
         self.end        = end
         max             = start + Interval ('31d')
-        if end > max :
+        if end > max:
             msg = \
                 ( "Error: Interval may not exceed one month: %s"
                 % ' to '.join ([i.pretty (common.ymd) for i in (start, end)])
@@ -227,9 +227,9 @@ class Daily_Record_Common (Action, autosuper) :
                   }
                 )
             raise Redirect (url)
-        if 'user' in filterspec :
+        if 'user' in filterspec:
             self.user = filterspec ['user'][0]
-        else :
+        else:
             self.user = self.db.getuid ()
         vacation.create_daily_recs (self.db, self.user, start, end)
         self.db.commit ()
@@ -237,7 +237,7 @@ class Daily_Record_Common (Action, autosuper) :
 
 # end class Daily_Record_Common
 
-class Daily_Record_Action (Daily_Record_Common) :
+class Daily_Record_Action (Daily_Record_Common):
     """ Move to the given date range for the given user after creating
         the daily records for the given range.
         Note: No editing is performed.
@@ -245,10 +245,10 @@ class Daily_Record_Action (Daily_Record_Common) :
 
     name           = 'daily_record_action'
 
-    def handle (self) :
+    def handle (self):
         _   = self.db.i18n.gettext
         uid = self.db.user.lookup (self.user)
-        if not self.db.user.get (uid, 'supervisor') :
+        if not self.db.user.get (uid, 'supervisor'):
             f_supervisor = _ ('supervisor')
             user = self.user
             msg  = _ ("No %(f_supervisor)s for %(user)s") % locals ()
@@ -275,7 +275,7 @@ class Daily_Record_Action (Daily_Record_Common) :
 
 # end class Daily_Record_Action
 
-class Daily_Record_Edit_Action (EditItemAction, Daily_Record_Common) :
+class Daily_Record_Edit_Action (EditItemAction, Daily_Record_Common):
     """ Remove items that did not change (for which we defined a hidden
         attribute in the mask) from the new items. Then proceed as usual
         like for EditItemAction. The filterspec is modified from the
@@ -286,23 +286,23 @@ class Daily_Record_Edit_Action (EditItemAction, Daily_Record_Common) :
     name           = 'daily_record_edit_action'
     permissionType = 'Edit'
 
-    def set_ar_tr (self, props, ar, tr, trid) :
+    def set_ar_tr (self, props, ar, tr, trid):
         arid = self.db.time_record.get (trid, 'attendance_record')
         assert len (arid) == 1
         arid = arid [0]
         trkey = ('time_record', trid)
-        if trkey in props :
+        if trkey in props:
             props [trkey].update (tr)
-        elif tr :
+        elif tr:
             props [trkey] = tr
         arkey = ('attendance_record', arid)
-        if arkey in props :
+        if arkey in props:
             props [arkey].update (ar)
-        elif ar :
+        elif ar:
             props [arkey] = ar
     # end def set_ar_tr
 
-    def new_ar_tr (self, props, links, newar, newtr) :
+    def new_ar_tr (self, props, links, newar, newtr):
         # We should never get here with newidx being None
         assert self.newidx is not None
         nid = str (-self.newidx)
@@ -319,7 +319,7 @@ class Daily_Record_Edit_Action (EditItemAction, Daily_Record_Common) :
             ))
     # end def new_ar_tr
 
-    def _editnodes (self, props, links) :
+    def _editnodes (self, props, links):
         """ Modify the props and links before handing to _editnodes of
             master class.
             First we remove all attendance records that have only the
@@ -343,56 +343,56 @@ class Daily_Record_Edit_Action (EditItemAction, Daily_Record_Common) :
             self.newidx = abs (self.newidx) + 1
         atrecs = {}
         # Materialize list: the props are modified during iteration
-        for (cl, id) in list (props) :
-            if cl != 'attendance_record' or int (id) > 0 :
+        for (cl, id) in list (props):
+            if cl != 'attendance_record' or int (id) > 0:
                 continue
             val = props [(cl, id)]
-            if list (val) == ['daily_record'] :
+            if list (val) == ['daily_record']:
                 del props [(cl, id)]
-            else :
+            else:
                 dstart, dend, dur = self.get_start_end (val)
                 atrecs [id] = dur
 
         # Materialize list: the props are modified during iteration
-        for (cl, id) in list (props) :
-            if cl != 'time_record' or int (id) > 0 :
+        for (cl, id) in list (props):
+            if cl != 'time_record' or int (id) > 0:
                 continue
             val = props [(cl, id)]
-            if  (list (val) == ['daily_record'] and id not in atrecs) :
+            if  (list (val) == ['daily_record'] and id not in atrecs):
                 del props [(cl, id)]
-            elif 'duration' not in val and id in atrecs :
+            elif 'duration' not in val and id in atrecs:
                 val ['duration'] = atrecs [id]
         # Check if start is given but no end, create end from start + duration
-        for (cl, id) in list (props) :
-            if cl != 'attendance_record' or int (id) > 0 :
+        for (cl, id) in list (props):
+            if cl != 'attendance_record' or int (id) > 0:
                 continue
-            if ('time_record', id) not in props :
+            if ('time_record', id) not in props:
                 continue
             aval = props [(cl, id)]
             tval = props [('time_record', id)]
-            if 'duration' not in tval :
+            if 'duration' not in tval:
                 continue
             dstart, dend, dur = self.get_start_end (aval)
             dur = tval ['duration']
             hours = int (dur)
             minutes = int ((dur - hours) * 60)
             iv = Interval ('%d:%d' % (hours, minutes))
-            if dstart and not dend :
+            if dstart and not dend:
                 aval ['end'] = (dstart + iv).pretty (hour_format)
-            if not dstart and dend :
+            if not dstart and dend:
                 aval ['start'] = (dend - iv).pretty (hour_format)
         # Check if some duration is > 6h, add lunch if applicable
-        for (cl, id) in list (props) :
-            if cl != 'time_record' or int (id) > 0 :
+        for (cl, id) in list (props):
+            if cl != 'time_record' or int (id) > 0:
                 continue
             val  = props [(cl, id)]
             aval = props [('attendance_record', id)]
             travel = False
-            if cl == 'time_record' and val.get ('time_activity') :
+            if cl == 'time_record' and val.get ('time_activity'):
                 ta = self.db.time_activity.getnode (val ['time_activity'])
                 travel = travel or ta.travel
             dstart, dend, dur = self.get_start_end (aval)
-            if travel or not val.get ('duration') :
+            if travel or not val.get ('duration'):
                 continue
             dur  = val ['duration']
             dr   = self.db.daily_record.getnode (val ['daily_record'])
@@ -405,31 +405,31 @@ class Daily_Record_Edit_Action (EditItemAction, Daily_Record_Common) :
             hours    = int (ld)
             minutes  = (ld - hours) * 60
             le       = ls + Interval ('%d:%d' % (hours, minutes))
-            if dur <= 6 or not dstart or dstart >= ls or dend <= ls :
+            if dur <= 6 or not dstart or dstart >= ls or dend <= ls:
                 continue
             newtr = dict (daily_record = dr.id)
             newar = dict (daily_record = dr.id, start = le.pretty (hour_format))
             dur1  = (ls - dstart).as_seconds () / 3600.
             dur2  = dur - dur1 - ld
             assert dur1 > 0
-            for a in 'wp', 'time_activity' :
-                if a in val and val [a] :
+            for a in 'wp', 'time_activity':
+                if a in val and val [a]:
                     newtr [a] = val [a]
-            if 'work_location' in aval and aval ['work_location'] :
+            if 'work_location' in aval and aval ['work_location']:
                 newar ['work_location'] = aval ['work_location']
             newar ['end'] = aval ['end']
             aval  ['end'] = ls.pretty (hour_format)
             val ['duration'] = dur1
-            if dur2 > 0 :
+            if dur2 > 0:
                 newtr ['duration'] = dur2
                 self.new_ar_tr (props, links, newar, newtr)
         # Handle dist
-        for (cl, id) in list (props) :
+        for (cl, id) in list (props):
             aval = props [(cl, id)]
-            if cl != 'attendance_record' or 'dist' not in aval :
+            if cl != 'attendance_record' or 'dist' not in aval:
                 continue
             # Dist is only meaningful for existing records
-            if int (id) < 0 :
+            if int (id) < 0:
                 del props [(cl, id)]['dist']
                 continue
             dist = aval ['dist']
@@ -448,11 +448,11 @@ class Daily_Record_Edit_Action (EditItemAction, Daily_Record_Common) :
             loc  = aval.get ('work_location', ar.work_location)
             strt = aval.get ('start', ar.start)
             end  = aval.get ('end', ar.end)
-            if not wp :
+            if not wp:
                 raise Reject (_ ('Distribution: WP must be given'))
-            if not dur :
+            if not dur:
                 raise Reject (_ ('Distribution: Duration must be given'))
-            if dist < dur :
+            if dist < dur:
                 newtr = dict \
                     ( daily_record  = ar.daily_record
                     , duration      = dist
@@ -463,12 +463,12 @@ class Daily_Record_Edit_Action (EditItemAction, Daily_Record_Common) :
                     ( work_location = loc
                     , daily_record  = ar.daily_record
                     )
-                if comm :
+                if comm:
                     newtr ['comment'] = comm
-                    if 'comment' in tval :
+                    if 'comment' in tval:
                         del tval ['comment']
                 sg = aval.get ('start_generated', ar.start_generated)
-                if strt :
+                if strt:
                     newar ['start']           = strt
                     newar ['end_generated']   = True
                     newar ['start_generated'] = sg
@@ -479,11 +479,11 @@ class Daily_Record_Edit_Action (EditItemAction, Daily_Record_Common) :
                 # Don't change old values
                 if 'wp' in tval:
                     del tval ['wp']
-                if 'time_activity' in tval :
+                if 'time_activity' in tval:
                     del tval ['time_activity']
-                if 'work_location' in aval :
+                if 'work_location' in aval:
                     del aval ['work_location']
-            elif dist > dur : # Nothing to do when dist == dur
+            elif dist > dur: # Nothing to do when dist == dur
                 dist -= dur
                 wstart, wend = common.week_from_date (dr.date)
                 dsearch = common.pretty_range (dr.date, wend)
@@ -492,18 +492,18 @@ class Daily_Record_Edit_Action (EditItemAction, Daily_Record_Common) :
                 ari = self.db.attendance_record.filter \
                     (None, dict (daily_record = drs))
                 recs = []
-                for aid in ari :
+                for aid in ari:
                     a = self.db.attendance_record.getnode (aid)
                     t = self.db.time_record.getnode (a.time_record)
-                    if a.id == id or t.wp :
+                    if a.id == id or t.wp:
                         continue
-                    if a.daily_record == dr.id :
-                        if not strt :
+                    if a.daily_record == dr.id:
+                        if not strt:
                             continue
-                        if a.start <= strt :
+                        if a.start <= strt:
                             continue
                     recs.append ((a, t))
-                if sum (r [1].duration for r in recs) < dist :
+                if sum (r [1].duration for r in recs) < dist:
                     m = _ ('Dist must not exceed sum of unassigned times '
                            'in week'
                           )
@@ -511,12 +511,12 @@ class Daily_Record_Edit_Action (EditItemAction, Daily_Record_Common) :
                 drcl = self.db.daily_record
                 for rec in sorted \
                     ( recs
-                    , key = lambda x :
+                    , key = lambda x:
                         (drcl.get (x [0].daily_record, 'date'), x [0].start)
-                    ) :
+                    ):
                     ar = rec [0]
                     tr = rec [1]
-                    if tr.duration <= dist :
+                    if tr.duration <= dist:
                         dist -= tr.duration
                         updar = dict (work_location = loc)
                         updtr = dict \
@@ -524,7 +524,7 @@ class Daily_Record_Edit_Action (EditItemAction, Daily_Record_Common) :
                             , time_activity = tact
                             )
                         self.set_ar_tr (props, updar, updtr, tr.id)
-                    else :
+                    else:
                         updtr   = dict (duration = tr.duration - dist)
                         updar   = {}
                         newar   = dict \
@@ -537,7 +537,7 @@ class Daily_Record_Edit_Action (EditItemAction, Daily_Record_Common) :
                             , wp            = wp
                             , time_activity = tact
                             )
-                        if ar.start :
+                        if ar.start:
                             updar ['start_generated'] = True
                             dstart  = Date (ar.start)
                             hours   = int (dist)
@@ -549,38 +549,38 @@ class Daily_Record_Edit_Action (EditItemAction, Daily_Record_Common) :
                         self.set_ar_tr (props, updar, updtr, tr.id)
                         self.new_ar_tr (props, links, newar, newtr)
                         dist = 0
-                    if not dist :
+                    if not dist:
                         break
                 assert dist == 0
         self.ok_msg = EditItemAction._editnodes (self, props, links)
         return self.ok_msg
     # end def _editnodes
 
-    def get_start_end (self, val) :
+    def get_start_end (self, val):
         dstart = dend = dur = None
         start = val.get ('start')
         end   = val.get ('end')
-        if start and ':' not in start :
+        if start and ':' not in start:
             start += ':00'
-        if end and ':' not in end :
+        if end and ':' not in end:
             end   += ':00'
         dr = self.db.daily_record.getnode (val ['daily_record'])
-        if start :
+        if start:
             dstart = Date (start, offset = 0)
             dstart.year  = dr.date.year
             dstart.month = dr.date.month
             dstart.day   = dr.date.day
-        if end :
+        if end:
             dend   = Date (end,   offset = 0)
             dend.year  = dr.date.year
             dend.month = dr.date.month
             dend.day   = dr.date.day
-        if start and end :
+        if start and end:
             dur = (dend - dstart).as_seconds () / 3600.
         return dstart, dend, dur
     # end def get_start_end
 
-    def handle (self) :
+    def handle (self):
         self.create_daily_records ()
         self.request.filterspec = \
             { 'date' : common.pretty_range (self.start, self.end)
@@ -595,30 +595,30 @@ class Daily_Record_Edit_Action (EditItemAction, Daily_Record_Common) :
 
 # end class Daily_Record_Edit_Action
 
-class Weekno_Action (Daily_Record_Edit_Action) :
+class Weekno_Action (Daily_Record_Edit_Action):
     """ Parse the weekno field and move to the given week instead of to
         the range given in the date attribute after editing.
     """
 
     name = 'weekno_action'
 
-    def handle (self) :
+    def handle (self):
         self.set_request ()
         filterspec   = self.request.filterspec
-        try :
+        try:
             weeknostr = filterspec ['weekno']
-        except KeyError :
+        except KeyError:
             weeknostr = self.request.form ['weekno'].value
-        try :
+        try:
             year, weekno = [int (i) for i in weeknostr.split ('/')]
-        except ValueError :
+        except ValueError:
             year = Date ('.').year
             weekno = int (weeknostr)
         filterspec ['date'] = common.pretty_range \
             (* common.from_week_number (year, weekno))
-        try :
+        try:
             return self.__super.handle ()
-        except Redirect :
+        except Redirect:
             pass
         args = \
             { ':action'        : 'search'
@@ -634,18 +634,18 @@ class Weekno_Action (Daily_Record_Edit_Action) :
     # end def handle
 # end class Weekno_Action
 
-class Daily_Record_Change_State (Daily_Record_Edit_Action) :
+class Daily_Record_Change_State (Daily_Record_Edit_Action):
     """ Handle editing. If everything is OK, try to change state for the
         current selection, otherwise display error messages from the
         edit.  If the state change creates errors they are shown.
         Otherwise move to the *current* selection.
     """
 
-    def handle (self) :
-        try :
+    def handle (self):
+        try:
             # returns only in case of error
             return self.__super.handle ()
-        except Redirect :
+        except Redirect:
             pass
         # figure the request
         request    = self.request
@@ -653,11 +653,11 @@ class Daily_Record_Change_State (Daily_Record_Edit_Action) :
         group      = request.group
         klass      = self.db.getclass (request.classname)
         msg        = []
-        for itemid in klass.filter (None, request.filterspec, sort, group) :
-            try :
-                if klass.get (itemid, 'status') == self.state_from :
+        for itemid in klass.filter (None, request.filterspec, sort, group):
+            try:
+                if klass.get (itemid, 'status') == self.state_from:
                     klass.set (itemid, status = self.state_to)
-            except Reject as cause :
+            except Reject as cause:
                 msg.append (str (cause).replace ("\n", "<br>"))
         args = \
             { ':action'        : 'search'
@@ -667,10 +667,10 @@ class Daily_Record_Change_State (Daily_Record_Edit_Action) :
             , ':filter'        : ','.join (request.filterspec)
             , ':startwith'     : '0'
             }
-        if msg :
+        if msg:
             self.db.rollback ()
             args [':error_message'] = "<br>".join (msg)
-        else :
+        else:
             args [':ok_message']    = self.ok_msg
             self.db.commit ()
         url = request.indexargs_url ('', args)
@@ -678,42 +678,42 @@ class Daily_Record_Change_State (Daily_Record_Edit_Action) :
     # end def handle
 # end class Daily_Record_Change_State
 
-class Daily_Record_Submit (Daily_Record_Change_State) :
-    def handle (self) :
+class Daily_Record_Submit (Daily_Record_Change_State):
+    def handle (self):
         self.state_from = self.db.daily_record_status.lookup ('open')
         self.state_to   = self.db.daily_record_status.lookup ('submitted')
         return self.__super.handle ()
     # end def handle
 # end class Daily_Record_Submit
 
-class Daily_Record_Approve (Daily_Record_Change_State) :
-    def handle (self) :
+class Daily_Record_Approve (Daily_Record_Change_State):
+    def handle (self):
         self.state_from = self.db.daily_record_status.lookup ('submitted')
         self.state_to   = self.db.daily_record_status.lookup ('accepted')
         return self.__super.handle ()
     # end def handle
 # end class Daily_Record_Approve
 
-class Daily_Record_Deny (Daily_Record_Change_State) :
-    def handle (self) :
+class Daily_Record_Deny (Daily_Record_Change_State):
+    def handle (self):
         self.state_from = self.db.daily_record_status.lookup ('submitted')
         self.state_to   = self.db.daily_record_status.lookup ('open')
         return self.__super.handle ()
     # end def handle
 # end class Daily_Record_Deny
 
-class Daily_Record_Reopen (Daily_Record_Change_State) :
-    def handle (self) :
+class Daily_Record_Reopen (Daily_Record_Change_State):
+    def handle (self):
         self.state_from = self.db.daily_record_status.lookup ('accepted')
         self.state_to   = self.db.daily_record_status.lookup ('open')
         return self.__super.handle ()
     # end def handle
 # end class Daily_Record_Reopen
 
-def approvals_pending (db, request, userlist) :
-    try :
+def approvals_pending (db, request, userlist):
+    try:
         db  = db._db
-    except AttributeError :
+    except AttributeError:
         pass
     pending   = {}
     submitted = db.daily_record_status.lookup ('submitted')
@@ -721,7 +721,7 @@ def approvals_pending (db, request, userlist) :
     filter    = request.filterspec
     editdict  = {':template' : 'edit', ':filter' : 'user,date'}
     now       = Date ('.')
-    for u in userlist :
+    for u in userlist:
         find_user   = dict (user = u, status = submitted)
         fdate       = None
         last_frozen = db.daily_record_freeze.filter \
@@ -729,23 +729,23 @@ def approvals_pending (db, request, userlist) :
             , dict (user = u, date = now.pretty (';%Y-%m-%d'), frozen = True)
             , group = [('-', 'date')]
             )
-        if last_frozen :
+        if last_frozen:
             fdate = db.daily_record_freeze.get (last_frozen [0], 'date') \
                   + common.day
             find_user ['date'] = fdate.pretty ('%Y-%m-%d;')
         dr_per_user = db.daily_record.filter (None, find_user)
         pending [u] = {}
-        if dr_per_user :
+        if dr_per_user:
             earliest = latest = None
-            for p in dr_per_user :
+            for p in dr_per_user:
                 date = db.daily_record.get (p, 'date')
                 week, year = common.weekno_year_from_day (date)
-                if not earliest or date < earliest :
+                if not earliest or date < earliest:
                     earliest = date
-                if not latest   or date > latest :
+                if not latest   or date > latest:
                     latest   = date
                 start, end = common.week_from_date (date)
-                if fdate and start < fdate :
+                if fdate and start < fdate:
                     start = fdate
                 filter ['date'] = common.pretty_range (start, end)
                 filter ['user'] = u
@@ -755,23 +755,23 @@ def approvals_pending (db, request, userlist) :
                     , 'todo'
                     ]
             interval = latest - earliest
-            for k in pending [u] :
-                if interval < Interval ('31d') :
+            for k in pending [u]:
+                if interval < Interval ('31d'):
                     filter ['date'] = common.pretty_range (earliest, latest)
                     pending [u][k][0] = request.indexargs_url ('', editdict)
-                else :
+                else:
                     pending [u][k][0] = pending [u][k][1]
-        else :
+        else:
             dyn = user_dynamic.last_user_dynamic (db, u)
-            if dyn and (not dyn.valid_to or not fdate or dyn.valid_to > fdate) :
+            if dyn and (not dyn.valid_to or not fdate or dyn.valid_to > fdate):
                 date = now
-                if dyn.valid_to and dyn.valid_to < date :
+                if dyn.valid_to and dyn.valid_to < date:
                     date = dyn.valid_to
                 week, year = common.weekno_year_from_day (date)
                 start, end = common.week_from_date (date)
-                if fdate and start < fdate :
+                if fdate and start < fdate:
                     start = fdate
-                if dyn.valid_to and dyn.valid_to < end :
+                if dyn.valid_to and dyn.valid_to < end:
                     end   = dyn.valid_to
                 filter ['date'] = common.pretty_range (start, end)
                 filter ['user'] = u
@@ -781,54 +781,54 @@ def approvals_pending (db, request, userlist) :
     return pending
 # end def approvals_pending
 
-def daysum (db, daily_record, format = None) :
+def daysum (db, daily_record, format = None):
     tr  = db.daily_record.get (daily_record, 'time_record')
     val = sum (db.time_record.get (i, 'duration') for i in tr)
-    if format :
+    if format:
         return format % val
     return val
 # end def daysum
 
-def weeksum (db, drid, format = None) :
+def weeksum (db, drid, format = None):
     start, end = common.week_from_date (db.daily_record.get (drid, 'date'))
     user       = db.daily_record.get (drid, 'user')
     d   = start
     sum = 0.
-    while d <= end :
+    while d <= end:
         dr   = db.daily_record.filter \
             (None, dict (date = common.pretty_range (d, d), user = user))
-        if len (dr) == 0 :
+        if len (dr) == 0:
             d = d + Interval ('1d')
             continue
         assert (len (dr) == 1)
         dr   = dr [0]
         sum += daysum (db, dr)
         d    = d + Interval ('1d')
-    if format :
+    if format:
         return format % sum
     return sum
 # end def weeksum
 
-def is_end_of_week (date) :
+def is_end_of_week (date):
     date = Date (str (date))
     wday = gmtime (date.timestamp ())[6]
     return wday == 6
 # end def is_end_of_week
 
-def dynuser_copyurl (dyn) :
+def dynuser_copyurl (dyn):
     db  = dyn._db
     dyn = dyn._klass.getnode (dyn._nodeid)
     fields = user_dynamic.dynuser_copyfields
     url = 'user_dynamic?:template=item&' + '&'.join \
         ('%s=%s' % (n, urlquote (str (dyn [n] or ''))) for n in fields)
-    if _dynuser_half_frozen (db, dyn.user, dyn.valid_from, dyn.valid_to) :
+    if _dynuser_half_frozen (db, dyn.user, dyn.valid_from, dyn.valid_to):
         fr = freeze.frozen (db, dyn.user, dyn.valid_from, order = '-') [0]
         fr = db.daily_record_freeze.get (fr, 'date') + common.day
         url += '&valid_from=%s' % fr.pretty (common.ymd)
     return url
 # end def dynuser_copyurl
 
-def _dynuser_half_frozen (db, userid, val_from, val_to) :
+def _dynuser_half_frozen (db, userid, val_from, val_to):
     return \
         (   freeze.frozen (db, userid, val_from)
         and (   val_to
@@ -838,82 +838,82 @@ def _dynuser_half_frozen (db, userid, val_from, val_to) :
         )
 # end def _dynuser_half_frozen
 
-def dynuser_half_frozen (dyn) :
+def dynuser_half_frozen (dyn):
     db       = dyn._db
     userid   = dyn.user.id
     val_from = Date (str (dyn.valid_from._value))
     val_to   = dyn.valid_to._value
-    if val_to :
+    if val_to:
         val_to = Date (str (val_to))
     return _dynuser_half_frozen (db, userid, val_from, val_to - common.day)
 # end def dynuser_half_frozen
 
-def dynuser_frozen (dyn) :
+def dynuser_frozen (dyn):
     db       = dyn._db
     userid   = dyn.user.id
     val_to   = dyn.valid_to._value
-    if not val_to :
+    if not val_to:
         return False
     val_to   = Date (str (val_to))
     return freeze.frozen (db, userid, val_to)
 # end def dynuser_frozen
 
-class Freeze_Action (Action, autosuper) :
+class Freeze_Action (Action, autosuper):
 
     user_required_msg = ''"User is required"
     user_invalid_msg  = ''"Invalid User"
-    def get_user (self) :
+    def get_user (self):
         _ = self.db.i18n.gettext
         self.request = templating.HTMLRequest (self.client)
         user         = self.request.form ['user'].value
-        if not user :
+        if not user:
             raise Reject (_ (self.user_required_msg))
-        try :
+        try:
             self.user = self.db.user.lookup (user)
-        except KeyError :
+        except KeyError:
             raise Reject (_ (self.user_invalid_msg))
         return self.user
     # end def get_user
 
-    def handle (self) :
+    def handle (self):
         _ = self.db.i18n.gettext
-        if not self.request.form ['date'].value :
+        if not self.request.form ['date'].value:
             raise Reject (_ ("Date is required"))
         self.date  = Date (self.request.form ['date'].value)
         msg = []
-        for u in self.users :
+        for u in self.users:
             date = self.date
             dyn  = user_dynamic.get_user_dynamic (self.db, u, date)
-            if not dyn :
+            if not dyn:
                 dyn = user_dynamic.find_user_dynamic \
                     (self.db, u, date, direction = '-')
-                if dyn :
+                if dyn:
                     # there must be a valid_to date, otherwise
                     # get_user_dynamic would have found something above
                     date = dyn.valid_to - common.day
                     assert (date < self.date)
-            if dyn :
-                try :
+            if dyn:
+                try:
                     self.db.daily_record_freeze.create \
                         (date = date, user = u, frozen = 1)
-                except Reject as cause :
+                except Reject as cause:
                     msg.append ((str (cause), u))
         self.db.commit ()
-        if msg :
+        if msg:
             msg.sort ()
             old   = None
             o_u   = None
             count = 1
             new_m = []
             msg.append ((None, None))
-            for m, u in msg :
-                if m == old :
+            for m, u in msg:
+                if m == old:
                     count += 1
-                else :
-                    if old :
-                        if count > 1 :
+                else:
+                    if old:
+                        if count > 1:
                             new_m.append ('%s (%d)' % (old, count))
-                        else :
+                        else:
                             new_m.append \
                                 ( '%s (%s)'
                                 % (old, self.db.user.get (o_u, 'username'))
@@ -923,7 +923,7 @@ class Freeze_Action (Action, autosuper) :
                     o_u   = u
             msg = new_m [:10]
             msg = '@ok_message=Warning: ' + '<br>Warning: '.join (msg) + '&'
-        else :
+        else:
             msg = ''
         url = \
             ( 'daily_record_freeze?'
@@ -936,35 +936,35 @@ class Freeze_Action (Action, autosuper) :
     # end def handle
 # end class Freeze_Action
 
-class Freeze_All_Action (Freeze_Action) :
-    def handle (self) :
+class Freeze_All_Action (Freeze_Action):
+    def handle (self):
         _ = self.db.i18n.gettext
         self.request = templating.HTMLRequest (self.client)
-        if 'user' in self.request.form and self.request.form ['user'].value :
+        if 'user' in self.request.form and self.request.form ['user'].value:
             raise Reject (_ ('''Don't specify a user for "Freeze all"'''))
         self.users   = self.db.user.getnodeids ()
         return self.__super.handle ()
     # end def handle
 # end class Freeze_All_Action
 
-class Freeze_User_Action (Freeze_Action) :
-    def handle (self) :
+class Freeze_User_Action (Freeze_Action):
+    def handle (self):
         self.users = [self.get_user ()]
         return self.__super.handle ()
     # end def handle
 # end class Freeze_User_Action
 
-class Freeze_Supervisor_Action (Freeze_Action) :
+class Freeze_Supervisor_Action (Freeze_Action):
     user_required_msg = ''"Supervisor (in User field) is required"
     user_invalid_msg  = ''"Invalid Supervisor"
-    def handle (self) :
+    def handle (self):
         self.get_user ()
         self.users = self.db.user.filter (None, dict (supervisor = self.user))
         return self.__super.handle ()
     # end def handle
 # end class Freeze_Supervisor_Action
 
-class Split_Dynamic_User_Action (Action) :
+class Split_Dynamic_User_Action (Action):
     """ Get date of last freeze-record and split dynamic user record
         around the freeze date. A precondition is that the dyn user
         record is half-frozen, i.e., the valid_from is frozen and the
@@ -974,7 +974,7 @@ class Split_Dynamic_User_Action (Action) :
         'New dynamic user' link with a valid_from = frozen date if the
         record is half-frozen.
     """
-    def handle (self) :
+    def handle (self):
         self.request = templating.HTMLRequest (self.client)
         assert \
             (   self.request.classname
@@ -984,14 +984,14 @@ class Split_Dynamic_User_Action (Action) :
         id       = self.client.nodeid
         dyn      = self.db.user_dynamic.getnode (id)
         perm     = self.db.security.hasPermission
-        if not common.user_has_role (self.db, self.db.getuid (), 'HR') :
+        if not common.user_has_role (self.db, self.db.getuid (), 'HR'):
             raise Reject ("Not allowed")
         fields   = user_dynamic.dynuser_copyfields + ['valid_to']
         param    = dict ((i, dyn [i]) for i in fields)
-        if dyn.valid_to :
+        if dyn.valid_to:
             date = common.pretty_range \
                 (dyn.valid_from, dyn.valid_to - common.day)
-        else :
+        else:
             date = dyn.valid_from.pretty (common.ymd) + ';'
         
         frozen   = self.db.daily_record_freeze.filter \
@@ -1011,41 +1011,41 @@ class Split_Dynamic_User_Action (Action) :
 # end class Split_Dynamic_User_Action
 
 class SearchActionWithTemplate(SearchAction):
-    def getCurrentURL (self, req) :
+    def getCurrentURL (self, req):
         template = self.getFromForm ('template')
-        if template and template != 'index' :
+        if template and template != 'index':
             return req.indexargs_url ('', {'@template' : template}) [1:]
         return req.indexargs_url('', {})[1:]
     # end def getCurrentURL
 
-    def fakeFilterVars (self) :
+    def fakeFilterVars (self):
         """ Fix search-strings for lookalike-computation: run
             search-strings from the form through translate
         """
         SearchAction.fakeFilterVars (self)
         cls = self.db.classes [self.classname]
-        try :
+        try:
             fields = self.form ['@filter']
-        except KeyError :
+        except KeyError:
             return
-        if not isinstance (fields, list) :
+        if not isinstance (fields, list):
             fields = [fields]
-        for k in fields :
+        for k in fields:
             key = k.value
-            if not key.split ('.') [-1].startswith ('lookalike_') :
+            if not key.split ('.') [-1].startswith ('lookalike_'):
                 continue
             prop = cls.get_transitive_prop (str (key))
-            if not prop or not isinstance(prop, hyperdb.String) :
+            if not prop or not isinstance(prop, hyperdb.String):
                 continue
             value = self.form [key]
-            if not isinstance (value, list) :
+            if not isinstance (value, list):
                 value = [value]
-            for v in value :
+            for v in value:
                 v.value = rup_utils.translate (v.value)
     # end def fakeFilterVars
 # end class SearchActionWithTemplate
 
-def init (instance) :
+def init (instance):
     actn = instance.registerAction
     actn ('daily_record_edit_action', Daily_Record_Edit_Action)
     actn ('daily_record_action',      Daily_Record_Action)
