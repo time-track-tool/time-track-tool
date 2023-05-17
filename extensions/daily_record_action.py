@@ -1,5 +1,5 @@
 #! /usr/bin/python
-# Copyright (C) 2006-22 Dr. Ralf Schlatterbeck Open Source Consulting.
+# Copyright (C) 2006-23 Dr. Ralf Schlatterbeck Open Source Consulting.
 # Reichergasse 131, A-3411 Weidling.
 # Web: http://www.runtux.com Email: office@runtux.com
 # All rights reserved
@@ -303,6 +303,8 @@ class Daily_Record_Edit_Action (EditItemAction, Daily_Record_Common) :
     # end def set_ar_tr
 
     def new_ar_tr (self, props, links, newar, newtr) :
+        # We should never get here with newidx being None
+        assert self.newidx is not None
         nid = str (-self.newidx)
         self.newidx += 1
         arkey = ('attendance_record', nid)
@@ -331,11 +333,14 @@ class Daily_Record_Edit_Action (EditItemAction, Daily_Record_Common) :
         """
         _ = self.db.i18n.gettext
         hour_format = '%H:%M'
-        clsnames = ('attendance_record', 'time_record')
-        self.newidx = min (int (id) for (cl, id) in props if cl in clsnames)
-        if self.newidx > 0 :
-            self.newidx = 0
-        self.newidx = abs (self.newidx) + 1
+        clsnames    = ('attendance_record', 'time_record')
+        valprops    = [int (id) for (cl, id) in props if cl in clsnames]
+        self.newidx = None
+        if valprops:
+            self.newidx = min (valprops)
+            if self.newidx > 0:
+                self.newidx = 0
+            self.newidx = abs (self.newidx) + 1
         atrecs = {}
         # Materialize list: the props are modified during iteration
         for (cl, id) in list (props) :
