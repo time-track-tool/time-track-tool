@@ -42,31 +42,31 @@ from common                         import freeze_date
 
 day  = Interval ('1d')
 
-def check_editable (db, cl, nodeid, new_values, date = None) :
+def check_editable (db, cl, nodeid, new_values, date = None):
     _ = db.i18n.gettext
-    if not date :
+    if not date:
         date = new_values.get ('date') or cl.get (nodeid, 'date')
     user = new_values.get ('user') or cl.get (nodeid, 'user')
     fr = frozen (db, user, date)
-    if cl == db.daily_record_freeze :
+    if cl == db.daily_record_freeze:
         fr = [f for f in fr if f != nodeid]
-    if fr :
+    if fr:
         raise Reject (_ ("Already frozen: %(date)s") % locals ())
-    if not get_user_dynamic (db, user, date) :
+    if not get_user_dynamic (db, user, date):
         raise Reject (_ ("No dyn. user rec for %(user)s %(date)s") % locals ())
 # end def check_editable
 
-def check_thawed_records (db, user, date) :
+def check_thawed_records (db, user, date):
     _      = db.i18n.gettext
     cl     = db.daily_record_freeze
     before = date.pretty (';%Y-%m-%d')
     thawed = cl.filter (None, dict (user = user, date = before, frozen = False))
-    if thawed :
+    if thawed:
         raise Reject \
             (_ ("Thawed freeze records at or before %(date)s") % locals ())
 # end def check_thawed_records
 
-def min_freeze (db, user, date) :
+def min_freeze (db, user, date):
     """ Compute minimum freeze date over all monthly periods.
         We loop over all the dyn user records to find the last date when
         that period was active and compare the freeze_date to the
@@ -76,55 +76,55 @@ def min_freeze (db, user, date) :
 
     periods = overtime_periods (db, user, start_of_year (date), date)
     freeze  = date
-    for s, e, p in periods :
+    for s, e, p in periods:
         x = freeze_date (date, p)
         y = freeze_date (e,    p)
-        if y < x :
+        if y < x:
             continue
-        if x < freeze :
+        if x < freeze:
             freeze = x
     return freeze
 # end def min_freeze
 
 periods = ['week', 'month']
 
-def new_freeze_record (db, cl, nodeid, new_values) :
+def new_freeze_record (db, cl, nodeid, new_values):
     _ = db.i18n.gettext
-    for i in ('date', 'user') :
-        if i not in new_values :
+    for i in ('date', 'user'):
+        if i not in new_values:
             raise Reject (_ ("%(attr)s must be set") % {'attr' : _ (i)})
     date = new_values ['date']
     user = new_values ['user']
     days = getattr (db.config.ext, 'TTT_FREEZE_DAYS', '10')
-    if date >= Date ('.-%sd' % days) :
+    if date >= Date ('.-%sd' % days):
         raise Reject \
             (_ ("Freezing only for dates >= %s days in the past" % days))
     date.hour = date.minute = date.second = 0
-    if 'frozen' not in new_values :
+    if 'frozen' not in new_values:
         new_values ['frozen'] = True
-    if new_values ['frozen'] :
+    if new_values ['frozen']:
         check_thawed_records (db, user, date)
     check_editable (db, cl, nodeid, new_values)
     fdate = new_values ['validity_date'] = min_freeze (db, user, date)
     attr = 'balance'
-    if attr not in new_values or new_values [attr] is None :
+    if attr not in new_values or new_values [attr] is None:
         balance, achieved = compute_balance (db, user, fdate, not_after = True)
         new_values [attr] = balance
-        if new_values.get ('achieved_hours', None) is None :
+        if new_values.get ('achieved_hours', None) is None:
             new_values ['achieved_hours'] = achieved
 # end def new_freeze_record
 
-def new_overtime (db, cl, nodeid, new_values) :
+def new_overtime (db, cl, nodeid, new_values):
     _ = db.i18n.gettext
-    for i in ('date', 'user', 'value') :
-        if i not in new_values :
+    for i in ('date', 'user', 'value'):
+        if i not in new_values:
             raise Reject (_ ("%(attr)s must be set") % {'attr' : _ (i)})
     date = new_values ['date']
     date.hour = date.minute = date.second = 0
     check_editable (db, cl, nodeid, new_values)
 # end def new_overtime
 
-def check_freeze_record (db, cl, nodeid, new_values) :
+def check_freeze_record (db, cl, nodeid, new_values):
     """Check that edits of a freeze record are ok.
        
        - editable
@@ -137,8 +137,8 @@ def check_freeze_record (db, cl, nodeid, new_values) :
        current record.
     """
     _ = db.i18n.gettext
-    for i in ('date', 'user') :
-        if i in new_values :
+    for i in ('date', 'user'):
+        if i in new_values:
             raise Reject (_ ("%(attr)s must not be changed") % {'attr' : _ (i)})
     date = cl.get (nodeid, 'date')
     user = cl.get (nodeid, 'user')
@@ -147,16 +147,16 @@ def check_freeze_record (db, cl, nodeid, new_values) :
         and list (new_values) == ['validity_date']
         and new_values ['validity_date'] == date
         and cl.get (nodeid, 'validity_date') is None
-        ) :
+        ):
         return
     if  (   db.getuid () == '1'
         and list (new_values) == ['achieved_hours']
         and new_values ['achieved_hours'] == 0
         and cl.get (nodeid, 'achieved_hours') is None
-        ) :
+        ):
         return
     dyn  = get_user_dynamic (db, user, date)
-    if not dyn :
+    if not dyn:
         dyn    = last_user_dynamic (db, user, date = date)
         prev   = cl.filter \
             ( None
@@ -164,12 +164,12 @@ def check_freeze_record (db, cl, nodeid, new_values) :
             , group = [('-', 'date')]
             )
         prev   = [p for p in prev if p != nodeid]
-        if prev :
+        if prev:
             prev = db.daily_record_freeze.getnode (prev [0])
         assert (dyn.valid_to)
         # already frozen?? dict modified during iter
-        if prev and prev.date >= dyn.valid_to - day :
-            for k in list (new_values) :
+        if prev and prev.date >= dyn.valid_to - day:
+            for k in list (new_values):
                 del new_values [k]
             cl.retire (nodeid)
             return
@@ -180,31 +180,31 @@ def check_freeze_record (db, cl, nodeid, new_values) :
     new_frozen = new_values.get ('frozen', old_frozen)
     freezing   = new_frozen != old_frozen and new_frozen
     attr       = 'balance'
-    if freezing :
+    if freezing:
         check_thawed_records (db, user, date - day)
         fdate = new_values ['validity_date'] = min_freeze (db, user, date)
         balance, achieved = compute_balance (db, user, fdate, not_after = True)
         new_values [attr] = start_balance = balance
         new_values ['achieved_hours'] = achieved
-    else :
+    else:
         new_values ['validity_date'] = None
         new_values ['achieved_hours']      = None
         new_values [attr] = None
 # end def check_freeze_record
 
-def check_overtime (db, cl, nodeid, new_values) :
+def check_overtime (db, cl, nodeid, new_values):
     _ = db.i18n.gettext
-    for i in ('user',) :
-        if i in new_values :
+    for i in ('user',):
+        if i in new_values:
             raise Reject (_ ("%(attr)s must not be changed") % {'attr' : _ (i)})
-    for i in ('date', 'value') :
-        if i in new_values and new_values [i] is None :
+    for i in ('date', 'value'):
+        if i in new_values and new_values [i] is None:
             raise Reject (_ ("%(attr)s must remain filled") % {'attr' : _ (i)})
     check_editable (db, cl, nodeid, new_values)
 # end def check_overtime
 
-def init (db) :
-    if 'daily_record_freeze' not in db.classes :
+def init (db):
+    if 'daily_record_freeze' not in db.classes:
         return
     db.daily_record_freeze.audit ("create", new_freeze_record)
     db.daily_record_freeze.audit ("set",    check_freeze_record)
