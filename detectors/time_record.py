@@ -1,5 +1,5 @@
 #! /usr/bin/python
-# Copyright (C) 2006-22 Dr. Ralf Schlatterbeck Open Source Consulting.
+# Copyright (C) 2006-23 Dr. Ralf Schlatterbeck Open Source Consulting.
 # Reichergasse 131, A-3411 Weidling.
 # Web: http://www.runtux.com Email: office@runtux.com
 # All rights reserved
@@ -135,7 +135,7 @@ def att_records_consistent (db, dr):
     arec     = [db.attendance_record.getnode (i) for i in dr.attendance_record]
     last_ar  = None
     need_break_recs = []
-    for ar in sorted (arec, key = lambda a: a.start):
+    for ar in sorted (arec, key = lambda a: a.start or ''):
         ar_pr  = pretty_att_record (db, dr, ar)
         wl     = None
         if ar.work_location:
