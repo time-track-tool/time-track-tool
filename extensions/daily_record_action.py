@@ -373,9 +373,10 @@ class Daily_Record_Edit_Action (EditItemAction, Daily_Record_Common):
             if 'duration' not in tval:
                 continue
             dstart, dend, dur = self.get_start_end (aval)
-            dur = tval ['duration']
-            hours = int (dur)
-            minutes = int ((dur - hours) * 60)
+            if tval ['duration'] is not None:
+                dur = tval ['duration']
+            hours = int (dur or 0)
+            minutes = int (((dur or 0) - hours) * 60)
             iv = Interval ('%d:%d' % (hours, minutes))
             if dstart and not dend:
                 aval ['end'] = (dstart + iv).pretty (hour_format)
