@@ -75,6 +75,33 @@ class Getter ():
         return pw
     # end def get_pw
 
+    def print_attendance_rec (self, ar):
+        ind = self.ind
+        print (ind, "db.attendance_record.create \\")
+        print (ind, "    ( daily_record  = dr")
+        # The 'tr' variable is valid here, we're iterating over the
+        # attendance recs of a given time_record.
+        if ar ['time_record']:
+            print (" %s    , time_record   = tr" % ind)
+        if ar ['start']:
+            print \
+                ( " %s    , start         = '%s'"
+                % (ind, ar ['start'])
+                )
+        if ar ['end']:
+            print \
+                ( " %s    , end           = '%s'"
+                % (ind, ar ['end'])
+                )
+        if ar ['work_location']:
+            id = ar ['work_location']['id']
+            if id == '8':
+                id = 'holo'
+            else:
+                id = "'%s'" % id
+            print (" %s    , work_location = %s" % (ind, id))
+        print (ind, "    )")
+
     def print_timerecs (self):
         h_done  = False
         tp_done = False
@@ -91,7 +118,7 @@ class Getter ():
             print ("def import_data_%s (db, user, olo):" % userid)
         else:
             print ("def import_data_%s (db, user):" % userid)
-        ind    = '   '
+        ind    = self.ind = '   '
         filter = dict (user = self.args.user, date = self.args.daterange)
         # Loop over dynamic user records sorted by date and output those
         # that intersect with the range.
@@ -249,9 +276,7 @@ class Getter ():
                         wp = wp ['data']['attributes']
                         tp = self.get ('time_project/%s' % wp ['project']['id'])
                         tp = tp ['data']['attributes']
-                        if wp ['travel']:
-                            new_wpid = 3
-                        elif tp ['is_public_holiday']:
+                        if tp ['is_public_holiday']:
                             new_wpid = 1
                         elif tp ['is_vacation']:
                             new_wpid = 44
@@ -263,31 +288,19 @@ class Getter ():
                         wpdict [tr ['wp']['id']] = new_wpid
                     if new_wpid:
                         print (ind, "    , wp            = '%s'" % new_wpid)
-                    # FIXME: Here we should iterate over attendance recs
-                    # not create the attendance record from time_record
-                    # data. Must be changed when the attendance record
-                    # changes are rolled out.
                     print (ind, "    )")
-                    print (ind, "db.attendance_record.create \\")
-                    print (ind, "    ( daily_record  = dr")
-                    print (ind, "    , time_record   = tr")
-                    if tr ['start']:
-                        print \
-                            ( " %s    , start         = '%s'"
-                            % (ind, tr ['start'])
-                            )
-                        print \
-                            ( " %s    , end           = '%s'"
-                            % (ind, tr ['end'])
-                            )
-                    if tr ['work_location']:
-                        id = tr ['work_location']['id']
-                        if id == '8':
-                            id = 'holo'
-                        else:
-                            id = "'%s'" % id
-                        print (" %s    , work_location = %s" % (ind, id))
-                    print (ind, "    )")
+                    for ari in tr ['attendance_record']:
+                        ar = self.get ('attendance_record/%s' % ari ['id'])
+                        ar = ar ['data']['attributes']
+                        self.print_attendance_rec (ar)
+                for ari in dr ['attendance_record']:
+                    ar = self.get ('attendance_record/%s' % ari ['id'])
+                    ar = ar ['data']['attributes']
+                    # See above, if the ar contains a time_record link
+                    # it will already have been output
+                    if ar ['time_record']:
+                        continue
+                    self.print_attendance_rec (ar)
         print (ind, "db.commit ()")
         print ("# end def import_data_%s" % userid)
 
