@@ -60,32 +60,6 @@ def import_data_21 (db, user, olo):
         , user               = user
         , vac_aliq           = '1'
         )
-    db.user_dynamic.create \
-        ( all_in             = 1
-        , booking_allowed    = 1
-        , do_auto_wp         = 1
-        , durations_allowed  = 0
-        , exemption          = 0
-        , hours_fri          = 7.5
-        , hours_mon          = 7.75
-        , hours_sat          = 0.0
-        , hours_sun          = 0.0
-        , hours_thu          = 7.75
-        , hours_tue          = 7.75
-        , hours_wed          = 7.75
-        , max_flexitime      = 5.0
-        , travel_full        = 0
-        , vacation_day       = 1.0
-        , vacation_month     = 1.0
-        , vacation_yearly    = 25.0
-        , valid_from         = date.Date ("2023-10-01.00:00:00")
-        , weekend_allowed    = 0
-        , weekly_hours       = 38.5
-        , org_location       = olo
-        , overtime_period    = otp
-        , user               = user
-        , vac_aliq           = '1'
-        )
     dr = db.daily_record.create \
         ( user = user
         , date = date.Date ('2023-01-01.00:00:00')

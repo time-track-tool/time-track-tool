@@ -900,11 +900,14 @@ def avg_hours_per_week_this_year (db, user, date_in_year, enddate = None):
     """
     y     = common.start_of_year (date_in_year)
     eoy   = common.end_of_year   (y)
-    now   = Date ('.')
+    if enddate is not None:
+        now = enddate
+    else:
+        now = Date ('.')
     if eoy > now:
         eoy = now
-    if enddate is not None and enddate > y and eoy > enddate:
-        eoy = enddate
+    if y > eoy:
+        return 0.0
     hours = 0.0
     dsecs = 0.0
     ds    = 24 * 60 * 60
@@ -928,7 +931,7 @@ def avg_hours_per_week_this_year (db, user, date_in_year, enddate = None):
     days = dsecs // ds
     assert days <= 366
     if not days:
-        return 0
+        return 0.0
     avgday = hours / float (days)
     return avgday * 7
 # end def avg_hours_per_week_this_year

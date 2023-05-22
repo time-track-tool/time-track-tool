@@ -1,5 +1,4 @@
-# -*- coding: utf-8 -*-
-# Copyright (C) 2010-22 Ralf Schlatterbeck. All rights reserved
+# Copyright (C) 2010-23 Ralf Schlatterbeck. All rights reserved
 # Reichergasse 131, A-3411 Weidling
 # ****************************************************************************
 #
@@ -4162,16 +4161,35 @@ class Test_Case_Timetracker (_Test_Case_Summary, unittest.TestCase) :
         self.db.commit ()
     # end def setup_user21
 
-    def test_user21 (self) :
-        self.log.debug ('test_user21')
-        self.setup_db ()
-        self.setup_user21 ()
-        self.db.close ()
-        self.db = self.tracker.open (self.username21)
-        user21_time.import_data_21 (self.db, self.user21, self.olo)
-        self.db.commit ()
-        self.db.close ()
-        self.db = self.tracker.open (self.username0)
+    def gen_user21_dynamic (self):
+        self.db.user_dynamic.create \
+            ( all_in             = 1
+            , booking_allowed    = 1
+            , do_auto_wp         = 1
+            , durations_allowed  = 0
+            , exemption          = 0
+            , hours_fri          = 7.5
+            , hours_mon          = 7.75
+            , hours_sat          = 0.0
+            , hours_sun          = 0.0
+            , hours_thu          = 7.75
+            , hours_tue          = 7.75
+            , hours_wed          = 7.75
+            , max_flexitime      = 5.0
+            , travel_full        = 0
+            , vacation_day       = 1.0
+            , vacation_month     = 1.0
+            , vacation_yearly    = 25.0
+            , valid_from         = date.Date ("2023-10-01.00:00:00")
+            , weekend_allowed    = 0
+            , weekly_hours       = 38.5
+            , org_location       = self.olo
+            , user               = self.user21
+            , vac_aliq           = '1'
+            )
+    # end def gen_user21_dynamic
+
+    def test_user21_inner (self):
         # monkey-patch avg_hours_per_week_this_year
         n   = 'avg_hours_per_week_this_year'
         fun = getattr (vacation, n)
@@ -4191,6 +4209,29 @@ class Test_Case_Timetracker (_Test_Case_Summary, unittest.TestCase) :
         v = vacation.avg_hours_per_week_this_year \
             (self.db, self.user21, now, enddate = date.Date ('2023-03-15'))
         assert "%.2f" % v == "40.13"
+        # Test a year in the future
+        dt = date.Date ('2024-05-01')
+        v = vacation.avg_hours_per_week_this_year \
+            (self.db, self.user21, dt, enddate = date.Date ('2023-03-15'))
+        assert "%.2f" % v == "0.00"
+    # end def test_user21_inner
+
+    def test_user21 (self) :
+        self.log.debug ('test_user21')
+        self.setup_db ()
+        self.setup_user21 ()
+        self.db.close ()
+        self.db = self.tracker.open (self.username21)
+        user21_time.import_data_21 (self.db, self.user21, self.olo)
+        self.db.commit ()
+        self.db.close ()
+        self.db = self.tracker.open (self.username0)
+        # Test twice with different dyn user records (one is in the
+        # future and should not change the outcome but only with one of
+        # them we used to get a traceback)
+        self.test_user21_inner ()
+        self.gen_user21_dynamic ()
+        self.test_user21_inner ()
     # end def test_user21
 
 # end class Test_Case_Timetracker
