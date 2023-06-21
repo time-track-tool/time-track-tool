@@ -579,10 +579,10 @@ def vacation_wp (db, wpid):
     return False
 # end def vacation_wp
 
-def check_open_not_frozen (db, dr, uname):
+def check_open_not_frozen (db, dr, uname, allow = False):
     _   = db.i18n.gettext
     uid = db.getuid ()
-    if dr.status != db.daily_record_status.lookup ('open') and uid != '1':
+    if not allow and dr.status != db.daily_record_status.lookup ('open'):
         raise Reject (_ ('Editing of time records only for status "open"'))
     if frozen (db, dr.user, dr.date):
         date = dr.date
@@ -599,7 +599,11 @@ def new_attendance_record (db, cl, nodeid, new_values):
     # For running lifter script, normally no attendance record is ever
     # created by admin.
     if uid != '1' or not trid:
-        check_open_not_frozen (db, dr, uname)
+        allow = False
+        if trid:
+            tr = db.time_record.getnode (trid)
+            allow = allow_new_public_holiday (db, dr, tr.wp, tr)
+        check_open_not_frozen (db, dr, uname, allow)
     duration = None
     if trid:
         tr = db.time_record.getnode (trid)
@@ -612,6 +616,25 @@ def new_attendance_record (db, cl, nodeid, new_values):
     check_start_end_duration (_, dr.date, start, end, duration, new_values)
 # end def new_attendance_record
 
+def allow_new_public_holiday (db, dr, wpid, tr):
+    """ tr is either new_values or a real tr record
+        depending on if we're checking a tr or an ar
+    """
+    allow = False
+    if wpid:
+        wp    = db.time_wp.getnode (wpid)
+        tp    = db.time_project.getnode (wp.project)
+        is_ph = tp.is_public_holiday
+        subm  = db.daily_record_status.lookup ('submitted')
+        accpt = db.daily_record_status.lookup ('accepted')
+        du    = vacation.leave_duration (db, dr.user, dr.date, is_ph)
+        if  (   tr ['duration'] == du
+            and (dr.status in (subm, accpt) and is_ph)
+            ):
+            allow = True
+    return allow
+# end def allow_new_public_holiday
+
 def new_time_record (db, cl, nodeid, new_values):
     """ auditor on time_record
     """
@@ -623,10 +646,11 @@ def new_time_record (db, cl, nodeid, new_values):
     common.reject_attributes  (_, new_values, 'tr_duration')
     dr       = db.daily_record.getnode (new_values ['daily_record'])
     uname    = db.user.get (dr.user, 'username')
-    check_open_not_frozen (db, dr, uname)
+    wpid     = new_values.get ('wp')
+    allow    = uid == '1' or allow_new_public_holiday (db, dr, wpid, new_values)
+    check_open_not_frozen (db, dr, uname, allow)
     duration = new_values.get ('duration', None)
     check_duration (_, duration, 24)
-    wpid     = new_values.get ('wp')
     ttby     = db.user.get (dr.user, 'timetracking_by')
     if  (   uid != dr.user
         and uid != ttby
