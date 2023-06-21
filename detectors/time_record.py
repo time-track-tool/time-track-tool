@@ -778,7 +778,7 @@ def check_time_record (db, cl, nodeid, new_values):
             allow = True
     elif dr.status in (subm, accpt) and is_ph:
         du = vacation.leave_duration (db, user, date, is_ph)
-        if (   new_values.keys () == ['duration']
+        if (   list (new_values) == ['duration']
            and new_values ['duration'] == du
            and cl.get (nodeid, 'duration') != du
            ):
