@@ -78,6 +78,14 @@
                           '@sort=code&@filter=typecat&@pagesize=50&'
                           '@startwith=0&typecat=%s' % typecat
    , ('artefact', '')   : '@columns=name,description,filename_format&@sort=name'
+   , ('attendance_record', '')
+                        : '@columns=daily_record.user,daily_record.date,'
+                          'daily_record.status,work_location&'
+                          '@sort=daily_record.user,daily_record.date'
+                          '&@filter=daily_record.user,'
+                          'daily_record.date&@pagesize=50&@startwith=0&'
+                          'daily_record.user=%s&daily_record.date=.-30d%%3B.'
+                           % (uid,)
    , ('auto_wp', '')    : '@columns=name,time_project,contract_type,duration&'
                           '@sort=contract_type&@group=org_location&'
                           '@filter=is_valid&'
@@ -394,6 +402,7 @@
      , ('antenna',             'Edit',   '?@template=item', 1)
      , ('area',                'Edit',   '?@template=item', 1)
      , ('artefact',            'Edit',   '?@template=item', 1)
+     , ('attendance_record',    None,    '',                1)
      , ('auto_wp',             'Edit', '?@template=item&is_valid=1&all_in=1', 1)
      , ('category',            'Edit',   '?@template=item', 1)
      , ('cc_bu_category',      'Edit',   '?@template=item', 1)
@@ -559,6 +568,7 @@
      , ('adr_type',            'Edit', 1,               ('',''))
      , ('alias',               'View', 1,               ('',''))
      , ('artefact',            'View', 1,               ('',''))
+     , ('attendance_record',   'View', 1,               ('',''))
      , ('auto_wp',             'View', 1,               ('',''))
      , ('category',            'View', 1,               ('',''))
      , ('contact',             'View', 1,               ('',''))

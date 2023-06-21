@@ -7556,3 +7556,6 @@ msgstr "Dark Mode"
 
 msgid "new_tt_iface"
 msgstr "New Timetracker"
+
+msgid "attendance_record"
+msgstr "Attendance record"
