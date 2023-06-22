@@ -32,12 +32,15 @@
       , r_over = utils.ExtProperty (utils, pdict ['required_overtime'])
       )
     ; uid     python: db._db.getuid    ()
-    ; edit_ok python: (  uid == user
-                      or utils.user_has_role (db._db, uid, 'controlling')
+    ; new_if  python: db._db.user.get (user, 'new_tt_iface')
+    ; edit_ok python: (  (   uid == user
+                         or utils.user_has_role (db._db, uid, 'controlling')
+                         )
+                      and not new_if
                       )
     ; nlines  python: int (db._db.user.get (uid, 'tt_lines') or 1) or 1
     ; is_hr   python: utils.user_has_role (db._db, uid, 'hr')
-    ; mod_ok  python: edit_ok or is_hr
+    ; mod_ok  python: (edit_ok or is_hr) and not new_if
     ; aprv_ok python: user != uid and (is_hr or user in approval_for)
     " tal:condition="context/is_view_ok">
     <tal:block tal:condition="not:context/is_view_ok">
