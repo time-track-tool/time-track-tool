@@ -332,6 +332,7 @@ class Daily_Record_Edit_Action (EditItemAction, Daily_Record_Common):
             Then we do lunchtime processing
         """
         _ = self.db.i18n.gettext
+        wl_office   = self.db.work_location.lookup ('Office')
         hour_format = '%H:%M'
         clsnames    = ('attendance_record', 'time_record')
         valprops    = [int (id) for (cl, id) in props if cl in clsnames]
@@ -387,7 +388,20 @@ class Daily_Record_Edit_Action (EditItemAction, Daily_Record_Common):
             if cl != 'time_record' or int (id) > 0:
                 continue
             val  = props [(cl, id)]
-            aval = props [('attendance_record', id)]
+            akey = ('attendance_record', id)
+            if akey in props:
+                aval = props [akey]
+            else:
+                wl = wl_office
+                if 'wp' in val:
+                    wp = self.db.time_wp.getnode (val ['wp'])
+                    tp = self.db.time_project.getnode (wp.project)
+                    if tp.work_location:
+                        wl = tp.work_location
+                aval = props [akey] = dict \
+                    ( daily_record  = val ['daily_record']
+                    , work_location = wl
+                    )
             travel = False
             if cl == 'time_record' and val.get ('time_activity'):
                 ta = self.db.time_activity.getnode (val ['time_activity'])
@@ -406,7 +420,11 @@ class Daily_Record_Edit_Action (EditItemAction, Daily_Record_Common):
             hours    = int (ld)
             minutes  = (ld - hours) * 60
             le       = ls + Interval ('%d:%d' % (hours, minutes))
-            if dur <= 6 or not dstart or dstart >= ls or dend <= ls:
+            if  (  dur <= 6
+                or not dstart
+                or dstart >= ls
+                or (dend is not None and dend <= ls)
+                ):
                 continue
             newtr = dict (daily_record = dr.id)
             newar = dict (daily_record = dr.id, start = le.pretty (hour_format))
