@@ -278,6 +278,55 @@
             </tr>
            </tal:block>
           </tal:block>
+          <tal:block tal:repeat="tr python: utils.sorted
+           ( [tr for tr in i ['time_record'] if not tr.attendance_record]
+           , ('wp', 'duration')
+           )">
+            <tr tal:attributes="class cls"
+             tal:define="dur python: utils.ExtProperty
+              ( utils, tr.duration, item = tr
+              , editable = editable, fieldwidth = 5
+              , format = '%.2f'
+              )">
+             <td colspan="2" class="start"/><td class="end"/>
+             <td tal:content="structure dur/as_listentry"
+              style="text-align:right;" class="nb" />
+             <td style="text-align:right;">
+              <span tal:condition="editable"
+               title="Mark line for deletion by removing duration">
+               <img src="@@file/del.png" alt="D" border="0"
+                tal:attributes="onclick
+                 python:dur.del_link (form='edit_daily_record')">
+              </span>
+             </td>
+             <td colspan="2" tal:define="name python:'time_record%s@wp'%tr.id">
+              <span tal:content="structure python:
+               tr.wp and '&nbsp;'.join
+                ([utils.ExtProperty
+                  ( utils, i [0]
+                  , item        = i [1]
+                  , displayprop = i [2]
+                  ).as_listentry ()
+                  for i in
+                    ( (tr.wp.project,tr.wp,None)
+                    , (tr.wp,tr,'wp_no')
+                    , (tr.wp,tr,None)
+                    )
+                ]) or ''
+               "/>
+             </td>
+             <td class="nb" tal:content="structure python: utils.ExtProperty
+              (utils, tr.time_activity, item = tr, editable = 0)
+              .menu (id = utils.valid_activities (db, i.date))"/>
+             <td style="text-align:right;"
+              tal:condition="python:tr.comment"
+              tal:content="structure python: utils.ExtProperty
+              (utils, tr.comment, item = tr, editable = 0)
+              .comment_edit (form='edit_daily_record')"/>
+             <td tal:condition="python: not editable and not tr.comment"/>
+             <td/><td/><td/>
+            </tr>
+          </tal:block>
           <tr tal:condition="python: editable and allowed"
               tal:attributes="class cls"
               tal:repeat="nl python: range (nlines)">
