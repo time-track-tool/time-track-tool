@@ -24,6 +24,14 @@
       <th class="required" tal:content="structure python:utils.fieldname
           (db, classname, 'daily_record')"/>
       <td tal:content="structure context/daily_record/field"/>
+      <th/>
+      <td tal:condition="python: context.daily_record"
+          tal:content="structure python:utils.ExtProperty
+            ( utils, context.daily_record.date
+            , item = context.daily_record
+            ).formatlink ()"/>
+     </tr>
+     <tr>
       <th tal:content="structure python:utils.fieldname
           (db, classname, 'duration')"/>
       <td tal:content="structure python:context.duration.field (size=20)"/>
