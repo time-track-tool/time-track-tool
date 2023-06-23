@@ -357,16 +357,48 @@ class Daily_Record_Edit_Action (EditItemAction, Daily_Record_Common):
 
         # Materialize list: the props are modified during iteration
         for (cl, id) in list (props):
-            if cl != 'time_record' or int (id) > 0:
+            if cl != 'time_record':
                 continue
-            val = props [(cl, id)]
-            got_dur [id] = False
-            if  (list (val) == ['daily_record'] and id not in atrecs):
-                del props [(cl, id)]
-            elif 'duration' in val:
-                got_dur [id] = True
-            elif id in atrecs:
-                val ['duration'] = atrecs [id]
+            if int (id) < 0:
+                val = props [(cl, id)]
+                got_dur [id] = False
+                if  (list (val) == ['daily_record'] and id not in atrecs):
+                    del props [(cl, id)]
+                elif 'duration' in val:
+                    got_dur [id] = True
+                elif id in atrecs:
+                    val ['duration'] = atrecs [id]
+            else:
+                # If we have a duration we check here if there is a
+                # corresponding attendance record, if yes we make
+                # end consistent, if no we create an entry with
+                # updated end time
+                assert int (id) != 0
+                val = props [(cl, id)]
+                if 'duration' in val:
+                    duration = val ['duration']
+                    tr = self.db.time_record.getnode (id)
+                    if not tr.attendance_record:
+                        continue
+                    assert len (tr.attendance_record) == 1
+                    ar = self.db.attendance_record.getnode \
+                        (tr.attendance_record [0])
+                    akey = ('attendance_record', ar.id)
+                    if akey in props:
+                        aval = props [akey]
+                    else:
+                        aval = dict (start = ar.start, end = ar.end)
+                    if 'start' not in aval:
+                        aval ['start'] = ar.start
+                    if 'end' not in aval:
+                        aval ['end'] = ar.end
+                    if 'daily_record' not in aval:
+                        aval ['daily_record'] = ar.daily_record
+                    dstart, dend, dur = self.get_start_end (aval)
+                    if duration != dur:
+                        iv = self.compute_interval (duration)
+                        aval ['end'] = (dstart + iv).pretty (hour_format)
+                    del aval ['daily_record']
         # Check if start is given but no end, create end from start + duration
         for (cl, id) in list (props):
             if cl != 'attendance_record' or int (id) > 0:
@@ -380,9 +412,7 @@ class Daily_Record_Edit_Action (EditItemAction, Daily_Record_Common):
             dstart, dend, dur = self.get_start_end (aval)
             if tval ['duration'] is not None:
                 dur = tval ['duration']
-            hours = int (dur or 0)
-            minutes = int (((dur or 0) - hours) * 60)
-            iv = Interval ('%d:%d' % (hours, minutes))
+            iv = self.compute_interval (dur or 0)
             if dstart and not dend:
                 aval ['end'] = (dstart + iv).pretty (hour_format)
             if not dstart and dend:
@@ -520,8 +550,9 @@ class Daily_Record_Edit_Action (EditItemAction, Daily_Record_Common):
                 dsearch = common.pretty_range (dr.date, wend)
                 drs = self.db.daily_record.filter \
                     (None, dict (user = dr.user, date = dsearch))
+                srt = [('+', 'daily_record.date'), ('+', 'start')]
                 ari = self.db.attendance_record.filter \
-                    (None, dict (daily_record = drs))
+                    (None, dict (daily_record = drs), sort = srt)
                 recs = []
                 for aid in ari:
                     a = self.db.attendance_record.getnode (aid)
@@ -588,6 +619,12 @@ class Daily_Record_Edit_Action (EditItemAction, Daily_Record_Common):
         self.ok_msg = EditItemAction._editnodes (self, props, links)
         return self.ok_msg
     # end def _editnodes
+
+    def compute_interval (self, dur):
+        hours = int (dur or 0)
+        minutes = int (((dur or 0) - hours) * 60)
+        return Interval ('%d:%d' % (hours, minutes))
+    # end def compute_interval
 
     def get_start_end (self, val):
         dstart = dend = dur = None

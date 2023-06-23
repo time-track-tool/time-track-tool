@@ -1003,7 +1003,10 @@ def update_arec (db, cl, nodeid, old_values):
 
 def update_trec (db, cl, nodeid, old_values):
     """ If time record is changed *and* has a corresponding
-        attendance_record backlink, we update "end" if necessary
+        attendance_record backlink, we update "work_location" if the
+        time record has a mandatory work location.
+        Note that we may not change the end time, this must be
+        consistently done in the mask _editnodes code.
     """
     tr = cl.getnode (nodeid)
     if not tr.attendance_record:
@@ -1034,8 +1037,6 @@ def update_trec (db, cl, nodeid, old_values):
         ep  = ar.end
         dur = None
     d = {}
-    if dur and dur != tr.duration:
-        d ['end'] = compute_endtime (sp, tr.duration)
     if tr.wp:
         wp = db.time_wp.getnode (tr.wp)
         work_location = db.time_project.get (wp.project, 'work_location')
