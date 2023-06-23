@@ -337,6 +337,7 @@ class Daily_Record_Edit_Action (EditItemAction, Daily_Record_Common):
         clsnames    = ('attendance_record', 'time_record')
         valprops    = [int (id) for (cl, id) in props if cl in clsnames]
         self.newidx = None
+        got_dur     = {}
         if valprops:
             self.newidx = min (valprops)
             if self.newidx > 0:
@@ -359,9 +360,12 @@ class Daily_Record_Edit_Action (EditItemAction, Daily_Record_Common):
             if cl != 'time_record' or int (id) > 0:
                 continue
             val = props [(cl, id)]
+            got_dur [id] = False
             if  (list (val) == ['daily_record'] and id not in atrecs):
                 del props [(cl, id)]
-            elif 'duration' not in val and id in atrecs:
+            elif 'duration' in val:
+                got_dur [id] = True
+            elif id in atrecs:
                 val ['duration'] = atrecs [id]
         # Check if start is given but no end, create end from start + duration
         for (cl, id) in list (props):
@@ -429,7 +433,15 @@ class Daily_Record_Edit_Action (EditItemAction, Daily_Record_Common):
             newtr = dict (daily_record = dr.id)
             newar = dict (daily_record = dr.id, start = le.pretty (hour_format))
             dur1  = (ls - dstart).as_seconds () / 3600.
-            dur2  = dur - dur1 - ld
+            dur2  = dur - dur1
+            if got_dur.get (id):
+                # Add lunch duration to end
+                end = aval ['end']
+                eh, em = (int (i) for i in end.split (':', 1))
+                e = eh * 60 + em + ld * 60
+                aval ['end'] = '%02d:%02d' % (e // 60, e % 60)
+            else:
+                dur2 -= ld
             assert dur1 > 0
             for a in 'wp', 'time_activity':
                 if a in val and val [a]:
