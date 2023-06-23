@@ -155,7 +155,7 @@ def att_records_consistent (db, dr):
             end   = [a.end   for a in ars]
             ar_pr = ', '.join ([pretty_att_record (db, dr, a) for a in ars])
             if not (start [0] >= end [1] or start [1] >= end [0]):
-                msgs.append ("%(tr_pr)s overlap" % locals ())
+                msgs.append ("%(ar_pr)s overlap" % locals ())
         last_ar = ar
     if not dyn.durations_allowed:
         nobreak  = 0.0
