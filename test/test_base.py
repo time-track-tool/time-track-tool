@@ -4189,7 +4189,7 @@ class Test_Case_Timetracker (_Test_Case_Summary, unittest.TestCase) :
             )
     # end def gen_user21_dynamic
 
-    def test_user21_inner (self):
+    def user21_inner (self):
         # monkey-patch avg_hours_per_week_this_year
         n   = 'avg_hours_per_week_this_year'
         fun = getattr (vacation, n)
@@ -4214,7 +4214,7 @@ class Test_Case_Timetracker (_Test_Case_Summary, unittest.TestCase) :
         v = vacation.avg_hours_per_week_this_year \
             (self.db, self.user21, dt, enddate = date.Date ('2023-03-15'))
         assert "%.2f" % v == "0.00"
-    # end def test_user21_inner
+    # end def user21_inner
 
     def test_user21 (self) :
         self.log.debug ('test_user21')
@@ -4229,9 +4229,9 @@ class Test_Case_Timetracker (_Test_Case_Summary, unittest.TestCase) :
         # Test twice with different dyn user records (one is in the
         # future and should not change the outcome but only with one of
         # them we used to get a traceback)
-        self.test_user21_inner ()
+        self.user21_inner ()
         self.gen_user21_dynamic ()
-        self.test_user21_inner ()
+        self.user21_inner ()
     # end def test_user21
 
 # end class Test_Case_Timetracker
