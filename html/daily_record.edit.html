@@ -233,7 +233,7 @@
                  tal:content="structure dur/as_listentry"
                  style="text-align:right;" class="nb" />
              <td style="text-align:right;">
-              <span tal:condition="editable"
+              <span tal:condition="python:editable and dur"
                title="Mark line for deletion by removing duration">
                <img src="@@file/del.png" alt="D" border="0"
                 tal:attributes="onclick
