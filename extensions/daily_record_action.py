@@ -537,7 +537,9 @@ class Daily_Record_Edit_Action (EditItemAction, Daily_Record_Common):
                     tr = rec [1]
                     if tr.duration <= dist:
                         dist -= tr.duration
-                        updar = dict (work_location = loc)
+                        updar = {}
+                        if not ar.work_location:
+                            updar.update (work_location = loc)
                         updtr = dict \
                             ( wp            = wp
                             , time_activity = tact
@@ -548,7 +550,7 @@ class Daily_Record_Edit_Action (EditItemAction, Daily_Record_Common):
                         updar   = {}
                         newar   = dict \
                             ( daily_record  = tr.daily_record
-                            , work_location = loc
+                            , work_location = ar.work_location or loc
                             )
                         newtr   = dict \
                             ( daily_record  = tr.daily_record
