@@ -438,6 +438,11 @@ _helptext          = \
              some fields like "Files affected" are filled in.
           '''
       ]
+    , ""'charge_to'                   :
+      [ ""'''Only to be filled in if an internal re-invoicing to another
+             organization has to be done.
+          '''
+      ]
     , ""'city'                        : [city]
     , ""'clearance_by'                :
       [ ""'''Usually the supervisor of a person approves

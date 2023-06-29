@@ -7537,7 +7537,7 @@ msgid "gl_account"
 msgstr "G/L account"
 
 msgid "charge_to"
-msgstr "Charge to"
+msgstr "Internal recharging to"
 
 msgid "delivery_address"
 msgstr "Delivery address"
