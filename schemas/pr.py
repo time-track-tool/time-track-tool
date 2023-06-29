@@ -73,9 +73,12 @@ classes = \
 
 
 prop_perms = []
+roles = \
+    [ ('PGP',       'Roles that require PGP')
+    , ('Sub-Login', 'Allow to login as another user')
+    ]
 
-# For PGP-Processing we need a role
-schemadef.register_roles             (db, [('PGP', 'Roles that require PGP')])
+schemadef.register_roles             (db, roles)
 schemadef.register_class_permissions (db, classes, prop_perms)
 schemadef.allow_user_details         \
     ( db, 'User', 'View', 'address'
