@@ -287,7 +287,7 @@
                )
            )">
        <th tal:content="structure python:utils.fieldname
-           (classname, 'gl_account')"/>
+           (db, classname, 'gl_account')"/>
        <td tal:content="structure python:context.gl_account.field ()"/>
       </tal:block>
       <tal:block tal:condition="python:
@@ -300,7 +300,7 @@
        <td/>
       </tal:block>
       <th tal:content="structure python:utils.fieldname
-          (classname, 'delivery_address')"/>
+          (db, classname, 'delivery_address')"/>
       <td rowspan="2">
        <span tal:content="structure python:context.delivery_address.menu
         (valid_from = ';.,-', valid_to = '.;,-', sort_on = ('+', 'order'))"/>
@@ -314,7 +314,7 @@
      </tr>
      <tr>
       <th tal:content="structure python:utils.fieldname
-          (classname, 'charge_to')"/>
+          (db, classname, 'charge_to')"/>
       <td tal:content="structure python:context.charge_to.menu
         (valid_from = ';.,-', valid_to = '.;,-')"/>
       <!--

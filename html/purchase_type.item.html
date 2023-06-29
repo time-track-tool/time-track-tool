@@ -104,7 +104,7 @@
      </tr>
      <tr tal:condition="context/id">
       <th tal:content="structure python:utils.fieldname
-          (classname, 'allow_gl_account')"/>
+          (db, classname, 'allow_gl_account')"/>
       <td tal:content="structure python: context.allow_gl_account.field ()"/>
      </tr>
     </tal:block>
