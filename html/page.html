@@ -689,7 +689,7 @@
   <link rel="stylesheet" type="text/css" href="@@file/style.css">
   <script tal:replace="structure request/base_javascript"></script>
   <script type="text/javascript"
-          src="@@file/lfiles/js/jquery-1.12.4.min.js"></script>
+          src="@@file/lfiles/js/jquery-3.7.0.min.js"></script>
   <script type="text/javascript"
             src="@@file/lfiles/js/formhandler.js"></script>
   <script type="text/javascript"
@@ -1150,7 +1150,7 @@
  <span tal:condition="python:not (context.is_view_ok() or context.is_edit_ok())">
  You are not allowed to view this page.
  </span>
- <div class="formdiv">
+ <div class="formdiv" id="formdiv">
   <form method="POST"
         onSubmit="return submit_once()"
         enctype="multipart/form-data"

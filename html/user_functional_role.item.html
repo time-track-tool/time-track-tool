@@ -2,9 +2,11 @@
  <tal:block metal:fill-slot="add-js">
   <script type="text/javascript">
    $(document).ready (function () {
-    var rbut = $('#rbutton');
-    rbut.css ('left',  $('#retire-button-space').position ().left);
-    rbut.css ('top',   $('#history-button').position ().top);
+    var rbut    = $('#rbutton');
+    var hboff   = $('#history-button').offset ().top;
+    var formoff = $('#formdiv').offset ().top;
+    rbut.css ('left',  $('#retire-button-space').offset ().left);
+    rbut.css ('top',   hboff - formoff);
     rbut.css ('position',   'absolute');
     rbut.css ('visibility', 'visible');
    });
