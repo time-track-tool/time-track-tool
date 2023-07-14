@@ -58,7 +58,7 @@
           @click="toggle_menu"
           icon="pi pi-copy"
           class="p-button-text"
-          :disabled="!enabled"
+          :disabled="!enabled || isMonday(date)"
         />
         <Menu
           class="p-button-success p-button-text t5-menu"
@@ -181,6 +181,7 @@ import {
   areIntervalsOverlapping,
   isAfter,
   isEqual,
+  isMonday,
 } from "date-fns";
 import { v4 as uuidv4 } from "uuid";
 import { mapState } from "vuex";
@@ -212,6 +213,7 @@ export default {
       too_much: {},
       default_work_location: {},
       animate: false,
+      isMonday: isMonday,
       menu_items_first_dow: [
         {
           label: "Everything",
