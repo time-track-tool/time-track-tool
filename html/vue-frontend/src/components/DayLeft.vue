@@ -159,6 +159,7 @@
         v-bind:day_enabled="enabled && all_atts_loaded"
         v-bind:float_labels="idx === 0"
         v-bind:is_last="idx === att_ids.length - 1"
+        v-bind:work_location="default_work_location[att_id]"
         :key="'att_' + att_id"
         @update="update_att"
         @delete="delete_att"
@@ -209,6 +210,7 @@ export default {
       start_overlaps: {},
       end_overlaps: {},
       too_much: {},
+      default_work_location: {},
       animate: false,
       menu_items_first_dow: [
         {
@@ -782,11 +784,14 @@ export default {
         percent: (this.loaded_att_ids.length / this.att_ids.length) * 100,
       });
     },
-    add_empty: function () {
+    add_empty: function (work_location) {
       let id = uuidv4();
       this.$set(this.start_overlaps, id, false);
       this.$set(this.end_overlaps, id, false);
       this.$set(this.too_much, id, false);
+      if (work_location !== undefined) {
+        this.$set(this.default_work_location, id, work_location);
+      }
       return id;
     },
     delete_att: function (id) {
@@ -939,7 +944,7 @@ export default {
         last.duration !== "" &&
         this.enabled
       ) {
-        this.att_ids.push(this.add_empty());
+        this.att_ids.push(this.add_empty(last.work_location));
       }
 
       console.log(atts);
