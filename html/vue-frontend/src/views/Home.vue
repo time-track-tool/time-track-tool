@@ -268,8 +268,8 @@ export default {
       let sum = 0;
       for (let key in this.att_sums) {
         sum += this.att_sums[key].on;
-        sum += this.att_sums[key].off;
-        sum += this.att_sums[key].travel;
+        // sum += this.att_sums[key].off;
+        // sum += this.att_sums[key].travel;
       }
       this.att_sum_for_days = sum;
     },

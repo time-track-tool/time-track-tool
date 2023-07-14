@@ -49,7 +49,8 @@
             v-bind:daily_record="daily_record"
             v-bind:sums_equal="sums_equal"
             v-bind:submit_enabled="submit_enabled"
-            v-bind:submit_error="submit_error"
+            v-bind:submit_error_off_time="submit_error_off_time"
+            v-bind:submit_error_travel_time="submit_error_travel_time"
             v-bind:update="update_day_right"
             v-bind:enabled_from_above="day_enabled && enable_day_right"
             v-bind:day_is_empty="sums_empty"
@@ -96,7 +97,8 @@ export default {
       trs_valid: true,
       atts_valid: true,
       error: null,
-      submit_error: "",
+      submit_error_travel_time: "",
+      submit_error_off_time: "",
       loaded_percent: 0,
       loaded_percent_by_side: { atts: 0, trs: 0 },
       update_day_left: false,
@@ -414,11 +416,9 @@ export default {
     att_sum_changed: function (att_sum) {
       this.att_sum = att_sum;
       if (this.loaded_percent >= 100) {
-        if (this.off_time_correct()) {
-          if (this.travel_time_correct()) {
-            this.update_submit_enabled();
-          }
-        }
+        this.off_time_correct();
+        this.travel_time_correct();
+        this.update_submit_enabled();
       }
       // to refresh the etag header
       if (att_sum.refetch_daily_record) {
@@ -434,11 +434,9 @@ export default {
     tr_sum_changed: function (tr_sum) {
       this.tr_sum = tr_sum;
       if (this.loaded_percent >= 100) {
-        if (this.off_time_correct()) {
-          if (this.travel_time_correct()) {
-            this.update_submit_enabled();
-          }
-        }
+        this.off_time_correct();
+        this.travel_time_correct();
+        this.update_submit_enabled();
       }
       if (tr_sum.refetch_daily_record) {
         this.fetch_daily_record({ params: { id: this.daily_record_id } });
@@ -488,21 +486,21 @@ export default {
         this.tr_sum.off_no_durations_allowed > 0 &&
         this.att_sum.off < this.tr_sum.off_no_durations_allowed
       ) {
-        this.submit_error =
+        this.submit_error_off_time =
           "You need to have " +
           this.tr_sum.off_no_durations_allowed +
           " hours Off time";
         res = false;
       } else if (this.att_sum.off > 0 || this.tr_sum.off > 0) {
         if (this.att_sum.off > this.tr_sum.off) {
-          this.submit_error =
-            'You can\'t have more "Off/Absent" time on the left than on the right';
+          this.submit_error_off_time =
+            'You can\'t have more "Off/Absent" time on the left than on the right. ';
           res = false;
         } else {
-          this.submit_error = "";
+          this.submit_error_off_time = "";
         }
       } else {
-        this.submit_error = "";
+        this.submit_error_off_time = "";
       }
       return res;
     },
@@ -510,14 +508,14 @@ export default {
       let res = true;
       if (this.att_sum.travel > 0 || this.tr_sum.travel > 0) {
         if (this.att_sum.travel === this.tr_sum.travel) {
-          this.submit_error = "";
+          this.submit_error_travel_time = "";
         } else {
-          this.submit_error =
-            "You must have the same amount of travel time on both sides";
+          this.submit_error_travel_time =
+            "You must have the same amount of travel time on both sides. ";
           res = false;
         }
       } else {
-        this.submit_error = "";
+        this.submit_error_travel_time = "";
       }
       return res;
     },
