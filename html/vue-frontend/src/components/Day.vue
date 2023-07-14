@@ -72,7 +72,7 @@
 import DayLeft from "@/components/DayLeft.vue";
 import DayRight from "@/components/DayRight.vue";
 import { mapActions, mapState } from "vuex";
-import { format, sub, isEqual, parseISO } from "date-fns";
+import { format, add, sub, isEqual, parseISO } from "date-fns";
 import isWeekend from "date-fns/isWeekend";
 import defines from "../defines";
 
@@ -113,7 +113,11 @@ export default {
   },
   created: function () {
     this.find_user_dynamic({
-      params: { user_id: this.user_id, date_str: this.date_string },
+      params: {
+        user_id: this.user_id,
+        date_str: this.date_string,
+        end_date_str: format(add(this.day, { days: 1 }), "yyyy-MM-dd"),
+      },
     }).then(() => {
       if (this.user_dynamic_id_for_date[this.date_string] === null) {
         this.error =
