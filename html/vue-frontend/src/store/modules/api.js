@@ -364,8 +364,8 @@ export default new Vapi({
   .get({
     action: "find_user_dynamic",
     property: "find_user_dynamic",
-    path: ({ user_id, date_str }) =>
-      `rest/data/user_dynamic/?user=${user_id}&valid_from=;${date_str}&valid_to=-,${date_str};`,
+    path: ({ user_id, date_str, end_date_str }) =>
+      `rest/data/user_dynamic/?user=${user_id}&valid_from=;${date_str}&valid_to=-,${end_date_str};`,
     // eslint-disable-next-line no-unused-vars
     onSuccess: (state, payload, axios, { params, data }) => {
       if (payload.data.data["@total_size"] === 1) {
