@@ -388,14 +388,14 @@ class Daily_Record_Edit_Action (EditItemAction, Daily_Record_Common):
                         aval = props [akey]
                     else:
                         aval = dict (start = ar.start, end = ar.end)
-                    if 'start' not in aval:
+                    if 'start' not in aval and ar.start is not None:
                         aval ['start'] = ar.start
-                    if 'end' not in aval:
+                    if 'end' not in aval and ar.end is not None:
                         aval ['end'] = ar.end
                     if 'daily_record' not in aval:
                         aval ['daily_record'] = ar.daily_record
                     dstart, dend, dur = self.get_start_end (aval)
-                    if duration != dur:
+                    if duration != dur and dstart is not None:
                         iv = self.compute_interval (duration)
                         aval ['end'] = (dstart + iv).pretty (hour_format)
                     del aval ['daily_record']
