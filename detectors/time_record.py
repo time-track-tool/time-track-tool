@@ -627,9 +627,10 @@ def allow_new_public_holiday (db, dr, wpid, tr):
         is_ph = tp.is_public_holiday
         subm  = db.daily_record_status.lookup ('submitted')
         accpt = db.daily_record_status.lookup ('accepted')
+        leave = db.daily_record_status.lookup ('leave')
         du    = vacation.leave_duration (db, dr.user, dr.date, is_ph)
         if  (   tr ['duration'] == du
-            and (dr.status in (subm, accpt) and is_ph)
+            and (dr.status in (subm, accpt, leave) and is_ph)
             ):
             allow = True
     return allow
