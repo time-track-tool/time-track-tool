@@ -126,6 +126,7 @@ Role "project":
 Role "project_view":
  User is allowed to access time_project (View for "time_project" only)
 Role "quality":
+Role "sub-login":
 Role "subcontract":
 Role "subcontract-org":
 Role "training-approval":

@@ -4246,7 +4246,8 @@ class Test_Case_Tracker (_Test_Case, unittest.TestCase) :
         , 'issue_admin', 'it', 'ituser'
         , 'itview', 'kpm-admin', 'msgedit', 'msgsync', 'nosy', 'pgp'
         , 'readonly-user', 'sec-incident-nosy'
-        , 'sec-incident-responsible', 'supportadmin', 'user', 'user_view'
+        , 'sec-incident-responsible', 'sub-login', 'supportadmin'
+        , 'user', 'user_view'
         ]
     transprop_perms = transprop_track
 # end class Test_Case_Tracker
@@ -6011,7 +6012,8 @@ class Test_Case_PR (_Test_Case, unittest.TestCase) :
         , 'hr-approval', 'it', 'it-approval', 'measurement-approval', 'nosy'
         , 'pgp', 'pr-view', 'procure-approval'
         , 'procurement', 'procurement-admin', 'project'
-        , 'project_view', 'quality', 'subcontract', 'subcontract-org'
+        , 'project_view', 'quality', 'sub-login'
+        , 'subcontract', 'subcontract-org'
         , 'training-approval', 'user', 'user_view'
         ]
     transprop_perms = transprop_pr
