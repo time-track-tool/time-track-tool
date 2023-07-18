@@ -75,7 +75,7 @@
       v-bind:copy_from_daily_record="daily_record_to[day]"
       v-bind:submit_from_above="submit_all"
       v-bind:edit_again_from_above="edit_again_all"
-      :key="day.toString()"
+      :key="day.toString() + idx"
       v-on:copy_day_to_week="copy_day_to_week"
       v-on:copy_day_to_month="copy_day_to_month"
       v-on:copy_from_last_week="copy_from_last_week"
@@ -109,7 +109,7 @@ msg: {{ api_error.error.response.data.error.msg }}
     <div class="border p-p-3 p-d-flex p-jc-between">
       <Button :label="'v' + version" class="p-mr-2 p-button-info" disabled />
       <Button
-        v-if="$route.params.range === 'week'"
+        v-if="$route.params.range === 'week' || $route.params.range === 'month'"
         :label="'Total: ' + att_sum_for_days + 'h'"
         class="p-mr-2 p-button-info"
         disabled
@@ -210,6 +210,7 @@ export default {
   },
   created: function () {
     // load and display current week
+    this.att_sum_for_days = 0;
     this.$store.commit("setUserId", this.$route.params.user_id);
     this.fetch_frozen_until({
       params: { user_id: this.$route.params.user_id },
@@ -267,8 +268,8 @@ export default {
       let sum = 0;
       for (let key in this.att_sums) {
         sum += this.att_sums[key].on;
-        sum += this.att_sums[key].off;
-        sum += this.att_sums[key].travel;
+        // sum += this.att_sums[key].off;
+        // sum += this.att_sums[key].travel;
       }
       this.att_sum_for_days = sum;
     },

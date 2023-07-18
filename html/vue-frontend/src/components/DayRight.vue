@@ -41,8 +41,11 @@
           label="Update from Jira"
           class="p-mr-2 p-button-secondary"
         /> -->
-        <InlineMessage v-if="submit_error" severity="error">{{
-          submit_error
+        <InlineMessage v-if="submit_error_off_time" severity="error">{{
+          submit_error_off_time
+        }}</InlineMessage>
+        <InlineMessage v-if="submit_error_travel_time" severity="error">{{
+          submit_error_travel_time
         }}</InlineMessage>
         <Button
           v-if="dr_is_status_open && submit_enabled"
@@ -117,7 +120,8 @@ export default {
     update: { type: Boolean, required: true },
     enabled_from_above: { type: Boolean, required: true },
     day_is_empty: { type: Boolean, required: true },
-    submit_error: { type: String, required: true },
+    submit_error_off_time: { type: String, required: true },
+    submit_error_travel_time: { type: String, required: true },
     daily_work_hours: { type: Number, required: true },
     is_first: { type: Boolean, required: true },
     day_is_weekend: { type: Boolean, required: true },

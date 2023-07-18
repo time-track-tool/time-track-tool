@@ -220,6 +220,7 @@ export default {
     day_enabled: { type: Boolean, required: true },
     float_labels: { type: Boolean, required: true },
     is_last: { type: Boolean, required: true },
+    work_location: { type: String, required: false, default: "1" },
   },
   data: function () {
     return {
@@ -251,7 +252,7 @@ export default {
         start_time: "",
         end_time: "",
         duration: "",
-        work_location: "1",
+        work_location: this.work_location,
         generated: false,
         created: false,
       };

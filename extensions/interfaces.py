@@ -361,7 +361,7 @@ def approval_for (db, valid_only = False) :
 def welcome (db) :
     fname = os.path.join (db.config.TRACKER_HOME, 'Welcome-Info.txt')
     try :
-        text = open (fname, 'rU').read ()
+        text = open (fname, 'r').read ()
         return escape (text).replace ('\n\n', '<br>\n')
     except IOError :
         pass
