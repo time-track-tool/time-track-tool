@@ -7559,3 +7559,6 @@ msgstr "New Timetracker"
 
 msgid "attendance_record"
 msgstr "Attendance record"
+
+msgid "employee_number"
+msgstr "Employee number"

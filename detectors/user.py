@@ -402,6 +402,26 @@ def business_responsible_check (db, cl, nodeid, new_values):
             raise Reject ('Business responsible must not be set for this user')
 # end def business_responsible_check
 
+def create_employee_number (db, cl, nodeid, old_values):
+    """ On creation if no employee_number is set we set it to the nodeid
+    """
+    u = cl.getnode (nodeid)
+    # May not be None or empty string
+    if not u.employee_number:
+        cl.set (nodeid, employee_number = nodeid)
+# end def create_employee_number
+
+def set_employee_number (db, cl, nodeid, new_values):
+    """ If the employee_number ever is empty
+    """
+    en = 'employee_number'
+    # May not set employee_number to empty string or None
+    if en in new_values and not new_values [en]:
+        del new_values [en]
+    if en not in new_values and cl.get (nodeid, en) is None:
+        new_values [en] = nodeid
+# end def set_employee_number
+
 def init (db):
     db.user.audit ("set",    audit_user_fields)
     db.user.audit ("create", new_user)
@@ -436,3 +456,6 @@ def init (db):
         db.user.audit ("set",    vie_backlink_check)
         db.user.audit ("create", business_responsible_check, priority = 150)
         db.user.audit ("set",    business_responsible_check, priority = 150)
+    if 'employee_number' in db.user.properties:
+        db.user.react ("create", create_employee_number)
+        db.user.audit ("set",    set_employee_number)

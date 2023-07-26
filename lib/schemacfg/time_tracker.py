@@ -609,6 +609,7 @@ def init \
                 , department_temp        = String    ()
                 , dark_mode              = Boolean   ()
                 , new_tt_iface           = Boolean   ()
+                , employee_number        = String    ()
                 )
             kw ['User_Class'].__init__ (self, db, classname, ** properties)
         # end def __init__
