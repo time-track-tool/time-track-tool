@@ -691,17 +691,19 @@ class LDAP_Roundup_Sync (Log):
         self.dynprops = {}
         if 'user_dynamic' in self.db.classes:
             self.dynprops = self.db.user_dynamic.properties
-        self.append_sync_attribute \
-            (id = User_Sync_Config_Entry
-                ( name           = 'employeenumber'
-                , do_change      = 1
-                , to_roundup     = None
-                , empty_allowed  = False
-                , from_vie_user  = False
-                , creation_only  = True
-                , write_vie_user = False
-                )
+        en_cfg_entry = User_Sync_Config_Entry
+            ( name           = 'employeenumber'
+            , do_change      = 1
+            , to_roundup     = None
+            , empty_allowed  = False
+            , from_vie_user  = False
+            , creation_only  = True
+            , write_vie_user = False
             )
+        if 'employee_number' in db.user.properties:
+            self.append_sync_attribute (employee_number = en_cfg_entry)
+        else:
+            self.append_sync_attribute (id = en_cfg_entry)
         if 'firstname' in props:
             self.append_sync_attribute \
                 ( firstname = User_Sync_Config_Entry
