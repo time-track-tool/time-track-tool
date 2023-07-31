@@ -813,8 +813,17 @@ def check_time_record (db, cl, nodeid, new_values):
         new_values ['tr_duration'] = None
 # end def check_time_record
 
-def check_for_retire_and_duration (db, cl, nodeid, old_values):
-    dur = cl.get (nodeid, 'duration')
+def retire_and_duration (db, cl, nodeid, old_values):
+    """ This should be the last reactor, we should not run any reactors
+        after the retire.
+    """
+    tr = cl.getnode (nodeid)
+    if tr.attendance_record:
+        assert len (tr.attendance_record) == 1
+        if db.attendance_record.is_retired (tr.attendance_record [0]):
+            cl.retire (nodeid)
+            return
+    dur = tr.duration
     if dur is None:
         cl.retire (nodeid)
     elif (common.changed_values (old_values, cl, nodeid)
@@ -823,7 +832,7 @@ def check_for_retire_and_duration (db, cl, nodeid, old_values):
         drid = cl.get (nodeid, 'daily_record')
         dr = db.daily_record.getnode (drid)
         user_dynamic.invalidate_tr_duration (db, dr.user, dr.date, dr.date)
-# end def check_for_retire_and_duration
+# end def retire_and_duration
 
 def fix_daily_recs_after_retire (db, cl, nodeid, dummy):
     """ Update the tr_duration in daily record """
@@ -991,7 +1000,12 @@ def update_arec (db, cl, nodeid, old_values):
     """ If attendance record is changed *and* has a corresponding
         time_record link, we update the duration if necessary
     """
+    # check if our corresponding TR is retired, if so, retire self
     ar = cl.getnode (nodeid)
+    if ar.time_record:
+        if db.time_record.is_retired (ar.time_record):
+            cl.retire (nodeid)
+            return
     if not ar.time_record or not ar.start:
         return
     tr = db.time_record.getnode  (ar.time_record)
@@ -1000,6 +1014,9 @@ def update_arec (db, cl, nodeid, old_values):
         (db.i18n.gettext, ar.start, ar.end, dr.date)
     if dur != tr.duration:
         db.time_record.set (tr.id, duration = dur)
+    # Or if both our times are the same and this is not 'create'
+    if not dur and old_values:
+        cl.retire (nodeid)
 # end def update_arec
 
 def update_trec (db, cl, nodeid, old_values):
@@ -1014,10 +1031,6 @@ def update_trec (db, cl, nodeid, old_values):
         return
     assert len (tr.attendance_record) == 1
     arid = tr.attendance_record [0]
-    # Check if time record was retired
-    if cl.is_retired (nodeid):
-        db.attendance_record.retire (arid)
-        return
 
     # Check what changed, do nothing if only tr_duration changed in timerec
     keys = []
@@ -1060,7 +1073,7 @@ def init (db):
     db.time_record.audit  ("create", new_time_record)
     db.time_record.audit  ("set",    check_time_record)
     db.time_record.react  ("create", compute_tr_duration)
-    db.time_record.react  ("set",    check_for_retire_and_duration)
+    db.time_record.react  ("set",    retire_and_duration,  priority = 500)
     db.time_record.audit  ("retire", check_retire)
     db.time_record.react  ("retire", fix_daily_recs_after_retire)
     db.time_record.audit  ("create", check_obsolete_props, priority = 500)
@@ -1069,8 +1082,8 @@ def init (db):
     att = db.attendance_record
     att.audit             ("create", new_attendance_record)
     att.audit             ("set",    check_att_record)
-    att.react             ("create", update_arec)
-    att.react             ("set",    update_arec)
+    att.react             ("create", update_arec, priority = 500)
+    att.react             ("set",    update_arec, priority = 500)
     db.daily_record.audit ("create", new_daily_record)
     db.daily_record.audit ("set",    check_daily_record)
     db.daily_record.react ("set",    send_mail_on_deny)
