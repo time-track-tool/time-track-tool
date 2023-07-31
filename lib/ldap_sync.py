@@ -691,7 +691,7 @@ class LDAP_Roundup_Sync (Log):
         self.dynprops = {}
         if 'user_dynamic' in self.db.classes:
             self.dynprops = self.db.user_dynamic.properties
-        en_cfg_entry = User_Sync_Config_Entry
+        en_cfg_entry = User_Sync_Config_Entry \
             ( name           = 'employeenumber'
             , do_change      = 1
             , to_roundup     = None
