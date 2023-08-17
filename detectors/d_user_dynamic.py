@@ -4,17 +4,17 @@
 # Web: http://www.runtux.com Email: office@runtux.com
 # All rights reserved
 # ****************************************************************************
-# 
+#
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
 # the Free Software Foundation; either version 2 of the License, or
 # (at your option) any later version.
-# 
+#
 # This program is distributed in the hope that it will be useful,
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 # GNU General Public License for more details.
-# 
+#
 # You should have received a copy of the GNU General Public License
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
@@ -557,6 +557,9 @@ def try_fix_vacation (db, cl, nodeid, old_values):
     """ If the working time per day is changed for a user we need to
         correct the already-booked vacations in that time-range.
         We also need to correct public holidays.
+        Note that if only the *end-date* changes, we only need to change
+        the records between old and new end-date.
+
     """
     days  = 'mon tue wed thu fri sat sun'.split ()
     props = list ('hours_' + x for x in days)
@@ -564,17 +567,34 @@ def try_fix_vacation (db, cl, nodeid, old_values):
     props.append ('valid_from')
     props.append ('valid_to')
     item = cl.getnode (nodeid)
-    if old_values is not None:
-        for p in props:
-            if p in old_values and item [p] != old_values [p]:
-                break
-        else:
-            return
+    # Check if at least one of the given props was changed
+    if old_values:
+        changed = \
+            [p for p in props if p in old_values and item [p] != old_values [p]]
+    else:
+        changed = props
+    if not changed:
+        return
     to = item.valid_to
     if to:
         to = to - common.day
+    frm = item.valid_from
+    if old_values and old_values ['valid_from'] < frm:
+        frm = old_values ['valid_from']
+    # If only valid_to changed we need to check only records between old
+    # and new valid_to:
+    if changed == ['valid_to']:
+        if not old_values ['valid_to']:
+            frm = item.valid_to
+            to  = None
+        elif not item.valid_to:
+            frm = old_values ['valid_to']
+            to  = None
+        else:
+            frm = min (old_values ['valid_to'], item.valid_to)
+            to  = max (old_values ['valid_to'], item.valid_to) - common.day
     vacation.update_public_holidays (db, cl.getnode (nodeid))
-    vacation.fix_vacation (db, item.user, item.valid_from, to)
+    vacation.fix_vacation (db, item.user, frm, to)
 # end def try_fix_vacation
 
 def retire_if_empty_range (db, cl, nodeid, old_values):

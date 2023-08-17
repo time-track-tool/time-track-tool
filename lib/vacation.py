@@ -1005,7 +1005,7 @@ def fix_vacation (db, uid, date_from = None, date_to = None):
         dr = db.daily_record.getnode (tr.daily_record)
         wp = db.time_wp.getnode      (tr.wp)
         tp = db.time_project.getnode (wp.project)
-        if not tp.is_vacation and not tp.is_public_holiday:
+        if not (tp.is_vacation or tp.is_public_holiday or tp.is_special_leave):
             continue
         du = leave_duration (db, uid, dr.date, tp.is_public_holiday)
         if tr.duration != du:

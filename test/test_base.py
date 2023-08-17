@@ -3364,6 +3364,19 @@ class Test_Case_Timetracker (_Test_Case_Summary, unittest.TestCase) :
         os.unlink (maildebug)
         self.db.commit ()
         self.db.close ()
+        self.db = self.tracker.open ('admin')
+        # Set wrong time on one of the time records
+        # ['11', '27', '28', '29', '30', '31', '32', '33', '34']
+        self.db.time_record.set_inner ('28', duration = 5)
+        self.db.commit ()
+        self.db.close ()
+        # Now the error will *not* be corrected when the dynamic user
+        # record changes *after* the error.
+        self.db = self.tracker.open (self.username0)
+        freeze = date.Date ('2010-12-31')
+        to     = date.Date ('2012-01-01')
+        self.db.daily_record_freeze.create (date = freeze, user = self.user2)
+        self.db.user_dynamic.set ('3', valid_to = to)
     # end def test_vacation
 
     def setup_user16 (self) :
