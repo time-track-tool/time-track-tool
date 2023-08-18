@@ -395,9 +395,21 @@ class Daily_Record_Edit_Action (EditItemAction, Daily_Record_Common):
                     if 'daily_record' not in aval:
                         aval ['daily_record'] = ar.daily_record
                     dstart, dend, dur = self.get_start_end (aval)
+                    import pdb; pdb.set_trace ()
                     if duration != dur and dstart is not None:
                         iv = self.compute_interval (duration)
                         aval ['end'] = (dstart + iv).pretty (hour_format)
+                    # Up until here it works nicely if the ar had start/end
+                    # and the duration changes to empty. But in case it
+                    # does not have start/end the ar would be left over
+                    # while the tr is retired.
+                    # We may not modify the daily_record and it already is set
+                    if duration is None and not dstart:
+                        assert ar.start is None and ar.end is None
+                        assert 'start' not in aval
+                        assert 'end' not in aval
+                        # Setting both to same value will retire the ar
+                        aval ['start'] = aval ['end'] = '8'
                     del aval ['daily_record']
         # Check if start is given but no end, create end from start + duration
         for (cl, id) in list (props):
