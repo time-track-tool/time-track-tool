@@ -33,7 +33,7 @@ import ast
 from . import user1_time, user2_time, user3_time, user4_time, user5_time
 from . import user6_time, user7_time, user8_time, user10_time, user11_time
 from . import user12_time, user13_time, user14_time, user15_19_vac, user16_leave
-from . import user17_time, user18_time, user20_time, user21_time
+from . import user17_time, user18_time, user20_time, user21_time, user22_time
 
 from operator     import mul
 from email.parser import Parser
@@ -4246,6 +4246,115 @@ class Test_Case_Timetracker (_Test_Case_Summary, unittest.TestCase) :
         self.gen_user21_dynamic ()
         self.user21_inner ()
     # end def test_user21
+
+    def setup_user22 (self) :
+        self.username22 = 'testuser22'
+        self.user22 = self.db.user.create \
+            ( username     = self.username22
+            , firstname    = 'Nummer22'
+            , lastname     = 'User22'
+            )
+        self.db.time_wp.set (self.vacation_wp, bookers = [self.user22])
+        self.db.public_holiday.create \
+            ( date        = date.Date ('2020-12-24')
+            , is_half     = True
+            , locations   = [self.loc]
+            , name        = 'Heiligabend'
+            )
+        self.db.public_holiday.create \
+            ( date        = date.Date ('2020-12-25')
+            , is_half     = False
+            , locations   = [self.loc]
+            , name        = 'Weihnachten'
+            )
+        self.db.public_holiday.create \
+            ( date        = date.Date ('2020-12-26')
+            , is_half     = False
+            , locations   = [self.loc]
+            , name        = 'Stephanitag'
+            )
+        self.db.public_holiday.create \
+            ( date        = date.Date ('2020-12-31')
+            , is_half     = True
+            , locations   = [self.loc]
+            , name        = 'Silvester'
+            )
+        self.db.commit ()
+    # end def setup_user22
+
+    def test_user22 (self) :
+        self.log.debug ('test_user22')
+        self.setup_db ()
+        self.setup_user22 ()
+        self.db.close ()
+        self.db = self.tracker.open ('admin')
+        user22_time.import_data_22 (self.db, self.user22, self.olo)
+        self.db.commit ()
+        self.db.close ()
+        self.db = self.tracker.open (self.username0)
+        dyn = self.db.user_dynamic.filter (None, dict (user = self.user22))
+        assert len (dyn) == 1
+        dyn = dyn [0]
+        dt  = date.Date ('2021-02-01')
+        flt = self.db.leave_submission.filter
+        #self.db.user_dynamic.set (dyn, valid_to = dt)
+        self.db.user_dynamic.create \
+	    ( all_in             = 1
+	    , booking_allowed    = 1
+	    , do_auto_wp         = 1
+	    , durations_allowed  = 0
+	    , exemption          = 0
+	    , max_flexitime      = 5.0
+	    , travel_full        = 0
+	    , vacation_day       = 1.0
+	    , vacation_month     = 1.0
+	    , vacation_yearly    = 25.0
+	    , valid_from         = date.Date ("2020-12-01.00:00:00")
+	    , weekend_allowed    = 0
+	    , weekly_hours       = 40
+	    , org_location       = self.olo
+	    , user               = self.user22
+	    , vac_aliq           = '1'
+	    )
+        leave = self.db.daily_record_status.lookup ('leave')
+        d   = \
+            { 'daily_record.user'   : self.user22
+            , 'daily_record.date'   : '2020-12-21;2021-01-28'
+            , 'daily_record.status' : leave
+            }
+        found_vac = found_spec = found_hol = found_flex = 0
+        trids = self.db.time_record.filter (None, d)
+        assert len (trids) == 13
+        for trid in trids:
+            tr = self.db.time_record.getnode (trid)
+            dr = self.db.daily_record.getnode (tr.daily_record)
+            dt = dr.date.pretty (common.ymd)
+            wp = self.db.time_wp.getnode (tr.wp)
+            tp = self.db.time_project.getnode (wp.project)
+            ho = self.db.public_holiday.filter (None, dict (date = dt))
+            if ho:
+                ho = self.db.public_holiday.getnode (ho [0])
+            else:
+                ho = None
+            found_vac  += bool (tp.is_vacation)
+            found_spec += bool (tp.is_special_leave)
+            found_hol  += bool (tp.is_public_holiday)
+            found_flex += tp.max_hours == 0
+            if tp.is_special_leave or tp.is_vacation or tp.is_public_holiday:
+                h = 8
+                if ho and ho.is_half:
+                    h = 4
+                assert tr.duration == h
+            if tp.max_hours == 0:
+                assert tr.duration == 0
+        assert found_spec == 2
+        assert found_vac  == 7
+        assert found_hol  == 3
+        assert found_flex == 1
+
+        self.db.commit ()
+        self.db.close ()
+    # end def test_user22
 
 # end class Test_Case_Timetracker
 
