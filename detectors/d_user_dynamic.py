@@ -868,6 +868,9 @@ def find_time_records (db, cl, nodeid, new_values):
                 wp = db.time_wp.getnode (tr.wp)
                 tc = db.time_project.getnode (wp.project)
                 assert tc.is_public_holiday
+                if tr.attendance_record:
+                    assert len (tr.attendance_record) == 1
+                    db.attendance_record.retire (tr.attendance_record [0])
                 db.time_record.retire (id)
 # end def find_time_records
 
