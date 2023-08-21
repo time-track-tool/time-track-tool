@@ -33,6 +33,9 @@ class Getter ():
             )
         self.headers ['X-Requested-With'] = 'requests library'
         self.url += 'rest/data/'
+        self.wp_map = {}
+        if self.args.auto_wp:
+            self.get_auto_wp ()
     # end def __init__
 
     def get (self, s, as_text=False):
@@ -75,6 +78,136 @@ class Getter ():
         return pw
     # end def get_pw
 
+    def get_auto_wp (self):
+        """ Get all WPs that relate to an auto-wp for this user.
+            Note that we're getting *all* of them not just the booked-on
+            ones: We want to test for conflicts when doing historic
+            changes.
+        """
+        d = dict \
+            ( auto_wp = '-1,-2'
+            , bookers = self.args.user
+            )
+        #d = \
+        #    { 'wp.auto_wp':        '-1,-2'
+        #    , 'daily_record.user': self.args.user
+        #    , 'daily_record.date': self.args.daterange
+        #    }
+        #fields = '&@fields=wp,wp.auto_wp'
+        #j = self.get ('time_record?' + urlencode (d)+fields)
+        #j = j ['data']['collection']
+        pf  = ( 'is_public_holiday', 'is_special_leave', 'is_vacation'
+              , 'no_overtime', 'no_overtime_day'
+              )
+        pf  = ','.join ('project.' + i for i in pf)
+        wpf = ['auto_wp', 'durations_allowed', 'name', 'time_start', 'time_end']
+        wpf = ','.join (wpf)
+        awf = [ 'contract_type.name', 'contract_type.order', 'duration'
+              , 'durations_allowed', 'is_valid', 'name'
+              ]
+        awf = ','.join ('auto_wp.' + i for i in awf)
+        d ['@fields'] = ','.join ((wpf, pf, awf))
+        j = self.get ('time_wp?' + urlencode (d))
+        j = j ['data']['collection']
+        auto_wp       = self.auto_wp       = {}
+        auto_wp_wp    = self.auto_wp_wp    = {}
+        contract_type = self.contract_type = {}
+        for item in j:
+            if item ['auto_wp.contract_type.name']:
+                contract_type [item ['auto_wp.contract_type.name']] = dict \
+                    ( name  = item ['auto_wp.contract_type.name']
+                    , order = item ['auto_wp.contract_type.order'] or 1
+                    )
+            awp_name = item ['auto_wp.name']
+            if self.args.auto_wp_suffix:
+                if awp_name.endswith (self.args.auto_wp_suffix):
+                    l = len (self.args.auto_wp_suffix)
+                    awp_name = awp_name [:-l].rstrip ()
+            auto_wp [item ['auto_wp']['id']] = dict \
+                ( contract_type     = item ['auto_wp.contract_type.name']
+                , duration          = item ['auto_wp.duration']
+                , durations_allowed = item ['auto_wp.durations_allowed']
+                , is_valid          = item ['auto_wp.is_valid']
+                , name              = awp_name
+                )
+            auto_wp_wp [item ['id']] = dict \
+                ( durations_allowed = item ['durations_allowed']
+                , name              = item ['name'].split () [-1]
+                , time_start        = item ['time_start']
+                , time_end          = item ['time_end']
+                , auto_wp           = awp_name
+                , contract_type     = item ['auto_wp.contract_type.name']
+                )
+    # end def get_auto_wp
+
+    def generate_auto_wp (self):
+        ind = self.ind
+        print (ind, "ct_by_name = {}")
+        for ctkey in sorted (self.contract_type):
+            if not ctkey:
+                continue
+            ct = self.contract_type [ctkey]
+            print (ind, "id = db.contract_type.create \\")
+            print (ind, "    ( name  = '%s'" % ct ['name'])
+            print (ind, "    , order = %d"   % ct ['order'])
+            print (ind, "    )")
+            print (ind, "ct_by_name ['%s'] = id" % ct ['name'])
+        print (ind, "username = db.user.get (user, 'username')")
+        print (ind, "aw_by_ct_name = {}")
+        for awid in sorted (self.auto_wp):
+            aw = self.auto_wp [awid]
+            ct = None
+            if aw ['contract_type']:
+                ct = "'" + aw ['contract_type'] + "'"
+            print (ind, "id = db.auto_wp.create \\")
+            print (ind, "    ( name              = '%s'" % aw ['name'])
+            if ct:
+                print (ind, "    , contract_type     = ct_by_name [%s]" % ct)
+            if aw ['duration']:
+                print (ind, "    , duration          = date.Interval ('%s')"
+                      % aw ['duration']
+                      )
+            print (ind, "    , durations_allowed = %d"
+                  % aw ['durations_allowed']
+                  )
+            print (ind, "    , is_valid          = 0")
+            print (ind, "    )")
+            print (ind, "aw_by_ct_name [(%s, '%s')] = id" % (ct, aw ['name']))
+        for n, wpid in enumerate (sorted (self.auto_wp_wp)):
+            self.wp_map [wpid] = n
+            wp = self.auto_wp_wp [wpid]
+            ct = None
+            if wp ['contract_type']:
+                ct = "'" + wp ['contract_type'] + "'"
+            print (ind, "au_wp_%d = db.time_wp.create \\" % n)
+            print (ind, "    ( name              = '%%s %s' %% username"
+                  % wp ['name']
+                  )
+            print (ind, "    , auto_wp           = aw_by_ct_name [(%s, '%s')]"
+                  % (ct, wp ['auto_wp'])
+                  )
+            print (ind, "    , bookers           = [user]")
+            print (ind, "    , durations_allowed = %d"
+                  % wp ['durations_allowed']
+                  )
+            print (ind, "    , time_start        = date.Date ('%s')"
+                  % wp ['time_start']
+                  )
+            print (ind, "    , time_end          = date.Date ('%s')"
+                  % wp ['time_end']
+                  )
+            print (ind, "    )")
+        for awid in sorted (self.auto_wp):
+            aw = self.auto_wp [awid]
+            ct = None
+            if aw ['contract_type']:
+                ct = "'" + aw ['contract_type'] + "'"
+            if aw ['is_valid']:
+                print \
+                    (ind, "id = aw_by_ct_name [(%s, '%s')]" % (ct, aw ['name']))
+                print (ind , "db.auto_wp.set (id, is_valid = True)")
+    # end def generate_auto_wp
+
     def print_attendance_rec (self, ar):
         ind = self.ind
         print (ind, "db.attendance_record.create \\")
@@ -101,6 +234,7 @@ class Getter ():
                 id = "'%s'" % id
             print (" %s    , work_location = %s" % (ind, id))
         print (ind, "    )")
+    # end def print_attendance_rec
 
     def print_timerecs (self):
         h_done  = False
@@ -119,6 +253,8 @@ class Getter ():
         else:
             print ("def import_data_%s (db, user):" % userid)
         ind    = self.ind = '   '
+        if self.args.auto_wp:
+            self.generate_auto_wp ()
         filter = dict (user = self.args.user, date = self.args.daterange)
         # Loop over dynamic user records sorted by date and output those
         # that intersect with the range.
@@ -228,7 +364,11 @@ class Getter ():
                     % (ind, l ['last_day'])
                     )
                 print (ind, "    , status    = '%s'" % l ['status']['id'])
-                print (ind, "    , time_wp   = '44'")
+                if lv ['id'] in self.wp_map:
+                    w_id = 'au_wp_%d' % self.wp_map [wpid]
+                else:
+                    w_id = "'44'"
+                print (ind, "    , time_wp   = %s" % w_id)
                 print (ind, "    )")
         if self.args.do_timerecs:
             filter ['@sort'] = 'date'
@@ -267,8 +407,16 @@ class Getter ():
                         (" %s    , duration      = %s" % (ind, tr ['duration']))
                     if tr [tact] and tr [tact]['id'] == '10':
                         print (ind, "    , time_activity = tatp")
-                    if tr ['wp'] and tr ['wp']['id'] in wpdict:
-                        new_wpid = wpdict [tr ['wp']['id']]
+                    w_id  = None
+                    if tr ['wp']:
+                        wpid = tr ['wp']['id']
+                        w_id = None
+                        if wpid in self.wp_map:
+                            w_id = 'au_wp_%d' % self.wp_map [wpid]
+                        elif wpid in wpdict:
+                            w_id = "'%s'" % wpdict [wpid]
+                    if tr ['wp'] and w_id:
+                        new_wpid = w_id
                     elif tr ['wp'] is None:
                         new_wpid = None
                     else:
@@ -286,8 +434,9 @@ class Getter ():
                             wpmax += 1
                             new_wpid = wpmax
                         wpdict [tr ['wp']['id']] = new_wpid
+                        new_wpid = "'%s'" % new_wpid
                     if new_wpid:
-                        print (ind, "    , wp            = '%s'" % new_wpid)
+                        print (ind, "    , wp            = %s" % new_wpid)
                     print (ind, "    )")
                     for ari in tr ['attendance_record']:
                         ar = self.get ('attendance_record/%s' % ari ['id'])
@@ -318,6 +467,15 @@ def main ():
     cmd.add_argument \
         ( 'daterange'
         , help    = 'Date range for export'
+        )
+    cmd.add_argument \
+        ( '--auto-wp'
+        , help    = 'Get automatic workpackages'
+        , action  = 'store_true'
+        )
+    cmd.add_argument \
+        ( '--auto-wp-suffix'
+        , help    = 'Remove given suffix from auto-wp names'
         )
     cmd.add_argument \
         ( '-c', '--vacation_correction'
