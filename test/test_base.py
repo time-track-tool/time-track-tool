@@ -34,11 +34,13 @@ from . import user1_time, user2_time, user3_time, user4_time, user5_time
 from . import user6_time, user7_time, user8_time, user10_time, user11_time
 from . import user12_time, user13_time, user14_time, user15_19_vac, user16_leave
 from . import user17_time, user18_time, user20_time, user21_time, user22_time
+from . import user23_time
 
 from operator     import mul
 from email.parser import Parser
 from mailbox      import mbox
 from base64       import b64decode
+from copy         import deepcopy
 
 from roundup.anypy.strings import StringIO
 from roundup.test          import memorydb
@@ -4299,23 +4301,23 @@ class Test_Case_Timetracker (_Test_Case_Summary, unittest.TestCase) :
         flt = self.db.leave_submission.filter
         #self.db.user_dynamic.set (dyn, valid_to = dt)
         self.db.user_dynamic.create \
-	    ( all_in             = 1
-	    , booking_allowed    = 1
-	    , do_auto_wp         = 1
-	    , durations_allowed  = 0
-	    , exemption          = 0
-	    , max_flexitime      = 5.0
-	    , travel_full        = 0
-	    , vacation_day       = 1.0
-	    , vacation_month     = 1.0
-	    , vacation_yearly    = 25.0
-	    , valid_from         = date.Date ("2020-12-01.00:00:00")
-	    , weekend_allowed    = 0
-	    , weekly_hours       = 40
-	    , org_location       = self.olo
-	    , user               = self.user22
-	    , vac_aliq           = '1'
-	    )
+            ( all_in             = 1
+            , booking_allowed    = 1
+            , do_auto_wp         = 1
+            , durations_allowed  = 0
+            , exemption          = 0
+            , max_flexitime      = 5.0
+            , travel_full        = 0
+            , vacation_day       = 1.0
+            , vacation_month     = 1.0
+            , vacation_yearly    = 25.0
+            , valid_from         = date.Date ("2020-12-01.00:00:00")
+            , weekend_allowed    = 0
+            , weekly_hours       = 40
+            , org_location       = self.olo
+            , user               = self.user22
+            , vac_aliq           = '1'
+            )
         leave = self.db.daily_record_status.lookup ('leave')
         d   = \
             { 'daily_record.user'   : self.user22
@@ -4355,6 +4357,117 @@ class Test_Case_Timetracker (_Test_Case_Summary, unittest.TestCase) :
         self.db.commit ()
         self.db.close ()
     # end def test_user22
+
+    def setup_user23 (self) :
+        self.username23 = 'testuser23'
+        self.user23 = self.db.user.create \
+            ( username     = self.username23
+            , firstname    = 'Nummer23'
+            , lastname     = 'User23'
+            )
+        self.ct_intern = self.db.contract_type.create \
+            ( name  = 'Internship'
+            , order = 1
+            )
+        self.db.user_dynamic.create \
+            ( additional_hours   = 20.0
+            , all_in             = 0
+            , booking_allowed    = 1
+            , do_auto_wp         = 1
+            , durations_allowed  = 0
+            , exemption          = 0
+            , hours_fri          = 4.0
+            , hours_mon          = 4.0
+            , hours_sat          = 0.0
+            , hours_sun          = 0.0
+            , hours_thu          = 4.0
+            , hours_tue          = 4.0
+            , hours_wed          = 4.0
+            , supp_weekly_hours  = 20.0
+            , travel_full        = 0
+            , vacation_day       = 1.0
+            , vacation_month     = 1.0
+            , vacation_yearly    = 25.0
+            , valid_from         = date.Date ("2021-07-01.00:00:00")
+            , valid_to           = date.Date ("2022-03-01.00:00:00")
+            , weekend_allowed    = 0
+            , weekly_hours       = 20.0
+            , org_location       = self.olo
+            , user               = self.user23
+            , vac_aliq           = '1'
+            , contract_type      = self.ct_intern
+            )
+        # These are needed because WPs names must be unique for the same TP
+        # Should we again need to import auto wp stuff we need to factor
+        # this out.
+        wl_off    = self.db.work_location.lookup ('off')
+        stat_open = self.db.time_project_status.lookup ('Open')
+        self.nursing_tp = self.db.time_project.create \
+            ( name = 'Nursing-Leave'
+            , work_location      = wl_off
+            , op_project         = False
+            , no_overtime        = True
+            , no_overtime_day    = True
+            , overtime_reduction = True
+            , responsible        = '1'
+            , status             = stat_open
+            , cost_center        = self.cc
+            , approval_required  = True
+            , approval_hr        = True
+            , is_vacation        = False
+            )
+        self.sick_tp = self.db.time_project.create \
+            ( name = 'Sick-Leave'
+            , work_location      = wl_off
+            , op_project         = False
+            , no_overtime        = True
+            , no_overtime_day    = True
+            , overtime_reduction = True
+            , responsible        = '1'
+            , status             = stat_open
+            , cost_center        = self.cc
+            , approval_required  = True
+            , approval_hr        = True
+            , is_vacation        = False
+            )
+        self.medical_tp = self.db.time_project.create \
+            ( name = 'Medical-Consultation'
+            , work_location      = wl_off
+            , op_project         = False
+            , no_overtime        = True
+            , no_overtime_day    = True
+            , overtime_reduction = True
+            , responsible        = '1'
+            , status             = stat_open
+            , cost_center        = self.cc
+            , approval_required  = True
+            , approval_hr        = True
+            , is_vacation        = False
+            )
+    # end def
+
+    def test_user23 (self) :
+        self.log.debug ('test_user23')
+        self.setup_db ()
+        self.setup_user23 ()
+        self.db.commit ()
+        self.db.close ()
+        self.db = self.tracker.open ('admin')
+        # Monkey-patch the detector list to remove auto wp checks
+        old_priolist = self.db.time_wp.auditors ['create']
+        pl = deepcopy (old_priolist)
+        # Priolist has (prio, name, function) tuples
+        for i, item in enumerate (pl.list):
+            if item [1] == 'wp_check_auto_wp':
+                del pl.list [i]
+                break
+        self.db.time_wp.auditors ['create'] = pl
+        user23_time.import_data_23 (self.db, self.user23, self.olo, self)
+        self.db.commit ()
+        # Restore detectors
+        self.db.time_wp.auditors ['create'] = old_priolist
+        self.db.close ()
+    # end def test_user23
 
 # end class Test_Case_Timetracker
 

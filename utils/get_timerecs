@@ -97,7 +97,8 @@ class Getter ():
         #j = self.get ('time_record?' + urlencode (d)+fields)
         #j = j ['data']['collection']
         pf  = ( 'is_public_holiday', 'is_special_leave', 'is_vacation'
-              , 'no_overtime', 'no_overtime_day'
+              , 'no_overtime', 'no_overtime_day', 'overtime_reduction'
+              , 'max_hours', 'name'
               )
         pf  = ','.join ('project.' + i for i in pf)
         wpf = ['auto_wp', 'durations_allowed', 'name', 'time_start', 'time_end']
@@ -124,34 +125,68 @@ class Getter ():
                     l = len (self.args.auto_wp_suffix)
                     awp_name = awp_name [:-l].rstrip ()
             auto_wp [item ['auto_wp']['id']] = dict \
-                ( contract_type     = item ['auto_wp.contract_type.name']
-                , duration          = item ['auto_wp.duration']
-                , durations_allowed = item ['auto_wp.durations_allowed']
-                , is_valid          = item ['auto_wp.is_valid']
-                , name              = awp_name
+                ( contract_type      = item ['auto_wp.contract_type.name']
+                , duration           = item ['auto_wp.duration']
+                , durations_allowed  = item ['auto_wp.durations_allowed']
+                , is_valid           = item ['auto_wp.is_valid']
+                , name               = awp_name
+                , is_public_holiday  = item ['project.is_public_holiday']
+                , is_special_leave   = item ['project.is_special_leave']
+                , is_vacation        = item ['project.is_vacation']
+                , no_overtime        = item ['project.no_overtime']
+                , no_overtime_day    = item ['project.no_overtime_day']
+                , overtime_reduction = item ['project.overtime_reduction']
+                , max_hours          = item ['project.max_hours']
+                , project_name       = item ['project.name']
                 )
             auto_wp_wp [item ['id']] = dict \
-                ( durations_allowed = item ['durations_allowed']
-                , name              = item ['name'].split () [-1]
-                , time_start        = item ['time_start']
-                , time_end          = item ['time_end']
-                , auto_wp           = awp_name
-                , contract_type     = item ['auto_wp.contract_type.name']
+                ( durations_allowed  = item ['durations_allowed']
+                , name               = item ['name'].split () [-1]
+                , time_start         = item ['time_start']
+                , time_end           = item ['time_end']
+                , auto_wp            = awp_name
+                , contract_type      = item ['auto_wp.contract_type.name']
+                , is_public_holiday  = item ['project.is_public_holiday']
+                , is_special_leave   = item ['project.is_special_leave']
+                , is_vacation        = item ['project.is_vacation']
+                , no_overtime        = item ['project.no_overtime']
+                , no_overtime_day    = item ['project.no_overtime_day']
+                , overtime_reduction = item ['project.overtime_reduction']
+                , max_hours          = item ['project.max_hours']
+                , project_name       = item ['project.name']
                 )
     # end def get_auto_wp
 
+    def get_tp_name (self, d):
+        if d ['is_public_holiday']:
+            tp = 'parent.holiday_tp'
+        elif d ['is_special_leave']:
+            tp = 'parent.special_tp'
+        elif d ['is_vacation']:
+            tp = 'parent.vacation_tp'
+        elif d ['max_hours'] == 0:
+            tp = 'parent.flexi_tp'
+        elif (  d ['no_overtime'] and d ['overtime_reduction']
+             or d ['no_overtime'] and d ['no_overtime_day']
+             ):
+            # These wp need to be set up in test harness
+            # Currently only set up in one test, needs to be factored
+            # if re-used
+            if d ['project_name'].startswith ('Nursing'):
+                tp = 'parent.nursing_tp'
+            elif d ['project_name'].startswith ('Sick'):
+                tp = 'parent.sick_tp'
+            elif d ['project_name'].startswith ('Medical'):
+                tp = 'parent.medical_tp'
+            else:
+                tp = 'parent.unpaid_tp'
+        else:
+            assert 0
+        return tp
+    # end def get_tp_name
+
     def generate_auto_wp (self):
         ind = self.ind
-        print (ind, "ct_by_name = {}")
-        for ctkey in sorted (self.contract_type):
-            if not ctkey:
-                continue
-            ct = self.contract_type [ctkey]
-            print (ind, "id = db.contract_type.create \\")
-            print (ind, "    ( name  = '%s'" % ct ['name'])
-            print (ind, "    , order = %d"   % ct ['order'])
-            print (ind, "    )")
-            print (ind, "ct_by_name ['%s'] = id" % ct ['name'])
         print (ind, "username = db.user.get (user, 'username')")
         print (ind, "aw_by_ct_name = {}")
         for awid in sorted (self.auto_wp):
@@ -171,6 +206,9 @@ class Getter ():
                   % aw ['durations_allowed']
                   )
             print (ind, "    , is_valid          = 0")
+            print (ind, "    , org_location      = olo")
+            tp = self.get_tp_name (aw)
+            print (ind, "    , time_project      = %s" % tp)
             print (ind, "    )")
             print (ind, "aw_by_ct_name [(%s, '%s')] = id" % (ct, aw ['name']))
         for n, wpid in enumerate (sorted (self.auto_wp_wp)):
@@ -193,9 +231,13 @@ class Getter ():
             print (ind, "    , time_start        = date.Date ('%s')"
                   % wp ['time_start']
                   )
-            print (ind, "    , time_end          = date.Date ('%s')"
-                  % wp ['time_end']
-                  )
+            if wp ['time_end']:
+                print (ind, "    , time_end          = date.Date ('%s')"
+                      % wp ['time_end']
+                      )
+            print (ind, "    , responsible       = parent.user0")
+            tp = self.get_tp_name (wp)
+            print (ind, "    , project           = %s" % tp)
             print (ind, "    )")
         for awid in sorted (self.auto_wp):
             aw = self.auto_wp [awid]
@@ -207,6 +249,20 @@ class Getter ():
                     (ind, "id = aw_by_ct_name [(%s, '%s')]" % (ct, aw ['name']))
                 print (ind , "db.auto_wp.set (id, is_valid = True)")
     # end def generate_auto_wp
+
+    def generate_ct (self):
+        ind = self.ind
+        print (ind, "ct_by_name = {}")
+        for ctkey in sorted (self.contract_type):
+            if not ctkey:
+                continue
+            ct = self.contract_type [ctkey]
+            print (ind, "id = db.contract_type.create \\")
+            print (ind, "    ( name  = '%s'" % ct ['name'])
+            print (ind, "    , order = %d"   % ct ['order'])
+            print (ind, "    )")
+            print (ind, "ct_by_name ['%s'] = id" % ct ['name'])
+    # end def generate_ct
 
     def print_attendance_rec (self, ar):
         ind = self.ind
@@ -248,13 +304,15 @@ class Getter ():
 
         print ("from roundup import date")
         print ("")
-        if self.args.dynuser:
-            print ("def import_data_%s (db, user, olo):" % userid)
-        else:
-            print ("def import_data_%s (db, user):" % userid)
+        print ("def import_data_%s (db, user" % userid, end = '')
+        if self.args.dynuser or self.args.auto_wp:
+            print (', olo', end = '')
+        if self.args.auto_wp:
+            print (', parent', end = '')
+        print ("):")
         ind    = self.ind = '   '
         if self.args.auto_wp:
-            self.generate_auto_wp ()
+            self.generate_ct ()
         filter = dict (user = self.args.user, date = self.args.daterange)
         # Loop over dynamic user records sorted by date and output those
         # that intersect with the range.
@@ -306,6 +364,15 @@ class Getter ():
                 print (ind, "db.user_dynamic.create \\")
                 n = 0
                 for pname in ud:
+                    if  (   pname == 'contract_type'
+                        and self.args.auto_wp
+                        and ud [pname]
+                        ):
+                        # Get the contract type:
+                        ct = self.get \
+                            ('contract_type/%s' % ud ['contract_type']['id'])
+                        ct = ct ['data']['attributes']
+                        ud ['contract_type'] = "ct_by_name ['%s']" % ct ['name']
                     if isinstance (ud [pname], (type ([]), type ({}))):
                         continue
                     delim = ['(', ','][bool (n)]
@@ -325,6 +392,8 @@ class Getter ():
                     % (ind, ud ['vac_aliq']['id'])
                     )
                 print (ind, "    )")
+        if self.args.auto_wp:
+            self.generate_auto_wp ()
         if self.args.vcorr:
             d   = dict (absolute = True)
             d ['@page_size'] = 1
@@ -470,7 +539,7 @@ def main ():
         )
     cmd.add_argument \
         ( '--auto-wp'
-        , help    = 'Get automatic workpackages'
+        , help    = 'Get automatic workpackages, implies -D'
         , action  = 'store_true'
         )
     cmd.add_argument \
@@ -516,6 +585,9 @@ def main ():
         , default = True
         )
     args = cmd.parse_args ()
+    # auto_wp implies dynuser
+    if args.auto_wp:
+        args.dynuser = True
     g = Getter (args)
     g.print_timerecs ()
 # end def main
