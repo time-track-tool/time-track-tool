@@ -139,9 +139,13 @@ class Getter ():
                 , max_hours          = item ['project.max_hours']
                 , project_name       = item ['project.name']
                 )
+            wpname = item ['name'].split () [-1]
+            if wpname == item ['name']:
+                wpname = ''
+            assert self.args.user not in wpname
             auto_wp_wp [item ['id']] = dict \
                 ( durations_allowed  = item ['durations_allowed']
-                , name               = item ['name'].split () [-1]
+                , name               = wpname
                 , time_start         = item ['time_start']
                 , time_end           = item ['time_end']
                 , auto_wp            = awp_name
@@ -218,8 +222,10 @@ class Getter ():
             if wp ['contract_type']:
                 ct = "'" + wp ['contract_type'] + "'"
             print (ind, "au_wp_%d = db.time_wp.create \\" % n)
-            print (ind, "    ( name              = '%%s %s' %% username"
-                  % wp ['name']
+            wpnamefmt = "'%%s %s' %% " % wp ['name'] if wp ['name'] else ''
+            assert self.args.username not in wpnamefmt
+            print (ind, "    ( name              = %susername"
+                  % wpnamefmt
                   )
             print (ind, "    , auto_wp           = aw_by_ct_name [(%s, '%s')]"
                   % (ct, wp ['auto_wp'])
