@@ -273,7 +273,7 @@
       <th colspan="2" class="header" i18n:translate="">
        Current Work Package(s)
       </th>
-      <td tal:attributes="colspan python:2-cond" class="header">
+      <td tal:attributes="colspan python:3-cond" class="header">
        <input x="h" value="Hide expired" onclick="chg_expired()" type="button">
       </td>
       <td class="header" tal:condition="cond">
@@ -298,6 +298,8 @@
       <th tal:content="structure python:utils.fieldname
           (db, 'time_wp', 'time_end')"/>
       <th tal:content="structure python:utils.fieldname
+          (db, 'time_wp', 'wp_no')"/>
+      <th tal:content="structure python:utils.fieldname
           (db, 'time_wp', 'description')"/>
      </tr>
      <tal:block tal:repeat="wp wps">
@@ -308,6 +310,7 @@
         (utils, wp.name, item = wp).formatlink ()"/>
        <td tal:content="python:wp.time_start.pretty(utils.ymd)"/>
        <td tal:content="python:wp.time_end.pretty(utils.ymd)"/>
+       <td tal:content="wp/wp_no"/>
        <td tal:content="wp/description"/>
       </tr>
      </tal:block>
