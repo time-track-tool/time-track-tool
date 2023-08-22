@@ -395,7 +395,6 @@ class Daily_Record_Edit_Action (EditItemAction, Daily_Record_Common):
                     if 'daily_record' not in aval:
                         aval ['daily_record'] = ar.daily_record
                     dstart, dend, dur = self.get_start_end (aval)
-                    import pdb; pdb.set_trace ()
                     if duration != dur and dstart is not None:
                         iv = self.compute_interval (duration)
                         aval ['end'] = (dstart + iv).pretty (hour_format)
