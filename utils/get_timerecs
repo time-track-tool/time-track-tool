@@ -447,11 +447,28 @@ class Getter ():
                 print (ind, "    )")
         if self.args.do_timerecs:
             filter ['@sort'] = 'date'
+            filter ['@fields'] = 'date,required_overtime,status,weekend_allowed'
             drs = self.get ('daily_record?' + urlencode (filter))
             drs = drs ['data']['collection']
-            for drr in drs:
-                dr = self.get ('daily_record/%s' % drr ['id'])
-                dr = dr ['data']['attributes']
+            trfilter = \
+                { 'daily_record.user': self.args.user
+                , 'daily_record.date': self.args.daterange
+                , '@sort':             'daily_record.date,id'
+                }
+            filt = dict (trfilter)
+            filt ['@fields'] = 'daily_record,duration,time_activity,wp'
+            trs = self.get ('time_record?' + urlencode (filt))
+            trs = trs ['data']['collection']
+            trl = len (trs)
+            tridx = 0
+            filt = dict (trfilter)
+            filt ['@fields'] = \
+                'daily_record,time_record,end,start,time_record,work_location'
+            ars = self.get ('attendance_record?' + urlencode (filt))
+            ars = ars ['data']['collection']
+            arl = len (ars)
+            aridx = 0
+            for dr in drs:
                 print (ind, "dr = db.daily_record.create \\")
                 print (ind, "    ( user = user")
                 print \
@@ -465,9 +482,21 @@ class Getter ():
                     % (ind, dr ['required_overtime'])
                     )
                 print (ind, "    )")
-                for tri in dr ['time_record']:
-                    tr = self.get ('time_record/%s' % tri ['id'])
-                    tr = tr ['data']['attributes']
+                ar_by_tr = {}
+                ar_no_tr = []
+                while (   aridx < arl
+                      and ars [aridx]['daily_record']['id'] == dr ['id']
+                      ):
+                    ar = ars [aridx]
+                    if ar ['time_record']:
+                        ar_by_tr [ar ['time_record']['id']] = ar
+                    else:
+                        ar_no_tr.append (ar)
+                    aridx += 1
+                while (   tridx < trl
+                      and trs [tridx]['daily_record']['id'] == dr ['id']
+                      ):
+                    tr = trs [tridx]
                     tact = 'time_activity'
                     if tr [tact] and tr [tact]['id'] == '10' and not tp_done:
                         print (ind, 'tatp = db.time_activity.create \\')
@@ -513,17 +542,12 @@ class Getter ():
                     if new_wpid:
                         print (ind, "    , wp            = %s" % new_wpid)
                     print (ind, "    )")
-                    for ari in tr ['attendance_record']:
-                        ar = self.get ('attendance_record/%s' % ari ['id'])
-                        ar = ar ['data']['attributes']
-                        self.print_attendance_rec (ar)
-                for ari in dr ['attendance_record']:
-                    ar = self.get ('attendance_record/%s' % ari ['id'])
-                    ar = ar ['data']['attributes']
+                    self.print_attendance_rec (ar_by_tr [tr ['id']])
+                    tridx += 1
+                for ar in ar_no_tr:
                     # See above, if the ar contains a time_record link
                     # it will already have been output
-                    if ar ['time_record']:
-                        continue
+                    assert not ar ['time_record']
                     self.print_attendance_rec (ar)
         print (ind, "db.commit ()")
         print ("# end def import_data_%s" % userid)
