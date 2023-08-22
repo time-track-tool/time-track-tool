@@ -251,9 +251,19 @@ def wp_check_auto_wp (db, cl, nodeid, new_values):
         raise Reject (_ ("Invalid change of start/end: no dyn. user"))
     if not dyn:
         return
-    if not lib_auto_wp.is_correct_dyn (dyn, auto_wp):
-        raise Reject \
-            (_ ("Invalid change of start: Invalid dyn. user"))
+    # Allow this to go through if
+    # - time_end is in new_values and *before* or at this dyn.valid_from
+    # - only description and name are in new_values other than time_end
+    # - if new_values is in new_values it must contain ' -'
+    if  (  set (new_values) - set (('name', 'time_end', 'description'))
+        or (   new_values.get ('time_end')
+           and new_values ['time_end'] > dyn.valid_from
+           )
+        or (new_values.get ('name') and ' -' not in new_values ['name'])
+        ):
+        if not lib_auto_wp.is_correct_dyn (dyn, auto_wp):
+            raise Reject \
+                (_ ("Invalid change of start: Invalid dyn. user"))
     # loop backwards through dyns
     if 'time_start' in new_values:
         # Find the first dyn user which matches up with our start date

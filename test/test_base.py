@@ -4468,22 +4468,6 @@ class Test_Case_Timetracker (_Test_Case_Summary, unittest.TestCase) :
         self.db.time_wp.auditors ['create'] = old_priolist
         self.db.close ()
         self.db = self.tracker.open (self.username0)
-        db = self.db
-        auwp = db.time_wp.filter (None, dict (auto_wp = [-1,-2]))
-        print ("WPS: %s" % auwp, file = sys.stderr)
-        for wpid in auwp:
-            wp = db.time_wp.getnode (wpid)
-            tp = db.time_project.getnode (wp.project)
-            te = wp.time_end
-            if te:
-                te = te.pretty (common.ymd)
-            ts = wp.time_start.pretty (common.ymd)
-            print \
-                ( '%s %s %s %s-%s'
-                % (tp.name, wp.name, wp.auto_wp, ts, te)
-                , file = sys.stderr
-                )
-
         dyn = self.db.user_dynamic.filter \
             (None, dict (user = self.user23, valid_from = '2022-03-01'))
         assert len (dyn) == 1
