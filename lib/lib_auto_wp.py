@@ -87,8 +87,9 @@ def check_auto_wp (db, auto_wp_id, userid) :
         wp = None
 
     while dyn :
-        # Remember the start time of the first dyn
+        # Remember the start time and end time of the first dyn
         dyn_start = dyn.valid_from
+        dyn_end   = dyn.valid_to
         # we compute the range of contiguous dyns with same do_auto_wp setting
         while dyn and dyn.valid_to :
             n = next_user_dynamic (db, dyn, use_ct = True)
@@ -154,6 +155,9 @@ def check_auto_wp (db, auto_wp_id, userid) :
 
         # We now either have a wp with correct start date or
         # with a start date > dyn.valid_to or none
+        # Sometimes we cannot change the end time of a wp because
+        # there are already others after it.
+        found_wp_after = False
         if wp and (not dyn.valid_to or wp.time_start < dyn.valid_to) :
             # We may have not a single wp but a set of 'fragments'
             # before the end-date of the dyn user record (or an open
@@ -182,10 +186,25 @@ def check_auto_wp (db, auto_wp_id, userid) :
                     db.time_wp.set (wp.id, **d)
             else :
                 if wp.time_end :
-                    d = dict (time_end = None, name = snam)
-                    if wp.description != desc :
-                        d ['description'] = desc
-                    db.time_wp.set (wp.id, **d)
+                    # Check if there is a wp with that name
+                    d1 = dict (project = wp.project)
+                    d2 = dict (name = snam)
+                    xist = db.time_wp.filter (None, d1, exact_match_spec = d2)
+                    if xist:
+                        found_wp_after = True
+                        assert dyn_end
+                        # Do nothing if end not changed
+                        if dyn_end != wp.time_end:
+                            n = '%s -%s' % (snam, dyn_end.pretty (ymd))
+                            d = dict (time_end = dyn_end, name = n)
+                            if wp.description != desc :
+                                d ['description'] = desc
+                            db.time_wp.set (wp.id, **d)
+                    else:
+                        d = dict (time_end = None, name = snam)
+                        if wp.description != desc :
+                            d ['description'] = desc
+                        db.time_wp.set (wp.id, **d)
             try :
                 wp = wps.pop (0)
             except IndexError :
@@ -216,7 +235,7 @@ def check_auto_wp (db, auto_wp_id, userid) :
             dyn = next_user_dynamic (db, dyn, use_ct = True)
         if not dyn :
             if not end_time :
-                assert not wp and not wps
+                assert not wp and not wps or found_wp_after
     if wp :
         wps.insert (0, wp)
         wp = None

@@ -741,6 +741,48 @@ class _Test_Base_Summary :
             , is_vacation        = False
             , is_special_leave   = True
             )
+        self.nursing_tp = self.db.time_project.create \
+            ( name = 'Nursing-Leave'
+            , work_location      = wl_off
+            , op_project         = False
+            , no_overtime        = True
+            , no_overtime_day    = True
+            , overtime_reduction = True
+            , responsible        = '1'
+            , status             = stat_open
+            , cost_center        = self.cc
+            , approval_required  = True
+            , approval_hr        = True
+            , is_vacation        = False
+            )
+        self.sick_tp = self.db.time_project.create \
+            ( name = 'Sick-Leave'
+            , work_location      = wl_off
+            , op_project         = False
+            , no_overtime        = True
+            , no_overtime_day    = True
+            , overtime_reduction = True
+            , responsible        = '1'
+            , status             = stat_open
+            , cost_center        = self.cc
+            , approval_required  = True
+            , approval_hr        = True
+            , is_vacation        = False
+            )
+        self.medical_tp = self.db.time_project.create \
+            ( name = 'Medical-Consultation'
+            , work_location      = wl_off
+            , op_project         = False
+            , no_overtime        = True
+            , no_overtime_day    = True
+            , overtime_reduction = True
+            , responsible        = '1'
+            , status             = stat_open
+            , cost_center        = self.cc
+            , approval_required  = True
+            , approval_hr        = True
+            , is_vacation        = False
+            )
         self.holiday_wp = self.db.time_wp.create \
             ( name               = 'Holiday'
             , project            = self.holiday_tp
@@ -4402,48 +4444,6 @@ class Test_Case_Timetracker (_Test_Case_Summary, unittest.TestCase) :
         # this out.
         wl_off    = self.db.work_location.lookup ('off')
         stat_open = self.db.time_project_status.lookup ('Open')
-        self.nursing_tp = self.db.time_project.create \
-            ( name = 'Nursing-Leave'
-            , work_location      = wl_off
-            , op_project         = False
-            , no_overtime        = True
-            , no_overtime_day    = True
-            , overtime_reduction = True
-            , responsible        = '1'
-            , status             = stat_open
-            , cost_center        = self.cc
-            , approval_required  = True
-            , approval_hr        = True
-            , is_vacation        = False
-            )
-        self.sick_tp = self.db.time_project.create \
-            ( name = 'Sick-Leave'
-            , work_location      = wl_off
-            , op_project         = False
-            , no_overtime        = True
-            , no_overtime_day    = True
-            , overtime_reduction = True
-            , responsible        = '1'
-            , status             = stat_open
-            , cost_center        = self.cc
-            , approval_required  = True
-            , approval_hr        = True
-            , is_vacation        = False
-            )
-        self.medical_tp = self.db.time_project.create \
-            ( name = 'Medical-Consultation'
-            , work_location      = wl_off
-            , op_project         = False
-            , no_overtime        = True
-            , no_overtime_day    = True
-            , overtime_reduction = True
-            , responsible        = '1'
-            , status             = stat_open
-            , cost_center        = self.cc
-            , approval_required  = True
-            , approval_hr        = True
-            , is_vacation        = False
-            )
     # end def
 
     def test_user23 (self) :
@@ -4492,7 +4492,6 @@ class Test_Case_Timetracker (_Test_Case_Summary, unittest.TestCase) :
             , required_overtime = True
             , order             = 3
             )
-        self.db.time_wp.set ('44', bookers = [self.user24])
     # end def setup_user24
 
     def test_user24 (self):
@@ -4502,14 +4501,17 @@ class Test_Case_Timetracker (_Test_Case_Summary, unittest.TestCase) :
         self.db.commit ()
         self.db.close ()
         self.db = self.tracker.open ('admin')
-        user24_time.import_data_24 (self.db, self.user24, self.olo)
-        #d = { 'daily_record.user': self.user24 }
-        #trids = self.db.time_record.filter (None, d)
-        #print (len (trids), file = sys.stderr)
-        #for id in trids:
-        #    tr = self.db.time_record.getnode (id)
-        #    dr = self.db.daily_record.getnode (tr.daily_record)
-        #    print (dr.date, dr.status, tr.duration, file = sys.stderr)
+        # Monkey-patch the detector list to remove auto wp checks
+        old_priolist = self.db.time_wp.auditors ['create']
+        pl = deepcopy (old_priolist)
+        # Priolist has (prio, name, function) tuples
+        for i, item in enumerate (pl.list):
+            if item [1] == 'wp_check_auto_wp':
+                del pl.list [i]
+                break
+        user24_time.import_data_24 (self.db, self.user24, self.olo, self)
+        # Restore detectors
+        self.db.time_wp.auditors ['create'] = old_priolist
         self.db.commit ()
         self.db.close ()
         self.db = self.tracker.open (self.username24)
@@ -4522,6 +4524,11 @@ class Test_Case_Timetracker (_Test_Case_Summary, unittest.TestCase) :
         d = dict (user = self.user24, status = '6')
         for l in self.db.leave_submission.filter (None, d):
             self.db.leave_submission.set (l, status = '7')
+        ud = self.db.user_dynamic.filter \
+            (None, dict (user = self.user24, valid_to = '2023-11-30'))
+        assert len (ud) == 1
+        dt = date.Date ('2023-12-01')
+        self.db.user_dynamic.set (ud [0], valid_to = dt)
         self.db.commit ()
         self.db.close ()
     # end def test_user24

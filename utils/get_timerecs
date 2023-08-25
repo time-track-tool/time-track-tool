@@ -245,6 +245,10 @@ class Getter ():
             tp = self.get_tp_name (wp)
             print (ind, "    , project           = %s" % tp)
             print (ind, "    )")
+    # end def generate_auto_wp
+
+    def generate_set_auto_wp_valid (self):
+        ind = self.ind
         for awid in sorted (self.auto_wp):
             aw = self.auto_wp [awid]
             ct = None
@@ -254,7 +258,7 @@ class Getter ():
                 print \
                     (ind, "id = aw_by_ct_name [(%s, '%s')]" % (ct, aw ['name']))
                 print (ind , "db.auto_wp.set (id, is_valid = True)")
-    # end def generate_auto_wp
+    # end def generate_set_auto_wp_valid
 
     def generate_ct (self):
         ind = self.ind
@@ -449,6 +453,8 @@ class Getter ():
                     w_id = "'44'"
                 print (ind, "    , time_wp   = %s" % w_id)
                 print (ind, "    )")
+        if self.args.auto_wp:
+            self.generate_set_auto_wp_valid ()
         if self.args.do_timerecs:
             filter ['@sort'] = 'date'
             filter ['@fields'] = 'date,required_overtime,status,weekend_allowed'

@@ -1,6 +1,7 @@
 from roundup import date
 
-def import_data_24 (db, user, olo):
+def import_data_24 (db, user, olo, parent):
+    ct_by_name = {}
     sd = dict (months = 1.0, required_overtime = 1, weekly = 0)
     otp = db.overtime_period.filter (None, sd)
     assert len (otp) == 1
@@ -66,6 +67,198 @@ def import_data_24 (db, user, olo):
         , user               = user
         , vac_aliq           = '1'
         )
+    username = db.user.get (user, 'username')
+    aw_by_ct_name = {}
+    id = db.auto_wp.create \
+        ( name              = 'Sick-leave'
+        , durations_allowed = 1
+        , is_valid          = 0
+        , org_location      = olo
+        , time_project      = parent.sick_tp
+        )
+    aw_by_ct_name [(None, 'Sick-leave')] = id
+    id = db.auto_wp.create \
+        ( name              = 'Public-Holiday'
+        , durations_allowed = 1
+        , is_valid          = 0
+        , org_location      = olo
+        , time_project      = parent.holiday_tp
+        )
+    aw_by_ct_name [(None, 'Public-Holiday')] = id
+    id = db.auto_wp.create \
+        ( name              = 'Vacation'
+        , durations_allowed = 1
+        , is_valid          = 0
+        , org_location      = olo
+        , time_project      = parent.vacation_tp
+        )
+    aw_by_ct_name [(None, 'Vacation')] = id
+    id = db.auto_wp.create \
+        ( name              = 'Comp\Flexi-Time'
+        , durations_allowed = 1
+        , is_valid          = 0
+        , org_location      = olo
+        , time_project      = parent.flexi_tp
+        )
+    aw_by_ct_name [(None, 'Comp\Flexi-Time')] = id
+    id = db.auto_wp.create \
+        ( name              = 'Medical-Consultation'
+        , durations_allowed = 0
+        , is_valid          = 0
+        , org_location      = olo
+        , time_project      = parent.medical_tp
+        )
+    aw_by_ct_name [(None, 'Medical-Consultation')] = id
+    id = db.auto_wp.create \
+        ( name              = 'Special-leave'
+        , durations_allowed = 1
+        , is_valid          = 0
+        , org_location      = olo
+        , time_project      = parent.special_tp
+        )
+    aw_by_ct_name [(None, 'Special-leave')] = id
+    id = db.auto_wp.create \
+        ( name              = 'Nursing-leave'
+        , durations_allowed = 1
+        , is_valid          = 0
+        , org_location      = olo
+        , time_project      = parent.nursing_tp
+        )
+    aw_by_ct_name [(None, 'Nursing-leave')] = id
+    au_wp_0 = db.time_wp.create \
+        ( name              = '%s -2023-11-30' % username
+        , auto_wp           = aw_by_ct_name [(None, 'Special-leave')]
+        , bookers           = [user]
+        , durations_allowed = 1
+        , time_start        = date.Date ('2021-04-01.00:00:00')
+        , time_end          = date.Date ('2023-11-30.00:00:00')
+        , responsible       = parent.user0
+        , project           = parent.special_tp
+        )
+    au_wp_1 = db.time_wp.create \
+        ( name              = '%s -2023-11-30' % username
+        , auto_wp           = aw_by_ct_name [(None, 'Nursing-leave')]
+        , bookers           = [user]
+        , durations_allowed = 1
+        , time_start        = date.Date ('2021-04-01.00:00:00')
+        , time_end          = date.Date ('2023-11-30.00:00:00')
+        , responsible       = parent.user0
+        , project           = parent.nursing_tp
+        )
+    au_wp_2 = db.time_wp.create \
+        ( name              = '%s -2023-11-30' % username
+        , auto_wp           = aw_by_ct_name [(None, 'Sick-leave')]
+        , bookers           = [user]
+        , durations_allowed = 1
+        , time_start        = date.Date ('2021-04-01.00:00:00')
+        , time_end          = date.Date ('2023-11-30.00:00:00')
+        , responsible       = parent.user0
+        , project           = parent.sick_tp
+        )
+    au_wp_3 = db.time_wp.create \
+        ( name              = '%s -2023-11-30' % username
+        , auto_wp           = aw_by_ct_name [(None, 'Public-Holiday')]
+        , bookers           = [user]
+        , durations_allowed = 1
+        , time_start        = date.Date ('2021-04-01.00:00:00')
+        , time_end          = date.Date ('2023-11-30.00:00:00')
+        , responsible       = parent.user0
+        , project           = parent.holiday_tp
+        )
+    # This has incorrect name (to prevent name collision) and no end
+    # date. This is later auto-corrected when auto wp is modified.
+    au_wp_4 = db.time_wp.create \
+        ( name              = '%s -2023-11-30 zoppel' % username
+        , auto_wp           = aw_by_ct_name [(None, 'Vacation')]
+        , bookers           = [user]
+        , durations_allowed = 1
+        , time_start        = date.Date ('2021-04-01.00:00:00')
+        , responsible       = parent.user0
+        , project           = parent.vacation_tp
+        )
+    au_wp_5 = db.time_wp.create \
+        ( name              = '%s -2023-11-30' % username
+        , auto_wp           = aw_by_ct_name [(None, 'Comp\Flexi-Time')]
+        , bookers           = [user]
+        , durations_allowed = 1
+        , time_start        = date.Date ('2021-04-01.00:00:00')
+        , time_end          = date.Date ('2023-11-30.00:00:00')
+        , responsible       = parent.user0
+        , project           = parent.flexi_tp
+        )
+    au_wp_6 = db.time_wp.create \
+        ( name              = '%s -2023-11-30' % username
+        , auto_wp           = aw_by_ct_name [(None, 'Medical-Consultation')]
+        , bookers           = [user]
+        , durations_allowed = 0
+        , time_start        = date.Date ('2021-04-01.00:00:00')
+        , time_end          = date.Date ('2023-11-30.00:00:00')
+        , responsible       = parent.user0
+        , project           = parent.medical_tp
+        )
+    au_wp_7 = db.time_wp.create \
+        ( name              = username
+        , auto_wp           = aw_by_ct_name [(None, 'Special-leave')]
+        , bookers           = [user]
+        , durations_allowed = 1
+        , time_start        = date.Date ('2023-12-01.00:00:00')
+        , responsible       = parent.user0
+        , project           = parent.special_tp
+        )
+    au_wp_8 = db.time_wp.create \
+        ( name              = username
+        , auto_wp           = aw_by_ct_name [(None, 'Nursing-leave')]
+        , bookers           = [user]
+        , durations_allowed = 1
+        , time_start        = date.Date ('2023-12-01.00:00:00')
+        , responsible       = parent.user0
+        , project           = parent.nursing_tp
+        )
+    au_wp_9 = db.time_wp.create \
+        ( name              = username
+        , auto_wp           = aw_by_ct_name [(None, 'Sick-leave')]
+        , bookers           = [user]
+        , durations_allowed = 1
+        , time_start        = date.Date ('2023-12-01.00:00:00')
+        , responsible       = parent.user0
+        , project           = parent.sick_tp
+        )
+    au_wp_10 = db.time_wp.create \
+        ( name              = username
+        , auto_wp           = aw_by_ct_name [(None, 'Public-Holiday')]
+        , bookers           = [user]
+        , durations_allowed = 1
+        , time_start        = date.Date ('2023-12-01.00:00:00')
+        , responsible       = parent.user0
+        , project           = parent.holiday_tp
+        )
+    au_wp_11 = db.time_wp.create \
+        ( name              = username
+        , auto_wp           = aw_by_ct_name [(None, 'Vacation')]
+        , bookers           = [user]
+        , durations_allowed = 1
+        , time_start        = date.Date ('2023-12-01.00:00:00')
+        , responsible       = parent.user0
+        , project           = parent.vacation_tp
+        )
+    au_wp_12 = db.time_wp.create \
+        ( name              = username
+        , auto_wp           = aw_by_ct_name [(None, 'Comp\Flexi-Time')]
+        , bookers           = [user]
+        , durations_allowed = 1
+        , time_start        = date.Date ('2023-12-01.00:00:00')
+        , responsible       = parent.user0
+        , project           = parent.flexi_tp
+        )
+    au_wp_13 = db.time_wp.create \
+        ( name              = username
+        , auto_wp           = aw_by_ct_name [(None, 'Medical-Consultation')]
+        , bookers           = [user]
+        , durations_allowed = 0
+        , time_start        = date.Date ('2023-12-01.00:00:00')
+        , responsible       = parent.user0
+        , project           = parent.medical_tp
+        )
     vcorr = db.vacation_correction.create \
         ( user     = user
         , date     = date.Date ('2021-04-01.00:00:00')
@@ -78,43 +271,57 @@ def import_data_24 (db, user, olo):
         , first_day = date.Date ('2023-12-04.00:00:00')
         , last_day  = date.Date ('2023-12-31.00:00:00')
         , status    = '7'
-        , time_wp   = '44'
+        , time_wp   = au_wp_4
         )
     ls = db.leave_submission.create \
         ( user      = user
         , first_day = date.Date ('2023-12-05.00:00:00')
         , last_day  = date.Date ('2023-12-10.00:00:00')
         , status    = '4'
-        , time_wp   = '44'
+        , time_wp   = au_wp_4
         )
     ls = db.leave_submission.create \
         ( user      = user
         , first_day = date.Date ('2023-12-11.00:00:00')
         , last_day  = date.Date ('2023-12-22.00:00:00')
         , status    = '7'
-        , time_wp   = '44'
+        , time_wp   = au_wp_4
         )
     ls = db.leave_submission.create \
         ( user      = user
         , first_day = date.Date ('2023-12-13.00:00:00')
         , last_day  = date.Date ('2023-12-17.00:00:00')
         , status    = '4'
-        , time_wp   = '44'
+        , time_wp   = au_wp_11
         )
     ls = db.leave_submission.create \
         ( user      = user
         , first_day = date.Date ('2023-12-18.00:00:00')
         , last_day  = date.Date ('2023-12-22.00:00:00')
         , status    = '4'
-        , time_wp   = '44'
+        , time_wp   = au_wp_11
         )
     ls = db.leave_submission.create \
         ( user      = user
         , first_day = date.Date ('2023-12-23.00:00:00')
         , last_day  = date.Date ('2023-12-31.00:00:00')
         , status    = '4'
-        , time_wp   = '44'
+        , time_wp   = au_wp_4
         )
+    id = aw_by_ct_name [(None, 'Sick-leave')]
+    db.auto_wp.set (id, is_valid = True)
+    id = aw_by_ct_name [(None, 'Public-Holiday')]
+    db.auto_wp.set (id, is_valid = True)
+    id = aw_by_ct_name [(None, 'Vacation')]
+    db.auto_wp.set (id, is_valid = True)
+    id = aw_by_ct_name [(None, 'Comp\Flexi-Time')]
+    db.auto_wp.set (id, is_valid = True)
+    id = aw_by_ct_name [(None, 'Medical-Consultation')]
+    db.auto_wp.set (id, is_valid = True)
+    id = aw_by_ct_name [(None, 'Special-leave')]
+    db.auto_wp.set (id, is_valid = True)
+    id = aw_by_ct_name [(None, 'Nursing-leave')]
+    db.auto_wp.set (id, is_valid = True)
     dr = db.daily_record.create \
         ( user = user
         , date = date.Date ('2023-08-01.00:00:00')
@@ -520,7 +727,7 @@ def import_data_24 (db, user, olo):
     tr = db.time_record.create \
         ( daily_record  = dr
         , duration      = 7.5
-        , wp            = '2'
+        , wp            = au_wp_2
         )
     db.attendance_record.create \
         ( daily_record  = dr
@@ -626,7 +833,7 @@ def import_data_24 (db, user, olo):
     tr = db.time_record.create \
         ( daily_record  = dr
         , duration      = 7.75
-        , wp            = '1'
+        , wp            = au_wp_3
         )
     db.attendance_record.create \
         ( daily_record  = dr
@@ -1077,7 +1284,7 @@ def import_data_24 (db, user, olo):
     tr = db.time_record.create \
         ( daily_record  = dr
         , duration      = 7.75
-        , wp            = '44'
+        , wp            = au_wp_4
         )
     db.attendance_record.create \
         ( daily_record  = dr
@@ -1091,7 +1298,7 @@ def import_data_24 (db, user, olo):
     tr = db.time_record.create \
         ( daily_record  = dr
         , duration      = 7.75
-        , wp            = '44'
+        , wp            = au_wp_4
         )
     db.attendance_record.create \
         ( daily_record  = dr
@@ -1105,7 +1312,7 @@ def import_data_24 (db, user, olo):
     tr = db.time_record.create \
         ( daily_record  = dr
         , duration      = 7.75
-        , wp            = '44'
+        , wp            = au_wp_4
         )
     db.attendance_record.create \
         ( daily_record  = dr
@@ -1119,7 +1326,7 @@ def import_data_24 (db, user, olo):
     tr = db.time_record.create \
         ( daily_record  = dr
         , duration      = 7.5
-        , wp            = '1'
+        , wp            = au_wp_3
         )
     db.attendance_record.create \
         ( daily_record  = dr
@@ -1147,7 +1354,7 @@ def import_data_24 (db, user, olo):
     tr = db.time_record.create \
         ( daily_record  = dr
         , duration      = 7.75
-        , wp            = '44'
+        , wp            = au_wp_11
         )
     db.attendance_record.create \
         ( daily_record  = dr
@@ -1161,7 +1368,7 @@ def import_data_24 (db, user, olo):
     tr = db.time_record.create \
         ( daily_record  = dr
         , duration      = 7.75
-        , wp            = '44'
+        , wp            = au_wp_11
         )
     db.attendance_record.create \
         ( daily_record  = dr
@@ -1175,7 +1382,7 @@ def import_data_24 (db, user, olo):
     tr = db.time_record.create \
         ( daily_record  = dr
         , duration      = 7.5
-        , wp            = '44'
+        , wp            = au_wp_11
         )
     db.attendance_record.create \
         ( daily_record  = dr
@@ -1197,7 +1404,7 @@ def import_data_24 (db, user, olo):
     tr = db.time_record.create \
         ( daily_record  = dr
         , duration      = 7.75
-        , wp            = '44'
+        , wp            = au_wp_11
         )
     db.attendance_record.create \
         ( daily_record  = dr
@@ -1211,7 +1418,7 @@ def import_data_24 (db, user, olo):
     tr = db.time_record.create \
         ( daily_record  = dr
         , duration      = 7.75
-        , wp            = '44'
+        , wp            = au_wp_11
         )
     db.attendance_record.create \
         ( daily_record  = dr
@@ -1225,7 +1432,7 @@ def import_data_24 (db, user, olo):
     tr = db.time_record.create \
         ( daily_record  = dr
         , duration      = 7.75
-        , wp            = '44'
+        , wp            = au_wp_11
         )
     db.attendance_record.create \
         ( daily_record  = dr
@@ -1239,7 +1446,7 @@ def import_data_24 (db, user, olo):
     tr = db.time_record.create \
         ( daily_record  = dr
         , duration      = 7.75
-        , wp            = '44'
+        , wp            = au_wp_11
         )
     db.attendance_record.create \
         ( daily_record  = dr
@@ -1253,7 +1460,7 @@ def import_data_24 (db, user, olo):
     tr = db.time_record.create \
         ( daily_record  = dr
         , duration      = 7.5
-        , wp            = '44'
+        , wp            = au_wp_11
         )
     db.attendance_record.create \
         ( daily_record  = dr
@@ -1275,7 +1482,7 @@ def import_data_24 (db, user, olo):
     tr = db.time_record.create \
         ( daily_record  = dr
         , duration      = 7.75
-        , wp            = '1'
+        , wp            = au_wp_3
         )
     db.attendance_record.create \
         ( daily_record  = dr
@@ -1289,7 +1496,7 @@ def import_data_24 (db, user, olo):
     tr = db.time_record.create \
         ( daily_record  = dr
         , duration      = 7.75
-        , wp            = '1'
+        , wp            = au_wp_3
         )
     db.attendance_record.create \
         ( daily_record  = dr
@@ -1303,7 +1510,7 @@ def import_data_24 (db, user, olo):
     tr = db.time_record.create \
         ( daily_record  = dr
         , duration      = 7.75
-        , wp            = '44'
+        , wp            = au_wp_4
         )
     db.attendance_record.create \
         ( daily_record  = dr
@@ -1317,7 +1524,7 @@ def import_data_24 (db, user, olo):
     tr = db.time_record.create \
         ( daily_record  = dr
         , duration      = 7.75
-        , wp            = '44'
+        , wp            = au_wp_4
         )
     db.attendance_record.create \
         ( daily_record  = dr
@@ -1331,7 +1538,7 @@ def import_data_24 (db, user, olo):
     tr = db.time_record.create \
         ( daily_record  = dr
         , duration      = 7.5
-        , wp            = '44'
+        , wp            = au_wp_4
         )
     db.attendance_record.create \
         ( daily_record  = dr
