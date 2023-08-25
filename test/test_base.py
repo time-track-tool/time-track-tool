@@ -4514,16 +4514,7 @@ class Test_Case_Timetracker (_Test_Case_Summary, unittest.TestCase) :
         self.db.time_wp.auditors ['create'] = old_priolist
         self.db.commit ()
         self.db.close ()
-        self.db = self.tracker.open (self.username24)
-        d = dict (user = self.user24, status = '4')
-        for l in self.db.leave_submission.filter (None, d):
-            self.db.leave_submission.set (l, status = '6', comment_cancel = 'a')
-        self.db.commit ()
-        self.db.close ()
         self.db = self.tracker.open (self.username0)
-        d = dict (user = self.user24, status = '6')
-        for l in self.db.leave_submission.filter (None, d):
-            self.db.leave_submission.set (l, status = '7')
         ud = self.db.user_dynamic.filter \
             (None, dict (user = self.user24, valid_to = '2023-11-30'))
         assert len (ud) == 1

@@ -157,7 +157,6 @@ def check_auto_wp (db, auto_wp_id, userid) :
         # with a start date > dyn.valid_to or none
         # Sometimes we cannot change the end time of a wp because
         # there are already others after it.
-        found_wp_after = False
         if wp and (not dyn.valid_to or wp.time_start < dyn.valid_to) :
             # We may have not a single wp but a set of 'fragments'
             # before the end-date of the dyn user record (or an open
@@ -191,7 +190,6 @@ def check_auto_wp (db, auto_wp_id, userid) :
                     d2 = dict (name = snam)
                     xist = db.time_wp.filter (None, d1, exact_match_spec = d2)
                     if xist:
-                        found_wp_after = True
                         assert dyn_end
                         # Do nothing if end not changed
                         if dyn_end != wp.time_end:
@@ -200,6 +198,12 @@ def check_auto_wp (db, auto_wp_id, userid) :
                             if wp.description != desc :
                                 d ['description'] = desc
                             db.time_wp.set (wp.id, **d)
+                            # Now get the *next* wp, this must exist
+                            # and must start at our end time and have no
+                            # end time
+                            wp = wps.pop ()
+                            assert wp.time_start == dyn_end
+                            assert not wp.time_end
                     else:
                         d = dict (time_end = None, name = snam)
                         if wp.description != desc :
@@ -235,7 +239,7 @@ def check_auto_wp (db, auto_wp_id, userid) :
             dyn = next_user_dynamic (db, dyn, use_ct = True)
         if not dyn :
             if not end_time :
-                assert not wp and not wps or found_wp_after
+                assert not wp and not wps
     if wp :
         wps.insert (0, wp)
         wp = None
