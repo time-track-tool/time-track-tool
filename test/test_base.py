@@ -34,7 +34,7 @@ from . import user1_time, user2_time, user3_time, user4_time, user5_time
 from . import user6_time, user7_time, user8_time, user10_time, user11_time
 from . import user12_time, user13_time, user14_time, user15_19_vac, user16_leave
 from . import user17_time, user18_time, user20_time, user21_time, user22_time
-from . import user23_time
+from . import user23_time, user24_time
 
 from operator     import mul
 from email.parser import Parser
@@ -4475,6 +4475,56 @@ class Test_Case_Timetracker (_Test_Case_Summary, unittest.TestCase) :
         self.db.user_dynamic.set (dyn.id, contract_type = None)
         self.db.close ()
     # end def test_user23
+
+    def setup_user24 (self) :
+        self.username24 = 'testuser24'
+        self.user24 = self.db.user.create \
+            ( username     = self.username24
+            , firstname    = 'Nummer24'
+            , lastname     = 'User24'
+            , supervisor   = self.user0
+            , address      = 'testuser24@example.com'
+            )
+        p = self.db.overtime_period.create \
+            ( name              = 'month average'
+            , months            = 1
+            , weekly            = False
+            , required_overtime = True
+            , order             = 3
+            )
+        self.db.time_wp.set ('44', bookers = [self.user24])
+    # end def setup_user24
+
+    def test_user24 (self):
+        self.log.debug ('test_user24')
+        self.setup_db ()
+        self.setup_user24 ()
+        self.db.commit ()
+        self.db.close ()
+        self.db = self.tracker.open ('admin')
+        user24_time.import_data_24 (self.db, self.user24, self.olo)
+        #d = { 'daily_record.user': self.user24 }
+        #trids = self.db.time_record.filter (None, d)
+        #print (len (trids), file = sys.stderr)
+        #for id in trids:
+        #    tr = self.db.time_record.getnode (id)
+        #    dr = self.db.daily_record.getnode (tr.daily_record)
+        #    print (dr.date, dr.status, tr.duration, file = sys.stderr)
+        self.db.commit ()
+        self.db.close ()
+        self.db = self.tracker.open (self.username24)
+        d = dict (user = self.user24, status = '4')
+        for l in self.db.leave_submission.filter (None, d):
+            self.db.leave_submission.set (l, status = '6', comment_cancel = 'a')
+        self.db.commit ()
+        self.db.close ()
+        self.db = self.tracker.open (self.username0)
+        d = dict (user = self.user24, status = '6')
+        for l in self.db.leave_submission.filter (None, d):
+            self.db.leave_submission.set (l, status = '7')
+        self.db.commit ()
+        self.db.close ()
+    # end def test_user24
 
 # end class Test_Case_Timetracker
 

@@ -347,6 +347,7 @@ def check_daily_record (db, cl, nodeid, new_values):
         vs_has_valid = True
         break
     vs = [v for v in vs if v.status == st_accp]
+    vs_accepted = False
     if vs:
         assert len (vs) == 1
         vs_accepted = True

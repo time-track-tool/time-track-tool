@@ -419,7 +419,9 @@ class Getter ():
                 print (ind, "    , absolute = %s" % vc ['absolute'])
                 print (ind, "    , days     = %s" % vc ['days'])
                 print (ind, "    )")
+        self.leaves_from_to = []
         if self.args.leaves:
+            print (ind, "leave = db.daily_record_status.lookup ('leave')")
             leave_filter = dict \
                 (user = self.args.user, first_day = self.args.daterange)
             leave_filter ['@sort'] = 'first_day'
@@ -428,6 +430,8 @@ class Getter ():
             for lv in lvs:
                 l = self.get ('leave_submission/%s' % lv ['id'])
                 l = l ['data']['attributes']
+                self.leaves_from_to.append \
+                    ((l ['first_day'], l ['last_day'], l ['status']['id']))
                 print (ind, "ls = db.leave_submission.create \\")
                 print (ind, "    ( user      = user")
                 print \
@@ -469,19 +473,41 @@ class Getter ():
             arl = len (ars)
             aridx = 0
             for dr in drs:
-                print (ind, "dr = db.daily_record.create \\")
-                print (ind, "    ( user = user")
-                print \
-                    (" %s    , date = date.Date ('%s')" % (ind, dr ['date']))
-                print \
-                    ( " %s    , weekend_allowed   = %s"
-                    % (ind, dr ['weekend_allowed'])
-                    )
-                print \
-                    ( " %s    , required_overtime = %s"
-                    % (ind, dr ['required_overtime'])
-                    )
-                print (ind, "    )")
+                do_create = True
+                is_leave  = False
+                # Sort '4' and '6' (open or cancel requested) first
+                for lft in sorted \
+                    ( self.leaves_from_to
+                    , key = lambda x: x [2] not in ['4', '6']
+                    ):
+                    if lft [0] <= dr ['date'] <= lft [1]:
+                        do_create = False
+                        is_leave = lft [2] in ('4', '6')
+                        break
+                if do_create:
+                    print (ind, "dr = db.daily_record.create \\")
+                    print (ind, "    ( user = user")
+                    print \
+                        ( " %s    , date = date.Date ('%s')"
+                        % (ind, dr ['date'])
+                        )
+                    print \
+                        ( " %s    , weekend_allowed   = %s"
+                        % (ind, dr ['weekend_allowed'])
+                        )
+                    print \
+                        ( " %s    , required_overtime = %s"
+                        % (ind, dr ['required_overtime'])
+                        )
+                    print (ind, "    )")
+                else:
+                    print ( ind
+                          , 'dr = db.daily_record.filter '
+                            "(None, dict (user = user, date = '%s'))"
+                          % dr ['date'][:10]
+                          )
+                    print (ind, 'assert len (dr) == 1')
+                    print (ind, 'dr = dr [0]')
                 ar_by_tr = {}
                 ar_no_tr = []
                 while (   aridx < arl
@@ -549,6 +575,8 @@ class Getter ():
                     # it will already have been output
                     assert not ar ['time_record']
                     self.print_attendance_rec (ar)
+                if is_leave:
+                    print (ind, 'db.daily_record.set (dr, status = leave)')
         print (ind, "db.commit ()")
         print ("# end def import_data_%s" % userid)
 
