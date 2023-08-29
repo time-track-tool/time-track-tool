@@ -182,9 +182,14 @@ def check_submission (db, cl, nodeid, new_values):
         common.reject_attributes (_, new_values, 'comment_cancel')
     new_status = db.leave_status.get \
         (new_values.get ('status', old.status), 'name')
-    if old_status != 'open':
+    if  (   old_status != 'open'
+        and old_status not in ('accepted', 'cancel_requested')
+        ):
         common.reject_attributes \
             (_, new_values, 'first_day', 'last_day', 'time_wp', 'comment')
+    if old_status in ('accepted', 'cancel_requested'):
+        common.reject_attributes \
+            (_, new_values, 'first_day', 'last_day', 'comment')
     fix_dates (new_values)
     common.require_attributes \
         (_, cl, nodeid, new_values, 'first_day', 'last_day')
@@ -201,6 +206,22 @@ def check_submission (db, cl, nodeid, new_values):
         or (old_status, new_status) not in allowed_stati
         ):
         check_wp    (db, time_wp, user, first_day, last_day, comment)
+    # If wp changes accepted->cancel requested->cancelled, allow it if
+    # it's the same type as the old one (vacation or public holiday)
+    if  (  old_status == 'accepted' and new_status == 'cancel requested'
+        or old_status == 'cancel requested' and new_status == 'cancelled'
+        ):
+        if 'time_wp' in new_values:
+            owp = db.time_wp.getnode (cl.get (nodeid, 'time_wp'))
+            otp = db.time_project.getnode (owp.project)
+            nwp = db.time_wp.getnode (new_values ['time_wp'])
+            ntp = db.time_project.getnode (nwp.project)
+            if otp.is_vacation and not ntp.is_vacation:
+                raise Reject ('Invalid change of WP, must be vacation')
+            if otp.is_special_leave and not ntp.is_special_leave:
+                raise Reject ('Invalid change of WP, must be special leave')
+            if otp.approval_required and not ntp.approval_required:
+                raise Reject ('Invalid change of WP, must require approval')
     if old_status in ('open', 'submitted'):
         vacation.create_daily_recs (db, user, first_day, last_day)
     if 'first_day' in new_values or 'last_day' in new_values:

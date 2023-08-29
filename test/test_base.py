@@ -4454,8 +4454,8 @@ class Test_Case_Timetracker (_Test_Case_Summary, unittest.TestCase) :
         self.db.close ()
         self.db = self.tracker.open ('admin')
         # Monkey-patch the detector list to remove auto wp checks
-        old_priolist = self.db.time_wp.auditors ['create']
-        pl = deepcopy (old_priolist)
+        old_priolist_wp = self.db.time_wp.auditors ['create']
+        pl = deepcopy (old_priolist_wp)
         # Priolist has (prio, name, function) tuples
         for i, item in enumerate (pl.list):
             if item [1] == 'wp_check_auto_wp':
@@ -4465,7 +4465,7 @@ class Test_Case_Timetracker (_Test_Case_Summary, unittest.TestCase) :
         user23_time.import_data_23 (self.db, self.user23, self.olo, self)
         self.db.commit ()
         # Restore detectors
-        self.db.time_wp.auditors ['create'] = old_priolist
+        self.db.time_wp.auditors ['create'] = old_priolist_wp
         self.db.close ()
         self.db = self.tracker.open (self.username0)
         dyn = self.db.user_dynamic.filter \
@@ -4492,6 +4492,66 @@ class Test_Case_Timetracker (_Test_Case_Summary, unittest.TestCase) :
             , required_overtime = True
             , order             = 3
             )
+        # We need to import the data *before* we create public holidays,
+        # otherwise the time records for these would be created during
+        # import
+        # Monkey-patch the detector list to remove auto wp checks
+        old_priolist_wp = self.db.time_wp.auditors ['create']
+        pl = deepcopy (old_priolist_wp)
+        dl = []
+        # Priolist has (prio, name, function) tuples
+        for i, item in enumerate (pl.list):
+            if item [1] == 'wp_check_auto_wp':
+                del pl.list [i]
+                break
+        old_priolist_ph = self.db.public_holiday.reactors ['create']
+        pl = deepcopy (old_priolist_ph)
+        # Priolist has (prio, name, function) tuples
+        for i, item in enumerate (pl.list):
+            if item [1] == 'fix_daily_recs':
+                del pl.list [i]
+                break
+        self.db.public_holiday.reactors ['create'] = pl
+        user24_time.import_data_24 (self.db, self.user24, self.olo, self)
+        # We need the public holidays in Dec
+        self.db.public_holiday.create \
+            ( date        = date.Date ('2023-12-08')
+            , description = 'Maria Empfängis'
+            , name        = 'Maria Empfängis'
+            , locations   = [self.loc]
+            , is_half     = False
+            )
+        self.db.public_holiday.create \
+            ( date        = date.Date ('2023-12-24')
+            , description = 'Heiligabend'
+            , name        = 'Heiligabend'
+            , locations   = [self.loc]
+            , is_half     = False
+            )
+        self.db.public_holiday.create \
+            ( date        = date.Date ('2023-12-25')
+            , description = 'Christtag'
+            , name        = 'Christtag'
+            , locations   = [self.loc]
+            , is_half     = False
+            )
+        self.db.public_holiday.create \
+            ( date        = date.Date ('2023-12-26')
+            , description = 'Stefanitag'
+            , name        = 'Stefanitag'
+            , locations   = [self.loc]
+            , is_half     = False
+            )
+        self.db.public_holiday.create \
+            ( date        = date.Date ('2023-12-31')
+            , description = 'Silvester'
+            , name        = 'Silvester'
+            , locations   = [self.loc]
+            , is_half     = False
+            )
+        # Restore detectors
+        self.db.time_wp.auditors        ['create'] = old_priolist_wp
+        self.db.public_holiday.reactors ['create'] = old_priolist_ph
     # end def setup_user24
 
     def test_user24 (self):
@@ -4500,26 +4560,32 @@ class Test_Case_Timetracker (_Test_Case_Summary, unittest.TestCase) :
         self.setup_user24 ()
         self.db.commit ()
         self.db.close ()
-        self.db = self.tracker.open ('admin')
-        # Monkey-patch the detector list to remove auto wp checks
-        old_priolist = self.db.time_wp.auditors ['create']
-        pl = deepcopy (old_priolist)
-        # Priolist has (prio, name, function) tuples
-        for i, item in enumerate (pl.list):
-            if item [1] == 'wp_check_auto_wp':
-                del pl.list [i]
-                break
-        user24_time.import_data_24 (self.db, self.user24, self.olo, self)
-        # Restore detectors
-        self.db.time_wp.auditors ['create'] = old_priolist
-        self.db.commit ()
-        self.db.close ()
         self.db = self.tracker.open (self.username0)
         ud = self.db.user_dynamic.filter \
             (None, dict (user = self.user24, valid_to = '2023-11-30'))
         assert len (ud) == 1
         dt = date.Date ('2023-12-01')
         self.db.user_dynamic.set (ud [0], valid_to = dt)
+        self.db.commit ()
+        self.db.close ()
+        self.db = self.tracker.open (self.username24)
+        # Now check if we can set to cancel requested:
+        # This used to raise
+        # 'Editing of time records only for status "open"'
+        # This leave_submission is 2023-12-23-2023-12-31
+        self.db.leave_submission.set ('6', status = '6', comment_cancel = 'bla')
+        # Now check if the same happens when we pass the wp
+        # This leave_submission is 2023-12-05-2023-12-10
+        # This used to raise 'Work package must not be specified'
+        # The wp is passed by the mask in the web interface.
+        self.db.leave_submission.set \
+            ('2', status = '6', comment_cancel = 'bla', time_wp = '58')
+        self.db.commit ()
+        self.db.close ()
+        self.db = self.tracker.open (self.username0)
+        d = dict (user = self.user24, status = '6')
+        for l in self.db.leave_submission.filter (None, d):
+            self.db.leave_submission.set (l, status = '7')
         self.db.commit ()
         self.db.close ()
     # end def test_user24

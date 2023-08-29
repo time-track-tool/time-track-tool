@@ -771,20 +771,26 @@ def check_time_record (db, cl, nodeid, new_values):
     subm     = db.daily_record_status.lookup ('submitted')
     accpt    = db.daily_record_status.lookup ('accepted')
     allow    = False
-    if dr.status == leave:
-        du = vacation.leave_duration (db, user, date, is_ph)
-        if  (   list (new_values) == ['duration']
-            and new_values ['duration'] == du
-            and cl.get (nodeid, 'duration') != du
-            ):
-            allow = True
-    elif dr.status in (subm, accpt) and is_ph:
-        du = vacation.leave_duration (db, user, date, is_ph)
-        if (   list (new_values) == ['duration']
-           and new_values ['duration'] == du
-           and cl.get (nodeid, 'duration') != du
-           ):
-           allow = True
+    allowed_new = set ('duration wp'.split ())
+    if  (   not (set (new_values) - allowed_new)
+        and dr.status in (leave, subm, accpt)
+        ):
+        assert new_values
+        allow = True
+        du    = vacation.leave_duration (db, user, date, is_ph)
+        if 'duration' in new_values and new_values ['duration'] != du:
+            allow = False
+        if 'wp' in new_values:
+            newwp = db.time_wp.getnode (new_values ['wp'])
+            newtp = db.time_project.getnode (newwp.project)
+            oldwp = db.time_wp.getnode (cl.get (nodeid, 'wp'))
+            oldtp = db.time_project.getnode (oldwp.project)
+            if oldtp.is_public_holiday != newtp.is_public_holiday:
+                allow = False
+            if oldtp.is_special_leave != newtp.is_special_leave:
+                allow = False
+            if oldtp.is_vacation != newtp.is_vacation:
+                allow = False
     allow = allow or db.getuid () == '1'
     if  (   status != db.daily_record_status.lookup ('open')
         and list (new_values) != ['tr_duration']
