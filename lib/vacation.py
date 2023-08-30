@@ -31,7 +31,7 @@
 from math import ceil
 
 from roundup.date import Date, Interval
-from freeze       import freeze_date
+import freeze
 import common
 import user_dynamic
 
@@ -102,6 +102,10 @@ def try_create_public_holiday (db, daily_record, date, user):
                     if tr.wp != wp:
                         d ['wp'] = wp
                     if d:
+                        if freeze.frozen (db, user, date):
+                            # Do not update wp for frozen records
+                            if list (d) == ['wp']:
+                                return
                         db.time_record.set (trid, ** d)
                     return
             comment = holiday.name
@@ -716,11 +720,11 @@ def valid_leave_wps (db, user = None, date = None, srt = None, thawed = None):
         Note that for thawed to work a user must be given
     """
     if thawed and user:
-        freeze = freeze_date (db, user)
-        if freeze and date:
-            date = max (freeze, date)
-        elif freeze:
-            date = freeze
+        frz = freeze.freeze_date (db, user)
+        if frz and date:
+            date = max (frz, date)
+        elif frz:
+            date = frz
     d = {'project.approval_required' : True}
     return valid_wps (db, d, user, date, srt, future = True)
 # end def valid_leave_wps

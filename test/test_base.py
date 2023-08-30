@@ -34,7 +34,7 @@ from . import user1_time, user2_time, user3_time, user4_time, user5_time
 from . import user6_time, user7_time, user8_time, user10_time, user11_time
 from . import user12_time, user13_time, user14_time, user15_19_vac, user16_leave
 from . import user17_time, user18_time, user20_time, user21_time, user22_time
-from . import user23_time, user24_time
+from . import user23_time, user24_time, user25_time
 
 from operator     import mul
 from email.parser import Parser
@@ -4589,6 +4589,102 @@ class Test_Case_Timetracker (_Test_Case_Summary, unittest.TestCase) :
         self.db.commit ()
         self.db.close ()
     # end def test_user24
+
+    def setup_user25 (self) :
+        self.username25 = 'testuser25'
+        self.user25 = self.db.user.create \
+            ( username     = self.username25
+            , firstname    = 'Nummer25'
+            , lastname     = 'User25'
+            , supervisor   = self.user0
+            , address      = 'testuser25@example.com'
+            )
+        p = self.db.overtime_period.create \
+            ( name              = 'month average'
+            , months            = 1
+            , weekly            = False
+            , required_overtime = True
+            , order             = 3
+            )
+        self.db.time_wp.set ('44', bookers = [self.user25])
+        # We need to import the data *before* we create public holidays,
+        # otherwise the time records for these would be created during
+        # import
+        old_priolist_ph = self.db.public_holiday.reactors ['create']
+        pl = deepcopy (old_priolist_ph)
+        # Priolist has (prio, name, function) tuples
+        for i, item in enumerate (pl.list):
+            if item [1] == 'fix_daily_recs':
+                del pl.list [i]
+                break
+        self.db.public_holiday.reactors ['create'] = pl
+        user25_time.import_data_25 (self.db, self.user25, self.olo, self)
+        # We need the public holidays in Dec
+        self.db.public_holiday.create \
+            ( date        = date.Date ('2020-12-24')
+            , description = 'Heiligabend'
+            , name        = 'Heiligabend'
+            , locations   = [self.loc]
+            , is_half     = False
+            )
+        self.db.public_holiday.create \
+            ( date        = date.Date ('2020-12-25')
+            , description = 'Christtag'
+            , name        = 'Christtag'
+            , locations   = [self.loc]
+            , is_half     = False
+            )
+        self.db.public_holiday.create \
+            ( date        = date.Date ('2020-12-26')
+            , description = 'Stefanitag'
+            , name        = 'Stefanitag'
+            , locations   = [self.loc]
+            , is_half     = False
+            )
+        self.db.public_holiday.create \
+            ( date        = date.Date ('2020-12-31')
+            , description = 'Silvester'
+            , name        = 'Silvester'
+            , locations   = [self.loc]
+            , is_half     = False
+            )
+        # Restore detectors
+        self.db.public_holiday.reactors ['create'] = old_priolist_ph
+        # Make public holiday wp end 2020-01-01
+        self.db.time_wp.set \
+            ( self.holiday_wp
+            , time_end = date.Date ('2020-01-01')
+            , name     = 'Old Public Holiday'
+            )
+        # And create new public holiday wp
+        self.holiday_wp_new = self.db.time_wp.create \
+            ( name               = 'Holiday'
+            , project            = self.holiday_tp
+            , time_start         = date.Date ('2020-01-01')
+            , durations_allowed  = True
+            , responsible        = '1'
+            , cost_center        = self.cc
+            , bookers            = [self.user25]
+            )
+        # Need to freeze
+        self.db.daily_record_freeze.create \
+            ( date = date.Date ('2021-12-31')
+            , user = self.user25
+            )
+    # end def setup_user25
+
+    def test_user25 (self):
+        self.log.debug ('test_user25')
+        self.setup_db ()
+        self.setup_user25 ()
+        self.db.commit ()
+        self.db.close ()
+        self.db = self.tracker.open (self.username0)
+        self.db.user_dynamic.set \
+            (self.dyn25, valid_to = date.Date ('2023-10-01'))
+        self.db.commit ()
+        self.db.close ()
+    # end def test_user25
 
 # end class Test_Case_Timetracker
 
