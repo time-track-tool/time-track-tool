@@ -70,59 +70,86 @@ def get_public_holiday (db, dyn, date):
     return None
 # end def get_public_holiday
 
-def try_create_public_holiday (db, daily_record, date, user):
-    # Change even if status is not open
-    wp      = public_holiday_wp (db, user, date)
-    # Only perform public holiday processing if user has a public
-    # holiday wp to book on.
-    if not wp:
-        return
-    dyn = user_dynamic.get_user_dynamic (db, user, date)
-    wh  = user_dynamic.day_work_hours   (dyn, date)
+def get_holiday_duration (db, dyn, date):
+    wh  = user_dynamic.day_work_hours (dyn, date)
     if wh:
         holiday = get_public_holiday (db, dyn, date)
         if holiday and wh:
             if holiday.is_half:
                 wh = wh / 2.
             wh = user_dynamic.round_daily_work_hours (wh)
-            # Check if there already is a public-holiday time_record
-            # Update duration (and wp) if wrong
-            trs = db.time_record.filter \
-                (None, dict (daily_record = daily_record))
-            for trid in trs:
-                tr = db.time_record.getnode (trid)
-                if tr.wp is None:
+            return wh
+    return 0
+# end def get_holiday_duration
+
+def try_create_public_holiday (db, daily_record, date, user):
+    # Change even if status is not open
+    hol_wp = public_holiday_wp (db, user, date)
+    # Only perform public holiday processing if user has a public
+    # holiday wp to book on.
+    if not hol_wp:
+        return
+    dyn = user_dynamic.get_user_dynamic (db, user, date)
+    wh  = get_holiday_duration (db, dyn, date)
+    holiday = get_public_holiday (db, dyn, date)
+    if holiday and wh:
+        # Check if there already is a public-holiday time_record
+        # Update duration (and wp) if wrong
+        trs = db.time_record.filter \
+            (None, dict (daily_record = daily_record))
+        seen = False
+        for trid in trs:
+            tr = db.time_record.getnode (trid)
+            if tr.wp is None:
+                continue
+            tp = db.time_project.getnode \
+                (db.time_wp.get (tr.wp, 'project'))
+            ar = None
+            arids = tr.attendance_record
+            assert len (arids) <= 1
+            if arids:
+                ar = db.attendance_record.getnode (arids [0])
+            if tp.is_public_holiday:
+                # There must be only one public holiday TR
+                if seen:
+                    if ar:
+                        db.attendance_record.retire (ar.id)
+                    db.time_record.retire (tr.id)
                     continue
-                tp = db.time_project.getnode \
-                    (db.time_wp.get (tr.wp, 'project'))
-                if tp.is_public_holiday:
-                    d = {}
-                    if tr.duration != wh:
-                        d ['duration'] = wh
-                    if tr.wp != wp:
-                        d ['wp'] = wp
-                    if d:
-                        if freeze.frozen (db, user, date):
-                            # Do not update wp for frozen records
-                            if list (d) == ['wp']:
-                                return
-                        db.time_record.set (trid, ** d)
-                    return
-            comment = holiday.name
-            if holiday.description:
-                comment = '\n'.join ((holiday.name, holiday.description))
-            trn = db.time_record.create \
-                ( daily_record  = daily_record
-                , duration      = wh
-                , wp            = wp
-                , comment       = comment
-                )
-            off = db.work_location.filter (None, dict (is_off = True)) [0]
-            db.attendance_record.create \
-                ( daily_record  = daily_record
-                , time_record   = trn
-                , work_location = off
-                )
+                d = {}
+                if tr.duration != wh:
+                    d ['duration'] = wh
+                if tr.wp != hol_wp:
+                    d ['wp'] = hol_wp
+                if d:
+                    if freeze.frozen (db, user, date):
+                        # Do not update wp for frozen records
+                        if list (d) == ['wp']:
+                            return
+                    if 'duration' in d:
+                        # Public holiday should not have start/end
+                        if ar and (ar.start or ar.end):
+                            db.attendance_record.set \
+                                (ar.id, start = None, end = None)
+                    db.time_record.set (trid, ** d)
+                seen = True
+        if seen:
+            return
+        comment = holiday.name
+        if holiday.description:
+            comment = '\n'.join ((holiday.name, holiday.description))
+        trn = db.time_record.create \
+            ( daily_record  = daily_record
+            , duration      = wh
+            , wp            = hol_wp
+            , comment       = comment
+            )
+        off = db.work_location.filter (None, dict (is_off = True)) [0]
+        db.attendance_record.create \
+            ( daily_record  = daily_record
+            , time_record   = trn
+            , work_location = off
+            )
 # end def try_create_public_holiday
 
 def update_public_holidays (db, dyn):

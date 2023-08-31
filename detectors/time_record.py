@@ -713,7 +713,9 @@ def check_att_record (db, cl, nodeid, new_values):
     # Allow change of end independent of existing duration in tr
     if ar.end:
         dur = None
-    check_start_end_duration (_, date, start, end, dur, new_values)
+    # Only check start/end if they don't become empty
+    if start or end:
+        check_start_end_duration (_, date, start, end, dur, new_values)
     if  (   uid != dr.user
         and uid != ttby
         and not common.user_has_role (db, uid, 'controlling', 'admin', 'hr')
@@ -846,6 +848,40 @@ def fix_daily_recs_after_retire (db, cl, nodeid, dummy):
     invalidate_tr_duration_in_dr (db, nodeid)
 # end def fix_daily_recs_after_retire
 
+def check_public_holiday_retire (db, tr, dr):
+    """ Special case for public holiday: Allow retire if we get nearer
+        to work hours
+        Note that a False return doesn't mean we disallow this, just
+        that the other checks need to pass.
+    """
+    if not tr.wp:
+        return False
+    wp = db.time_wp.getnode (tr.wp)
+    tp = db.time_project.getnode (wp.project)
+    if not tp.is_public_holiday:
+        return False
+    # Compute public holiday sum
+    phsum = 0
+    dyn = user_dynamic.get_user_dynamic (db, dr.user, dr.date)
+    wh  = vacation.get_holiday_duration (db, dyn, dr.date)
+    if not wh:
+        return False
+    for trid in dr.time_record:
+        if trid == tr.id:
+            continue
+        trn = db.time_record.getnode (trid)
+        if not trn.wp:
+            continue
+        wp = db.time_wp.getnode (trn.wp)
+        tp = db.time_project.getnode (wp.project)
+        if not tp.is_public_holiday:
+            continue
+        phsum += trn.duration
+    if phsum >= wh:
+        return True
+    return False
+# end def check_public_holiday_retire
+
 def check_retire (db, cl, nodeid, new_values):
     _ = db.i18n.gettext
     assert not new_values
@@ -858,7 +894,9 @@ def check_retire (db, cl, nodeid, new_values):
         raise Reject (_ ("Can't retire frozen time record"))
     tt_by = db.user.get (dr.user, 'timetracking_by')
     allowed = True
-    if dr.status == st_open:
+    if check_public_holiday_retire (db, tr, dr):
+        allowed = True
+    elif dr.status == st_open:
         if  (   uid != dr.user
             and uid != tt_by
             and not common.user_has_role (db, uid, 'controlling', 'admin')

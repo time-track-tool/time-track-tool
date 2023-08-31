@@ -34,7 +34,7 @@ from . import user1_time, user2_time, user3_time, user4_time, user5_time
 from . import user6_time, user7_time, user8_time, user10_time, user11_time
 from . import user12_time, user13_time, user14_time, user15_19_vac, user16_leave
 from . import user17_time, user18_time, user20_time, user21_time, user22_time
-from . import user23_time, user24_time, user25_time
+from . import user23_time, user24_time, user25_time, user26_time
 
 from operator     import mul
 from email.parser import Parser
@@ -4685,6 +4685,68 @@ class Test_Case_Timetracker (_Test_Case_Summary, unittest.TestCase) :
         self.db.commit ()
         self.db.close ()
     # end def test_user25
+
+    def setup_user26 (self) :
+        self.username26 = 'testuser26'
+        self.user26 = self.db.user.create \
+            ( username     = self.username26
+            , firstname    = 'Nummer26'
+            , lastname     = 'User26'
+            , supervisor   = self.user0
+            , address      = 'testuser26@example.com'
+            )
+        p = self.db.overtime_period.create \
+            ( name              = 'month average'
+            , months            = 1
+            , weekly            = False
+            , required_overtime = True
+            , order             = 3
+            )
+        self.db.time_wp.set ('44', bookers = [self.user26])
+        self.locj = self.db.location.create \
+            ( name    = 'Japan'
+            , country = 'Japan'
+            , address = 'Japan'
+            )
+        self.oloj = self.db.org_location.create \
+            ( name                = 'Org J'
+            , location            = self.locj
+            , organisation        = self.org
+            , vacation_legal_year = False
+            , vacation_yearly     = 25.0
+            , do_leave_process    = True
+            , vac_aliq            = '1'
+            )
+        user26_time.import_data_26 (self.db, self.user26, self.olo)
+        # We need a public holiday
+        self.db.public_holiday.create \
+            ( date        = date.Date ('2023-08-11')
+            , description = 'Mountain day'
+            , name        = 'Mountain day'
+            , locations   = [self.locj]
+            , is_half     = False
+            )
+        self.db.time_wp.set (self.holiday_wp, bookers = [self.user26])
+    # end def setup_user26
+
+    def test_user26 (self):
+        self.log.debug ('test_user26')
+        self.setup_db ()
+        self.setup_user26 ()
+        self.db.commit ()
+        self.db.close ()
+        self.db = self.tracker.open (self.username26)
+        dn = self.db.user_dynamic.filter (None, dict (user = self.user26))
+        assert len (dn) == 1
+        self.db.user_dynamic.set (dn [0], org_location = self.oloj)
+        dr = self.db.daily_record.filter (None, dict (date = '2023-08-11'))
+        assert len (dr) == 1
+        dr = dr [0]
+        vacation.try_create_public_holiday \
+            (self.db, dr, date.Date ('2023-08-11'), self.user26)
+        self.db.commit ()
+        self.db.close ()
+    # end def test_user26
 
 # end class Test_Case_Timetracker
 
