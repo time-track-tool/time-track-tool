@@ -1937,7 +1937,6 @@ class Vacation_Report (_Report):
                             ( user          = u
                             , date          = vd
                             , contract_type = ctype
-                            , absolute      = False
                             )
                         )
                     try:
