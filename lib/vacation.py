@@ -877,8 +877,13 @@ def vacation_params (db, user, date, vc, hv = False):
             pd    = vc.date
             carry = ltot = vc.days
         else:
-            carry = remaining_vacation    (db, user, ctype, pd - day)
-            ltot  = consolidated_vacation (db, user, ctype, pd - day)
+            # If the vacation correction is mid this year ltot=carry=0
+            if vc.date > date:
+                carry = 0.0
+                ltot  = 0.0
+            else:
+                carry = remaining_vacation    (db, user, ctype, pd - day)
+                ltot  = consolidated_vacation (db, user, ctype, pd - day)
     carry = carry or 0.0
     ltot  = ltot  or 0.0
     return yday, pd, carry, ltot
