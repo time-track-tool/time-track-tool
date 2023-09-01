@@ -1690,8 +1690,8 @@ class Vacation_Report (_Report):
             pass
         self.db      = db
         self.uid     = db.getuid ()
-        self.hv = hv = common.user_has_role (
-            self.db, self.uid, 'HR-vacation', 'Vacation-report')
+        self.hv = hv = common.user_has_role \
+            (self.db, self.uid, 'HR-vacation', 'Vacation-report')
         db.log_info  ("vacation_report: %s" % timestamp)
         st_accp = db.leave_status.lookup ('accepted')
         st_cnrq = db.leave_status.lookup ('cancel requested')
