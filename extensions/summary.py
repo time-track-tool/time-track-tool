@@ -1945,11 +1945,6 @@ class Vacation_Report (_Report):
                             item  = self.htmldb.vacation_correction.getItem (x)
                             days  = item.days
                             ep    = self.utils.ExtProperty
-                            # Do not print abs vac corrections on Jan first
-                            # These do not change the display
-                            dt    = item.date
-                            if item.absolute and d.month == 1 and d.day == 1:
-                                continue
                             vcs.append \
                                 ( ep
                                     ( self.utils, days 
@@ -1959,16 +1954,9 @@ class Vacation_Report (_Report):
                                 )
                         container ['vacation corrections'] = vcs
                     except AttributeError:
-                        gn = db.vacation_correction.getnode
-                        vcss = [gn (i) for i in vcids]
-                        # Do not print abs vac corrections on Jan first
-                        # These do not change the display
                         container ['vacation corrections'] = ' + '.join \
-                            ( str (v.days) for v in vcss
-                              if (  not v.absolute
-                                 or v.date.month != 1
-                                 or v.date.day != 1
-                                 )
+                            (str (db.vacation_correction.get (i, 'days'))
+                             for i in vcids
                             )
                     if (u, ctype) not in self.values:
                         self.values [(u, ctype)] = []
