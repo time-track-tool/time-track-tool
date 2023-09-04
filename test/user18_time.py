@@ -60,12 +60,12 @@ def import_data_18 (db, user, olo) :
         , user               = user
         , vac_aliq           = '1'
         )
-    vcorr = db.vacation_correction.create \
-        ( user     = user
-        , date     = date.Date ('2018-01-01.00:00:00')
-        , absolute = 1
-        , days     = 7.765
-        )
+    vcs = db.vacation_correction.filter (None, dict (user = user))
+    assert len (vcs) == 1
+    vc = db.vacation_correction.getnode (vcs [0])
+    assert vc.absolute
+    assert vc.date == date.Date ('2018-01-01')
+    db.vacation_correction.set (vc.id, days = 7.765)
     ls = db.leave_submission.create \
         ( user      = user
         , first_day = date.Date ('2019-05-20.00:00:00')

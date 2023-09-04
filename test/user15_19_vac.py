@@ -61,12 +61,6 @@ def import_data_15 (db, user, olo) :
         , user               = user
         , vac_aliq           = '2'
         )
-    vcorr = db.vacation_correction.create \
-        ( user     = user
-        , date     = date.Date ('2018-01-01')
-        , absolute = 1
-        , days     = 0.0
-        )
     db.commit ()
 # end def import_data_15
 
@@ -130,12 +124,6 @@ def import_data_16 (db, user, olo) :
         , overtime_period    = otp
         , user               = user
         , vac_aliq           = '2'
-        )
-    vcorr = db.vacation_correction.create \
-        ( user     = user
-        , date     = date.Date ('2018-01-01')
-        , absolute = 1
-        , days     = 0.0
         )
     db.commit ()
 # end def import_data_16
@@ -230,12 +218,12 @@ def import_data_17 (db, user, olo) :
         , user               = user
         , vac_aliq           = '2'
         )
-    vcorr = db.vacation_correction.create \
-        ( user     = user
-        , date     = date.Date ('2018-01-01')
-        , absolute = 1
-        , days     = 1.0
-        )
+    vcs  = db.vacation_correction.filter (None, dict (user = user))
+    assert len (vcs) == 1
+    vc = db.vacation_correction.getnode (vcs [0])
+    assert vc.absolute
+    assert vc.days == 0
+    db.vacation_correction.set (vc.id, days = 1.0)
     db.commit ()
 # end def import_data_17
 
@@ -269,12 +257,6 @@ def import_data_18 (db, user, olo) :
         , overtime_period    = otp
         , user               = user
         , vac_aliq           = '2'
-        )
-    vcorr = db.vacation_correction.create \
-        ( user     = user
-        , date     = date.Date ('2018-01-01')
-        , absolute = 1
-        , days     = 0.0
         )
     db.commit ()
 # end def import_data_18
@@ -335,12 +317,6 @@ def import_data_19 (db, user, olo) :
         , overtime_period    = otp
         , user               = user
         , vac_aliq           = '2'
-        )
-    vcorr = db.vacation_correction.create \
-        ( user     = user
-        , date     = date.Date ('2018-01-01')
-        , absolute = 1
-        , days     = 0.0
         )
     db.commit ()
 # end def import_data_19

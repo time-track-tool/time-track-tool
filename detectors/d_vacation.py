@@ -653,6 +653,9 @@ def check_correction (db, cl, nodeid, new_values):
             or not new_values.get ('absolute')
             ):
             raise Reject (_ ("Frozen"))
+    # Check that there is no other record for that user and date
+    common.check_unique \
+        (_, cl, nodeid, date = date.pretty (common.ymd), user = user)
     # Check that vacation parameters exist in dyn. user records
     dyn = user_dynamic.get_user_dynamic (db, user, date)
     username = db.user.get (user, 'username')

@@ -29,6 +29,7 @@ from io import BytesIO
 # For monkey-patching:
 import inspect
 import ast
+import pytest
 
 from . import user1_time, user2_time, user3_time, user4_time, user5_time
 from . import user6_time, user7_time, user8_time, user10_time, user11_time
@@ -1789,6 +1790,16 @@ class Test_Case_Timetracker (_Test_Case_Summary, unittest.TestCase) :
             (self.db, self.uid_by_name ['testuser19'], self.olo)
         self.db.commit ()
         self.db.close  ()
+        self.db = self.tracker.open ('admin')
+        with pytest.raises (Reject):
+            vcorr = self.db.vacation_correction.create \
+                ( user     = self.uid_by_name ['testuser15']
+                , date     = date.Date ('2018-01-01')
+                , absolute = 1
+                , days     = 0.0
+                )
+        self.db.rollback ()
+        self.db.close  ()
         self.db = self.tracker.open (self.username0)
         summary.init (self.tracker)
         fs = { 'user' : self.uid_by_name.values ()
@@ -1816,7 +1827,7 @@ class Test_Case_Timetracker (_Test_Case_Summary, unittest.TestCase) :
         self.assertEqual (lines  [1] [4], '0.00')
         self.assertEqual (lines  [1] [5], '15.00')
         self.assertEqual (lines  [1] [6], '0.0')
-        self.assertEqual (lines  [1] [7], '0.0 + 0.0')
+        self.assertEqual (lines  [1] [7], '0.0')
         self.assertEqual (lines  [1] [8], '15.00')
         self.assertEqual (lines  [2] [0], 'testuser16')
         self.assertEqual (lines  [2] [1], '2018-12-31')
@@ -1825,17 +1836,17 @@ class Test_Case_Timetracker (_Test_Case_Summary, unittest.TestCase) :
         self.assertEqual (lines  [2] [4], '0.00')
         self.assertEqual (lines  [2] [5], '15.00')
         self.assertEqual (lines  [2] [6], '0.0')
-        self.assertEqual (lines  [2] [7], '0.0 + 0.0')
+        self.assertEqual (lines  [2] [7], '0.0')
         self.assertEqual (lines  [2] [8], '15.00')
         self.assertEqual (lines  [3] [0], 'testuser17')
         self.assertEqual (lines  [3] [1], '2018-12-31')
         self.assertEqual (lines  [3] [2], '30.00')
         self.assertEqual (lines  [3] [3], '30.00')
-        self.assertEqual (lines  [3] [4], '0.00')
-        self.assertEqual (lines  [3] [5], '30.00')
+        self.assertEqual (lines  [3] [4], '1.00')
+        self.assertEqual (lines  [3] [5], '31.00')
         self.assertEqual (lines  [3] [6], '0.0')
-        self.assertEqual (lines  [3] [7], '0.0 + 1.0')
-        self.assertEqual (lines  [3] [8], '30.00')
+        self.assertEqual (lines  [3] [7], '1.0')
+        self.assertEqual (lines  [3] [8], '31.00')
         self.assertEqual (lines  [4] [0], 'testuser18')
         self.assertEqual (lines  [4] [1], '2018-12-31')
         self.assertEqual (lines  [4] [2], '30.00')
@@ -1843,7 +1854,7 @@ class Test_Case_Timetracker (_Test_Case_Summary, unittest.TestCase) :
         self.assertEqual (lines  [4] [4], '0.00')
         self.assertEqual (lines  [4] [5], '12.50')
         self.assertEqual (lines  [4] [6], '0.0')
-        self.assertEqual (lines  [4] [7], '0.0 + 0.0')
+        self.assertEqual (lines  [4] [7], '0.0')
         self.assertEqual (lines  [4] [8], '12.50')
         self.assertEqual (lines  [5] [0], 'testuser19')
         self.assertEqual (lines  [5] [1], '2018-12-31')
@@ -1852,7 +1863,7 @@ class Test_Case_Timetracker (_Test_Case_Summary, unittest.TestCase) :
         self.assertEqual (lines  [5] [4], '0.00')
         self.assertEqual (lines  [5] [5], '17.50')
         self.assertEqual (lines  [5] [6], '0.0')
-        self.assertEqual (lines  [5] [7], '0.0 + 0.0')
+        self.assertEqual (lines  [5] [7], '0.0')
         self.assertEqual (lines  [5] [8], '17.50')
         fs = { 'user' : self.uid_by_name.values ()
              , 'date' : '2019-01-01;2019-12-31'
@@ -1876,11 +1887,11 @@ class Test_Case_Timetracker (_Test_Case_Summary, unittest.TestCase) :
         self.assertEqual (lines  [1] [1], '2019-12-31')
         self.assertEqual (lines  [1] [2], '30.00')
         self.assertEqual (lines  [1] [3], '30.00')
-        self.assertEqual (lines  [1] [4], '30.00')
-        self.assertEqual (lines  [1] [5], '60.00')
+        self.assertEqual (lines  [1] [4], '31.00')
+        self.assertEqual (lines  [1] [5], '61.00')
         self.assertEqual (lines  [1] [6], '0.0')
         self.assertEqual (lines  [1] [7], '')
-        self.assertEqual (lines  [1] [8], '60.00')
+        self.assertEqual (lines  [1] [8], '61.00')
         self.assertEqual (lines  [2] [0], 'testuser18')
         self.assertEqual (lines  [2] [1], '2019-12-31')
         self.assertEqual (lines  [2] [2], '30.00')
@@ -1922,11 +1933,11 @@ class Test_Case_Timetracker (_Test_Case_Summary, unittest.TestCase) :
         self.assertEqual (lines  [1] [1], '2019-02-03')
         self.assertEqual (lines  [1] [2], '30.00')
         self.assertEqual (lines  [1] [3], '2.50')
-        self.assertEqual (lines  [1] [4], '30.00')
-        self.assertEqual (lines  [1] [5], '32.50')
+        self.assertEqual (lines  [1] [4], '31.00')
+        self.assertEqual (lines  [1] [5], '33.50')
         self.assertEqual (lines  [1] [6], '0.0')
         self.assertEqual (lines  [1] [7], '')
-        self.assertEqual (lines  [1] [8], '32.50')
+        self.assertEqual (lines  [1] [8], '33.50')
         self.assertEqual (lines  [2] [0], 'testuser18')
         self.assertEqual (lines  [2] [1], '2019-02-03')
         self.assertEqual (lines  [2] [2], '30.00')
