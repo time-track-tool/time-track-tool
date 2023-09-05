@@ -402,13 +402,13 @@ class Daily_Record_Edit_Action (EditItemAction, Daily_Record_Common):
                     # and the duration changes to empty. But in case it
                     # does not have start/end the ar would be left over
                     # while the tr is retired.
-                    # We may not modify the daily_record and it already is set
-                    if duration is None and not dstart:
-                        assert ar.start is None and ar.end is None
-                        assert 'start' not in aval
-                        assert 'end' not in aval
+                    if duration is None and ar.start is None and ar.end is None:
+                        assert not dstart
+                        assert 'start' not in aval or aval ['start'] is None
+                        assert 'end'   not in aval or aval ['end']   is None
                         # Setting both to same value will retire the ar
-                        aval ['start'] = aval ['end'] = '8'
+                        aval ['start'] = aval ['end'] = '4'
+                    # We may not modify the daily_record and it already is set
                     del aval ['daily_record']
         # Check if start is given but no end, create end from start + duration
         for (cl, id) in list (props):
