@@ -202,7 +202,7 @@ def check_auto_wp (db, auto_wp_id, userid) :
                             # and must start at our end time and have no
                             # end time
                             wp = wps.pop ()
-                            assert wp.time_start == dyn_end
+                            assert wp.time_start >= dyn_end
                             assert not wp.time_end
                     else:
                         d = dict (time_end = None, name = snam)
