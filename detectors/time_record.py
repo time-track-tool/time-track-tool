@@ -86,9 +86,11 @@ def pretty_att_record (db, dr, ar):
     ar_pr = ["%(user)s, %(sdate)s" % locals ()]
     if ar.start:
         ar_pr.append ("%s-%s" % (ar.start, ar.end))
-    else:
+    elif ar.work_location:
         wl = db.work_location.getnode (ar.work_location)
         ar_pr.append ("%s: %s" % (_ ('work_location'), wl.code))
+    else:
+        ar_pr.append ("attendance_record%s" % ar.id)
     return ' '.join (ar_pr)
 # end def pretty_att_record
 
