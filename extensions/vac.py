@@ -173,14 +173,15 @@ class Leave_Buttons (object):
     # end def generate
 # end class Leave_Buttons
 
-def remaining_until (db, now = None):
+def remaining_until (db, uid = None, now = None):
     try:
         db  = db._db
     except AttributeError:
         pass
     if now is None:
         now = Date ('.')
-    uid = db.getuid ()
+    if uid is None:
+        uid = db.getuid ()
     dyn = user_dynamic.get_user_dynamic (db, uid, now)
     if dyn is None:
         return None
@@ -188,11 +189,12 @@ def remaining_until (db, now = None):
         (db, uid, dyn.contract_type, now) - common.day
 # end def remaining_until
 
-def remaining_vacation (db, user, date):
-    c = ceil (vacation.remaining_vacation (db, user, date = date))
+def remaining_vacation (db, user, ctype = -1, date = None):
+    remain = vacation.remaining_vacation
+    c = ceil (remain (db, user, ctype = ctype, date = date))
     if c == 0:
         return 0.0
-    return c
+    return float (c)
 # end def remaining_vacation
 
 def consolidated_vacation (db, user, date):
@@ -269,13 +271,13 @@ def leave_days (db, user, first_day, last_day):
         return 'Invalid data'
 # end def leave_days
 
-def eoy_vacation (db, user, date):
+def eoy_vacation (db, user, date, ctype = -1):
     eoy = Date (date.pretty ('%Y-12-31'))
-    vc  = vacation.get_vacation_correction (db, user)
+    vc  = vacation.get_vacation_correction (db, user, ctype, date)
     assert vc
     yday, pd, carry, ltot = vacation.vacation_params (db, user, eoy, vc)
     cons  = vacation.consolidated_vacation (db, user, vc.contract_type, eoy)
-    return ceil (cons - ltot + carry)
+    return float (ceil (cons - ltot + carry))
 # end def eoy_vacation
 
 def month_name (date):
@@ -745,6 +747,23 @@ def lookup_users (db, userstring):
     return r
 # end def lookup_users
 
+def ct_for_year (db, user, now = None):
+    ct = set ()
+    if now is None:
+        now = Date ('.')
+    jan = Date ('%s-01-01' % now.year)
+    dec = Date ('%s-12-31' % now.year)
+    dyn = user_dynamic.first_user_dynamic (db, user, date = jan)
+    while dyn:
+        ct.add (dyn.contract_type)
+        dyn = user_dynamic.next_user_dynamic (db, dyn)
+        if not dyn or dyn.valid_from > dec:
+            break
+    ct = [db.contract_type.getnode (x) if x else None for x in ct]
+    ct.sort (key = lambda x : (x and x.name or ''))
+    return ct
+# end def ct_for_year
+
 class Rest_Request (RestfulInstance):
 
     @Routing.route ("/aux/timesheet", 'GET')
@@ -803,6 +822,7 @@ def init (instance):
     reg ('avg_hours_per_week_this_year', avg_hours)
     reg ('get_current_ctype',            vacation.get_current_ctype)
     reg ('current_user_dynamic',         current_user_dynamic)
+    reg ('ct_for_year',                  ct_for_year)
     action = instance.registerAction
     action ('new_leave',                 New_Leave_Action)
 # end def init

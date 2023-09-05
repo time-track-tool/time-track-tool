@@ -98,7 +98,7 @@
               )"
             tal:content="python:
             utils.remaining_vacation 
-             (db._db, mprops [0].prop.id, mprops [1].prop._value)
+             (db._db, mprops [0].prop.id, date = mprops [1].prop._value)
              + ( leavedays
                * [1, -1][str (mprops [4].prop) == 'submitted']
                * mprops [3].prop.project.is_vacation._value
@@ -239,16 +239,21 @@
               (db._db, db._db.getuid (), jandate, remdate, 'accepted')
     ; fsub    python: utils.flexitime_with_status
               (db._db, db._db.getuid (), jandate, remdate, 'submitted')
+    ; cts     python: utils.ct_for_year (db._db, db._db.getuid ())
     ">
     <h3 i18n:translate="">Overview remaining vacation days</h3>
     <table class="form">
      <tr>
       <th i18n:translate="">Vacation
        <span tal:content="python:jandate.pretty (utils.ymd)"/>
-       &nbsp;
       </th>
+     </tr>
+     <tr tal:repeat="ct python:cts">
+      <th tal:content="python: 'Contract type: '
+                               + ('Default' if ct is None else ct.name)"/>
       <td class="number" tal:content="python:
-          utils.eoy_vacation (db._db, db._db.getuid (), remdate)"/>
+          utils.eoy_vacation (db._db, db._db.getuid (), remdate, ct and ct.id)
+          "/>
      </tr>
      <tr>
       <th i18n:translate="">Approved&nbsp;</th>
@@ -261,11 +266,14 @@
      <tr>
       <th i18n:translate="">Remaining Vacation
        <span tal:content="python:remdate.pretty (utils.ymd)"/>
-       &nbsp;
       </th>
-      <td class="number" tal:content="python:utils.remaining_vacation
-          (db._db, db._db.getuid (), date = remdate) - vsub"/>
       <th i18n:translate="">(including submissions)</th>
+     </tr>
+     <tr tal:repeat="ct python:cts">
+      <th tal:content="python: 'Contract type: '
+                               + ('Default' if ct is None else ct.name)"/>
+      <td class="number" tal:content="python:utils.remaining_vacation
+          (db._db, db._db.getuid (), ct and ct.id, date = remdate) - vsub"/>
      </tr>
     </table>
     <h3 i18n:translate="">Overview comp/flexitime days</h3>

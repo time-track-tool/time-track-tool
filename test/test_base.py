@@ -128,7 +128,7 @@ import common
 import summary
 import user_dynamic
 import vacation
-from vac import eoy_vacation
+import vac
 
 header_regex = re.compile (r'\s*\n')
 def header_decode (h) :
@@ -1753,6 +1753,7 @@ class Test_Case_Timetracker (_Test_Case_Summary, unittest.TestCase) :
         self.assertEqual (lines  [2] [8], '34.27')
         self.assertEqual (lines  [2] [9], '0.00')
 
+        eoy_vacation = vac.eoy_vacation
         self.assertEqual \
             (33, eoy_vacation (self.db, self.user13, date.Date ('2014-12-31')))
         self.assertEqual \
@@ -4794,31 +4795,6 @@ class Test_Case_Timetracker (_Test_Case_Summary, unittest.TestCase) :
         self.setup_user27 ()
         self.db.commit ()
         self.db.close ()
-        self.db = self.tracker.open (self.username27)
-        u0 = self.db.user.getnode (self.user0)
-        print ('Roles user0: %s' % u0.roles, file = sys.stderr)
-        for id in self.db.vac_aliq.getnodeids (retired = False):
-            va = self.db.vac_aliq.getnode (id)
-            print (va.name, file = sys.stderr)
-        d = { 'daily_record.user': self.user27 }
-        trids = self.db.time_record.filter (None, d)
-        print ("Time records:", len (trids), file = sys.stderr)
-        for id in trids:
-            tr = self.db.time_record.getnode (id)
-            dr = self.db.daily_record.getnode (tr.daily_record)
-            print ( tr.id, dr.date, dr.status, tr.wp, tr.duration
-                  , file = sys.stderr
-                  )
-        drids = self.db.daily_record.filter \
-            ( None, dict (user = self.user27, date = '2022-01-01;')
-            , sort = ('+', 'date')
-            )
-        print ("Daily records:", len (drids), file = sys.stderr)
-        for id in drids:
-            dr = self.db.daily_record.getnode (id)
-            print (dr.date, dr.status, file = sys.stderr)
-        self.db.commit ()
-        self.db.close ()
         self.db = self.tracker.open (self.username0)
         summary.init (self.tracker)
         fs = { 'user' : [self.user27], 'date' : '2022-01-01;2023-12-31' }
@@ -4826,9 +4802,6 @@ class Test_Case_Timetracker (_Test_Case_Summary, unittest.TestCase) :
         sr = summary.Vacation_Report \
             (self.db, r, templating.TemplatingUtils (None))
         lines = tuple (csv.reader (StringIO (sr.as_csv ()), delimiter = ','))
-        for j in range (4):
-            for i in range (9):
-                print (lines [j+1][i], file=sys.stderr)
         self.assertEqual (len (lines), 5)
         self.assertEqual (len (lines [0]), 9)
         self.assertEqual (lines  [0] [0], 'User')
@@ -4876,7 +4849,20 @@ class Test_Case_Timetracker (_Test_Case_Summary, unittest.TestCase) :
         self.assertEqual (lines  [4] [6], '2.0')
         self.assertEqual (lines  [4] [7], '')
         self.assertEqual (lines  [4] [8], '16.00')
-        #assert 0
+        # Now check also what the leave submission form would display
+        dt = date.Date ('2023-12-31')
+        cts = vac.ct_for_year (self.db, self.user27, dt)
+        assert len (cts) == 2
+        ct1, ct2 = cts
+        assert ct1 is None
+        ct2 = ct2.id
+        self.db.commit ()
+        self.db.close ()
+        self.db = self.tracker.open (self.username27)
+        assert vac.eoy_vacation (self.db, self.user27, dt, ct1) == 8.0
+        assert vac.eoy_vacation (self.db, self.user27, dt, ct2) == 18.0
+        assert vac.remaining_vacation (self.db, self.user27, ct1, dt) == 8.0
+        assert vac.remaining_vacation (self.db, self.user27, ct2, dt) == 16.0
         self.db.commit ()
         self.db.close ()
     # end def test_user27
