@@ -224,60 +224,66 @@
 </tal:block>
 
 <tal:block metal:define-macro="vacation_status">
- <tal:block tal:define=
-   " remdate python:utils.remaining_until (db)
-   ; jandate python: remdate - utils.year + utils.day
-   ; vapr    python: utils.vacation_time_sum
-             (db._db, db._db.getuid (), -1, jandate, remdate)
-   ; vsub    python: utils.vacation_with_status
-             (db._db, db._db.getuid (), jandate, remdate, 'submitted')
-   ; fapr    python: utils.flexitime_with_status
-             (db._db, db._db.getuid (), jandate, remdate, 'accepted')
-   ; fsub    python: utils.flexitime_with_status
-             (db._db, db._db.getuid (), jandate, remdate, 'submitted')
-   ">
-  <h3 i18n:translate="">Overview remaining vacation days</h3>
-  <table class="form">
-   <tr>
-    <th i18n:translate="">Vacation
-     <span tal:content="python:jandate.pretty (utils.ymd)"/>
-     &nbsp;
-    </th>
-    <td class="number" tal:content="python:
-        utils.eoy_vacation (db._db, db._db.getuid (), remdate)"/>
-   </tr>
-   <tr>
-    <th i18n:translate="">Approved&nbsp;</th>
-    <td class="number" tal:content="vapr"/>
-   </tr>
-   <tr>
-    <th i18n:translate="">Submitted&nbsp;</th>
-    <td class="number" tal:content="vsub"/>
-   </tr>
-   <tr>
-    <th i18n:translate="">Remaining Vacation
-     <span tal:content="python:remdate.pretty (utils.ymd)"/>
-     &nbsp;
-    </th>
-    <td class="number" tal:content="python:utils.remaining_vacation
-        (db._db, db._db.getuid (), date = remdate) - vsub"/>
-    <th i18n:translate="">(including submissions)</th>
-   </tr>
-  </table>
-  <h3 i18n:translate="">Overview comp/flexitime days</h3>
-  <table class="form">
-   <tr>
-    <th i18n:translate="">Approved&nbsp;</th>
-    <td class="number" tal:content="fapr"/>
-   </tr>
-   <tr>
-    <th i18n:translate="">Submitted&nbsp;</th>
-    <td class="number" tal:content="fsub"/>
-   </tr>
-   <tr>
-    <th i18n:translate="">Total&nbsp;</th>
-    <td class="number" tal:content="python:fapr + fsub"/>
-   </tr>
-  </table>
+ <tal:block tal:define="remdate python:utils.remaining_until (db)">
+  <tal:block tal:condition="python:remdate is None">
+   <h3 i18n:translate="">No dynamic user record for user</h3>
+  </tal:block>
+  <tal:block tal:condition="python:remdate is not None">
+   <tal:block tal:define=
+    " jandate python: remdate - utils.year + utils.day
+    ; vapr    python: utils.vacation_time_sum
+              (db._db, db._db.getuid (), -1, jandate, remdate)
+    ; vsub    python: utils.vacation_with_status
+              (db._db, db._db.getuid (), jandate, remdate, 'submitted')
+    ; fapr    python: utils.flexitime_with_status
+              (db._db, db._db.getuid (), jandate, remdate, 'accepted')
+    ; fsub    python: utils.flexitime_with_status
+              (db._db, db._db.getuid (), jandate, remdate, 'submitted')
+    ">
+    <h3 i18n:translate="">Overview remaining vacation days</h3>
+    <table class="form">
+     <tr>
+      <th i18n:translate="">Vacation
+       <span tal:content="python:jandate.pretty (utils.ymd)"/>
+       &nbsp;
+      </th>
+      <td class="number" tal:content="python:
+          utils.eoy_vacation (db._db, db._db.getuid (), remdate)"/>
+     </tr>
+     <tr>
+      <th i18n:translate="">Approved&nbsp;</th>
+      <td class="number" tal:content="vapr"/>
+     </tr>
+     <tr>
+      <th i18n:translate="">Submitted&nbsp;</th>
+      <td class="number" tal:content="vsub"/>
+     </tr>
+     <tr>
+      <th i18n:translate="">Remaining Vacation
+       <span tal:content="python:remdate.pretty (utils.ymd)"/>
+       &nbsp;
+      </th>
+      <td class="number" tal:content="python:utils.remaining_vacation
+          (db._db, db._db.getuid (), date = remdate) - vsub"/>
+      <th i18n:translate="">(including submissions)</th>
+     </tr>
+    </table>
+    <h3 i18n:translate="">Overview comp/flexitime days</h3>
+    <table class="form">
+     <tr>
+      <th i18n:translate="">Approved&nbsp;</th>
+      <td class="number" tal:content="fapr"/>
+     </tr>
+     <tr>
+      <th i18n:translate="">Submitted&nbsp;</th>
+      <td class="number" tal:content="fsub"/>
+     </tr>
+     <tr>
+      <th i18n:translate="">Total&nbsp;</th>
+      <td class="number" tal:content="python:fapr + fsub"/>
+     </tr>
+    </table>
+   </tal:block>
+  </tal:block>
  </tal:block>
 </tal:block>

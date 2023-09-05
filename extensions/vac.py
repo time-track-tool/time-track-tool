@@ -173,11 +173,17 @@ class Leave_Buttons (object):
     # end def generate
 # end class Leave_Buttons
 
-def remaining_until (db):
-    db  = db._db
-    now = Date ('.')
+def remaining_until (db, now = None):
+    try:
+        db  = db._db
+    except AttributeError:
+        pass
+    if now is None:
+        now = Date ('.')
     uid = db.getuid ()
     dyn = user_dynamic.get_user_dynamic (db, uid, now)
+    if dyn is None:
+        return None
     return vacation.next_yearly_vacation_date \
         (db, uid, dyn.contract_type, now) - common.day
 # end def remaining_until
