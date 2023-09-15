@@ -700,7 +700,7 @@ class LDAP_Roundup_Sync (Log):
             , creation_only  = True
             , write_vie_user = False
             )
-        if 'employee_number' in db.user.properties:
+        if 'employee_number' in self.db.user.properties:
             self.append_sync_attribute (employee_number = en_cfg_entry)
         else:
             self.append_sync_attribute (id = en_cfg_entry)
