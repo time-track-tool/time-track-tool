@@ -652,10 +652,15 @@ class Daily_Record_Edit_Action (EditItemAction, Daily_Record_Common):
             dstart.month = dr.date.month
             dstart.day   = dr.date.day
         if end:
-            dend   = Date (end,   offset = 0)
+            t = end
+            if t == '24:00':
+                t = '0:00'
+            dend       = Date (t, offset = 0)
             dend.year  = dr.date.year
             dend.month = dr.date.month
             dend.day   = dr.date.day
+            if end == '24:00':
+                dend += common.day
         if start and end:
             dur = (dend - dstart).as_seconds () / 3600.
         return dstart, dend, dur
