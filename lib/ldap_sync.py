@@ -41,7 +41,11 @@ class Pic:
         if (not size or self.len <= size) and self.img.format == 'JPEG':
             return self.b
         # Maybe no resize necessary after conversion to JPEG:
-        if self.img.format != 'JPEG':
+        try:
+            exif = self.img.getexif ()
+        except AttributeError:
+            exif = None
+        if exif is None:
             picio  = io.BytesIO ()
             self.img.save (picio, format = 'JPEG', quality = quality)
             sz     = len (picio.getvalue ())
@@ -52,7 +56,6 @@ class Pic:
             # We don't need the exif on the image (in fact we're trying
             # to shrink the image here) and some exif info is
             # unparseable by Pillow.
-            exif = self.img.getexif ()
             for k in list (exif):
                 if k != 0x0112:
                     try:

@@ -1,0 +1,58 @@
+#!/usr/bin/python3
+
+import os
+import sys
+import io
+from argparse import ArgumentParser
+from PIL      import Image
+
+cmd = ArgumentParser ()
+cmd.add_argument \
+    ( 'picfile'
+    , help    = 'Picture to read'
+    )
+cmd.add_argument \
+    ( '-o', '--output-file'
+    , help    = 'File to write to, default is stdout'
+    )
+cmd.add_argument \
+    ( '-d', '--directory'
+    , help    = 'Directory to import from, default=%(default)s'
+    , default = '.'
+    )
+cmd.add_argument \
+    ( '-q', '--quality'
+    , help    = 'Quality of resulting picture in percent, default=%(default)s'
+    , default = 80
+    , type    = int
+    )
+cmd.add_argument \
+    ( '-s', '--size'
+    , help    = 'Max size of resulting picture, default=%(default)s'
+    , default = 10240
+    , type    = int
+    )
+args = cmd.parse_args ()
+sys.path.insert (1, os.path.join (args.directory, 'lib'))
+
+from ldap_sync import Pic
+
+class JPic (Pic):
+
+    def __init__ (self, fileobj):
+        self.b   = fileobj.read ()
+        self.len = len (self.b)
+        self.img = Image.open (io.BytesIO (self.b))
+        if self.img.mode in ('P', 'RGBA'):
+            self.img = self.img.convert ('RGB')
+    # end def __init__
+
+# end class JPic
+
+with open (args.picfile, 'rb') as f:
+    p = JPic (f)
+if args.output_file:
+    with open (args.output_file, 'wb') as fout:
+        fout.write (p.resized_picture (args.size, args.quality))
+else:
+    sys.stdout.buffer.write (p.resized_picture (args.size, args.quality))
