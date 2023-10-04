@@ -423,7 +423,7 @@ export default new Vapi({
     action: "fetch_frozen_until",
     property: "frozen_until",
     path: ({ user_id }) =>
-      `rest/data/daily_record_freeze?user=${user_id}&@page_size=1&@fields=date&@sort=-date`,
+      `rest/data/daily_record_freeze?user=${user_id}&frozen=1&@page_size=1&@fields=date&@sort=-date`,
     // eslint-disable-next-line no-unused-vars
     onSuccess: (state, payload, axios, { params, data }) => {
       state.frozen_until = parseISO(
