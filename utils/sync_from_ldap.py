@@ -24,6 +24,13 @@ def main () :
         , action  = 'store_true'
         )
     parser.add_argument \
+        ( "-C", "--no-roundup-user-creation"
+        , dest    = 'roundup_user_creation'
+        , help    = "Do not create users in roundup"
+        , action  = 'store_false'
+        , default = True
+        )
+    parser.add_argument \
         ( "-d", "--database-directory"
         , dest    = "database_directory"
         , help    = "Directory of the roundup installation"
@@ -65,12 +72,13 @@ def main () :
     # If max_changes is 0 we do not set a limit
     max_changes = args.max_changes or None
 
-    lds = LDAP_Roundup_Sync \
-        ( db
-        , verbose         = args.verbose
-        , dry_run_roundup = not args.update
-        , dry_run_ldap    = not args.write_to_ldap
+    params = dict \
+        ( verbose                   = args.verbose
+        , dry_run_roundup           = not args.update
+        , dry_run_ldap              = not args.write_to_ldap
+        , rup_user_creation_allowed = args.roundup_user_creation
         )
+    lds = LDAP_Roundup_Sync (db, **params)
     if not args.two_way_sync :
         lds.log.info ("Update LDAP (two-way-sync) is deactivated")
     try :

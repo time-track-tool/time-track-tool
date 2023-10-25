@@ -374,7 +374,7 @@ class LDAP_Roundup_Sync (Log):
     def __init__ \
         ( self, db, update_roundup = None, update_ldap = None, verbose = 0
         , dry_run_roundup = False, dry_run_ldap = False, get_groups = True
-        , log = None, ldap = None
+        , log = None, ldap = None, rup_user_creation_allowed = True
         ):
         self.db              = db
         self.cfg             = db.config.ext
@@ -388,6 +388,7 @@ class LDAP_Roundup_Sync (Log):
         self.ad_domain       = self.cfg.LDAP_AD_DOMAINS.split (',')
         self.objectclass     = getattr (self.cfg, 'LDAP_OBJECTCLASS', 'person')
         self.base_dn         = self.cfg.LDAP_BASE_DN
+        self.rup_user_creation_allowed = rup_user_creation_allowed
         if log is not None:
             self.log = log
         else:
@@ -1390,7 +1391,8 @@ class LDAP_Roundup_Sync (Log):
         luser = self.get_ldap_user_by_username (username)
         self.debug (3, 'User by username')
         if luser:
-            guid = luser.raw_value ('objectGUID')
+            guid  = luser.raw_value ('objectGUID')
+            empno = luser.value ('employeenumber')
         if update is not None:
             self.update_roundup = update
         uid = None
@@ -1398,6 +1400,9 @@ class LDAP_Roundup_Sync (Log):
         uids = None
         if luser:
             uids = self.db.user.filter (None, dict (guid = tohex (guid)))
+            if not uids and empno:
+                uids = self.db.user.filter \
+                    (None, exact_match_spec = dict (employee_number = empno))
         if uids:
             assert len (uids) == 1
             uid = uids [0]
@@ -1441,6 +1446,10 @@ class LDAP_Roundup_Sync (Log):
             r_user = self.compute_r_user (user, luser)
             # If an error occurred this will have returned None
             if not r_user and user:
+                return
+            if not user and not self.rup_user_creation_allowed:
+                self.info \
+                    ('Not creating user "%s" in roundup from ldap' % username)
                 return
             d = {}
             c = {}
