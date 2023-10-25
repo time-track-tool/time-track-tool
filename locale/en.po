@@ -1012,7 +1012,7 @@ msgid "edit again"
 msgstr "Edit again"
 
 msgid "supervisor"
-msgstr "Supervisor"
+msgstr "Legal Manager"
 
 #, python-format
 msgid "No %(f_supervisor)s for %(user)s"
@@ -1674,7 +1674,7 @@ msgid "born"
 msgstr ""
 
 msgid "business_responsible"
-msgstr "Business responsible"
+msgstr "Direct Manager"
 
 msgid ""
 "The business responsible defines who is responsible for a person\n"
@@ -6669,7 +6669,7 @@ msgid "surrogate"
 msgstr ""
 
 msgid "sex"
-msgstr ""
+msgstr "Gender"
 
 msgid "security_req_group"
 msgstr "Security requirements group"

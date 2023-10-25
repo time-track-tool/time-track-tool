@@ -6755,7 +6755,7 @@ msgid "surrogate"
 msgstr ""
 
 msgid "sex"
-msgstr ""
+msgstr "Gender"
 
 msgid "security_req_group"
 msgstr ""
