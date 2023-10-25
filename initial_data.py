@@ -108,15 +108,24 @@ admin = dict \
     ( username = "admin"
     , password = adminpw
     , roles    = "Admin"
+    , **d
     )
-
+if 'employee_number' in db.user.properties:
+    employee_number = 1
+    admin.update (employee_number = str (employee_number))
 if 'transceiver' not in db.classes :
     admin ['address'] = db.config.ADMIN_EMAIL
 db.user.create (**admin)
-db.user.create \
+
+anon = dict
     ( username = "anonymous"
     , roles    = "Anonymous"
     )
+if 'employee_number' in db.user.properties:
+    employee_number += 1
+    anon.update (employee_number = str (employee_number))
+db.user.create (**anon)
+
 if 'it_issue' in db.classes :
     d = dict \
         ( username = "helpdesk"
@@ -125,6 +134,9 @@ if 'it_issue' in db.classes :
         )
     if 'firstname' in db.user.properties :
         d ['firstname'] = d ['lastname'] = 'helpdesk'
+    if 'employee_number' in db.user.properties:
+        employee_number += 1
+        d.update (employee_number = str (employee_number))
     db.user.create (** d)
     if hasattr (db, 'sql') :
         db.sql ('create index _it_issue_status_idx on _it_issue (_status);')
@@ -666,17 +678,25 @@ if 'transceiver' in db.classes :
         , sint         = 60
         , sint_pending = False
         )
-    db.user.create \
+    guest = dict \
         ( username = "guest"
         , password = adminpw
         , roles    = 'Guest'
         , timezone = 'Europe/Vienna'
         )
-    db.user.create \
+    if 'employee_number' in db.user.properties:
+        employee_number += 1
+        guest.update (employee_number = str (employee_number))
+    db.user.create (**guest)
+    logger = dict \
         ( username = "logger"
         , password = adminpw
         , roles    = 'Logger'
         )
+    if 'employee_number' in db.user.properties:
+        employee_number += 1
+        logger.update (employee_number = str (employee_number))
+    db.user.create (**logger)
 if 'measurement' in db.classes and hasattr (db, 'sql') :
     db.sql \
         ('create index _measurement_date_idx_ '
@@ -1456,6 +1476,13 @@ if 'purchase_security_risk' in db.classes :
         ( supplier_risk_category = src_vhi
         , infosec_level          = il_vhi
         , purchase_risk_type     = prt_dnp
+        )
+
+if 'employee_number' in db.user.properties and hasattr (db, 'sql') :
+    db.sql \
+        ( 'alter table _user add constraint '
+          'user_employee_number_unique unique '
+          '(_employee_number, __retired__);'
         )
 
 if 'payment_type' in db.classes :

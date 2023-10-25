@@ -609,6 +609,7 @@ def init \
                 , department_temp        = String    ()
                 , dark_mode              = Boolean   ()
                 , new_tt_iface           = Boolean   ()
+                , employee_number        = String    ()
                 )
             kw ['User_Class'].__init__ (self, db, classname, ** properties)
         # end def __init__
@@ -933,6 +934,7 @@ def security (db, ** kw):
         , ( "user",         "View", ["User"]
           , ( "timetracking_by", "vie_user", "vie_user_bl_override"
             , "vie_user_ml", "department_temp", "business_responsible"
+            , "employee_number"
             )
           )
         , ( "user",         "Edit", ["Functional-Role"]
