@@ -1402,7 +1402,9 @@ class LDAP_Roundup_Sync (Log):
             uids = self.db.user.filter (None, dict (guid = tohex (guid)))
             if not uids and empno:
                 uids = self.db.user.filter \
-                    (None, exact_match_spec = dict (employee_number = empno))
+                    ( None, {}
+                    , exact_match_spec = dict (employee_number = empno)
+                    )
         if uids:
             assert len (uids) == 1
             uid = uids [0]
