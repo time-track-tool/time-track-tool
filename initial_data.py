@@ -108,7 +108,6 @@ admin = dict \
     ( username = "admin"
     , password = adminpw
     , roles    = "Admin"
-    , **d
     )
 if 'employee_number' in db.user.properties:
     employee_number = 1
@@ -117,7 +116,7 @@ if 'transceiver' not in db.classes :
     admin ['address'] = db.config.ADMIN_EMAIL
 db.user.create (**admin)
 
-anon = dict
+anon = dict \
     ( username = "anonymous"
     , roles    = "Anonymous"
     )

@@ -1061,6 +1061,7 @@ class Test_Case_LDAP_Sync (_Test_Base, unittest.TestCase) :
     digests = set \
         (( 'c3b3e3bd46d5c7e9c82b71e1d92ad1a1'
          , '3ee3295b3570234333076afb9943dac8'
+         , '2c22826feabcf4b3072a176fced9d009'
         ))
 
     def test_pic_convert_no_resize (self) :
@@ -1075,7 +1076,7 @@ class Test_Case_LDAP_Sync (_Test_Base, unittest.TestCase) :
         self.assertEqual (len (d), 7)
         pic = d ['thumbnailPhoto'][0][1][0]
         # This depends on the pillow version
-        assert len (pic) in set ((6034, 6025))
+        assert len (pic) in set ((6034, 6025, 4289))
         # compute md5sum over synced picture to assert that the picture
         # conversion is stable and produces same result every time.
         # Otherwise we would produce lots of ldap changes!

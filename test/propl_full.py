@@ -860,6 +860,7 @@ properties = \
         , 'csv_delimiter'
         , 'dark_mode'
         , 'department_temp'
+        , 'employee_number'
         , 'entry_date'
         , 'firstname'
         , 'guid'

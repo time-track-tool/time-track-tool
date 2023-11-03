@@ -869,6 +869,7 @@ properties = \
         , 'clearance_by'
         , 'dark_mode'
         , 'department_temp'
+        , 'employee_number'
         , 'entry_date'
         , 'firstname'
         , 'job_description'
