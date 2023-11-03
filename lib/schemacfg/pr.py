@@ -750,8 +750,9 @@ def security (db, ** kw):
         for id in ap:
             a = db.pr_approval.getnode (id)
             # already signed by finance?
-            finance = db.pr_approval_order.lookup ('finance')
-            if a.status != un and a.role_id == finance:
+            finance = db.pr_approval_order.filter \
+                (None, dict (is_finance = True))
+            if a.status != un and a.role_id in finance:
                 return False
         return linked_pr (db, userid, itemid)
     # end def approver_non_finance
