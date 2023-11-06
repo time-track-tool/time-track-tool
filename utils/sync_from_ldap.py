@@ -43,6 +43,11 @@ def main ():
         , type    = int
         )
     parser.add_argument \
+        ( "-R", "--roundup-wins"
+        , help    = "If both directions of sync are specified, roundup wins"
+        , action  = 'store_true'
+        )
+    parser.add_argument \
         ( "-u", "--update"
         , help    = "Update roundup with info from LDAP directory"
         , default = False
@@ -61,6 +66,9 @@ def main ():
         , action  = 'store_true'
         )
     args = parser.parse_args ()
+    if args.roundup_wins and not args.two_way_sync:
+        print ("Option roundup-wins (-R) only valid with two way sync")
+        sys.exit (23)
 
     sys.path.insert (1, os.path.join (args.database_directory, 'lib'))
     from ldap_sync import LDAP_Roundup_Sync
@@ -77,6 +85,7 @@ def main ():
         , dry_run_roundup           = not args.update
         , dry_run_ldap              = not args.write_to_ldap
         , rup_user_creation_allowed = args.roundup_user_creation
+        , roundup_wins              = args.roundup_wins
         )
     lds = LDAP_Roundup_Sync (db, **params)
     if not args.two_way_sync:

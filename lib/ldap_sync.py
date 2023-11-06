@@ -377,6 +377,7 @@ class LDAP_Roundup_Sync (Log):
         ( self, db, update_roundup = None, update_ldap = None, verbose = 0
         , dry_run_roundup = False, dry_run_ldap = False, get_groups = True
         , log = None, ldap = None, rup_user_creation_allowed = True
+        , roundup_wins = False
         ):
         self.db              = db
         self.cfg             = db.config.ext
@@ -390,6 +391,7 @@ class LDAP_Roundup_Sync (Log):
         self.ad_domain       = self.cfg.LDAP_AD_DOMAINS.split (',')
         self.objectclass     = getattr (self.cfg, 'LDAP_OBJECTCLASS', 'person')
         self.base_dn         = self.cfg.LDAP_BASE_DN
+        self.roundup_wins    = roundup_wins
         self.rup_user_creation_allowed = rup_user_creation_allowed
         if log is not None:
             self.log = log
@@ -1459,7 +1461,9 @@ class LDAP_Roundup_Sync (Log):
             c = {}
             for k in self.attr_map ['user']:
                 for synccfg in self.attr_map ['user'][k]:
-                    if synccfg.to_roundup:
+                    if  ( synccfg.to_roundup
+                        and (not synccfg.do_change or not self.roundup_wins)
+                        ):
                         v = synccfg.to_roundup (luser, synccfg.name)
                         if v is not None:
                             v = u2s (v)
