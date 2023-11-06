@@ -6,7 +6,7 @@ from argparse import ArgumentParser
 
 from roundup  import instance
 
-def main () :
+def main ():
     # most ldap info is now fetched from extensions/config.ini
     parser = ArgumentParser ()
     parser.add_argument \
@@ -79,21 +79,21 @@ def main () :
         , rup_user_creation_allowed = args.roundup_user_creation
         )
     lds = LDAP_Roundup_Sync (db, **params)
-    if not args.two_way_sync :
+    if not args.two_way_sync:
         lds.log.info ("Update LDAP (two-way-sync) is deactivated")
-    try :
-        if args.users :
+    try:
+        if args.users:
             lds.log.info ("Start to sync users '%s' from LDAP" % users)
-            for username in args.users :
+            for username in args.users:
                 lds.sync_user_from_ldap (username)
-                if args.two_way_sync :
+                if args.two_way_sync:
                     lds.sync_user_to_ldap (username)
-        else :
+        else:
             lds.log.info ("Start to sync all users from LDAP")
             lds.sync_all_users_from_ldap (max_changes = max_changes)
-            if args.two_way_sync :
+            if args.two_way_sync:
                 lds.sync_all_users_to_ldap (max_changes = max_changes)
-    except Exception :
+    except Exception:
         lds.log_exception ()
 
     timestamp_end = datetime.datetime.now()
@@ -101,5 +101,5 @@ def main () :
     lds.log.info ("Summary_overall;Duration;%s" % duration)
 # end def main
 
-if __name__ == '__main__' :
+if __name__ == '__main__':
     main ()
