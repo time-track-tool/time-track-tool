@@ -262,6 +262,7 @@ class User_Sync_Config_Entry (Config_Entry):
                         there is a valid dynamic user record or if the
                         user has the is_system flag set in the
                         user_status.
+                        Note: This feature is currently disabled.
     """
 
     attrs = ( 'name', 'do_change', 'to_roundup', 'empty_allowed'
@@ -344,6 +345,7 @@ class Userdynamic_Sync_Config_Entry (Config_Entry):
                         there is a valid dynamic user record.
                         The dyn_user_valid flag is used only for items
                         that take data from the dynamic user record.
+                        Note: This feature is currently disabled.
     """
 
     attrs = \
@@ -1817,6 +1819,7 @@ class LDAP_Roundup_Sync (Log):
                 if  (   synccfg.dyn_user_valid
                     and not dyn_is_current
                     and not is_system
+                    and False # Disabled this feature
                     ):
                     self.warn \
                         ( 'Not syncing "%s"->"%s": no valid dyn. user for "%s"'
