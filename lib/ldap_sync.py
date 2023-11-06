@@ -834,18 +834,18 @@ class LDAP_Roundup_Sync (Log):
                     , write_vie_user = False
                     )
                 )
-        if self.allow_sync_user ('room', 'physicalDeliveryOfficeName'):
-            self.append_sync_attribute \
-                ( room = User_Sync_Config_Entry
-                    ( name           = 'physicalDeliveryOfficeName'
-                    , do_change      = self.get_name
-                    , to_roundup     = self.cls_lookup (self.db.room)
-                    , empty_allowed  = True
-                    , from_vie_user  = True
-                    , creation_only  = self.update_ldap
-                    , write_vie_user = True
-                    )
-                )
+#        if self.allow_sync_user ('room', 'physicalDeliveryOfficeName'):
+#            self.append_sync_attribute \
+#                ( room = User_Sync_Config_Entry
+#                    ( name           = 'physicalDeliveryOfficeName'
+#                    , do_change      = self.get_name
+#                    , to_roundup     = self.cls_lookup (self.db.room)
+#                    , empty_allowed  = True
+#                    , from_vie_user  = True
+#                    , creation_only  = self.update_ldap
+#                    , write_vie_user = True
+#                    )
+#                )
         if self.allow_sync_user ('substitute', 'secretary'):
             self.append_sync_attribute \
                 ( substitute = User_Sync_Config_Entry
