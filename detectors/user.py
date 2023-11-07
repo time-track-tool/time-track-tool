@@ -454,8 +454,9 @@ def init (db):
     if 'vie_user_bl_override' in db.user.properties:
         db.user.audit ("create", vie_backlink_check)
         db.user.audit ("set",    vie_backlink_check)
-        db.user.audit ("create", business_responsible_check, priority = 150)
-        db.user.audit ("set",    business_responsible_check, priority = 150)
+        # This is no longer needed/wanted:
+        #db.user.audit ("create", business_responsible_check, priority = 150)
+        #db.user.audit ("set",    business_responsible_check, priority = 150)
     if 'employee_number' in db.user.properties:
         db.user.react ("create", create_employee_number)
         db.user.audit ("set",    set_employee_number)

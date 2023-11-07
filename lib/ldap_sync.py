@@ -262,6 +262,7 @@ class User_Sync_Config_Entry (Config_Entry):
                         there is a valid dynamic user record or if the
                         user has the is_system flag set in the
                         user_status.
+                        Note: This feature is currently disabled.
     """
 
     attrs = ( 'name', 'do_change', 'to_roundup', 'empty_allowed'
@@ -344,6 +345,7 @@ class Userdynamic_Sync_Config_Entry (Config_Entry):
                         there is a valid dynamic user record.
                         The dyn_user_valid flag is used only for items
                         that take data from the dynamic user record.
+                        Note: This feature is currently disabled.
     """
 
     attrs = \
@@ -374,7 +376,8 @@ class LDAP_Roundup_Sync (Log):
     def __init__ \
         ( self, db, update_roundup = None, update_ldap = None, verbose = 0
         , dry_run_roundup = False, dry_run_ldap = False, get_groups = True
-        , log = None, ldap = None
+        , log = None, ldap = None, rup_user_creation_allowed = True
+        , roundup_wins = False
         ):
         self.db              = db
         self.cfg             = db.config.ext
@@ -388,6 +391,8 @@ class LDAP_Roundup_Sync (Log):
         self.ad_domain       = self.cfg.LDAP_AD_DOMAINS.split (',')
         self.objectclass     = getattr (self.cfg, 'LDAP_OBJECTCLASS', 'person')
         self.base_dn         = self.cfg.LDAP_BASE_DN
+        self.roundup_wins    = roundup_wins
+        self.rup_user_creation_allowed = rup_user_creation_allowed
         if log is not None:
             self.log = log
         else:
@@ -831,18 +836,18 @@ class LDAP_Roundup_Sync (Log):
                     , write_vie_user = False
                     )
                 )
-        if self.allow_sync_user ('room', 'physicalDeliveryOfficeName'):
-            self.append_sync_attribute \
-                ( room = User_Sync_Config_Entry
-                    ( name           = 'physicalDeliveryOfficeName'
-                    , do_change      = self.get_name
-                    , to_roundup     = self.cls_lookup (self.db.room)
-                    , empty_allowed  = True
-                    , from_vie_user  = True
-                    , creation_only  = self.update_ldap
-                    , write_vie_user = True
-                    )
-                )
+#        if self.allow_sync_user ('room', 'physicalDeliveryOfficeName'):
+#            self.append_sync_attribute \
+#                ( room = User_Sync_Config_Entry
+#                    ( name           = 'physicalDeliveryOfficeName'
+#                    , do_change      = self.get_name
+#                    , to_roundup     = self.cls_lookup (self.db.room)
+#                    , empty_allowed  = True
+#                    , from_vie_user  = True
+#                    , creation_only  = self.update_ldap
+#                    , write_vie_user = True
+#                    )
+#                )
         if self.allow_sync_user ('substitute', 'secretary'):
             self.append_sync_attribute \
                 ( substitute = User_Sync_Config_Entry
@@ -1390,7 +1395,8 @@ class LDAP_Roundup_Sync (Log):
         luser = self.get_ldap_user_by_username (username)
         self.debug (3, 'User by username')
         if luser:
-            guid = luser.raw_value ('objectGUID')
+            guid  = luser.raw_value ('objectGUID')
+            empno = luser.value ('employeenumber')
         if update is not None:
             self.update_roundup = update
         uid = None
@@ -1398,6 +1404,11 @@ class LDAP_Roundup_Sync (Log):
         uids = None
         if luser:
             uids = self.db.user.filter (None, dict (guid = tohex (guid)))
+            if not uids and empno:
+                uids = self.db.user.filter \
+                    ( None, {}
+                    , exact_match_spec = dict (employee_number = empno)
+                    )
         if uids:
             assert len (uids) == 1
             uid = uids [0]
@@ -1442,11 +1453,17 @@ class LDAP_Roundup_Sync (Log):
             # If an error occurred this will have returned None
             if not r_user and user:
                 return
+            if not user and not self.rup_user_creation_allowed:
+                self.info \
+                    ('Not creating user "%s" in roundup from ldap' % username)
+                return
             d = {}
             c = {}
             for k in self.attr_map ['user']:
                 for synccfg in self.attr_map ['user'][k]:
-                    if synccfg.to_roundup:
+                    if  ( synccfg.to_roundup
+                        and (not synccfg.do_change or not self.roundup_wins)
+                        ):
                         v = synccfg.to_roundup (luser, synccfg.name)
                         if v is not None:
                             v = u2s (v)
@@ -1806,6 +1823,7 @@ class LDAP_Roundup_Sync (Log):
                 if  (   synccfg.dyn_user_valid
                     and not dyn_is_current
                     and not is_system
+                    and False # Disabled this feature
                     ):
                     self.warn \
                         ( 'Not syncing "%s"->"%s": no valid dyn. user for "%s"'
