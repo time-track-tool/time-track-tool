@@ -564,23 +564,28 @@ class LDAP_Roundup_Sync (Log):
         return rn
     # end def get_cn
 
-    def truncate_department (self, department):
+    def truncate_field (self, field, fieldname = 'department'):
         AD_MAX_LENGTH_DEPARTMENT = 64
-        if department and len (department) > AD_MAX_LENGTH_DEPARTMENT:
-            department_trunc = department [0:AD_MAX_LENGTH_DEPARTMENT]
+        if field and len (field) > AD_MAX_LENGTH_DEPARTMENT:
+            field_trunc = field [0:AD_MAX_LENGTH_DEPARTMENT]
             self.warn \
-                ( "Cutting of department string to %s"
-                  " chars to fit AD: '%s' -> '%s'"
-                % (AD_MAX_LENGTH_DEPARTMENT, department, department_trunc)
+                ( "Cutting of %s string to %s chars to fit AD: '%s' -> '%s'"
+                % (fieldname, AD_MAX_LENGTH_DEPARTMENT, field, field_trunc)
                 )
-            department = department_trunc
-        return department
-    # end def truncate_department
+            field = field_trunc
+        return field
+    # end def truncate_field
 
     def get_department (self, user, attr):
         if user.department_temp:
-            return self.truncate_department (user.department_temp)
+            return self.truncate_field (user.department_temp)
     # end def get_department
+
+    def get_company_name (self, user, attr):
+        if user.company_name:
+            # Use the same truncation mechanism as for department
+            return self.truncate_field (user.company_name, 'company_name')
+    # end def get_company_name
 
     def get_name (self, user, attr):
         """ Get name from roundup user class Link attr """
@@ -898,14 +903,16 @@ class LDAP_Roundup_Sync (Log):
                     , write_vie_user = False
                     )
                 )
-        if self.allow_sync_user ('org_location', 'company'):
+        if self.allow_sync_user ('company_name', 'company'):
             self.append_sync_attribute \
-                ( key = 'user_dynamic'
-                , org_location = Userdynamic_Sync_Config_Entry
-                    ( name         = 'name'
-                    , ldap_prop    = 'company'
-                    , from_roundup = self.set_user_dynamic_prop
-                    , to_roundup   = None
+                ( company_name = User_Sync_Config_Entry
+                    ( name           = 'company'
+                    , do_change      = self.get_company_name
+                    , to_roundup     = None
+                    , empty_allowed  = True
+                    , from_vie_user  = True
+                    , creation_only  = True
+                    , write_vie_user = False
                     )
                 )
         if  (   self.allow_sync_user ('sap_cc', 'extensionAttribute3')
