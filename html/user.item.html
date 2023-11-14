@@ -144,6 +144,16 @@
        </tr>
       </tal:block>
      </tal:block>
+     <tr tal:condition="python:'company_name' in props">
+      <th tal:content="structure python:
+          utils.fieldname (db, 'user', 'company_name')"/>
+      <td tal:content="structure python: context.company_name.field ()"/>
+     </tr>
+     <tr tal:condition="python:'company_code' in props">
+      <th tal:content="structure python:
+          utils.fieldname (db, 'user', 'company_code')"/>
+      <td tal:content="structure python: context.company_code.field ()"/>
+     </tr>
      <tr tal:condition="python:'department_temp' in props">
       <th tal:content="structure python:
           utils.fieldname (db, 'user', 'department_temp')"/>

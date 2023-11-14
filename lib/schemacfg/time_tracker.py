@@ -610,6 +610,8 @@ def init \
                 , dark_mode              = Boolean   ()
                 , new_tt_iface           = Boolean   ()
                 , employee_number        = String    ()
+                , company_name           = String    ()
+                , company_code           = String    ()
                 )
             kw ['User_Class'].__init__ (self, db, classname, ** properties)
         # end def __init__
