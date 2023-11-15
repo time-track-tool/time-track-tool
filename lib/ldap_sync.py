@@ -942,14 +942,16 @@ class LDAP_Roundup_Sync (Log):
                 , Email          = Usercontact_Sync_Config_Entry
                     (False, False, False, ('mail',))
                 )
-            d ['internal Phone'] = Usercontact_Sync_Config_Entry \
-                (True,  False, True, ('otherTelephone',))
-            d ['external Phone'] = Usercontact_Sync_Config_Entry \
-                (True,  False, True, ('telephoneNumber',))
-            d ['mobile Phone']   = Usercontact_Sync_Config_Entry \
-                (True,  False, True, ('mobile', 'otherMobile'))
-            d ['Mobile short']   = Usercontact_Sync_Config_Entry \
-                (True,  False, True, ('pager',  'otherPager'))
+            # These are no longer synced to AD:
+            if 0:
+                d ['internal Phone'] = Usercontact_Sync_Config_Entry \
+                    (True,  False, True, ('otherTelephone',))
+                d ['external Phone'] = Usercontact_Sync_Config_Entry \
+                    (True,  False, True, ('telephoneNumber',))
+                d ['mobile Phone']   = Usercontact_Sync_Config_Entry \
+                    (True,  False, True, ('mobile', 'otherMobile'))
+                d ['Mobile short']   = Usercontact_Sync_Config_Entry \
+                    (True,  False, True, ('pager',  'otherPager'))
             self.append_sync_attribute (**d)
         else:
             self.append_sync_attribute \
