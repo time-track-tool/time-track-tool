@@ -936,7 +936,7 @@ def security (db, ** kw):
         , ( "user",         "View", ["User"]
           , ( "timetracking_by", "vie_user", "vie_user_bl_override"
             , "vie_user_ml", "department_temp", "business_responsible"
-            , "employee_number"
+            , "employee_number", "company_name", "company_code"
             )
           )
         , ( "user",         "Edit", ["Functional-Role"]
