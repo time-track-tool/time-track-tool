@@ -8,30 +8,26 @@
  <tal:block tal:define=
   "batch request/batch;
    pdict python: utils.properties_dict (db, context);
-   props python:
-    ( utils.ExtProperty (utils, pdict ['id'])
-    , utils.ExtProperty
-        ( utils, pdict ['name']
-        , get_cssclass = lambda x: 'nobreak'
-        )
-    , utils.ExtProperty (utils, pdict ['description'])
-    , utils.ExtProperty
-        ( utils, pdict ['organisation']
-        , multiselect = 1
-        , filter      = utils.valid_item (now)
-        )
-    , utils.ExtProperty
-        ( utils, pdict ['sap_cc_category']
-        , multiselect = 1
-        )
-    , utils.ExtProperty (utils, pdict ['responsible'])
-    , utils.ExtProperty (utils, pdict ['deputy'])
-    , utils.ExtProperty (utils, pdict ['purchasing_agents'])
-    , utils.ExtProperty (utils, pdict ['team_lead'])
-    , utils.ExtProperty (utils, pdict ['group_lead'])
-    , utils.ExtProperty (utils, pdict ['nosy'])
-    , utils.ExtProperty (utils, pdict ['valid'])
+   prp python:
+    ( ('id',                {})
+    , ('name',              dict (get_cssclass = lambda x: 'nobreak'))
+    , ('description',       {})
+    , ( 'organisation'
+      , dict (multiselect = 1, filter = utils.valid_item (now))
+      )
+    , ('sap_cc_category',   dict (multiselect = 1))
+    , ('responsible',       {})
+    , ('deputy',            {})
+    , ('purchasing_agents', {})
+    , ('team_lead',         {})
+    , ('group_lead',        {})
+    , ('nosy',              {})
+    , ('valid',             {})
     );
+   props python:
+    [ utils.ExtProperty (utils, pdict [p [0]], ** p [1])
+      for p in prp if p [0] in pdict
+    ]
    "
   tal:condition="context/is_view_ok">
 
