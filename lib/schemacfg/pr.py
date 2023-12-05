@@ -493,6 +493,8 @@ def security (db, ** kw):
         , ("Training-Approval",    "Approvals for Training")
         , ("Subcontract-Org",      "Approvals for Subcontracting")
         , ("CISO",                 "Editing of Security Tables")
+        # LAS is 'List of Approved Suppliers'
+        , ("LAS",                  "Supplier management")
         ]
 
     #     classname        allowed to view   /  edit
@@ -510,9 +512,9 @@ def security (db, ** kw):
         , ("pr_approval_status", ["User"],              [])
         , ("pr_currency",        ["User"],              ["Procurement-Admin"])
         , ("pr_status",          ["User"],              [])
-        , ("pr_supplier",        ["User"],              ["Procurement-Admin"])
-        , ("pr_rating_category", ["User"],              ["Procurement-Admin"])
-        , ("pr_supplier_rating", ["User"],              ["Procurement-Admin"])
+        , ("pr_supplier",        ["User"],       ["Procurement-Admin", "LAS"])
+        , ("pr_rating_category", ["User"],       ["Procurement-Admin", "LAS"])
+        , ("pr_supplier_rating", ["User"],       ["Procurement-Admin", "LAS"])
         , ("psp_element",        ["User"],              [])
         , ("purchase_type",      ["User"],              ["Procurement-Admin"])
         , ("terms_conditions",   ["User"],              [])
@@ -695,6 +697,7 @@ def security (db, ** kw):
             )
         )
     db.security.addPermissionToRole ('CISO', p)
+    db.security.addPermissionToRole ('LAS', p)
     p = db.security.addPermission \
         ( name = 'View'
         , klass = 'pr_offer_item'
@@ -709,6 +712,7 @@ def security (db, ** kw):
             )
         )
     db.security.addPermissionToRole ('CISO', p)
+    db.security.addPermissionToRole ('LAS', p)
 
     def view_role_approval (db, userid, itemid):
         """ Users are allowed to view if they have one of the view roles
