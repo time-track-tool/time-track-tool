@@ -19,7 +19,7 @@
   <tal:block tal:define=
       " use_labelprop       python:True
       ; has_resp            python: False
-      ; required_attributes python:'sap_cc_category'
+      ; required_attributes python:'sap_cc_category' if 'sap_cc_category' in props else ''
       ">
   <tal:block metal:use-macro="templates/page/macros/formatted_class">
    <tal:block metal:fill-slot="formatted_class_content">
@@ -58,7 +58,7 @@
      <td tal:content="structure python:context.organisation.menu
          (**utils.valid_item (now))"/>
     </tr>
-    <tr>
+    <tr tal:condition="python:'sap_cc_category' in props">
      <th tal:content="structure python:utils.fieldname
          (db, classname, 'sap_cc_category')"/>
      <td tal:content="structure python:context.sap_cc_category.menu ()"/>
