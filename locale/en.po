@@ -7565,3 +7565,6 @@ msgstr "Employee number"
 
 msgid "company_name"
 msgstr "Company"
+
+msgid "o_permission"
+msgstr "User Permission"

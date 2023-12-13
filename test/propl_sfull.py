@@ -463,6 +463,11 @@ properties = \
         , 'name'
         ]
       )
+    , ( 'o_permission'
+      , [ 'org_location'
+        , 'user'
+        ]
+      )
     , ( 'org_group'
       , [ 'name'
         ]

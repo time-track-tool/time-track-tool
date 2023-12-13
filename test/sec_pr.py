@@ -2,6 +2,8 @@ security = """
 New Web users get the Roles "User,Nosy"
 New Email users get the Role "User"
 Role "admin":
+ User is allowed to create o_permission (Create for "o_permission" only)
+ User is allowed to edit o_permission (Edit for "o_permission" only)
  User may access the rest interface (Rest Access)
  User may access the web interface (Web Access)
  User may access the xmlrpc interface (Xmlrpc Access)
@@ -69,6 +71,9 @@ Role "las":
 Role "measurement-approval":
 Role "nosy":
  User may get nosy messages for purchase_request (Nosy for "purchase_request" only)
+Role "o-permission":
+ User is allowed to create o_permission (Create for "o_permission" only)
+ User is allowed to edit o_permission (Edit for "o_permission" only)
 Role "pgp":
 Role "pr-view":
  User is allowed to access pr_approval (View for "pr_approval" only)
@@ -164,6 +169,7 @@ Role "user":
  User is allowed to access infosec_level (View for "infosec_level" only)
  User is allowed to access internal_order (View for "internal_order" only)
  User is allowed to access location (View for "location" only)
+ User is allowed to access o_permission (View for "o_permission" only)
  User is allowed to access org_location (View for "org_location" only)
  User is allowed to access organisation (View for "organisation" only)
  User is allowed to access part_of_budget (View for "part_of_budget" only)
