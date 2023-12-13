@@ -7568,3 +7568,6 @@ msgstr "Company"
 
 msgid "company_code"
 msgstr "Company Code"
+
+msgid "o_permission"
+msgstr "User Permission"

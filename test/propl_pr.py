@@ -63,6 +63,11 @@ properties = \
         , 'type'
         ]
       )
+    , ( 'o_permission'
+      , [ 'organisation'
+        , 'user'
+        ]
+      )
     , ( 'org_location'
       , [ 'location'
         , 'name'

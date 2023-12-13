@@ -50,6 +50,7 @@ def init \
     , Org_Location_Class
     , Time_Project_Status_Class
     , Currency_Class
+    , O_Permission_Class
     , ** kw
     ):
     export = {}
@@ -467,6 +468,11 @@ def init \
         # end def __init__
     # end class User_Class
     export.update (dict (User_Class = User_Class))
+
+    o_permission = O_Permission_Class \
+        ( db, ''"o_permission"
+        , organisation = Multilink ("organisation")
+        )
 
     return export
 # end def init

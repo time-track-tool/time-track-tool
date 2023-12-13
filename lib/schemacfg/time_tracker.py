@@ -49,6 +49,7 @@ def init \
     , Interval
     , Department_Class
     , Time_Project_Status_Class
+    , O_Permission_Class
     , ** kw
     ):
     export = {}
@@ -684,6 +685,11 @@ def init \
         , name                  = String    ()
         )
     org_group.setkey ("name")
+
+    o_permission = O_Permission_Class \
+        ( db, ''"o_permission"
+        , org_location          = Multilink ("org_location")
+        )
 
     return export
 # end def init

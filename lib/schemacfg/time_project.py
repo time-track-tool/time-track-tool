@@ -1,5 +1,4 @@
-# -*- coding: iso-8859-1 -*-
-# Copyright (C) 2015 Dr. Ralf Schlatterbeck Open Source Consulting.
+# Copyright (C) 2015-23 Dr. Ralf Schlatterbeck Open Source Consulting.
 # Reichergasse 131, A-3411 Weidling.
 # Web: http://www.runtux.com Email: office@runtux.com
 # All rights reserved
@@ -25,6 +24,7 @@
 #
 # Purpose
 #    Schema definitions for PSP-elements (time-project or time-category)
+#    And for permission management
 #
 #--
 #
@@ -112,6 +112,20 @@ def init \
     # end class SAP_CC_Class
     export.update (dict (SAP_CC_Class = SAP_CC_Class))
 
+    class O_Permission_Class (Ext_Class) :
+        """ Create a o_permission class with some default properties
+        """
+
+        def __init__ (self, db, classname, ** properties) :
+            self.update_properties \
+                ( user                  = Link      ("user")
+                )
+            Ext_Class.__init__ (self, db, classname, ** properties)
+            self.setlabelprop ("user")
+        # end def __init__
+    # end class O_Permission_Class
+    export.update (dict (O_Permission_Class = O_Permission_Class))
+
     return export
 # end def init
 
@@ -127,6 +141,7 @@ def security (db, ** kw) :
         , ("Project_View",      "May view project data")
         , ("Controlling",       "Controlling")
         , ("Procurement",       "Purchasing/Procurement")
+        , ("O-Permission",      "Allowed org-location/organisation per user")
         ]
 
     #     classname
@@ -144,6 +159,13 @@ def security (db, ** kw) :
         , ( "sap_cc"
           , ["User"]
           , []
+          )
+        # Note that the role 'O-Permission' has additional checks that
+        # do not allow changing org locations that are not in the
+        # permission set of that user.
+        , ( "o_permission"
+          , ["User"]
+          , ["Admin", "O-Permission"]
           )
         ]
 

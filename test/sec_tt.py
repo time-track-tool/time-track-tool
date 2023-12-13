@@ -2,6 +2,8 @@ security = """
 New Web users get the Roles "User,Nosy"
 New Email users get the Role "User"
 Role "admin":
+ User is allowed to create o_permission (Create for "o_permission" only)
+ User is allowed to edit o_permission (Edit for "o_permission" only)
  User may access the rest interface (Rest Access)
  User may access the web interface (Web Access)
  User may access the xmlrpc interface (Xmlrpc Access)
@@ -222,6 +224,9 @@ Role "it":
  User may manipulate user Roles through the web (Web Roles)
 Role "nosy":
  User may get nosy messages for doc (Nosy for "doc" only)
+Role "o-permission":
+ User is allowed to create o_permission (Create for "o_permission" only)
+ User is allowed to edit o_permission (Edit for "o_permission" only)
 Role "office":
   (Restore for "room" only)
   (Retire for "room" only)
@@ -311,6 +316,7 @@ Role "user":
  User is allowed to access job_log (View for "job_log" only)
  User is allowed to access leave_status (View for "leave_status" only)
  User is allowed to access location (View for "location" only)
+ User is allowed to access o_permission (View for "o_permission" only)
  User is allowed to access org_group (View for "org_group" only)
  User is allowed to access org_location (View for "org_location" only)
  User is allowed to access organisation (View for "organisation" only)
