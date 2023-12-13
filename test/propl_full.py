@@ -856,6 +856,8 @@ properties = \
         , 'alternate_addresses'
         , 'business_responsible'
         , 'clearance_by'
+        , 'company_code'
+        , 'company_name'
         , 'contacts'
         , 'csv_delimiter'
         , 'dark_mode'

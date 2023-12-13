@@ -867,6 +867,8 @@ properties = \
         , 'alternate_addresses'
         , 'business_responsible'
         , 'clearance_by'
+        , 'company_code'
+        , 'company_name'
         , 'dark_mode'
         , 'department_temp'
         , 'employee_number'
