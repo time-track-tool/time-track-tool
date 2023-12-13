@@ -57,6 +57,15 @@ Role "it":
  User is allowed to create domain_permission (Create for "domain_permission" only)
  User is allowed to edit domain_permission (Edit for "domain_permission" only)
 Role "it-approval":
+Role "las":
+  (Edit for "pr_offer_item": ('add_to_las',) only)
+  (View for "pr_offer_item": ('activity', 'actor', 'add_to_las', 'creation', 'creator', 'pr_supplier', 'supplier') only)
+ User is allowed to create pr_rating_category (Create for "pr_rating_category" only)
+ User is allowed to create pr_supplier (Create for "pr_supplier" only)
+ User is allowed to create pr_supplier_rating (Create for "pr_supplier_rating" only)
+ User is allowed to edit pr_rating_category (Edit for "pr_rating_category" only)
+ User is allowed to edit pr_supplier (Edit for "pr_supplier" only)
+ User is allowed to edit pr_supplier_rating (Edit for "pr_supplier_rating" only)
 Role "measurement-approval":
 Role "nosy":
  User may get nosy messages for purchase_request (Nosy for "purchase_request" only)
