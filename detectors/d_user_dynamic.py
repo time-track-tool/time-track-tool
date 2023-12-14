@@ -40,6 +40,7 @@ import freeze
 import user_dynamic
 import vacation
 import lib_auto_wp
+import o_permission
 
 def check_ranges (cl, nodeid, user, valid_from, valid_to, allow_same = False):
     """ We allow valid_to == valid_from if allow_same is True
@@ -466,6 +467,7 @@ def new_user_dynamic (db, cl, nodeid, new_values):
         , 'valid_from'
         , 'org_location'
         )
+    o_permission.check_valid_user (db, cl, nodeid, new_values)
     user       = new_values ['user']
     valid_from = new_values ['valid_from']
     valid_to   = new_values.get ('valid_to', None)
@@ -723,6 +725,9 @@ def olo_check (db, cl, nodeid, new_values):
     if lp:
         common.require_attributes \
             (db.i18n.gettext, cl, nodeid, new_values, 'vac_aliq')
+    if nodeid:
+        # org must not change
+        common.reject_attributes (db.i18n.gettext, new_values, 'organisation')
 # end def olo_check
 
 def find_existing_leave (db, cl, nodeid, new_values):

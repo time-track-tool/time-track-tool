@@ -27,8 +27,10 @@
 #    Routines for handling permissions bound to org/location
 #
 
-from roundup.date import Date
+from roundup.date       import Date
+from roundup.exceptions import Reject
 import user_dynamic
+import common
 
 def get_allowed_olo (db, uid):
     """ Return a set of allowed org location ids for that user """
@@ -80,3 +82,169 @@ def time_project_allowed_by_org (db, userid, itemid):
     """
     return organisation_allowed (db, userid, itemid, 'time_project')
 # end def time_project_allowed_by_org
+
+def time_wp_allowed_by_org (db, userid, itemid):
+    """ User may access work package because organisation is allowed
+    """
+    wp = db.time_wp.getnode (itemid)
+    return time_project_allowed_by_org (db, userid, wp.project)
+# end def time_wp_allowed_by_org
+
+def time_wp_group_allowed_by_org (db, userid, itemid):
+    """ User may access time_wp_group because organisation of time
+        category is allowed
+    """
+    wpg = db.time_wp_group.getnode (itemid)
+    for wp in wpg.wps:
+        if time_wp_allowed_by_org (db, userid, wp):
+            return True
+    return False
+# end def time_wp_group_allowed_by_org
+
+def dynamic_user_allowed_by_olo (db, userid, itemid):
+    """ User may access dynamic user record because the org_location is
+        allowed
+    """
+    olo = get_allowed_olo (db, userid)
+    dyn = db.user_dynamic.getnode (itemid)
+    return dyn.org_location in olo
+# end def dynamic_user_allowed_by_olo
+
+def user_allowed_by_olo (db, userid, itemid, classname, date = None):
+    """ User may access item because user->user_dynamic->org_location is
+        allowed
+    """
+    cls  = db.classes [classname]
+    item = cls.getnode (itemid)
+    if date is None:
+        date = Date ('.')
+    dyn  = user_dynamic.get_user_dynamic (db, userid, date)
+    return dynamic_user_allowed_by_olo (db, userid, dyn.id)
+# end def user_allowed_by_olo
+
+def daily_record_allowed_by_olo (db, userid, itemid):
+    """ User may access item because org_location in dynamic user is
+        allowed
+    """
+    dr = db.daily_record.getnode (itemid)
+    return user_allowed_by_olo (db, userid, dr.user, 'daily_record', dr.date)
+# end def daily_record_allowed_by_olo
+
+def dr_freeze_allowed_by_olo (db, userid, itemid):
+    """ User may access item because org_location in dynamic user is
+        allowed
+    """
+    dr = db.daily_record_freeze.getnode (itemid)
+    return user_allowed_by_olo \
+        (db, userid, dr.user, 'daily_record_freeze', dr.date)
+# end def dr_freeze_allowed_by_olo
+
+def dr_item_allowed_by_olo (db, userid, itemid, classname):
+    """ Allow access to something that has a daily_record
+    """
+    cls  = db.classes [classname]
+    item = cls.getnode (itemid)
+    return daily_record_allowed_by_olo (db, userid, item.daily_record)
+# end def dr_item_allowed_by_olo
+
+def tr_allowed_by_olo (db, userid, itemid):
+    """ User may access time_record because org_location in dynamic user
+        is allowed
+    """
+    return dr_item_allowed_by_olo (db, userid, itemid, 'time_record')
+# end def tr_allowed_by_olo
+
+def ar_allowed_by_olo (db, userid, itemid):
+    """ User may access attendance_record because org_location in
+        dynamic user is allowed
+    """
+    return dr_item_allowed_by_olo (db, userid, itemid, 'attendance_record')
+# end def ar_allowed_by_olo
+
+def overtime_corr_allowed_by_olo (db, userid, itemid):
+    """ User may access item because org_location in dynamic user is
+        allowed
+    """
+    oc = db.overtime_correction.getnode (itemid)
+    return user_allowed_by_olo \
+        (db, userid, oc.user, 'overtime_correction', oc.date)
+# end def overtime_corr_allowed_by_olo
+
+def vacation_corr_allowed_by_olo (db, userid, itemid):
+    """ User may access item because org_location in dynamic user is
+        allowed
+    """
+    vc = db.vacation_correction.getnode (itemid)
+    return user_allowed_by_olo \
+        (db, userid, vc.user, 'vacation_correction', vc.date)
+# end def vacation_corr_allowed_by_olo
+
+def leave_allowed_by_olo (db, userid, itemid):
+    """ User may access item because org_location in dynamic user is
+        allowed
+    """
+    ls = db.leave_submission.getnode (itemid)
+    return user_allowed_by_olo \
+        (db, userid, ls.user, 'vacation_correction')
+# end def leave_allowed_by_olo
+
+def check_valid_user (db, cl, nodeid, new_values, date = None):
+    uid = db.getuid ()
+    if uid == '1' or common.user_has_role (db, uid, 'Admin'):
+        return
+    assert not nodeid
+    userid = new_values.get ('user')
+    assert userid
+    if date is None:
+        date = Date ('.')
+    dyn  = user_dynamic.get_user_dynamic (db, userid, date)
+    # Allow creation of *first* dynamic user record or same as existing
+    if cl == db.user_dynamic and dyn is None:
+        dyn = user_dynamic.last_user_dynamic (db, userid)
+        if dyn is None:
+            return
+    # Allow creation of vac correction *before* first dyn user
+    if cl == db.vacation_correction and dyn is None:
+        dyn = user_dynamic.last_user_dynamic (db, userid)
+    _    = db.i18n.gettext
+    if not dyn or not dynamic_user_allowed_by_olo (db, userid, dyn.id):
+        uname = dict (uname = db.user.get (userid, 'username'))
+        raise Reject (_ ('User "%(uname)s" not allowed') % uname)
+# end def check_valid_user
+
+def check_valid_org (db, cl, nodeid, new_values):
+    uid = db.getuid ()
+    if uid == '1' or common.user_has_role (db, uid, 'Admin'):
+        return
+    org = new_values.get ('organisation')
+    if org is None:
+        return
+    orgs = get_allowed_org (db, uid)
+    _    = db.i18n.gettext
+    if org not in orgs:
+        orgname = dict (orgname = db.organisation.get (org, 'name'))
+        raise Reject (_ ('Organisation "%(orgname)s not allowed') % orgname)
+# end def check_valid_org
+
+def check_valid_wp_member (db, cl, nodeid, new_values):
+    """ Check that the changed wps of a time_wp_group are allowed
+    """
+    uid = db.getuid ()
+    if uid == '1' or common.user_has_role (db, uid, 'Admin'):
+        return
+    if 'wps' not in new_values:
+        return
+    old = []
+    if nodeid:
+        old = set (cl.get (nodeid, 'wps'))
+    new = set (new_values ['wps'])
+    changed = (old - new).union (new - old)
+    orgs = get_allowed_org (db, uid)
+    _    = db.i18n.gettext
+    for wpid in changed:
+        wp = db.time_wp.getnode (wpid)
+        tp = db.time_project.getnode (wp.project)
+        if not tp.organisation or tp.organisation in orgs:
+            continue
+        raise Reject (_ ('Changing member time_wp%s not allowed') % wpid)
+# end def check_valid_wp_member

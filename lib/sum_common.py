@@ -105,12 +105,13 @@ def daily_record_viewable (db, userid, itemid):
        If user has role HR-Org-Location and is in the same Org-Location
        as the record, it may also be seen.
     """
-    if common.user_has_role (db, userid, 'HR', 'Controlling'):
+    if not o_permission.daily_record_allowed_by_olo (db, userid, itemid):
+        return False
+    if common.user_has_role \
+        (db, userid, 'HR', 'Controlling', 'HR-Org-Location'):
         return True
     dr = db.daily_record.getnode (itemid)
     if userid == dr.user:
-        return True
-    if user_dynamic.hr_olo_role_for_this_user (db, userid, dr.user, dr.date):
         return True
     return dr.user in supervised_users (db, userid)
 # end def daily_record_viewable

@@ -30,9 +30,8 @@
 
 from roundup.exceptions             import Reject
 from roundup.date                   import Date
-from o_permission                   import get_allowed_olo, get_allowed_org
-
 import common
+import o_permission
 
 def check_time_project (db, cl, nodeid, new_values):
     _ = db.i18n.gettext
@@ -49,6 +48,7 @@ def check_time_project (db, cl, nodeid, new_values):
     if 'is_extern' in cl.properties:
         required.append ('is_extern')
     common.require_attributes (_, cl, nodeid, new_values, *required)
+    o_permission.check_valid_org (db, cl, nodeid, new_values)
 # end def check_time_project
 
 def new_time_project (db, cl, nodeid, new_values):
@@ -75,6 +75,7 @@ def new_time_project (db, cl, nodeid, new_values):
             new_values ['status'] = '1'
     common.require_attributes \
         (db.i18n.gettext, cl, nodeid, new_values, 'cost_center')
+    o_permission.check_valid_org (db, cl, nodeid, new_values)
 # end def new_time_project
 
 def fix_wp (db, cl, nodeid, old_values):
@@ -115,11 +116,11 @@ def check_o_permission (db, cl, nodeid, new_values):
     # Determine what changes
     if 'org_location' in cl.properties:
         attr   = 'org_location'
-        method = get_allowed_olo
+        method = o_permission.get_allowed_olo
         cls    = db.org_location
     else:
         attr   = 'organisation'
-        method = get_allowed_org
+        method = o_permission.get_allowed_org
         cls    = db.organisation
     if attr in new_values:
         if nodeid:
@@ -149,6 +150,9 @@ def init (db):
     if 'o_permission' in db.classes:
         db.o_permission.audit ("create", check_o_permission)
         db.o_permission.audit ("set",    check_o_permission)
+    if 'sap_cc' in db.classes:
+        db.sap_cc.audit  ("create", o_permission.check_valid_org)
+        db.sap_cc.audit  ("set",    o_permission.check_valid_org)
 # end def init
 
 ### __END__ time_project

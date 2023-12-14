@@ -508,6 +508,8 @@ class _Test_Base_Summary :
             , lastname     = 'User0'
             , roles        = roles
             )
+        self.db.o_permission.create \
+            (user = self.user0, org_location = [self.olo, self.olo2])
         user_dynamic.user_create_magic (self.db, self.user0, self.olo)
         self.db.user_dynamic.create \
             ( user            = self.user0
@@ -1640,6 +1642,9 @@ class Test_Case_Timetracker (_Test_Case_Summary, unittest.TestCase) :
             , firstname    = 'Nummer12'
             , lastname     = 'User12'
             )
+        # Allow user to create their own dyn user rec
+        self.db.o_permission.create \
+            (user = self.user12, org_location = [self.olo, self.olo2])
         p = self.db.overtime_period.create \
             ( name              = 'monthly average required'
             , months            = 1
@@ -1972,6 +1977,9 @@ class Test_Case_Timetracker (_Test_Case_Summary, unittest.TestCase) :
             , firstname    = 'Nummer14'
             , lastname     = 'User14'
             )
+        # Allow user to create their own dyn user rec
+        self.db.o_permission.create \
+            (user = self.user14, org_location = [self.olo, self.olo2])
         self.db.commit ()
     # end def setup_user14
 
@@ -4058,6 +4066,9 @@ class Test_Case_Timetracker (_Test_Case_Summary, unittest.TestCase) :
             , firstname    = 'Nummer20'
             , lastname     = 'User20'
             )
+        # Allow user to create their own dyn user rec
+        self.db.o_permission.create \
+            (user = self.user20, org_location = [self.olo, self.olo2])
         p = self.db.overtime_period.create \
             ( name              = 'monthly average required'
             , months            = 1
@@ -4230,6 +4241,9 @@ class Test_Case_Timetracker (_Test_Case_Summary, unittest.TestCase) :
             , firstname    = 'Nummer21'
             , lastname     = 'User21'
             )
+        # Allow user to create their own dyn user rec
+        self.db.o_permission.create \
+            (user = self.user21, org_location = [self.olo, self.olo2])
         self.db.time_wp.set (self.vacation_wp, bookers = [self.user21])
         self.db.commit ()
     # end def setup_user21
@@ -4460,7 +4474,7 @@ class Test_Case_Timetracker (_Test_Case_Summary, unittest.TestCase) :
         # this out.
         wl_off    = self.db.work_location.lookup ('off')
         stat_open = self.db.time_project_status.lookup ('Open')
-    # end def
+    # end def setup_user23
 
     def test_user23 (self) :
         self.log.debug ('test_user23')
@@ -5232,6 +5246,9 @@ class Test_Case_Fulltracker (_Test_Case_Summary, unittest.TestCase) :
             , firstname    = 'Nummer7'
             , lastname     = 'User7'
             )
+        # Allow user to create their own dyn user rec
+        self.db.o_permission.create \
+            (user = self.user7, org_location = [self.olo, self.olo2])
         user_dynamic.user_create_magic (self.db, self.user7, self.olo)
         self.db.user_dynamic.create \
             ( user            = self.user7

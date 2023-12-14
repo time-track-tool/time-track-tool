@@ -882,20 +882,17 @@ def compute_balance (db, user, date, sharp_end = False, not_after = False) :
 def hr_olo_role_for_this_user_dyn (db, dbuid, userdyn) :
     """ Given db uid has role HR-Org-Location and the given dynamic user
         is in the same Org-Location as the uid.
+        With introduction of o_permission HR and HR-Org-Location roles
+        are equal. We now use the o_permission check.
     """
-    if not common.user_has_role (db, dbuid, 'HR-Org-Location') :
+    if not common.user_has_role (db, dbuid, 'HR', 'HR-Org-Location') :
         return False
-    dyn = get_user_dynamic (db, dbuid, Date ('.'))
-    if not dyn :
-        return False
-    if userdyn.org_location == dyn.org_location :
-        return True
-    return False
+    return o_permission.dynamic_user_allowed_by_olo (db, dbuid, userdyn.id)
 # end def hr_olo_role_for_this_user_dyn
 
 def hr_olo_role_for_this_user (db, dbuid, userid, date = None) :
-    """ db uid has role HR-Org-Location and the given user is in
-        the same Org-Location (on given date) as the uid.
+    """ dbuid has role HR or HR-Org-Location and the given user is in
+        the same Org-Location (on given date) as the dbuid.
         Use todays date for the check if no date given.
     """
     if not date :
