@@ -32,12 +32,16 @@
 
 import common
 import user_dynamic
+import o_permission
 from roundup.date import Date
 
 def time_project_viewable (db, userid, itemid) :
     """User may view time category if user is owner or deputy of time
-       category or on nosy list of time category
+       category or on nosy list of time category and if the view is
+       permitted via the organisation
     """
+    if not o_permission.time_project_allowed_by_org (db, userid, itemid):
+        return False
     project = db.time_project.getnode (itemid)
     p_nosy  = {}
     if 'nosy' in db.time_project.properties :

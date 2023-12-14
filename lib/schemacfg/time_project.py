@@ -34,6 +34,7 @@ from roundup.date    import Interval
 from schemacfg       import schemadef
 import sum_common
 import common
+import o_permission
 
 def init \
     ( db
@@ -152,14 +153,6 @@ def security (db, ** kw) :
           , ["User"]
           , ["Project"]
           )
-        , ( "time_project"
-          , ["Project_View", "Project", "Controlling"]
-          , []
-          )
-        , ( "sap_cc"
-          , ["User"]
-          , []
-          )
         # Note that the role 'O-Permission' has additional checks that
         # do not allow changing org locations that are not in the
         # permission set of that user.
@@ -169,19 +162,7 @@ def security (db, ** kw) :
           )
         ]
 
-    prop_perms = \
-        [ ( "time_project", "Edit", ["Project"]
-          , ( "cost_center", "deputy", "description", "name"
-            , "nosy", "organisation", "responsible", "status"
-            )
-          )
-        , ( "time_project", "Edit", ["Procurement"]
-          , ("purchasing_agents", "group_lead", "team_lead", "nosy")
-          )
-        , ( "sap_cc", "Edit", ["Procurement"]
-          , ("purchasing_agents", "group_lead", "team_lead", "nosy")
-          )
-        ]
+    prop_perms = []
 
     schemadef.register_roles             (db, roles)
     schemadef.register_class_permissions (db, classes, prop_perms)
@@ -189,25 +170,68 @@ def security (db, ** kw) :
     fixdoc = schemadef.security_doc_from_docstring
 
     p = db.security.addPermission \
+        ( name        = 'Search'
+        , klass       = 'sap_cc'
+        )
+    db.security.addPermissionToRole ("User", p)
+    p = db.security.addPermission \
+        ( name        = 'View'
+        , klass       = 'sap_cc'
+        , check       = o_permission.sap_cc_allowed_by_org
+        , description = fixdoc (o_permission.sap_cc_allowed_by_org.__doc__)
+        )
+    for role in ("User", "Procurement"):
+        db.security.addPermissionToRole (role, p)
+    p = db.security.addPermission \
+        ( name        = 'Edit'
+        , klass       = 'sap_cc'
+        , check       = o_permission.sap_cc_allowed_by_org
+        , properties  = ("purchasing_agents", "group_lead", "team_lead", "nosy")
+        , description = fixdoc (o_permission.sap_cc_allowed_by_org.__doc__)
+        )
+    db.security.addPermissionToRole ("Procurement", p)
+
+    p = db.security.addPermission \
+        ( name        = 'Search'
+        , klass       = 'time_project'
+        )
+    db.security.addPermissionToRole ("User", p)
+    p = db.security.addPermission \
+        ( name        = 'View'
+        , klass       = 'time_project'
+        , check       = o_permission.time_project_allowed_by_org
+        , description = fixdoc
+            (o_permission.time_project_allowed_by_org.__doc__)
+        )
+    for role in ("Project_View", "Project", "Controlling", "Procurement"):
+        db.security.addPermissionToRole (role, p)
+    p = db.security.addPermission \
         ( name        = 'View'
         , klass       = 'time_project'
         , check       = sum_common.time_project_viewable
         , description = fixdoc (sum_common.time_project_viewable.__doc__)
         )
     db.security.addPermissionToRole ('User', p)
-
     p = db.security.addPermission \
-        ( name        = 'View'
+        ( name        = 'Edit'
         , klass       = 'time_project'
+        , check       = o_permission.time_project_allowed_by_org
+        , properties  = ( "cost_center", "deputy", "description", "name"
+                        , "nosy", "organisation", "responsible", "status"
+                        )
+        , description = fixdoc
+            (o_permission.time_project_allowed_by_org.__doc__)
         )
-    db.security.addPermissionToRole ('Procurement', p)
-
+    db.security.addPermissionToRole ("Project", p)
     p = db.security.addPermission \
-        ( name        = 'View'
-        , klass       = 'sap_cc'
+        ( name        = 'Edit'
+        , klass       = 'time_project'
+        , check       = o_permission.time_project_allowed_by_org
+        , properties  = ("purchasing_agents", "group_lead", "team_lead", "nosy")
+        , description = fixdoc
+            (o_permission.time_project_allowed_by_org.__doc__)
         )
-    db.security.addPermissionToRole ('Procurement', p)
-
+    db.security.addPermissionToRole ("Procurement", p)
     db.security.addPermissionToRole ('Project', 'Create', 'time_project')
 
 # end def security
