@@ -524,7 +524,6 @@ def security (db, ** kw):
         , ("psp_element",        ["User"],              [])
         , ("purchase_type",      ["User"],              ["Procurement-Admin"])
         , ("terms_conditions",   ["User"],              [])
-        , ("time_project",       ["User"],              [])
         , ("user",               ["Procurement-Admin"], [])
         , ("purchase_request",   ["PR-View"],           [])
         , ("pr_offer_item",      ["PR-View"],           [])
@@ -582,14 +581,6 @@ def security (db, ** kw):
         , 'status', 'id'
         , 'creation', 'creator', 'activity', 'actor'
         )
-    # Search permission
-    p = db.security.addPermission \
-        ( name        = 'Search'
-        , klass       = 'time_project'
-        , properties  = tp_properties
-        )
-    db.security.addPermissionToRole ('User', p)
-
     p = db.security.addPermission \
         ( name        = 'Search'
         , klass       = 'user'

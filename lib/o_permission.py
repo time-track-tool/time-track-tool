@@ -56,3 +56,27 @@ def get_allowed_org (db, uid):
     operm = db.o_permission.getnode (ids [0])
     return set (operm.organisation)
 # end def get_allowed_org
+
+def organisation_allowed (db, userid, itemid, classname):
+    """ User may view item because organisation is allowed
+    """
+    cls  = db.classes [classname]
+    item = cls.getnode (itemid)
+    orgs = get_allowed_org (db, userid)
+    # Allow items where organisation is not set
+    if not item.organisation:
+        return True
+    return item.organisation in orgs
+# end def organisation_allowed
+
+def sap_cc_allowed_by_org (db, userid, itemid):
+    """ User may access sap cost center because organisation is allowed
+    """
+    return organisation_allowed (db, userid, itemid, 'sap_cc')
+# end def sap_cc_allowed_by_org
+
+def time_project_allowed_by_org (db, userid, itemid):
+    """ User may access time category because organisation is allowed
+    """
+    return organisation_allowed (db, userid, itemid, 'time_project')
+# end def time_project_allowed_by_org
