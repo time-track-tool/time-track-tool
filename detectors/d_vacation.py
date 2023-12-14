@@ -28,6 +28,7 @@ import common
 import freeze
 import user_dynamic
 import vacation
+import o_permission
 
 def check_range (db, nodeid, uid, first_day, last_day):
     """ Check length of range and if there are any records in the given
@@ -635,7 +636,15 @@ def check_correction (db, cl, nodeid, new_values):
     if nodeid:
         common.require_attributes \
             (_, cl, nodeid, new_values, 'absolute')
+        for i in 'user',:
+            if i in new_values:
+                raise Reject \
+                    (_ ("%(attr)s may not be changed") % {'attr': _ (i)})
     else:
+        common.require_attributes \
+            (_, cl, nodeid, new_values, 'user', 'date')
+        date = new_values ['date']
+        o_permission.check_valid_user (db, cl, nodeid, new_values, date = date)
         if 'absolute' not in new_values:
             new_values ['absolute'] = False
     user = new_values.get ('user')

@@ -39,6 +39,7 @@ from user_dynamic                   import compute_balance, first_user_dynamic
 from user_dynamic                   import overtime_periods
 from common                         import next_search_date, start_of_year
 from common                         import freeze_date
+from o_permission                   import check_valid_user
 
 day  = Interval ('1d')
 
@@ -94,6 +95,7 @@ def new_freeze_record (db, cl, nodeid, new_values):
         if i not in new_values:
             raise Reject (_ ("%(attr)s must be set") % {'attr' : _ (i)})
     date = new_values ['date']
+    check_valid_user (db, cl, nodeid, new_values, date = date)
     user = new_values ['user']
     days = getattr (db.config.ext, 'TTT_FREEZE_DAYS', '10')
     if date >= Date ('.-%sd' % days):
@@ -120,6 +122,7 @@ def new_overtime (db, cl, nodeid, new_values):
         if i not in new_values:
             raise Reject (_ ("%(attr)s must be set") % {'attr' : _ (i)})
     date = new_values ['date']
+    check_valid_user (db, cl, nodeid, new_values, date = date)
     date.hour = date.minute = date.second = 0
     check_editable (db, cl, nodeid, new_values)
 # end def new_overtime
