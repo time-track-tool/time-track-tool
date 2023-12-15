@@ -131,6 +131,7 @@ def new_submission (db, cl, nodeid, new_values):
         raise Reject (_ ("Vacation request for 0 days"))
     check_dr_status (db, user, first_day, last_day, 'open')
     check_dyn_user_params (db, user, first_day, last_day)
+    o_permission.check_new_leave_submission_perm (db, cl, nodeid, new_values)
 # end def new_submission
 
 def check_dyn_user_params (db, user, first_day, last_day):
