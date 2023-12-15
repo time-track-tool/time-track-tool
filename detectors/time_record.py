@@ -619,6 +619,7 @@ def new_attendance_record (db, cl, nodeid, new_values):
     start = new_values.get ('start')
     end   = new_values.get ('end')
     check_start_end_duration (_, dr.date, start, end, duration, new_values)
+    o_permission.check_new_tr_or_ar_allowed (db, cl, nodeid, new_values)
 # end def new_attendance_record
 
 def allow_new_public_holiday (db, dr, wpid, tr):
@@ -684,6 +685,7 @@ def new_time_record (db, cl, nodeid, new_values):
             wday = gmtime (dr.date.timestamp ())[6]
             if wday in (5, 6):
                 raise Reject (_ ('No weekend booking allowed'))
+    o_permission.check_new_tr_or_ar_allowed (db, cl, nodeid, new_values)
 # end def new_time_record
 
 def check_att_record (db, cl, nodeid, new_values):

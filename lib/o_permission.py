@@ -110,15 +110,15 @@ def dynamic_user_allowed_by_olo (db, userid, itemid):
     return dyn.org_location in olo
 # end def dynamic_user_allowed_by_olo
 
-def user_allowed_by_olo (db, userid, itemid, classname, date = None):
-    """ User may access item because user->user_dynamic->org_location is
+def user_allowed_by_olo (db, userid, itemuid, date = None):
+    """ User may access item because item->user_dynamic->org_location is
         allowed
     """
-    cls  = db.classes [classname]
-    item = cls.getnode (itemid)
     if date is None:
         date = Date ('.')
-    dyn  = user_dynamic.get_user_dynamic (db, userid, date)
+    dyn  = user_dynamic.get_user_dynamic (db, itemuid, date)
+    if not dyn:
+        return False
     return dynamic_user_allowed_by_olo (db, userid, dyn.id)
 # end def user_allowed_by_olo
 
@@ -127,7 +127,7 @@ def daily_record_allowed_by_olo (db, userid, itemid):
         allowed
     """
     dr = db.daily_record.getnode (itemid)
-    return user_allowed_by_olo (db, userid, dr.user, 'daily_record', dr.date)
+    return user_allowed_by_olo (db, userid, dr.user, dr.date)
 # end def daily_record_allowed_by_olo
 
 def dr_freeze_allowed_by_olo (db, userid, itemid):
@@ -135,8 +135,7 @@ def dr_freeze_allowed_by_olo (db, userid, itemid):
         allowed
     """
     dr = db.daily_record_freeze.getnode (itemid)
-    return user_allowed_by_olo \
-        (db, userid, dr.user, 'daily_record_freeze', dr.date)
+    return user_allowed_by_olo (db, userid, dr.user, dr.date)
 # end def dr_freeze_allowed_by_olo
 
 def dr_item_allowed_by_olo (db, userid, itemid, classname):
@@ -166,8 +165,7 @@ def overtime_corr_allowed_by_olo (db, userid, itemid):
         allowed
     """
     oc = db.overtime_correction.getnode (itemid)
-    return user_allowed_by_olo \
-        (db, userid, oc.user, 'overtime_correction', oc.date)
+    return user_allowed_by_olo (db, userid, oc.user, oc.date)
 # end def overtime_corr_allowed_by_olo
 
 def vacation_corr_allowed_by_olo (db, userid, itemid):
@@ -175,8 +173,7 @@ def vacation_corr_allowed_by_olo (db, userid, itemid):
         allowed
     """
     vc = db.vacation_correction.getnode (itemid)
-    return user_allowed_by_olo \
-        (db, userid, vc.user, 'vacation_correction', vc.date)
+    return user_allowed_by_olo (db, userid, vc.user, vc.date)
 # end def vacation_corr_allowed_by_olo
 
 def leave_allowed_by_olo (db, userid, itemid):
@@ -184,8 +181,7 @@ def leave_allowed_by_olo (db, userid, itemid):
         allowed
     """
     ls = db.leave_submission.getnode (itemid)
-    return user_allowed_by_olo \
-        (db, userid, ls.user, 'vacation_correction')
+    return user_allowed_by_olo (db, userid, ls.user)
 # end def leave_allowed_by_olo
 
 def check_valid_user (db, cl, nodeid, new_values, date = None):
@@ -248,3 +244,30 @@ def check_valid_wp_member (db, cl, nodeid, new_values):
             continue
         raise Reject (_ ('Changing member time_wp%s not allowed') % wpid)
 # end def check_valid_wp_member
+
+def check_new_tr_or_ar_allowed (db, cl, nodeid, new_values):
+    """ Creation is allowed if the dyn user record for the daily record
+        has the correct org_location
+    """
+    uid = db.getuid ()
+    if uid == '1' or common.user_has_role (db, uid, 'Admin'):
+        return
+    dr = db.daily_record.getnode (new_values ['daily_record'])
+    if dr.user == uid:
+        return
+    _  = db.i18n.gettext
+    if not daily_record_allowed_by_olo (db, uid, dr.id):
+        classname = dict (classname = _ (cl.classname))
+        raise Reject \
+            (_ ('Creating %(classname)s not allowed for this user') % classname)
+# end def check_new_tr_or_ar_allowed
+
+def check_new_leave_submission_perm (db, cl, nodeid, new_values):
+    uid = db.getuid ()
+    if uid == '1' or common.user_has_role (db, uid, 'Admin'):
+        return
+    if new_values ['user'] == uid:
+        return
+    fd = new_values ['first_day']
+    check_valid_user (db, cl, nodeid, new_values, date = fd)
+# end def check_new_leave_submission_perm
