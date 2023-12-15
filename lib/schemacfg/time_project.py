@@ -169,11 +169,7 @@ def security (db, ** kw) :
 
     fixdoc = schemadef.security_doc_from_docstring
 
-    p = db.security.addPermission \
-        ( name        = 'Search'
-        , klass       = 'sap_cc'
-        )
-    db.security.addPermissionToRole ("User", p)
+    schemadef.add_search_permission (db, 'sap_cc', 'User')
     p = db.security.addPermission \
         ( name        = 'View'
         , klass       = 'sap_cc'
@@ -191,11 +187,7 @@ def security (db, ** kw) :
         )
     db.security.addPermissionToRole ("Procurement", p)
 
-    p = db.security.addPermission \
-        ( name        = 'Search'
-        , klass       = 'time_project'
-        )
-    db.security.addPermissionToRole ("User", p)
+    schemadef.add_search_permission (db, 'time_project', 'User')
     p = db.security.addPermission \
         ( name        = 'View'
         , klass       = 'time_project'
