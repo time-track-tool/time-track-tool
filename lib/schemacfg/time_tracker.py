@@ -833,7 +833,7 @@ def security (db, ** kw):
           )
         , ( "work_location"
           , ["User"]
-          , ["Controlling"]
+          , []
           )
         , ( "time_report"
           , ["Time-Report", "Controlling", "Project", "Project_View"]
