@@ -1175,7 +1175,7 @@ def security (db, ** kw):
            timetracking by, supervisor and approval delegated)
         """
         wp = db.time_wp.getnode (itemid)
-        if wp.is_public or userid in wp.bookers:
+        if userid in wp.bookers:
             return True
         # Get all users for which *this* user is in timetracking_by
         users = db.user.filter (None, dict (timetracking_by = userid))
@@ -1188,6 +1188,10 @@ def security (db, ** kw):
             for u in common.tt_clearance_by (db, b):
                 if u == userid:
                     return True
+        # Changed: Only users allowed by the organisation not *all*
+        # users may book
+        if wp.is_public and time_wp_allowed_by_org (db, userid, itemid):
+            return True
         return False
     # end def wp_admitted
 
