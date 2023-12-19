@@ -36,6 +36,7 @@
         , help_filter = 'status=%s' % utils.valid_user_stati_filter (db)
         )
       )
+    , ('allowed_olo',         dict (multiselect = 1))
     , ('cost_center',         dict (multiselect = 1))
     , ('is_public',           {})
     , ('is_extern',           {})

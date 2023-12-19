@@ -120,6 +120,10 @@
     </tr>
     <tr>
      <th tal:content="structure python:utils.fieldname
+         (db, classname, 'allowed_olo')"/>
+     <td tal:content="structure python:context.allowed_olo.menu
+         (**utils.valid_item (now))"/>
+     <th tal:content="structure python:utils.fieldname
          (db, classname, 'is_extern')"/>
      <td tal:content="structure python:context.is_extern.field ()"/>
     </tr>

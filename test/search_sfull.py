@@ -1946,7 +1946,10 @@ properties = \
         ]
       )
     , ( 'time_wp'
-      , [ ( 'auto_wp'
+      , [ ( 'allowed_olo'
+          , ['admin', 'cc-permission', 'contact', 'controlling', 'doc_admin', 'facility', 'functional-role', 'hr', 'hr-leave-approval', 'hr-vacation', 'issue_admin', 'it', 'itview', 'msgedit', 'msgsync', 'o-permission', 'office', 'organisation', 'procurement', 'project', 'project_view', 'sec-incident-nosy', 'sec-incident-responsible', 'summary_view', 'supportadmin', 'time-report', 'type', 'user', 'vacation-report']
+          )
+        , ( 'auto_wp'
           , ['admin', 'hr']
           )
         , ( 'bookers'
