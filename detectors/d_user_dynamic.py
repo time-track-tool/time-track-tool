@@ -973,6 +973,8 @@ def auto_wp_check (db, cl, nodeid, new_values):
             new_values ['is_valid'] = False
         if 'all_in' not in new_values:
             new_values ['all_in'] = True
+    if 'org_location' in new_values:
+        o_permission.check_new_auto_wp_olo (db, cl, nodeid, new_values)
 # end def auto_wp_check
 
 def auto_wp_modify (db, cl, nodeid, old_values):

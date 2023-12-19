@@ -101,6 +101,17 @@ def time_wp_group_allowed_by_org (db, userid, itemid):
     return False
 # end def time_wp_group_allowed_by_org
 
+def auto_wp_allowed_by_olo (db, userid, itemid):
+    """ User may access automatic work package if Organisation/Location
+        is allowed
+    """
+    olo = get_allowed_olo (db, userid)
+    awp = db.auto_wp.getnode (itemid)
+    if awp.org_location in olo:
+        return True
+    return False
+# end def auto_wp_allowed_by_olo
+
 def dynamic_user_allowed_by_olo (db, userid, itemid):
     """ User may access dynamic user record because the org_location is
         allowed
@@ -271,3 +282,14 @@ def check_new_leave_submission_perm (db, cl, nodeid, new_values):
     fd = new_values ['first_day']
     check_valid_user (db, cl, nodeid, new_values, date = fd)
 # end def check_new_leave_submission_perm
+
+def check_new_auto_wp_olo (db, cl, nodeid, new_values):
+    uid = db.getuid ()
+    if uid == '1' or common.user_has_role (db, uid, 'Admin'):
+        return
+    if new_values ['org_location'] in get_allowed_olo (db, uid):
+        return
+    d = dict (auto_wp = _ ('auto_wp'), olo = _ ('org_location'))
+    raise Reject \
+        ( _ ("You are not allowed to create %(auto_wp)s for this %(olo)s") % d)
+# end def check_new_auto_wp_olo
