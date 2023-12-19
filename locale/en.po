@@ -7568,3 +7568,7 @@ msgstr "Company"
 
 msgid "o_permission"
 msgstr "User Permission"
+
+msgid "allowed_olo"
+msgstr "Allowed Organisation/Location"
+

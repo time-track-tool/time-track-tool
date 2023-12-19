@@ -438,7 +438,8 @@ properties = \
         ]
       )
     , ( 'time_wp'
-      , [ 'auto_wp'
+      , [ 'allowed_olo'
+        , 'auto_wp'
         , 'bookers'
         , 'cost_center'
         , 'description'

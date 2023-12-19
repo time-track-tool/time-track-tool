@@ -369,6 +369,7 @@ def init \
         , epic_key              = String    ()
         , is_extern             = Boolean   ()
         , auto_wp               = Link      ("auto_wp")
+        , allowed_olo           = Multilink ("org_location")
         )
 
     time_wp_summary_no = Class \
@@ -1188,6 +1189,13 @@ def security (db, ** kw):
         # users may book
         if wp.is_public and time_wp_allowed_by_org (db, userid, itemid):
             return True
+        # Also allow if user is in allowed_olo
+        # Note: This may be not enough for old wps, we would need to get
+        # *all* olos that the user was ever part of
+        if wp.allowed_olo:
+            dyn = user_dynamic.get_user_dynamic (db, userid, Date ('.'))
+            if dyn and dyn.org_location in wp.allowed_olo:
+                return True
         return False
     # end def wp_admitted
 
@@ -1666,7 +1674,7 @@ def security (db, ** kw):
         , properties  = \
             ( 'description'
             , 'time_start', 'time_end', 'bookers', 'planned_effort'
-            , 'time_wp_summary_no', 'epic_key'
+            , 'time_wp_summary_no', 'epic_key', 'allowed_olo'
             )
         )
     db.security.addPermissionToRole ('User', p)
@@ -1684,7 +1692,7 @@ def security (db, ** kw):
         , description = fixdoc (is_project_owner_or_deputy.__doc__)
         , properties  = \
             ( 'name', 'responsible', 'wp_no', 'cost_center'
-            , 'time_wp_summary_no', 'is_public'
+            , 'time_wp_summary_no', 'is_public', 'allowed_olo'
             )
         )
     db.security.addPermissionToRole ('User', p)
@@ -1695,7 +1703,7 @@ def security (db, ** kw):
         , 'description', 'durations_allowed', 'epic_key'
         , 'has_expiration_date', 'id', 'is_extern', 'is_public', 'name'
         , 'project', 'responsible', 'time_end', 'time_start'
-        , 'time_wp_summary_no', 'wp_no'
+        , 'time_wp_summary_no', 'wp_no', 'allowed_olo'
         )
     schemadef.add_search_permission (db, 'time_wp', 'User')
     p = db.security.addPermission \

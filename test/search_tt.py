@@ -1014,7 +1014,10 @@ properties = \
         ]
       )
     , ( 'time_wp'
-      , [ ( 'auto_wp'
+      , [ ( 'allowed_olo'
+          , ['admin', 'cc-permission', 'controlling', 'doc_admin', 'dom-user-edit-facility', 'dom-user-edit-gtt', 'dom-user-edit-hr', 'dom-user-edit-office', 'facility', 'functional-role', 'hr', 'hr-leave-approval', 'hr-vacation', 'it', 'o-permission', 'office', 'organisation', 'pgp', 'procurement', 'project', 'project_view', 'summary_view', 'time-report', 'user', 'user_view', 'vacation-report']
+          )
+        , ( 'auto_wp'
           , ['admin', 'hr']
           )
         , ( 'bookers'
