@@ -731,10 +731,6 @@ def security (db, ** kw):
           , ["User"]
           , ["Office"]
           )
-        , ( "auto_wp"
-          , ["HR"]
-          , ["HR"]
-          )
         , ( "cc_bu_category"
           , ["User"]
           , ["Controlling"]
@@ -1306,6 +1302,17 @@ def security (db, ** kw):
     db.security.addPermissionToRole ('User', p)
     for role in ("Controlling", "HR"):
         db.security.addPermissionToRole (role, 'Create', 'attendance_record')
+
+    for perm in 'View', 'Edit':
+        p = db.security.addPermission \
+            ( name        = perm
+            , klass       = 'auto_wp'
+            , check       = o_permission.auto_wp_allowed_by_olo
+            , description = fixdoc (o_permission.auto_wp_allowed_by_olo.__doc__)
+            )
+        db.security.addPermissionToRole ('HR', p)
+    db.security.addPermissionToRole ('HR', 'Create', 'auto_wp')
+    schemadef.add_search_permission (db, 'auto_wp', 'HR')
 
     # Allow retire/restore for cost_center_permission_group
     for perm in 'Retire', 'Restore':
