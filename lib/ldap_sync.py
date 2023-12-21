@@ -1413,7 +1413,10 @@ class LDAP_Roundup_Sync (Log):
         uids = None
         if luser:
             uids = self.db.user.filter (None, dict (guid = tohex (guid)))
-            if not uids and empno:
+            if  ( not uids
+                and empno
+                and 'employee_number' in self.db.user.properties
+                ):
                 uids = self.db.user.filter \
                     ( None, {}
                     , exact_match_spec = dict (employee_number = empno)
