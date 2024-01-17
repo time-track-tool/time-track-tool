@@ -1010,7 +1010,7 @@ class LDAP_Roundup_Sync (Log):
             user_status that defines this group. We return the matching
             group with the lowest ldap_prio in the user status.
         """
-        srt = lambda gid: self.ldap_groups [gid].prio
+        srt = lambda gid: self.ldap_groups [gid].prio or 0
         for gid in sorted (self.ldap_groups, key = srt):
             g = self.ldap_groups [gid]
             if dn in g.users:
