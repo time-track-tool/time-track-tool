@@ -31,6 +31,7 @@
 
 from schemacfg import schemadef
 from domain_perm import check_domain_permission
+from o_permission import daily_record_allowed_by_olo
 
 def init \
     ( db
@@ -41,14 +42,14 @@ def init \
     , Ext_Class
     , Class
     , ** kw
-    ) :
+    ):
     export = {}
 
     User_Status_Ancestor = kw.get ('User_Status_Class', Ext_Class)
-    class User_Status_Class (User_Status_Ancestor) :
+    class User_Status_Class (User_Status_Ancestor):
         """ Add some attrs for tracking ldap behaviour
         """
-        def __init__ (self, db, classname, ** properties) :
+        def __init__ (self, db, classname, ** properties):
             self.update_properties \
                 ( ldap_group             = String    ()
                 , roles                  = String    ()
@@ -60,11 +61,11 @@ def init \
     export.update (dict (User_Status_Class = User_Status_Class))
 
     User_Ancestor = kw.get ('User_Class', Ext_Class)
-    class User_Class (User_Ancestor) :
+    class User_Class (User_Ancestor):
         """ Add some attrs to user class: We need the active directory
             guid for matching users when syncing users with ldap.
         """
-        def __init__ (self, db, classname, ** properties) :
+        def __init__ (self, db, classname, ** properties):
             self.update_properties \
                 ( guid                   = String    ()
                 , ad_domain              = String    ()
@@ -92,7 +93,7 @@ def init \
     return export
 # end def init
 
-def security (db, ** kw) :
+def security (db, ** kw):
     roles = \
         [ ("Dom-User-Edit-GTT", "Edit/Create users with specific AD domain")
         , ("Dom-User-Edit-HR",  "Edit users with specific AD domain")
@@ -144,15 +145,15 @@ def security (db, ** kw) :
           , ["IT"]
           )
         ]
-    if 'contract_type' in db.classes :
+    if 'contract_type' in db.classes:
         classes.append \
             ( ( "contract_type"
               , ["Dom-User-Edit-GTT", "Dom-User-Edit-HR"]
               , []
               )
             )
-    if 'user_contact' in db.classes :
-        for role, x in role_perms [:3] :
+    if 'user_contact' in db.classes:
+        for role, x in role_perms [:3]:
             classes.append \
                 ( ( "user_contact"
                   , []
@@ -164,19 +165,21 @@ def security (db, ** kw) :
     schemadef.register_class_permissions (db, classes, prop_perms)
     fixdoc = schemadef.security_doc_from_docstring
 
-    if 'user_dynamic' in db.classes :
+    if 'user_dynamic' in db.classes:
 
-        def user_dynamic_dom (db, userid, itemid) :
+        def user_dynamic_dom (db, userid, itemid):
             """ May only view/edit records with the correct domain
             """
+            if not daily_record_allowed_by_olo (db, userid, itemid):
+                return False
             dyn   = db.user_dynamic.getnode (itemid)
             user  = db.user.getnode (dyn.user)
             return check_domain_permission (db, userid, user.ad_domain)
         # end def user_dynamic_dom
 
-        for role in ("Dom-User-Edit-GTT", "Dom-User-Edit-HR") :
+        for role in ("Dom-User-Edit-GTT", "Dom-User-Edit-HR"):
             db.security.addPermissionToRole (role, 'Create', 'user_dynamic')
-            for perm in ('View', 'Edit') :
+            for perm in ('View', 'Edit'):
                 p = db.security.addPermission \
                     ( name        = perm
                     , klass       = 'user_dynamic'
@@ -185,7 +188,7 @@ def security (db, ** kw) :
                     )
                 db.security.addPermissionToRole (role, p)
 
-    def domain_access_user (db, userid, itemid) :
+    def domain_access_user (db, userid, itemid):
         """ Users may view/edit user records for ad_domain for which they
             are in the domain_permission for the user.
         """
@@ -193,8 +196,8 @@ def security (db, ** kw) :
         return check_domain_permission (db, userid, u.ad_domain)
     # end def domain_access_user
 
-    for role, props in role_perms :
-        for perm in 'Edit', 'View' :
+    for role, props in role_perms:
+        for perm in 'Edit', 'View':
             p = db.security.addPermission \
                 ( name        = perm
                 , klass       = 'user'
@@ -204,27 +207,30 @@ def security (db, ** kw) :
                 )
             db.security.addPermissionToRole (role, p)
 
-    def domain_view_user_dynamic (db, userid, itemid) :
-        """ Users may view user_dynamic records for ad_domain for which
-            they are in the domain_permission for the user
-        """
-        ud = db.user_dynamic.getnode (itemid)
-        u  = db.user.getnode (ud.user)
-        return check_domain_permission (db, userid, u.ad_domain)
-    # end def domain_view_user_dynamic
+    if 'user_dynamic' in db.classes:
+        def domain_view_user_dynamic (db, userid, itemid):
+            """ Users may view user_dynamic records for ad_domain for which
+                they are in the domain_permission for the user
+            """
+            if not daily_record_allowed_by_olo (db, userid, itemid):
+                return False
+            ud = db.user_dynamic.getnode (itemid)
+            u  = db.user.getnode (ud.user)
+            return check_domain_permission (db, userid, u.ad_domain)
+        # end def domain_view_user_dynamic
 
-    p = db.security.addPermission \
-        ( name        = 'View'
-        , klass       = 'user_dynamic'
-        , check       = domain_view_user_dynamic
-        , description = fixdoc (domain_view_user_dynamic.__doc__)
-        )
-    db.security.addPermissionToRole ('Dom-User-Edit-GTT', p)
-    db.security.addPermissionToRole ('Dom-User-Edit-HR', p)
-    p = db.security.addPermission \
-        ( name        = 'Search'
-        , klass       = 'user_dynamic'
-        )
-    db.security.addPermissionToRole ('Dom-User-Edit-GTT', p)
-    db.security.addPermissionToRole ('Dom-User-Edit-HR', p)
+        p = db.security.addPermission \
+            ( name        = 'View'
+            , klass       = 'user_dynamic'
+            , check       = domain_view_user_dynamic
+            , description = fixdoc (domain_view_user_dynamic.__doc__)
+            )
+        db.security.addPermissionToRole ('Dom-User-Edit-GTT', p)
+        db.security.addPermissionToRole ('Dom-User-Edit-HR', p)
+        p = db.security.addPermission \
+            ( name        = 'Search'
+            , klass       = 'user_dynamic'
+            )
+        db.security.addPermissionToRole ('Dom-User-Edit-GTT', p)
+        db.security.addPermissionToRole ('Dom-User-Edit-HR', p)
 # end def security
