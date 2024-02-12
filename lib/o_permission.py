@@ -45,7 +45,7 @@ def get_allowed_olo (db, uid):
         dyn = user_dynamic.get_user_dynamic (db, uid, now)
         if dyn and dyn.org_location:
             return {dyn.org_location}
-    return {()}
+    return set ()
 # end def get_allowed_olo
 
 def get_allowed_org (db, uid):
