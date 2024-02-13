@@ -194,6 +194,8 @@
                           'sensor.do_logging&date=.-1w%3B&'
                           'sensor.is_app_sensor=yes&sensor.do_logging=yes'
    , ('measurement', ''): utils.measurement_query
+   , ('o_permission', '') : ':columns=id,user,org_location&'
+                          ':sort=user&:pagesize=50&:startwith=0'
    , ('org_location', '') : '@columns=id,name,organisation,location,'
                           'valid_from,valid_to,do_leave_process,'
                           'vacation_yearly,vacation_legal_year,vac_aliq,'
@@ -621,6 +623,7 @@
      , ('location',            'View', 1,               ('',''))
      , ('logstyle',            'View', 1,               ('',''))
      , ('measurement',         'View', 1,               ('',''))
+     , ('o_permission',        'View', 1,               ('',''))
      , ('org_location',        'View', 1,               ('',''))
      , ('organisation',        'View', 1,               ('',''))
      , ('overtime_correction'
