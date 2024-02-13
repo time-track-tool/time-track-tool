@@ -446,6 +446,7 @@ def init \
         , hours_sat             = Number    ()
         , hours_sun             = Number    ()
         , org_location          = Link      ("org_location", do_journal = "no")
+        , aux_org_locations     = Multilink ("org_location", do_journal = "no")
         , all_in                = Boolean   ()
         , additional_hours      = Number    ()
         , overtime_period       = Link      ( "overtime_period"

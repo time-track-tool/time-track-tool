@@ -370,6 +370,13 @@ _helptext          = \
             the user for whom an automatic workpackage is created.
          '''
       ]
+    , ""'aux_org_locations'           :
+      [ ""'''Additional Org/Locations for visibility: People from the
+             listed additional Org/Locations with the appropriate
+             permissions may see items (like dynamic user records, daily
+             records, etc.) for that user.
+          '''
+      ]
     , ""'aux_username'                :
       [""'''Additional username used in subsidiaries or similar''']
     , ""'balance'                     :
