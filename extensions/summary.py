@@ -1,5 +1,5 @@
 #! /usr/bin/python
-# Copyright (C) 2006-23 Dr. Ralf Schlatterbeck Open Source Consulting.
+# Copyright (C) 2006-24 Dr. Ralf Schlatterbeck Open Source Consulting.
 # Reichergasse 131, A-3411 Weidling.
 # Web: http://www.runtux.com Email: office@runtux.com
 # All rights reserved
@@ -44,6 +44,7 @@ from roundup.cgi.actions            import Action
 from roundup.configuration          import InvalidOptionError
 from rsclib.autosuper               import autosuper
 from rsclib.PM_Value                import PM_Value
+from o_permission                   import dynamic_user_allowed_by_olo
 
 import common
 import request_util
@@ -1607,9 +1608,11 @@ class Staff_Report (_Report):
     def staff_permission_ok (self, user, dynuser):
         if user == self.uid:
             return True
-        if common.user_has_role (self.db, self.uid, 'HR', 'staff-report'):
-            return True
         if self.supi_clearance (user):
+            return True
+        if not dynamic_user_allowed_by_olo (self.db, self.uid, dynuser.id):
+            return False
+        if common.user_has_role (self.db, self.uid, 'HR', 'staff-report'):
             return True
         if common.user_has_role (self.db, self.uid, 'HR-Org-Location'):
             hrt = user_dynamic.hr_olo_role_for_this_user_dyn
@@ -1774,9 +1777,9 @@ class Vacation_Report (_Report):
                     mind = Date ('%s-01-01' % start.year)
                 if end and min_user_date [(u, ctype)] > end:
                     continue
-                dyn = vacation.vac_get_user_dynamic (db, u, ctype, md)
+                dyn  = vacation.vac_get_user_dynamic (db, u, ctype, md)
                 if  (  not dyn or (dyn.valid_from and dyn.valid_from > end)
-                    or not self.permission_ok (u, dyn)
+                    or not self.permission_ok (u, dyn, check_olo = False)
                     ):
                     continue
                 last_dyn = ldyn = dyn
@@ -1788,6 +1791,9 @@ class Vacation_Report (_Report):
                     max_user_date [(u, ctype)] = last_dyn.valid_to
                     if last_dyn.valid_to < mind:
                         continue
+                # Second permission check *with* check_olo
+                if not self.permission_ok (u, last_dyn, check_olo = True):
+                    continue
                 user_vc [(u, ctype)] = vc
                 if u not in self.user_ctypes:
                     self.user_ctypes [u] = []
@@ -1984,12 +1990,16 @@ class Vacation_Report (_Report):
         return True
     # end def is_obsolete
 
-    def permission_ok (self, user, dynuser):
+    def permission_ok (self, user, dynuser, check_olo = True):
         if user == self.uid:
             return True
-        if self.hv:
-            return True
         if self.supi_clearance (user):
+            return True
+        if  (   check_olo
+            and not dynamic_user_allowed_by_olo (self.db, self.uid, dynuser.id)
+            ):
+            return False
+        if self.hv:
             return True
         return False
     # end def permission_ok
