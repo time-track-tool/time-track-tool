@@ -200,6 +200,11 @@
           (db, classname, 'org_location')"/>
       <td tal:content="structure python:context.org_location.menu
           (**utils.valid_item (now))"/>
+      <th rowspan="4" tal:content="structure python:utils.fieldname
+          (db, classname, 'aux_org_locations')"/>
+      <td rowspan="4"
+          tal:content="structure python:context.aux_org_locations.menu
+          (**utils.valid_item (now), height = 4)"/>
      </tr>
      <tr>
       <th tal:content="structure python:utils.fieldname
@@ -218,6 +223,8 @@
       <th tal:content="structure python:utils.fieldname
           (db, classname, 'exemption')"/>
       <td tal:content="structure python:context.exemption.field ()"/>
+     </tr>
+     <tr>
       <th tal:content="structure python:utils.fieldname
           (db, classname, 'short_time_work_hours')"/>
       <td tal:content="structure python:

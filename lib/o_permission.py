@@ -1,5 +1,5 @@
 #! /usr/bin/python
-# Copyright (C) 2023 Dr. Ralf Schlatterbeck Open Source Consulting.
+# Copyright (C) 2023-24 Dr. Ralf Schlatterbeck Open Source Consulting.
 # Reichergasse 131, A-3411 Weidling.
 # Web: http://www.runtux.com Email: office@runtux.com
 # All rights reserved
@@ -118,7 +118,7 @@ def dynamic_user_allowed_by_olo (db, userid, itemid):
     """
     olo = get_allowed_olo (db, userid)
     dyn = db.user_dynamic.getnode (itemid)
-    return dyn.org_location in olo
+    return dyn.org_location in olo or olo.intersection (dyn.aux_org_locations)
 # end def dynamic_user_allowed_by_olo
 
 def user_allowed_by_olo (db, userid, itemuid, date = None):

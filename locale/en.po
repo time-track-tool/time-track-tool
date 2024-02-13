@@ -3520,6 +3520,9 @@ msgstr ""
 msgid "org_location"
 msgstr "Organisation/Location"
 
+msgid "aux_org_locations"
+msgstr "Auxiliary Org/Locations"
+
 msgid ""
 "Organisation and location of this %(Classname)s, cartesian\n"
 "             product of organisation and location -- only the combinations\n"
