@@ -745,6 +745,17 @@ class Summary_Report (_Report):
         users       = filterspec.get ('user', [])
         sv          = dict ((i, 1) for i in filterspec.get ('supervisor', []))
         svu         = []
+        # Summary report can only be seen by role Summary-Report now
+        if not common.user_has_role (self.db, self.uid, 'Summary-Report'):
+            self.wps             = {}
+            self.usernames       = []
+            self.start           = start
+            self.end             = end
+            self.time_containers = {}
+            self.wp_containers   = []
+            self.dr_containers   = []
+            return
+
         if sv:
             svu = db.user.find (supervisor = sv)
         users         = list (set (users).union (svu))
@@ -1334,10 +1345,13 @@ class Summary_Report (_Report):
 
     def _output (self, line_formatter, item_formatter):
         start = self.start + Interval ('1d')
-        end   = max \
-            ([self.time_containers [i][-1].sort_end
-              for i in self.time_containers
-            ])
+        if not self.time_containers:
+            end = self.end
+        else:
+            end   = max \
+                ([self.time_containers [i][-1].sort_end
+                  for i in self.time_containers
+                ])
         for wpc in self.wp_containers:
             tc_pointers = dict \
                 ([(i, 0) for i in self.time_containers])

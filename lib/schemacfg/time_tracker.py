@@ -719,6 +719,7 @@ def security (db, ** kw):
         , ("Organisation",      "Editing of organisation-related items")
         , ("Sub-Login",         "Allow to login as another user")
         , ("CC-Permission",     "Allow editing cost center permission")
+        , ("Summary-Report",    "Allowed to view summary report")
         ]
 
     #     classname
