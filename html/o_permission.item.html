@@ -25,7 +25,7 @@
      <tr>
       <th tal:content="structure python:utils.fieldname
           (db, classname, 'user')" class="required"/>
-      <td tal:condition="not:context/id">
+      <td>
        <span tal:content="structure python:context.user.field ()"/>
        <span tal:content="structure python:utils.user_classhelp
          ( db, property='user'
