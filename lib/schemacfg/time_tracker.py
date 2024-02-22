@@ -1189,7 +1189,9 @@ def security (db, ** kw):
                     return True
         # Changed: Only users allowed by the organisation not *all*
         # users may book
-        if wp.is_public and time_wp_allowed_by_org (db, userid, itemid):
+        if  (   wp.is_public
+            and o_permission.time_wp_allowed_by_org (db, userid, itemid)
+            ):
             return True
         # Also allow if user is in allowed_olo
         # Note: This may be not enough for old wps, we would need to get
