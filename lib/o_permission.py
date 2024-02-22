@@ -293,7 +293,20 @@ def check_new_auto_wp_olo (db, cl, nodeid, new_values):
         return
     if new_values ['org_location'] in get_allowed_olo (db, uid):
         return
+    _  = db.i18n.gettext
     d = dict (auto_wp = _ ('auto_wp'), olo = _ ('org_location'))
     raise Reject \
         ( _ ("You are not allowed to create %(auto_wp)s for this %(olo)s") % d)
 # end def check_new_auto_wp_olo
+
+def check_new_dyn_user_olo (db, cl, nodeid, new_values):
+    uid = db.getuid ()
+    if uid == '1' or common.user_has_role (db, uid, 'Admin'):
+        return
+    if new_values ['org_location'] in get_allowed_olo (db, uid):
+        return
+    _  = db.i18n.gettext
+    d = dict (udyn = _ ('user_dynamic'), olo = _ ('org_location'))
+    raise Reject \
+        ( _ ("You are not allowed to create %(udyn)s for this %(olo)s") % d)
+# end def check_new_dyn_user_olo
