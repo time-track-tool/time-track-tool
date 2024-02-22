@@ -195,7 +195,7 @@ def leave_allowed_by_olo (db, userid, itemid):
     return user_allowed_by_olo (db, userid, ls.user)
 # end def leave_allowed_by_olo
 
-def check_valid_user (db, cl, nodeid, new_values, date = None):
+def check_valid_user (db, cl, nodeid, new_values, date = None, enddate = None):
     uid = db.getuid ()
     if uid == '1' or common.user_has_role (db, uid, 'Admin'):
         return
@@ -205,11 +205,23 @@ def check_valid_user (db, cl, nodeid, new_values, date = None):
     if date is None:
         date = Date ('.')
     dyn  = user_dynamic.get_user_dynamic (db, userid, date)
-    # Allow creation of *first* dynamic user record or same as existing
+    # Allow creation of dynamic user record in a gap where no other
+    # record exists or same as existing (in which case we found dyn above)
     if cl == db.user_dynamic and dyn is None:
-        dyn = user_dynamic.last_user_dynamic (db, userid)
-        if dyn is None:
-            return
+        # Search forward
+        dyn = user_dynamic.find_user_dynamic (db, userid, date, direction = '+')
+        if dyn and (not enddate or dyn.valid_from < enddate):
+            # Leave error message to code below
+            dyn = None
+        else:
+            dyn = user_dynamic.find_user_dynamic \
+                (db, userid, date, direction = '-')
+            if dyn and (not dyn.valid_to or dyn.valid_to > date):
+                # Leave error message to code below
+                dyn = None
+            else:
+                # No overlapping dyn user records found, allow create
+                return
     # Allow creation of vac correction *before* first dyn user
     if cl == db.vacation_correction and dyn is None:
         dyn = user_dynamic.last_user_dynamic (db, userid)
