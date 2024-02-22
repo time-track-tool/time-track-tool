@@ -213,6 +213,10 @@ def check_valid_user (db, cl, nodeid, new_values, date = None):
     # Allow creation of vac correction *before* first dyn user
     if cl == db.vacation_correction and dyn is None:
         dyn = user_dynamic.last_user_dynamic (db, userid)
+    # Allow creation of freeze record *after* last dyn user
+    # Or in a gap between dyn users
+    if cl == db.daily_record_freeze and dyn is None and date:
+        dyn = user_dynamic.find_user_dynamic (db, userid, date, direction = '-')
     _    = db.i18n.gettext
     if not dyn or not dynamic_user_allowed_by_olo (db, userid, dyn.id):
         uname = dict (uname = db.user.get (userid, 'username'))
