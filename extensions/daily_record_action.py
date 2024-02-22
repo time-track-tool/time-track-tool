@@ -59,6 +59,7 @@ import freeze
 import rup_utils
 import user_dynamic
 import vacation
+import o_permission
 
 def prev_week (db, request):
     try:
@@ -963,6 +964,8 @@ class Freeze_Action (Action, autosuper):
 
     def handle (self):
         _ = self.db.i18n.gettext
+        uid = db.getuid ()
+        now = Date ('.')
         if not self.request.form ['date'].value:
             raise Reject (_ ("Date is required"))
         self.date  = Date (self.request.form ['date'].value)
@@ -979,6 +982,9 @@ class Freeze_Action (Action, autosuper):
                     date = dyn.valid_to - common.day
                     assert (date < self.date)
             if dyn:
+                method = o_permission.dynamic_user_allowed_by_olo
+                if not method (db, uid, dyn.id):
+                    continue
                 try:
                     self.db.daily_record_freeze.create \
                         (date = date, user = u, frozen = 1)
@@ -1017,7 +1023,7 @@ class Freeze_Action (Action, autosuper):
             + ':columns=id,date,user,frozen,balance,validity_date'
             + '&:sort=user,date&:filter=creation'
             + '&:pagesize=200&:startwith=0&creation=%s%%3B'
-            ) % (Date ('.') - Interval ('00:05'))
+            ) % (now - Interval ('00:05'))
         raise Redirect (url)
     # end def handle
 # end class Freeze_Action
