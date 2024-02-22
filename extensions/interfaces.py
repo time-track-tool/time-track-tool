@@ -44,6 +44,7 @@ import common
 import freeze
 import user_dynamic
 import vacation
+import o_permission
 
 def localecollate (s) :
     old = locale.getlocale (locale.LC_COLLATE)
@@ -549,6 +550,16 @@ def valid_item (now) :
     return d
 # end def valid_item
 
+def get_allowed_olo (db):
+    """ Return IDs of all org locations where the user has permission
+    """
+    try :
+        db = db._db
+    except AttributeError :
+        pass
+    return list (o_permission.get_allowed_olo (db, db.getuid ()))
+# end def get_allowed_olo
+
 def init (instance) :
     reg = instance.registerUtil
     reg ("correct_midnight_date_string", correct_midnight_date_string)
@@ -588,3 +599,5 @@ def init (instance) :
     reg ("pr_agents",                    pr_agents)
     reg ("valid_activities",             valid_activities)
     reg ("valid_item",                   valid_item)
+    reg ("get_allowed_olo",              get_allowed_olo)
+# end def init
