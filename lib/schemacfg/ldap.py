@@ -117,7 +117,6 @@ def security (db, ** kw):
         , 'pictures'
         , 'position_text'
         , 'room'
-        , 'sex'
         , 'status'
         , 'subst_active'
         , 'substitute'
