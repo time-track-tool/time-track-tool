@@ -467,12 +467,13 @@ def new_user_dynamic (db, cl, nodeid, new_values):
         , 'valid_from'
         , 'org_location'
         )
-    o_permission.check_valid_user       (db, cl, nodeid, new_values)
-    o_permission.check_new_dyn_user_olo (db, cl, nodeid, new_values)
     user       = new_values ['user']
     valid_from = new_values ['valid_from']
     valid_to   = new_values.get ('valid_to', None)
     olo        = new_values ['org_location']
+    o_permission.check_valid_user \
+        (db, cl, nodeid, new_values, valid_from, valid_to)
+    o_permission.check_new_dyn_user_olo (db, cl, nodeid, new_values)
     if freeze.frozen (db, user, valid_from):
         raise Reject (_ ("Frozen: %(valid_from)s") % locals ())
     last = user_dynamic.last_user_dynamic (db, user)
