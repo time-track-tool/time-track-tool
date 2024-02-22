@@ -72,6 +72,7 @@
              (    context.id
              and db.user_dynamic.is_edit_ok ()
              and not utils.dynuser_frozen (context)
+             and utils.dynamic_user_allowed_by_olo (db, context.id)
              ) ">
         <a i18n:translate="" tal:attributes="href python:
         utils.dynuser_copyurl (context)">
