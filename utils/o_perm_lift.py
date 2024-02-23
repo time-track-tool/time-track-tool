@@ -26,7 +26,20 @@ olo_groups = dict \
         ,
         )
     , tcag =
-        ( 'TTTech Chip IP Design GmbH; AUT, Wien'
+        ( 'CLOVER d.o.o. Banja Luka; BIH, Banja Luka'
+        , 'FTN-IRAM-RT DOO NOVI SAD; SRB, Novi Sad'
+        , 'INSTITUT "RT-RK" DOO Banja Luka; BIH, Banja Luka'
+        , 'INSTITUT "RT-RK" DOO Banja Luka; SRB, Novi Sad'
+        , 'iWedia doo Novi Sad; SRB, Novi Sad'
+        , 'iWedia SA; CHE, Lausanne'
+        , 'OBLO LIVING doo Novi Sad; SRB, Belgrade'
+        , 'OBLO LIVING doo Novi Sad; SRB, Novi Sad'
+        , 'RT-RK DOO NOVI SAD; BIH, Banja Luka'
+        , 'RT-RK DOO NOVI SAD; SRB, Belgrade'
+        , 'RT-RK DOO NOVI SAD; SRB, Novi Sad'
+        , 'TTControl GmbH; AUT, Wien'
+        , 'TTControl S.r.l.; ITA, Brixen'
+        , 'TTTech Chip IP Design GmbH; AUT, Wien'
         , 'TTTech Computertechnik AG; AUT, Wien'
         , 'TTTech Computertechnik AG, organizacní složka; CZE, Brno'
         , 'TTTech Deutschland GmbH; DEU, München'
@@ -34,15 +47,13 @@ olo_groups = dict \
         , 'TTTech Digital Solutions GmbH; AUT, Wien'
         , 'TTTech Flexibilis Oy; FIN, Tampere'
         , 'TTTech Industrial Automation AG; AUT, Wien'
+        , 'TTTech Industrial North America Inc.; USA, Milpitas,CA'
         , 'TTTech Innovation Campus Brixen S.r.l.; ITA, Brixen'
         , 'TTTech Japan Corp.; JPN, Nagoya'
         , 'TTTech Japan Expat AUT; JPN, Nagoya'
         , 'TTTECH NORTH AMERICA, INC.; USA, Andover, MA'
         , 'TTTECH NORTH AMERICA, INC.; USA, Houston, TX'
         , 'TTTECH NORTH AMERICA, INC.; USA, Santa Clara, CA'
-        , 'TTControl GmbH; AUT, Wien'
-        , 'TTControl S.r.l.; ITA, Brixen'
-        , 'TTech Industrial North America Inc.; USA, Milpitas,CA'
         )
     )
 
@@ -62,8 +73,15 @@ user_by_olo = dict \
         , 'haller@ds1.internal', 'mauri@ds1.internal'
         )
     , tcag =
-        ( 'atischler@ds1.internal', 'reisner@ds1.internal'
-        , 'koehldorfer@ds1.internal', 'kusej@ds1.internal'
+        ( 'kusej@ds1.internal',        'auner@ds1.internal'
+        , 'aroman@ds1.internal',       'reisner@ds1.internal'
+        , 'gallioth@ds1.internal',     'atischler@ds1.internal'
+        , 'kargl@ds1.internal',        'koehldorfer@ds1.internal'
+        , 'scherer@ds1.internal',      'punkenhofer@ds1.internal'
+        , 'risse@ds1.internal',        'machian@ds1.internal'
+        , 'ebaumgartner@ds1.internal', 'bindreiter@ds1.internal'
+        , 'julcher@ds1.internal',      'mariano@ds1.internal'
+        , 'bstoeger@ds1.internal'
         )
     )
 
