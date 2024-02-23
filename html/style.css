@@ -76,6 +76,12 @@ td.sidebar {
   padding: 1px 0 0 1px;
   white-space: nowrap;
 }
+td.hidden {
+  display: none;
+}
+th.hidden {
+  display: none;
+}
 
 /* don't display the sidebar when printing */
 @media print {
