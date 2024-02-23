@@ -30,7 +30,8 @@
 
 from schemacfg import schemadef
 from domain_perm import check_domain_permission
-from o_permission import daily_record_allowed_by_olo
+import o_permission
+import common
 
 def init \
     ( db
@@ -103,40 +104,42 @@ def security (db, ** kw):
     schemadef.register_roles (db, roles)
     db.security.addPermissionToRole ('Dom-User-Edit-GTT', 'Create', 'user')
     # Editable user fields for the Domain-User-Edit roles
-    user_props = \
-        [ 'contacts'
-        , 'csv_delimiter'
-        , 'entry_date'
-        , 'firstname'
+    generic_user_props = \
+        [ 'csv_delimiter'
         , 'hide_message_files'
-        , 'job_description'
-        , 'lastname'
         , 'lunch_duration'
         , 'lunch_start'
+        , 'room'
+        , 'subst_active'
+        , 'substitute'
+        , 'timezone'
+        , 'tt_lines'
+        ]
+    user_props = \
+        [ 'contacts'
+        , 'entry_date'
+        , 'firstname'
+        , 'job_description'
+        , 'lastname'
         , 'nickname'
         , 'pictures'
         , 'position_text'
-        , 'room'
         , 'status'
-        , 'subst_active'
-        , 'substitute'
         , 'supervisor'
-        , 'timezone'
-        , 'tt_lines'
         , 'vie_user'
 	]
-    user_props_hr  = user_props + \
+    user_props_hr  = generic_user_props + \
         ['clearance_by', 'roles', 'reduced_activity_list']
-    user_props_gtt = user_props + \
+    user_props_gtt = generic_user_props + user_props + \
         ['username', 'sync_foreign_key', 'department_temp']
     user_props_office = ['contacts', 'position_text', 'room']
     user_props_facility = ['room']
-    role_perms = \
-        [ ("Dom-User-Edit-GTT",      user_props_gtt)
-        , ("Dom-User-Edit-HR",       user_props_hr)
-        , ("Dom-User-Edit-Office",   user_props_office)
-        , ("Dom-User-Edit-Facility", user_props_facility)
-        ]
+    role_perms = dict \
+        ([ ("Dom-User-Edit-GTT",      user_props_gtt)
+        ,  ("Dom-User-Edit-HR",       user_props_hr)
+        ,  ("Dom-User-Edit-Office",   user_props_office)
+        ,  ("Dom-User-Edit-Facility", user_props_facility)
+        ])
     classes = \
         [ ( "domain_permission"
           , ["IT"]
@@ -151,7 +154,8 @@ def security (db, ** kw):
               )
             )
     if 'user_contact' in db.classes:
-        for role, x in role_perms [:3]:
+        for r in 'GTT', 'HR', 'Office':
+            role = 'Dom-User-Edit-' + r
             classes.append \
                 ( ( "user_contact"
                   , []
@@ -168,7 +172,8 @@ def security (db, ** kw):
         def user_dynamic_dom (db, userid, itemid):
             """ May only view/edit records with the correct domain
             """
-            if not daily_record_allowed_by_olo (db, userid, itemid):
+            m = o_permission.daily_record_allowed_by_olo
+            if not m (db, userid, itemid):
                 return False
             dyn   = db.user_dynamic.getnode (itemid)
             user  = db.user.getnode (dyn.user)
@@ -191,10 +196,17 @@ def security (db, ** kw):
             are in the domain_permission for the user.
         """
         u = db.user.getnode (itemid)
+        # The Dom-User-Edit-GTT role my unconditionally edit *all* users
+        # which are in the correct domain, otherwise we need to check
+        # o_permission
+        if not common.user_has_role (db, userid, 'Dom-User-Edit-GTT'):
+            if not o_permission.user_allowed_by_olo (db, userid, itemid):
+                return False
         return check_domain_permission (db, userid, u.ad_domain)
     # end def domain_access_user
 
-    for role, props in role_perms:
+    for role in role_perms:
+        props = role_perms [role]
         for perm in 'Edit', 'View':
             p = db.security.addPermission \
                 ( name        = perm
@@ -210,7 +222,8 @@ def security (db, ** kw):
             """ Users may view user_dynamic records for ad_domain for which
                 they are in the domain_permission for the user
             """
-            if not daily_record_allowed_by_olo (db, userid, itemid):
+            m = o_permission.daily_record_allowed_by_olo
+            if not m (db, userid, itemid):
                 return False
             ud = db.user_dynamic.getnode (itemid)
             u  = db.user.getnode (ud.user)
