@@ -90,6 +90,8 @@ for ogroup in user_by_olo:
 
 for uid in by_uid:
     oids = db.o_permission.filter (None, dict (user = uid))
+    if len (oids) > 1:
+        import pdb; pdb.set_trace ()
     assert len (oids) <= 1
     old_olo = set ()
     if oids:
@@ -103,4 +105,22 @@ for uid in by_uid:
             db.o_permission.set (oid, org_location = new_olo)
         else:
             db.o_permission.create (user = uid, org_location = new_olo)
+
+# WP fixes
+oloids_ = (7, 3, 10, 1, 23, 51, 34, 80, 30, 41, 75, 76, 26, 83, 20, 68, 67)
+oloids  = []
+for oid in oloids_:
+    try:
+        olo = db.org_location.getnode (str (oid))
+        name = olo.name
+    except (KeyError, IndexError) as err:
+        print ('Warning: %s' % err)
+        continue
+    oloids.append (olo.id)
+print ("OLO-IDS: %s" % ','.join (oloids))
+for wpid in (125, 55693, 4646, 4645, 144):
+    try:
+        db.time_wp.set (wpid, bookers = [], allowed_olo = oloids)
+    except IndexError as err:
+        print ('Warning: %s' % err)
 db.commit ()
