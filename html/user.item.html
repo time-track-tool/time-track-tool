@@ -270,17 +270,6 @@
        </td>
       </tr>
      </tal:block>
-     <tr tal:condition="python:'supervisor' in bclass.properties">
-      <th tal:content="structure python:utils.fieldname
-          (db, 'user', 'supervisor')"/>
-      <td>
-       <span tal:content="structure python:context.supervisor.field ()"/>
-       <span tal:content="structure python:utils.user_classhelp
-             ( db, property = 'supervisor'
-             , form = 'user_form'
-             )"/>
-      </td>
-     </tr>
      <tr tal:condition="python:
         (   'business_responsible' in bclass.properties
         and (  not 'vie_user_ml' in bclass.properties
@@ -297,6 +286,17 @@
              , form           = 'user_form'
              , exclude_system = True
              , internal_only  = True
+             )"/>
+      </td>
+     </tr>
+     <tr tal:condition="python:'supervisor' in bclass.properties">
+      <th tal:content="structure python:utils.fieldname
+          (db, 'user', 'supervisor')"/>
+      <td>
+       <span tal:content="structure python:context.supervisor.field ()"/>
+       <span tal:content="structure python:utils.user_classhelp
+             ( db, property = 'supervisor'
+             , form = 'user_form'
              )"/>
       </td>
      </tr>

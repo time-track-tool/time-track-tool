@@ -872,7 +872,8 @@ def security (db, ** kw):
             )
           )
         , ( "user",         "Edit", ["Functional-Role"]
-          , ( "scale_seniority", "business_responsible"
+          , ( "scale_seniority"
+            ,
             )
           )
         , ( "user",         "View", ["Functional-Role"]
