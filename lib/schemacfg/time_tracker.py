@@ -1197,7 +1197,7 @@ def security (db, ** kw):
         # Note: This may be not enough for old wps, we would need to get
         # *all* olos that the user was ever part of
         if wp.allowed_olo:
-            dyn = user_dynamic.get_user_dynamic (db, userid, Date ('.'))
+            dyn = user_dynamic.get_user_dynamic (db, userid, date.Date ('.'))
             if dyn and dyn.org_location in wp.allowed_olo:
                 return True
         return False
