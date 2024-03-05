@@ -973,7 +973,7 @@ class Freeze_Action (Action, autosuper):
 
     def handle (self):
         _ = self.db.i18n.gettext
-        uid = db.getuid ()
+        uid = self.db.getuid ()
         now = Date ('.')
         if not self.request.form ['date'].value:
             raise Reject (_ ("Date is required"))
@@ -992,7 +992,7 @@ class Freeze_Action (Action, autosuper):
                     assert (date < self.date)
             if dyn:
                 method = o_permission.dynamic_user_allowed_by_olo
-                if not method (db, uid, dyn.id):
+                if not method (self.db, uid, dyn.id):
                     continue
                 try:
                     self.db.daily_record_freeze.create \
