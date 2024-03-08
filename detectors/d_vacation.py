@@ -351,12 +351,38 @@ def state_change_reactor (db, cl, nodeid, old_values):
         handle_cancel_rq (db, vs)
 # end def state_change_reactor
 
+def get_leave_email (db, leave):
+    """ Determine all users with HR-leave-approval role and correct
+        permission on this user.
+    """
+    now  = Date ('.')
+    role = 'HR-leave-approval'
+    filter  = dict (roles = role)
+    filter ['status.is_nosy'] = True
+    userids = db.user.filter (None, filter)
+    email_users = []
+    for approve_user in userids:
+        # User themselves should not approve
+        if leave.user == approve_user:
+            continue
+        if not common.user_has_role (db, approve_user, role):
+            continue
+        if not o_permission.user_allowed_by_olo \
+            (db, approve_user, leave.user, now):
+            continue
+        email_users.append (db.user.getnode (approve_user))
+    return tuple (u.address for u in email_users)
+# end def get_leave_email
+
 def try_send_mail (db, vs, now, var_text, var_subject, var_mail = None, ** kw):
+    """ Two methods to specify destination emails: With a pointer to the
+        config variable in var_mail or directly with the email
+        parameter.
+    """
     mailer         = roundupdb.Mailer (db.config)
     now            = Date ('.')
     wp             = db.time_wp.getnode (vs.time_wp)
     user           = db.user.getnode (vs.user)
-    email          = (user.address, )
     username       = user.username
     lastname       = user.lastname
     firstname      = user.firstname
@@ -377,8 +403,10 @@ def try_send_mail (db, vs, now, var_text, var_subject, var_mail = None, ** kw):
         notify_subj = getattr (db.config.ext, var_subject)
         if var_mail is not None:
             notify_mail = (getattr (db.config.ext, var_mail),)
+        elif 'email' in kw:
+            notify_mail = kw ['email']
         else:
-            notify_mail = d ['email']
+            notify_mail = (user.address,)
     except InvalidOptionError:
         pass
     if notify_text and notify_subj and notify_mail:
@@ -518,7 +546,7 @@ def handle_accept (db, vs, ars, trs, old_status):
                 ( db, vs, now
                 , 'MAIL_SPECIAL_LEAVE_NOTIFY_TEXT'
                 , 'MAIL_SPECIAL_LEAVE_NOTIFY_SUBJECT'
-                , 'MAIL_SPECIAL_LEAVE_NOTIFY_EMAIL'
+                , email = get_leave_email (db, vs)
                 )
 # end def handle_accept
 
@@ -563,7 +591,7 @@ def handle_cancel (db, vs, drs, ars, trs, is_crq):
                 ( db, vs, now
                 , 'MAIL_SPECIAL_LEAVE_CANCEL_TEXT'
                 , 'MAIL_SPECIAL_LEAVE_CANCEL_SUBJECT'
-                , 'MAIL_SPECIAL_LEAVE_CANCEL_EMAIL'
+                , email = get_leave_email (db, vs)
                 )
 # end def handle_cancel
 
@@ -574,10 +602,7 @@ def handle_crq_or_submit (db, vs, now, conf_string, hr_only):
                for x in common.tt_clearance_by (db, vs.user)
               ]
     if hr_only:
-        emails.extend \
-            (db.user.get (u, 'address')
-             for u in common.get_uids_with_role (db, 'HR-leave-approval')
-            )
+        emails.extend (get_leave_email (db, vs))
     url     = '%sleave_submission?@template=approve' % db.config.TRACKER_WEB
     approval_type = ''
     try:
@@ -621,7 +646,7 @@ def handle_submit (db, vs):
     ctype   = dyn.contract_type
     hr_only = vacation.need_hr_approval \
         (db, tp, vs.user, ctype, vs.first_day, vs.last_day, 'submitted', True)
-    handle_crq_or_submit (db, vs, now, 'SUBMIT', hr_only)
+    handle_crq_or_submit (db, vs, now, 'SUBMIT', hr_only or tp.is_special_leave)
     if tp.is_special_leave:
         try_send_mail \
             ( db, vs, now
