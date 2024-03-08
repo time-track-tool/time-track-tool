@@ -232,8 +232,8 @@ def check_valid_user (db, cl, nodeid, new_values, date = None, enddate = None):
     if cl == db.daily_record_freeze and dyn is None and date:
         dyn = user_dynamic.find_user_dynamic (db, userid, date, direction = '-')
     _    = db.i18n.gettext
-    if not dyn or not dynamic_user_allowed_by_olo (db, userid, dyn.id):
-        uname = dict (uname = db.user.get (userid, 'username'))
+    if not dyn or not dynamic_user_allowed_by_olo (db, uid, dyn.id):
+        uname = dict (uname = db.user.get (uid, 'username'))
         raise Reject (_ ('User "%(uname)s" not allowed') % uname)
 # end def check_valid_user
 
