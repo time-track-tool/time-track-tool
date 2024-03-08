@@ -152,6 +152,8 @@ def dr_freeze_allowed_by_olo (db, userid, itemid):
 def dr_item_allowed_by_olo (db, userid, itemid, classname):
     """ Allow access to something that has a daily_record
     """
+    if int (itemid) < 0:
+        return True
     cls  = db.classes [classname]
     item = cls.getnode (itemid)
     return daily_record_allowed_by_olo (db, userid, item.daily_record)
