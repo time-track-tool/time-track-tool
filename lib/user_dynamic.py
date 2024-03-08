@@ -37,6 +37,7 @@ from roundup.date import Date
 
 import freeze
 import common
+import o_permission
 ymd = common.ymd
 day = common.day
 
@@ -163,6 +164,34 @@ def next_user_dynamic (db, dynuser, use_ct = False):
 def prev_user_dynamic (db, dynuser, use_ct = False):
     return _next_user_dynamic (db, dynuser, direction = '-', use_ct = use_ct)
 # end def prev_user_dynamic
+
+def next_allowed_user_dynamic (db, dynuser, use_ct = False):
+    hypdb = db
+    try:
+        hypdb = db._db
+    except AttributeError:
+        pass
+    uid = hypdb.getuid ()
+    dyn = next_user_dynamic (db, dynuser, use_ct)
+    allowed = o_permission.dynamic_user_allowed_by_olo
+    while dyn and not allowed (hypdb, uid, dyn.id):
+        dyn = next_user_dynamic (hypdb, dyn, use_ct)
+    return dyn
+# end def next_allowed_user_dynamic
+
+def prev_allowed_user_dynamic (db, dynuser, use_ct = False):
+    hypdb = db
+    try:
+        hypdb = db._db
+    except AttributeError:
+        pass
+    uid = hypdb.getuid ()
+    dyn = prev_user_dynamic (db, dynuser, use_ct)
+    allowed = o_permission.dynamic_user_allowed_by_olo
+    while dyn and not allowed (hypdb, uid, dyn.id):
+        dyn = prev_user_dynamic (hypdb, dyn, use_ct)
+    return dyn
+# end def prev_allowed_user_dynamic
 
 def act_or_latest_user_dynamic (db, user):
     ud = get_user_dynamic (db, user, Date ('.'))
