@@ -354,7 +354,7 @@
                             )
    , ('user_dynamic', '')
                        : '@columns=id,user,valid_from,org_location&@sort=-id&'
-                         '@pagesize=20&@startwith=0'
+                         '@filter=user&@pagesize=20&@startwith=0&user=%s' % uid
    , ('user_contact', '')
                         : '@columns=user.firstname,user.lastname,'
                           'contact,contact_type&'
