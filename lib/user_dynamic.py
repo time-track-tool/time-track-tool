@@ -194,10 +194,15 @@ def prev_allowed_user_dynamic (db, dynuser, use_ct = False):
 # end def prev_allowed_user_dynamic
 
 def act_or_latest_user_dynamic (db, user):
-    ud = get_user_dynamic (db, user, Date ('.'))
-    if not ud:
+    """ Used typically from web interface """
+    uid = db.getuid ()
+    ud  = get_user_dynamic (db, user, Date ('.'))
+    allowed = o_permission.dynamic_user_allowed_by_olo
+    if not ud or not allowed (db, uid, ud.id):
         ud = last_user_dynamic (db, user)
-    return ud
+    if ud and allowed (db, uid, ud.id):
+        return ud
+    return None
 # end def act_or_latest_user_dynamic
 
 wdays = ['mon', 'tue', 'wed', 'thu', 'fri', 'sat', 'sun']

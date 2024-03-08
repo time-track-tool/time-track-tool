@@ -30,6 +30,7 @@ import re
 import common
 import user_dynamic
 import vacation
+import o_permission
 from   roundup.date           import Date, Interval
 from   roundup.cgi.actions    import NewItemAction
 from   roundup.cgi.exceptions import Redirect
@@ -706,9 +707,11 @@ def current_user_dynamic (context, user = None):
     now = Date ('.')
     uid = user or db.getuid ()
     dyn = user_dynamic.get_user_dynamic (db, uid, now)
-    if dyn:
+    allowed = o_permission.dynamic_user_allowed_by_olo
+    if dyn and allowed (db, db.getuid (), dyn.id):
         dyn = HTMLItem (client, 'user_dynamic', dyn.id)
-    return dyn
+        return dyn
+    return None
 # end def current_user_dynamic
 
 def flexi_alliquot_html (db, user, date_in_year, ctype):

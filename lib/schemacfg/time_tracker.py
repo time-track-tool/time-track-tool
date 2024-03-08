@@ -880,9 +880,6 @@ def security (db, ** kw):
           , ( "planning_role", "scale_seniority", "business_responsible"
             )
           )
-        , ( "user_dynamic", "View", ["User"]
-          , ( "org_location",)
-          )
         ]
 
     schemadef.register_roles             (db, roles)
