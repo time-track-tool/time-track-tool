@@ -1126,4 +1126,52 @@ def user_create_magic (db, uid, olo):
     db.commit ()
 # end def user_create_magic
 
+def find_dynuser_gaps (db, start_date = None):
+    """ Loop over dynamic users and find gaps where the user was not
+        employed. Optionally filter list by o_permission on the *later*
+        record of each pair.
+    """
+    if start_date is None:
+        start_date = Date ('.')
+    filt = dict (valid_from = common.pretty_range (start_date))
+    sort = [('+', 'user'), ('+', 'valid_from')]
+    date = None
+    user = None
+    ret  = []
+    prev = None
+    for dynid in db.user_dynamic.filter (None, filt, sort = sort):
+        dyn = db.user_dynamic.getnode (dynid)
+        if dyn.user != user:
+            user = dyn.user
+            date = dyn.valid_to
+            prev = dyn
+            continue
+        if dyn.valid_from != prev.valid_to:
+            ret.append ((prev, dyn))
+            date = dyn.valid_to
+        prev = dyn
+    return ret
+# end def find_dynuser_gaps
+
+def find_dynuser_company_changes (db, start_date):
+    filt = dict (valid_from = common.pretty_range (start_date))
+    sort = [('+', 'user'), ('+', 'valid_from')]
+    olo  = None
+    user = None
+    ret  = []
+    prev = None
+    for dynid in db.user_dynamic.filter (None, filt, sort = sort):
+        dyn = db.user_dynamic.getnode (dynid)
+        if dyn.user != user:
+            user = dyn.user
+            olo  = dyn.org_location
+            prev = dyn
+            continue
+        if dyn.org_location != olo:
+            ret.append ((prev, dyn))
+            olo  = dyn.org_location
+        prev = dyn
+    return ret
+# end def find_dynuser_company_changes
+
 #END

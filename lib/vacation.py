@@ -430,7 +430,7 @@ def get_vacation_correction (db, user, ctype = -1, date = None):
     """
     if date is None:
         date = Date ('.')
-    dt = ";%s" % date.pretty (common.ymd)
+    dt = common.pretty_range (None, date)
     d = dict \
         ( user          = user
         , absolute      = True
