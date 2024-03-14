@@ -62,6 +62,8 @@ def get_allowed_org (db, uid):
 def organisation_allowed (db, userid, itemid, classname):
     """ User may view item because organisation is allowed
     """
+    if userid == '1' or common.user_has_role (db, userid, 'admin'):
+        return True
     cls  = db.classes [classname]
     item = cls.getnode (itemid)
     orgs = get_allowed_org (db, userid)
@@ -107,6 +109,8 @@ def auto_wp_allowed_by_olo (db, userid, itemid):
     """
     olo = get_allowed_olo (db, userid)
     awp = db.auto_wp.getnode (itemid)
+    if userid == '1' or common.user_has_role (db, userid, 'admin'):
+        return True
     if awp.org_location in olo:
         return True
     return False
@@ -116,6 +120,8 @@ def dynamic_user_allowed_by_olo (db, userid, itemid):
     """ User may access dynamic user record because the org_location is
         allowed
     """
+    if userid == '1' or common.user_has_role (db, userid, 'admin'):
+        return True
     olo = get_allowed_olo (db, userid)
     dyn = db.user_dynamic.getnode (itemid)
     return dyn.org_location in olo or olo.intersection (dyn.aux_org_locations)
@@ -125,6 +131,8 @@ def user_allowed_by_olo (db, userid, itemuid, date = None):
     """ User may access item because item->user_dynamic->org_location is
         allowed
     """
+    if userid == '1' or common.user_has_role (db, userid, 'admin'):
+        return True
     if date is None:
         date = Date ('.')
     dyn  = user_dynamic.get_user_dynamic (db, itemuid, date)
