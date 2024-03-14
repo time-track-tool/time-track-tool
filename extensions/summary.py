@@ -1499,6 +1499,19 @@ class Staff_Report (_Report):
         period_objects   = dict \
             (week = common.period_week, month = common.period_month)
         for u in self.users:
+            ustart = start
+            # Loop over all dyn recs for that user and re-compute start
+            # date if no permission
+            sdyn = user_dynamic.get_user_dynamic (db, u, start)
+            if not sdyn:
+                sdyn = user_dynamic.first_user_dynamic (db, u, date = start)
+            # We already established above that for the end date we have
+            # a dynamic user record
+            while not dynamic_user_allowed_by_olo (db, self.uid, sdyn.id):
+                sdyn = user_dynamic.next_user_dynamic (db, sdyn)
+            if sdyn.valid_from > ustart:
+                ustart = sdyn.valid_from
+
             dyn        = user_dynamic.get_user_dynamic (db, u, end)
             values [u] = []
             for period in 'week', 'month', 'range':
@@ -1506,16 +1519,38 @@ class Staff_Report (_Report):
                     continue
                 ccls = time_container_classes [period]
                 if period == 'range':
-                    container = ccls (start, end, i18n = db.i18n)
-                    values [u].append   (container)
-                    self.fill_container (container, u, dyn, start, end)
+                    # It might be the case that we may not see all
+                    # dynamic user records in the range
+                    # We do not display the range in that case.
+                    while (   sdyn
+                          and dynamic_user_allowed_by_olo
+                              (db, self.uid, sdyn.id)
+                          ):
+                        sdyn = user_dynamic.next_user_dynamic (db, sdyn)
+                        if not sdyn or sdyn.valid_to is None:
+                            break
+                        if sdyn.valid_to > end:
+                            break
+                    if  (  not sdyn
+                        or dynamic_user_allowed_by_olo (db, self.uid, sdyn.id)
+                        ):
+                        container = ccls (ustart, end, i18n = db.i18n)
+                        values [u].append   (container)
+                        self.fill_container (container, u, dyn, ustart, end)
                 else:
-                    date = start
+                    date = ustart
                     while date <= end:
                         eop = common.end_of_period \
                             (date, period_objects [period])
                         if eop > end:
                             eop = end
+                        cdyn = user_dynamic.get_user_dynamic (db, u, eop)
+                        # Permission check on individual period
+                        if  (  not cdyn
+                            or not dynamic_user_allowed_by_olo
+                               (db, self.uid, cdyn.id)
+                            ):
+                            continue
                         container = ccls (date, i18n = db.i18n)
                         values [u].append   (container)
                         self.fill_container (container, u, dyn, date, eop)
