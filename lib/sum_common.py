@@ -40,8 +40,6 @@ def time_project_viewable (db, userid, itemid):
        category or on nosy list of time category and if the view is
        permitted via the organisation
     """
-    if not o_permission.time_project_allowed_by_org (db, userid, itemid):
-        return False
     project = db.time_project.getnode (itemid)
     p_nosy  = {}
     if 'nosy' in db.time_project.properties:
@@ -58,11 +56,14 @@ def time_wp_viewable (db, userid, itemid):
     """User may view work package if responsible for it, if user is
        owner or deputy of time category or on nosy list of time category
     """
-    wp       = db.time_wp.getnode (itemid)
+    wp    = db.time_wp.getnode (itemid)
+    allow = o_permission.time_project_allowed_by_org
     return \
         (  userid == wp.responsible
         or time_project_viewable (db, userid, wp.project)
-        or common.user_has_role (db, userid, 'Summary_View')
+        or (   allow (db, userid, itemid)
+           and common.user_has_role (db, userid, 'Summary_View')
+           )
         )
 # end def time_wp_viewable
 
@@ -105,15 +106,17 @@ def daily_record_viewable (db, userid, itemid):
        If user has role HR-Org-Location and is in the same Org-Location
        as the record, it may also be seen.
     """
+    dr = db.daily_record.getnode (itemid)
+    if userid == dr.user:
+        return True
+    if dr.user in supervised_users (db, userid):
+        return True
     if not o_permission.daily_record_allowed_by_olo (db, userid, itemid):
         return False
     if common.user_has_role \
         (db, userid, 'HR', 'Controlling', 'HR-Org-Location'):
         return True
-    dr = db.daily_record.getnode (itemid)
-    if userid == dr.user:
-        return True
-    return dr.user in supervised_users (db, userid)
+    return False
 # end def daily_record_viewable
 
 def get_users (db, filterspec, start, end):

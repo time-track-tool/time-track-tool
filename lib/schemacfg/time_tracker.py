@@ -927,8 +927,6 @@ def security (db, ** kw):
            in this case. Modification is also allowed by the supervisor or
            the person to whom approvals are delegated.
         """
-        if not o_permission.daily_record_allowed_by_olo (db, userid, itemid):
-            return False
         ownerid   = db.daily_record.get (itemid, 'user')
         ttby      = db.user.get (ownerid, 'timetracking_by')
         if userid == ttby:
@@ -1003,8 +1001,6 @@ def security (db, ** kw):
            Viewing is allowed by the supervisor or the person to whom
            approvals are delegated.
         """
-        if not o_permission.leave_allowed_by_olo (db, userid, itemid):
-            return False
         ownerid   = db.leave_submission.get (itemid, 'user')
         clearance = tt_clearance_by (db, ownerid)
         return userid in clearance
@@ -1016,8 +1012,6 @@ def security (db, ** kw):
         """User is allowed to see time record if he is allowed to see
            all details on work package or
         """
-        if not o_permission.tr_allowed_by_olo (db, userid, itemid):
-            return False
         dr = db.time_record.get (itemid, 'daily_record')
         wp = db.time_record.get (itemid, 'wp')
         if sum_common.daily_record_viewable (db, userid, dr):
@@ -1032,8 +1026,6 @@ def security (db, ** kw):
         # function it is intended that it ends with "if"
         """User is allowed to see time record if
         """
-        if not o_permission.ar_allowed_by_olo (db, userid, itemid):
-            return False
         dr = db.attendance_record.get (itemid, 'daily_record')
         if sum_common.daily_record_viewable (db, userid, dr):
             return True
@@ -1044,8 +1036,6 @@ def security (db, ** kw):
             time_records for that day.
         """
         if int (itemid) < 0:
-            return False
-        if not o_permission.daily_record_allowed_by_olo (db, userid, itemid):
             return False
         dr = db.daily_record.getnode (itemid)
         # Not necessary to do the same check for attendance_record since
@@ -1095,8 +1085,6 @@ def security (db, ** kw):
         """
         if int (itemid) < 0:
             return False
-        if not o_permission.time_project_allowed_by_org (db, userid, itemid):
-            return False
         ownerid = db.time_project.get (itemid, 'responsible')
         open    = db.time_project_status.lookup ('Open')
         status  = db.time_project.get (itemid, 'status')
@@ -1119,15 +1107,11 @@ def security (db, ** kw):
     # end def approval_for_record
 
     def approval_for_time_record (db, userid, itemid):
-        if not o_permission.tr_allowed_by_olo (db, userid, itemid):
-            return False
         return approval_for_record (db, db.time_record, userid, itemid)
     # end def approval_for_time_record
     approval_for_time_record.__doc__ = approval_for_record.__doc__
 
     def approval_for_attendance_record (db, userid, itemid):
-        if not o_permission.ar_allowed_by_olo (db, userid, itemid):
-            return False
         return approval_for_record (db, db.attendance_record, userid, itemid)
     # end def approval_for_attendance_record
     approval_for_attendance_record.__doc__ = approval_for_record.__doc__
@@ -1237,8 +1221,6 @@ def security (db, ** kw):
         """User is allowed to view freeze information if he/she
            matches the user of the freeze record.
         """
-        if not o_permission.dr_freeze_allowed_by_olo (db, userid, itemid):
-            return False
         df = db.daily_record_freeze.getnode (itemid)
         return df.user == userid
     # end def dr_freeze_visible_for_user
