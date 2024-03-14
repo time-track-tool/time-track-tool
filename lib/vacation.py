@@ -728,18 +728,24 @@ def valid_wps \
         olo = None
         if dyn:
             olo = dyn.org_location
-        d1  = dict (d, is_public = True, has_expiration_date = False)
-        wp.extend (db.time_wp.filter (None, d1, srt))
-        d1  = dict (d, is_public = True, time_end = '%s;' % dt)
-        wp.extend (db.time_wp.filter (None, d1, srt))
         d1  = dict (d, bookers = user, has_expiration_date = False)
         wp.extend (db.time_wp.filter (None, d1, srt))
         d1  = dict (d, bookers = user, time_end = '%s;' % dt)
         wp.extend (db.time_wp.filter (None, d1, srt))
         if olo:
-            d1  = dict (d, allowed_olo = olo, has_expiration_date = False)
+            d1  = dict \
+                ( d
+                , is_public           = True
+                , allowed_olo         = [olo, -1]
+                , has_expiration_date = False
+                )
             wp.extend (db.time_wp.filter (None, d1, srt))
-            d1  = dict (d, allowed_olo = olo, time_end = '%s;' % dt)
+            d1  = dict \
+                ( d
+                , is_public           = True
+                , allowed_olo         = [olo, -1]
+                , time_end            = '%s;' % dt
+                )
             wp.extend (db.time_wp.filter (None, d1, srt))
     else:
         d1 = dict (d, has_expiration_date = False)
