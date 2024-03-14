@@ -681,6 +681,11 @@
        , ('','')
        )
      , ('vacation_report',     'View', 1,               ('',''))
+     , ( 'vacation_report'
+       , 'View'
+       , utils.user_has_role (db._db, db._db.getuid (), 'HR')
+       , ('Gap Report','gap')
+       )
      , ('valid',               'View', 1,               ('',''))
      ] + utils.summary_report_links (db._db)
    )

@@ -105,7 +105,7 @@ class Extended_Daily_Record (Extended_Node):
 class Extended_WP (Extended_Node):
     """ Keeps information about the username *and* about the status of
         the work package.
-        
+
         For permissions, see time_wp_viewable in lib/sum_common.py
     """
     def __init__ (self, db, wpid):
@@ -377,7 +377,7 @@ class Comparable_Container (Container, Dict_Mixin):
     def __cmp__ (self, other):
         _ = self.i18n.gettext
         return \
-            (  cmp (self.sortkey, other.sortkey) 
+            (  cmp (self.sortkey, other.sortkey)
             or cmp (_ (self.classname), _ (other.classname))
             or cmp (self.name, other.name)
             )
@@ -536,7 +536,7 @@ class WP_Container (Comparable_Container):
             self.time_wp_summary_no    = ('time_wp_summary_no', wpsn.name)
             self.time_wp_summary_no_id = ('time_wp_summary_no', wpsn.id)
     # end def __init__
-    
+
     def __repr__ (self):
         name = self.__class__.__name__
         return "%s (%s, %s, %s)" % \
@@ -691,6 +691,26 @@ class _Report (autosuper):
             supi = self.db.user.get (supi, 'supervisor')
     # end def supi_clearance
 
+    def format_vac_corr (self, vc, container):
+        try:
+            vcs = HTML_List ()
+            for x in vc:
+                item  = self.htmldb.vacation_correction.getItem (x)
+                days  = item.days
+                ep    = self.utils.ExtProperty
+                vcs.append \
+                    ( ep
+                        ( self.utils, days
+                        , item         = item
+                        , is_labelprop = True
+                        )
+                    )
+            container ['vacation corrections'] = vcs
+        except AttributeError:
+            container ['vacation corrections'] = ' + '.join \
+                (str (db.vacation_correction.get (i, 'days')) for i in vc)
+    # end def format_vac_corr
+
 # end class _Report
 
 class Summary_Report (_Report):
@@ -778,7 +798,7 @@ class Summary_Report (_Report):
                         )
                     dr_containers.append (c)
                     by_id [id] = c
-                    
+
                 for i in db.user_dynamic.find (** {cl : spec}):
                     ud = db.user_dynamic.getnode (i)
                     if  (   ud.valid_from <= end
@@ -794,7 +814,7 @@ class Summary_Report (_Report):
                         udend = end
                     assert (udstart <= udend)
                     drs = db.daily_record.filter \
-                        ( None, dict 
+                        ( None, dict
                             ( user   = ud.user
                             , date   = common.pretty_range (udstart, udend)
                             , status = status
@@ -805,7 +825,7 @@ class Summary_Report (_Report):
                     by_id [getattr (ud, cl)].update (dict.fromkeys (drs))
                     drecs.update (dict ((d.id, d) for d in drs))
 
-        db.log_info ("summary_report: after deps: %s" 
+        db.log_info ("summary_report: after deps: %s"
             % (time.time () - timestamp))
         if not users and not olo_or_dept:
             users   = db.user.getnodeids () # also invalid users!
@@ -814,7 +834,7 @@ class Summary_Report (_Report):
         dr          = []
         if users:
             dr = db.daily_record.filter \
-                ( None, dict 
+                ( None, dict
                     ( user   = users
                     , date   = common.pretty_range (start, end)
                     , status = status
@@ -974,7 +994,7 @@ class Summary_Report (_Report):
             ccs     = db.cost_center.find (cost_center_group = ccg)
             ccs     = dict ((c, 1) for c in ccs)
             wp_containers.append \
-                ( WP_Container 
+                ( WP_Container
                     ( db.cost_center_group, ccg
                     , 'cost_center_group' in self.columns
                     , i18n = db.i18n
@@ -1050,7 +1070,7 @@ class Summary_Report (_Report):
         usernames = list (sorted (usernames))
         db.log_info ("summary_report: sorted   usernames (%s)"
             % (time.time () - timestamp))
-        
+
         # append only wps where somebody actually booked on
         wps         = dict ((tr.wp.id, 1) for tr in time_recs)
         for w in wps:
@@ -1988,31 +2008,13 @@ class Vacation_Report (_Report):
                     vd = common.pretty_range (fd, d)
                     vcids = db.vacation_correction.filter \
                         ( None
-                        , dict 
+                        , dict
                             ( user          = u
                             , date          = vd
                             , contract_type = ctype
                             )
                         )
-                    try:
-                        vcs = HTML_List ()
-                        for x in vcids:
-                            item  = self.htmldb.vacation_correction.getItem (x)
-                            days  = item.days
-                            ep    = self.utils.ExtProperty
-                            vcs.append \
-                                ( ep
-                                    ( self.utils, days 
-                                    , item         = item
-                                    , is_labelprop = True
-                                    )
-                                )
-                        container ['vacation corrections'] = vcs
-                    except AttributeError:
-                        container ['vacation corrections'] = ' + '.join \
-                            (str (db.vacation_correction.get (i, 'days'))
-                             for i in vcids
-                            )
+                    self.format_vac_corr (vcids, container)
                     if (u, ctype) not in self.values:
                         self.values [(u, ctype)] = []
                     self.values [(u, ctype)].append (container)
@@ -2098,6 +2100,79 @@ class Vacation_Report (_Report):
 
 # end class Vacation_Report
 
+class Gap_Report (_Report):
+    fields = \
+        ( (""'balance_start',        1)
+        , (""'carry',                2)
+        , (""'vacation corrections', 3)
+        )
+
+    def __init__ (self, db, request, utils, is_csv = False):
+        self.htmldb = db
+        try:
+            db = db._db
+        except AttributeError:
+            pass
+        self.db      = db
+        self.uid     = db.getuid ()
+        self.request = request
+        self.utils   = utils
+        filterspec   = request.filterspec
+        now          = Date ('.')
+        try:
+            date     = Date (filterspec.get ('date'))
+        except ValueError:
+            date     = now
+        fields       = dict (self.fields)
+        self.fields  = sorted \
+            (list (fields), key = lambda x: fields [x])
+        self.gaps    = user_dynamic.find_dynuser_gaps (db, date)
+    # end def __init__
+
+    def header_line (self, formatter):
+        _ = self.db.i18n.gettext
+        line = []
+        line.append (formatter (_ ('user')))
+        line.append (formatter (_ ('date')))
+        for f in self.fields:
+            line.append (formatter (_ (f)))
+        return line
+    # end def header_line
+
+    def _output (self, line_formatter, item_formatter):
+        db   = self.db
+        day  = common.day
+        line = []
+        ccls = time_container_classes ['day']
+        for odyn, ndyn in self.gaps:
+            start = ndyn.valid_from
+            eprev = odyn.valid_to
+            user  = db.user.getnode (ndyn.user)
+            # Check if there is an absolute vacation correction between
+            # eprev and start
+            dt    = common.pretty_range (eprev, start)
+            filt  = dict (date = dt, user = user.id)
+            vc    = db.vacation_correction.filter (None, filt)
+            bal   = user_dynamic.compute_balance \
+                (db, user.id, start - day, True) [0]
+            #if not vc or abs (bal) >= 0.01:
+            contr = ccls (start, i18n = db.i18n)
+            contr ['balance_start'] = bal
+            contr ['carry'] = ''
+            self.format_vac_corr (vc, contr)
+            if ndyn.vac_aliq is not None and odyn.vac_aliq is not None:
+                carry = vacation.remaining_vacation (db, user.id, date = start)
+                contr ['carry'] = carry
+            line  = []
+            line.append (item_formatter (self.linked_user (user.id)))
+            line.append (item_formatter (start.pretty (common.ymd)))
+            for fn in self.fields:
+                line.append (item_formatter (contr [fn]))
+            line_formatter (line)
+    # end def _output
+
+# end class Gap_Report
+
 class CSV_Report (Action, autosuper):
     def handle (self, outfile = None):
         request                   = templating.HTMLRequest     (self.client)
@@ -2130,6 +2205,10 @@ class CSV_Vacation_Report (CSV_Report):
     report_class = Vacation_Report
 # end class CSV_Vacation_Report
 
+class CSV_Gap_Report (CSV_Report):
+    report_class = Gap_Report
+# end class CSV_Gap_Report
+
 def summary_report_links (db):
     """ Returns a list of summary-report links: We look up the config
         value summary_report_redirect in section ttt. If we find an
@@ -2158,9 +2237,11 @@ def init (instance):
     util   ('Summary_Report',       Summary_Report)
     util   ('Staff_Report',         Staff_Report)
     util   ('Vacation_Report',      Vacation_Report)
+    util   ('Gap_Report',           Gap_Report)
     util   ('summary_report_links', summary_report_links)
     action = instance.registerAction
     action ('csv_summary_report',   CSV_Summary_Report)
     action ('csv_staff_report',     CSV_Staff_Report)
     action ('csv_vacation_report',  CSV_Vacation_Report)
+    action ('csv_gap_report',       CSV_Gap_Report)
 # end def init
