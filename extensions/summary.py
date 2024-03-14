@@ -2126,7 +2126,10 @@ class Gap_Report (_Report):
         fields       = dict (self.fields)
         self.fields  = sorted \
             (list (fields), key = lambda x: fields [x])
-        self.gaps    = user_dynamic.find_dynuser_gaps (db, date)
+        if common.user_has_role (self.db, self.uid, 'HR'):
+            self.gaps = user_dynamic.find_dynuser_gaps (db, date)
+        else:
+            self.gaps = []
     # end def __init__
 
     def header_line (self, formatter):
@@ -2144,7 +2147,10 @@ class Gap_Report (_Report):
         day  = common.day
         line = []
         ccls = time_container_classes ['day']
+        allowed = dynamic_user_allowed_by_olo
         for odyn, ndyn in self.gaps:
+            if not allowed (db, self.uid, ndyn.id):
+                continue
             start = ndyn.valid_from
             eprev = odyn.valid_to
             user  = db.user.getnode (ndyn.user)
