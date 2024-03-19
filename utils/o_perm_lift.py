@@ -138,7 +138,8 @@ for oid in oloids_:
 print ("OLO-IDS: %s" % ','.join (oloids))
 for wpid in (125, 55693, 4646, 4645, 144):
     try:
-        db.time_wp.set (wpid, bookers = [], allowed_olo = oloids)
+        db.time_wp.set \
+            (wpid, bookers = [], allowed_olo = oloids, is_public = True)
     except IndexError as err:
         print ('Warning: %s' % err)
 db.commit ()
