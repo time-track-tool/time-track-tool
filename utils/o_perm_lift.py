@@ -142,4 +142,12 @@ for wpid in (125, 55693, 4646, 4645, 144):
             (wpid, bookers = [], allowed_olo = oloids, is_public = True)
     except IndexError as err:
         print ('Warning: %s' % err)
+print ("Setting TTTech Computertechnik Aux Org/Location for some users")
+for dynid, uid in (('15952', '3295'), ('15247', '5548')):
+    try:
+        dyn = db.user_dynamic.getnode (dynid)
+        assert dyn.user == uid
+    except IndexError:
+        continue
+    db.user_dynamic.set (dynid, aux_org_locations = ['1'])
 db.commit ()

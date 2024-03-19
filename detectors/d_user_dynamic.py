@@ -326,7 +326,9 @@ def check_user_dynamic (db, cl, nodeid, new_values):
         and db.getuid () == '1'
         )
     if  (   freeze.frozen (db, user, old_from)
-        and (  list (new_values) != ['valid_to']
+        and (  (   list (new_values) != ['valid_to']
+               and list (new_values) != ['aux_org_locations']
+               )
             or not val_to
             or freeze.frozen (db, user, val_to)
             )
