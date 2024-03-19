@@ -1744,6 +1744,17 @@ def security (db, ** kw):
         )
     for role in 'HR', 'HR-Org-Location':
         db.security.addPermissionToRole (role, p)
+    # Allow editing aux_org_locations even if frozen
+    p = db.security.addPermission \
+        ( name        = 'Edit'
+        , klass       = 'user_dynamic'
+        , check       = o_permission.dynamic_user_allowed_by_olo
+        , description = fixdoc
+            (o_permission.dynamic_user_allowed_by_olo.__doc__)
+        , properties  = ("aux_org_locations",)
+        )
+    for role in 'HR', 'HR-Org-Location':
+        db.security.addPermissionToRole (role, p)
     db.security.addPermissionToRole ('HR', 'Create', 'user_dynamic')
     schemadef.add_search_permission (db, 'user_dynamic', 'User')
     p = db.security.addPermission \
