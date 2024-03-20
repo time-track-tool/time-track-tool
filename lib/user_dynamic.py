@@ -193,11 +193,16 @@ def prev_allowed_user_dynamic (db, dynuser, use_ct = False):
     return dyn
 # end def prev_allowed_user_dynamic
 
-def act_or_latest_user_dynamic (db, user):
-    """ Used typically from web interface """
+def act_or_latest_user_dynamic (db, user, check_o_perm = True):
+    """ Used typically from web interface
+    """
     uid = db.getuid ()
     ud  = get_user_dynamic (db, user, Date ('.'))
-    allowed = o_permission.dynamic_user_allowed_by_olo
+    if check_o_perm:
+        allowed = o_permission.dynamic_user_allowed_by_olo
+    else:
+        def allowed (*args):
+            return True
     if not ud or not allowed (db, uid, ud.id):
         ud = last_user_dynamic (db, user)
     if ud and allowed (db, uid, ud.id):
