@@ -60,9 +60,13 @@ def public_holiday_wp (db, user, date):
 # end def public_holiday_wp
 
 def get_public_holiday (db, dyn, date):
-    loc = db.org_location.get (dyn.org_location, 'location')
+    olo = dyn.org_location
+    loc = db.org_location.get (olo, 'location')
     dt  = common.pretty_range (date, date)
     hol = db.public_holiday.filter (None, dict (date = dt, locations = loc))
+    if not hol:
+        hol = db.public_holiday.filter \
+            (None, dict (date = dt, org_location = olo))
     if hol:
         assert len (hol) == 1
         holiday = db.public_holiday.getnode (hol [0])
@@ -159,6 +163,10 @@ def update_public_holidays (db, dyn):
         dt = common.pretty_range (dyn.valid_from, dyn.valid_to - common.day)
     d   = dict (date = dt, locations = loc)
     hols = db.public_holiday.filter (None, d)
+    hols = set (hols)
+    d   = dict (date = dt, org_location = dyn.org_location)
+    ho2  = db.public_holiday.filter (None, d)
+    hols.update (ho2)
     for h in hols:
         hol = db.public_holiday.getnode (h)
         dat = common.pretty_range (hol.date, hol.date)

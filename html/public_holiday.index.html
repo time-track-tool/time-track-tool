@@ -18,6 +18,11 @@
       , multiselect = 1
       , filter      = utils.valid_item (now)
       )
+    , utils.ExtProperty 
+      ( utils, pdict ['org_location']
+      , multiselect = 1
+      , filter      = utils.valid_item (now)
+      )
     , utils.ExtProperty (utils, pdict ['is_half'])
     );
    "
