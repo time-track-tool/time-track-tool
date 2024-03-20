@@ -40,6 +40,12 @@
      <td tal:content="structure python:context.locations.menu
          (height=5, **utils.valid_item (now))"/>
     </tr>
+    <tr>
+     <th tal:content="structure python:utils.fieldname
+         (db, classname, 'org_location')"/>
+     <td tal:content="structure python:context.org_location.menu
+         (height=5, **utils.valid_item (now))"/>
+    </tr>
    </tal:block>
   </tal:block>
  </tal:block>

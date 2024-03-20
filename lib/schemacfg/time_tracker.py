@@ -158,6 +158,7 @@ def init \
         , date                  = Date      (offset = 0)
         , locations             = Multilink ("location")
         , is_half               = Boolean   ()
+        , org_location          = Multilink ("org_location")
         )
 
     summary_report = Class \
