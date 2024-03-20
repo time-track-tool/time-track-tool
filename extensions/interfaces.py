@@ -344,7 +344,7 @@ def approval_for (db, valid_only = False) :
             if u in approve_for :
                 del invalid [u]
                 continue
-            dyn = user_dynamic.act_or_latest_user_dynamic (db, u)
+            dyn = user_dynamic.act_or_latest_user_dynamic (db, u, False)
             if not dyn :
                 del invalid [u]
                 continue
