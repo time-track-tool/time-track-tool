@@ -46,7 +46,7 @@ import user_dynamic
 import vacation
 import o_permission
 
-def localecollate (s) :
+def localecollate (s):
     old = locale.getlocale (locale.LC_COLLATE)
     locale.setlocale (locale.LC_COLLATE, '')
     s = locale.strxfrm (str (s))
@@ -54,7 +54,7 @@ def localecollate (s) :
     return s
 # end def localecollate
 
-def correct_midnight_date_string (db) :
+def correct_midnight_date_string (db):
     """returns GMT's "today.midnight" in localtime format.
     suitable for passing in to forms that need this date.
     """
@@ -62,7 +62,7 @@ def correct_midnight_date_string (db) :
     return d.pretty ('%Y-%m-%d.%H:%M:%S')
 # end def correct_midnight_date_string
 
-def rough_date_diff (left, right, format = "%Y-%m-%d") :
+def rough_date_diff (left, right, format = "%Y-%m-%d"):
     """returns the interval between the two dates left - right.
     format is used for the granularity when interpreting the two values.
 
@@ -74,14 +74,14 @@ def rough_date_diff (left, right, format = "%Y-%m-%d") :
     return l_d - r_d
 # end def rough_date_diff
 
-def start_timer (utils) :
+def start_timer (utils):
     """starts an internal timer for profiling the templates
     """
     utils.timer = time.time ()
     return utils.timer
 # end def start_timer
 
-def time_stamp (utils) :
+def time_stamp (utils):
     """return a timestamp in seconds elapsed from last `start_timer` call
     """
     return time.time () - utils.timer
@@ -94,21 +94,22 @@ def date_help \
     , height   = 200
     , label    = ''"(cal)"
     , form     = "itemSynopsis"
-    ) :
+    ):
     """dump out the link to a calendar pop-up window
 
     item: HTMLProperty e.g.: context.deadline
     """
-    if item.isset () :
+    if item.isset ():
         # Hack: rup seems to have a bug where sometimes item._value is a
         # string and not a Date class... in this case __str__ fails.
         # Looks like this happens when an error is raised.
         x = item
-        if type ("") == type (item._value) : x = item._value
+        if type ("") == type (item._value):
+            x = item._value
         date = "&date=%s" % x
-    else :
+    else:
         date = ""
-    if item.is_edit_ok () :
+    if item.is_edit_ok ():
         return ( """<a class="classhelp" """
                  """href="javascript:help_window """
                """('%s?@template=calendar"""
@@ -126,7 +127,7 @@ def date_help \
     return ''
 # end def date_help
 
-def html_calendar (request) :
+def html_calendar (request):
     """returns a html calendar.
 
     `request`  the roundup.request object
@@ -192,30 +193,30 @@ def html_calendar (request) :
     res.append ("""  <td>""")
     res.append ("""   <table class="calendar_display">""")
     res.append ("""    <tr class="weekdays">""")
-    for day_ in calendar.weekheader (3).split () :
+    for day_ in calendar.weekheader (3).split ():
         res.append \
                ("""     <td>%s</td>""" % day_)
     res.append ("""    </tr>""")
 
-    for week_ in calendar.monthcalendar (year, month) :
+    for week_ in calendar.monthcalendar (year, month):
         res.append \
                ("""    <tr>""")
-        for day_ in week_ :
+        for day_ in week_:
             link = "javascript:form[field].value = '%d-%02d-%02d'; " \
                               "window.close ();" % (year, month, day_)
             #print curr_date, day_, month, year
             if day_  == curr_date.day   and \
                month == curr_date.month and \
-               year  == curr_date.year :
+               year  == curr_date.year:
                 # highlight
                 style = "today"
-            else :
+            else:
                 style = ""
-            if day_ :
+            if day_:
                 res.append \
                ("""     <td class="%s"><a href="%s">%s</a></td>""" %
                           (style, link, day_))
-            else :
+            else:
                 res.append \
                ("""     <td></td>""")
         res.append \
@@ -227,28 +228,28 @@ def html_calendar (request) :
     return "\n".join (res)
 # end def html_calendar
 
-def daily_record_check_batch (db, request) :
-    if 'user' not in request.filterspec or 'date' not in request.filterspec :
+def daily_record_check_batch (db, request):
+    if 'user' not in request.filterspec or 'date' not in request.filterspec:
         return []
     batch = request.batch ()
-    if batch.sequence_length > 31 :
+    if batch.sequence_length > 31:
         return []
     return batch
 # end def daily_record_check_batch
 
-def batch_has_status (batch, status) :
+def batch_has_status (batch, status):
     b = copy (batch)
-    for i in batch :
-        if str (i.status) == status :
+    for i in batch:
+        if str (i.status) == status:
             return True
     return False
 # end def batch_open
 
-def work_packages (db, daily_record, editable = True) :
+def work_packages (db, daily_record, editable = True):
     """ Compute allowed work packages for this date and user of the
         given daily_record. Needs a HTML db and a HTML daily_record.
     """
-    if not editable :
+    if not editable:
         return []
     date = daily_record.date._value # is a html prop
     user = daily_record.user.id
@@ -261,13 +262,13 @@ def work_packages (db, daily_record, editable = True) :
     return sorted (wps, key = srt)
 # end def work_packages
 
-def work_packages_selector (wps) :
+def work_packages_selector (wps):
     """ Generate all options for wps inside a selector. Return html and
         a dict containing id to option number mapping
     """
     d    = { -1 : 0 }
     html = [' <option value="-1">- no selection -</option>']
-    for n, wp in enumerate (wps) :
+    for n, wp in enumerate (wps):
         d [wp.id] = n + 1
         html.append \
             ( ' <option value="%s">%s %s %s</option>'
@@ -278,7 +279,7 @@ def work_packages_selector (wps) :
     return '\n'.join (html), d
 # end def work_packages_selector
 
-def work_packages_javascript (name, wpsdict, id) :
+def work_packages_javascript (name, wpsdict, id):
     idx = wpsdict.get (id, 0)
     return ("<script> document.edit_daily_record ['%(name)s'].options "
             "[%(idx)s].selected = true;</script>"
@@ -286,7 +287,7 @@ def work_packages_javascript (name, wpsdict, id) :
            )
 # end def work_packages_javascript
 
-def u_sorted (vals, keys, fun = str) :
+def u_sorted (vals, keys, fun = str):
     """ Sort given values by given keys.
         The function "fun" is tricky. If you want to sort numerically,
         use "int" here, but i18n.gettext is also nice for sorting by
@@ -296,7 +297,7 @@ def u_sorted (vals, keys, fun = str) :
     return sorted (vals, key = key)
 # end def u_sorted
 
-def weekend_allowed (db, daily_record) :
+def weekend_allowed (db, daily_record):
     """ The daily_record is a HTMLItem from the web interface
     """
     user = daily_record.user.id
@@ -305,15 +306,15 @@ def weekend_allowed (db, daily_record) :
     return dyn and dyn.weekend_allowed
 # end def weekend_allowed
 
-def approval_for (db, valid_only = False) :
+def approval_for (db, valid_only = False):
     """ Return a hash of all user-ids for which the current db.getuid()
         user may approve time records. If valid_only is specified we
         return only users with status 'valid' or a user_dyn record with
         a frozen date below the validity span.
     """
-    try :
+    try:
         db  = db._db
-    except AttributeError :
+    except AttributeError:
         pass
     uid = db.getuid ()
     clearer_for = db.user.find   (clearance_by = uid)
@@ -321,56 +322,56 @@ def approval_for (db, valid_only = False) :
         (None, {'substitute' : uid, 'subst_active' : True})
     clearer_for.extend (subst)
     # clearance_by may be inherited once via subst:
-    if subst :
+    if subst:
         clearer_for.extend (db.user.find (clearance_by = subst))
-    if not db.user.get (uid, 'clearance_by') :
+    if not db.user.get (uid, 'clearance_by'):
         clearer_for.append (uid)
     # if clearer_for is empty return empty dict
-    if not clearer_for :
+    if not clearer_for:
         return {}
     d   = dict (supervisor = clearer_for)
     d_a = dict (d)
-    if valid_only :
+    if valid_only:
         d_a ['status'] = db.user_status.lookup ('valid')
     approve_for = dict.fromkeys (db.user.filter (None, d_a), 1)
-    if valid_only :
+    if valid_only:
         d ['status'] = list \
             (x for x in db.user_status.getnodeids (retired = False)
              if x != d_a ['status']
             )
         invalid = dict.fromkeys (db.user.filter (None, d), 1)
         # dict modified during iteration
-        for u in list (invalid) :
-            if u in approve_for :
+        for u in list (invalid):
+            if u in approve_for:
                 del invalid [u]
                 continue
             dyn = user_dynamic.act_or_latest_user_dynamic (db, u, False)
-            if not dyn :
+            if not dyn:
                 del invalid [u]
                 continue
             # User invalid but dyn user valid?!
-            if dyn.valid_to is None :
+            if dyn.valid_to is None:
                 continue
-            if freeze.frozen (db, u, dyn.valid_to - common.day) :
+            if freeze.frozen (db, u, dyn.valid_to - common.day):
                 del invalid [u]
         approve_for.update (invalid)
-    if uid in approve_for :
+    if uid in approve_for:
         del approve_for [uid]
     return approve_for
 # end def approval_for
 
-def welcome (db) :
+def welcome (db):
     fname = os.path.join (db.config.TRACKER_HOME, 'Welcome-Info.txt')
-    try :
+    try:
         text = open (fname, 'r').read ()
         return escape (text).replace ('\n\n', '<br>\n')
-    except IOError :
+    except IOError:
         pass
     _ = db.i18n.gettext
     return "".join ((_ (''"Welcome to the "), db.config.TRACKER_NAME, '.'))
 # end def welcome
 
-def color_duration (tr) :
+def color_duration (tr):
     """Compute the css class for a duration or tr_duration. Note that we
        also compute the cached value of tr_duration if not yet computed.
     """
@@ -378,39 +379,45 @@ def color_duration (tr) :
     travel_act = db.time_activity.filter (None, {'travel' : True})
     travel_act = dict ((a, 1) for a in travel_act)
     if tr.time_activity and tr.time_activity.id in travel_act:
-        if not tr.tr_duration or tr.activity < tr.daily_record.activity :
+        if not tr.tr_duration or tr.activity < tr.daily_record.activity:
             id = tr.daily_record.id
             user_dynamic.update_tr_duration (db, db.daily_record.getnode (id))
         return 'travel'
     return ''
 # end def color_duration
 
-def now () :
+def now ():
     return Date ('.')
 # end def now
 
-def until_now () :
+def until_now ():
     return now ().pretty (';%Y-%m-%d')
 # end def until_now
 
-def get_from_form (request, name) :
-    try :
+def get_from_form (request, name):
+    try:
         for key in ('@' + name, ':' + name):
-            if key in request.form :
+            if key in request.form:
                 return request.form [key].value.strip ()
     except TypeError:
         pass
     return ''
 # end def get_from_form
 
-def user_props (db) :
-    try :
+def user_props (db):
+    try:
         db = db._db
-    except AttributeError :
+    except AttributeError:
         pass
-    props = dict (username = 0, firstname = 2, lastname = 3, address = 6)
+    props = dict \
+        ( username        = 0
+        , firstname       = 2
+        , lastname        = 3
+        , employee_number = 5
+        , address         = 6
+        )
     props = dict ((k, props [k]) for k in props if k in db.user.properties)
-    if 'firstname' not in props :
+    if 'firstname' not in props:
         props ['realname'] = 5
     return ','.join (x for x in sorted (props, key = lambda k : props [k]))
 # end def user_props
@@ -425,30 +432,30 @@ def user_classhelp \
     , internal_only  = False
     , exclude_system = False
     , client         = None
-    ) :
-    try :
+    ):
+    try:
         hdb = db._db
-    except AttributeError :
+    except AttributeError:
         hdb = db
-    if user_status :
+    if user_status:
         status = user_status
-    else :
+    else:
         udict = dict (is_nosy = True)
-        if exclude_system :
+        if exclude_system:
             udict ['is_system'] = False
-        if internal_only :
+        if internal_only:
             udict ['is_internal'] = True
         status = ','.join (hdb.user_status.filter (None, udict))
-    if status :
+    if status:
         status = ';status=' + status
     idfilter = ''
-    if ids :
-        if isinstance (ids, type ([])) :
+    if ids:
+        if isinstance (ids, type ([])):
             ids = ','.join (ids)
         idfilter = ';id=' + ids
-    if isinstance (db, hyperdb_database) :
+    if isinstance (db, hyperdb_database):
         classhelp = HTMLClass (client, 'user').classhelp
-    else :
+    else:
         classhelp = db.user.classhelp
     return classhelp \
         ( user_props (db)
@@ -461,67 +468,67 @@ def user_classhelp \
         )
 # end def user_classhelp
 
-def nickname (db, user) :
-    if 'nickname' in db._db.user.properties and user.nickname.is_view_ok () :
+def nickname (db, user):
+    if 'nickname' in db._db.user.properties and user.nickname.is_view_ok ():
         return user.nickname.plain (escape = 1)
     return user.username.plain (escape = 1)
 # end def nickname
 
-def indexargs_dict (nav, form) :
+def indexargs_dict (nav, form):
     d = {}
-    if nav :
+    if nav:
         d = {':startwith' : nav.first, ':pagesize' : nav.size}
-    if ':nosearch' in form :
+    if ':nosearch' in form:
         d [':nosearch'] = 1
     return d
 # end def indexargs_dict
 
-def may_search (db, uid, classname, property) :
+def may_search (db, uid, classname, property):
     check = getattr (db.security, 'hasSearchPermission', None)
-    if check :
+    if check:
         return check (uid, classname, property)
     return True
 # end def may_search
 
-def artefact_link_match (db, field) :
+def artefact_link_match (db, field):
     """ Match given field content against configurable regex.
         Return True if matching.
     """
-    try :
+    try:
         db = db._db
-    except AttributeError :
+    except AttributeError:
         pass
-    if not field :
+    if not field:
         return None
     rgx = re.compile (getattr (db.config.ext, 'MATCH_ARTEFACT', 'http'))
     return rgx.search (field)
 # end def artefact_link_match
 
-def pr_agents (db) :
-    try :
+def pr_agents (db):
+    try:
         db = db._db
-    except AttributeError :
+    except AttributeError:
         pass
     vroles = set ()
-    for ptid in db.purchase_type.getnodeids (retired = False) :
+    for ptid in db.purchase_type.getnodeids (retired = False):
         pt = db.purchase_type.getnode (ptid)
         vroles.update (pt.pr_view_roles)
     users = set ()
-    for rid in vroles :
+    for rid in vroles:
         vr = db.pr_approval_order.getnode (rid)
         users.update (vr.users)
     return ','.join (users)
 # end def pr_agents
 
-def valid_activities (db, date) :
-    try :
+def valid_activities (db, date):
+    try:
         db = db._db
-    except AttributeError :
+    except AttributeError:
         pass
     uid  = db.getuid ()
     date = date._value
     dyn  = user_dynamic.get_user_dynamic (db, uid, date)
-    if not dyn :
+    if not dyn:
         return []
     all_activities = db.time_activity.getnodeids (retired = False)
     acts = [db.time_activity.getnode (a) for a in all_activities]
@@ -529,16 +536,16 @@ def valid_activities (db, date) :
              not a.time_activity_perm
              or  a.time_activity_perm in dyn.time_activity_perm
            ]
-    if 'reduced_activity_list' not in db.user.properties :
+    if 'reduced_activity_list' not in db.user.properties:
         return act
     ts = db.user.get (uid, 'reduced_activity_list')
-    if ts and ts <= date :
+    if ts and ts <= date:
         valid = db.time_activity.filter (None, dict (is_valid = True))
         return list (set (act).intersection (valid))
     return act
 # end def valid_activities
 
-def valid_item (now) :
+def valid_item (now):
     """ Return parameters for querying valid items of a class that has
         valid_from and valid_to properties.
     """
@@ -550,17 +557,29 @@ def valid_item (now) :
     return d
 # end def valid_item
 
+def valid_olo (db, dt = None):
+    """ Return org_locations for which the user has an o_permission
+        record or if there is no o_permission record the org_location in
+        the dynamic user.
+    """
+    if dt is None:
+        dt = now ()
+    d = valid_item (dt)
+    d ['id'] = get_allowed_olo (db)
+    return d
+# end def valid_olo
+
 def get_allowed_olo (db):
     """ Return IDs of all org locations where the user has permission
     """
-    try :
+    try:
         db = db._db
-    except AttributeError :
+    except AttributeError:
         pass
     return list (o_permission.get_allowed_olo (db, db.getuid ()))
 # end def get_allowed_olo
 
-def init (instance) :
+def init (instance):
     reg = instance.registerUtil
     reg ("correct_midnight_date_string", correct_midnight_date_string)
     reg ("rough_date_diff",              rough_date_diff)
@@ -599,5 +618,6 @@ def init (instance) :
     reg ("pr_agents",                    pr_agents)
     reg ("valid_activities",             valid_activities)
     reg ("valid_item",                   valid_item)
+    reg ("valid_olo",                    valid_olo)
     reg ("get_allowed_olo",              get_allowed_olo)
 # end def init

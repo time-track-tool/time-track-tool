@@ -2136,7 +2136,9 @@ class Gap_Report (_Report):
         _ = self.db.i18n.gettext
         line = []
         line.append (formatter (_ ('user')))
+        line.append (formatter (_ ('user.employee_number')))
         line.append (formatter (_ ('date')))
+        line.append (formatter (_ ('org_location')))
         for f in self.fields:
             line.append (formatter (_ (f)))
         return line
@@ -2171,7 +2173,12 @@ class Gap_Report (_Report):
                 contr ['carry'] = carry
             line  = []
             line.append (item_formatter (self.linked_user (user.id)))
+            line.append (item_formatter (user.employee_number))
             line.append (item_formatter (start.pretty (common.ymd)))
+            line.append \
+                (item_formatter
+                    (self.linked_type
+                        (ndyn.org_location, 'org_location', 'name')))
             for fn in self.fields:
                 line.append (item_formatter (contr [fn]))
             line_formatter (line)

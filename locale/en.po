@@ -7566,6 +7566,9 @@ msgstr "Attendance record"
 msgid "employee_number"
 msgstr "Employee number"
 
+msgid "user.employee_number"
+msgstr "Employee number"
+
 msgid "company_name"
 msgstr "Company"
 
