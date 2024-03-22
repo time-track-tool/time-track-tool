@@ -1535,14 +1535,21 @@ class LDAP_Roundup_Sync (Log):
             else:
                 d.update (c)
                 assert (d)
+                n = "(Dry Run): "
+                if self.update_roundup and not self.dry_run_roundup:
+                    n = ''
+                if  (   'test' in username
+                    and 'lastname'  not in d
+                    and 'firstname' not in d
+                    and 'realname'  not in d
+                    ):
+                    self.info ("%sIgnoring test user: %s" % (n, username))
+                    return
                 assert 'lastname' in d or 'firstname' in d or 'realname' in d
                 d ['roles']  = roles
                 d ['status'] = new_status_id
                 if 'username' not in d:
                     d ['username'] = username
-                n = "(Dry Run): "
-                if self.update_roundup and not self.dry_run_roundup:
-                    n = ''
                 self.info ("%sCreate Roundup user: %s: %s" % (n, username, d))
                 self.changed_roundup_users [d ['username']] = d
                 if self.update_roundup and not self.dry_run_roundup:
