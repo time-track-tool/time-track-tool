@@ -325,10 +325,9 @@ def check_user_dynamic (db, cl, nodeid, new_values):
         and new_values ['exemption'] == False
         and db.getuid () == '1'
         )
+    is_aux_olo = list (new_values) == ['aux_org_locations']
     if  (   freeze.frozen (db, user, old_from)
-        and (  (   list (new_values) != ['valid_to']
-               and list (new_values) != ['aux_org_locations']
-               )
+        and (  list (new_values) != ['valid_to']
             or not val_to
             or freeze.frozen (db, user, val_to)
             )
@@ -340,6 +339,7 @@ def check_user_dynamic (db, cl, nodeid, new_values):
         and (db.getuid () != '1' or not flexi_fix)
         and not vac_fix
         and not exemption
+        and not is_aux_olo
         ):
         raise Reject (_ ("Frozen: %(old_from)s") % locals ())
     last = user_dynamic.last_user_dynamic (db, user)
@@ -349,7 +349,7 @@ def check_user_dynamic (db, cl, nodeid, new_values):
                 (cl, nodeid, user, val_from, val_to, allow_same = True)
         val_from = new_values ['valid_from']
         val_to   = new_values ['valid_to']
-    if not vac_fix and not flexi_fix and not exemption:
+    if not vac_fix and not flexi_fix and not exemption and not is_aux_olo:
         check_overtime_parameters (db, cl, nodeid, new_values)
         check_vacation (db, cl, nodeid, 'vacation_yearly', new_values)
         if not freeze.frozen (db, user, old_from):
