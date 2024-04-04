@@ -134,7 +134,7 @@ def get_default_cmd (argv = None) :
     cmd.add_argument \
         ( "-U", "--url"
         , help    = "URL of tracker (without rest path) default: %(default)s"
-        , default = 'http://bee:8080/ttt/'
+        , default = 'http://cat:8080/ttt/'
         )
     cmd.add_argument \
         ( "-u", "--username"
