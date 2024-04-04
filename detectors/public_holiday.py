@@ -71,9 +71,9 @@ def check_dupe_loc (db, cl, nodeid, new_values):
     if not date:
         assert nodeid
         date = cl.get (nodeid, 'date')
-    if not locs and nodeid:
+    # If locs or olos is in newvalues, ignore old setting
+    if not locs and not olos and nodeid:
         locs = cl.get (nodeid, 'locations')
-    if not olos and nodeid:
         olos = cl.get (nodeid, 'org_location')
     olos = set ()
     locs = set ()
