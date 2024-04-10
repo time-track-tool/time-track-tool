@@ -1140,21 +1140,24 @@ def find_dynuser_gaps (db, start_date = None):
         start_date = Date ('.')
     filt = dict (valid_from = common.pretty_range (start_date))
     sort = [('+', 'user'), ('+', 'valid_from')]
-    date = None
     user = None
     ret  = []
     prev = None
+    seen = set ()
     for dynid in db.user_dynamic.filter (None, filt, sort = sort):
         dyn = db.user_dynamic.getnode (dynid)
         if dyn.user != user:
             user = dyn.user
-            date = dyn.valid_to
             prev = dyn
+            dynp = prev_user_dynamic (db, dyn)
+            if dynp and dynp.id not in seen:
+                if dyn.valid_from != dynp.valid_to:
+                    ret.append ((dynp, dyn))
             continue
         if dyn.valid_from != prev.valid_to:
             ret.append ((prev, dyn))
-            date = dyn.valid_to
         prev = dyn
+        seen.add (dyn.id)
     return ret
 # end def find_dynuser_gaps
 
