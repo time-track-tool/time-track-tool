@@ -61,7 +61,7 @@
     </tr>
     <tr tal:condition="python: 'order' in bclass.properties">
      <th tal:content="structure python:utils.fieldname
-         (classname, 'order')"/>
+         (db, classname, 'order')"/>
      <td tal:content="structure python:context.order.field ()"/>
     </tr>
    </tal:block>
