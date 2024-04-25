@@ -67,7 +67,9 @@ user_by_olo = dict \
         , 'zwainz@ds1.internal'
         )
     , auto_china =
-        ('mmarjanovic@ds1.internal', 'chen@ds1.internal')
+        ( 'mmarjanovic@ds1.internal', 'chen@ds1.internal'
+        , 'croman@ds1.internal', 'haller@ds1.internal'
+        )
     , auto_korea =
         ( 'mmarjanovic@ds1.internal', 'croman@ds1.internal'
         , 'haller@ds1.internal', 'mauri@ds1.internal'
