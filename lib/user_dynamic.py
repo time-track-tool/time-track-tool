@@ -1131,7 +1131,7 @@ def user_create_magic (db, uid, olo):
     db.commit ()
 # end def user_create_magic
 
-def find_dynuser_gaps (db, start_date = None):
+def find_dynuser_gaps (db, start_date = None, users = None, olo = None):
     """ Loop over dynamic users and find gaps where the user was not
         employed. Optionally filter list by o_permission on the *later*
         record of each pair.
@@ -1139,6 +1139,10 @@ def find_dynuser_gaps (db, start_date = None):
     if start_date is None:
         start_date = Date ('.')
     filt = dict (valid_from = common.pretty_range (start_date))
+    if users:
+        filt.update (user = users)
+    if olo:
+        filt.update (org_location = olo)
     sort = [('+', 'user'), ('+', 'valid_from')]
     user = None
     ret  = []
