@@ -2118,6 +2118,8 @@ class Gap_Report (_Report):
         self.request = request
         self.utils   = utils
         filterspec   = request.filterspec
+        user         = filterspec.get ('user', None)
+        olo          = filterspec.get ('org_location', None)
         now          = Date ('.')
         try:
             date     = Date (filterspec.get ('date'))
@@ -2127,7 +2129,12 @@ class Gap_Report (_Report):
         self.fields  = sorted \
             (list (fields), key = lambda x: fields [x])
         if common.user_has_role (self.db, self.uid, 'HR'):
-            self.gaps = user_dynamic.find_dynuser_gaps (db, date)
+            d = dict (start_date = date)
+            if user:
+                d ['users'] = user
+            if olo:
+                d ['olo'] = olo
+            self.gaps = user_dynamic.find_dynuser_gaps (db, **d)
         else:
             self.gaps = []
     # end def __init__
