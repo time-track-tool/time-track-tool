@@ -1,11 +1,14 @@
 #!/usr/bin/python3
 
+import sys
 import os
 from roundup import instance
 
 dir     = os.getcwd ()
 tracker = instance.open (dir)
 db      = tracker.open ('admin')
+sys.path.insert (1, 'lib')
+from common import user_has_role
 
 olo_groups = dict \
     ( auto_germany =
@@ -152,4 +155,20 @@ for dynid, uid in (('15952', '3295'), ('15247', '5548')):
     except IndexError:
         continue
     db.user_dynamic.set (dynid, aux_org_locations = ['1'])
+# Add role 'hr-leave-approval' for these users if not present:
+hr_leave_users = \
+    [ '2548', '34', '5781', '6228', '1434', '711', '2863', '4931'
+    , '2861', '1307', '4750'
+    ]
+for uid in hr_leave_users:
+    try:
+        if user_has_role (db, uid, 'hr-leave-approval'):
+            continue
+    except IndexError as err:
+        print ('Warning: %s' % err)
+        continue
+    u = db.user.getnode (uid)
+    r = user.roles
+    r = r + ',hr-leave-approval'
+    db.user.set (uid, roles = r)
 db.commit ()
