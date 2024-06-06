@@ -7578,3 +7578,6 @@ msgstr "User Permission"
 msgid "allowed_olo"
 msgstr "Allowed Organisation/Location"
 
+msgid "carry_on_date"
+msgstr "Vacation on Date"
+

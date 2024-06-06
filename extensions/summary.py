@@ -2103,7 +2103,7 @@ class Vacation_Report (_Report):
 class Gap_Report (_Report):
     fields = \
         ( (""'balance_start',        1)
-        , (""'carry',                2)
+        , (""'carry_on_date',        2)
         , (""'vacation corrections', 3)
         )
 
@@ -2173,11 +2173,12 @@ class Gap_Report (_Report):
             #if not vc or abs (bal) >= 0.01:
             contr = ccls (start, i18n = db.i18n)
             contr ['balance_start'] = bal
-            contr ['carry'] = ''
+            contr ['carry_on_date'] = ''
             self.format_vac_corr (vc, contr)
             if ndyn.vac_aliq is not None and odyn.vac_aliq is not None:
-                carry = vacation.remaining_vacation (db, user.id, date = start)
-                contr ['carry'] = carry
+                carry = vacation.remaining_vacation \
+                    (db, user.id, date = start, to_eoy = False)
+                contr ['carry_on_date'] = carry
             line  = []
             line.append (item_formatter (self.linked_user (user.id)))
             line.append (item_formatter (user.employee_number))
