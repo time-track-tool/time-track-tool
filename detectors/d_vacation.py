@@ -692,13 +692,16 @@ def check_correction (db, cl, nodeid, new_values):
     common.check_unique \
         (_, cl, nodeid, date = date.pretty (common.ymd), user = user)
     # Check that vacation parameters exist in dyn. user records
-    dyn = user_dynamic.get_user_dynamic (db, user, date)
+    dyn  = user_dynamic.get_user_dynamic (db, user, date)
+    fdyn = dyn
+    ndyn = dyn
     username = db.user.get (user, 'username')
     # Check for initial creation of user/dynamic user record where
     # the creation of a vacation correction is triggered
     if not dyn:
-        dyn = user_dynamic.first_user_dynamic (db, user)
-    if not dyn or dyn.valid_to and dyn.valid_to < date:
+        dyn  = user_dynamic.first_user_dynamic (db, user)
+        ndyn = user_dynamic.first_user_dynamic (db, user, date = date)
+    if not fdyn and ndyn.valid_from < date - common.day:
         raise Reject \
             (_ ('No current dyn. user record for "%(username)s"') % locals ())
     # Check that no vacation correction is created in a year before the
