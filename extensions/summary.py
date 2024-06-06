@@ -1570,6 +1570,7 @@ class Staff_Report (_Report):
                             or not dynamic_user_allowed_by_olo
                                (db, self.uid, cdyn.id)
                             ):
+                            date = eop + day
                             continue
                         container = ccls (date, i18n = db.i18n)
                         values [u].append   (container)
