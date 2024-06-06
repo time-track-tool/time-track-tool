@@ -57,6 +57,7 @@ olo_groups = dict \
         , 'TTTECH NORTH AMERICA, INC.; USA, Andover, MA'
         , 'TTTECH NORTH AMERICA, INC.; USA, Houston, TX'
         , 'TTTECH NORTH AMERICA, INC.; USA, Santa Clara, CA'
+        , 'TTTech Nexus GmbH; AUT, Wien'
         )
     )
 
