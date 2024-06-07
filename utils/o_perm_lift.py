@@ -86,8 +86,7 @@ user_by_olo = dict \
         , 'scherer@ds1.internal',      'punkenhofer@ds1.internal'
         , 'risse@ds1.internal',        'machian@ds1.internal'
         , 'ebaumgartner@ds1.internal', 'bindreiter@ds1.internal'
-        , 'julcher@ds1.internal',      'mariano@ds1.internal'
-        , 'bstoeger@ds1.internal'
+        , 'julcher@ds1.internal',      'bstoeger@ds1.internal'
         )
     )
 
