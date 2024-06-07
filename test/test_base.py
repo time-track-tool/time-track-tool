@@ -502,6 +502,7 @@ class _Test_Base_Summary :
         roles.append ('User_View')
         sec   = self.db.security
         roles = ','.join (x for x in roles if x.lower () in sec.role)
+        roles += ',Summary-Report'
         self.username0 = 'testuser0'
         self.user0 = self.db.user.create \
             ( username     = self.username0
