@@ -5229,7 +5229,7 @@ class Test_Case_Fulltracker (_Test_Case_Summary, unittest.TestCase) :
 
         self.db.user_dynamic.set \
             ( ud.id
-            , valid_from        = date.Date ('2012-09-03')
+            , valid_from        = date.Date ('2012-09-01')
             , booking_allowed   = True
             , vacation_yearly   = 25.0
             , all_in            = False
