@@ -2170,7 +2170,7 @@ class Gap_Report (_Report):
             filt  = dict (date = dt, user = user.id)
             vc    = db.vacation_correction.filter (None, filt)
             bal   = user_dynamic.compute_balance \
-                (db, user.id, start - day, True) [0]
+                (db, user.id, start, True) [0]
             #if not vc or abs (bal) >= 0.01:
             contr = ccls (start, i18n = db.i18n)
             contr ['balance_start'] = bal
