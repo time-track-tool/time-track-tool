@@ -1713,6 +1713,9 @@ class Test_Case_Timetracker (_Test_Case_Summary, unittest.TestCase) :
         # Allow report
         rl = self.db.user.get (self.user0, 'roles')
         self.db.user.set (self.user0, roles = ','.join ((rl, 'hr-vacation')))
+        # Allow user to create their own dyn user rec
+        self.db.o_permission.create \
+            (user = self.user13, org_location = [self.olo, self.olo2])
         self.db.commit ()
         self.db.close  ()
         self.db = self.tracker.open (self.username13)
