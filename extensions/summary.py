@@ -708,7 +708,7 @@ class _Report (autosuper):
             container ['vacation corrections'] = vcs
         except AttributeError:
             container ['vacation corrections'] = ' + '.join \
-                (str (db.vacation_correction.get (i, 'days')) for i in vc)
+                (str (self.db.vacation_correction.get (i, 'days')) for i in vc)
     # end def format_vac_corr
 
 # end class _Report
