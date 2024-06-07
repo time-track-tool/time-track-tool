@@ -534,6 +534,7 @@ properties = \
         , 'is_half'
         , 'locations'
         , 'name'
+        , 'org_location'
         ]
       )
     , ( 'query'
@@ -917,6 +918,7 @@ properties = \
     , ( 'user_dynamic'
       , [ 'additional_hours'
         , 'all_in'
+        , 'aux_org_locations'
         , 'booking_allowed'
         , 'contract_type'
         , 'daily_worktime'

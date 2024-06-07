@@ -101,7 +101,7 @@ Role "facility":
 Role "functional-role":
   (Restore for "user_functional_role" only)
   (Retire for "user_functional_role" only)
- User is allowed Edit on (Edit for "user": ('business_responsible', 'scale_seniority') only)
+ User is allowed Edit on (Edit for "user": ('scale_seniority',) only)
  User is allowed View on (View for "user": ('business_responsible', 'planning_role', 'scale_seniority') only)
  User is allowed to access user_functional_role (View for "user_functional_role" only)
  User is allowed to create user_functional_role (Create for "user_functional_role" only)
@@ -147,6 +147,7 @@ Role "hr":
  User may access attendance_record because org_location in dynamic user is allowed (View for "attendance_record" only)
  User may access automatic work package if Organisation/Location is allowed (Edit for "auto_wp" only)
  User may access automatic work package if Organisation/Location is allowed (View for "auto_wp" only)
+ User may access dynamic user record because the org_location is allowed (Edit for "user_dynamic": ('aux_org_locations',) only)
  User may access dynamic user record because the org_location is allowed (View for "user_dynamic" only)
  User may access item because org_location in dynamic user is allowed (Edit for "daily_record": ('attendance_record', 'status', 'time_record') only)
  User may access item because org_location in dynamic user is allowed (Edit for "daily_record": ('required_overtime', 'weekend_allowed') only)
@@ -171,6 +172,7 @@ Role "hr-org-location":
  User is allowed to search time_activity_perm (Search for "time_activity_perm" only)
  User may access attendance_record because org_location in dynamic user is allowed (Edit for "attendance_record" only)
  User may access attendance_record because org_location in dynamic user is allowed (View for "attendance_record" only)
+ User may access dynamic user record because the org_location is allowed (Edit for "user_dynamic": ('aux_org_locations',) only)
  User may access dynamic user record because the org_location is allowed (View for "user_dynamic" only)
  User may access item because org_location in dynamic user is allowed (View for "daily_record_freeze" only)
  User may access item because org_location in dynamic user is allowed (View for "overtime_correction" only)
@@ -320,6 +322,7 @@ Role "sec-incident-responsible":
  User is allowed to access it_project (View for "it_project" only)
 Role "staff-report":
 Role "sub-login":
+Role "summary-report":
 Role "summary_view":
 Role "supportadmin":
  User is allowed to access adr_type (View for "adr_type" only)
@@ -372,7 +375,6 @@ Role "user":
  User is allowed View on (View for "user": ('activity', 'actor', 'address', 'alternate_addresses', 'business_responsible', 'clearance_by', 'creation', 'creator', 'firstname', 'id', 'job_description', 'lastname', 'lunch_duration', 'lunch_start', 'nickname', 'pictures', 'position_text', 'queries', 'realname', 'room', 'sex', 'status', 'subst_active', 'substitute', 'supervisor', 'timezone', 'title', 'tt_lines', 'username') only)
  User is allowed View on (View for "user": ('activity', 'actor', 'address', 'alternate_addresses', 'creation', 'creator', 'id', 'queries', 'realname', 'status', 'timezone', 'username') only)
  User is allowed View on (View for "user": ('business_responsible', 'company_code', 'company_name', 'department_temp', 'employee_number', 'timetracking_by', 'vie_user', 'vie_user_bl_override', 'vie_user_ml') only)
- User is allowed View on (View for "user_dynamic": ('org_location',) only)
  User is allowed View on file if file is linked from an item with View permission (View for "file" only)
  User is allowed View on issue if issue is non-confidential or user is on nosy list (View for "issue" only)
  User is allowed View on it_issue if it_issue is non-confidential or user is on nosy list (View for "it_issue" only)
