@@ -204,6 +204,7 @@ class _Test_Base :
         , 'subcontract'
         , 'subcontract-org'
         , 'sub-login'
+        , 'summary-report'
         , 'summary_view'
         , 'supportadmin'
         , 'time-report'
@@ -874,6 +875,7 @@ class Test_Case_Support_Timetracker (_Test_Case, unittest.TestCase) :
         , 'procurement', 'project'
         , 'project_view', 'sec-incident-nosy'
         , 'sec-incident-responsible', 'staff-report', 'sub-login'
+        , 'summary-report'
         , 'summary_view' , 'supportadmin', 'time-report', 'type', 'user'
         , 'vacation-report'
         ]
@@ -890,7 +892,8 @@ class Test_Case_Timetracker (_Test_Case_Summary, unittest.TestCase) :
         , 'hr-leave-approval', 'hr-org-location', 'hr-vacation', 'it', 'nosy'
         , 'o-permission'
         , 'office', 'organisation', 'pgp', 'procurement', 'project'
-        , 'project_view', 'staff-report', 'sub-login', 'summary_view'
+        , 'project_view', 'staff-report', 'sub-login'
+        , 'summary-report', 'summary_view'
         , 'time-report', 'user', 'user_view', 'vacation-report'
         ]
     transprop_perms = transprop_time
@@ -5010,7 +5013,8 @@ class Test_Case_Fulltracker (_Test_Case_Summary, unittest.TestCase) :
         , 'msgedit', 'msgsync', 'nosy', 'o-permission', 'office', 'organisation'
         , 'pgp', 'procurement', 'project', 'project_view'
         , 'sec-incident-nosy', 'sec-incident-responsible'
-        , 'staff-report', 'sub-login', 'summary_view', 'supportadmin'
+        , 'staff-report', 'sub-login'
+        , 'summary-report', 'summary_view', 'supportadmin'
         , 'time-report', 'user', 'user_view', 'vacation-report'
         ]
     transprop_perms = transprop_full
