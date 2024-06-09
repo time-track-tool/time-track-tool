@@ -7565,6 +7565,3 @@ msgstr "Employee number"
 
 msgid "company_name"
 msgstr "Company"
-
-msgid "company_code"
-msgstr "Company Code"
