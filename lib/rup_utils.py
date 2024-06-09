@@ -74,7 +74,7 @@ def translate (x) :
         >>> translate ('äöüÄÖÜß')
         'aouaouss'
     """
-    t = x.decode ('utf-8').translate (translation_table).encode ('utf-8')
+    t = x.translate (translation_table)
     return t.lower ()
 # end def translate
 
