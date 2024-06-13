@@ -2,6 +2,7 @@
 
 import sys
 import requests
+import datetime
 from bs4 import BeautifulSoup
 from roundup.date import Date
 
@@ -37,19 +38,59 @@ english = dict \
     ,  ('Nationalfeiertag',    'National holiday')
     ,  ('Neujahr',             "New Year's Day")
     ,  ('Ostermontag',         'Easter Monday')
+    ,  ('Ostersonntag',        'Easter Sunday')
     ,  ('Pfingstmontag',       'Whit Monday')
+    ,  ('Pfingstsonntag',      'Whit Sunday')
     ,  ('Staatsfeiertag',      'Labour Day')
     ,  ('Stefanitag',          'Boxing Day')
     ))
 
 olos = dict \
-    ( TCAG = ['1', '7', '10', '41', '80']
+    ( TCAG = ['1', '7', '10', '41', '80', '84']
     , TAAG = ['36', '37']
     )
 
 month_num = {}
 for n, m in enumerate (monthnames):
     month_num [m] = n + 1
+
+def try_create_ph (rq, dt, name):
+    # Get ph on that date
+    d  = dict (date = dt)
+    d ['@fields'] = 'locations,org_location'
+    phs = rq.get ('public_holiday?' + urlencode (d))
+    phs = phs ['data']['collection']
+    olo_ph = set ()
+    loc_ph = set ()
+    for ph in phs:
+        olo_ph.update \
+            (x ['id'] for x in ph ['org_location'])
+        loc_ph.update \
+            (x ['id'] for x in ph ['locations'])
+    for tcname in olos:
+        olo = olos [tcname]
+        if loc_ph:
+            print \
+                ( 'Warning: Holiday on %s has locations'
+                % (dt,)
+                )
+            continue
+        if olo_ph.intersection (olo):
+            print \
+                ( 'Warning: Holiday on %s exists for %s'
+                % (dt, tcname)
+                )
+            continue
+        # now create it
+        d = dict \
+            ( name         = english.get (name, name)
+            , description  = name
+            , date         = dt
+            , is_half      = 0
+            , org_location = ','.join (olo)
+            )
+        rq.post ('public_holiday', json = d)
+# end try_create_ph
 
 def import_public_holidays (rq):
     ans = requests.get (url)
@@ -82,41 +123,13 @@ def import_public_holidays (rq):
                         month = month_num [monthname]
                         assert year == dyear
                         dt = '%s-%02d-%02d' % (year, month, day)
-                        # Get ph on that date
-                        d  = dict (date = dt)
-                        d ['@fields'] = 'locations,org_location'
-                        phs = rq.get ('public_holiday?' + urlencode (d))
-                        phs = phs ['data']['collection']
-                        olo_ph = set ()
-                        loc_ph = set ()
-                        for ph in phs:
-                            olo_ph.update \
-                                (x ['id'] for x in ph ['org_location'])
-                            loc_ph.update \
-                                (x ['id'] for x in ph ['locations'])
-                        for tcname in olos:
-                            olo = olos [tcname]
-                            if loc_ph:
-                                print \
-                                    ( 'Warning: Holiday on %s has locations'
-                                    % (dt,)
-                                    )
-                                continue
-                            if olo_ph.intersection (olo):
-                                print \
-                                    ( 'Warning: Holiday on %s exists for %s'
-                                    % (dt, tcname)
-                                    )
-                                continue
-                            # now create it
-                            d = dict \
-                                ( name         = english.get (name, name)
-                                , description  = name
-                                , date         = dt
-                                , is_half      = 0
-                                , org_location = ','.join (olo)
-                                )
-                            rq.post ('public_holiday', json = d)
+                        try_create_ph (rq, dt, name)
+                        if name in ('Ostermontag', 'Pfingstmontag'):
+                            dti = datetime.datetime.strptime (dt, '%Y-%m-%d')
+                            dti -= datetime.timedelta (days = 1)
+                            dt  = dti.strftime ('%Y-%m-%d')
+                            name = name.replace ('montag', 'sonntag')
+                            try_create_ph (rq, dt, name)
 # end import_public_holidays
 
 def main (argv = sys.argv [1:]):
