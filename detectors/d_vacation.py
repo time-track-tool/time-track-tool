@@ -1,5 +1,5 @@
 #! /usr/bin/python
-# Copyright (C) 2014-21 Dr. Ralf Schlatterbeck Open Source Consulting.
+# Copyright (C) 2014-24 Dr. Ralf Schlatterbeck Open Source Consulting.
 # Reichergasse 131, A-3411 Weidling.
 # Web: http://www.runtux.com Email: office@runtux.com
 # All rights reserved
@@ -638,6 +638,10 @@ def handle_decline (db, vs):
 # end def handle_decline
 
 # Always called in a reactor
+# But the vacation sum uses time records for computing the already-taken
+# vacation. These are never exiting at this point since we're in status
+# submitted. So it is wrong to call vacation.need_hr_approval with
+# 'booked' set to True.
 def handle_submit (db, vs):
     now     = Date ('.')
     wp      = db.time_wp.getnode (vs.time_wp)
@@ -645,7 +649,7 @@ def handle_submit (db, vs):
     dyn     = user_dynamic.get_user_dynamic (db, vs.user, vs.first_day)
     ctype   = dyn.contract_type
     hr_only = vacation.need_hr_approval \
-        (db, tp, vs.user, ctype, vs.first_day, vs.last_day, 'submitted', True)
+        (db, tp, vs.user, ctype, vs.first_day, vs.last_day, 'submitted')
     handle_crq_or_submit (db, vs, now, 'SUBMIT', hr_only or tp.is_special_leave)
     if tp.is_special_leave:
         try_send_mail \
