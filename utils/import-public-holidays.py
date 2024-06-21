@@ -32,6 +32,7 @@ english = dict \
     ,  ('Christi Himmelfahrt', 'Ascension Day')
     ,  ('Christtag',           'Christmas Day')
     ,  ('Fronleichnam',        'Corpus Christi')
+    ,  ('Heiligabend',         'Christmas Eve')
     ,  ('Heilige Drei Könige', 'Epiphany')
     ,  ('Karfreitag',          'Good Friday')
     ,  ('Mariä Empfängnis',    'Immaculate Conception')
@@ -43,6 +44,7 @@ english = dict \
     ,  ('Pfingstmontag',       'Whit Monday')
     ,  ('Pfingstsonntag',      'Whit Sunday')
     ,  ('Staatsfeiertag',      'Labour Day')
+    ,  ('Silvester',           "New Year's Eve")
     ,  ('Stefanitag',          'Boxing Day')
     ))
 
@@ -125,6 +127,14 @@ def import_public_holidays (rq):
                         assert year == dyear
                         dt = '%s-%02d-%02d' % (year, month, day)
                         try_create_ph (rq, dt, name)
+                        if name == 'Stefanitag':
+                            dti = datetime.datetime.strptime (dt, '%Y-%m-%d')
+                            dif = datetime.timedelta (days = 2)
+                            dt  = (dti - dif).strftime ('%Y-%m-%d')
+                            try_create_ph (rq, dt, 'Heiligabend')
+                            dif = datetime.timedelta (days = 5)
+                            dt  = (dti + dif).strftime ('%Y-%m-%d')
+                            try_create_ph (rq, dt, 'Silvester')
                         if name in ('Ostermontag', 'Pfingstmontag'):
                             dti = datetime.datetime.strptime (dt, '%Y-%m-%d')
                             dti -= datetime.timedelta (days = 1)
