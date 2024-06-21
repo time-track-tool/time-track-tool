@@ -33,6 +33,7 @@ english = dict \
     ,  ('Christtag',           'Christmas Day')
     ,  ('Fronleichnam',        'Corpus Christi')
     ,  ('Heilige Drei Könige', 'Epiphany')
+    ,  ('Karfreitag',          'Good Friday')
     ,  ('Mariä Empfängnis',    'Immaculate Conception')
     ,  ('Mariä Himmelfahrt',   'Assumption')
     ,  ('Nationalfeiertag',    'National holiday')
@@ -128,8 +129,14 @@ def import_public_holidays (rq):
                             dti = datetime.datetime.strptime (dt, '%Y-%m-%d')
                             dti -= datetime.timedelta (days = 1)
                             dt  = dti.strftime ('%Y-%m-%d')
-                            name = name.replace ('montag', 'sonntag')
-                            try_create_ph (rq, dt, name)
+                            n   = name.replace ('montag', 'sonntag')
+                            try_create_ph (rq, dt, n)
+                            if name == 'Ostermontag':
+                                # Subtract another 2 days
+                                dti -= datetime.timedelta (days = 2)
+                                dt  = dti.strftime ('%Y-%m-%d')
+                                n   = 'Karfreitag'
+                                try_create_ph (rq, dt, n)
 # end import_public_holidays
 
 def main (argv = sys.argv [1:]):
