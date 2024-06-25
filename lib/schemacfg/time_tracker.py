@@ -721,6 +721,7 @@ def security (db, ** kw):
         , ("Sub-Login",         "Allow to login as another user")
         , ("CC-Permission",     "Allow editing cost center permission")
         , ("Summary-Report",    "Allowed to view summary report")
+        , ("View-Roles",        "Allow to view user roles")
         ]
 
     #     classname
@@ -879,6 +880,11 @@ def security (db, ** kw):
           )
         , ( "user",         "View", ["Functional-Role"]
           , ( "planning_role", "scale_seniority", "business_responsible"
+            )
+          )
+        , ( "user",         "View", ["View-Roles"]
+          , ( "roles"
+            ,
             )
           )
         ]

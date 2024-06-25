@@ -213,6 +213,7 @@ class _Test_Base :
         , 'user'
         , 'user_view'
         , 'vacation-report'
+        , 'view-roles'
         ))
 
     def setup_tracker (self, backend = None) :
@@ -878,7 +879,7 @@ class Test_Case_Support_Timetracker (_Test_Case, unittest.TestCase) :
         , 'sec-incident-responsible', 'staff-report', 'sub-login'
         , 'summary-report'
         , 'summary_view' , 'supportadmin', 'time-report', 'type', 'user'
-        , 'vacation-report'
+        , 'vacation-report', 'view-roles'
         ]
     transprop_perms = transprop_sfull
 # end class Test_Case_Support_Timetracker
@@ -895,7 +896,7 @@ class Test_Case_Timetracker (_Test_Case_Summary, unittest.TestCase) :
         , 'office', 'organisation', 'pgp', 'procurement', 'project'
         , 'project_view', 'staff-report', 'sub-login'
         , 'summary-report', 'summary_view'
-        , 'time-report', 'user', 'user_view', 'vacation-report'
+        , 'time-report', 'user', 'user_view', 'vacation-report', 'view-roles'
         ]
     transprop_perms = transprop_time
 
@@ -3275,7 +3276,7 @@ class Test_Case_Timetracker (_Test_Case_Summary, unittest.TestCase) :
             ( ('subject',    'Leave request "Vacation/Vacation" '
                              '2008-12-02 to 2008-12-02 from Test User2')
             , ('precedence', 'bulk')
-            , ('to',         'user1@test.test')
+            , ('to',         'user1@test.test, user0@test.test')
             , ('from',       'roundup-admin@your.tracker.email.domain.example')
             ) :
             self.assertEqual (header_decode (e [h]), t)
@@ -3284,10 +3285,10 @@ class Test_Case_Timetracker (_Test_Case_Summary, unittest.TestCase) :
             , b'Test User2 has submitted a leave request\n'
               b'"Vacation/Vacation".\n'
               b'Comment from user: None\n'
-              b'Please approve or decline at\n'
-              b'http://localhost:4711/ttt/leave_submission?@template=approve'
-              b'\nMany thanks!'
-              b'\n\nThis is an automatically generated message.\n'
+              b'Needs approval by HR.\n'
+              b'http://localhost:4711/ttt/leave_submission?@template=approve\n'
+              b'Many thanks!\n\n'
+              b'This is an automatically generated message.\n'
               b'Responses to this address are not possible.'
             )
         os.unlink (maildebug)
@@ -5019,7 +5020,7 @@ class Test_Case_Fulltracker (_Test_Case_Summary, unittest.TestCase) :
         , 'sec-incident-nosy', 'sec-incident-responsible'
         , 'staff-report', 'sub-login'
         , 'summary-report', 'summary_view', 'supportadmin'
-        , 'time-report', 'user', 'user_view', 'vacation-report'
+        , 'time-report', 'user', 'user_view', 'vacation-report', 'view-roles'
         ]
     transprop_perms = transprop_full
 

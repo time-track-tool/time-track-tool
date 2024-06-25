@@ -236,11 +236,9 @@ Role "office":
  User is allowed to create absence (Create for "absence" only)
  User is allowed to create absence_type (Create for "absence_type" only)
  User is allowed to create room (Create for "room" only)
- User is allowed to create uc_type (Create for "uc_type" only)
  User is allowed to edit absence (Edit for "absence" only)
  User is allowed to edit absence_type (Edit for "absence_type" only)
  User is allowed to edit room (Edit for "room" only)
- User is allowed to edit uc_type (Edit for "uc_type" only)
 Role "organisation":
  User is allowed to access location (View for "location" only)
  User is allowed to access org_location (View for "org_location" only)
@@ -411,4 +409,6 @@ Role "user":
 Role "user_view":
  User is allowed to access user (View for "user" only)
 Role "vacation-report":
+Role "view-roles":
+ User is allowed View on (View for "user": ('roles',) only)
 """.strip ()
