@@ -545,4 +545,6 @@ Role "user":
  Users are allowed to view their own and public queries for classes where they have search permission (View for "query" only)
  Users may see daily record if they may see one of the time_records for that day (View for "daily_record" only)
 Role "vacation-report":
+Role "view-roles":
+ User is allowed View on (View for "user": ('roles',) only)
 """.strip ()
