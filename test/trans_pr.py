@@ -6,7 +6,7 @@ transprop_perms = \
         , 'procurement'
         , 'procurement-admin', 'project', 'project_view', 'quality'
         , 'subcontract', 'subcontract-org', 'training-approval'
-        , 'user', 'user_view'
+        , 'user', 'user_view', 'view-roles'
         ]
       )
     ]

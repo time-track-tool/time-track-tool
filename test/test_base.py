@@ -6773,7 +6773,7 @@ class Test_Case_PR (_Test_Case, unittest.TestCase) :
         , 'procurement', 'procurement-admin', 'project'
         , 'project_view', 'quality', 'sub-login'
         , 'subcontract', 'subcontract-org'
-        , 'training-approval', 'user', 'user_view'
+        , 'training-approval', 'user', 'user_view', 'view-roles'
         ]
     transprop_perms = transprop_pr
 # end class Test_Case_PR

@@ -143,6 +143,7 @@ def security (db, ** kw) :
         , ("Controlling",       "Controlling")
         , ("Procurement",       "Purchasing/Procurement")
         , ("O-Permission",      "Allowed org-location/organisation per user")
+        , ("View-Roles",        "Allow to view user roles")
         ]
 
     #     classname
@@ -162,7 +163,13 @@ def security (db, ** kw) :
           )
         ]
 
-    prop_perms = []
+    prop_perms = \
+        [ ( "user",         "View", ["View-Roles"]
+          , ( "roles"
+            ,
+            )
+          )
+        ]
 
     schemadef.register_roles             (db, roles)
     schemadef.register_class_permissions (db, classes, prop_perms)
