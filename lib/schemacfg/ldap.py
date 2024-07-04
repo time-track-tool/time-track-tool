@@ -129,7 +129,7 @@ def security (db, ** kw):
         , 'vie_user'
 	]
     user_props_hr  = generic_user_props + \
-        ['clearance_by', 'roles', 'reduced_activity_list']
+        ['clearance_by', 'reduced_activity_list']
     user_props_gtt = generic_user_props + user_props + \
         ['username', 'sync_foreign_key', 'department_temp']
     user_props_office = ['contacts', 'position_text', 'room']
