@@ -343,7 +343,6 @@
                                ( 'lastname'
                                , 'firstname'
                                , 'username'
-                               , 'room'
                                , 'supervisor'
                                )
                               if n in db._db.user.properties
@@ -517,7 +516,6 @@
      , ('rc_suitability',      'Edit',   '?@template=item', 1)
      , ('reference',           'Edit',   '?@template=item', 1)
      , ('reporting_group',     'Edit',   '?@template=item', 1)
-     , ('room',                'Edit',   '?@template=item', 1)
      , ('safety_level',        'Edit',   '?@template=item', 1)
      , ('sales_conditions',    'Edit',   '?@template=item', 1)
      , ('sap_cc',              'Edit',   '?@template=item', 1)
@@ -648,7 +646,6 @@
      , ('qsl',                 'View', 1,               ('',''))
      , ('qso',                 'View', 1,               ('',''))
      , ('rc_product',          'View', 1,               ('',''))
-     , ('room',                'View', 1,               ('',''))
      , ('reference',           'View', 1,               ('',''))
      , ('sap_cc',              'View', 1,               ('',''))
      , ('sensor',              'View', 1,               ('',''))

@@ -119,10 +119,7 @@
      </td>
     </tr>
     <tal:block tal:condition="python:
-         ('room' in bclass.properties and context.room.is_view_ok ())
-         or ('substitute' in bclass.properties
-            and context.substitute.is_view_ok ()
-            )
+         'substitute' in bclass.properties and context.substitute.is_view_ok ()
          ">
      <tal:block tal:condition="python:
           'user_dynamic' in db._db.classes and context.id">
@@ -213,11 +210,6 @@
         </tr>
        </table>
       </td>
-     </tr>
-     <tr tal:condition="python:'room' in bclass.properties">
-      <th tal:content="structure python:utils.fieldname
-          (db, 'user', 'room')"/>
-      <td tal:content="structure context/room/menu"/>
      </tr>
      <tr tal:condition="python:'position_text' in bclass.properties">
       <th tal:content="structure python:utils.fieldname
