@@ -73,6 +73,7 @@ user_by_olo = dict \
     , auto_china =
         ( 'mmarjanovic@ds1.internal', 'chen@ds1.internal'
         , 'croman@ds1.internal', 'haller@ds1.internal'
+        , 'chxu@ds1.internal'
         )
     , auto_korea =
         ( 'mmarjanovic@ds1.internal', 'croman@ds1.internal'
@@ -110,6 +111,17 @@ for ogroup in user_by_olo:
             print ("Warning: %s" % msg)
             continue
         by_uid [uid].extend (ogroups [ogroup])
+
+# Users in only one OLO:
+user_olo = [('187', '3'), ('304', '34'), ('5615', '23')]
+for uid, olo in user_olo:
+    try:
+        nd = db.user.getnode (uid)
+        un = nd.username
+    except IndexError:
+        continue
+    assert uid not in by_uid
+    by_uid [uid] = [olo]
 
 for uid in by_uid:
     oids = db.o_permission.filter (None, dict (user = uid))
