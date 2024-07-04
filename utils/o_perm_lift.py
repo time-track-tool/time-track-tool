@@ -168,7 +168,26 @@ for uid in hr_leave_users:
         print ('Warning: %s' % err)
         continue
     u = db.user.getnode (uid)
-    r = user.roles
+    r = u.roles
     r = r + ',hr-leave-approval'
+    db.user.set (uid, roles = r)
+view_roles_users = \
+    [ '2548', '2851', '2198', '34', '1846', '5781', '6228', '1434', '2371'
+    , '711', '304', '5615', '2863', '4931', '2861', '1307', '187', '126'
+    , '4750'
+    ]
+for uid in view_roles_users:
+    try:
+        if user_has_role (db, uid, 'view-roles'):
+            continue
+    except IndexError as err:
+        print ('Warning: %s' % err)
+        continue
+    u = db.user.getnode (uid)
+    r = u.roles
+    if not r:
+        r = 'view-roles'
+    else:
+        r = r + ',view-roles'
     db.user.set (uid, roles = r)
 db.commit ()
