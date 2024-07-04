@@ -1751,14 +1751,14 @@ def security (db, ** kw):
         )
     for role in 'HR', 'HR-Org-Location':
         db.security.addPermissionToRole (role, p)
-    # Allow editing aux_org_locations even if frozen
+    # Allow editing aux_org_locations and time_activity_perm even if frozen
     p = db.security.addPermission \
         ( name        = 'Edit'
         , klass       = 'user_dynamic'
         , check       = o_permission.dynamic_user_allowed_by_olo
         , description = fixdoc
             (o_permission.dynamic_user_allowed_by_olo.__doc__)
-        , properties  = ("aux_org_locations",)
+        , properties  = ("aux_org_locations", "time_activity_perm")
         )
     for role in 'HR', 'HR-Org-Location':
         db.security.addPermissionToRole (role, p)
