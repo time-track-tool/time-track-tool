@@ -130,7 +130,7 @@ for uid in by_uid:
             db.o_permission.create (user = uid, org_location = new_olo)
 
 # WP fixes
-oloids_ = (7, 3, 10, 1, 23, 51, 34, 80, 30, 41, 75, 76, 26, 83, 20, 68, 67)
+oloids_ = (7, 3, 10, 1, 23, 51, 34, 80, 30, 41, 75, 76, 26, 83, 20, 68, 67, 84)
 oloids  = []
 for oid in oloids_:
     try:
