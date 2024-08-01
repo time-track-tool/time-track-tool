@@ -25,7 +25,8 @@
       <th class="required"
           tal:content="structure python:utils.fieldname
               (db, classname, 'org_location')"/>
-      <td tal:content="structure python:context.org_location.menu ()"/>
+      <td tal:content="structure python:context.org_location.menu
+          (**utils.valid_item (now))"/>
      </tr>
      <tr>
       <th tal:content="structure python:utils.fieldname

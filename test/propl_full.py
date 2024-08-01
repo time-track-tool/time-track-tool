@@ -442,6 +442,11 @@ properties = \
         , 'name'
         ]
       )
+    , ( 'o_permission'
+      , [ 'org_location'
+        , 'user'
+        ]
+      )
     , ( 'org_group'
       , [ 'name'
         ]
@@ -529,6 +534,7 @@ properties = \
         , 'is_half'
         , 'locations'
         , 'name'
+        , 'org_location'
         ]
       )
     , ( 'query'
@@ -804,7 +810,8 @@ properties = \
         ]
       )
     , ( 'time_wp'
-      , [ 'auto_wp'
+      , [ 'allowed_olo'
+        , 'auto_wp'
         , 'bookers'
         , 'cost_center'
         , 'description'
@@ -911,6 +918,7 @@ properties = \
     , ( 'user_dynamic'
       , [ 'additional_hours'
         , 'all_in'
+        , 'aux_org_locations'
         , 'booking_allowed'
         , 'contract_type'
         , 'daily_worktime'

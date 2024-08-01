@@ -1,4 +1,18 @@
 <tal:block metal:use-macro="templates/page/macros/icing">
+ <tal:block metal:fill-slot="more-javascript">
+  <script>
+    function set_allowedorg_visibility () {
+      $(".vis").removeClass ('hidden');
+      if ($('input[name="is_public"]:checked').val () != 'yes') {
+        $(".vis").addClass ('hidden');
+      }
+    }
+    $(document).ready (function (){
+      $(ispub).change (set_allowedorg_visibility);
+      set_allowedorg_visibility ();
+    })
+  </script>
+ </tal:block>
  <title metal:fill-slot="head_title">
   <tal:block tal:condition="context/id" i18n:translate="">
    <span tal:replace="string:${Classname}: ${context/id}"
@@ -103,8 +117,8 @@
     </tr>
     <tr>
      <th tal:content="structure python:utils.fieldname
-         (db, classname, 'is_public')"/>
-     <td tal:content="structure python:context.is_public.field ()"/>
+         (db, classname, 'is_extern')"/>
+     <td tal:content="structure python:context.is_extern.field ()"/>
      <th tal:content="structure python:utils.fieldname
          (db, classname, 'bookers')"/>
      <td>
@@ -120,8 +134,12 @@
     </tr>
     <tr>
      <th tal:content="structure python:utils.fieldname
-         (db, classname, 'is_extern')"/>
-     <td tal:content="structure python:context.is_extern.field ()"/>
+         (db, classname, 'is_public')"/>
+     <td id="ispub" tal:content="structure python:context.is_public.field ()"/>
+     <th class="vis" tal:content="structure python:utils.fieldname
+         (db, classname, 'allowed_olo')"/>
+     <td class="vis" tal:content="structure python:context.allowed_olo.menu
+         (**utils.valid_item (now))"/>
     </tr>
     <tr>
      <th tal:content="structure python:utils.fieldname

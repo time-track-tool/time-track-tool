@@ -1,5 +1,5 @@
 #! /usr/bin/python
-# Copyright (C) 2006-23 Dr. Ralf Schlatterbeck Open Source Consulting.
+# Copyright (C) 2006-24 Dr. Ralf Schlatterbeck Open Source Consulting.
 # Reichergasse 131, A-3411 Weidling.
 # Web: http://www.runtux.com Email: office@runtux.com
 # All rights reserved
@@ -44,6 +44,7 @@ from roundup.cgi.actions            import Action
 from roundup.configuration          import InvalidOptionError
 from rsclib.autosuper               import autosuper
 from rsclib.PM_Value                import PM_Value
+from o_permission                   import dynamic_user_allowed_by_olo
 
 import common
 import request_util
@@ -104,7 +105,7 @@ class Extended_Daily_Record (Extended_Node):
 class Extended_WP (Extended_Node):
     """ Keeps information about the username *and* about the status of
         the work package.
-        
+
         For permissions, see time_wp_viewable in lib/sum_common.py
     """
     def __init__ (self, db, wpid):
@@ -376,7 +377,7 @@ class Comparable_Container (Container, Dict_Mixin):
     def __cmp__ (self, other):
         _ = self.i18n.gettext
         return \
-            (  cmp (self.sortkey, other.sortkey) 
+            (  cmp (self.sortkey, other.sortkey)
             or cmp (_ (self.classname), _ (other.classname))
             or cmp (self.name, other.name)
             )
@@ -535,7 +536,7 @@ class WP_Container (Comparable_Container):
             self.time_wp_summary_no    = ('time_wp_summary_no', wpsn.name)
             self.time_wp_summary_no_id = ('time_wp_summary_no', wpsn.id)
     # end def __init__
-    
+
     def __repr__ (self):
         name = self.__class__.__name__
         return "%s (%s, %s, %s)" % \
@@ -690,6 +691,26 @@ class _Report (autosuper):
             supi = self.db.user.get (supi, 'supervisor')
     # end def supi_clearance
 
+    def format_vac_corr (self, vc, container):
+        try:
+            vcs = HTML_List ()
+            for x in vc:
+                item  = self.htmldb.vacation_correction.getItem (x)
+                days  = item.days
+                ep    = self.utils.ExtProperty
+                vcs.append \
+                    ( ep
+                        ( self.utils, days
+                        , item         = item
+                        , is_labelprop = True
+                        )
+                    )
+            container ['vacation corrections'] = vcs
+        except AttributeError:
+            container ['vacation corrections'] = ' + '.join \
+                (str (self.db.vacation_correction.get (i, 'days')) for i in vc)
+    # end def format_vac_corr
+
 # end class _Report
 
 class Summary_Report (_Report):
@@ -744,6 +765,17 @@ class Summary_Report (_Report):
         users       = filterspec.get ('user', [])
         sv          = dict ((i, 1) for i in filterspec.get ('supervisor', []))
         svu         = []
+        # Summary report can only be seen by role Summary-Report now
+        if not common.user_has_role (self.db, self.uid, 'Summary-Report'):
+            self.wps             = {}
+            self.usernames       = []
+            self.start           = start
+            self.end             = end
+            self.time_containers = {}
+            self.wp_containers   = []
+            self.dr_containers   = []
+            return
+
         if sv:
             svu = db.user.find (supervisor = sv)
         users         = list (set (users).union (svu))
@@ -766,7 +798,7 @@ class Summary_Report (_Report):
                         )
                     dr_containers.append (c)
                     by_id [id] = c
-                    
+
                 for i in db.user_dynamic.find (** {cl : spec}):
                     ud = db.user_dynamic.getnode (i)
                     if  (   ud.valid_from <= end
@@ -782,7 +814,7 @@ class Summary_Report (_Report):
                         udend = end
                     assert (udstart <= udend)
                     drs = db.daily_record.filter \
-                        ( None, dict 
+                        ( None, dict
                             ( user   = ud.user
                             , date   = common.pretty_range (udstart, udend)
                             , status = status
@@ -793,7 +825,7 @@ class Summary_Report (_Report):
                     by_id [getattr (ud, cl)].update (dict.fromkeys (drs))
                     drecs.update (dict ((d.id, d) for d in drs))
 
-        db.log_info ("summary_report: after deps: %s" 
+        db.log_info ("summary_report: after deps: %s"
             % (time.time () - timestamp))
         if not users and not olo_or_dept:
             users   = db.user.getnodeids () # also invalid users!
@@ -802,7 +834,7 @@ class Summary_Report (_Report):
         dr          = []
         if users:
             dr = db.daily_record.filter \
-                ( None, dict 
+                ( None, dict
                     ( user   = users
                     , date   = common.pretty_range (start, end)
                     , status = status
@@ -962,7 +994,7 @@ class Summary_Report (_Report):
             ccs     = db.cost_center.find (cost_center_group = ccg)
             ccs     = dict ((c, 1) for c in ccs)
             wp_containers.append \
-                ( WP_Container 
+                ( WP_Container
                     ( db.cost_center_group, ccg
                     , 'cost_center_group' in self.columns
                     , i18n = db.i18n
@@ -1038,7 +1070,7 @@ class Summary_Report (_Report):
         usernames = list (sorted (usernames))
         db.log_info ("summary_report: sorted   usernames (%s)"
             % (time.time () - timestamp))
-        
+
         # append only wps where somebody actually booked on
         wps         = dict ((tr.wp.id, 1) for tr in time_recs)
         for w in wps:
@@ -1333,10 +1365,13 @@ class Summary_Report (_Report):
 
     def _output (self, line_formatter, item_formatter):
         start = self.start + Interval ('1d')
-        end   = max \
-            ([self.time_containers [i][-1].sort_end
-              for i in self.time_containers
-            ])
+        if not self.time_containers:
+            end = self.end
+        else:
+            end   = max \
+                ([self.time_containers [i][-1].sort_end
+                  for i in self.time_containers
+                ])
         for wpc in self.wp_containers:
             tc_pointers = dict \
                 ([(i, 0) for i in self.time_containers])
@@ -1484,6 +1519,19 @@ class Staff_Report (_Report):
         period_objects   = dict \
             (week = common.period_week, month = common.period_month)
         for u in self.users:
+            ustart = start
+            # Loop over all dyn recs for that user and re-compute start
+            # date if no permission
+            sdyn = user_dynamic.get_user_dynamic (db, u, start)
+            if not sdyn:
+                sdyn = user_dynamic.first_user_dynamic (db, u, date = start)
+            # We already established above that for the end date we have
+            # a dynamic user record
+            while not dynamic_user_allowed_by_olo (db, self.uid, sdyn.id):
+                sdyn = user_dynamic.next_user_dynamic (db, sdyn)
+            if sdyn.valid_from > ustart:
+                ustart = sdyn.valid_from
+
             dyn        = user_dynamic.get_user_dynamic (db, u, end)
             values [u] = []
             for period in 'week', 'month', 'range':
@@ -1491,16 +1539,39 @@ class Staff_Report (_Report):
                     continue
                 ccls = time_container_classes [period]
                 if period == 'range':
-                    container = ccls (start, end, i18n = db.i18n)
-                    values [u].append   (container)
-                    self.fill_container (container, u, dyn, start, end)
+                    # It might be the case that we may not see all
+                    # dynamic user records in the range
+                    # We do not display the range in that case.
+                    while (   sdyn
+                          and dynamic_user_allowed_by_olo
+                              (db, self.uid, sdyn.id)
+                          ):
+                        sdyn = user_dynamic.next_user_dynamic (db, sdyn)
+                        if not sdyn or sdyn.valid_to is None:
+                            break
+                        if sdyn.valid_to > end:
+                            break
+                    if  (  not sdyn
+                        or dynamic_user_allowed_by_olo (db, self.uid, sdyn.id)
+                        ):
+                        container = ccls (ustart, end, i18n = db.i18n)
+                        values [u].append   (container)
+                        self.fill_container (container, u, dyn, ustart, end)
                 else:
-                    date = start
+                    date = ustart
                     while date <= end:
                         eop = common.end_of_period \
                             (date, period_objects [period])
                         if eop > end:
                             eop = end
+                        cdyn = user_dynamic.get_user_dynamic (db, u, eop)
+                        # Permission check on individual period
+                        if  (  not cdyn
+                            or not dynamic_user_allowed_by_olo
+                               (db, self.uid, cdyn.id)
+                            ):
+                            date = eop + day
+                            continue
                         container = ccls (date, i18n = db.i18n)
                         values [u].append   (container)
                         self.fill_container (container, u, dyn, date, eop)
@@ -1607,9 +1678,11 @@ class Staff_Report (_Report):
     def staff_permission_ok (self, user, dynuser):
         if user == self.uid:
             return True
-        if common.user_has_role (self.db, self.uid, 'HR', 'staff-report'):
-            return True
         if self.supi_clearance (user):
+            return True
+        if not dynamic_user_allowed_by_olo (self.db, self.uid, dynuser.id):
+            return False
+        if common.user_has_role (self.db, self.uid, 'HR', 'staff-report'):
             return True
         if common.user_has_role (self.db, self.uid, 'HR-Org-Location'):
             hrt = user_dynamic.hr_olo_role_for_this_user_dyn
@@ -1774,9 +1847,9 @@ class Vacation_Report (_Report):
                     mind = Date ('%s-01-01' % start.year)
                 if end and min_user_date [(u, ctype)] > end:
                     continue
-                dyn = vacation.vac_get_user_dynamic (db, u, ctype, md)
+                dyn  = vacation.vac_get_user_dynamic (db, u, ctype, md)
                 if  (  not dyn or (dyn.valid_from and dyn.valid_from > end)
-                    or not self.permission_ok (u, dyn)
+                    or not self.permission_ok (u, dyn, check_olo = False)
                     ):
                     continue
                 last_dyn = ldyn = dyn
@@ -1788,6 +1861,9 @@ class Vacation_Report (_Report):
                     max_user_date [(u, ctype)] = last_dyn.valid_to
                     if last_dyn.valid_to < mind:
                         continue
+                # Second permission check *with* check_olo
+                if not self.permission_ok (u, last_dyn, check_olo = True):
+                    continue
                 user_vc [(u, ctype)] = vc
                 if u not in self.user_ctypes:
                     self.user_ctypes [u] = []
@@ -1933,31 +2009,13 @@ class Vacation_Report (_Report):
                     vd = common.pretty_range (fd, d)
                     vcids = db.vacation_correction.filter \
                         ( None
-                        , dict 
+                        , dict
                             ( user          = u
                             , date          = vd
                             , contract_type = ctype
                             )
                         )
-                    try:
-                        vcs = HTML_List ()
-                        for x in vcids:
-                            item  = self.htmldb.vacation_correction.getItem (x)
-                            days  = item.days
-                            ep    = self.utils.ExtProperty
-                            vcs.append \
-                                ( ep
-                                    ( self.utils, days 
-                                    , item         = item
-                                    , is_labelprop = True
-                                    )
-                                )
-                        container ['vacation corrections'] = vcs
-                    except AttributeError:
-                        container ['vacation corrections'] = ' + '.join \
-                            (str (db.vacation_correction.get (i, 'days'))
-                             for i in vcids
-                            )
+                    self.format_vac_corr (vcids, container)
                     if (u, ctype) not in self.values:
                         self.values [(u, ctype)] = []
                     self.values [(u, ctype)].append (container)
@@ -1984,12 +2042,16 @@ class Vacation_Report (_Report):
         return True
     # end def is_obsolete
 
-    def permission_ok (self, user, dynuser):
+    def permission_ok (self, user, dynuser, check_olo = True):
         if user == self.uid:
             return True
-        if self.hv:
-            return True
         if self.supi_clearance (user):
+            return True
+        if  (   check_olo
+            and not dynamic_user_allowed_by_olo (self.db, self.uid, dynuser.id)
+            ):
+            return False
+        if self.hv:
             return True
         return False
     # end def permission_ok
@@ -2039,6 +2101,100 @@ class Vacation_Report (_Report):
 
 # end class Vacation_Report
 
+class Gap_Report (_Report):
+    fields = \
+        ( (""'balance_start',        1)
+        , (""'carry_on_date',        2)
+        , (""'vacation corrections', 3)
+        )
+
+    def __init__ (self, db, request, utils, is_csv = False):
+        self.htmldb = db
+        try:
+            db = db._db
+        except AttributeError:
+            pass
+        self.db      = db
+        self.uid     = db.getuid ()
+        self.request = request
+        self.utils   = utils
+        filterspec   = request.filterspec
+        user         = filterspec.get ('user', None)
+        olo          = filterspec.get ('org_location', None)
+        now          = Date ('.')
+        try:
+            date     = Date (filterspec.get ('date'))
+        except ValueError:
+            date     = now
+        fields       = dict (self.fields)
+        self.fields  = sorted \
+            (list (fields), key = lambda x: fields [x])
+        if common.user_has_role (self.db, self.uid, 'HR'):
+            d = dict (start_date = date)
+            if user:
+                d ['users'] = user
+            if olo:
+                d ['olo'] = olo
+            self.gaps = user_dynamic.find_dynuser_gaps (db, **d)
+        else:
+            self.gaps = []
+    # end def __init__
+
+    def header_line (self, formatter):
+        _ = self.db.i18n.gettext
+        line = []
+        line.append (formatter (_ ('user')))
+        line.append (formatter (_ ('user.employee_number')))
+        line.append (formatter (_ ('date')))
+        line.append (formatter (_ ('org_location')))
+        for f in self.fields:
+            line.append (formatter (_ (f)))
+        return line
+    # end def header_line
+
+    def _output (self, line_formatter, item_formatter):
+        db   = self.db
+        day  = common.day
+        line = []
+        ccls = time_container_classes ['day']
+        allowed = dynamic_user_allowed_by_olo
+        for odyn, ndyn in self.gaps:
+            if not allowed (db, self.uid, ndyn.id):
+                continue
+            start = ndyn.valid_from
+            eprev = odyn.valid_to
+            user  = db.user.getnode (ndyn.user)
+            # Check if there is an absolute vacation correction between
+            # eprev and start
+            dt    = common.pretty_range (eprev, start)
+            filt  = dict (date = dt, user = user.id)
+            vc    = db.vacation_correction.filter (None, filt)
+            bal   = user_dynamic.compute_balance \
+                (db, user.id, start, True) [0]
+            #if not vc or abs (bal) >= 0.01:
+            contr = ccls (start, i18n = db.i18n)
+            contr ['balance_start'] = bal
+            contr ['carry_on_date'] = ''
+            self.format_vac_corr (vc, contr)
+            if ndyn.vac_aliq is not None and odyn.vac_aliq is not None:
+                carry = vacation.remaining_vacation \
+                    (db, user.id, date = start, to_eoy = False)
+                contr ['carry_on_date'] = carry
+            line  = []
+            line.append (item_formatter (self.linked_user (user.id)))
+            line.append (item_formatter (user.employee_number))
+            line.append (item_formatter (start.pretty (common.ymd)))
+            line.append \
+                (item_formatter
+                    (self.linked_type
+                        (ndyn.org_location, 'org_location', 'name')))
+            for fn in self.fields:
+                line.append (item_formatter (contr [fn]))
+            line_formatter (line)
+    # end def _output
+
+# end class Gap_Report
+
 class CSV_Report (Action, autosuper):
     def handle (self, outfile = None):
         request                   = templating.HTMLRequest     (self.client)
@@ -2071,6 +2227,10 @@ class CSV_Vacation_Report (CSV_Report):
     report_class = Vacation_Report
 # end class CSV_Vacation_Report
 
+class CSV_Gap_Report (CSV_Report):
+    report_class = Gap_Report
+# end class CSV_Gap_Report
+
 def summary_report_links (db):
     """ Returns a list of summary-report links: We look up the config
         value summary_report_redirect in section ttt. If we find an
@@ -2099,9 +2259,11 @@ def init (instance):
     util   ('Summary_Report',       Summary_Report)
     util   ('Staff_Report',         Staff_Report)
     util   ('Vacation_Report',      Vacation_Report)
+    util   ('Gap_Report',           Gap_Report)
     util   ('summary_report_links', summary_report_links)
     action = instance.registerAction
     action ('csv_summary_report',   CSV_Summary_Report)
     action ('csv_staff_report',     CSV_Staff_Report)
     action ('csv_vacation_report',  CSV_Vacation_Report)
+    action ('csv_gap_report',       CSV_Gap_Report)
 # end def init

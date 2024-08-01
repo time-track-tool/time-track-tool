@@ -1,5 +1,5 @@
 #! /usr/bin/python
-# Copyright (C) 2014-23 Dr. Ralf Schlatterbeck Open Source Consulting.
+# Copyright (C) 2014-24 Dr. Ralf Schlatterbeck Open Source Consulting.
 # Reichergasse 131, A-3411 Weidling.
 # Web: http://www.runtux.com Email: office@runtux.com
 # All rights reserved
@@ -60,9 +60,13 @@ def public_holiday_wp (db, user, date):
 # end def public_holiday_wp
 
 def get_public_holiday (db, dyn, date):
-    loc = db.org_location.get (dyn.org_location, 'location')
+    olo = dyn.org_location
+    loc = db.org_location.get (olo, 'location')
     dt  = common.pretty_range (date, date)
     hol = db.public_holiday.filter (None, dict (date = dt, locations = loc))
+    if not hol:
+        hol = db.public_holiday.filter \
+            (None, dict (date = dt, org_location = olo))
     if hol:
         assert len (hol) == 1
         holiday = db.public_holiday.getnode (hol [0])
@@ -159,6 +163,10 @@ def update_public_holidays (db, dyn):
         dt = common.pretty_range (dyn.valid_from, dyn.valid_to - common.day)
     d   = dict (date = dt, locations = loc)
     hols = db.public_holiday.filter (None, d)
+    hols = set (hols)
+    d   = dict (date = dt, org_location = dyn.org_location)
+    ho2  = db.public_holiday.filter (None, d)
+    hols.update (ho2)
     for h in hols:
         hol = db.public_holiday.getnode (h)
         dat = common.pretty_range (hol.date, hol.date)
@@ -430,7 +438,7 @@ def get_vacation_correction (db, user, ctype = -1, date = None):
     """
     if date is None:
         date = Date ('.')
-    dt = ";%s" % date.pretty (common.ymd)
+    dt = common.pretty_range (None, date)
     d = dict \
         ( user          = user
         , absolute      = True
@@ -724,14 +732,29 @@ def valid_wps \
 
     wp  = []
     if user:
-        d1  = dict (d, is_public = True, has_expiration_date = False)
-        wp.extend (db.time_wp.filter (None, d1, srt))
-        d1  = dict (d, is_public = True, time_end = '%s;' % dt)
-        wp.extend (db.time_wp.filter (None, d1, srt))
+        dyn = user_dynamic.get_user_dynamic (db, user, date)
+        olo = None
+        if dyn:
+            olo = dyn.org_location
         d1  = dict (d, bookers = user, has_expiration_date = False)
         wp.extend (db.time_wp.filter (None, d1, srt))
         d1  = dict (d, bookers = user, time_end = '%s;' % dt)
         wp.extend (db.time_wp.filter (None, d1, srt))
+        if olo:
+            d1  = dict \
+                ( d
+                , is_public           = True
+                , allowed_olo         = [olo, -1]
+                , has_expiration_date = False
+                )
+            wp.extend (db.time_wp.filter (None, d1, srt))
+            d1  = dict \
+                ( d
+                , is_public           = True
+                , allowed_olo         = [olo, -1]
+                , time_end            = '%s;' % dt
+                )
+            wp.extend (db.time_wp.filter (None, d1, srt))
     else:
         d1 = dict (d, has_expiration_date = False)
         wp.extend (db.time_wp.filter (None, d1, srt))

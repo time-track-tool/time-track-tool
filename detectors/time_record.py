@@ -41,6 +41,7 @@ import json
 import common
 import user_dynamic
 import vacation
+import o_permission
 
 hour_format = '%H:%M'
 
@@ -444,6 +445,10 @@ def new_daily_record (db, cl, nodeid, new_values):
     _   = db.i18n.gettext
     uid = db.getuid ()
     common.require_attributes (_, cl, nodeid, new_values, 'user', 'date')
+    date = new_values ['date']
+    date.hour = date.minute = date.second = 0
+    new_values ['date'] = date
+    o_permission.check_valid_user (db, cl, nodeid, new_values, date = date)
     user  = new_values ['user']
     ttby  = db.user.get (user, 'timetracking_by')
     uname = db.user.get (user, 'username')
@@ -459,9 +464,6 @@ def new_daily_record (db, cl, nodeid, new_values):
     # the following is allowed for the admin (import!)
     if uid != '1':
         common.reject_attributes (_, new_values, 'status')
-    date = new_values ['date']
-    date.hour = date.minute = date.second = 0
-    new_values ['date'] = date
     dyn  = user_dynamic.get_user_dynamic (db, user, date)
     if not dyn and uid != '1':
         raise Reject \
@@ -617,6 +619,7 @@ def new_attendance_record (db, cl, nodeid, new_values):
     start = new_values.get ('start')
     end   = new_values.get ('end')
     check_start_end_duration (_, dr.date, start, end, duration, new_values)
+    o_permission.check_new_tr_or_ar_allowed (db, cl, nodeid, new_values)
 # end def new_attendance_record
 
 def allow_new_public_holiday (db, dr, wpid, tr):
@@ -682,6 +685,7 @@ def new_time_record (db, cl, nodeid, new_values):
             wday = gmtime (dr.date.timestamp ())[6]
             if wday in (5, 6):
                 raise Reject (_ ('No weekend booking allowed'))
+    o_permission.check_new_tr_or_ar_allowed (db, cl, nodeid, new_values)
 # end def new_time_record
 
 def check_att_record (db, cl, nodeid, new_values):

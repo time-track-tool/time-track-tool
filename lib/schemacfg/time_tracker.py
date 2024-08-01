@@ -36,6 +36,7 @@ from schemacfg       import schemadef
 import sum_common
 import common
 import user_dynamic
+import o_permission
 
 def init \
     ( db
@@ -49,6 +50,7 @@ def init \
     , Interval
     , Department_Class
     , Time_Project_Status_Class
+    , O_Permission_Class
     , ** kw
     ):
     export = {}
@@ -121,9 +123,9 @@ def init \
         , user                  = Link      ("user",          do_journal = "no")
         , date                  = Date      (offset = 0)
         , frozen                = Boolean   ()
-	, achieved_hours        = Number    ()
-	, balance               = Number    ()
-	, validity_date         = Date      ()
+        , achieved_hours        = Number    ()
+        , balance               = Number    ()
+        , validity_date         = Date      ()
         , week_balance          = Number    ()
         , month_balance         = Number    ()
         , month_validity_date   = Date      (offset = 0)
@@ -156,6 +158,7 @@ def init \
         , date                  = Date      (offset = 0)
         , locations             = Multilink ("location")
         , is_half               = Boolean   ()
+        , org_location          = Multilink ("org_location")
         )
 
     summary_report = Class \
@@ -367,6 +370,7 @@ def init \
         , epic_key              = String    ()
         , is_extern             = Boolean   ()
         , auto_wp               = Link      ("auto_wp")
+        , allowed_olo           = Multilink ("org_location")
         )
 
     time_wp_summary_no = Class \
@@ -443,6 +447,7 @@ def init \
         , hours_sat             = Number    ()
         , hours_sun             = Number    ()
         , org_location          = Link      ("org_location", do_journal = "no")
+        , aux_org_locations     = Multilink ("org_location", do_journal = "no")
         , all_in                = Boolean   ()
         , additional_hours      = Number    ()
         , overtime_period       = Link      ( "overtime_period"
@@ -685,6 +690,11 @@ def init \
         )
     org_group.setkey ("name")
 
+    o_permission = O_Permission_Class \
+        ( db, ''"o_permission"
+        , org_location          = Multilink ("org_location")
+        )
+
     return export
 # end def init
 
@@ -710,6 +720,7 @@ def security (db, ** kw):
         , ("Organisation",      "Editing of organisation-related items")
         , ("Sub-Login",         "Allow to login as another user")
         , ("CC-Permission",     "Allow editing cost center permission")
+        , ("Summary-Report",    "Allowed to view summary report")
         ]
 
     #     classname
@@ -723,10 +734,6 @@ def security (db, ** kw):
         , ( "absence_type"
           , ["User"]
           , ["Office"]
-          )
-        , ( "auto_wp"
-          , ["HR"]
-          , ["HR"]
           )
         , ( "cc_bu_category"
           , ["User"]
@@ -752,14 +759,6 @@ def security (db, ** kw):
           , ["User"]
           , ["Controlling"]
           )
-        , ( "daily_record"
-          , ["HR", "Controlling"]
-          , []
-          )
-        , ( "daily_record_freeze"
-          , ["HR", "Controlling"]
-          , []
-          )
         , ( "daily_record_status"
           , ["User"]
           , []
@@ -768,17 +767,9 @@ def security (db, ** kw):
           , ["User"]
           , []
           )
-        , ( "leave_submission"
-          , ["HR", "HR-vacation", "HR-leave-approval", "controlling"]
-          , ["HR-vacation"]
-          )
         , ("organisation"
           , ["User"]
           , ["Controlling"]
-          )
-        , ( "overtime_correction"
-          , ["HR", "Controlling"]
-          , []
           )
         , ( "overtime_period"
           , ["User"]
@@ -797,10 +788,6 @@ def security (db, ** kw):
           , []
           )
         , ( "reporting_group"
-          , ["User"]
-          , ["HR", "Controlling"]
-          )
-        , ( "sap_cc"
           , ["User"]
           , ["HR", "Controlling"]
           )
@@ -824,21 +811,9 @@ def security (db, ** kw):
           , ["User"]
           , ["Controlling"]
           )
-        , ( "time_record"
-          , ["HR", "Controlling"]
-          , ["HR", "Controlling"]
-          )
-        , ( "attendance_record"
-          , ["HR", "Controlling"]
-          , ["HR", "Controlling"]
-          )
         , ( "time_wp_group"
           , ["User"]
-          , ["Project"]
-          )
-        , ( "time_wp"
-          , ["Project_View", "Project", "Controlling"]
-          , ["Project"]
+          , []
           )
         , ( "time_wp_summary_no"
           , ["User"]
@@ -848,17 +823,9 @@ def security (db, ** kw):
           , ["User"]
           , []
           )
-        , ( "user_dynamic"
-          , ["HR"]
-          , []
-          )
         , ( "vac_aliq"
           , ["User"]
           , []
-          )
-        , ( "vacation_correction"
-          , ["HR", "HR-vacation", "HR-leave-approval", "controlling"]
-          , ["HR-vacation"]
           )
         , ( "vacation_report"
           , ["User"]
@@ -866,7 +833,7 @@ def security (db, ** kw):
           )
         , ( "work_location"
           , ["User"]
-          , ["Controlling"]
+          , []
           )
         , ( "time_report"
           , ["Time-Report", "Controlling", "Project", "Project_View"]
@@ -899,56 +866,20 @@ def security (db, ** kw):
         ]
 
     prop_perms = \
-        [ ( "daily_record", "Edit", ["HR", "Controlling"]
-          , ("status", "time_record", "attendance_record")
-          )
-        , ( "daily_record", "Edit", ["HR"]
-          , ("required_overtime", "weekend_allowed")
-          )
-        , ( "leave_submission", "Edit", ["HR-leave-approval"]
-          , ("status",)
-          )
-        , ( "sap_cc", "Edit", ["Controlling"]
-          , ("group_lead", "team_lead", "nosy")
-          )
-        , ( "time_project", "Edit", ["Controlling"]
-          , ("group_lead", "team_lead", "nosy")
-          )
-        , ( "time_project", "Edit", ["Project"]
-          , ( "max_hours", "op_project", "planned_effort"
-            , "product_family", "project_type", "reporting_group"
-            , "work_location", "infosec_req", "is_extern"
-            )
-          )
-        , ( "time_project", "Edit", ["HR"]
-          , ( "is_public_holiday", "is_vacation", "is_special_leave"
-            , "no_overtime", "no_overtime_day", "only_hours"
-            , "overtime_reduction", "approval_required", "approval_hr"
-            , "is_extern"
-            )
-          )
-        , ( "time_wp",      "Edit", ["Controlling"]
-          , ( "project",)
-          )
-        , ( "user_dynamic", "View", ["Controlling"]
-          , ( "id", "sap_cc", "user", "valid_from", "valid_to")
-          )
-        , ( "user",         "View", ["User"]
+        [ ( "user",         "View", ["User"]
           , ( "timetracking_by", "vie_user", "vie_user_bl_override"
             , "vie_user_ml", "department_temp", "business_responsible"
             , "employee_number", "company_name", "company_code"
             )
           )
         , ( "user",         "Edit", ["Functional-Role"]
-          , ( "scale_seniority", "business_responsible"
+          , ( "scale_seniority"
+            ,
             )
           )
         , ( "user",         "View", ["Functional-Role"]
           , ( "planning_role", "scale_seniority", "business_responsible"
             )
-          )
-        , ( "user_dynamic", "View", ["User"]
-          , ( "org_location",)
           )
         ]
 
@@ -960,13 +891,7 @@ def security (db, ** kw):
         )
     schemadef.own_user_detail_permission (db, 'User', 'Edit', 'dark_mode')
 
-    # Allow retire/restore for Functional-Role
-    for perm in 'Retire', 'Restore':
-        p = db.security.addPermission \
-            ( name        = perm
-            , klass       = 'user_functional_role'
-            )
-        db.security.addPermissionToRole ('Functional-Role', p)
+    fixdoc = schemadef.security_doc_from_docstring
 
     # For the following the use is regulated by auditors.
     db.security.addPermissionToRole ('User', 'Create', 'attendance_record')
@@ -977,8 +902,6 @@ def security (db, ** kw):
     schemadef.add_search_permission (db, 'daily_record', 'User')
     schemadef.add_search_permission (db, 'time_record', 'User')
     schemadef.add_search_permission (db, 'attendance_record', 'User')
-
-    fixdoc = schemadef.security_doc_from_docstring
 
     def approver_daily_record (db, userid, itemid):
         """User is allowed to edit daily record if he is supervisor.
@@ -1200,6 +1123,8 @@ def security (db, ** kw):
 
            Check that no daily_record_freeze is active at date
         """
+        if not o_permission.overtime_corr_allowed_by_olo (db, userid, itemid):
+            return False
         oc = db.overtime_correction.getnode (itemid)
         return not frozen (db, oc.user, oc.date)
     # end def overtime_thawed
@@ -1210,6 +1135,8 @@ def security (db, ** kw):
 
            Check that no daily_record_freeze is active after date
         """
+        if not o_permission.dr_freeze_allowed_by_olo (db, userid, itemid):
+            return False
         df = db.daily_record_freeze.getnode (itemid)
         return not frozen (db, df.user, df.date + date.Interval ('1d'))
     # end def dr_freeze_last_frozen
@@ -1218,6 +1145,8 @@ def security (db, ** kw):
         """User is allowed to edit dynamic user data if not frozen in
            validity span of dynamic user record
         """
+        if not o_permission.dynamic_user_allowed_by_olo (db, userid, itemid):
+            return False
         dyn = db.user_dynamic.getnode (itemid)
         return not frozen (db, dyn.user, dyn.valid_from)
     # end def dynuser_thawed
@@ -1228,7 +1157,7 @@ def security (db, ** kw):
            timetracking by, supervisor and approval delegated)
         """
         wp = db.time_wp.getnode (itemid)
-        if wp.is_public or userid in wp.bookers:
+        if userid in wp.bookers:
             return True
         # Get all users for which *this* user is in timetracking_by
         users = db.user.filter (None, dict (timetracking_by = userid))
@@ -1241,16 +1170,29 @@ def security (db, ** kw):
             for u in common.tt_clearance_by (db, b):
                 if u == userid:
                     return True
+        # Changed: Only users allowed by the organisation not *all*
+        # users may book
+        if  (   wp.is_public
+            and o_permission.time_wp_allowed_by_org (db, userid, itemid)
+            ):
+            return True
+        # Also allow if user is in allowed_olo
+        # Note: This may be not enough for old wps, we would need to get
+        # *all* olos that the user was ever part of
+        if wp.allowed_olo:
+            dyn = user_dynamic.get_user_dynamic (db, userid, date.Date ('.'))
+            if dyn and dyn.org_location in wp.allowed_olo:
+                return True
         return False
     # end def wp_admitted
 
-    def project_or_wp_name_visible (db, userid, itemid):
-        """User is allowed to view work package and time category names
+    def wp_name_visible (db, userid, itemid):
+        """User is allowed to view work package names
            if he/she has role HR or HR-Org-Location.
         """
         if common.user_has_role (db, userid, 'HR', 'HR-Org-Location'):
             return True
-    # end def project_or_wp_name_visible
+    # end def wp_name_visible
 
     def record_visible_for_hr_olo (db, cl, userid, itemid):
         """User is allowed to view record data if he/she
@@ -1268,32 +1210,6 @@ def security (db, ** kw):
     # end def time_record_visible_for_hr_olo
     time_record_visible_for_hr_olo.__doc__ = record_visible_for_hr_olo.__doc__
 
-    def attendance_record_visible_for_hr_olo (db, userid, itemid):
-        return record_visible_for_hr_olo \
-            (db, db.attendance_record, userid, itemid)
-    # end def attendance_record_visible_for_hr_olo
-    attendance_record_visible_for_hr_olo.__doc__ = \
-        record_visible_for_hr_olo.__doc__
-
-    def user_dynamic_visible_for_hr_olo (db, userid, itemid):
-        """User is allowed to view dynamic user data if he/she
-           is in group HR-Org-Location and in the same Org-Location as
-           the given user
-        """
-        dyn = db.user_dynamic.getnode (itemid)
-        return user_dynamic.hr_olo_role_for_this_user_dyn (db, userid, dyn)
-    # end def user_dynamic_visible_for_hr_olo
-
-    def overtime_corr_visible_for_hr_olo (db, userid, itemid):
-        """User is allowed to view overtime information if he/she
-           is in group HR-Org-Location and in the same Org-Location as
-           the given user
-        """
-        ot = db.overtime_correction.getnode (itemid)
-        return user_dynamic.hr_olo_role_for_this_user \
-            (db, userid, ot.user, ot.date)
-    # end def overtime_corr_visible_for_hr_olo
-
     def overtime_corr_visible_for_user (db, userid, itemid):
         """User is allowed to view their own overtime information
         """
@@ -1301,16 +1217,6 @@ def security (db, ** kw):
         if ot.user == userid:
             return True
     # end def overtime_corr_visible_for_user
-
-    def dr_freeze_visible_for_hr_olo (db, userid, itemid):
-        """User is allowed to view freeze information if he/she
-           is in group HR-Org-Location and in the same Org-Location as
-           the given user
-        """
-        df = db.daily_record_freeze.getnode (itemid)
-        return user_dynamic.hr_olo_role_for_this_user \
-            (db, userid, df.user, df.date)
-    # end def dr_freeze_visible_for_hr_olo
 
     def dr_freeze_visible_for_user (db, userid, itemid):
         """User is allowed to view freeze information if he/she
@@ -1322,7 +1228,7 @@ def security (db, ** kw):
 
     def time_report_visible (db, userid, itemid):
         """ User may see time report if reponsible or deputy of time
-            project or on nosy list of time project.
+            category or on nosy list of time category.
         """
         trep = db.time_report.getnode (itemid)
         if not trep.time_project:
@@ -1344,92 +1250,16 @@ def security (db, ** kw):
         return False
     # end def own_file
 
-    p = db.security.addPermission \
-        ( name        = 'Edit'
-        , klass       = 'file'
-        , check       = own_file
-        , description = fixdoc (own_file.__doc__)
-        )
-    db.security.addPermissionToRole ('Time-Report', p)
-
-    p = db.security.addPermission \
-        ( name        = 'Edit'
-        , klass       = 'time_wp'
-        , check       = ok_work_package
-        , description = fixdoc (ok_work_package.__doc__)
-        , properties  = \
-            ( 'description'
-            , 'time_start', 'time_end', 'bookers', 'planned_effort'
-            , 'time_wp_summary_no', 'epic_key'
-            )
-        )
-    db.security.addPermissionToRole ('User', p)
-
-    p = db.security.addPermission \
-        ( name        = 'View'
-        , klass       = 'time_wp'
-        , check       = sum_common.time_wp_viewable
-        , description = fixdoc (sum_common.time_wp_viewable.__doc__)
-        )
-    db.security.addPermissionToRole ('User', p)
-
-    p = db.security.addPermission \
-        ( name        = 'Edit'
-        , klass       = 'time_wp'
-        , check       = is_project_owner_or_deputy
-        , description = fixdoc (is_project_owner_or_deputy.__doc__)
-        , properties  = \
-            ( 'name', 'responsible', 'wp_no', 'cost_center'
-            , 'time_wp_summary_no', 'is_public'
-            )
-        )
-    db.security.addPermissionToRole ('User', p)
-
-    p = db.security.addPermission \
-        ( name        = 'Edit'
-        , klass       = 'time_project'
-        , check       = time_project_responsible_and_open
-        , description = fixdoc (time_project_responsible_and_open.__doc__)
-        , properties  = ('deputy', 'planned_effort', 'nosy')
-        )
-    db.security.addPermissionToRole ('User', p)
-
-    p = db.security.addPermission \
-        ( name        = 'Edit'
-        , klass       = 'daily_record'
-        , check       = ok_daily_record
-        , description = fixdoc (ok_daily_record.__doc__)
-        , properties  = ('status', 'time_record', 'attendance_record')
-        )
-    db.security.addPermissionToRole ('User', p)
-
-    p = db.security.addPermission \
-        ( name        = 'View'
-        , klass       = 'daily_record'
-        , check       = ok_daily_record
-        , description = fixdoc (ok_daily_record.__doc__)
-        )
-    db.security.addPermissionToRole ('User', p)
-
     for perm in 'View', 'Edit':
-
         p = db.security.addPermission \
             ( name        = perm
-            , klass       = 'daily_record'
-            , check       = approver_daily_record
-            , description = fixdoc (approver_daily_record.__doc__)
-            , properties  = ('required_overtime',)
+            , klass       = 'attendance_record'
+            , check       = o_permission.ar_allowed_by_olo
+            , description = fixdoc (o_permission.ar_allowed_by_olo.__doc__)
             )
-        #db.security.addPermissionToRole ('User', p)
-
-        p = db.security.addPermission \
-            ( name        = perm
-            , klass       = 'time_record'
-            , check       = own_time_record
-            , description = fixdoc (own_time_record.__doc__)
-            )
-        db.security.addPermissionToRole ('User', p)
-
+        for role in ("HR", "HR-Org-Location", "Controlling"):
+            db.security.addPermissionToRole (role, p)
+    for perm in 'View', 'Edit':
         p = db.security.addPermission \
             ( name        = perm
             , klass       = 'attendance_record'
@@ -1437,83 +1267,20 @@ def security (db, ** kw):
             , description = fixdoc (own_attendance_record.__doc__)
             )
         db.security.addPermissionToRole ('User', p)
-
-        p = db.security.addPermission \
-            ( name        = perm
-            , klass       = 'leave_submission'
-            , check       = own_leave_submission
-            , description = fixdoc (own_leave_submission.__doc__)
-            , properties  = \
-                ( 'user', 'first_day', 'last_day', 'status', 'time_wp'
-                , 'comment', 'comment_cancel'
-                )
-            )
-        db.security.addPermissionToRole ('User', p)
-
-    # Allow retire and restore for own (or timetracking_by) timerecs and
-    # attendance records
+    # Allow retire and restore for own (or timetracking_by) attendance records
     for perm in 'Retire', 'Restore':
         p = db.security.addPermission \
             ( name        = perm
-            , klass       = 'time_record'
-            , check       = own_time_record
-            , description = fixdoc (own_time_record.__doc__)
-            )
-        db.security.addPermissionToRole ('User', p)
-        p = db.security.addPermission \
-            ( name        = perm
             , klass       = 'attendance_record'
             , check       = own_attendance_record
             , description = fixdoc (own_attendance_record.__doc__)
             )
         db.security.addPermissionToRole ('User', p)
-
-    p = db.security.addPermission \
-        ( name        = 'View'
-        , klass       = 'leave_submission'
-        , check       = approval_for_leave_submission
-        , description = fixdoc (approval_for_leave_submission.__doc__)
-        )
-    db.security.addPermissionToRole ('User', p)
-
-    p = db.security.addPermission \
-        ( name        = 'Edit'
-        , klass       = 'leave_submission'
-        , check       = approval_for_leave_submission
-        , description = fixdoc (approval_for_leave_submission.__doc__)
-        , properties  = ('status',)
-        )
-    db.security.addPermissionToRole ('User', p)
-
-    p = db.security.addPermission \
-        ( name        = 'View'
-        , klass       = 'time_record'
-        , check       = approval_for_time_record
-        , description = fixdoc (approval_for_time_record.__doc__)
-        )
-    db.security.addPermissionToRole ('User', p)
     p = db.security.addPermission \
         ( name        = 'View'
         , klass       = 'attendance_record'
         , check       = approval_for_attendance_record
         , description = fixdoc (approval_for_attendance_record.__doc__)
-        )
-    db.security.addPermissionToRole ('User', p)
-    p = db.security.addPermission \
-        ( name        = 'View'
-        , klass       = 'daily_record'
-        , check       = sum_common.daily_record_viewable
-        , description = fixdoc (sum_common.daily_record_viewable.__doc__)
-        )
-    db.security.addPermissionToRole ('User', p)
-    p = db.security.addPermission \
-        ( name        = 'View'
-        , klass       = 'time_record'
-        , check       = may_see_time_record
-        , description = ' '.join
-            (( fixdoc (may_see_time_record.__doc__)
-             , fixdoc (sum_common.daily_record_viewable.__doc__)
-            ))
         )
     db.security.addPermissionToRole ('User', p)
     p = db.security.addPermission \
@@ -1526,16 +1293,95 @@ def security (db, ** kw):
             ))
         )
     db.security.addPermissionToRole ('User', p)
-    schemadef.add_search_permission (db, 'time_record', 'User')
-    schemadef.add_search_permission (db, 'attendance_record', 'User')
+    for role in ("Controlling", "HR"):
+        db.security.addPermissionToRole (role, 'Create', 'attendance_record')
+
+    for perm in 'View', 'Edit':
+        p = db.security.addPermission \
+            ( name        = perm
+            , klass       = 'auto_wp'
+            , check       = o_permission.auto_wp_allowed_by_olo
+            , description = fixdoc (o_permission.auto_wp_allowed_by_olo.__doc__)
+            )
+        db.security.addPermissionToRole ('HR', p)
+    db.security.addPermissionToRole ('HR', 'Create', 'auto_wp')
+    schemadef.add_search_permission (db, 'auto_wp', 'HR')
+
+    # Allow retire/restore for cost_center_permission_group
+    for perm in 'Retire', 'Restore':
+        p = db.security.addPermission \
+            ( name        = perm
+            , klass       = 'cost_center_permission_group'
+            )
+        db.security.addPermissionToRole ('CC-Permission', p)
+
+    p = db.security.addPermission \
+        ( name        = 'View'
+        , klass       = 'daily_record'
+        , check       = o_permission.daily_record_allowed_by_olo
+        , description = fixdoc
+            (o_permission.daily_record_allowed_by_olo.__doc__)
+        )
+    for role in ("HR", "Controlling"):
+        db.security.addPermissionToRole (role, p)
     p = db.security.addPermission \
         ( name        = 'Edit'
-        , klass       = 'overtime_correction'
-        , check       = overtime_thawed
-        , description = fixdoc (overtime_thawed.__doc__)
+        , klass       = 'daily_record'
+        , check       = o_permission.daily_record_allowed_by_olo
+        , description = fixdoc
+            (o_permission.daily_record_allowed_by_olo.__doc__)
+        , properties  = ("status", "time_record", "attendance_record")
         )
-    db.security.addPermissionToRole ('HR', p)
-    db.security.addPermissionToRole ('HR', 'Create', 'overtime_correction')
+    for role in ("HR", "Controlling"):
+        db.security.addPermissionToRole (role, p)
+    p = db.security.addPermission \
+        ( name        = 'Edit'
+        , klass       = 'daily_record'
+        , check       = o_permission.daily_record_allowed_by_olo
+        , description = fixdoc
+            (o_permission.daily_record_allowed_by_olo.__doc__)
+        , properties  = ("required_overtime", "weekend_allowed")
+        )
+    for role in ("HR",):
+        db.security.addPermissionToRole (role, p)
+    p = db.security.addPermission \
+        ( name        = 'Edit'
+        , klass       = 'daily_record'
+        , check       = ok_daily_record
+        , description = fixdoc (ok_daily_record.__doc__)
+        , properties  = ('status', 'time_record', 'attendance_record')
+        )
+    db.security.addPermissionToRole ('User', p)
+    p = db.security.addPermission \
+        ( name        = 'View'
+        , klass       = 'daily_record'
+        , check       = ok_daily_record
+        , description = fixdoc (ok_daily_record.__doc__)
+        )
+    db.security.addPermissionToRole ('User', p)
+    p = db.security.addPermission \
+        ( name        = 'View'
+        , klass       = 'daily_record'
+        , check       = sum_common.daily_record_viewable
+        , description = fixdoc (sum_common.daily_record_viewable.__doc__)
+        )
+    db.security.addPermissionToRole ('User', p)
+    p = db.security.addPermission \
+        ( name        = 'View'
+        , klass       = 'daily_record'
+        , check       = may_see_daily_record
+        , description = fixdoc (may_see_daily_record.__doc__)
+        )
+    db.security.addPermissionToRole ('User', p)
+
+    p = db.security.addPermission \
+        ( name        = 'View'
+        , klass       = 'daily_record_freeze'
+        , check       = o_permission.dr_freeze_allowed_by_olo
+        , description = fixdoc (o_permission.dr_freeze_allowed_by_olo.__doc__)
+        )
+    for role in ("HR", "HR-Org-Location", "Controlling"):
+        db.security.addPermissionToRole (role, p)
     p = db.security.addPermission \
         ( name        = 'Edit'
         , klass       = 'daily_record_freeze'
@@ -1546,43 +1392,169 @@ def security (db, ** kw):
     db.security.addPermissionToRole ('HR', p)
     db.security.addPermissionToRole ('HR', 'Create', 'daily_record_freeze')
     p = db.security.addPermission \
+        ( name        = 'View'
+        , klass       = 'daily_record_freeze'
+        , check       = dr_freeze_visible_for_user
+        , description = fixdoc (dr_freeze_visible_for_user.__doc__)
+        )
+    db.security.addPermissionToRole ('User', p)
+    schemadef.add_search_permission (db, 'daily_record_freeze', 'User')
+
+    p = db.security.addPermission \
         ( name        = 'Edit'
-        , klass       = 'user_dynamic'
-        , check       = dynuser_thawed
-        , description = fixdoc (dynuser_thawed.__doc__)
+        , klass       = 'file'
+        , check       = own_file
+        , description = fixdoc (own_file.__doc__)
         )
-    db.security.addPermissionToRole ('HR', p)
-    db.security.addPermissionToRole ('HR', 'Create', 'user_dynamic')
-    wp_properties = \
-        ( 'name', 'wp_no', 'description', 'responsible', 'project'
-        , 'time_start', 'time_end', 'durations_allowed'
-        , 'cost_center', 'creation', 'creator', 'activity', 'actor', 'id'
-        , 'has_expiration_date', 'time_wp_summary_no', 'epic_key'
-        , 'is_public', 'is_extern'
-        )
-    wp_search_props = wp_properties + ('auto_wp',)
+    db.security.addPermissionToRole ('Time-Report', p)
+
     p = db.security.addPermission \
         ( name        = 'View'
-        , klass       = 'time_wp'
-        , check       = wp_admitted
-        , description = fixdoc (wp_admitted.__doc__)
-        , properties  = wp_properties
+        , klass       = 'leave_submission'
+        , check       = o_permission.leave_allowed_by_olo
+        , description = fixdoc (o_permission.leave_allowed_by_olo.__doc__)
+        )
+    for role in ("HR", "HR-vacation", "HR-leave-approval", "controlling"):
+        db.security.addPermissionToRole (role, p)
+    p = db.security.addPermission \
+        ( name        = 'Edit'
+        , klass       = 'leave_submission'
+        , check       = o_permission.leave_allowed_by_olo
+        , description = fixdoc (o_permission.leave_allowed_by_olo.__doc__)
+        )
+    db.security.addPermissionToRole ("HR-vacation", p)
+    p = db.security.addPermission \
+        ( name        = 'Edit'
+        , klass       = 'leave_submission'
+        , check       = o_permission.leave_allowed_by_olo
+        , description = fixdoc (o_permission.leave_allowed_by_olo.__doc__)
+        , properties  = ("status",)
+        )
+    db.security.addPermissionToRole ("HR-leave-approval", p)
+    for perm in 'View', 'Edit':
+        p = db.security.addPermission \
+            ( name        = perm
+            , klass       = 'leave_submission'
+            , check       = own_leave_submission
+            , description = fixdoc (own_leave_submission.__doc__)
+            , properties  = \
+                ( 'user', 'first_day', 'last_day', 'status', 'time_wp'
+                , 'comment', 'comment_cancel'
+                )
+            )
+        db.security.addPermissionToRole ('User', p)
+    p = db.security.addPermission \
+        ( name        = 'View'
+        , klass       = 'leave_submission'
+        , check       = approval_for_leave_submission
+        , description = fixdoc (approval_for_leave_submission.__doc__)
+        )
+    db.security.addPermissionToRole ('User', p)
+    p = db.security.addPermission \
+        ( name        = 'Edit'
+        , klass       = 'leave_submission'
+        , check       = approval_for_leave_submission
+        , description = fixdoc (approval_for_leave_submission.__doc__)
+        , properties  = ('status',)
+        )
+    db.security.addPermissionToRole ('User', p)
+    db.security.addPermissionToRole \
+        ('HR-vacation', 'Create', 'leave_submission')
+
+    p = db.security.addPermission \
+        ( name        = 'View'
+        , klass       = 'overtime_correction'
+        , check       = o_permission.overtime_corr_allowed_by_olo
+        , description = fixdoc
+            (o_permission.overtime_corr_allowed_by_olo.__doc__)
+        )
+    for role in ("HR", "HR-Org-Location", "Controlling"):
+        db.security.addPermissionToRole (role, p)
+    p = db.security.addPermission \
+        ( name        = 'Edit'
+        , klass       = 'overtime_correction'
+        , check       = overtime_thawed
+        , description = fixdoc (overtime_thawed.__doc__)
+        )
+    db.security.addPermissionToRole ('HR', p)
+    db.security.addPermissionToRole ('HR', 'Create', 'overtime_correction')
+    p = db.security.addPermission \
+        ( name        = 'View'
+        , klass       = 'overtime_correction'
+        , check       = overtime_corr_visible_for_user
+        , description = fixdoc (overtime_corr_visible_for_user.__doc__)
         )
     db.security.addPermissionToRole ('User', p)
     p = db.security.addPermission \
         ( name        = 'Search'
-        , klass       = 'time_wp'
-        , properties  = wp_search_props + ('bookers',)
+        , klass       = 'overtime_correction'
         )
-    db.security.addPermissionToRole ('User', p)
-    schemadef.add_search_permission (db, 'time_wp', 'User', wp_search_props)
+    for role in ("HR", "HR-Org-Location", "Controlling"):
+        db.security.addPermissionToRole (role, p)
+
     p = db.security.addPermission \
-        ( name        = 'View'
+        ( name        = 'Edit'
+        , klass       = 'overtime_period'
+        , properties  = ('name', 'order')
+        )
+    db.security.addPermissionToRole ('HR', p)
+    db.security.addPermissionToRole ('HR', 'Create', 'overtime_period')
+
+    p = db.security.addPermission \
+        ( name        = 'Edit'
+        , klass       = 'sap_cc'
+        , check       = o_permission.sap_cc_allowed_by_org
+        , description = fixdoc (o_permission.sap_cc_allowed_by_org.__doc__)
+        )
+    for role in ("HR", "Controlling"):
+        db.security.addPermissionToRole (role, p)
+        db.security.addPermissionToRole (role, 'Create', 'sap_cc')
+
+    schemadef.add_search_permission \
+	(db, 'time_activity_perm', 'HR-Org-Location')
+
+    p = db.security.addPermission \
+        ( name        = 'Edit'
         , klass       = 'time_project'
-        , check       = sum_common.time_project_viewable
-        , description = fixdoc (sum_common.time_project_viewable.__doc__)
+        , check       = time_project_responsible_and_open
+        , description = fixdoc (time_project_responsible_and_open.__doc__)
+        , properties  = ('deputy', 'planned_effort', 'nosy')
         )
     db.security.addPermissionToRole ('User', p)
+    p = db.security.addPermission \
+        ( name        = 'Edit'
+        , klass       = 'time_project'
+        , properties  = ("group_lead", "team_lead", "nosy")
+        , check       = o_permission.time_project_allowed_by_org
+        , description = fixdoc
+            (o_permission.time_project_allowed_by_org.__doc__)
+        )
+    db.security.addPermissionToRole ('Controlling', p)
+    p = db.security.addPermission \
+        ( name        = 'Edit'
+        , klass       = 'time_project'
+        , properties  = ( "max_hours", "op_project", "planned_effort"
+                        , "product_family", "project_type", "reporting_group"
+                        , "work_location", "infosec_req", "is_extern"
+                        )
+        , check       = o_permission.time_project_allowed_by_org
+        , description = fixdoc
+            (o_permission.time_project_allowed_by_org.__doc__)
+        )
+    db.security.addPermissionToRole ('Project', p)
+    p = db.security.addPermission \
+        ( name        = 'Edit'
+        , klass       = 'time_project'
+        , properties  = ( "is_public_holiday", "is_vacation"
+                        , "is_special_leave", "no_overtime", "no_overtime_day"
+                        , "only_hours", "overtime_reduction"
+                        , "approval_required", "approval_hr", "is_extern"
+                        )
+        , check       = o_permission.time_project_allowed_by_org
+        , description = fixdoc
+            (o_permission.time_project_allowed_by_org.__doc__)
+        )
+    db.security.addPermissionToRole ('HR', p)
     tp_properties = \
         ( 'name', 'description', 'responsible', 'deputy'
         , 'status', 'work_location', 'op_project', 'id'
@@ -1596,131 +1568,58 @@ def security (db, ** kw):
         ( name        = 'View'
         , klass       = 'time_project'
         , properties  = tp_properties
-        )
-    db.security.addPermissionToRole ('User', p)
-    # Search permission
-    p = db.security.addPermission \
-        ( name        = 'Search'
-        , klass       = 'time_project'
-        , properties  = tp_properties
+        , check       = o_permission.time_project_allowed_by_org
+        , description = fixdoc
+            (o_permission.time_project_allowed_by_org.__doc__)
         )
     db.security.addPermissionToRole ('User', p)
 
+    for perm in 'View', 'Edit':
+        p = db.security.addPermission \
+            ( name        = perm
+            , klass       = 'time_record'
+            , check       = o_permission.tr_allowed_by_olo
+            , description = fixdoc (o_permission.tr_allowed_by_olo.__doc__)
+            )
+        for role in ("HR", "HR-Org-Location", "Controlling"):
+            db.security.addPermissionToRole (role, p)
+    for perm in 'View', 'Edit':
+        p = db.security.addPermission \
+            ( name        = perm
+            , klass       = 'time_record'
+            , check       = own_time_record
+            , description = fixdoc (own_time_record.__doc__)
+            )
+        db.security.addPermissionToRole ('User', p)
+    # Allow retire and restore for own (or timetracking_by) timerecs
+    for perm in 'Retire', 'Restore':
+        p = db.security.addPermission \
+            ( name        = perm
+            , klass       = 'time_record'
+            , check       = own_time_record
+            , description = fixdoc (own_time_record.__doc__)
+            )
+        db.security.addPermissionToRole ('User', p)
     p = db.security.addPermission \
         ( name        = 'View'
-        , klass       = 'time_wp'
-        , check       = project_or_wp_name_visible
-        , description = fixdoc (project_or_wp_name_visible.__doc__)
-        , properties  = ('name', 'project')
+        , klass       = 'time_record'
+        , check       = approval_for_time_record
+        , description = fixdoc (approval_for_time_record.__doc__)
         )
     db.security.addPermissionToRole ('User', p)
     p = db.security.addPermission \
         ( name        = 'View'
-        , klass       = 'time_project'
-        , check       = project_or_wp_name_visible
-        , description = fixdoc (project_or_wp_name_visible.__doc__)
-        , properties  = ('name',)
+        , klass       = 'time_record'
+        , check       = may_see_time_record
+        , description = ' '.join
+            (( fixdoc (may_see_time_record.__doc__)
+             , fixdoc (sum_common.daily_record_viewable.__doc__)
+            ))
         )
     db.security.addPermissionToRole ('User', p)
-    p = db.security.addPermission \
-        ( name        = 'Edit'
-        , klass       = 'overtime_period'
-        , properties  = ('name', 'order')
-        )
-    db.security.addPermissionToRole ('HR', p)
-    db.security.addPermissionToRole ('HR', 'Create', 'overtime_period')
+    for role in ("Controlling", "HR"):
+        db.security.addPermissionToRole (role, 'Create', 'time_record')
 
-    p = db.security.addPermission \
-        ( name        = 'View'
-        , klass       = 'time_record'
-        , check       = time_record_visible_for_hr_olo
-        , description = fixdoc (time_record_visible_for_hr_olo.__doc__)
-        )
-    db.security.addPermissionToRole ('HR-Org-Location', p)
-    p = db.security.addPermission \
-        ( name        = 'View'
-        , klass       = 'attendance_record'
-        , check       = attendance_record_visible_for_hr_olo
-        , description = fixdoc (attendance_record_visible_for_hr_olo.__doc__)
-        )
-    db.security.addPermissionToRole ('HR-Org-Location', p)
-    p = db.security.addPermission \
-        ( name        = 'Search'
-        , klass       = 'time_record'
-        )
-    db.security.addPermissionToRole ('HR-Org-Location', p)
-    # Also allow user search permission to role User. They can only see
-    # their own records anyway and it will be *much* faster if we do not
-    # return *all* records and filter them in python.
-    db.security.addPermissionToRole ('User', p)
-    p = db.security.addPermission \
-        ( name        = 'Search'
-        , klass       = 'attendance_record'
-        )
-    db.security.addPermissionToRole ('HR-Org-Location', p)
-    p = db.security.addPermission \
-        ( name        = 'View'
-        , klass       = 'user_dynamic'
-        , check       = user_dynamic_visible_for_hr_olo
-        , description = fixdoc (user_dynamic_visible_for_hr_olo.__doc__)
-        )
-    db.security.addPermissionToRole ('HR-Org-Location', p)
-    p = db.security.addPermission \
-        ( name        = 'Search'
-        , klass       = 'user_dynamic'
-        )
-    db.security.addPermissionToRole ('HR-Org-Location', p)
-    p = db.security.addPermission \
-        ( name        = 'Search'
-        , klass       = 'time_activity_perm'
-        )
-    db.security.addPermissionToRole ('HR-Org-Location', p)
-    p = db.security.addPermission \
-        ( name        = 'View'
-        , klass       = 'overtime_correction'
-        , check       = overtime_corr_visible_for_user
-        , description = fixdoc (overtime_corr_visible_for_user.__doc__)
-        )
-    db.security.addPermissionToRole ('User', p)
-    p = db.security.addPermission \
-        ( name        = 'View'
-        , klass       = 'overtime_correction'
-        , check       = overtime_corr_visible_for_hr_olo
-        , description = fixdoc (overtime_corr_visible_for_hr_olo.__doc__)
-        )
-    db.security.addPermissionToRole ('HR-Org-Location', p)
-    p = db.security.addPermission \
-        ( name        = 'Search'
-        , klass       = 'overtime_correction'
-        )
-    db.security.addPermissionToRole ('HR-Org-Location', p)
-    p = db.security.addPermission \
-        ( name        = 'View'
-        , klass       = 'daily_record_freeze'
-        , check       = dr_freeze_visible_for_hr_olo
-        , description = fixdoc (dr_freeze_visible_for_hr_olo.__doc__)
-        )
-    db.security.addPermissionToRole ('HR-Org-Location', p)
-    p = db.security.addPermission \
-        ( name        = 'View'
-        , klass       = 'daily_record_freeze'
-        , check       = dr_freeze_visible_for_user
-        , description = fixdoc (dr_freeze_visible_for_user.__doc__)
-        )
-    db.security.addPermissionToRole ('User', p)
-    p = db.security.addPermission \
-        ( name        = 'Search'
-        , klass       = 'daily_record_freeze'
-        )
-    db.security.addPermissionToRole ('HR-Org-Location', p)
-    db.security.addPermissionToRole ('User', p)
-    p = db.security.addPermission \
-        ( name        = 'View'
-        , klass       = 'daily_record'
-        , check       = may_see_daily_record
-        , description = fixdoc (may_see_daily_record.__doc__)
-        )
-    db.security.addPermissionToRole ('User', p)
     p = db.security.addPermission \
         ( name        = 'View'
         , klass       = 'time_report'
@@ -1728,6 +1627,152 @@ def security (db, ** kw):
         , description = fixdoc (time_report_visible.__doc__)
         )
     db.security.addPermissionToRole ('User', p)
+
+    p = db.security.addPermission \
+        ( name        = 'View'
+        , klass       = 'time_wp'
+        , check       = o_permission.time_wp_allowed_by_org
+        , description = fixdoc (o_permission.time_wp_allowed_by_org.__doc__)
+        )
+    for role in ("Project_View", "Project", "Controlling"):
+        db.security.addPermissionToRole (role, p)
+    p = db.security.addPermission \
+        ( name        = 'Edit'
+        , klass       = 'time_wp'
+        , check       = o_permission.time_wp_allowed_by_org
+        , description = fixdoc (o_permission.time_wp_allowed_by_org.__doc__)
+        )
+    db.security.addPermissionToRole ("Project", p)
+    p = db.security.addPermission \
+        ( name        = 'Edit'
+        , klass       = 'time_wp'
+        , check       = o_permission.time_wp_allowed_by_org
+        , description = fixdoc (o_permission.time_wp_allowed_by_org.__doc__)
+        , properties  = ("project",)
+        )
+    db.security.addPermissionToRole ("Controlling", p)
+    p = db.security.addPermission \
+        ( name        = 'Edit'
+        , klass       = 'time_wp'
+        , check       = ok_work_package
+        , description = fixdoc (ok_work_package.__doc__)
+        , properties  = \
+            ( 'description'
+            , 'time_start', 'time_end', 'bookers', 'planned_effort'
+            , 'time_wp_summary_no', 'epic_key', 'allowed_olo'
+            )
+        )
+    db.security.addPermissionToRole ('User', p)
+    p = db.security.addPermission \
+        ( name        = 'View'
+        , klass       = 'time_wp'
+        , check       = sum_common.time_wp_viewable
+        , description = fixdoc (sum_common.time_wp_viewable.__doc__)
+        )
+    db.security.addPermissionToRole ('User', p)
+    p = db.security.addPermission \
+        ( name        = 'Edit'
+        , klass       = 'time_wp'
+        , check       = is_project_owner_or_deputy
+        , description = fixdoc (is_project_owner_or_deputy.__doc__)
+        , properties  = \
+            ( 'name', 'responsible', 'wp_no', 'cost_center'
+            , 'time_wp_summary_no', 'is_public', 'allowed_olo'
+            )
+        )
+    db.security.addPermissionToRole ('User', p)
+    # Hmm, this has everything but auto_wp, bookers, planned_effort
+    # probably should get rid of wp_properties
+    wp_properties = \
+        ( 'activity', 'actor', 'cost_center', 'creation', 'creator'
+        , 'description', 'durations_allowed', 'epic_key'
+        , 'has_expiration_date', 'id', 'is_extern', 'is_public', 'name'
+        , 'project', 'responsible', 'time_end', 'time_start'
+        , 'time_wp_summary_no', 'wp_no', 'allowed_olo'
+        )
+    schemadef.add_search_permission (db, 'time_wp', 'User')
+    p = db.security.addPermission \
+        ( name        = 'View'
+        , klass       = 'time_wp'
+        , check       = wp_admitted
+        , description = fixdoc (wp_admitted.__doc__)
+        , properties  = wp_properties
+        )
+    db.security.addPermissionToRole ('User', p)
+    p = db.security.addPermission \
+        ( name        = 'View'
+        , klass       = 'time_wp'
+        , check       = wp_name_visible
+        , description = fixdoc (wp_name_visible.__doc__)
+        , properties  = ('name', 'project')
+        )
+    db.security.addPermissionToRole ('User', p)
+    db.security.addPermissionToRole ('Project', 'Create', 'time_wp')
+
+    p = db.security.addPermission \
+        ( name        = 'Edit'
+        , klass       = 'time_wp_group'
+        , check       = o_permission.time_wp_group_allowed_by_org
+        , description = fixdoc
+            (o_permission.time_wp_group_allowed_by_org.__doc__)
+        )
+    db.security.addPermissionToRole ('Project', p)
+    db.security.addPermissionToRole ('Project', 'Create', 'time_wp_group')
+
+    p = db.security.addPermission \
+        ( name        = 'View'
+        , klass       = 'user_dynamic'
+        , check       = o_permission.dynamic_user_allowed_by_olo
+        , description = fixdoc
+            (o_permission.dynamic_user_allowed_by_olo.__doc__)
+        )
+    for role in 'HR', 'HR-Org-Location':
+        db.security.addPermissionToRole (role, p)
+    p = db.security.addPermission \
+        ( name        = 'View'
+        , klass       = 'user_dynamic'
+        , check       = o_permission.dynamic_user_allowed_by_olo
+        , description = fixdoc
+            (o_permission.dynamic_user_allowed_by_olo.__doc__)
+        , properties  = ("id", "sap_cc", "user", "valid_from", "valid_to")
+        )
+    db.security.addPermissionToRole ('Controlling', p)
+    p = db.security.addPermission \
+        ( name        = 'Edit'
+        , klass       = 'user_dynamic'
+        , check       = dynuser_thawed
+        , description = fixdoc (dynuser_thawed.__doc__)
+        )
+    for role in 'HR', 'HR-Org-Location':
+        db.security.addPermissionToRole (role, p)
+    # Allow editing aux_org_locations and time_activity_perm even if frozen
+    p = db.security.addPermission \
+        ( name        = 'Edit'
+        , klass       = 'user_dynamic'
+        , check       = o_permission.dynamic_user_allowed_by_olo
+        , description = fixdoc
+            (o_permission.dynamic_user_allowed_by_olo.__doc__)
+        , properties  = ("aux_org_locations", "time_activity_perm")
+        )
+    for role in 'HR', 'HR-Org-Location':
+        db.security.addPermissionToRole (role, p)
+    db.security.addPermissionToRole ('HR', 'Create', 'user_dynamic')
+    schemadef.add_search_permission (db, 'user_dynamic', 'User')
+    p = db.security.addPermission \
+        ( name        = 'View'
+        , klass       = 'user_dynamic'
+        , check       = own_user_dynamic
+        , description = fixdoc (own_user_dynamic.__doc__)
+        )
+    db.security.addPermissionToRole ('User', p)
+
+    # Allow retire/restore for Functional-Role
+    for perm in 'Retire', 'Restore':
+        p = db.security.addPermission \
+            ( name        = perm
+            , klass       = 'user_functional_role'
+            )
+        db.security.addPermissionToRole ('Functional-Role', p)
     p = db.security.addPermission \
         ( name        = 'View'
         , klass       = 'user_functional_role'
@@ -1737,25 +1782,25 @@ def security (db, ** kw):
     db.security.addPermissionToRole ('User', p)
 
     p = db.security.addPermission \
-        ( name        = 'Search'
-        , klass       = 'user_dynamic'
-        )
-    db.security.addPermissionToRole ('User', p)
-
-    p = db.security.addPermission \
         ( name        = 'View'
-        , klass       = 'user_dynamic'
-        , check       = own_user_dynamic
-        , description = fixdoc (own_user_dynamic.__doc__)
-        )
-    db.security.addPermissionToRole ('User', p)
-
-    p = db.security.addPermission \
-        ( name        = 'Search'
         , klass       = 'vacation_correction'
+        , check       = o_permission.vacation_corr_allowed_by_olo
+        , description = fixdoc
+            (o_permission.vacation_corr_allowed_by_olo.__doc__)
         )
-    db.security.addPermissionToRole ('User', p)
-
+    for role in ("HR", "HR-vacation", "HR-leave-approval", "controlling"):
+        db.security.addPermissionToRole (role, p)
+    p = db.security.addPermission \
+        ( name        = 'Edit'
+        , klass       = 'vacation_correction'
+        , check       = o_permission.vacation_corr_allowed_by_olo
+        , description = fixdoc
+            (o_permission.vacation_corr_allowed_by_olo.__doc__)
+        )
+    db.security.addPermissionToRole ('HR-vacation', p)
+    db.security.addPermissionToRole \
+        ('HR-vacation', 'Create', 'vacation_correction')
+    schemadef.add_search_permission (db, 'vacation_correction', 'User')
     p = db.security.addPermission \
         ( name        = 'View'
         , klass       = 'vacation_correction'
@@ -1764,11 +1809,4 @@ def security (db, ** kw):
         )
     db.security.addPermissionToRole ('User', p)
 
-    # Allow retire/restore for cost_center_permission_group
-    for perm in 'Retire', 'Restore':
-        p = db.security.addPermission \
-            ( name        = perm
-            , klass       = 'cost_center_permission_group'
-            )
-        db.security.addPermissionToRole ('CC-Permission', p)
 # end def security

@@ -1,0 +1,51 @@
+<tal:block tal:define="Title python:i18n.gettext ('Gap Report');">
+ <tal:block metal:use-macro="templates/page/macros/icing">
+  <title metal:fill-slot="head_title" tal:content="Title"/>
+  <span metal:fill-slot="body_title" tal:content="Title"/>
+  <tal:block metal:fill-slot="create_or_query">
+   <tal:block
+    metal:use-macro="templates/page/macros/create_or_query_new_tracker_item" />
+  </tal:block>
+  <tal:block metal:fill-slot="content">
+   <tal:block tal:define=
+    "batch request/batch;
+     pdict python: utils.properties_dict (db, context);
+     l python:
+      ( ('date',    {})
+      , ( 'user',   {})
+      , ('org_location'
+        , dict 
+            ( multiselect = 1
+            , filter      = utils.valid_olo (db)
+            )
+        )
+      );
+     myprops python: dict
+      ((k [0], utils.ExtProperty (utils, pdict [k [0]], ** (k [1]))) for k in l
+       if k [0] in pdict
+      );
+     vr python: utils.Gap_Report (db, request, utils)
+    " tal:condition="context/is_view_ok">
+      <tal:block tal:replace="structure python:vr.as_html ()"/>
+    <tal:block tal:define=
+        " props python: []
+        ; propkeys       python: ('date', 'user', 'org_location')
+        ; sprops         python: [myprops [p] for p in myprops]
+        ; multi_props    python: [p for p in sprops if p.multiselect]
+        ; sort_props     python: []
+        ; nomulti_props  python: [p for p in sprops
+                                  if not p.multiselect and p.searchable]
+        ; csv_link       python:request.indexargs_url
+               (classname, {'@action':'csv_gap_report'})
+        ; do_fulltext    python: False
+        ; do_pagesize    python: False
+        ; do_query       python: True
+        ; terse          python: False
+        ; head_title     python: 'Gap report'
+        ">
+     <tal:block metal:use-macro="templates/page/macros/search_form"/>
+    </tal:block>
+   </tal:block>
+  </tal:block>
+ </tal:block>
+</tal:block>

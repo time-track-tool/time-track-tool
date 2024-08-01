@@ -40,6 +40,7 @@ import freeze
 import user_dynamic
 import vacation
 import lib_auto_wp
+import o_permission
 
 def check_ranges (cl, nodeid, user, valid_from, valid_to, allow_same = False):
     """ We allow valid_to == valid_from if allow_same is True
@@ -324,6 +325,7 @@ def check_user_dynamic (db, cl, nodeid, new_values):
         and new_values ['exemption'] == False
         and db.getuid () == '1'
         )
+    is_aux_olo = list (new_values) == ['aux_org_locations']
     if  (   freeze.frozen (db, user, old_from)
         and (  list (new_values) != ['valid_to']
             or not val_to
@@ -337,6 +339,7 @@ def check_user_dynamic (db, cl, nodeid, new_values):
         and (db.getuid () != '1' or not flexi_fix)
         and not vac_fix
         and not exemption
+        and not is_aux_olo
         ):
         raise Reject (_ ("Frozen: %(old_from)s") % locals ())
     last = user_dynamic.last_user_dynamic (db, user)
@@ -346,7 +349,7 @@ def check_user_dynamic (db, cl, nodeid, new_values):
                 (cl, nodeid, user, val_from, val_to, allow_same = True)
         val_from = new_values ['valid_from']
         val_to   = new_values ['valid_to']
-    if not vac_fix and not flexi_fix and not exemption:
+    if not vac_fix and not flexi_fix and not exemption and not is_aux_olo:
         check_overtime_parameters (db, cl, nodeid, new_values)
         check_vacation (db, cl, nodeid, 'vacation_yearly', new_values)
         if not freeze.frozen (db, user, old_from):
@@ -470,6 +473,9 @@ def new_user_dynamic (db, cl, nodeid, new_values):
     valid_from = new_values ['valid_from']
     valid_to   = new_values.get ('valid_to', None)
     olo        = new_values ['org_location']
+    o_permission.check_valid_user \
+        (db, cl, nodeid, new_values, valid_from, valid_to)
+    o_permission.check_new_dyn_user_olo (db, cl, nodeid, new_values)
     if freeze.frozen (db, user, valid_from):
         raise Reject (_ ("Frozen: %(valid_from)s") % locals ())
     last = user_dynamic.last_user_dynamic (db, user)
@@ -723,6 +729,9 @@ def olo_check (db, cl, nodeid, new_values):
     if lp:
         common.require_attributes \
             (db.i18n.gettext, cl, nodeid, new_values, 'vac_aliq')
+    if nodeid:
+        # org must not change
+        common.reject_attributes (db.i18n.gettext, new_values, 'organisation')
 # end def olo_check
 
 def find_existing_leave (db, cl, nodeid, new_values):
@@ -968,6 +977,8 @@ def auto_wp_check (db, cl, nodeid, new_values):
             new_values ['is_valid'] = False
         if 'all_in' not in new_values:
             new_values ['all_in'] = True
+    if 'org_location' in new_values:
+        o_permission.check_new_auto_wp_olo (db, cl, nodeid, new_values)
 # end def auto_wp_check
 
 def auto_wp_modify (db, cl, nodeid, old_values):

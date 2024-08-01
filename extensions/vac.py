@@ -30,6 +30,7 @@ import re
 import common
 import user_dynamic
 import vacation
+import o_permission
 from   roundup.date           import Date, Interval
 from   roundup.cgi.actions    import NewItemAction
 from   roundup.cgi.exceptions import Redirect
@@ -382,14 +383,19 @@ class Leave_Display (object):
         # Get public holidays
         srt = [('+', 'date')]
         ph  = db.public_holiday.filter (None, dict (date = dt), sort = srt)
-        # Index by location and sort by date
+        # Index by location/org_location and sort by date
         self.by_location = {}
+        self.by_olo = {}
         for id in ph:
             holiday = db.public_holiday.getnode (id)
             for loc in holiday.locations:
                 if loc not in self.by_location:
                     self.by_location [loc] = []
                 self.by_location [loc].append (holiday)
+            for olo in holiday.org_location:
+                if olo not in self.by_olo:
+                    self.by_olo [olo] = []
+                self.by_olo [olo].append (holiday)
 
         self.abs_v = db.absence_type.getnode (db.absence_type.lookup ('V'))
         self.abs_a = db.absence_type.getnode (db.absence_type.lookup ('A'))
@@ -445,14 +451,15 @@ class Leave_Display (object):
                 , link        = self.data_path + 'public_holiday/' + h.id
                 )
             d.update (holiday = hd, type = 'holiday')
-        if 'loc' in kw:
-            loc = kw ['loc']
-            lid = dict \
-                ( id   = loc.id
-                , name = loc.name
-                , link = self.data_path + 'location/' + loc.id
+        if 'lolo' in kw:
+            lolo = kw ['lolo']
+            cn   = lolo.cl.classname
+            lid  = dict \
+                ( id   = lolo.id
+                , name = lolo.name
+                , link = self.data_path + cn + '/' + lolo.id
                 )
-            d.update (location = lid)
+            d [cn] = lid
         return d
     # end def as_dict_entry
 
@@ -476,7 +483,7 @@ class Leave_Display (object):
                 , username  = user.username
                 )
             rec ['date'] = {}
-            loc, holidays = self.get_holidays (u)
+            lolo_d, holidays = self.get_holidays (u)
             fmt = self.as_dict_entry
             d   = self.fdd
             while d <= self.ldd:
@@ -484,7 +491,8 @@ class Leave_Display (object):
                 if gmtime (d.timestamp ()) [6] in [5, 6]:
                     r = dict (type = 'weekend')
                 else:
-                    r = (  self.get_holiday_entry (d, holidays, loc, fmt = fmt)
+                    r = (  self.get_holiday_entry
+                               (d, holidays, lolo_d, fmt = fmt)
                         or self.get_absence_entry (user, d, fmt = fmt)
                         or self.get_leave_entry   (user, d, fmt = fmt)
                         )
@@ -522,13 +530,13 @@ class Leave_Display (object):
             ret.append ('  <td class="name">%s</td>' % user.lastname)
             ret.append ('  <td class="name">%s</td>' % user.firstname)
             ret.append ('  <td class="name">%s</td>' % user.username)
-            loc, holidays = self.get_holidays (u)
+            lolo_d, holidays = self.get_holidays (u)
             d = self.fdd
             while d <= self.ldd:
                 if gmtime (d.timestamp ()) [6] in [5, 6]:
                     ret.append ('  <td class="holiday"/>')
                 else:
-                    r = (  self.get_holiday_entry (d, holidays, loc)
+                    r = (  self.get_holiday_entry (d, holidays, lolo_d)
                         or self.get_absence_entry (user, d)
                         or self.get_leave_entry   (user, d)
                         )
@@ -545,18 +553,23 @@ class Leave_Display (object):
     # end def format_leaves
 
     def get_holidays (self, user):
-        loc = None
+        lolo_d = {}
         dyn = user_dynamic.get_user_dynamic (self.db, user, self.now)
         if dyn and dyn.org_location:
             loc = self.db.org_location.get (dyn.org_location, 'location')
-            holidays = dict \
-                ((h.date.pretty (common.ymd), h)
-                 for h in self.by_location.get (loc, [])
-                )
-            loc = self.db.location.getnode (loc)
+            olo = dyn.org_location
+            holidays = {}
+            for h in self.by_location.get (loc, []):
+                key = h.date.pretty (common.ymd)
+                holidays [key] = h
+                lolo_d   [key] = self.db.location.getnode (loc)
+            for h in self.by_olo.get (olo, []):
+                key = h.date.pretty (common.ymd)
+                holidays [key] = h
+                lolo_d   [key] = self.db.org_location.getnode (olo)
         else:
             holidays = {}
-        return loc, holidays
+        return lolo_d, holidays
     # end def get_holidays
 
     def _helpwin (self, url):
@@ -626,9 +639,9 @@ class Leave_Display (object):
         return None
     # end def get_absence_entry
 
-    def format_holiday (self, d, loc, holiday):
+    def format_holiday (self, d, lolo, holiday):
         pd = d.pretty (common.ymd)
-        t  = "%s: %s" % (loc.name, str (holiday.name))
+        t  = "%s: %s" % (lolo.name, str (holiday.name))
         if holiday.description:
             t = '%s (%s)' % (t, holiday.description)
         ret = []
@@ -638,13 +651,14 @@ class Leave_Display (object):
         return '\n'.join (ret)
     # end def format_holiday
 
-    def get_holiday_entry (self, d, holidays, loc, fmt = None):
+    def get_holiday_entry (self, d, holidays, lolo_d, fmt = None):
         if fmt is None:
             fmt = self.format_holiday
         ret = []
         pd = d.pretty (common.ymd)
         if pd in holidays:
-            return fmt (d = d, loc = loc, holiday = holidays [pd])
+            lolo = lolo_d [pd]
+            return fmt (d = d, lolo = lolo, holiday = holidays [pd])
     # end def get_holiday_entry
 
     def get_leave_entry (self, user, d, fmt = None):
@@ -706,9 +720,11 @@ def current_user_dynamic (context, user = None):
     now = Date ('.')
     uid = user or db.getuid ()
     dyn = user_dynamic.get_user_dynamic (db, uid, now)
-    if dyn:
+    allowed = o_permission.dynamic_user_allowed_by_olo
+    if dyn and allowed (db, db.getuid (), dyn.id):
         dyn = HTMLItem (client, 'user_dynamic', dyn.id)
-    return dyn
+        return dyn
+    return None
 # end def current_user_dynamic
 
 def flexi_alliquot_html (db, user, date_in_year, ctype):

@@ -194,6 +194,8 @@
                           'sensor.do_logging&date=.-1w%3B&'
                           'sensor.is_app_sensor=yes&sensor.do_logging=yes'
    , ('measurement', ''): utils.measurement_query
+   , ('o_permission', '') : ':columns=id,user,org_location&'
+                          ':sort=user&:pagesize=50&:startwith=0'
    , ('org_location', '') : '@columns=id,name,organisation,location,'
                           'valid_from,valid_to,do_leave_process,'
                           'vacation_yearly,vacation_legal_year,vac_aliq,'
@@ -265,7 +267,8 @@
                           '@pagesize=20&@startwith=0&'
                           'valid=1'
    , ('public_holiday', '')
-                        : '@columns=id,name,description,date,locations,is_half&'
+                        : '@columns=id,name,description,date,locations,is_half'
+                          ',org_location&'
                           '@sort=date&@filter=date&@pagesize=20&@startwith=0&'
                           'date=.%3B'
    , ('qsl', '')        : '@columns=qsl_type,date_recv,date_sent,qso.call,'
@@ -340,7 +343,6 @@
                                ( 'lastname'
                                , 'firstname'
                                , 'username'
-                               , 'room'
                                , 'supervisor'
                                )
                               if n in db._db.user.properties
@@ -352,7 +354,7 @@
                             )
    , ('user_dynamic', '')
                        : '@columns=id,user,valid_from,org_location&@sort=-id&'
-                         '@pagesize=20&@startwith=0'
+                         '@filter=user&@pagesize=20&@startwith=0&user=%s' % uid
    , ('user_contact', '')
                         : '@columns=user.firstname,user.lastname,'
                           'contact,contact_type&'
@@ -471,6 +473,7 @@
      , ('measurement',         'Create', '?@template=item', 1)
      , ('measuring_unit',      'Edit',   '?@template=item', 1)
      , ('msg_keyword',         'Edit',   '?@template=item', 1)
+     , ('o_permission',        'Edit',   '?@template=item', 1)
      , ('operating_system',    'View',   '?@template=item', 1)
      , ('organisation',        'Edit',   '?@template=item', 1)
      , ('org_location',        'Edit',   '?@template=item', 1)
@@ -513,7 +516,6 @@
      , ('rc_suitability',      'Edit',   '?@template=item', 1)
      , ('reference',           'Edit',   '?@template=item', 1)
      , ('reporting_group',     'Edit',   '?@template=item', 1)
-     , ('room',                'Edit',   '?@template=item', 1)
      , ('safety_level',        'Edit',   '?@template=item', 1)
      , ('sales_conditions',    'Edit',   '?@template=item', 1)
      , ('sap_cc',              'Edit',   '?@template=item', 1)
@@ -620,6 +622,7 @@
      , ('location',            'View', 1,               ('',''))
      , ('logstyle',            'View', 1,               ('',''))
      , ('measurement',         'View', 1,               ('',''))
+     , ('o_permission',        'View', 1,               ('',''))
      , ('org_location',        'View', 1,               ('',''))
      , ('organisation',        'View', 1,               ('',''))
      , ('overtime_correction'
@@ -643,7 +646,6 @@
      , ('qsl',                 'View', 1,               ('',''))
      , ('qso',                 'View', 1,               ('',''))
      , ('rc_product',          'View', 1,               ('',''))
-     , ('room',                'View', 1,               ('',''))
      , ('reference',           'View', 1,               ('',''))
      , ('sap_cc',              'View', 1,               ('',''))
      , ('sensor',              'View', 1,               ('',''))
@@ -677,6 +679,11 @@
        , ('','')
        )
      , ('vacation_report',     'View', 1,               ('',''))
+     , ( 'vacation_report'
+       , 'View'
+       , utils.user_has_role (db._db, db._db.getuid (), 'HR')
+       , ('Gap Report','gap')
+       )
      , ('valid',               'View', 1,               ('',''))
      ] + utils.summary_report_links (db._db)
    )
@@ -715,7 +722,7 @@
         }
       });
   </script -->
-  <tal:block metal:define-slot="add-js"></tal:block>
+  <tal:block metal:define-slot="more-javascript"></tal:block>
  </head>
  <body class="body">
   <table class="body" align="center" valign="middle"

@@ -30,27 +30,28 @@
 
 from roundup.exceptions             import Reject
 from roundup.date                   import Date
-
 import common
+import o_permission
 
-def check_time_project (db, cl, nodeid, new_values) :
+def check_time_project (db, cl, nodeid, new_values):
     _ = db.i18n.gettext
-    for i in 'wp_no', 'project' :
-        if i in new_values and cl.get (nodeid, i) :
-            raise Reject ("%(attr)s may not be changed" % {'attr' : _ (i)})
+    for i in 'wp_no', 'project':
+        if i in new_values and cl.get (nodeid, i):
+            raise Reject ("%(attr)s may not be changed" % {'attr': _ (i)})
     common.check_prop_len (_, new_values.get ('name', cl.get (nodeid, 'name')))
-    if 'work_location' in cl.properties :
+    if 'work_location' in cl.properties:
         wl  = new_values.get ('work_location', cl.get (nodeid, 'work_location'))
-        if not wl :
+        if not wl:
             common.require_attributes \
                 (_, cl, nodeid, new_values, 'organisation')
     required = ['cost_center', 'approval_hr', 'approval_required']
-    if 'is_extern' in cl.properties :
+    if 'is_extern' in cl.properties:
         required.append ('is_extern')
     common.require_attributes (_, cl, nodeid, new_values, *required)
+    o_permission.check_valid_org (db, cl, nodeid, new_values)
 # end def check_time_project
 
-def new_time_project (db, cl, nodeid, new_values) :
+def new_time_project (db, cl, nodeid, new_values):
     defaults = \
         ( ('approval_required', False)
         , ('approval_hr',       False)
@@ -58,25 +59,26 @@ def new_time_project (db, cl, nodeid, new_values) :
         )
     common.require_attributes \
         (db.i18n.gettext, cl, nodeid, new_values, 'name', 'responsible')
-    if 'is_extern' in cl.properties and 'is_extern' not in new_values :
+    if 'is_extern' in cl.properties and 'is_extern' not in new_values:
         new_values ['is_extern'] = False
-    if 'work_location' in cl.properties and 'work_location' not in new_values :
+    if 'work_location' in cl.properties and 'work_location' not in new_values:
         common.require_attributes \
             (db.i18n.gettext, cl, nodeid, new_values, 'organisation')
-    for k, v in defaults :
-        if k in cl.properties and k not in new_values :
+    for k, v in defaults:
+        if k in cl.properties and k not in new_values:
             new_values [k] = v
     common.check_prop_len (db.i18n.gettext, new_values ['name'])
-    if 'status' not in new_values :
-        try :
+    if 'status' not in new_values:
+        try:
             new_values ['status'] = db.time_project_status.lookup ('New')
-        except KeyError :
+        except KeyError:
             new_values ['status'] = '1'
     common.require_attributes \
         (db.i18n.gettext, cl, nodeid, new_values, 'cost_center')
+    o_permission.check_valid_org (db, cl, nodeid, new_values)
 # end def new_time_project
 
-def fix_wp (db, cl, nodeid, old_values) :
+def fix_wp (db, cl, nodeid, old_values):
     """ Copy cost_center of time_project to time_wp if changed in
         time_project. Close WPs if not an active status.
     """
@@ -84,28 +86,73 @@ def fix_wp (db, cl, nodeid, old_values) :
     ccn = 'cost_center'
     tp  = cl.getnode (nodeid)
     act = db.time_project_status.get (tp.status, 'active')
-    if not old_values :
+    if not old_values:
         return
     now = Date ('.')
-    for wp in db.time_wp.filter (None, dict (project = nodeid)) :
+    for wp in db.time_wp.filter (None, dict (project = nodeid)):
         d = {}
-        if ccn in old_values and old_values [ccn] != tp.cost_center :
+        if ccn in old_values and old_values [ccn] != tp.cost_center:
             d [ccn] = tp.cost_center
-        if not act :
+        if not act:
             te = db.time_wp.get (wp, 'time_end')
-            if not te or te > now :
+            if not te or te > now:
                 d ['time_end'] = now
-        if d :
+        if d:
             db.time_wp.set (wp, ** d)
 # end def fix_wp
 
-def init (db) :
-    if 'time_project' not in db.classes :
+def check_o_permission (db, cl, nodeid, new_values):
+    # User is required and must not change later
+    if nodeid:
+        common.reject_attributes (db.i18n.gettext, new_values, 'user')
+        uid = cl.get (nodeid, 'user')
+    else:
+        common.require_attributes (db.i18n.gettext, cl, new_values, 'user')
+        uid = new_values ['user']
+    dbuid = db.getuid ()
+    # Allow all changes for admin user or admin role
+    if dbuid == '1' or common.user_has_role (db, dbuid, 'admin'):
+        return
+    # Determine what changes
+    if 'org_location' in cl.properties:
+        attr   = 'org_location'
+        method = o_permission.get_allowed_olo
+        cls    = db.org_location
+    else:
+        attr   = 'organisation'
+        method = o_permission.get_allowed_org
+        cls    = db.organisation
+    if attr in new_values:
+        if nodeid:
+            old_olo = set (cl.get (nodeid, attr))
+        else:
+            old_olo = {()}
+        olo = set (new_values [attr])
+        changed = (old_olo - olo).union (olo - old_olo)
+        allowed = method (db, dbuid)
+        # If we try to change something that is not allowed:
+        if changed - allowed:
+            _ = db.i18n.gettext
+            raise Reject \
+                ( _ ('Change for org location %s not allowed')
+                % ', '.join
+                    (cls.get (x, 'name') for x in sorted (changed - allowed))
+                )
+# end def check_o_permission
+
+def init (db):
+    if 'time_project' not in db.classes:
         return
     db.time_project.audit  ("create", new_time_project)
     db.time_project.audit  ("set",    check_time_project)
-    if 'time_wp' in db.classes :
+    if 'time_wp' in db.classes:
         db.time_project.react  ("set", fix_wp)
+    if 'o_permission' in db.classes:
+        db.o_permission.audit ("create", check_o_permission)
+        db.o_permission.audit ("set",    check_o_permission)
+    if 'sap_cc' in db.classes:
+        db.sap_cc.audit  ("create", o_permission.check_valid_org)
+        db.sap_cc.audit  ("set",    o_permission.check_valid_org)
 # end def init
 
 ### __END__ time_project

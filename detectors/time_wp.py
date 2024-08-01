@@ -36,6 +36,7 @@ import re
 import common
 import user_dynamic
 import lib_auto_wp
+import o_permission
 
 def check_duplicate_field_value (cl, project, field, value):
     _   = cl.db.i18n.gettext
@@ -331,6 +332,9 @@ def init (db):
     # Name check for time_project too
     db.time_project.audit  ("create", check_name)
     db.time_project.audit  ("set",    check_name)
+    # checks for time_wp_group
+    db.time_wp_group.audit ("create", o_permission.check_valid_wp_member)
+    db.time_wp_group.audit ("set",    o_permission.check_valid_wp_member)
 # end def init
 
 ### __END__ time_wp

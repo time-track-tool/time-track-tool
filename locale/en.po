@@ -3520,6 +3520,9 @@ msgstr ""
 msgid "org_location"
 msgstr "Organisation/Location"
 
+msgid "aux_org_locations"
+msgstr "Auxiliary Org/Locations"
+
 msgid ""
 "Organisation and location of this %(Classname)s, cartesian\n"
 "             product of organisation and location -- only the combinations\n"
@@ -7563,5 +7566,18 @@ msgstr "Attendance record"
 msgid "employee_number"
 msgstr "Employee number"
 
+msgid "user.employee_number"
+msgstr "Employee number"
+
 msgid "company_name"
 msgstr "Company"
+
+msgid "o_permission"
+msgstr "User Permission"
+
+msgid "allowed_olo"
+msgstr "Allowed Organisation/Location"
+
+msgid "carry_on_date"
+msgstr "Vacation on Date"
+

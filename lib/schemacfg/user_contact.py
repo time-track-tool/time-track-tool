@@ -76,7 +76,7 @@ def security (db, ** kw) :
     if 'it' in db.security.role :
         user_roles.append ("IT")
     classes    = \
-        ( ("uc_type",      ("User",),        ("HR", "Office"))
+        ( ("uc_type",      ("User",),        ("HR",))
         , ("user_contact", ("HR", "Office"), ())
         )
     prop_perms = \

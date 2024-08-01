@@ -63,17 +63,11 @@
          (db, 'user', 'aux_username')"/>
      <td tal:content="structure context/aux_username/field"/>
     </tr>
-    <tr tal:condition="python:
-        'sex' in bclass.properties and context.sex.is_view_ok ()">
-     <th tal:content="structure python:utils.fieldname
-         (db, 'user', 'sex')"/>
-     <td tal:content="structure context/sex/menu"/>
-    </tr>
     <tal:block tal:condition="python:'user_dynamic' in db._db.classes">
-     <tal:block tal:condition="context/id">
-     <tr tal:define="
-       ud python:utils.act_or_latest_user_dynamic (db._db, context.id)"
-      tal:condition="python:db.user_dynamic.user.is_view_ok () and ud">
+     <tal:block tal:define="ud python:
+         utils.act_or_latest_user_dynamic (db._db, context.id)"
+         tal:condition="python:context.id">
+     <tr tal:condition="python:db.user_dynamic.user.is_view_ok () and ud">
       <th i18n:translate="">user_dynamic</th>
       <td>
         <a tal:attributes="href python:'user_dynamic%s' % ud.id">
@@ -125,10 +119,7 @@
      </td>
     </tr>
     <tal:block tal:condition="python:
-         ('room' in bclass.properties and context.room.is_view_ok ())
-         or ('substitute' in bclass.properties
-            and context.substitute.is_view_ok ()
-            )
+         'substitute' in bclass.properties and context.substitute.is_view_ok ()
          ">
      <tal:block tal:condition="python:
           'user_dynamic' in db._db.classes and context.id">
@@ -220,11 +211,6 @@
        </table>
       </td>
      </tr>
-     <tr tal:condition="python:'room' in bclass.properties">
-      <th tal:content="structure python:utils.fieldname
-          (db, 'user', 'room')"/>
-      <td tal:content="structure context/room/menu"/>
-     </tr>
      <tr tal:condition="python:'position_text' in bclass.properties">
       <th tal:content="structure python:utils.fieldname
           (db, 'user', 'position_text')"/>
@@ -276,17 +262,6 @@
        </td>
       </tr>
      </tal:block>
-     <tr tal:condition="python:'supervisor' in bclass.properties">
-      <th tal:content="structure python:utils.fieldname
-          (db, 'user', 'supervisor')"/>
-      <td>
-       <span tal:content="structure python:context.supervisor.field ()"/>
-       <span tal:content="structure python:utils.user_classhelp
-             ( db, property = 'supervisor'
-             , form = 'user_form'
-             )"/>
-      </td>
-     </tr>
      <tr tal:condition="python:
         (   'business_responsible' in bclass.properties
         and (  not 'vie_user_ml' in bclass.properties
@@ -303,6 +278,17 @@
              , form           = 'user_form'
              , exclude_system = True
              , internal_only  = True
+             )"/>
+      </td>
+     </tr>
+     <tr tal:condition="python:'supervisor' in bclass.properties">
+      <th tal:content="structure python:utils.fieldname
+          (db, 'user', 'supervisor')"/>
+      <td>
+       <span tal:content="structure python:context.supervisor.field ()"/>
+       <span tal:content="structure python:utils.user_classhelp
+             ( db, property = 'supervisor'
+             , form = 'user_form'
              )"/>
       </td>
      </tr>

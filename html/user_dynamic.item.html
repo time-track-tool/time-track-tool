@@ -10,7 +10,7 @@
    <span tal:replace="Classname" i18n:name="Classname" />
   </tal:block>
  </title>
- <tal:block metal:fill-slot="add-js">
+ <tal:block metal:fill-slot="more-javascript">
   <script type="text/javascript">
    function deldays () {
        var wd = ['mon', 'tue', 'wed', 'thu', 'fri', 'sat', 'sun'];
@@ -72,6 +72,7 @@
              (    context.id
              and db.user_dynamic.is_edit_ok ()
              and not utils.dynuser_frozen (context)
+             and utils.dynamic_user_allowed_by_olo (db, context.id)
              ) ">
         <a i18n:translate="" tal:attributes="href python:
         utils.dynuser_copyurl (context)">
@@ -199,7 +200,14 @@
       <th tal:content="structure python:utils.fieldname
           (db, classname, 'org_location')"/>
       <td tal:content="structure python:context.org_location.menu
-          (**utils.valid_item (now))"/>
+              ( id=utils.get_allowed_olo (db)
+              , **utils.valid_item (now)
+              )"/>
+      <th rowspan="4" tal:content="structure python:utils.fieldname
+          (db, classname, 'aux_org_locations')"/>
+      <td rowspan="5"
+          tal:content="structure python:context.aux_org_locations.menu
+              (**utils.valid_item (now), height = 7)"/>
      </tr>
      <tr>
       <th tal:content="structure python:utils.fieldname
@@ -218,10 +226,18 @@
       <th tal:content="structure python:utils.fieldname
           (db, classname, 'exemption')"/>
       <td tal:content="structure python:context.exemption.field ()"/>
+     </tr>
+     <tr>
       <th tal:content="structure python:utils.fieldname
           (db, classname, 'short_time_work_hours')"/>
       <td tal:content="structure python:
           context.short_time_work_hours.field ()"/>
+     </tr>
+     <tr>
+      <th tal:content="structure python:utils.fieldname
+          (db, classname, 'time_activity_perm')"/>
+      <td tal:content="structure python:
+          context.time_activity_perm.menu (height=3)"/>
      </tr>
      <!--
      <tr>

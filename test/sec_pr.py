@@ -2,6 +2,8 @@ security = """
 New Web users get the Roles "User,Nosy"
 New Email users get the Role "User"
 Role "admin":
+ User is allowed to create o_permission (Create for "o_permission" only)
+ User is allowed to edit o_permission (Edit for "o_permission" only)
  User may access the rest interface (Rest Access)
  User may access the web interface (Web Access)
  User may access the xmlrpc interface (Xmlrpc Access)
@@ -26,23 +28,19 @@ Role "controlling":
  Allowed to edit until ordered (Edit for "pr_offer_item": ('gl_account',) only)
  Allowed to edit until ordered (Edit for "purchase_request": ('gl_account',) only)
  User is allowed to access query (View for "query" only)
- User is allowed to access time_project (View for "time_project" only)
  User is allowed to create query (Create for "query" only)
  User is allowed to edit query (Edit for "query" only)
+ User may access time category because organisation is allowed (View for "time_project" only)
 Role "dom-user-edit-facility":
  Users may view/edit user records for ad_domain for which they are in the domain_permission for the user (Edit for "user": ['room'] only)
  Users may view/edit user records for ad_domain for which they are in the domain_permission for the user (View for "user": ['room'] only)
 Role "dom-user-edit-gtt":
-  (Search for "user_dynamic" only)
  User is allowed to create user (Create for "user" only)
- Users may view user_dynamic records for ad_domain for which they are in the domain_permission for the user (View for "user_dynamic" only)
- Users may view/edit user records for ad_domain for which they are in the domain_permission for the user (Edit for "user": ['contacts', 'csv_delimiter', 'department_temp', 'entry_date', 'firstname', 'hide_message_files', 'job_description', 'lastname', 'lunch_duration', 'lunch_start', 'nickname', 'pictures', 'position_text', 'room', 'sex', 'status', 'subst_active', 'substitute', 'supervisor', 'sync_foreign_key', 'timezone', 'tt_lines', 'username', 'vie_user'] only)
- Users may view/edit user records for ad_domain for which they are in the domain_permission for the user (View for "user": ['contacts', 'csv_delimiter', 'department_temp', 'entry_date', 'firstname', 'hide_message_files', 'job_description', 'lastname', 'lunch_duration', 'lunch_start', 'nickname', 'pictures', 'position_text', 'room', 'sex', 'status', 'subst_active', 'substitute', 'supervisor', 'sync_foreign_key', 'timezone', 'tt_lines', 'username', 'vie_user'] only)
+ Users may view/edit user records for ad_domain for which they are in the domain_permission for the user (Edit for "user": ['contacts', 'csv_delimiter', 'department_temp', 'entry_date', 'firstname', 'hide_message_files', 'job_description', 'lastname', 'lunch_duration', 'lunch_start', 'nickname', 'pictures', 'position_text', 'room', 'status', 'subst_active', 'substitute', 'supervisor', 'sync_foreign_key', 'timezone', 'tt_lines', 'username', 'vie_user'] only)
+ Users may view/edit user records for ad_domain for which they are in the domain_permission for the user (View for "user": ['contacts', 'csv_delimiter', 'department_temp', 'entry_date', 'firstname', 'hide_message_files', 'job_description', 'lastname', 'lunch_duration', 'lunch_start', 'nickname', 'pictures', 'position_text', 'room', 'status', 'subst_active', 'substitute', 'supervisor', 'sync_foreign_key', 'timezone', 'tt_lines', 'username', 'vie_user'] only)
 Role "dom-user-edit-hr":
-  (Search for "user_dynamic" only)
- Users may view user_dynamic records for ad_domain for which they are in the domain_permission for the user (View for "user_dynamic" only)
- Users may view/edit user records for ad_domain for which they are in the domain_permission for the user (Edit for "user": ['clearance_by', 'contacts', 'csv_delimiter', 'entry_date', 'firstname', 'hide_message_files', 'job_description', 'lastname', 'lunch_duration', 'lunch_start', 'nickname', 'pictures', 'position_text', 'reduced_activity_list', 'roles', 'room', 'sex', 'status', 'subst_active', 'substitute', 'supervisor', 'timezone', 'tt_lines', 'vie_user'] only)
- Users may view/edit user records for ad_domain for which they are in the domain_permission for the user (View for "user": ['clearance_by', 'contacts', 'csv_delimiter', 'entry_date', 'firstname', 'hide_message_files', 'job_description', 'lastname', 'lunch_duration', 'lunch_start', 'nickname', 'pictures', 'position_text', 'reduced_activity_list', 'roles', 'room', 'sex', 'status', 'subst_active', 'substitute', 'supervisor', 'timezone', 'tt_lines', 'vie_user'] only)
+ Users may view/edit user records for ad_domain for which they are in the domain_permission for the user (Edit for "user": ['clearance_by', 'csv_delimiter', 'hide_message_files', 'lunch_duration', 'lunch_start', 'reduced_activity_list', 'room', 'subst_active', 'substitute', 'timezone', 'tt_lines'] only)
+ Users may view/edit user records for ad_domain for which they are in the domain_permission for the user (View for "user": ['clearance_by', 'csv_delimiter', 'hide_message_files', 'lunch_duration', 'lunch_start', 'reduced_activity_list', 'room', 'subst_active', 'substitute', 'timezone', 'tt_lines'] only)
 Role "dom-user-edit-office":
  Users may view/edit user records for ad_domain for which they are in the domain_permission for the user (Edit for "user": ['contacts', 'position_text', 'room'] only)
  Users may view/edit user records for ad_domain for which they are in the domain_permission for the user (View for "user": ['contacts', 'position_text', 'room'] only)
@@ -69,6 +67,9 @@ Role "las":
 Role "measurement-approval":
 Role "nosy":
  User may get nosy messages for purchase_request (Nosy for "purchase_request" only)
+Role "o-permission":
+ User is allowed to create o_permission (Create for "o_permission" only)
+ User is allowed to edit o_permission (Edit for "o_permission" only)
 Role "pgp":
 Role "pr-view":
  User is allowed to access pr_approval (View for "pr_approval" only)
@@ -76,18 +77,18 @@ Role "pr-view":
  User is allowed to access purchase_request (View for "purchase_request" only)
 Role "procure-approval":
 Role "procurement":
-  (View for "sap_cc" only)
-  (View for "time_project" only)
  User is allowed Edit on (Edit for "purchase_request": ('renew_until',) only)
  User is allowed Edit on (Edit for "sap_cc": ('deputy_gets_mail',) only)
- User is allowed Edit on (Edit for "sap_cc": ('group_lead', 'nosy', 'purchasing_agents', 'team_lead') only)
  User is allowed Edit on (Edit for "time_project": ('deputy_gets_mail',) only)
- User is allowed Edit on (Edit for "time_project": ('group_lead', 'nosy', 'purchasing_agents', 'team_lead') only)
  User is allowed to access pr_approval (View for "pr_approval" only)
  User is allowed to access pr_approval_config (View for "pr_approval_config" only)
  User is allowed to access pr_approval_order (View for "pr_approval_order" only)
  User is allowed to edit special risks if the PR has appropriate status (Edit for "purchase_request": ('pr_risks',) only)
  User is allowed to reject PR in state approving or approved (Edit for "purchase_request": ('messages', 'status') only)
+ User may access sap cost center because organisation is allowed (Edit for "sap_cc": ('group_lead', 'nosy', 'purchasing_agents', 'team_lead') only)
+ User may access sap cost center because organisation is allowed (View for "sap_cc" only)
+ User may access time category because organisation is allowed (Edit for "time_project": ('group_lead', 'nosy', 'purchasing_agents', 'team_lead') only)
+ User may access time category because organisation is allowed (View for "time_project" only)
 Role "procurement-admin":
   (Restore for "pr_approval_order" only)
   (Retire for "pr_approval_order" only)
@@ -127,13 +128,13 @@ Role "procurement-admin":
  User is allowed to edit security_req_group (Edit for "security_req_group" only)
  User is allowed to reject PR in state approving or approved (Edit for "purchase_request": ('messages', 'status') only)
 Role "project":
- User is allowed Edit on (Edit for "time_project": ('cost_center', 'deputy', 'description', 'name', 'nosy', 'organisation', 'responsible', 'status') only)
- User is allowed to access time_project (View for "time_project" only)
  User is allowed to create time_project (Create for "time_project" only)
  User is allowed to create time_project_status (Create for "time_project_status" only)
  User is allowed to edit time_project_status (Edit for "time_project_status" only)
+ User may access time category because organisation is allowed (Edit for "time_project": ('cost_center', 'deputy', 'description', 'name', 'nosy', 'organisation', 'responsible', 'status') only)
+ User may access time category because organisation is allowed (View for "time_project" only)
 Role "project_view":
- User is allowed to access time_project (View for "time_project" only)
+ User may access time category because organisation is allowed (View for "time_project" only)
 Role "quality":
 Role "sub-login":
 Role "subcontract":
@@ -143,7 +144,6 @@ Role "user":
   (Search for "pr_approval" only)
   (Search for "pr_offer_item" only)
   (Search for "purchase_request" only)
-  (Search for "time_project": ('name', 'description', 'responsible', 'deputy', 'organisation', 'status', 'id', 'creation', 'creator', 'activity', 'actor') only)
  Allow setting add_to_las from 'None' for orphanes offer items (Edit for "pr_offer_item": ('add_to_las',) only)
  Allowed to edit until ordered (Edit for "pr_offer_item": ('gl_account',) only)
  Allowed to edit until ordered (Edit for "purchase_request": ('gl_account',) only)
@@ -164,6 +164,7 @@ Role "user":
  User is allowed to access infosec_level (View for "infosec_level" only)
  User is allowed to access internal_order (View for "internal_order" only)
  User is allowed to access location (View for "location" only)
+ User is allowed to access o_permission (View for "o_permission" only)
  User is allowed to access org_location (View for "org_location" only)
  User is allowed to access organisation (View for "organisation" only)
  User is allowed to access part_of_budget (View for "part_of_budget" only)
@@ -183,11 +184,9 @@ Role "user":
  User is allowed to access purchase_risk_type (View for "purchase_risk_type" only)
  User is allowed to access purchase_security_risk (View for "purchase_security_risk" only)
  User is allowed to access purchase_type (View for "purchase_type" only)
- User is allowed to access sap_cc (View for "sap_cc" only)
  User is allowed to access security_req_group (View for "security_req_group" only)
  User is allowed to access supplier_risk_category (View for "supplier_risk_category" only)
  User is allowed to access terms_conditions (View for "terms_conditions" only)
- User is allowed to access time_project (View for "time_project" only)
  User is allowed to access time_project_status (View for "time_project_status" only)
  User is allowed to access user_status (View for "user_status" only)
  User is allowed to cancel their own PR (Edit for "purchase_request": ('status', 'messages', 'nosy') only)
@@ -206,16 +205,19 @@ Role "user":
  User is allowed to search for their own files (Search for "file" only)
  User is allowed to search for their own messages (Search for "msg" only)
  User is allowed to search for their queries (Search for "query" only)
+ User is allowed to search sap_cc (Search for "sap_cc" only)
+ User is allowed to search time_project (Search for "time_project" only)
  User is allowed to search user_status (Search for "user": ('status',) only)
  User is allowed to view (some of) their own user details (View for "user": ('activity', 'address', 'alternate_addresses', 'creation', 'csv_delimiter', 'hide_message_files', 'password', 'queries', 'realname', 'subst_until', 'substitute', 'timezone') only)
  User is allowed to view special risks if the PR has appropriate status and the user is creator or owner of the PR or has one of the view roles (View for "purchase_request": ('pr_risks',) only)
  User is allowed to view their own files (View for "file" only)
  User is allowed to view their own messages (View for "msg" only)
+ User may access sap cost center because organisation is allowed (View for "sap_cc" only)
  User may access the rest interface (Rest Access)
  User may access the web interface (Web Access)
  User may access the xmlrpc interface (Xmlrpc Access)
  User may use the email interface (Email Access)
- User may view time category if user is owner or deputy of time category or on nosy list of time category (View for "time_project" only)
+ User may view time category if user is owner or deputy of time category or on nosy list of time category and if the view is permitted via the organisation (View for "time_project" only)
  User with view role is allowed editing if status is 'approved' or 'ordered' (Edit for "purchase_request": ('files', 'messages', 'nosy', 'status') only)
  Users are allowed if an approval from them is linked to the PR (Edit for "purchase_request": ('files', 'messages', 'nosy') only)
  Users are allowed if an approval from them is linked to the PR (View for "purchase_request" only)
@@ -232,4 +234,6 @@ Role "user":
  Users are allowed to view their own and public queries for classes where they have search permission (View for "query" only)
 Role "user_view":
  User is allowed to access user (View for "user" only)
+Role "view-roles":
+ User is allowed View on (View for "user": ('roles',) only)
 """.strip ()

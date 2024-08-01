@@ -184,6 +184,7 @@ class _Test_Base :
         , 'msgedit'
         , 'msgsync'
         , 'nosy'
+        , 'o-permission'
         , 'office'
         , 'organisation'
         , 'pbx'
@@ -203,6 +204,7 @@ class _Test_Base :
         , 'subcontract'
         , 'subcontract-org'
         , 'sub-login'
+        , 'summary-report'
         , 'summary_view'
         , 'supportadmin'
         , 'time-report'
@@ -211,6 +213,7 @@ class _Test_Base :
         , 'user'
         , 'user_view'
         , 'vacation-report'
+        , 'view-roles'
         ))
 
     def setup_tracker (self, backend = None) :
@@ -500,6 +503,7 @@ class _Test_Base_Summary :
         roles.append ('User_View')
         sec   = self.db.security
         roles = ','.join (x for x in roles if x.lower () in sec.role)
+        roles += ',Summary-Report'
         self.username0 = 'testuser0'
         self.user0 = self.db.user.create \
             ( username     = self.username0
@@ -507,6 +511,8 @@ class _Test_Base_Summary :
             , lastname     = 'User0'
             , roles        = roles
             )
+        self.db.o_permission.create \
+            (user = self.user0, org_location = [self.olo, self.olo2])
         user_dynamic.user_create_magic (self.db, self.user0, self.olo)
         self.db.user_dynamic.create \
             ( user            = self.user0
@@ -867,12 +873,13 @@ class Test_Case_Support_Timetracker (_Test_Case, unittest.TestCase) :
         , 'controlling' , 'doc_admin', 'facility', 'functional-role', 'hr'
         , 'hr-leave-approval', 'hr-org-location'
         , 'hr-vacation', 'issue_admin', 'it', 'itview'
-        , 'msgedit', 'msgsync', 'nosy', 'office', 'organisation'
+        , 'msgedit', 'msgsync', 'nosy', 'o-permission', 'office', 'organisation'
         , 'procurement', 'project'
         , 'project_view', 'sec-incident-nosy'
         , 'sec-incident-responsible', 'staff-report', 'sub-login'
+        , 'summary-report'
         , 'summary_view' , 'supportadmin', 'time-report', 'type', 'user'
-        , 'vacation-report'
+        , 'vacation-report', 'view-roles'
         ]
     transprop_perms = transprop_sfull
 # end class Test_Case_Support_Timetracker
@@ -885,9 +892,11 @@ class Test_Case_Timetracker (_Test_Case_Summary, unittest.TestCase) :
         , 'dom-user-edit-facility', 'dom-user-edit-gtt', 'dom-user-edit-hr'
         , 'dom-user-edit-office', 'facility', 'functional-role', 'hr'
         , 'hr-leave-approval', 'hr-org-location', 'hr-vacation', 'it', 'nosy'
+        , 'o-permission'
         , 'office', 'organisation', 'pgp', 'procurement', 'project'
-        , 'project_view', 'staff-report', 'sub-login', 'summary_view'
-        , 'time-report', 'user', 'user_view', 'vacation-report'
+        , 'project_view', 'staff-report', 'sub-login'
+        , 'summary-report', 'summary_view'
+        , 'time-report', 'user', 'user_view', 'vacation-report', 'view-roles'
         ]
     transprop_perms = transprop_time
 
@@ -1638,6 +1647,9 @@ class Test_Case_Timetracker (_Test_Case_Summary, unittest.TestCase) :
             , firstname    = 'Nummer12'
             , lastname     = 'User12'
             )
+        # Allow user to create their own dyn user rec
+        self.db.o_permission.create \
+            (user = self.user12, org_location = [self.olo, self.olo2])
         p = self.db.overtime_period.create \
             ( name              = 'monthly average required'
             , months            = 1
@@ -1702,6 +1714,9 @@ class Test_Case_Timetracker (_Test_Case_Summary, unittest.TestCase) :
         # Allow report
         rl = self.db.user.get (self.user0, 'roles')
         self.db.user.set (self.user0, roles = ','.join ((rl, 'hr-vacation')))
+        # Allow user to create their own dyn user rec
+        self.db.o_permission.create \
+            (user = self.user13, org_location = [self.olo, self.olo2])
         self.db.commit ()
         self.db.close  ()
         self.db = self.tracker.open (self.username13)
@@ -1970,6 +1985,9 @@ class Test_Case_Timetracker (_Test_Case_Summary, unittest.TestCase) :
             , firstname    = 'Nummer14'
             , lastname     = 'User14'
             )
+        # Allow user to create their own dyn user rec
+        self.db.o_permission.create \
+            (user = self.user14, org_location = [self.olo, self.olo2])
         self.db.commit ()
     # end def setup_user14
 
@@ -3258,7 +3276,7 @@ class Test_Case_Timetracker (_Test_Case_Summary, unittest.TestCase) :
             ( ('subject',    'Leave request "Vacation/Vacation" '
                              '2008-12-02 to 2008-12-02 from Test User2')
             , ('precedence', 'bulk')
-            , ('to',         'user1@test.test')
+            , ('to',         'user1@test.test, user0@test.test')
             , ('from',       'roundup-admin@your.tracker.email.domain.example')
             ) :
             self.assertEqual (header_decode (e [h]), t)
@@ -3267,10 +3285,10 @@ class Test_Case_Timetracker (_Test_Case_Summary, unittest.TestCase) :
             , b'Test User2 has submitted a leave request\n'
               b'"Vacation/Vacation".\n'
               b'Comment from user: None\n'
-              b'Please approve or decline at\n'
-              b'http://localhost:4711/ttt/leave_submission?@template=approve'
-              b'\nMany thanks!'
-              b'\n\nThis is an automatically generated message.\n'
+              b'Needs approval by HR.\n'
+              b'http://localhost:4711/ttt/leave_submission?@template=approve\n'
+              b'Many thanks!\n\n'
+              b'This is an automatically generated message.\n'
               b'Responses to this address are not possible.'
             )
         os.unlink (maildebug)
@@ -3318,7 +3336,7 @@ class Test_Case_Timetracker (_Test_Case_Summary, unittest.TestCase) :
             [ ( ('subject',    'Leave request "Special Leave/Special" '
                                '2010-12-22 to 2010-12-30 from Test User2')
               , ('precedence', 'bulk')
-              , ('to',         'user1@test.test')
+              , ('to',         'user1@test.test, user0@test.test')
               , ('from',       'roundup-admin@'
                                'your.tracker.email.domain.example')
               )
@@ -3334,7 +3352,7 @@ class Test_Case_Timetracker (_Test_Case_Summary, unittest.TestCase) :
             [ b'Test User2 has submitted a leave request\n'
               b'"Special Leave/Special".\n'
               b'Comment from user: Special leave comment\n'
-              b'Please approve or decline at\n'
+              b'Needs approval by HR.\n'
               b'http://localhost:4711/ttt/leave_submission?@template=approve'
               b'\nMany thanks!'
               b'\n\nThis is an automatically generated message.\n'
@@ -4056,6 +4074,9 @@ class Test_Case_Timetracker (_Test_Case_Summary, unittest.TestCase) :
             , firstname    = 'Nummer20'
             , lastname     = 'User20'
             )
+        # Allow user to create their own dyn user rec
+        self.db.o_permission.create \
+            (user = self.user20, org_location = [self.olo, self.olo2])
         p = self.db.overtime_period.create \
             ( name              = 'monthly average required'
             , months            = 1
@@ -4228,6 +4249,9 @@ class Test_Case_Timetracker (_Test_Case_Summary, unittest.TestCase) :
             , firstname    = 'Nummer21'
             , lastname     = 'User21'
             )
+        # Allow user to create their own dyn user rec
+        self.db.o_permission.create \
+            (user = self.user21, org_location = [self.olo, self.olo2])
         self.db.time_wp.set (self.vacation_wp, bookers = [self.user21])
         self.db.commit ()
     # end def setup_user21
@@ -4458,7 +4482,7 @@ class Test_Case_Timetracker (_Test_Case_Summary, unittest.TestCase) :
         # this out.
         wl_off    = self.db.work_location.lookup ('off')
         stat_open = self.db.time_project_status.lookup ('Open')
-    # end def
+    # end def setup_user23
 
     def test_user23 (self) :
         self.log.debug ('test_user23')
@@ -4991,11 +5015,12 @@ class Test_Case_Fulltracker (_Test_Case_Summary, unittest.TestCase) :
         , 'external', 'facility', 'functional-role', 'hr'
         , 'hr-leave-approval', 'hr-org-location'
         , 'hr-vacation', 'issue_admin', 'it', 'itview'
-        , 'msgedit', 'msgsync', 'nosy', 'office', 'organisation'
+        , 'msgedit', 'msgsync', 'nosy', 'o-permission', 'office', 'organisation'
         , 'pgp', 'procurement', 'project', 'project_view'
         , 'sec-incident-nosy', 'sec-incident-responsible'
-        , 'staff-report', 'sub-login', 'summary_view', 'supportadmin'
-        , 'time-report', 'user', 'user_view', 'vacation-report'
+        , 'staff-report', 'sub-login'
+        , 'summary-report', 'summary_view', 'supportadmin'
+        , 'time-report', 'user', 'user_view', 'vacation-report', 'view-roles'
         ]
     transprop_perms = transprop_full
 
@@ -5208,7 +5233,7 @@ class Test_Case_Fulltracker (_Test_Case_Summary, unittest.TestCase) :
 
         self.db.user_dynamic.set \
             ( ud.id
-            , valid_from        = date.Date ('2012-09-03')
+            , valid_from        = date.Date ('2012-09-01')
             , booking_allowed   = True
             , vacation_yearly   = 25.0
             , all_in            = False
@@ -5230,6 +5255,9 @@ class Test_Case_Fulltracker (_Test_Case_Summary, unittest.TestCase) :
             , firstname    = 'Nummer7'
             , lastname     = 'User7'
             )
+        # Allow user to create their own dyn user rec
+        self.db.o_permission.create \
+            (user = self.user7, org_location = [self.olo, self.olo2])
         user_dynamic.user_create_magic (self.db, self.user7, self.olo)
         self.db.user_dynamic.create \
             ( user            = self.user7
@@ -6740,12 +6768,12 @@ class Test_Case_PR (_Test_Case, unittest.TestCase) :
         , 'dom-user-edit-facility', 'dom-user-edit-gtt', 'dom-user-edit-hr'
         , 'dom-user-edit-office', 'finance', 'hr'
         , 'hr-approval', 'it', 'it-approval', 'las'
-        , 'measurement-approval', 'nosy'
+        , 'measurement-approval', 'nosy', 'o-permission'
         , 'pgp', 'pr-view', 'procure-approval'
         , 'procurement', 'procurement-admin', 'project'
         , 'project_view', 'quality', 'sub-login'
         , 'subcontract', 'subcontract-org'
-        , 'training-approval', 'user', 'user_view'
+        , 'training-approval', 'user', 'user_view', 'view-roles'
         ]
     transprop_perms = transprop_pr
 # end class Test_Case_PR

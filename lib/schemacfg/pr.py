@@ -50,6 +50,7 @@ def init \
     , Org_Location_Class
     , Time_Project_Status_Class
     , Currency_Class
+    , O_Permission_Class
     , ** kw
     ):
     export = {}
@@ -468,6 +469,11 @@ def init \
     # end class User_Class
     export.update (dict (User_Class = User_Class))
 
+    o_permission = O_Permission_Class \
+        ( db, ''"o_permission"
+        , organisation = Multilink ("organisation")
+        )
+
     return export
 # end def init
 
@@ -518,7 +524,6 @@ def security (db, ** kw):
         , ("psp_element",        ["User"],              [])
         , ("purchase_type",      ["User"],              ["Procurement-Admin"])
         , ("terms_conditions",   ["User"],              [])
-        , ("time_project",       ["User"],              [])
         , ("user",               ["Procurement-Admin"], [])
         , ("purchase_request",   ["PR-View"],           [])
         , ("pr_offer_item",      ["PR-View"],           [])
@@ -576,14 +581,6 @@ def security (db, ** kw):
         , 'status', 'id'
         , 'creation', 'creator', 'activity', 'actor'
         )
-    # Search permission
-    p = db.security.addPermission \
-        ( name        = 'Search'
-        , klass       = 'time_project'
-        , properties  = tp_properties
-        )
-    db.security.addPermissionToRole ('User', p)
-
     p = db.security.addPermission \
         ( name        = 'Search'
         , klass       = 'user'

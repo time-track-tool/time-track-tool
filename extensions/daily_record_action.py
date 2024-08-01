@@ -59,6 +59,7 @@ import freeze
 import rup_utils
 import user_dynamic
 import vacation
+import o_permission
 
 def prev_week (db, request):
     try:
@@ -914,6 +915,15 @@ def dynuser_copyurl (dyn):
     return url
 # end def dynuser_copyurl
 
+def dynamic_user_allowed_by_olo (db, itemid):
+    try:
+        db = db._db
+    except AttributeError:
+        pass
+    uid = db.getuid ()
+    return o_permission.dynamic_user_allowed_by_olo (db, uid, itemid)
+# end def dynamic_user_allowed_by_olo
+
 def _dynuser_half_frozen (db, userid, val_from, val_to):
     return \
         (   freeze.frozen (db, userid, val_from)
@@ -963,6 +973,8 @@ class Freeze_Action (Action, autosuper):
 
     def handle (self):
         _ = self.db.i18n.gettext
+        uid = self.db.getuid ()
+        now = Date ('.')
         if not self.request.form ['date'].value:
             raise Reject (_ ("Date is required"))
         self.date  = Date (self.request.form ['date'].value)
@@ -979,6 +991,9 @@ class Freeze_Action (Action, autosuper):
                     date = dyn.valid_to - common.day
                     assert (date < self.date)
             if dyn:
+                method = o_permission.dynamic_user_allowed_by_olo
+                if not method (self.db, uid, dyn.id):
+                    continue
                 try:
                     self.db.daily_record_freeze.create \
                         (date = date, user = u, frozen = 1)
@@ -1017,7 +1032,7 @@ class Freeze_Action (Action, autosuper):
             + ':columns=id,date,user,frozen,balance,validity_date'
             + '&:sort=user,date&:filter=creation'
             + '&:pagesize=200&:startwith=0&creation=%s%%3B'
-            ) % (Date ('.') - Interval ('00:05'))
+            ) % (now - Interval ('00:05'))
         raise Redirect (url)
     # end def handle
 # end class Freeze_Action
@@ -1133,38 +1148,39 @@ class SearchActionWithTemplate(SearchAction):
 
 def init (instance):
     actn = instance.registerAction
-    actn ('daily_record_edit_action', Daily_Record_Edit_Action)
-    actn ('daily_record_action',      Daily_Record_Action)
-    actn ('daily_record_submit',      Daily_Record_Submit)
-    actn ('daily_record_approve',     Daily_Record_Approve)
-    actn ('daily_record_deny',        Daily_Record_Deny)
-    actn ('daily_record_reopen',      Daily_Record_Reopen)
-    actn ('weekno_action',            Weekno_Action)
-    actn ('freeze_all',               Freeze_All_Action)
-    actn ('freeze_supervisor',        Freeze_Supervisor_Action)
-    actn ('freeze_user',              Freeze_User_Action)
-    actn ('split_dynamic_user',       Split_Dynamic_User_Action)
-    actn ('searchwithtemplate',       SearchActionWithTemplate)
+    actn ('daily_record_edit_action',    Daily_Record_Edit_Action)
+    actn ('daily_record_action',         Daily_Record_Action)
+    actn ('daily_record_submit',         Daily_Record_Submit)
+    actn ('daily_record_approve',        Daily_Record_Approve)
+    actn ('daily_record_deny',           Daily_Record_Deny)
+    actn ('daily_record_reopen',         Daily_Record_Reopen)
+    actn ('weekno_action',               Weekno_Action)
+    actn ('freeze_all',                  Freeze_All_Action)
+    actn ('freeze_supervisor',           Freeze_Supervisor_Action)
+    actn ('freeze_user',                 Freeze_User_Action)
+    actn ('split_dynamic_user',          Split_Dynamic_User_Action)
+    actn ('searchwithtemplate',          SearchActionWithTemplate)
     util = instance.registerUtil
-    util ('next_week',                next_week)
-    util ('prev_week',                prev_week)
-    util ("button_submit_to",         button_submit_to)
-    util ("button_action",            button_action)
-    util ('weekno_year',              common.weekno_year_from_day)
-    util ('daysum',                   daysum)
-    util ('weeksum',                  weeksum)
-    util ("approvals_pending",        approvals_pending)
-    util ("is_end_of_week",           is_end_of_week)
-    util ("freeze_all_script",        freeze_all_script)
-    util ("freeze_supervisor_script", freeze_supervisor_script)
-    util ("freeze_user_script",       freeze_user_script)
-    util ("frozen",                   freeze.frozen)
-    util ("range_frozen",             freeze.range_frozen)
-    util ("time_url",                 time_url)
-    util ("next_dr_freeze",           freeze.next_dr_freeze)
-    util ("prev_dr_freeze",           freeze.prev_dr_freeze)
-    util ("week_freeze_date",         common.week_freeze_date)
-    util ("dynuser_half_frozen",      dynuser_half_frozen)
-    util ("dynuser_frozen",           dynuser_frozen)
-    util ("dynuser_copyurl",          dynuser_copyurl)
+    util ('next_week',                   next_week)
+    util ('prev_week',                   prev_week)
+    util ("button_submit_to",            button_submit_to)
+    util ("button_action",               button_action)
+    util ('weekno_year',                 common.weekno_year_from_day)
+    util ('daysum',                      daysum)
+    util ('weeksum',                     weeksum)
+    util ("approvals_pending",           approvals_pending)
+    util ("is_end_of_week",              is_end_of_week)
+    util ("freeze_all_script",           freeze_all_script)
+    util ("freeze_supervisor_script",    freeze_supervisor_script)
+    util ("freeze_user_script",          freeze_user_script)
+    util ("frozen",                      freeze.frozen)
+    util ("range_frozen",                freeze.range_frozen)
+    util ("time_url",                    time_url)
+    util ("next_dr_freeze",              freeze.next_dr_freeze)
+    util ("prev_dr_freeze",              freeze.prev_dr_freeze)
+    util ("week_freeze_date",            common.week_freeze_date)
+    util ("dynuser_half_frozen",         dynuser_half_frozen)
+    util ("dynuser_frozen",              dynuser_frozen)
+    util ("dynuser_copyurl",             dynuser_copyurl)
+    util ("dynamic_user_allowed_by_olo", dynamic_user_allowed_by_olo)
 # end def init

@@ -1,5 +1,5 @@
 #! /usr/bin/python
-# Copyright (C) 2014-21 Dr. Ralf Schlatterbeck Open Source Consulting.
+# Copyright (C) 2014-24 Dr. Ralf Schlatterbeck Open Source Consulting.
 # Reichergasse 131, A-3411 Weidling.
 # Web: http://www.runtux.com Email: office@runtux.com
 # All rights reserved
@@ -28,6 +28,7 @@ import common
 import freeze
 import user_dynamic
 import vacation
+import o_permission
 
 def check_range (db, nodeid, uid, first_day, last_day):
     """ Check length of range and if there are any records in the given
@@ -130,6 +131,7 @@ def new_submission (db, cl, nodeid, new_values):
         raise Reject (_ ("Vacation request for 0 days"))
     check_dr_status (db, user, first_day, last_day, 'open')
     check_dyn_user_params (db, user, first_day, last_day)
+    o_permission.check_new_leave_submission_perm (db, cl, nodeid, new_values)
 # end def new_submission
 
 def check_dyn_user_params (db, user, first_day, last_day):
@@ -349,12 +351,38 @@ def state_change_reactor (db, cl, nodeid, old_values):
         handle_cancel_rq (db, vs)
 # end def state_change_reactor
 
+def get_leave_email (db, leave):
+    """ Determine all users with HR-leave-approval role and correct
+        permission on this user.
+    """
+    now  = Date ('.')
+    role = 'HR-leave-approval'
+    filter  = dict (roles = role)
+    filter ['status.is_nosy'] = True
+    userids = db.user.filter (None, filter)
+    email_users = []
+    for approve_user in userids:
+        # User themselves should not approve
+        if leave.user == approve_user:
+            continue
+        if not common.user_has_role (db, approve_user, role):
+            continue
+        if not o_permission.user_allowed_by_olo \
+            (db, approve_user, leave.user, now):
+            continue
+        email_users.append (db.user.getnode (approve_user))
+    return tuple (u.address for u in email_users)
+# end def get_leave_email
+
 def try_send_mail (db, vs, now, var_text, var_subject, var_mail = None, ** kw):
+    """ Two methods to specify destination emails: With a pointer to the
+        config variable in var_mail or directly with the email
+        parameter.
+    """
     mailer         = roundupdb.Mailer (db.config)
     now            = Date ('.')
     wp             = db.time_wp.getnode (vs.time_wp)
     user           = db.user.getnode (vs.user)
-    email          = (user.address, )
     username       = user.username
     lastname       = user.lastname
     firstname      = user.firstname
@@ -375,8 +403,10 @@ def try_send_mail (db, vs, now, var_text, var_subject, var_mail = None, ** kw):
         notify_subj = getattr (db.config.ext, var_subject)
         if var_mail is not None:
             notify_mail = (getattr (db.config.ext, var_mail),)
+        elif 'email' in kw:
+            notify_mail = kw ['email']
         else:
-            notify_mail = d ['email']
+            notify_mail = (user.address,)
     except InvalidOptionError:
         pass
     if notify_text and notify_subj and notify_mail:
@@ -561,7 +591,7 @@ def handle_cancel (db, vs, drs, ars, trs, is_crq):
                 ( db, vs, now
                 , 'MAIL_SPECIAL_LEAVE_CANCEL_TEXT'
                 , 'MAIL_SPECIAL_LEAVE_CANCEL_SUBJECT'
-                , 'MAIL_SPECIAL_LEAVE_CANCEL_EMAIL'
+                , email = get_leave_email (db, vs)
                 )
 # end def handle_cancel
 
@@ -572,10 +602,7 @@ def handle_crq_or_submit (db, vs, now, conf_string, hr_only):
                for x in common.tt_clearance_by (db, vs.user)
               ]
     if hr_only:
-        emails.extend \
-            (db.user.get (u, 'address')
-             for u in common.get_uids_with_role (db, 'HR-leave-approval')
-            )
+        emails.extend (get_leave_email (db, vs))
     url     = '%sleave_submission?@template=approve' % db.config.TRACKER_WEB
     approval_type = ''
     try:
@@ -611,6 +638,10 @@ def handle_decline (db, vs):
 # end def handle_decline
 
 # Always called in a reactor
+# But the vacation sum uses time records for computing the already-taken
+# vacation. These are never exiting at this point since we're in status
+# submitted. So it is wrong to call vacation.need_hr_approval with
+# 'booked' set to True.
 def handle_submit (db, vs):
     now     = Date ('.')
     wp      = db.time_wp.getnode (vs.time_wp)
@@ -618,8 +649,8 @@ def handle_submit (db, vs):
     dyn     = user_dynamic.get_user_dynamic (db, vs.user, vs.first_day)
     ctype   = dyn.contract_type
     hr_only = vacation.need_hr_approval \
-        (db, tp, vs.user, ctype, vs.first_day, vs.last_day, 'submitted', True)
-    handle_crq_or_submit (db, vs, now, 'SUBMIT', hr_only)
+        (db, tp, vs.user, ctype, vs.first_day, vs.last_day, 'submitted')
+    handle_crq_or_submit (db, vs, now, 'SUBMIT', hr_only or tp.is_special_leave)
     if tp.is_special_leave:
         try_send_mail \
             ( db, vs, now
@@ -635,7 +666,15 @@ def check_correction (db, cl, nodeid, new_values):
     if nodeid:
         common.require_attributes \
             (_, cl, nodeid, new_values, 'absolute')
+        for i in 'user',:
+            if i in new_values:
+                raise Reject \
+                    (_ ("%(attr)s may not be changed") % {'attr': _ (i)})
     else:
+        common.require_attributes \
+            (_, cl, nodeid, new_values, 'user', 'date')
+        date = new_values ['date']
+        o_permission.check_valid_user (db, cl, nodeid, new_values, date = date)
         if 'absolute' not in new_values:
             new_values ['absolute'] = False
     user = new_values.get ('user')
@@ -657,13 +696,16 @@ def check_correction (db, cl, nodeid, new_values):
     common.check_unique \
         (_, cl, nodeid, date = date.pretty (common.ymd), user = user)
     # Check that vacation parameters exist in dyn. user records
-    dyn = user_dynamic.get_user_dynamic (db, user, date)
+    dyn  = user_dynamic.get_user_dynamic (db, user, date)
+    fdyn = dyn
+    ndyn = dyn
     username = db.user.get (user, 'username')
     # Check for initial creation of user/dynamic user record where
     # the creation of a vacation correction is triggered
     if not dyn:
-        dyn = user_dynamic.first_user_dynamic (db, user)
-    if not dyn or dyn.valid_to and dyn.valid_to < date:
+        dyn  = user_dynamic.first_user_dynamic (db, user)
+        ndyn = user_dynamic.first_user_dynamic (db, user, date = date)
+    if not fdyn and ndyn.valid_from < date - common.day:
         raise Reject \
             (_ ('No current dyn. user record for "%(username)s"') % locals ())
     # Check that no vacation correction is created in a year before the

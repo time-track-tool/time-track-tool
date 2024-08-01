@@ -40,6 +40,10 @@ sender_addr = no-reply@example.com
 # interpolation is desired the percent sign must be substituted by a
 # dollar sign.
 
+# Note that the following email config items are obsolete:
+# - special_leave_notify_email
+# - special_leave_cancel_email
+
 # On approval of all leave types
 leave_notify_email = office@example.com
 leave_notify_subject = Leave "$(tp_name)s/$(wp_name)s"
@@ -63,7 +67,6 @@ leave_cancel_text  = Dear member of the Office Team,
  many thanks!
 
 # On approval of special leave
-special_leave_notify_email = hr-admin@example.com
 special_leave_notify_subject = Leave "$(tp_name)s/$(wp_name)s"
  $(first_day)s-$(last_day)s accepted
 special_leave_notify_text  = Dear member of HR Admin,
@@ -74,7 +77,6 @@ special_leave_notify_text  = Dear member of HR Admin,
  many thanks!
 
 # On cancel of special leave
-special_leave_cancel_email = hr-admin@example.com
 special_leave_cancel_subject = Leave "$(tp_name)s/$(wp_name)s"
  $(first_day)s-$(last_day)s cancelled
 special_leave_cancel_text  = Dear member of HR Admin,
