@@ -45,7 +45,7 @@ olo_groups = dict \
         , 'TTTech Chip IP Design GmbH; AUT, Wien'
         , 'TTTech Computertechnik AG; AUT, Wien'
         , 'TTTech Computertechnik AG, organizacní složka; CZE, Brno'
-        , 'TTTech Deutschland GmbH; DEU, München'
+        , 'TTTech Deutschland GmbH; DEU, Taufkirchen'
         , 'TTTech Development Romania SRL; ROU, Bucharest'
         , 'TTTech Digital Solutions GmbH; AUT, Wien'
         , 'TTTech Flexibilis Oy; FIN, Tampere'
