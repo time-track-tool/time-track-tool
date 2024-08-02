@@ -26,7 +26,10 @@
 # Purpose
 #    Action(s) for dialling
 
-#import requests
+try:
+    import requests
+except ImportError:
+    requests = None
 from roundup.cgi.actions    import Action
 from roundup.cgi            import templating
 from roundup.cgi.exceptions import Redirect
@@ -58,8 +61,12 @@ class Dial (Action) :
         #print url
         #print callerid.number
         auth = (sipdev.http_username, sipdev.http_password)
+        if requests is None:
+            raise Reject ('Dialing not supported (no requests module)')
         r    = requests.get (url, auth = auth)
-        if not (200 <= r.status_code <= 299):
+        # 401 Unauthorized will be returned by the phone although it
+        # *still dials.
+        if not (200 <= r.status_code <= 299) and r.status_code != 401:
             raise Reject \
                 ( 'Request returned %s: %s\n    %s'
                 % (r.status_code, r.reason, r.text)
