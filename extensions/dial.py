@@ -26,7 +26,7 @@
 # Purpose
 #    Action(s) for dialling
 
-import requests
+#import requests
 from roundup.cgi.actions    import Action
 from roundup.cgi            import templating
 from roundup.cgi.exceptions import Redirect
