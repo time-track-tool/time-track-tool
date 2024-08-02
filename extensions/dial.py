@@ -1,5 +1,5 @@
 #! /usr/bin/python
-# Copyright (C) 2013-21 Dr. Ralf Schlatterbeck Open Source Consulting.
+# Copyright (C) 2013-24 Dr. Ralf Schlatterbeck Open Source Consulting.
 # Reichergasse 131, A-3411 Weidling.
 # Web: http://www.runtux.com Email: office@runtux.com
 # All rights reserved
@@ -26,13 +26,11 @@
 # Purpose
 #    Action(s) for dialling
 
-try :
-    from urllib.request import urlopen
-except ImportError :
-    from urllib import urlopen
+import requests
 from roundup.cgi.actions    import Action
 from roundup.cgi            import templating
 from roundup.cgi.exceptions import Redirect
+from roundup.exceptions     import Reject
 
 class Dial (Action) :
 
@@ -51,22 +49,21 @@ class Dial (Action) :
         callerid   = self.db.callerid.getnode (cids [0])
         user       = self.db.user.getnode (self.db.getuid ())
         sipdev     = self.db.sip_device.getnode (user.sip_device)
-        url = 'http://%s:%s@%s:80/command.htm?number=%s&outgoing_uri=%s@%s' % \
-            ( sipdev.http_username
-            , sipdev.http_password
-            , sipdev.name
+        url = 'http://%s/command.htm?number=%s&outgoing_uri=%s@%s' % \
+            ( sipdev.name
             , callerid.number
             , sipdev.pbx_username
             , sipdev.pbx_hostname
             )
         #print url
         #print callerid.number
-        try :
-            f = urlopen (url)
-            f.read  ()
-            f.close ()
-        except EOFError :
-            pass
+        auth = (sipdev.http_username, sipdev.http_password)
+        r    = requests.get (url, auth = auth)
+        if not (200 <= r.status_code <= 299):
+            raise Reject \
+                ( 'Request returned %s: %s\n    %s'
+                % (r.status_code, r.reason, r.text)
+                )
         raise Redirect ("address%s" % contact.address)
     # end def handle
 
