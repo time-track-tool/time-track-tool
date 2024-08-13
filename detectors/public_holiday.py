@@ -75,12 +75,8 @@ def check_dupe_loc (db, cl, nodeid, new_values):
     if not locs and not olos and nodeid:
         locs = cl.get (nodeid, 'locations')
         olos = cl.get (nodeid, 'org_location')
-    olos = set ()
-    locs = set ()
-    if locs:
-        locs = set (locs)
-    if olos:
-        olos = set (olos)
+    locs = set (locs or ())
+    olos = set (olos or ())
     # Get all public holidays on that date
     dt  = date.pretty (ymd)
     phs = db.public_holiday.filter (None, dict (date = dt))
@@ -94,7 +90,7 @@ def check_dupe_loc (db, cl, nodeid, new_values):
             for ol in olo:
                 lo.add (db.org_location.get (ol, 'location'))
         if not olo and lo:
-            olo = db.org_location.filter (None, dict (location = lo))
+            olo = db.org_location.filter (None, dict (location = list (lo)))
         intersect = locs.intersection (lo)
         if intersect:
             iloc = ', '.join \

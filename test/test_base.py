@@ -4987,6 +4987,61 @@ class Test_Case_Timetracker (_Test_Case_Summary, unittest.TestCase) :
         self.db.close ()
     # end def test_user28
 
+    def test_duplicate_public_holiday (self):
+        self.log.debug ('test_user28')
+        self.setup_db ()
+        self.db.commit ()
+        self.db.close ()
+        self.db = self.tracker.open ('admin')
+        dt = date.Date ('2024-01-01')
+        ph = self.db.public_holiday.create \
+            ( date        = dt
+            , description = 'Neujahr'
+            , name        = "New Year's Day"
+            , is_half     = False
+            , locations   = [self.loc]
+            )
+        with pytest.raises (Reject):
+            p = self.db.public_holiday.create \
+                ( date        = dt
+                , description = 'Neujahr'
+                , name        = "New Year's Day"
+                , is_half     = False
+                , locations   = [self.loc]
+                )
+        with pytest.raises (Reject):
+            p = self.db.public_holiday.create \
+                ( date         = dt
+                , description  = 'Neujahr'
+                , name         = "New Year's Day"
+                , is_half      = False
+                , org_location = [self.olo]
+                )
+        self.db.public_holiday.retire (ph)
+        ph = self.db.public_holiday.create \
+            ( date         = dt
+            , description  = 'Neujahr'
+            , name         = "New Year's Day"
+            , is_half      = False
+            , org_location = [self.olo]
+            )
+        with pytest.raises (Reject):
+            p = self.db.public_holiday.create \
+                ( date        = dt
+                , description = 'Neujahr'
+                , name        = "New Year's Day"
+                , is_half     = False
+                , locations   = [self.loc]
+                )
+        with pytest.raises (Reject):
+            p = self.db.public_holiday.create \
+                ( date         = dt
+                , description  = 'Neujahr'
+                , name         = "New Year's Day"
+                , is_half      = False
+                , org_location = [self.olo]
+                )
+    # end def test_duplicate_public_holiday
 
 # end class Test_Case_Timetracker
 
