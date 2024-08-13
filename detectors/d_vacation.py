@@ -546,7 +546,7 @@ def handle_accept (db, vs, ars, trs, old_status):
                 ( db, vs, now
                 , 'MAIL_SPECIAL_LEAVE_NOTIFY_TEXT'
                 , 'MAIL_SPECIAL_LEAVE_NOTIFY_SUBJECT'
-                , 'MAIL_SPECIAL_LEAVE_NOTIFY_EMAIL'
+                , email = get_leave_email (db, vs)
                 )
 # end def handle_accept
 
