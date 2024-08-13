@@ -2241,8 +2241,9 @@ def summary_report_links (db):
         menu.
     """
     _ = db.i18n.gettext
-    orig = ('summary_report', 'View', 1, ('',''))
-    old  = ('summary_report', 'View', 1, (_('Summary Report (old)'),''))
+    allowed = common.user_has_role (db, db.getuid (), 'Summary-Report')
+    orig = ('summary_report', 'View', allowed, ('',''))
+    old  = ('summary_report', 'View', allowed, (_('Summary Report (old)'),''))
     red  = ('summary_report', 'View', 1, ('','redirect'))
 
     try:
