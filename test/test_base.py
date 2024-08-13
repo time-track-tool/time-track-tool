@@ -3395,7 +3395,7 @@ class Test_Case_Timetracker (_Test_Case_Summary, unittest.TestCase) :
             , ( ('subject',    'Leave "Special Leave/Special" '
                                '2010-12-22 to 2010-12-30 accepted')
               , ('precedence', 'bulk')
-              , ('to',         'hr-admin@example.com')
+              , ('to',         'user0@test.test')
               , ('from',       'roundup-admin@'
                                'your.tracker.email.domain.example')
               )
