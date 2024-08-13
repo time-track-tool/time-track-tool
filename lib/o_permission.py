@@ -202,7 +202,12 @@ def leave_allowed_by_olo (db, userid, itemid):
         allowed
     """
     ls = db.leave_submission.getnode (itemid)
-    return user_allowed_by_olo (db, userid, ls.user)
+    # Get user_dynamic records for start and end date of leave
+    # submission, if either one is permitted we permit view of that
+    # record.
+    for dt in (ls.first_day, ls.last_day):
+        if user_allowed_by_olo (db, userid, ls.user, dt):
+            return True
 # end def leave_allowed_by_olo
 
 def check_valid_user (db, cl, nodeid, new_values, date = None, enddate = None):
