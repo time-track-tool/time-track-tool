@@ -7564,7 +7564,7 @@ msgid "attendance_record"
 msgstr "Attendance record"
 
 msgid "employee_number"
-msgstr "Employee number"
+msgstr "SF System ID"
 
 msgid "user.employee_number"
 msgstr "Employee number"
