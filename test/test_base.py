@@ -5043,6 +5043,54 @@ class Test_Case_Timetracker (_Test_Case_Summary, unittest.TestCase) :
                 )
     # end def test_duplicate_public_holiday
 
+    def test_duplicate_freeze_record (self):
+        self.setup_db ()
+        self.setup_user11 ()
+        self.db.commit ()
+        self.db.close ()
+        self.db = self.tracker.open (self.username11)
+        user11_time.import_data_11 (self.db, self.user11)
+        self.db.commit ()
+        self.db.close ()
+        self.db = self.tracker.open (self.username0)
+        # Intentionally use a date with non-zero hour/minute
+        dt = date.Date ('2013-07-01.01:01')
+        frz = self.db.daily_record_freeze.create \
+            ( date   = dt
+            , user   = self.user11
+            )
+        # Test change of date
+        with pytest.raises (Reject):
+            self.db.daily_record_freeze.set (frz, date = dt + common.day)
+        with pytest.raises (Reject):
+            self.db.daily_record_freeze.create \
+                ( date = dt
+                , user = self.user11
+                )
+        self.db.daily_record_freeze.retire (frz)
+        frz = self.db.daily_record_freeze.create \
+            ( date   = dt
+            , user   = self.user11
+            , frozen = False
+            )
+        with pytest.raises (Reject):
+            self.db.daily_record_freeze.create \
+                ( date = dt
+                , user = self.user11
+                )
+        self.db.daily_record_freeze.retire (frz)
+        dt = date.Date ('2024-07-01')
+        frz = self.db.daily_record_freeze.create \
+            ( date   = dt
+            , user   = self.user11
+            )
+        with pytest.raises (Reject):
+            self.db.daily_record_freeze.create \
+                ( date = dt
+                , user = self.user11
+                )
+    # end def test_duplicate_freeze_record
+
 # end class Test_Case_Timetracker
 
 class Test_Case_Tracker (_Test_Case, unittest.TestCase) :

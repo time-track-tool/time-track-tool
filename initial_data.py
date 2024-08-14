@@ -1487,3 +1487,10 @@ if 'employee_number' in db.user.properties and hasattr (db, 'sql') :
 if 'payment_type' in db.classes :
     db.payment_type.create (name = 'Invoice',     order = 10)
     db.payment_type.create (name = 'Credit Card', order = 20)
+
+if 'daily_record_freeze' in db.classes:
+    db.sql \
+        ( 'alter table _daily_record_freeze add constraint '
+          'drf_date_user_unique unique '
+          '(_date, _user, __retired__);'
+        )
