@@ -90,6 +90,48 @@ def time_project_allowed_by_org (db, userid, itemid):
     return organisation_allowed (db, userid, itemid, 'time_project')
 # end def time_project_allowed_by_org
 
+def psp_element_allowed_by_org (db, userid, itemid):
+    """ User may access PSP element because organisation is allowed
+    """
+    return organisation_allowed (db, userid, itemid, 'psp_element')
+# end def psp_element_allowed_by_org
+
+def purchase_request_allowed_by_org (db, userid, itemid):
+    """ User may access purchase request because organisation is allowed
+    """
+    if userid == '1' or common.user_has_role (db, userid, 'admin'):
+        return True
+    pr = db.purchase_request.getnode (itemid)
+    # Should not happen, better on the safe side
+    if not pr.organisation:
+        return False
+    return organisation_allowed (db, userid, itemid, 'purchase_request')
+# end def purchase_request_allowed_by_org
+
+def purchase_type_allowed_by_org (db, userid, itemid):
+    """ User may access purchase type because organisation is allowed
+    """
+    if userid == '1' or common.user_has_role (db, userid, 'admin'):
+        return True
+    pt = db.purchase_type.getnode (itemid)
+    if not pt.organisations:
+        return True
+    orgs = get_allowed_org (db, userid)
+    return orgs.intersection (pt.organisations)
+# end def purchase_type_allowed_by_org
+
+def supplier_rating_allowed_by_org (db, userid, itemid):
+    """ User may access supplier rating because organisation is allowed
+    """
+    return organisation_allowed (db, userid, itemid, 'pr_supplier_rating')
+# end def supplier_rating_allowed_by_org
+
+def supplier_risk_allowed_by_org (db, userid, itemid):
+    """ User may access supplier risk because organisation is allowed
+    """
+    return organisation_allowed (db, userid, itemid, 'pr_supplier_risk')
+# end def supplier_risk_allowed_by_org
+
 def time_wp_allowed_by_org (db, userid, itemid):
     """ User may access work package because organisation is allowed
     """
@@ -342,3 +384,31 @@ def check_new_dyn_user_olo (db, cl, nodeid, new_values):
     raise Reject \
         ( _ ("You are not allowed to create %(udyn)s for this %(olo)s") % d)
 # end def check_new_dyn_user_olo
+
+def check_supplier_rating (db, cl, nodeid, new_values):
+    uid = db.getuid ()
+    if uid == '1' or common.user_has_role (db, uid, 'Admin'):
+        return
+    if common.user_has_role (db, uid, 'Procurement-Admin'):
+        return
+    if new_values ['organisation'] in get_allowed_org (db, uid):
+        return
+    _  = db.i18n.gettext
+    d = dict (rating = _ ('pr_supplier_rating'), org = _ ('organisation'))
+    raise Reject \
+        ( _ ("You are not allowed to create %(rating)s for this %(org)s") % d)
+# end def check_supplier_rating
+
+def check_supplier_risk (db, cl, nodeid, new_values):
+    uid = db.getuid ()
+    if uid == '1' or common.user_has_role (db, uid, 'Admin'):
+        return
+    if common.user_has_role (db, uid, 'Procurement-Admin'):
+        return
+    if new_values ['organisation'] in get_allowed_org (db, uid):
+        return
+    _  = db.i18n.gettext
+    d = dict (risk = _ ('pr_supplier_risk'), org = _ ('organisation'))
+    raise Reject \
+        ( _ ("You are not allowed to create %(risk)s for this %(org)s") % d)
+# end def check_supplier_risk

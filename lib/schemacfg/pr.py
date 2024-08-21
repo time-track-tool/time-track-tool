@@ -517,9 +517,8 @@ def security (db, ** kw):
         , ("pr_status",          ["User"],              [])
         , ("pr_supplier",        ["User"],       ["Procurement-Admin", "LAS"])
         , ("pr_rating_category", ["User"],       ["Procurement-Admin", "LAS"])
-        , ("pr_supplier_rating", ["User"],       ["Procurement-Admin", "LAS"])
-        , ("psp_element",        ["User"],              [])
-        , ("purchase_type",      ["User"],              ["Procurement-Admin"])
+        , ("pr_supplier_rating", [],                    ["Procurement-Admin"])
+        , ("purchase_type",      [],                    ["Procurement-Admin"])
         , ("terms_conditions",   ["User"],              [])
         , ("user",               ["Procurement-Admin"], [])
         , ("internal_order",     ["User"],              [])
@@ -529,7 +528,7 @@ def security (db, ** kw):
         , ("pg_category",        ["User"],              ["Procurement-Admin"])
         , ("supplier_risk_category", ["User"],          [])
         , ("purchase_risk_type", ["User"],              [])
-        , ("pr_supplier_risk",   ["User"],      ["Procurement-Admin", "CISO"])
+        , ("pr_supplier_risk",   [],                    ["Procurement-Admin"])
         , ("payment_type",       ["User"],              [])
         , ("purchase_security_risk", ["User"],          [])
         ]
@@ -612,6 +611,9 @@ def security (db, ** kw):
         if not itemid or int (itemid) < 1:
             return False
         pr = db.purchase_request.getnode (itemid)
+        if not o_permission.purchase_request_allowed_by_org \
+            (db, userid, itemid):
+            return False
         if not pr.purchase_type:
             return False
         pt = db.purchase_type.getnode (pr.purchase_type)
@@ -901,7 +903,7 @@ def security (db, ** kw):
         if pr.status == st_open:
             return True
         return False
-    # end def cancel_own_pr
+    # end def cancel_open_pr
 
     p = db.security.addPermission \
         ( name = 'Edit'
@@ -1385,5 +1387,57 @@ def security (db, ** kw):
             (o_permission.time_project_allowed_by_org.__doc__)
         )
     db.security.addPermissionToRole ('User', p)
+
+    schemadef.add_search_permission (db, 'psp_element', 'User')
+    p = db.security.addPermission \
+        ( name        = 'View'
+        , klass       = 'psp_element' 
+        , check       = o_permission.psp_element_allowed_by_org
+        , description = fixdoc (o_permission.psp_element_allowed_by_org.__doc__)
+        )
+    db.security.addPermissionToRole ("User", p)
+
+    p = db.security.addPermission \
+        ( name        = 'View'
+        , klass       = 'pr_supplier_risk' 
+        , check       = o_permission.supplier_risk_allowed_by_org
+        , description = fixdoc \
+            (o_permission.supplier_risk_allowed_by_org.__doc__)
+        )
+    db.security.addPermissionToRole ("User", p)
+    p = db.security.addPermission \
+        ( name        = 'Edit'
+        , klass       = 'pr_supplier_risk' 
+        , check       = o_permission.supplier_risk_allowed_by_org
+        , description = fixdoc \
+            (o_permission.supplier_risk_allowed_by_org.__doc__)
+        )
+    db.security.addPermissionToRole ("CISO", p)
+
+    p = db.security.addPermission \
+        ( name        = 'View'
+        , klass       = 'pr_supplier_rating' 
+        , check       = o_permission.supplier_rating_allowed_by_org
+        , description = fixdoc \
+            (o_permission.supplier_rating_allowed_by_org.__doc__)
+        )
+    db.security.addPermissionToRole ("User", p)
+    p = db.security.addPermission \
+        ( name        = 'Edit'
+        , klass       = 'pr_supplier_rating' 
+        , check       = o_permission.supplier_rating_allowed_by_org
+        , description = fixdoc \
+            (o_permission.supplier_rating_allowed_by_org.__doc__)
+        )
+    db.security.addPermissionToRole ("LAS", p)
+
+    p = db.security.addPermission \
+        ( name        = 'View'
+        , klass       = 'purchase_type' 
+        , check       = o_permission.purchase_type_allowed_by_org
+        , description = fixdoc \
+            (o_permission.purchase_type_allowed_by_org.__doc__)
+        )
+    db.security.addPermissionToRole ("User", p)
 
 # end def security

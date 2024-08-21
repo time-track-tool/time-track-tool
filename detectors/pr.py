@@ -20,6 +20,7 @@
 import re
 import common
 import prlib
+import o_permission
 from   roundup.date                   import Date, Interval
 from   roundup.exceptions             import Reject
 from   roundup                        import roundupdb
@@ -1481,10 +1482,14 @@ def init (db):
     db.pr_approval_order.audit  ("set",    pao_check_roles)
     db.pr_supplier_rating.audit ("create", check_supplier_rating)
     db.pr_supplier_rating.audit ("set",    check_supplier_rating)
+    db.pr_supplier_rating.audit ("create", o_permission.check_supplier_rating)
+    db.pr_supplier_rating.audit ("set",    o_permission.check_supplier_rating)
     db.pr_supplier.audit        ("create", namelen)
     db.pr_supplier.audit        ("set",    namelen)
     db.pr_supplier_risk.audit   ("create", check_supplier_risk)
     db.pr_supplier_risk.audit   ("set",    check_supplier_risk)
+    db.pr_supplier_risk.audit   ("create", o_permission.check_supplier_risk)
+    db.pr_supplier_risk.audit   ("set",    o_permission.check_supplier_risk)
     db.purchase_security_risk.audit ("create", check_psr)
     db.purchase_security_risk.audit ("set",    check_psr)
     db.product_group.audit      ("create", check_pg)
