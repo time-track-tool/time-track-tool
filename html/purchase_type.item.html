@@ -88,6 +88,12 @@
         )"/>
       </td>
      </tr>
+     <tr>
+      <th tal:content="structure python:utils.fieldname
+          (db, classname, 'organisations')"/>
+      <td tal:content="structure python:context.organisations.menu
+          (**utils.valid_item (now))"/>
+     </tr>
      <tr tal:condition="context/id">
       <th tal:content="structure python:utils.fieldname
           (db, classname, 'purchasing_agents')"/>

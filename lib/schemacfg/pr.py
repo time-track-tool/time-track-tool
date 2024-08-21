@@ -31,6 +31,7 @@
 
 import common
 import prlib
+import o_permission
 from   schemacfg import schemadef
 from   roundup   import date
 
@@ -275,6 +276,7 @@ def init \
         , nosy                  = Multilink ("user")
         , purchasing_agents     = Multilink ("user")
         , allow_gl_account      = Boolean   ()
+        , organisations         = Multilink ("organisation")
         )
     purchase_type.setkey ('name')
 
@@ -460,13 +462,14 @@ def init \
             self.update_properties \
                 ( want_no_messages       = Boolean   ()
                 , subst_until            = Date      ()
+                , organisation           = Link      ("organisation")
                 )
             User_Ancestor.__init__ (self, db, classname, ** properties)
         # end def __init__
     # end class User_Class
     export.update (dict (User_Class = User_Class))
 
-    o_permission = O_Permission_Class \
+    o_perm = O_Permission_Class \
         ( db, ''"o_permission"
         , organisation = Multilink ("organisation")
         )
@@ -1371,5 +1374,16 @@ def security (db, ** kw):
         , properties  = ('gl_account',)
         )
     db.security.addPermissionToRole ('Controlling', p)
+
+    tp_props = ('name', 'responsible', 'deputy', 'status', 'organisation')
+    p = db.security.addPermission \
+        ( name        = 'View'
+        , klass       = 'time_project'
+        , properties  = tp_props
+        , check       = o_permission.time_project_allowed_by_org
+        , description = fixdoc
+            (o_permission.time_project_allowed_by_org.__doc__)
+        )
+    db.security.addPermissionToRole ('User', p)
 
 # end def security

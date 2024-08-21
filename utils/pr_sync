@@ -173,16 +173,8 @@ class PR_Sync (Requester):
 #            ( 'user_status'
 #            , ('name', 'description', 'is_nosy', 'ldap_group', 'roles')
 #            )
-        self.sync_class \
-            ( 'user'
-            , ( 'username', 'address', 'alternate_addresses'
-              , 'realname', 'status', 'supervisor'
-              )
-            , key       = 'username'
-            , roles     = 'User,Nosy'
-            , dont_sync = dict.fromkeys (('1', '2'))
-            , update    = self.args.sync_user
-            )
+        self.sync_user ()
+        self.sync_user_org ()
         self.sync_pending ()
         self.sync_class \
             ( 'sap_cc'
@@ -427,6 +419,51 @@ class PR_Sync (Requester):
         self.pendmap = {}
     # end def sync_pending
 
+    def sync_user (self):
+        self.sync_class \
+            ( 'user'
+            , ( 'username', 'address', 'alternate_addresses'
+              , 'realname', 'status', 'supervisor'
+              )
+            , key       = 'username'
+            , roles     = 'User,Nosy'
+            , dont_sync = dict.fromkeys (('1', '2'))
+            , update    = self.args.sync_user
+            )
+    # end def sync_user
+
+    def sync_user_org (self):
+        changed = False
+        # Fetch remote organisation, username via dynamic user records
+        # for *all* users:
+        d = dict \
+            ( valid_from = ';.'
+            , valid_to   = '.;,-'
+            )
+        d ['@fields'] = 'user.username,org_location.organisation.name'
+        coll = self.get ('user_dynamic?' + urlencode (d)) ['data']['collection']
+        org_by_user = {}
+        org_by_name = {}
+        for c in coll:
+            username = c ['user.username']
+            orgname  = c ['org_location.organisation.name']
+            if orgname not in org_by_name:
+                try:
+                    org_by_name [orgname] = self.db.organisation.lookup \
+                        (orgname)
+                except KeyError:
+                    org_by_name [orgname] = None
+            org_by_user [username] = org_by_name [orgname]
+        for uid in self.db.user.getnodeids ():
+            u = self.db.user.getnode (uid)
+            org = org_by_user.get (u.username, None)
+            if u.organisation != org:
+                self.db.user.set (uid, organisation = org)
+                changed = True
+        if changed and self.update:
+            self.db.commit ()
+    # end def sync_user_org
+
     def verbose (self, msg, level = 1, * args):
         if (self.args.verbose or 0) >= level:
             print (msg, *args)
@@ -448,9 +485,13 @@ def main ():
         )
     cmd.add_argument \
         ( "-d", "--database-directory"
-        , dest    = "database_directory"
         , help    = "Directory of the roundup installation"
         , default = '.'
+        )
+    cmd.add_argument \
+        ( "--organisation-only"
+        , help    = "Sync only organisations of users"
+        , action  = 'store_true'
         )
     cmd.add_argument \
         ( "-P", "--password"
@@ -470,8 +511,8 @@ def main ():
         )
     cmd.add_argument \
         ( "-s", "--sync-user"
-        , dest    = "sync_user"
-        , help    = "Only if this option is given we sync users"
+        , help    = "Only if this option is given we sync users."
+                    " This does *not* apply to user.organisation"
         , action  = 'store_true'
         )
     cmd.add_argument \
@@ -487,14 +528,17 @@ def main ():
         )
     cmd.add_argument \
         ( '-v', '--verbose'
-        , dest   = 'verbose'
         , help   = 'Verbose output'
         , action = 'count'
         )
     args = cmd.parse_args ()
 
     sync = PR_Sync (args)
-    sync.sync ()
+    if args.organisation_only:
+        sync.sync_user     ()
+        sync.sync_user_org ()
+    else:
+        sync.sync ()
 # end def main
 
 if __name__ == '__main__':

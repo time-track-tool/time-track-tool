@@ -56,7 +56,10 @@ def get_allowed_org (db, uid):
     ids = db.o_permission.filter (None, dict (user = uid))
     assert len (ids) <= 1
     if not ids:
-        return set ()
+        if 'organisation' in db.user.properties:
+            return set ((db.user.get (uid, 'organisation'),) or ())
+        else:
+            return set ()
     operm = db.o_permission.getnode (ids [0])
     return set (operm.organisation)
 # end def get_allowed_org
