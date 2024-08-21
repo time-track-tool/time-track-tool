@@ -1391,7 +1391,7 @@ def security (db, ** kw):
     schemadef.add_search_permission (db, 'psp_element', 'User')
     p = db.security.addPermission \
         ( name        = 'View'
-        , klass       = 'psp_element' 
+        , klass       = 'psp_element'
         , check       = o_permission.psp_element_allowed_by_org
         , description = fixdoc (o_permission.psp_element_allowed_by_org.__doc__)
         )
@@ -1399,7 +1399,7 @@ def security (db, ** kw):
 
     p = db.security.addPermission \
         ( name        = 'View'
-        , klass       = 'pr_supplier_risk' 
+        , klass       = 'pr_supplier_risk'
         , check       = o_permission.supplier_risk_allowed_by_org
         , description = fixdoc \
             (o_permission.supplier_risk_allowed_by_org.__doc__)
@@ -1407,16 +1407,17 @@ def security (db, ** kw):
     db.security.addPermissionToRole ("User", p)
     p = db.security.addPermission \
         ( name        = 'Edit'
-        , klass       = 'pr_supplier_risk' 
+        , klass       = 'pr_supplier_risk'
         , check       = o_permission.supplier_risk_allowed_by_org
         , description = fixdoc \
             (o_permission.supplier_risk_allowed_by_org.__doc__)
         )
     db.security.addPermissionToRole ("CISO", p)
+    db.security.addPermissionToRole ('CISO', 'Create', 'pr_supplier_risk')
 
     p = db.security.addPermission \
         ( name        = 'View'
-        , klass       = 'pr_supplier_rating' 
+        , klass       = 'pr_supplier_rating'
         , check       = o_permission.supplier_rating_allowed_by_org
         , description = fixdoc \
             (o_permission.supplier_rating_allowed_by_org.__doc__)
@@ -1424,16 +1425,17 @@ def security (db, ** kw):
     db.security.addPermissionToRole ("User", p)
     p = db.security.addPermission \
         ( name        = 'Edit'
-        , klass       = 'pr_supplier_rating' 
+        , klass       = 'pr_supplier_rating'
         , check       = o_permission.supplier_rating_allowed_by_org
         , description = fixdoc \
             (o_permission.supplier_rating_allowed_by_org.__doc__)
         )
     db.security.addPermissionToRole ("LAS", p)
+    db.security.addPermissionToRole ('LAS', 'Create', 'pr_supplier_rating')
 
     p = db.security.addPermission \
         ( name        = 'View'
-        , klass       = 'purchase_type' 
+        , klass       = 'purchase_type'
         , check       = o_permission.purchase_type_allowed_by_org
         , description = fixdoc \
             (o_permission.purchase_type_allowed_by_org.__doc__)
