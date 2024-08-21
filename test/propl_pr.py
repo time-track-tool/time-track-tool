@@ -299,7 +299,6 @@ properties = \
       , [ 'allow_gl_account'
         , 'confidential'
         , 'description'
-        , 'forced_roles'
         , 'name'
         , 'nosy'
         , 'order'
@@ -307,9 +306,7 @@ properties = \
         , 'pr_roles'
         , 'pr_view_roles'
         , 'purchasing_agents'
-        , 'roles'
         , 'valid'
-        , 'view_roles'
         ]
       )
     , ( 'query'

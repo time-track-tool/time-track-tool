@@ -266,9 +266,6 @@ def init \
         ( db, ''"purchase_type"
         , name                  = String    ()
         , order                 = Number    ()
-        , roles                 = String    ()
-        , forced_roles          = String    ()
-        , view_roles            = String    ()
         , description           = String    ()
         , valid                 = Boolean   ()
         , confidential          = Boolean   ()

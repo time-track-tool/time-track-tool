@@ -1205,16 +1205,6 @@ def requester_chg (db, cl, nodeid, new_values):
             raise Reject (_ ("Requester may not be changed"))
 # end def requester_chg
 
-def pt_check_roles (db, cl, nodeid, new_values):
-    _ = db.i18n.gettext
-    if 'roles' in new_values:
-        new_values ['roles'] = None
-    if 'view_roles' in new_values:
-        new_values ['view_roles'] = None
-    if 'forced_roles' in new_values:
-        new_values ['forced_roles'] = None
-# end def pt_check_roles
-
 def pao_check_roles (db, cl, nodeid, new_values):
     """ Now allow the role-name to not be a roundup role anymore
         Also check that only_nosy is set to a boolean value.
@@ -1440,8 +1430,6 @@ def fix_gl_account_oi (db, cl, nodeid, new_values):
 def init (db):
     if 'purchase_request' not in db.classes:
         return
-    db.purchase_type.audit      ("create", pt_check_roles)
-    db.purchase_type.audit      ("set",    pt_check_roles)
     db.purchase_request.audit   ("create", new_pr,          priority = 50)
     db.purchase_request.audit   ("set",    check_requester, priority = 50)
     db.purchase_request.audit   ("create", check_psp_cc,    priority = 80)
