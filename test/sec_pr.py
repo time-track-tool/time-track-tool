@@ -64,14 +64,12 @@ Role "las":
  User is allowed to edit pr_rating_category (Edit for "pr_rating_category" only)
  User is allowed to edit pr_supplier (Edit for "pr_supplier" only)
  User may access supplier rating because organisation is allowed (Edit for "pr_supplier_rating" only)
-Role "measurement-approval":
 Role "nosy":
  User may get nosy messages for purchase_request (Nosy for "purchase_request" only)
 Role "o-permission":
  User is allowed to create o_permission (Create for "o_permission" only)
  User is allowed to edit o_permission (Edit for "o_permission" only)
 Role "pgp":
-Role "procure-approval":
 Role "procurement-admin":
   (Restore for "pr_approval_order" only)
   (Retire for "pr_approval_order" only)

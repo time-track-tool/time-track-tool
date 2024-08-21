@@ -10,7 +10,8 @@ db      = tracker.open ('admin')
 sys.path.insert (1, os.path.join (dir, 'lib'))
 import common
 
-obsolete = {'procurement', 'pr-view'}
+obsolete = \
+    {'procurement', 'pr-view', 'procure-approval', 'measurement-approval'}
 
 changed = False
 for uid in db.user.getnodeids (retired = False):
