@@ -490,7 +490,6 @@ def security (db, ** kw):
         , ("HR-Approval",          "Approvals for HR-related issues")
         , ("IT-Approval",          "Approve IT-Related PRs")
         , ("Procurement-Admin",    "Procurement administration")
-        , ("Quality",              "Approvals for Safety issues")
         , ("Subcontract",          "Approvals for staff/subcontracting")
         , ("Training-Approval",    "Approvals for Training")
         , ("Subcontract-Org",      "Approvals for Subcontracting")

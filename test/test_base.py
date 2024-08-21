@@ -193,7 +193,6 @@ class _Test_Base :
         , 'product'
         , 'project'
         , 'project_view'
-        , 'quality'
         , 'readonly-user'
         , 'sec-incident-nosy'
         , 'sec-incident-responsible'
@@ -6869,7 +6868,7 @@ class Test_Case_PR (_Test_Case, unittest.TestCase) :
         , 'hr-approval', 'it', 'it-approval', 'las'
         , 'nosy', 'o-permission', 'pgp'
         , 'procurement-admin', 'project'
-        , 'project_view', 'quality', 'sub-login'
+        , 'project_view', 'sub-login'
         , 'subcontract', 'subcontract-org'
         , 'training-approval', 'user', 'user_view', 'view-roles'
         ]

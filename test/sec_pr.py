@@ -118,7 +118,6 @@ Role "project":
  User may access time category because organisation is allowed (View for "time_project" only)
 Role "project_view":
  User may access time category because organisation is allowed (View for "time_project" only)
-Role "quality":
 Role "sub-login":
 Role "subcontract":
 Role "subcontract-org":
