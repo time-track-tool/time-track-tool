@@ -828,22 +828,28 @@ def security (db, ** kw):
         return False
     # end def open_or_approving
 
-    def open_approving_approved (db, userid, itemid):
+    def until_ordered (db, userid, itemid):
         if open_or_approving (db, userid, itemid):
             return True
         pr          = db.purchase_request.getnode (itemid)
-        st_approved = db.pr_status.lookup ('approved')
-        if pr.status == st_approved:
+        stati = []
+        unwanted = ('ordered', 'rejected', 'cancelled')
+        for st in db.pr_status.getnodeids (retired = False):
+            status = db.pr_status.getnode (st)
+            if status.name in unwanted:
+                continue
+            stati.append (st)
+        if pr.status in stati:
             return True
         return False
-    # end def open_approving_approved
+    # end def until_ordered
 
-    def open_approving_approved_oi (db, userid, itemid):
+    def until_ordered_oi (db, userid, itemid):
         pr  = get_pr_from_offer_item (db, itemid)
         if pr is None:
             return False
-        return open_approving_approved (db, userid, pr.id)
-    # def open_approving_approved_oi
+        return until_ordered (db, userid, pr.id)
+    # def until_ordered_oi
 
     def cancel_own_pr (db, userid, itemid):
         """ User is allowed to cancel their own PR.
@@ -1179,30 +1185,33 @@ def security (db, ** kw):
         )
     db.security.addPermissionToRole ('User', p)
 
-    def approved_or_ordered (db, userid, itemid):
+    def after_approval (db, userid, itemid):
         """ User with view role is allowed editing if status
-            is 'approved' or 'ordered'
+            is not one of the in-progress stati and not
+            rejected/cancelled. This is a negative check to be able to
+            add additional stati after 'approved' that still allow
+            editing here.
         """
         if not pr_pt_role (db, userid, itemid):
             return False
         pr = db.purchase_request.getnode (itemid)
+        unwanted = ('open', 'approving', 'rejected', 'cancelled')
         stati = []
-        for n in ('approved', 'ordered'):
-            try:
-                st = db.pr_status.lookup (n)
-                stati.append (st)
-            except KeyError:
-                pass
+        for st in db.pr_status.getnodeids (retired = False):
+            status = db.pr_status.getnode (st)
+            if status.name in unwanted:
+                continue
+            stati.append (st)
         if pr.status in stati:
             return True
         return False
-    # end def approved_or_ordered
+    # end def after_approval
 
     p = db.security.addPermission \
         ( name        = 'Edit'
         , klass       = 'purchase_request'
-        , check       = approved_or_ordered
-        , description = fixdoc (approved_or_ordered.__doc__)
+        , check       = after_approval
+        , description = fixdoc (after_approval.__doc__)
         , properties  = ('status', 'messages', 'files', 'nosy')
         )
     db.security.addPermissionToRole ('User', p)
@@ -1324,24 +1333,24 @@ def security (db, ** kw):
         )
     db.security.addPermissionToRole ('User', p)
 
-    def not_ordered_and_purchasing (db, userid, itemid):
-        st = open_approving_approved (db, userid, itemid)
+    def until_ordered_and_purchasing (db, userid, itemid):
+        st = until_ordered (db, userid, itemid)
         if not st:
             return False
         return pr_pt_role (db, userid, itemid)
-    # end def not_ordered_and_purchasing
+    # end def until_ordered_and_purchasing
 
-    def not_ordered_and_purchasing_oi (db, userid, itemid):
+    def until_ordered_and_purchasing_oi (db, userid, itemid):
         pr  = get_pr_from_offer_item (db, itemid)
         if pr is None:
             return False
-        return not_ordered_and_purchasing (db, userid, pr.id)
-    # end def not_ordered_and_purchasing_oi
+        return until_ordered_and_purchasing (db, userid, pr.id)
+    # end def until_ordered_and_purchasing_oi
 
     p = db.security.addPermission \
         ( name        = 'Edit'
         , klass       = 'purchase_request'
-        , check       = not_ordered_and_purchasing
+        , check       = until_ordered_and_purchasing
         , description = "Allowed to edit until ordered"
         , properties  = ('gl_account',)
         )
@@ -1349,7 +1358,7 @@ def security (db, ** kw):
     p = db.security.addPermission \
         ( name        = 'Edit'
         , klass       = 'pr_offer_item'
-        , check       = not_ordered_and_purchasing_oi
+        , check       = until_ordered_and_purchasing_oi
         , description = "Allowed to edit until ordered"
         , properties  = ('gl_account',)
         )
@@ -1358,7 +1367,7 @@ def security (db, ** kw):
     p = db.security.addPermission \
         ( name        = 'Edit'
         , klass       = 'purchase_request'
-        , check       = open_approving_approved
+        , check       = until_ordered
         , description = "Allowed to edit until ordered"
         , properties  = ('gl_account',)
         )
@@ -1366,7 +1375,7 @@ def security (db, ** kw):
     p = db.security.addPermission \
         ( name        = 'Edit'
         , klass       = 'pr_offer_item'
-        , check       = open_approving_approved_oi
+        , check       = until_ordered_oi
         , description = "Allowed to edit until ordered"
         , properties  = ('gl_account',)
         )
