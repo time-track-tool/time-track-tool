@@ -489,12 +489,10 @@ def security (db, ** kw):
         , ("HR",                   "Approvals for staff/subcontracting")
         , ("HR-Approval",          "Approvals for HR-related issues")
         , ("IT-Approval",          "Approve IT-Related PRs")
-        , ("Procurement",          "Procurement department")
         , ("Procurement-Admin",    "Procurement administration")
         , ("Procure-Approval",     "Procurement approvals")
         , ("Quality",              "Approvals for Safety issues")
         , ("Subcontract",          "Approvals for staff/subcontracting")
-        , ("PR-View",              "See all Purchase Requests")
         , ("Measurement-Approval", "Responsible for Measurement-Equipment")
         , ("Training-Approval",    "Approvals for Training")
         , ("Subcontract-Org",      "Approvals for Subcontracting")
@@ -512,9 +510,8 @@ def security (db, ** kw):
         , ("organisation",       ["User"],              [])
         , ("org_location",       ["User"],              [])
         , ("part_of_budget",     ["User"],              [])
-        , ("pr_approval_config", ["Procurement"],       ["Procurement-Admin"])
-        , ("pr_approval_order",  ["Procurement", "User"], ["Procurement-Admin"])
-        , ("pr_approval",        ["Procurement","PR-View"], [])
+        , ("pr_approval_config", [],                    ["Procurement-Admin"])
+        , ("pr_approval_order",  ["User"],              ["Procurement-Admin"])
         , ("pr_approval_status", ["User"],              [])
         , ("pr_currency",        ["User"],              ["Procurement-Admin"])
         , ("pr_status",          ["User"],              [])
@@ -525,8 +522,6 @@ def security (db, ** kw):
         , ("purchase_type",      ["User"],              ["Procurement-Admin"])
         , ("terms_conditions",   ["User"],              [])
         , ("user",               ["Procurement-Admin"], [])
-        , ("purchase_request",   ["PR-View"],           [])
-        , ("pr_offer_item",      ["PR-View"],           [])
         , ("internal_order",     ["User"],              [])
         , ("pr_ext_resource",    ["User"],              [])
         , ("security_req_group", ["User"],      ["Procurement-Admin", "CISO"])
@@ -555,13 +550,13 @@ def security (db, ** kw):
         , ( "pr_approval", "Edit", ["User"]
           , ("purchase_request", "date")
           )
-        , ( "purchase_request", "Edit", ["Procurement", "Procurement-Admin"]
+        , ( "purchase_request", "Edit", ["Procurement-Admin"]
           , ("renew_until",)
           )
-        , ( "time_project", "Edit", ["Procurement"]
+        , ( "time_project", "Edit", ["Procurement-Admin"]
           , ("deputy_gets_mail",)
           )
-        , ( "sap_cc", "Edit", ["Procurement"]
+        , ( "sap_cc", "Edit", ["Procurement-Admin"]
           , ("deputy_gets_mail",)
           )
         ]
@@ -1187,10 +1182,7 @@ def security (db, ** kw):
 
     def after_approval (db, userid, itemid):
         """ User with view role is allowed editing if status
-            is not one of the in-progress stati and not
-            rejected/cancelled. This is a negative check to be able to
-            add additional stati after 'approved' that still allow
-            editing here.
+            is not one of the in-progress stati
         """
         if not pr_pt_role (db, userid, itemid):
             return False
@@ -1308,6 +1300,8 @@ def security (db, ** kw):
         """ User is allowed to edit special risks
             if the PR has appropriate status.
         """
+        if not pr_pt_role (db, userid, itemid):
+            return False
         st_open      = db.pr_status.lookup ('open')
         pr           = db.purchase_request.getnode (itemid)
         if pr.status == st_open:
@@ -1322,7 +1316,7 @@ def security (db, ** kw):
         , description = fixdoc (edit_pr_risks.__doc__)
         , properties = ('pr_risks',)
         )
-    db.security.addPermissionToRole ('Procurement', p)
+    db.security.addPermissionToRole ('User', p)
 
     p = db.security.addPermission \
         ( name        = 'View'

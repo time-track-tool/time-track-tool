@@ -863,64 +863,73 @@ if 'leave_status' in db.classes :
     db.leave_status.set (v3, transitions = [v5])
     db.leave_status.set (v5, transitions = [v3, v6])
     db.leave_status.retire (v7)
+if 'pr_approval_order' in db.classes :
+    db.pr_approval_order.create (role = '',            order = 10)
+    procure = db.pr_approval_order.create (role = 'procurement', order = 20)
+    itapr   = db.pr_approval_order.create (role = 'it-approval', order = 30)
+    quality = db.pr_approval_order.create (role = 'quality',     order = 35)
+    subcont = db.pr_approval_order.create (role = 'subcontract', order = 40)
+    hr      = db.pr_approval_order.create (role = 'hr',          order = 50)
+    finance = db.pr_approval_order.create (role = 'finance',     order = 60)
+    board   = db.pr_approval_order.create (role = 'board',       order = 70)
 if 'purchase_type' in db.classes :
     db.purchase_type.create \
-        ( name       = 'Service'
-        , order      = 10
-        , view_roles = "Procurement"
+        ( name          = 'Service'
+        , order         = 10
+        , pr_view_roles = [procure]
         )
     db.purchase_type.create \
-        ( name       = 'IT-Assett'
-        , order      = 20
-        , roles      = "IT-Approval"
-        , view_roles = "Procurement"
+        ( name          = 'IT-Assett'
+        , order         = 20
+        , pr_roles      = [itapr]
+        , pr_view_roles = [procure]
         )
     db.purchase_type.create \
-        ( name       = 'Assett'
-        , order      = 25
-        , roles      = "Procurement"
-        , view_roles = "Procurement"
+        ( name          = 'Assett'
+        , order         = 25
+        , pr_roles      = [procure]
+        , pr_view_roles = [procure]
         )
     db.purchase_type.create \
-        ( name       = 'IT-Hardware'
-        , order      = 30
-        , roles      = "IT-Approval"
-        , view_roles = "Procurement"
+        ( name          = 'IT-Hardware'
+        , order         = 30
+        , pr_roles      = [itapr]
+        , pr_view_roles = [procure]
         )
     db.purchase_type.create \
-        ( name       = 'Hardware'
-        , order      = 35
-        , roles      = "Procurement"
-        , view_roles = "Procurement"
+        ( name          = 'Hardware'
+        , order         = 35
+        , pr_roles      = [procure]
+        , pr_view_roles = [procure]
         )
     db.purchase_type.create \
-        ( name       = 'IT-Software'
-        , order      = 40
-        , roles      = "IT-Approval"
-        , view_roles = "Procurement"
+        ( name          = 'IT-Software'
+        , order         = 40
+        , pr_roles      = [itapr]
+        , pr_view_roles = [procure]
         )
     db.purchase_type.create \
-        ( name       = 'Software'
-        , order      = 45
-        , roles      = "Procurement"
-        , view_roles = "Procurement"
+        ( name          = 'Software'
+        , order         = 45
+        , pr_roles      = [procure]
+        , pr_view_roles = [procure]
         )
     db.purchase_type.create \
-        ( name       = 'Stock'
-        , order      = 50
-        , view_roles = "Procurement"
+        ( name          = 'Stock'
+        , order         = 50
+        , pr_view_roles = [procure]
         )
     db.purchase_type.create \
-        ( name       = 'Subcontracting'
-        , order      = 60
-        , roles      = "Subcontract,HR"
-        , view_roles = "Procurement"
+        ( name          = 'Subcontracting'
+        , order         = 60
+        , pr_roles      = [subcont, hr]
+        , pr_view_roles = [procure]
         )
     db.purchase_type.create \
-        ( name       = 'Other'
-        , order      = 70
-        , roles      = "Procurement"
-        , view_roles = "Procurement"
+        ( name          = 'Other'
+        , order         = 70
+        , pr_roles      = [procure]
+        , pr_view_roles = [procure]
         )
     if hasattr (db, 'sql') :
         db.sql ('alter table _purchase_request alter column '
@@ -946,15 +955,6 @@ if 'pr_approval_status' in db.classes :
     s2 = db.pr_approval_status.create (name = 'approved',  order = 2)
     s3 = db.pr_approval_status.create (name = 'rejected',  order = 3)
     db.pr_approval_status.set (s1, transitions = [s2, s3])
-if 'pr_approval_order' in db.classes :
-    db.pr_approval_order.create (role = '',            order = 10)
-    db.pr_approval_order.create (role = 'procurement', order = 20)
-    db.pr_approval_order.create (role = 'it-approval', order = 30)
-    db.pr_approval_order.create (role = 'quality',     order = 35)
-    db.pr_approval_order.create (role = 'subcontract', order = 40)
-    db.pr_approval_order.create (role = 'hr',          order = 50)
-    db.pr_approval_order.create (role = 'finance',     order = 60)
-    db.pr_approval_order.create (role = 'board',       order = 70)
 if 'pr_currency' in db.classes :
     db.pr_currency.create \
         ( name = '€', order = 10, exchange_rate = 1

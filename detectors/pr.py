@@ -1207,23 +1207,12 @@ def requester_chg (db, cl, nodeid, new_values):
 
 def pt_check_roles (db, cl, nodeid, new_values):
     _ = db.i18n.gettext
-    common.check_roles (db, cl, nodeid, new_values)
-    common.check_roles (db, cl, nodeid, new_values, 'view_roles')
-    common.check_roles (db, cl, nodeid, new_values, 'forced_roles')
-    # Ensure that all purchasing_agents have one of the view roles
-    if 'purchasing_agents' in new_values:
-        if 'pr_view_roles' in new_values:
-            roles = new_values ['pr_view_roles']
-        elif nodeid:
-            roles = cl.get (nodeid, 'pr_view_roles')
-        users = set ()
-        for rid in roles:
-            role = db.pr_approval_order.getnode (rid)
-            users.update (role.users)
-        for id in new_values ['purchasing_agents']:
-            if id not in users:
-                un = db.user.get (id, 'username')
-                raise Reject (_ ("User doesn't have a View-Role: %s") % un)
+    if 'roles' in new_values:
+        new_values ['roles'] = None
+    if 'view_roles' in new_values:
+        new_values ['view_roles'] = None
+    if 'forced_roles' in new_values:
+        new_values ['forced_roles'] = None
 # end def pt_check_roles
 
 def pao_check_roles (db, cl, nodeid, new_values):
