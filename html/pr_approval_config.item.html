@@ -45,6 +45,11 @@
      </tr>
      <tr>
       <th tal:content="structure python:utils.fieldname
+          (db, classname, 'quality_amount')"/>
+      <td tal:content="structure python:context.quality_amount.field ()"/>
+     </tr>
+     <tr>
+      <th tal:content="structure python:utils.fieldname
           (db, classname, 'pr_ext_resource')"/>
       <td tal:content="structure python:context.pr_ext_resource.menu ()"/>
      </tr>

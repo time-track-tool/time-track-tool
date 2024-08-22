@@ -235,20 +235,32 @@ class Approval_Logic:
         db = self.db
         _  = db.i18n.gettext
         pr = self.pr
-        # Compute board and finance approval configs for this pr
+        # Compute board, finance and quality approval configs for this pr
         board_roles   = db.pr_approval_order.filter \
             (None, dict (is_board = True))
         finance_roles = db.pr_approval_order.filter \
             (None, dict (is_finance = True))
+        quality_roles = db.pr_approval_order.filter \
+            (None, dict (is_quality = True))
         # Check if there are any pr_approval_config entries with board or
         # finance roles
-        ids = db.pr_approval_config.filter (None, dict (role = board_roles))
-        bac = _app_cfgs (db, pr, ids)
-        board_roles = set (ac.role for ac in bac)
+        if board_roles:
+            ids = db.pr_approval_config.filter \
+                (None, dict (role = board_roles, valid = True))
+            bac = _app_cfgs (db, pr, ids)
+            board_roles = set (ac.role for ac in bac)
 
-        ids = db.pr_approval_config.filter (None, dict (role = finance_roles))
-        fac = _app_cfgs (db, pr, ids)
-        finance_roles = set (ac.role for ac in fac)
+        if finance_roles:
+            ids = db.pr_approval_config.filter \
+                (None, dict (role = finance_roles, valid = True))
+            fac = _app_cfgs (db, pr, ids)
+            finance_roles = set (ac.role for ac in fac)
+
+        if quality_roles:
+            ids = db.pr_approval_config.filter \
+                (None, dict (role = quality_roles, valid = True))
+            fac = _app_cfgs (db, pr, ids)
+            quality_roles = set (ac.role for ac in fac)
 
         if self.do_create and not board_roles:
             raise Reject \
@@ -256,6 +268,9 @@ class Approval_Logic:
         if self.do_create and not finance_roles:
             raise Reject \
                 (_ ("Configuration error: No finance roles for this PR"))
+        if self.do_create and not quality_roles:
+            raise Reject \
+                (_ ("Configuration error: No quality roles for this PR"))
         board_approval = False
 
         assert not self.do_create  or pr.organisation
@@ -301,6 +316,7 @@ class Approval_Logic:
 
         max_risk = max_risk_type (db, pr.id)
         prc_ids  = db.pr_approval_config.filter (None, dict (valid = True))
+        oisum    = pr_offer_item_sum (db, pr.id)
         if cur:
             assert not self.do_create or pr.part_of_budget
             if pr.part_of_budget:
@@ -309,6 +325,11 @@ class Approval_Logic:
                 pob = None
             s  = pr_offer_item_sum (db, pr.id)
             s  = s * 1.0 / cur.exchange_rate
+            supplier_approved = True
+            for id in pr.offer_items:
+                oi = db.pr_offer_item.getnode (id)
+                if not self.supplier_is_approved (oi.pr_supplier):
+                    supplier_approved = False
             for prcid in prc_ids:
                 prc = db.pr_approval_config.getnode (prcid)
                 if prc.if_not_in_las and in_las (db, pr.id):
@@ -347,10 +368,14 @@ class Approval_Logic:
                        and pob.name.lower () == 'no'
                        and s > prc.oob_amount
                        )
+                    or (   prc.quality_amount is not None
+                       and pr.safety_critical
+                       and not supplier_approved
+                       and s > prc.quality_amount
+                       )
                     ):
                     self.add_approval_with_role (prc.role)
                     r = db.pr_approval_order.getnode (prc.role)
-        oisum = pr_offer_item_sum (db, pr.id)
         if cur:
             min_head = self.team_group_head_approval (cur, oisum, pcc)
             if min_head is not None and oisum > min_head:
@@ -374,17 +399,6 @@ class Approval_Logic:
                             , deputy_gets_mail = dep.deputy_gets_mail or False
                             )
                         self._add_approval ((dep.manager, dep.deputy), apr)
-        if cur and oisum > cur.min_sum:
-            # Loop over order items and check if any is not on the approved
-            # suppliers list
-            supplier_approved = True
-            for id in pr.offer_items:
-                oi = db.pr_offer_item.getnode (id)
-                if not self.supplier_is_approved (oi.pr_supplier):
-                    supplier_approved = False
-            if pr.safety_critical and not supplier_approved:
-                quality = db.pr_approval_order.lookup ('quality')
-                self.add_approval_with_role (quality)
 
         assert not self.do_create or pr.purchase_type
         if pr.purchase_type:

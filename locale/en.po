@@ -2924,6 +2924,9 @@ msgstr ""
 msgid "is_finance"
 msgstr "Finance role"
 
+msgid "is_quality"
+msgstr "Quality role"
+
 msgid "If this flag is set, the role is used for finance approvals"
 msgstr ""
 
@@ -7535,6 +7538,9 @@ msgstr "No department approval"
 
 msgid "oob_amount"
 msgstr "Amount Out of Bugdet"
+
+msgid "quality_amount"
+msgstr "Amount for quality approvals"
 
 msgid "gl_account"
 msgstr "G/L account"

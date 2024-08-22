@@ -184,6 +184,7 @@ def init \
         , infosec_amount        = Number    ()
         , payment_type_amount   = Number    ()
         , oob_amount            = Number    ()
+        , quality_amount        = Number    ()
         , departments           = Multilink ("department")
         )
 
@@ -194,6 +195,7 @@ def init \
         , users                 = Multilink ("user")
         , is_finance            = Boolean   ()
         , is_board              = Boolean   ()
+        , is_quality            = Boolean   ()
         , want_no_messages      = Boolean   ()
         , only_nosy             = Boolean   ()
         )
@@ -507,15 +509,15 @@ def security (db, ** kw):
         , ("organisation",       ["User"],              [])
         , ("org_location",       ["User"],              [])
         , ("part_of_budget",     ["User"],              [])
-        , ("pr_approval_config", [],                    ["Procurement-Admin"])
+        , ("pr_approval_config", ["Procurement-Admin"], ["Procurement-Admin"])
         , ("pr_approval_order",  ["User"],              ["Procurement-Admin"])
         , ("pr_approval_status", ["User"],              [])
         , ("pr_currency",        ["User"],              ["Procurement-Admin"])
         , ("pr_status",          ["User"],              [])
         , ("pr_supplier",        ["User"],       ["Procurement-Admin", "LAS"])
         , ("pr_rating_category", ["User"],       ["Procurement-Admin", "LAS"])
-        , ("pr_supplier_rating", [],                    ["Procurement-Admin"])
-        , ("purchase_type",      [],                    ["Procurement-Admin"])
+        , ("pr_supplier_rating", ["Procurement-Admin"], ["Procurement-Admin"])
+        , ("purchase_type",      ["Procurement-Admin"], ["Procurement-Admin"])
         , ("terms_conditions",   ["User"],              [])
         , ("user",               ["Procurement-Admin"], [])
         , ("internal_order",     ["User"],              [])
@@ -525,7 +527,7 @@ def security (db, ** kw):
         , ("pg_category",        ["User"],              ["Procurement-Admin"])
         , ("supplier_risk_category", ["User"],          [])
         , ("purchase_risk_type", ["User"],              [])
-        , ("pr_supplier_risk",   [],                    ["Procurement-Admin"])
+        , ("pr_supplier_risk",   ["Procurement-Admin"], ["Procurement-Admin"])
         , ("payment_type",       ["User"],              [])
         , ("purchase_security_risk", ["User"],          [])
         ]
@@ -1440,5 +1442,26 @@ def security (db, ** kw):
             (o_permission.purchase_type_allowed_by_org.__doc__)
         )
     db.security.addPermissionToRole ("User", p)
+
+#    # Doesn't seem to be needed
+#    # Allow editing pr_approval.{date, msg} while open or approving
+#    # By user and by purchasing agent
+#    def allow_cancel (db, userid, itemid):
+#        """ Allow user to change attributes of approval needed for cancel
+#        """
+#        if own_pr (db, userid, itemid):
+#            return False
+#        if pr_pt_role (db, userid, itemid):
+#            return True
+#    # end def allow_cancel
+#
+#    p = db.security.addPermission \
+#        ( name        = 'Edit'
+#        , klass       = 'pr_approval'
+#        , check       = allow_cancel
+#        , description = fixdoc (allow_cancel.__doc__)
+#        , properties  = ('date', 'msg')
+#        )
+#    #db.security.addPermissionToRole ("User", p)
 
 # end def security

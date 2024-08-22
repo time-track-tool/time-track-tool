@@ -403,6 +403,7 @@ def check_psp_cc_consistency (db, cl, nodeid, new_values, org = None):
     if psp:
         assert tc # Timecat *must be defined if psp element is defined
         node = db.psp_element.getnode (psp)
+        cls  = db.psp_element
         tp   = db.time_project.getnode (tc)
         st   = db.time_project_status.getnode (tp.status)
         if not node.valid or not st.active:
@@ -419,6 +420,7 @@ def check_psp_cc_consistency (db, cl, nodeid, new_values, org = None):
                 )
     else:
         node = db.sap_cc.getnode (cc)
+        cls  = db.sap_cc
         if not node.valid:
             sap_cc = _ ('sap_cc')
             name   = node.name
@@ -428,9 +430,15 @@ def check_psp_cc_consistency (db, cl, nodeid, new_values, org = None):
         if not node.organisation:
             raise Reject (_ ("Organisation of CC/TC is empty"))
         o2 = db.organisation.get (node.organisation, 'name')
+        classname = _ (cls.classname)
+        classname_item = _ (cl.classname)
+        name = node.name
         raise Reject \
-            ( _("Organisation must be consistent with CC/TC: got %s expect %s")
-            % (o1, o2)
+            ( _ ("%(classname_item)s: Organisation in %(classname)s %(name)s"
+                 " must be consistent with organisation of PR: "
+                 "got %(o2)s expect %(o1)s"
+                )
+            % locals ()
             )
 # end def check_psp_cc_consistency
 
@@ -1434,7 +1442,7 @@ def check_org_for_item (db, cl, nodeid, new_values, check_all, orgs):
     _ = db.i18n.gettext
     classname = _ (cl.classname)
     pspid = new_values.get ('psp_element', None)
-    if pspid is None and nodeid:
+    if 'psp_element' not in new_values and nodeid:
         pspid = cl.get (nodeid, 'psp_element')
     if pspid and (check_all or 'psp_element' in new_values):
         psp = db.psp_element.getnode (pspid)
@@ -1448,7 +1456,7 @@ def check_org_for_item (db, cl, nodeid, new_values, check_all, orgs):
                 )
 
     sapid = new_values.get ('sap_cc', None)
-    if not sapid and nodeid:
+    if 'sap_cc' not in new_values and nodeid:
         sapid = cl.get (nodeid, 'sap_cc')
     if sapid and (check_all or 'sap_cc' in new_values):
         sap = db.sap_cc.getnode (sapid)
@@ -1462,7 +1470,7 @@ def check_org_for_item (db, cl, nodeid, new_values, check_all, orgs):
                 )
 
     ptid = new_values.get ('purchase_type', None)
-    if not ptid and nodeid:
+    if 'purchase_type' not in new_values and nodeid:
         ptid = cl.get (nodeid, 'purchase_type')
     if ptid and (check_all or 'purchase_type' in new_values):
         pt = db.purchase_type.getnode (ptid)
@@ -1479,14 +1487,14 @@ def check_org_for_item (db, cl, nodeid, new_values, check_all, orgs):
 def check_org (db, cl, nodeid, new_values):
     check_all = False
     uid = new_values.get ('requester', None)
-    if not uid:
+    if 'requester' not in new_values:
         uid = cl.get (nodeid, 'requester')
     if 'requester' in new_values:
         check_all = True
     orgs = o_permission.get_allowed_org (db, uid)
 
     orgid = new_values.get ('organisation', None)
-    if not orgid:
+    if 'organisation' not in new_values:
         orgid = cl.get (nodeid, 'organisation')
     if orgid and (check_all or 'organisation' in new_values):
         if orgid not in orgs:
