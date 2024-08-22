@@ -485,16 +485,8 @@ def security (db, ** kw):
     """
 
     roles = \
-        [ ("Board",                "Approvals over certain limits")
-        , ("Nosy",                 "Nosy list")
-        , ("Finance",              "Finance-related approvals")
-        , ("HR",                   "Approvals for staff/subcontracting")
-        , ("HR-Approval",          "Approvals for HR-related issues")
-        , ("IT-Approval",          "Approve IT-Related PRs")
+        [ ("Nosy",                 "Nosy list")
         , ("Procurement-Admin",    "Procurement administration")
-        , ("Subcontract",          "Approvals for staff/subcontracting")
-        , ("Training-Approval",    "Approvals for Training")
-        , ("Subcontract-Org",      "Approvals for Subcontracting")
         , ("CISO",                 "Editing of Security Tables")
         # LAS is 'List of Approved Suppliers'
         , ("LAS",                  "Supplier management")
@@ -736,7 +728,9 @@ def security (db, ** kw):
         if own_pr (db, userid, itemid):
             return False
         # Finance may not change
-        if common.user_has_role (db, userid, 'finance'):
+        finance_roles = db.approval_order.filter \
+            (None, dict (is_finance = True, users = userid))
+        if finance_roles:
             return False
         pr = db.purchase_request.getnode (itemid)
         st_approving = db.pr_status.lookup ('approving')

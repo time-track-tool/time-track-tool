@@ -11,7 +11,10 @@ sys.path.insert (1, os.path.join (dir, 'lib'))
 import common
 
 obsolete = \
-    {'procurement', 'pr-view', 'procure-approval', 'measurement-approval'}
+    { 'procurement', 'pr-view', 'procure-approval', 'measurement-approval'
+    , 'board', 'finance', 'hr', 'hr-approval', 'it-approval', 'subcontract'
+    , 'subcontract-org', 'training-approval', 'quality'
+    }
 
 changed = False
 for uid in db.user.getnodeids (retired = False):

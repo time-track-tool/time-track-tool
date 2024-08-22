@@ -16,7 +16,6 @@ Role "admin":
  User may view everything (View)
 Role "anonymous":
  User may access the web interface (Web Access)
-Role "board":
 Role "ciso":
   (Edit for "pr_offer_item": ('add_to_las',) only)
   (View for "pr_offer_item": ('activity', 'actor', 'add_to_las', 'creation', 'creator', 'pr_supplier', 'supplier') only)
@@ -44,9 +43,6 @@ Role "dom-user-edit-hr":
 Role "dom-user-edit-office":
  Users may view/edit user records for ad_domain for which they are in the domain_permission for the user (Edit for "user": ['contacts', 'position_text', 'room'] only)
  Users may view/edit user records for ad_domain for which they are in the domain_permission for the user (View for "user": ['contacts', 'position_text', 'room'] only)
-Role "finance":
-Role "hr":
-Role "hr-approval":
 Role "it":
  User is allowed Edit on file if file is linked from an item with Edit permission (Edit for "file" only)
  User is allowed Edit on msg if msg is linked from an item with Edit permission (Edit for "msg" only)
@@ -54,7 +50,6 @@ Role "it":
  User is allowed to access domain_permission (View for "domain_permission" only)
  User is allowed to create domain_permission (Create for "domain_permission" only)
  User is allowed to edit domain_permission (Edit for "domain_permission" only)
-Role "it-approval":
 Role "las":
   (Edit for "pr_offer_item": ('add_to_las',) only)
   (View for "pr_offer_item": ('activity', 'actor', 'add_to_las', 'creation', 'creator', 'pr_supplier', 'supplier') only)
@@ -123,9 +118,6 @@ Role "project":
 Role "project_view":
  User may access time category because organisation is allowed (View for "time_project" only)
 Role "sub-login":
-Role "subcontract":
-Role "subcontract-org":
-Role "training-approval":
 Role "user":
   (Search for "pr_approval" only)
   (Search for "pr_offer_item" only)
