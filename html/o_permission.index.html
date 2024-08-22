@@ -17,6 +17,12 @@
         , filter      = utils.valid_item (now)
         )
       )
+    , ( 'organisation'
+      , dict
+        ( multiselect = 1
+        , filter      = utils.valid_item (now)
+        )
+      )
     );
     props python:
         [ utils.ExtProperty (utils, pdict [p [0]], ** p [1])

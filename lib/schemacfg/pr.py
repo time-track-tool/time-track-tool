@@ -1394,6 +1394,7 @@ def security (db, ** kw):
         )
     db.security.addPermissionToRole ("User", p)
 
+    schemadef.add_search_permission (db, 'pr_supplier_risk', 'User')
     p = db.security.addPermission \
         ( name        = 'View'
         , klass       = 'pr_supplier_risk'
@@ -1412,6 +1413,7 @@ def security (db, ** kw):
     db.security.addPermissionToRole ("CISO", p)
     db.security.addPermissionToRole ('CISO', 'Create', 'pr_supplier_risk')
 
+    schemadef.add_search_permission (db, 'pr_supplier_rating', 'User')
     p = db.security.addPermission \
         ( name        = 'View'
         , klass       = 'pr_supplier_rating'

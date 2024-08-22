@@ -830,38 +830,54 @@ properties = \
       )
     , ( 'pr_supplier_rating'
       , [ ( 'organisation'
-          , [ 'admin'
+          , [ 'admin', 'board', 'ciso', 'controlling', 'dom-user-edit-facility', 'dom-user-edit-gtt', 'dom-user-edit-hr', 'dom-user-edit-office', 'finance', 'hr', 'hr-approval', 'it', 'it-approval'
+            , 'las', 'o-permission', 'pgp', 'procurement-admin', 'project', 'project_view'
+            , 'subcontract', 'subcontract-org', 'training-approval', 'user', 'user_view', 'view-roles'
             ]
           )
         , ( 'rating'
-          , [ 'admin'
+          , [ 'admin', 'board', 'ciso', 'controlling', 'dom-user-edit-facility', 'dom-user-edit-gtt', 'dom-user-edit-hr', 'dom-user-edit-office', 'finance', 'hr', 'hr-approval', 'it', 'it-approval'
+            , 'las', 'o-permission', 'pgp', 'procurement-admin', 'project', 'project_view'
+            , 'subcontract', 'subcontract-org', 'training-approval', 'user', 'user_view', 'view-roles'
             ]
           )
         , ( 'scope'
-          , [ 'admin'
+          , [ 'admin', 'board', 'ciso', 'controlling', 'dom-user-edit-facility', 'dom-user-edit-gtt', 'dom-user-edit-hr', 'dom-user-edit-office', 'finance', 'hr', 'hr-approval', 'it', 'it-approval'
+            , 'las', 'o-permission', 'pgp', 'procurement-admin', 'project', 'project_view'
+            , 'subcontract', 'subcontract-org', 'training-approval', 'user', 'user_view', 'view-roles'
             ]
           )
         , ( 'supplier'
-          , [ 'admin'
+          , [ 'admin', 'board', 'ciso', 'controlling', 'dom-user-edit-facility', 'dom-user-edit-gtt', 'dom-user-edit-hr', 'dom-user-edit-office', 'finance', 'hr', 'hr-approval', 'it', 'it-approval'
+            , 'las', 'o-permission', 'pgp', 'procurement-admin', 'project', 'project_view'
+            , 'subcontract', 'subcontract-org', 'training-approval', 'user', 'user_view', 'view-roles'
             ]
           )
         ]
       )
     , ( 'pr_supplier_risk'
       , [ ( 'organisation'
-          , [ 'admin'
+          , [ 'admin', 'board', 'ciso', 'controlling', 'dom-user-edit-facility', 'dom-user-edit-gtt', 'dom-user-edit-hr', 'dom-user-edit-office', 'finance', 'hr', 'hr-approval', 'it', 'it-approval'
+            , 'las', 'o-permission', 'pgp', 'procurement-admin', 'project', 'project_view'
+            , 'subcontract', 'subcontract-org', 'training-approval', 'user', 'user_view', 'view-roles'
             ]
           )
         , ( 'security_req_group'
-          , [ 'admin'
+          , [ 'admin', 'board', 'ciso', 'controlling', 'dom-user-edit-facility', 'dom-user-edit-gtt', 'dom-user-edit-hr', 'dom-user-edit-office', 'finance', 'hr', 'hr-approval', 'it', 'it-approval'
+            , 'las', 'o-permission', 'pgp', 'procurement-admin', 'project', 'project_view'
+            , 'subcontract', 'subcontract-org', 'training-approval', 'user', 'user_view', 'view-roles'
             ]
           )
         , ( 'supplier'
-          , [ 'admin'
+          , [ 'admin', 'board', 'ciso', 'controlling', 'dom-user-edit-facility', 'dom-user-edit-gtt', 'dom-user-edit-hr', 'dom-user-edit-office', 'finance', 'hr', 'hr-approval', 'it', 'it-approval'
+            , 'las', 'o-permission', 'pgp', 'procurement-admin', 'project', 'project_view'
+            , 'subcontract', 'subcontract-org', 'training-approval', 'user', 'user_view', 'view-roles'
             ]
           )
         , ( 'supplier_risk_category'
-          , [ 'admin'
+          , [ 'admin', 'board', 'ciso', 'controlling', 'dom-user-edit-facility', 'dom-user-edit-gtt', 'dom-user-edit-hr', 'dom-user-edit-office', 'finance', 'hr', 'hr-approval', 'it', 'it-approval'
+            , 'las', 'o-permission', 'pgp', 'procurement-admin', 'project', 'project_view'
+            , 'subcontract', 'subcontract-org', 'training-approval', 'user', 'user_view', 'view-roles'
             ]
           )
         ]

@@ -1428,6 +1428,91 @@ def fix_gl_account_oi (db, cl, nodeid, new_values):
                 break
 # end def fix_gl_account_oi
 
+def check_org_for_item (db, cl, nodeid, new_values, check_all, orgs):
+    """ Check that all linked items have an allowed organisation
+    """
+    _ = db.i18n.gettext
+    classname = _ (cl.classname)
+    pspid = new_values.get ('psp_element', None)
+    if pspid is None and nodeid:
+        pspid = cl.get (nodeid, 'psp_element')
+    if pspid and (check_all or 'psp_element' in new_values):
+        psp = db.psp_element.getnode (pspid)
+        if psp.organisation not in orgs:
+            name = psp.name
+            raise Reject \
+                (_ ('Organisation of PSP element %(name)s of %(classname)s '
+                    'not allowed for this requester'
+                   )
+                % locals ()
+                )
+
+    sapid = new_values.get ('sap_cc', None)
+    if not sapid and nodeid:
+        sapid = cl.get (nodeid, 'sap_cc')
+    if sapid and (check_all or 'sap_cc' in new_values):
+        sap = db.sap_cc.getnode (sapid)
+        if sap.organisation not in orgs:
+            name = sap.name
+            raise Reject \
+                (_ ('Organisation of SAP cost-center %(name)s '
+                    'of %(classname)s not allowed for this requester'
+                   )
+                % locals ()
+                )
+
+    ptid = new_values.get ('purchase_type', None)
+    if not ptid and nodeid:
+        ptid = cl.get (nodeid, 'purchase_type')
+    if ptid and (check_all or 'purchase_type' in new_values):
+        pt = db.purchase_type.getnode (ptid)
+        if pt.organisations and not orgs.intersection (pt.organisations):
+            name = pt.name
+            raise Reject \
+                (_ ( 'None of the organisations of the purchase type %(name)s'
+                   ' of %(classname)s are allowed for this requester'
+                   )
+                % locals ()
+                )
+# end def check_org_for_item
+
+def check_org (db, cl, nodeid, new_values):
+    check_all = False
+    uid = new_values.get ('requester', None)
+    if not uid:
+        uid = cl.get (nodeid, 'requester')
+    if 'requester' in new_values:
+        check_all = True
+    orgs = o_permission.get_allowed_org (db, uid)
+
+    orgid = new_values.get ('organisation', None)
+    if not orgid:
+        orgid = cl.get (nodeid, 'organisation')
+    if orgid and (check_all or 'organisation' in new_values):
+        if orgid not in orgs:
+            name = db.organisation.get (orgid, 'name')
+            raise Reject \
+                ( 'Organisation %(name)s not allowed for this requester'
+                % locals ()
+                )
+
+    check_org_for_item (db, cl, nodeid, new_values, check_all, orgs)
+
+    if check_all:
+        offer_items = new_values.get ('offer_items', [])
+        if not offer_items and nodeid:
+            offer_items = cl.get (nodeid, 'offer_items')
+        for oiid in offer_items:
+            check_org_for_item (db, db.pr_offer_item, oiid, {}, True, orgs)
+# end def check_org
+
+def check_org_oi (db, cl, nodeid, new_values):
+    pr  = get_pr_from_offer_item (db, nodeid)
+    if pr and pr.requester:
+        orgs = o_permission.get_allowed_org (db, pr.requester)
+        check_org_for_item (db, cl, nodeid, new_values, False, orgs)
+# end def check_org_oi
+
 def init (db):
     if 'purchase_request' not in db.classes:
         return
@@ -1454,6 +1539,8 @@ def init (db):
     db.purchase_request.audit   ("set",    pr_check_payment_type)
     db.purchase_request.audit   ("set",    fix_gl_account)
     db.purchase_request.audit   ("create", fix_gl_account)
+    db.purchase_request.audit   ("set",    check_org, priority = 300)
+    db.purchase_request.audit   ("create", check_org, priority = 300)
     db.pr_approval.audit        ("create", new_pr_approval)
     db.pr_approval.audit        ("set",    change_pr_approval)
     db.pr_approval.audit        ("set",    set_approval_pr, priority = 90)
@@ -1476,6 +1563,8 @@ def init (db):
     db.pr_offer_item.react      ("set",    send_las_email, priority = 150)
     db.pr_offer_item.audit      ("set",    fix_gl_account_oi)
     db.pr_offer_item.audit      ("create", fix_gl_account_oi)
+    db.pr_offer_item.audit      ("set",    check_org_oi, priority = 300)
+    db.pr_offer_item.audit      ("create", check_org_oi, priority = 300)
     db.pr_currency.audit        ("create", check_currency)
     db.pr_currency.audit        ("set",    check_currency)
     db.pr_approval_order.audit  ("create", pao_check_roles)

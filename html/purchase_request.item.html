@@ -85,7 +85,7 @@
         <span tal:condition="python: context.psp_element.is_edit_ok ()"
               tal:attributes="title python: context.psp_element.name"
               tal:content="structure python:db.psp_element.classhelp
-              ( 'number,name'
+              ( 'number,name,organisation'
               , property  = 'psp_element'
               , inputtype = 'radio'
               , width     = '800'
@@ -117,7 +117,7 @@
            tal:content="structure python:context.sap_cc.plain ()"/>
         <span tal:condition="python: context.sap_cc.is_edit_ok ()"
               tal:content="structure python:db.sap_cc.classhelp
-              ( 'name,description,responsible,deputy'
+              ( 'name,description,responsible,deputy,organisation'
               , property  = 'sap_cc'
               , inputtype = 'radio'
               , width     = '800'
@@ -544,7 +544,7 @@
             <span tal:condition="python: i.psp_element.is_edit_ok ()"
                   tal:attributes="title python: i.psp_element.name"
                   tal:content="structure python:db.psp_element.classhelp
-                  ( 'number,name'
+                  ( 'number,name,organisation'
                   , property  = 'pr_offer_item%s@psp_element' % i.id
                   , inputtype = 'radio'
                   , width     = '800'
@@ -570,7 +570,7 @@
                 tal:content="structure python:i.sap_cc.plain ()"/>
              <span tal:condition="python: i.sap_cc.is_edit_ok ()"
                    tal:replace="structure python:db.sap_cc.classhelp
-                   ( 'name,description,responsible,deputy'
+                   ( 'name,description,responsible,deputy,organisation'
                    , property  = 'pr_offer_item%s@sap_cc' % i.id
                    , inputtype = 'radio'
                    , width     = '800'
@@ -711,7 +711,7 @@
             <span tal:content="structure python:utils.new_property
                 (context, db, 'pr_offer_item', -idx, 'psp_element').field ()"/>
             <span tal:content="structure python:db.psp_element.classhelp
-                  ( 'number,name'
+                  ( 'number,name,organisation'
                   , property  = 'pr_offer_item-%s@psp_element' % idx
                   , inputtype = 'radio'
                   , width     = '800'
@@ -722,7 +722,7 @@
             <span tal:content="structure python:utils.new_property
                 (context, db, 'pr_offer_item', -idx, 'sap_cc').field ()"/>
             <span tal:content="structure python:db.sap_cc.classhelp
-                  ( 'name,description,responsible,deputy'
+                  ( 'name,description,responsible,deputy,organisation'
                   , property  = 'pr_offer_item-%s@sap_cc' % idx
                   , inputtype = 'radio'
                   , width     = '800'

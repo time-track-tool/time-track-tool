@@ -124,11 +124,11 @@ def check_o_permission (db, cl, nodeid, new_values):
         cls    = db.organisation
     if attr in new_values:
         if nodeid:
-            old_olo = set (cl.get (nodeid, attr))
+            old_oro = set (cl.get (nodeid, attr))
         else:
-            old_olo = {()}
-        olo = set (new_values [attr])
-        changed = (old_olo - olo).union (olo - old_olo)
+            old_oro = set ()
+        oro = set (new_values [attr])
+        changed = (old_oro - oro).union (oro - old_oro)
         allowed = method (db, dbuid)
         # If we try to change something that is not allowed:
         if changed - allowed:

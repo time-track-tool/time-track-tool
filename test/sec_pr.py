@@ -184,6 +184,8 @@ Role "user":
  User is allowed to search for their own files (Search for "file" only)
  User is allowed to search for their own messages (Search for "msg" only)
  User is allowed to search for their queries (Search for "query" only)
+ User is allowed to search pr_supplier_rating (Search for "pr_supplier_rating" only)
+ User is allowed to search pr_supplier_risk (Search for "pr_supplier_risk" only)
  User is allowed to search psp_element (Search for "psp_element" only)
  User is allowed to search sap_cc (Search for "sap_cc" only)
  User is allowed to search time_project (Search for "time_project" only)
