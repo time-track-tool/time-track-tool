@@ -490,37 +490,40 @@ properties = \
       )
     , ( 'pr_approval_config'
       , [ ( 'amount'
-          , ['admin']
+          , ['admin', 'procurement-admin']
           )
         , ( 'departments'
-          , ['admin']
+          , ['admin', 'procurement-admin']
           )
         , ( 'if_not_in_las'
-          , ['admin']
+          , ['admin', 'procurement-admin']
           )
         , ( 'infosec_amount'
-          , ['admin']
+          , ['admin', 'procurement-admin']
           )
         , ( 'oob_amount'
-          , ['admin']
+          , ['admin', 'procurement-admin']
           )
         , ( 'organisations'
-          , ['admin']
+          , ['admin', 'procurement-admin']
           )
         , ( 'payment_type_amount'
-          , ['admin']
+          , ['admin', 'procurement-admin']
           )
         , ( 'pr_ext_resource'
-          , ['admin']
+          , ['admin', 'procurement-admin']
           )
         , ( 'purchase_type'
-          , ['admin']
+          , ['admin', 'procurement-admin']
+          )
+        , ( 'quality_amount'
+          , ['admin', 'procurement-admin']
           )
         , ( 'role'
-          , ['admin']
+          , ['admin', 'procurement-admin']
           )
         , ( 'valid'
-          , ['admin']
+          , ['admin', 'procurement-admin']
           )
         ]
       )
@@ -532,6 +535,12 @@ properties = \
             ]
           )
         , ( 'is_finance'
+          , [ 'admin', 'board', 'ciso', 'controlling', 'dom-user-edit-facility', 'dom-user-edit-gtt', 'dom-user-edit-hr', 'dom-user-edit-office', 'finance', 'hr', 'hr-approval', 'it', 'it-approval'
+            , 'las', 'o-permission', 'pgp', 'procurement-admin', 'project', 'project_view'
+            , 'subcontract', 'subcontract-org', 'training-approval', 'user', 'user_view', 'view-roles'
+            ]
+          )
+        , ( 'is_quality'
           , [ 'admin', 'board', 'ciso', 'controlling', 'dom-user-edit-facility', 'dom-user-edit-gtt', 'dom-user-edit-hr', 'dom-user-edit-office', 'finance', 'hr', 'hr-approval', 'it', 'it-approval'
             , 'las', 'o-permission', 'pgp', 'procurement-admin', 'project', 'project_view'
             , 'subcontract', 'subcontract-org', 'training-approval', 'user', 'user_view', 'view-roles'
@@ -736,7 +745,7 @@ properties = \
             ]
           )
         , ( 'purchase_type'
-          , [ 'admin'
+          , [ 'admin', 'procurement-admin'
             ]
           )
         , ( 'sap_cc'
@@ -1136,7 +1145,7 @@ properties = \
             ]
           )
         , ( 'purchase_type'
-          , [ 'admin'
+          , [ 'admin', 'procurement-admin'
             ]
           )
         , ( 'purchasing_agents'
@@ -1269,51 +1278,51 @@ properties = \
       )
     , ( 'purchase_type'
       , [ ( 'allow_gl_account'
-          , [ 'admin'
+          , [ 'admin', 'procurement-admin'
             ]
           )
         , ( 'confidential'
-          , [ 'admin'
+          , [ 'admin', 'procurement-admin'
             ]
           )
         , ( 'description'
-          , [ 'admin'
+          , [ 'admin', 'procurement-admin'
             ]
           )
         , ( 'name'
-          , [ 'admin'
+          , [ 'admin', 'procurement-admin'
             ]
           )
         , ( 'nosy'
-          , [ 'admin'
+          , [ 'admin', 'procurement-admin'
             ]
           )
         , ( 'order'
-          , [ 'admin'
+          , [ 'admin', 'procurement-admin'
             ]
           )
         , ( 'organisations'
-          , [ 'admin'
+          , [ 'admin', 'procurement-admin'
             ]
           )
         , ( 'pr_forced_roles'
-          , [ 'admin'
+          , [ 'admin', 'procurement-admin'
             ]
           )
         , ( 'pr_roles'
-          , [ 'admin'
+          , [ 'admin', 'procurement-admin'
             ]
           )
         , ( 'pr_view_roles'
-          , [ 'admin'
+          , [ 'admin', 'procurement-admin'
             ]
           )
         , ( 'purchasing_agents'
-          , [ 'admin'
+          , [ 'admin', 'procurement-admin'
             ]
           )
         , ( 'valid'
-          , [ 'admin'
+          , [ 'admin', 'procurement-admin'
             ]
           )
         ]

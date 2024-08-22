@@ -129,6 +129,7 @@ properties = \
         , 'payment_type_amount'
         , 'pr_ext_resource'
         , 'purchase_type'
+        , 'quality_amount'
         , 'role'
         , 'valid'
         ]
@@ -136,6 +137,7 @@ properties = \
     , ( 'pr_approval_order'
       , [ 'is_board'
         , 'is_finance'
+        , 'is_quality'
         , 'only_nosy'
         , 'order'
         , 'role'
