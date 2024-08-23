@@ -458,6 +458,10 @@ class PR_Sync (Requester):
             u = self.db.user.getnode (uid)
             org = org_by_user.get (u.username, None)
             if u.organisation != org:
+                self.verbose \
+                    ( 'Setting org=%s for user%s (upd=%s)'
+                    % (org, uid, self.update)
+                    )
                 self.db.user.set (uid, organisation = org)
                 changed = True
         if changed and self.update:
