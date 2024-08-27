@@ -21,6 +21,7 @@
 
 import prlib
 import common
+import o_permission
 from   html import escape
 try:
     from urllib.parse import urlencode
@@ -263,4 +264,5 @@ def init (instance):
     reg ('need_psp',                     need_psp)
     reg ('has_asset',                    has_asset)
     reg ('oi_key',                       oi_key)
+    reg ('may_purchase',                 o_permission.may_purchase)
 # end def init

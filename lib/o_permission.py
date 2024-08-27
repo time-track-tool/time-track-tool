@@ -412,3 +412,14 @@ def check_supplier_risk (db, cl, nodeid, new_values):
     raise Reject \
         ( _ ("You are not allowed to create %(risk)s for this %(org)s") % d)
 # end def check_supplier_risk
+
+def may_purchase (db):
+    """ Return all orgs that may purchase and which are allowed for that user
+    """
+    orgs = []
+    for oid in get_allowed_org (db, db.getuid ()):
+        org = db.organisation.getnode (oid)
+        if org.may_purchase:
+            orgs.append (oid)
+    return orgs
+# end def may_purchase

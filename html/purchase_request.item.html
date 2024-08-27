@@ -60,7 +60,7 @@
       <th tal:content="structure python:utils.fieldname
           (db, classname, 'organisation')"/>
       <td tal:content="structure python:context.organisation.menu
-          (may_purchase = True)"/>
+          (id = utils.may_purchase (db._db))"/>
      </tr>
      <tr>
       <th tal:content="structure python:utils.fieldname
