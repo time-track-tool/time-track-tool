@@ -61,8 +61,11 @@ except KeyError:
 for id in db.purchase_type.getnodeids (retired = False):
     pt = db.purchase_type.getnode (id)
     if not pt.pr_edit_roles:
+        view = [pr_view]
+        if pt.pr_view_roles == ['5']:
+            view = []
         db.purchase_type.set \
-            (id, pr_edit_roles = pt.pr_view_roles, pr_view_roles = [pr_view])
+            (id, pr_edit_roles = pt.pr_view_roles, pr_view_roles = view)
         changed = True
 
 if changed:
