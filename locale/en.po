@@ -3828,6 +3828,9 @@ msgstr ""
 msgid "pr_view_roles"
 msgstr "View-Roles"
 
+msgid "pr_edit_roles"
+msgstr "Edit-Roles"
+
 msgid ""
 "Roles that may view purchase requests of this %(Classname)s\n"
 "          "

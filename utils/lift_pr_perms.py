@@ -27,3 +27,43 @@ for uid in db.user.getnodeids (retired = False):
         changed = True
 if changed:
     db.commit ()
+
+changed = False
+
+view_users = \
+    [ 3851, 451, 1724, 3693, 1431, 534, 264, 804, 725, 1737, 165, 704
+    , 3666, 800, 4176, 3623, 4204, 452, 712, 156, 66, 192, 4075, 1397
+    , 1850, 19, 908, 1860, 970, 638, 1411, 2043, 483, 4133, 3497, 2091
+    , 3368, 990, 232, 1880, 3653, 2263, 2069, 632, 4178, 447, 2105, 487
+    , 444, 127, 1789, 1634, 440, 108, 33, 200, 39, 4112, 760, 395, 569
+    , 3974, 1960, 724, 1429, 3971, 4121, 3972, 4177, 751, 3772, 3897
+    , 1959, 2540, 3489, 851, 2086
+    ]
+view_users = [str (x) for x in view_users]
+
+try:
+    pr_view = db.pr_approval_order.lookup ('PR-View')
+except KeyError:
+    pr_view = db.pr_approval_order.create \
+        ( role       = 'PR-View'
+        , order      = 3.5
+        , only_nosy  = False
+        , is_board   = False
+        , is_finance = False
+        , is_quality = False
+        , users      = view_users
+        , want_no_messages = False
+        )
+    changed = True
+
+# Move roles from pr_view_roles to pr_edit_roles if the latter is empty
+# Set pr_view_roles to the new approval order
+for id in db.purchase_type.getnodeids (retired = False):
+    pt = db.purchase_type.getnode (id)
+    if not pt.pr_edit_roles:
+        db.purchase_type.set \
+            (id, pr_edit_roles = pt.pr_view_roles, pr_view_roles = [pr_view])
+        changed = True
+
+if changed:
+    db.commit ()
