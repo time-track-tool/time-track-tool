@@ -1221,6 +1221,8 @@ def pao_check_roles (db, cl, nodeid, new_values):
     _ = db.i18n.gettext
     if 'role' in new_values and ',' in new_values ['role']:
         raise Reject (_ ("No commas allowed in role name"))
+    common.require_attributes \
+        ( db.i18n.gettext, cl, nodeid, new_values, 'order')
     nosyflag   = new_values.get ('only_nosy')
     is_board   = new_values.get ('is_board')
     is_finance = new_values.get ('is_finance')
