@@ -1,16 +1,16 @@
 #! /usr/bin/python3
 # Copyright (C) 2006-22 Dr. Ralf Schlatterbeck Open Source Consulting.
-# 
+#
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
 # in the Software without restriction, including without limitation the rights
 # to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
 # copies of the Software, and to permit persons to whom the Software is
 # furnished to do so, subject to the following conditions:
-# 
+#
 #   The above copyright notice and this permission notice shall be included in
 #   all copies or substantial portions of the Software.
-# 
+#
 # THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
 # IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
 # FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -705,7 +705,7 @@ _helptext          = \
       ]
     , ""'doc++title'                  :
       [ ""'''Should be an intuitive one-line description of the %(Classname)s
-             consisting of the &lt;short name&gt; and the &lt;long name&gt;. 
+             consisting of the &lt;short name&gt; and the &lt;long name&gt;.
              Example for a title:
              \"ASDM Automotive Software Development Manual\".
           '''
@@ -1076,15 +1076,22 @@ _helptext          = \
     , ""'ip_subnet'                   :
       [""'''Internet protocol subnet''']
     , ""'is_asset'                    :
-      [""'''Select YES for inventory or other asset goods to
-            be activated in the company's balance sheet.
-            Typical examples are office furniture, appliances (coffee
-            machines, refrigerators), tools (measuring equipment, test
-            stands, molds), etc.
-            If the situation for your purchase is unclear please contact
-            Finance or SCM.
-            In case this field is kept blank, the field will be
-            automatically set to NO after saving the PR.
+      [""'''Select YES for tangible/intangible assets that can be
+            recognized as CAPEX in the company's balance sheet.
+            Please refer to the CAPEX Guidance for the distinction between
+            CAPEX(=Asset) and OPEX on Group Accounting's public Sharepoint
+            Site.
+            When in doubt please contact Controlling (NOT SCM!). Regarding
+            assets over EUR 50.000 Group Accounting must be involved.
+            In order for CO/Group Accounting to assess the purchase (OPEX or
+            CAPEX) complete information in the Purchase Request is a MUST.
+            In this case please contact a member of Group Accounting via
+            special approval.
+            Please refer to the Purchase Checklist regarding required
+            information on Group Accounting's public Sharepoint Site.
+            In case of an asset please also indicate the useful life of the
+            asset and whether the purchase refers to an already existing asset
+            in the description.
          '''
       ]
     , ""'is_board'                    :
@@ -2087,7 +2094,7 @@ _helptext          = \
              hours, be it 38.5h sharp or 40 or 42 or 45 on demand) is
              not made in accordance with the daily required hours (7.75,
              Fri: 7.5) but by division through 5 over the week.
-             
+
              E.g.
              person has 38.5h sharp system, and changes during a week to
              other system. The required hours for the days in the 38.5h
@@ -2197,7 +2204,7 @@ _helptext          = \
     , ""'time_wp.id'                  : [help_id]
     , ""'time_wp.wp_no'               : [wp_no]
     , ""'time_wp_group.id'            : [help_id]
-    , ""'time_wp_summary_no'          : 
+    , ""'time_wp_summary_no'          :
       [""'''For summarizing work packages by activity''']
     , ""'time_wp_summary_no.id'       : [help_id]
     , ""'timeout'                     :
