@@ -21,11 +21,6 @@
    <tal:block metal:fill-slot="formatted_class_content">
     <tr>
      <th tal:content="structure python:utils.fieldname
-         (db, classname, 'number')"/>
-     <td tal:content="structure python:context.number.field ()"/>
-    </tr>
-    <tr>
-     <th tal:content="structure python:utils.fieldname
          (db, classname, 'name')"/>
      <td tal:content="structure python:context.name.field ()"/>
     </tr>
