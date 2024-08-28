@@ -1,5 +1,4 @@
-# -*- coding: iso-8859-1 -*-
-# Copyright (C) 2015-22 Dr. Ralf Schlatterbeck Open Source Consulting.
+# Copyright (C) 2015-24 Dr. Ralf Schlatterbeck Open Source Consulting.
 # Reichergasse 131, A-3411 Weidling.
 # Web: http://www.runtux.com Email: office@runtux.com
 # All rights reserved
@@ -756,7 +755,7 @@ def security (db, ** kw):
         if own_pr (db, userid, itemid):
             return False
         # Finance may not change
-        finance_roles = db.approval_order.filter \
+        finance_roles = db.pr_approval_order.filter \
             (None, dict (is_finance = True, users = userid))
         if finance_roles:
             return False
