@@ -70,3 +70,27 @@ for id in db.purchase_type.getnodeids (retired = False):
 
 if changed:
     db.commit ()
+
+changed = False
+orgs = \
+    [ '19', '20', '21', '22', '27', '31', '32', '33', '34', '40'
+    , '41', '42', '43', '44', '45', '48', '50', '51', '52', '53'
+    , '55', '58', '59', '61', '62', '63', '64', '65', '66'
+    ]
+users = \
+    [ '55', '854', '110', '322', '2629', '4226', '330', '958', '720', '1822'
+    , '878', '1109', '4219', '4108', '1960', '108', '1429', '990', '3974'
+    , '632', '2091', '200', '3666', '908', '156', '165', '959', '4075'
+    , '4176', '33', '19', '569', '1880', '1850', '3489', '2086', '440'
+    , '451', '276', '1752', '487', '3972', '1789', '444'
+    ]
+
+for uid in users:
+    puids = db.o_permission.filter (None, dict (user = uid))
+    if puids:
+        assert len (puids) == 1
+    else:
+        db.o_permission.create (user = uid, organisation = orgs)
+        changed = True
+if changed:
+    db.commit ()
