@@ -1521,6 +1521,11 @@ _helptext          = \
             be used for different items!
          '''
       ]
+    , ""'pr_edit_roles'               :
+      [ ""'''Roles that may edit purchase requests (and act as
+             purchasing agent) of this %(Classname)s
+          '''
+      ]
     , ""'pr_ext_resource'              :
       [ ""'''Yes: Requirement to access company systems, tools, buildings
              (access-card) or premises for delivering the services for

@@ -512,7 +512,7 @@ def pr_agents (db):
     vroles = set ()
     for ptid in db.purchase_type.getnodeids (retired = False):
         pt = db.purchase_type.getnode (ptid)
-        vroles.update (pt.pr_view_roles)
+        vroles.update (pt.pr_edit_roles)
     users = set ()
     for rid in vroles:
         vr = db.pr_approval_order.getnode (rid)

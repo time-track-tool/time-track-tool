@@ -180,7 +180,7 @@ def pr_type_valid_agents (db, pr_type_id):
         pass
     pt = db.purchase_type.getnode (pr_type_id)
     users = set ()
-    for rid in pt.pr_view_roles:
+    for rid in pt.pr_edit_roles:
         r = db.pr_approval_order.getnode (rid)
         users.update (r.users)
     return list (users)

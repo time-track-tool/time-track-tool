@@ -624,7 +624,7 @@ def change_pr (db, cl, nodeid, new_values):
 
 def agent_in_approval_order_users (db, uid, ptid):
     pt = db.purchase_type.getnode (ptid)
-    for aoid in pt.pr_view_roles:
+    for aoid in pt.pr_edit_roles:
         ao = db.pr_approval_order.getnode (aoid)
         if uid in ao.users:
             return True

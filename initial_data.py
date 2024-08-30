@@ -876,60 +876,60 @@ if 'purchase_type' in db.classes :
     db.purchase_type.create \
         ( name          = 'Service'
         , order         = 10
-        , pr_view_roles = [procure]
+        , pr_edit_roles = [procure]
         )
     db.purchase_type.create \
         ( name          = 'IT-Assett'
         , order         = 20
         , pr_roles      = [itapr]
-        , pr_view_roles = [procure]
+        , pr_edit_roles = [procure]
         )
     db.purchase_type.create \
         ( name          = 'Assett'
         , order         = 25
         , pr_roles      = [procure]
-        , pr_view_roles = [procure]
+        , pr_edit_roles = [procure]
         )
     db.purchase_type.create \
         ( name          = 'IT-Hardware'
         , order         = 30
         , pr_roles      = [itapr]
-        , pr_view_roles = [procure]
+        , pr_edit_roles = [procure]
         )
     db.purchase_type.create \
         ( name          = 'Hardware'
         , order         = 35
         , pr_roles      = [procure]
-        , pr_view_roles = [procure]
+        , pr_edit_roles = [procure]
         )
     db.purchase_type.create \
         ( name          = 'IT-Software'
         , order         = 40
         , pr_roles      = [itapr]
-        , pr_view_roles = [procure]
+        , pr_edit_roles = [procure]
         )
     db.purchase_type.create \
         ( name          = 'Software'
         , order         = 45
         , pr_roles      = [procure]
-        , pr_view_roles = [procure]
+        , pr_edit_roles = [procure]
         )
     db.purchase_type.create \
         ( name          = 'Stock'
         , order         = 50
-        , pr_view_roles = [procure]
+        , pr_edit_roles = [procure]
         )
     db.purchase_type.create \
         ( name          = 'Subcontracting'
         , order         = 60
         , pr_roles      = [subcont, hr]
-        , pr_view_roles = [procure]
+        , pr_edit_roles = [procure]
         )
     db.purchase_type.create \
         ( name          = 'Other'
         , order         = 70
         , pr_roles      = [procure]
-        , pr_view_roles = [procure]
+        , pr_edit_roles = [procure]
         )
     if hasattr (db, 'sql') :
         db.sql ('alter table _purchase_request alter column '
