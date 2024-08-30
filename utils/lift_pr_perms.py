@@ -40,6 +40,15 @@ view_users = \
     , 1959, 2540, 3489, 851, 2086
     ]
 view_users = [str (x) for x in view_users]
+vu = []
+for uid in view_users:
+    try:
+        u = db.user.getnode (uid)
+        n = u.username
+        vu.append (uid)
+    except IndexError:
+        pass
+view_users = vu
 
 try:
     pr_view = db.pr_approval_order.lookup ('PR-View')
@@ -55,6 +64,10 @@ except KeyError:
         , want_no_messages = False
         )
     changed = True
+if changed:
+    db.commit ()
+
+changed = False
 
 # Move roles from pr_view_roles to pr_edit_roles if the latter is empty
 # Set pr_view_roles to the new approval order
@@ -77,6 +90,15 @@ orgs = \
     , '41', '42', '43', '44', '45', '48', '50', '51', '52', '53'
     , '55', '58', '59', '61', '62', '63', '64', '65', '66'
     ]
+orgn = []
+for oid in orgs:
+    try:
+        org = db.organisation.getnode (oid)
+        n   = org.name
+        orgn.append (oid)
+    except IndexError:
+        pass
+orgs = orgn
 users = \
     [ '55', '854', '110', '322', '2629', '4226', '330', '958', '720', '1822'
     , '878', '1109', '4219', '4108', '1960', '108', '1429', '990', '3974'
@@ -84,6 +106,15 @@ users = \
     , '4176', '33', '19', '569', '1880', '1850', '3489', '2086', '440'
     , '451', '276', '1752', '487', '3972', '1789', '444'
     ]
+nusers = []
+for uid in users:
+    try:
+        u = db.user.getnode (uid)
+        n = u.username
+        nusers.append (uid)
+    except IndexError:
+        pass
+users = nusers
 
 for uid in users:
     puids = db.o_permission.filter (None, dict (user = uid))

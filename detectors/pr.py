@@ -892,6 +892,25 @@ def nosy_for_approval (db, app, add = False):
     return nosy
 # end def nosy_for_approval
 
+def fix_agents (db, cl, nodeid, new_values):
+    """ When changing to approving state, make sure that the agents are
+        valid for the organisation of this PR.
+    """
+    pr_approving = db.pr_status.lookup ('approving')
+    if 'status' not in new_values or new_values ['status'] != pr_approving:
+        return
+    pua = 'purchasing_agents'
+    agents = new_values.get (pua, cl.get (nodeid, pua))
+    org = new_values.get ('organisation', cl.get (nodeid, 'organisation'))
+    assert org
+    new_agents = []
+    for a in agents:
+        prn = 'purchase_request'
+        if o_permission.organisation_allowed (db, a, nodeid, prn):
+            new_agents.append (a)
+    new_values [pua] = new_agents
+# end def fix_agents
+
 def fix_nosy (db, cl, nodeid, new_values):
     """ At the end of all nosy-list manipulations make sure that some
         users *stay* on the nosy list even if they were removed for some
@@ -1542,6 +1561,7 @@ def init (db):
     db.purchase_request.react   ("set",    changed_pr)
     db.purchase_request.react   ("create", create_pr_approval)
     db.purchase_request.audit   ("set",    check_io_pr)
+    db.purchase_request.audit   ("set",    fix_agents,      priority = 180)
     db.purchase_request.audit   ("set",    fix_nosy,        priority = 200)
     db.purchase_request.audit   ("set",    set_infosec,     priority = 250)
     db.purchase_request.audit   ("create", check_issue_nums)
