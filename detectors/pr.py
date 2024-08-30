@@ -631,7 +631,7 @@ def agent_in_approval_order_users (db, uid, ptid):
     return False
 # end def agent_in_approval_order_users
 
-def compute_agents (db, paset, pts):
+def compute_agents (db, paset, pts, org):
     pa = set ()
     for uid in paset:
         # Add only if allowed by *all* pts
@@ -639,7 +639,8 @@ def compute_agents (db, paset, pts):
             if not agent_in_approval_order_users (db, uid, pt):
                 break
         else:
-            pa.add (uid)
+            if org in o_permission.get_allowed_org (db, uid):
+                pa.add (uid)
     return pa
 # end def compute_agents
 
@@ -676,6 +677,20 @@ def set_agents (db, cl, nodeid, new_values):
         paset = set ()
     else:
         paset = set (new_values.get ('purchasing_agents', []))
+    org = None
+    if 'organisation' in new_values:
+        org = new_values ['organisation']
+    else:
+        if nodeid and cl.get (nodeid, 'organisation'):
+            org = cl.get (nodeid, 'organisation')
+        else:
+            for cn in 'sap_cc', 'psp_element':
+                cls = db.getclass (cn)
+                org = None
+                if a in new_values:
+                    org = cls.get (new_values [a], 'organisation')
+                elif nodeid and cl.get (nodeid, a):
+                    org = cls.get (cl.get (nodeid, a), 'organisation')
     # Loop over offer items and add pt if any, also add purchase agents
     ois = new_values.get ('offer_items', [])
     if pr and 'offer_items' not in new_values:
@@ -695,7 +710,7 @@ def set_agents (db, cl, nodeid, new_values):
     # This also means that if the list gets empty here we will compute
     # the default below.
     if 'purchasing_agents' in new_values and not force:
-        pa = compute_agents (db, pa, pts)
+        pa = compute_agents (db, pa, pts, org)
         if pa:
             new_values ['purchasing_agents'] = list (pa)
     if  (  not pa
@@ -725,7 +740,7 @@ def set_agents (db, cl, nodeid, new_values):
             paset.update (db.purchase_type.get (pt, 'purchasing_agents'))
         # Only put those agents into 'purchasing_agents' that have
         # necessary role from all the purchase_types in pts
-        pa = compute_agents (db, paset, pts)
+        pa = compute_agents (db, paset, pts, org)
         new_values ['purchasing_agents'] = list (pa)
     # Add agents to nosy list
     if set (new_values.get ('purchasing_agents', [])) != opa:
