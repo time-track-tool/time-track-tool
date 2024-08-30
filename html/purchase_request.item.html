@@ -165,7 +165,7 @@
 	       tal:replace="structure python:utils.user_classhelp
 		 ( db, property='purchasing_agents'
 		 , inputtype='checkbox'
-                 , ids = utils.pr_agents (db)
+                 , ids = utils.pr_agents (db, context.organisation.id or None)
 		 )"/><br>
        </td>
       </tal:block>

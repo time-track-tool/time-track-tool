@@ -504,7 +504,7 @@ def artefact_link_match (db, field):
     return rgx.search (field)
 # end def artefact_link_match
 
-def pr_agents (db):
+def pr_agents (db, org = None):
     try:
         db = db._db
     except AttributeError:
@@ -516,7 +516,12 @@ def pr_agents (db):
     users = set ()
     for rid in vroles:
         vr = db.pr_approval_order.getnode (rid)
-        users.update (vr.users)
+        if org:
+            for u in vr.users:
+                if org in o_permission.get_allowed_org (db, u):
+                    users.add (u)
+        else:
+            users.update (vr.users)
     return ','.join (users)
 # end def pr_agents
 
