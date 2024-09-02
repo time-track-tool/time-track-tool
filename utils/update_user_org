@@ -8,6 +8,13 @@ dir     = os.getcwd ()
 tracker = instance.open (dir)
 db      = tracker.open ('admin')
 
+tc_org = set \
+    ([ '42', '32', '58', '40', '41', '51', '21', '27', '34', '59'
+     , '66', '33', '50', '20', '19', '31', '45', '61', '44', '48'
+     , '22', '43'
+    ])
+ta_org = set (['56', '39', '49', '37', '54', '47', '46', '23', '60'])
+
 sys.path.insert (1, os.path.join (dir, 'lib'))
 
 user_org = {}
@@ -49,8 +56,12 @@ for uid in user_org:
     orgs = user_org [uid]
     assert len (orgs) >= 1
     if len (orgs) == 1 and u.organisation == list (orgs) [0]:
-        print ('Same org')
+        print ('    Same org')
         continue
-    for oid in user_org [uid]:
+    if u.organisation:
+        orgs.add (u.organisation)
+    for oid in orgs:
         org = db.organisation.getnode (oid)
         print ('    organisation%s %s' % (oid, org.name))
+    if tc_org.intersection (orgs) and ta_org.intersection (orgs):
+        print ('    USER IS IN BOTH ORGS')
