@@ -125,3 +125,15 @@ for uid in users:
         changed = True
 if changed:
     db.commit ()
+
+changed = False
+operm_users = ('444', '110')
+for uid in operm_users:
+    if not common.user_has_role (db, uid, 'o-permission'):
+        u = db.user.getnode (uid)
+        r = common.role_list (u.roles)
+        r.append ('o-permission')
+        db.user.set (uid, roles = ','.join (r))
+        changed = True
+if changed:
+    db.commit ()
