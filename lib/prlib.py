@@ -31,6 +31,7 @@
 #
 
 import common
+import o_permission
 from   roundup.exceptions import Reject
 
 def pr_offer_item_sum (db, pr):
@@ -587,3 +588,46 @@ def compute_approvals (db, pr, do_create = False, email_only = False):
     al = Approval_Logic (db, pr, do_create, email_only)
     return al.compute_approvals ()
 # end def compute_approvals
+
+def pr_pt_role (db, userid, itemid, *rolenames):
+    """ Users are allowed if they have one of the edit roles
+        of the purchase type or one of the (forced) approval roles.
+    """
+    if not itemid or int (itemid) < 1:
+        return False
+    pr = db.purchase_request.getnode (itemid)
+    if not o_permission.purchase_request_allowed_by_org \
+        (db, userid, itemid):
+        return False
+    if not pr.purchase_type:
+        return False
+    pt = db.purchase_type.getnode (pr.purchase_type)
+    roles = set ()
+    for r in rolenames:
+        roles.update (getattr (pt, r))
+    for r in roles:
+        if has_pr_role (db, userid, r):
+            return True
+    return False
+# end def pr_pt_role
+
+def pr_edit_or_approve_role (db, userid, itemid):
+    """ Users are allowed if they have one of the edit roles
+        of the purchase type or one of the (forced) approval roles.
+    """
+    return pr_pt_role \
+        (db, userid, itemid, 'pr_edit_roles', 'pr_roles', 'pr_forced_roles')
+# end def pr_edit_or_approve_role
+
+def pr_edit_role (db, userid, itemid):
+    """ Users are allowed if they have the edit role of the purchase type
+    """
+    return pr_pt_role (db, userid, itemid, 'pr_edit_roles')
+# end def pr_edit_role
+
+def pr_view_role (db, userid, itemid):
+    """ Users are allowed if they have one of the view roles
+        of the purchase type.
+    """
+    return pr_pt_role (db, userid, itemid, 'pr_view_roles')
+# end def pr_view_roles

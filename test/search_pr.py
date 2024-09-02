@@ -1305,6 +1305,10 @@ properties = \
           , [ 'admin', 'procurement-admin'
             ]
           )
+        , ( 'pr_edit_roles'
+          , [ 'admin', 'procurement-admin'
+            ]
+          )
         , ( 'pr_forced_roles'
           , [ 'admin', 'procurement-admin'
             ]

@@ -305,6 +305,7 @@ properties = \
         , 'nosy'
         , 'order'
         , 'organisations'
+        , 'pr_edit_roles'
         , 'pr_forced_roles'
         , 'pr_roles'
         , 'pr_view_roles'

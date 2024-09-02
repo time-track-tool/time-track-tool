@@ -33,6 +33,7 @@ import prlib
 import o_permission
 from   schemacfg import schemadef
 from   roundup   import date
+from   prlib     import pr_edit_or_approve_role, pr_view_role
 
 def init \
     ( db
@@ -595,48 +596,11 @@ def security (db, ** kw):
 
     fixdoc = schemadef.security_doc_from_docstring
 
-    def pr_pt_role (db, userid, itemid, *rolenames):
-        """ Users are allowed if they have one of the edit roles
-            of the purchase type or one of the (forced) approval roles.
-        """
-        if not itemid or int (itemid) < 1:
-            return False
-        pr = db.purchase_request.getnode (itemid)
-        if not o_permission.purchase_request_allowed_by_org \
-            (db, userid, itemid):
-            return False
-        if not pr.purchase_type:
-            return False
-        pt = db.purchase_type.getnode (pr.purchase_type)
-        roles = set ()
-        for r in rolenames:
-            roles.update (getattr (pt, r))
-        for r in roles:
-            if prlib.has_pr_role (db, userid, r):
-                return True
-        return False
-    # end def pr_pt_role
-
-    def pr_edit_role (db, userid, itemid):
-        """ Users are allowed if they have one of the edit roles
-            of the purchase type or one of the (forced) approval roles.
-        """
-        return pr_pt_role \
-            (db, userid, itemid, 'pr_edit_roles', 'pr_roles', 'pr_forced_roles')
-    # end def pr_edit_role
-
-    def pr_view_role (db, userid, itemid):
-        """ Users are allowed if they have one of the view roles
-            of the purchase type.
-        """
-        return pr_pt_role (db, userid, itemid, 'pr_view_roles')
-    # end def pr_edit_role
-
     p = db.security.addPermission \
         ( name = 'View'
         , klass = 'purchase_request'
-        , check = pr_edit_role
-        , description = fixdoc (pr_edit_role.__doc__)
+        , check = pr_edit_or_approve_role
+        , description = fixdoc (pr_edit_or_approve_role.__doc__)
         )
     db.security.addPermissionToRole ('User', p)
 
@@ -651,8 +615,8 @@ def security (db, ** kw):
     p = db.security.addPermission \
         ( name = 'Edit'
         , klass = 'purchase_request'
-        , check = pr_edit_role
-        , description = fixdoc (pr_edit_role.__doc__)
+        , check = pr_edit_or_approve_role
+        , description = fixdoc (pr_edit_or_approve_role.__doc__)
         , properties =
             ( 'sap_reference', 'terms_conditions', 'frame_purchase'
             , 'frame_purchase_end', 'nosy', 'messages', 'purchasing_agents'
@@ -671,7 +635,7 @@ def security (db, ** kw):
             return False
         if pr_view_role (db, userid, pr.id):
             return True
-        return pr_edit_role (db, userid, pr.id)
+        return pr_edit_or_approve_role (db, userid, pr.id)
     # end def pt_role_offer_item
 
     p = db.security.addPermission \
@@ -734,7 +698,7 @@ def security (db, ** kw):
             return False
         if pr_view_role (db, userid, pr.id):
             return True
-        return pr_edit_role (db, userid, pr.id)
+        return pr_edit_or_approve_role (db, userid, pr.id)
     # end def view_role_approval
 
     p = db.security.addPermission \
@@ -901,7 +865,7 @@ def security (db, ** kw):
             return False
         if own_pr (db, userid, itemid):
             return True
-        if pr_edit_role (db, userid, itemid):
+        if pr_edit_or_approve_role (db, userid, itemid):
             return True
         return False
     # end def edit_pr_justification
@@ -1206,7 +1170,7 @@ def security (db, ** kw):
         """ User with edit role is allowed editing if status
             is not one of the in-progress stati
         """
-        if not pr_edit_role (db, userid, itemid):
+        if not pr_edit_or_approve_role (db, userid, itemid):
             return False
         pr = db.purchase_request.getnode (itemid)
         unwanted = ('open', 'approving', 'rejected', 'cancelled')
@@ -1306,7 +1270,7 @@ def security (db, ** kw):
             return True
         if pr_view_role (db, userid, itemid):
             return True
-        if pr_edit_role (db, userid, itemid):
+        if pr_edit_or_approve_role (db, userid, itemid):
             return True
         return False
     # end def view_pr_risks
@@ -1324,7 +1288,7 @@ def security (db, ** kw):
         """ User is allowed to edit special risks
             if the PR has appropriate status.
         """
-        if not pr_edit_role (db, userid, itemid):
+        if not pr_edit_or_approve_role (db, userid, itemid):
             return False
         st_open      = db.pr_status.lookup ('open')
         pr           = db.purchase_request.getnode (itemid)
@@ -1355,7 +1319,7 @@ def security (db, ** kw):
         st = until_ordered (db, userid, itemid)
         if not st:
             return False
-        return pr_edit_role (db, userid, itemid)
+        return pr_edit_or_approve_role (db, userid, itemid)
     # end def until_ordered_and_purchasing
 
     def until_ordered_and_purchasing_oi (db, userid, itemid):

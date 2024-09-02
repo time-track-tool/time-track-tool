@@ -159,7 +159,13 @@ def pr_filter_status_transitions (db, context):
         pass
     uid   = db.getuid ()
     stati = ['approving', 'approved']
-    if not common.user_has_role (db, uid, *prlib.reject_roles):
+    allow = False
+    if common.user_has_role (db, uid, *prlib.reject_roles):
+        allow = True
+    if not allow and context.id:
+        if prlib.pr_edit_role (db, uid, context.id):
+            allow = True
+    if not allow:
         stati.append ('rejected')
     # This filters the stati *out* of the list.
     return common.filter_status_transitions (context, * stati)
