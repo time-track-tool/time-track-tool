@@ -12,7 +12,13 @@ db      = tracker.open ('admin')
 cmd = ArgumentParser ()
 cmd.add_argument \
     ( '-u', '--update'
-    , help = 'Do updates'
+    , help    = 'Do updates'
+    )
+cmd.add_argument \
+    ( '-v', '--verbose'
+    , help    = 'Verbose printing, specify several times for more verbosity'
+    , action  = 'count'
+    , default = 0
     )
 args = cmd.parse_args ()
 
@@ -44,7 +50,8 @@ for sid in db.sap_cc.getnodeids (retired = False):
         if uid not in user_org:
             user_org [uid] = set ()
         user_org [uid].add (sap_cc.organisation)
-        print ('user%s sap_cc%s' % (uid, sid))
+        if args.verbose > 2:
+            print ('user%s sap_cc%s' % (uid, sid))
 tp_status = db.time_project_status.filter (None, dict (active = True))
 for pid in db.psp_element.getnodeids (retired = False):
     psp = db.psp_element.getnode (pid)
@@ -63,23 +70,28 @@ for pid in db.psp_element.getnodeids (retired = False):
         if uid not in user_org:
             user_org [uid] = set ()
         user_org [uid].add (psp.organisation)
-        print ('user%s psp%s tc%s' % (uid, pid, tid))
+        if args.verbose > 2:
+            print ('user%s psp%s tc%s' % (uid, pid, tid))
 
 for uid in user_org:
     u = db.user.getnode (uid)
-    print ('user%s %s' % (uid, u.username))
+    if args.verbose > 1:
+        print ('user%s %s' % (uid, u.username))
     orgs = user_org [uid]
     assert len (orgs) >= 1
     if len (orgs) == 1 and u.organisation == list (orgs) [0]:
-        print ('    Same org')
+        if args.verbose > 1:
+            print ('    Same org')
         continue
     if u.organisation:
         orgs.add (u.organisation)
     for oid in orgs:
         org = db.organisation.getnode (oid)
-        print ('    organisation%s %s' % (oid, org.name))
+        if args.verbose > 1:
+            print ('    organisation%s %s' % (oid, org.name))
     if tc_org.intersection (orgs) and ta_org.intersection (orgs):
-        print ('    USER IS IN BOTH ORGS')
+        if args.verbose > 1:
+            print ('    USER IS IN BOTH ORGS')
         if not u.organisation:
             continue
         assert u.organisation not in tc_org or u.organisation not in ta_org
@@ -92,13 +104,15 @@ for uid in user_org:
         perm = db.o_permission.getnode (opid)
         if orgs != set (perm.organisation):
             orgs = list (orgs)
-            print ('Update: user%s %s orgs: %s' % (uid, u.username, orgs))
+            if args.verbose:
+                print ('Update: user%s %s orgs: %s' % (uid, u.username, orgs))
             if args.update:
                 db.o_permission.set (opid, organisation = orgs)
                 changed = True
     else:
         orgs = list (orgs)
-        print ('Create: user%s %s orgs: %s' % (uid, u.username, orgs))
+        if args.verbose:
+            print ('Create: user%s %s orgs: %s' % (uid, u.username, orgs))
         if args.update:
             opid = db.o_permission.create (user = uid, organisation = orgs)
             changed = True
