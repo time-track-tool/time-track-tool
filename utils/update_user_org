@@ -9,11 +9,14 @@ tracker = instance.open (dir)
 db      = tracker.open ('admin')
 
 tc_org = set \
-    ([ '42', '32', '58', '40', '41', '51', '21', '27', '34', '59'
-     , '66', '33', '50', '20', '19', '31', '45', '61', '44', '48'
-     , '22', '43'
+    ([ '19', '20', '21', '22', '27', '31', '32', '33', '34', '40'
+     , '41', '42', '43', '44', '45', '48', '50', '51', '52', '53'
+     , '55', '58', '59', '61', '62', '63', '64', '65', '66'
     ])
-ta_org = set (['56', '39', '49', '37', '54', '47', '46', '23', '60'])
+ta_org = set (['23', '37', '39', '46', '47', '49', '54', '56', '60'])
+seltsam = set (['52', '53', '55', '62', '63', '64', '65'])
+
+tc_org = tc_org - seltsam
 
 sys.path.insert (1, os.path.join (dir, 'lib'))
 
@@ -21,7 +24,7 @@ user_org = {}
 
 for sid in db.sap_cc.getnodeids (retired = False):
     sap_cc = db.sap_cc.getnode (sid)
-    if not sap_cc.organisation:
+    if not sap_cc.organisation or not sap_cc.valid:
         continue
     for uid in (sap_cc.responsible, sap_cc.deputy):
         if not uid:
@@ -33,11 +36,14 @@ for sid in db.sap_cc.getnodeids (retired = False):
             user_org [uid] = set ()
         user_org [uid].add (sap_cc.organisation)
         print ('user%s sap_cc%s' % (uid, sid))
+tp_status = db.time_project_status.filter (None, dict (active = True))
 for pid in db.psp_element.getnodeids (retired = False):
     psp = db.psp_element.getnode (pid)
+    if not psp.valid:
+        continue
     tid = psp.project
     tc  = db.time_project.getnode (tid)
-    if not tc.organisation:
+    if not tc.organisation or tc.status not in tp_status:
         continue
     for uid in (tc.responsible, tc.deputy):
         if not uid:
@@ -65,3 +71,14 @@ for uid in user_org:
         print ('    organisation%s %s' % (oid, org.name))
     if tc_org.intersection (orgs) and ta_org.intersection (orgs):
         print ('    USER IS IN BOTH ORGS')
+        if not u.organisation:
+            continue
+        assert u.organisation not in tc_org or u.organisation not in ta_org
+        t_orgs = tc_org if u.organisation in tc_org else ta_org
+        orgs = list (t_orgs.intersection (orgs))
+    opid = db.o_permission.filter (None, dict (user = uid))
+    if opid:
+        assert len (opid) == 1
+        perm = db.o_permission.getnode (opid)
+    else:
+        opid = db.o_permission.create (user = uid, organisation = orgs)
