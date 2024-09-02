@@ -1,0 +1,56 @@
+#!/usr/bin/python3
+
+import sys
+import os
+from roundup           import date
+from roundup           import instance
+dir     = os.getcwd ()
+tracker = instance.open (dir)
+db      = tracker.open ('admin')
+
+sys.path.insert (1, os.path.join (dir, 'lib'))
+
+user_org = {}
+
+for sid in db.sap_cc.getnodeids (retired = False):
+    sap_cc = db.sap_cc.getnode (sid)
+    if not sap_cc.organisation:
+        continue
+    for uid in (sap_cc.responsible, sap_cc.deputy):
+        if not uid:
+            continue
+        u = db.user.getnode (uid)
+        if u.status != '1':
+            continue
+        if uid not in user_org:
+            user_org [uid] = set ()
+        user_org [uid].add (sap_cc.organisation)
+        print ('user%s sap_cc%s' % (uid, sid))
+for pid in db.psp_element.getnodeids (retired = False):
+    psp = db.psp_element.getnode (pid)
+    tid = psp.project
+    tc  = db.time_project.getnode (tid)
+    if not tc.organisation:
+        continue
+    for uid in (tc.responsible, tc.deputy):
+        if not uid:
+            continue
+        u = db.user.getnode (uid)
+        if u.status != '1':
+            continue
+        if uid not in user_org:
+            user_org [uid] = set ()
+        user_org [uid].add (psp.organisation)
+        print ('user%s psp%s tc%s' % (uid, pid, tid))
+
+for uid in user_org:
+    u = db.user.getnode (uid)
+    print ('user%s %s' % (uid, u.username))
+    orgs = user_org [uid]
+    assert len (orgs) >= 1
+    if len (orgs) == 1 and u.organisation == list (orgs) [0]:
+        print ('Same org')
+        continue
+    for oid in user_org [uid]:
+        org = db.organisation.getnode (oid)
+        print ('    organisation%s %s' % (oid, org.name))
