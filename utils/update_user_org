@@ -102,7 +102,9 @@ for uid in user_org:
         assert len (opid) == 1
         opid = opid [0]
         perm = db.o_permission.getnode (opid)
-        if orgs != set (perm.organisation):
+        # Only update if we would add organisations
+        if orgs - set (perm.organisation):
+            orgs.update (perm.organisation)
             orgs = list (orgs)
             if args.verbose:
                 print ('Update: user%s %s orgs: %s' % (uid, u.username, orgs))
