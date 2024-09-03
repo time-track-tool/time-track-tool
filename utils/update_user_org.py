@@ -13,6 +13,7 @@ cmd = ArgumentParser ()
 cmd.add_argument \
     ( '-u', '--update'
     , help    = 'Do updates'
+    , action  = 'store_true'
     )
 cmd.add_argument \
     ( '-v', '--verbose'
