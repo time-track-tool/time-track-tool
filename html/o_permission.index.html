@@ -10,7 +10,7 @@
    pdict python: utils.properties_dict (db, context);
    prp python:
     ( ('id',                {})
-    , ('user',              {})
+    , ('user',              dict (is_labelprop = False))
     , ( 'org_location'
       , dict
         ( multiselect = 1
