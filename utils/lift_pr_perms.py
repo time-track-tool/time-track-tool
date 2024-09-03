@@ -115,7 +115,7 @@ u_proc = \
     , '1822', '1860', '2014', '2126', '2404', '2622', '2629', '2787', '2847'
     , '2915', '3273', '3599', '4108', '4219', '4226'
     ]
-users = u_ctrl + u_fin + u_it + u_lab + u_qua + u_trn + u_hr
+users = u_ctrl + u_fin + u_it + u_lab + u_qua + u_trn + u_hr + u_proc
 nusers = []
 for uid in users:
     try:
