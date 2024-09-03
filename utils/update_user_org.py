@@ -98,6 +98,8 @@ for uid in user_org:
         assert u.organisation not in tc_org or u.organisation not in ta_org
         t_orgs = tc_org if u.organisation in tc_org else ta_org
         orgs = t_orgs.intersection (orgs)
+    if len (orgs) == 1 and list (orgs)[0] == u.organisation:
+        continue
     opid = db.o_permission.filter (None, dict (user = uid))
     if opid:
         assert len (opid) == 1
