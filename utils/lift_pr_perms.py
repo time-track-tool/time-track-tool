@@ -147,3 +147,26 @@ for uid in operm_users:
         changed = True
 if changed:
     db.commit ()
+
+changed = False
+qid = db.pr_approval_order.lookup ('quality')
+quality = db.pr_approval_order.getnode (qid)
+if not quality.is_quality:
+    db.pr_approval_order.set (qid, is_quality = True)
+    changed = True
+cid = db.pr_approval_config.filter (None, dict (role = qid))
+assert len (cid) <= 1
+if not cid:
+    cfg = db.pr_approval_config.create \
+        ( role           = qid
+        , quality_amount = 1000
+        , valid          = True
+        , if_not_in_las  = False
+        )
+    changed = True
+else:
+    cid = cid [0]
+    cfg = db.pr_approval_config.getnode (cid)
+    assert cfg.quality_amount is not None
+if changed:
+    db.commit ()
