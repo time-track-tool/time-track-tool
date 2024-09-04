@@ -7315,7 +7315,7 @@ msgid "total_cost"
 msgstr "Total cost"
 
 msgid "pr_risks"
-msgstr "Special risks"
+msgstr "Special procurement risks"
 
 msgid "special_approval"
 msgstr "Special approval"
