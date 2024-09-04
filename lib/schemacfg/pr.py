@@ -491,6 +491,7 @@ def security (db, ** kw):
         , ("CISO",                 "Editing of Security Tables")
         # LAS is 'List of Approved Suppliers'
         , ("LAS",                  "Supplier management")
+        , ("Reject",               "May reject PRs")
         ]
 
     #     classname        allowed to view   /  edit

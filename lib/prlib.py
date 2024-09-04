@@ -582,7 +582,7 @@ pr_justification = \
       )
     )
 
-reject_roles = ('Procurement-Admin',)
+reject_roles = ('Procurement-Admin', 'Reject')
 
 def compute_approvals (db, pr, do_create = False, email_only = False):
     al = Approval_Logic (db, pr, do_create, email_only)
