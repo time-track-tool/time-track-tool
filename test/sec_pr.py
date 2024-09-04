@@ -117,6 +117,8 @@ Role "project":
  User may access time category because organisation is allowed (View for "time_project" only)
 Role "project_view":
  User may access time category because organisation is allowed (View for "time_project" only)
+Role "reject":
+ User is allowed to reject PR in state approving or approved (Edit for "purchase_request": ('messages', 'status') only)
 Role "sub-login":
 Role "user":
   (Search for "pr_approval" only)
@@ -171,8 +173,8 @@ Role "user":
  User is allowed to create purchase_request (Create for "purchase_request" only)
  User is allowed to create queries (Create for "query" only)
  User is allowed to edit (some of) their own user details (Edit for "user": ('csv_delimiter', 'hide_message_files', 'password', 'queries', 'realname', 'subst_until', 'substitute', 'timezone') only)
- User is allowed to edit PR Justification if the PR has appropriate status and the user is creator or owner of the PR or has one of the edit roles (Edit for "purchase_request": ('pr_justification',) only)
- User is allowed to edit special risks if the PR has appropriate status (Edit for "purchase_request": ('pr_risks',) only)
+ User is allowed to edit PR Justification until and including approved status when the user is creator or owner of the PR or has one of the edit roles (Edit for "purchase_request": ('pr_justification',) only)
+ User is allowed to edit special procurement risks if the PR is signed (Edit for "purchase_request": ('pr_risks',) only)
  User is allowed to edit their own PRs (creator or requester or supervisor of requester) while PR is open or rejected (Edit for "purchase_request" only)
  User is allowed to edit their queries (Edit for "query" only)
  User is allowed to reopen their own rejected PR (Edit for "purchase_request": ('messages', 'nosy', 'status') only)
@@ -187,7 +189,7 @@ Role "user":
  User is allowed to search time_project (Search for "time_project" only)
  User is allowed to search user_status (Search for "user": ('status',) only)
  User is allowed to view (some of) their own user details (View for "user": ('activity', 'address', 'alternate_addresses', 'creation', 'csv_delimiter', 'hide_message_files', 'password', 'queries', 'realname', 'subst_until', 'substitute', 'timezone') only)
- User is allowed to view special risks if the PR has appropriate status and the user is creator or owner of the PR or has one of the view/edit roles (View for "purchase_request": ('pr_risks',) only)
+ User is allowed to view special procurement risks if the PR is signed and the user is creator or owner of the PR or has one of the view/edit roles (View for "purchase_request": ('pr_risks',) only)
  User is allowed to view their own files (View for "file" only)
  User is allowed to view their own messages (View for "msg" only)
  User may access PSP element because organisation is allowed (View for "psp_element" only)

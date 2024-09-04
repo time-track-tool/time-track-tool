@@ -852,8 +852,8 @@ def security (db, ** kw):
 
     def edit_pr_justification (db, userid, itemid):
         """ User is allowed to edit PR Justification
-            if the PR has appropriate status
-            and the user is creator or owner of the PR or has one of the
+            until and including approved status
+            when the user is creator or owner of the PR or has one of the
             edit roles.
         """
         st_open      = db.pr_status.lookup ('open')
@@ -1258,8 +1258,8 @@ def security (db, ** kw):
     db.security.addPermissionToRole ('User', p)
 
     def view_pr_risks (db, userid, itemid):
-        """ User is allowed to view special risks
-            if the PR has appropriate status
+        """ User is allowed to view special procurement risks
+            if the PR is signed
             and the user is creator or owner of the PR or has one of the
             view/edit roles.
         """
@@ -1286,8 +1286,8 @@ def security (db, ** kw):
     db.security.addPermissionToRole ('User', p)
 
     def edit_pr_risks (db, userid, itemid):
-        """ User is allowed to edit special risks
-            if the PR has appropriate status.
+        """ User is allowed to edit special procurement risks
+            if the PR is signed.
         """
         if not pr_edit_or_approve_role (db, userid, itemid):
             return False

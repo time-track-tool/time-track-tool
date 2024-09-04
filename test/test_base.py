@@ -190,6 +190,7 @@ class _Test_Base :
         , 'project'
         , 'project_view'
         , 'readonly-user'
+        , 'reject'
         , 'sec-incident-nosy'
         , 'sec-incident-responsible'
         , 'staff-report'
@@ -6859,9 +6860,8 @@ class Test_Case_PR (_Test_Case, unittest.TestCase) :
         , 'dom-user-edit-facility', 'dom-user-edit-gtt', 'dom-user-edit-hr'
         , 'dom-user-edit-office'
         , 'it', 'las', 'nosy', 'o-permission', 'pgp'
-        , 'procurement-admin', 'project'
-        , 'project_view', 'sub-login'
-        , 'user', 'user_view', 'view-roles'
+        , 'procurement-admin', 'project' , 'project_view', 'reject'
+        , 'sub-login', 'user', 'user_view', 'view-roles'
         ]
     transprop_perms = transprop_pr
 # end class Test_Case_PR
