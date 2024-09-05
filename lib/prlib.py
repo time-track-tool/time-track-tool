@@ -327,16 +327,20 @@ class Approval_Logic:
             s  = pr_offer_item_sum (db, pr.id)
             s  = s * 1.0 / cur.exchange_rate
             supplier_approved = True
+            ptypes = set ()
+            ptypes.add (pr.purchase_type)
             for id in pr.offer_items:
                 oi = db.pr_offer_item.getnode (id)
                 if not self.supplier_is_approved (oi.pr_supplier):
                     supplier_approved = False
+                if oi.purchase_type:
+                    ptypes.add (oi.purchase_type)
             for prcid in prc_ids:
                 prc = db.pr_approval_config.getnode (prcid)
                 if prc.if_not_in_las and in_las (db, pr.id):
                     continue
                 if  (   prc.purchase_type
-                    and pr.purchase_type not in prc.purchase_type
+                    and not ptypes.intersection (prc.purchase_type)
                     ):
                     continue
                 if  (   prc.pr_ext_resource
