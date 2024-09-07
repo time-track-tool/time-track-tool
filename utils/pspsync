@@ -154,6 +154,8 @@ class Importer (object):
                 if psp.project_org != '-'.join (spt [-2:]):
                     d ['project_org'] = '-'.join (spt [-2:])
                 assert tc.description.endswith ('-' + tcno)
+                if psp.project != tc.id:
+                    d ['project'] = tc.id
                 assert ccode in self.org_by_company_code
                 if d:
                     if self.args.update:

@@ -33,10 +33,16 @@
          )"/>
       </td>
      </tr>
-     <tr>
+     <tr tal:condition="python: 'org_location' in props">
       <th tal:content="structure python:utils.fieldname
           (db, classname, 'org_location')"/>
       <td tal:content="structure python:context.org_location.menu
+          (**utils.valid_item (now))" />
+     </tr>
+     <tr tal:condition="python: 'organisation' in props">
+      <th tal:content="structure python:utils.fieldname
+          (db, classname, 'organisation')"/>
+      <td tal:content="structure python:context.organisation.menu
           (**utils.valid_item (now))" />
      </tr>
     </tal:block>

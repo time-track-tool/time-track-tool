@@ -47,14 +47,14 @@ def init \
     , Class
     , Ext_Class
     , ** kw
-    ) :
+    ):
     export = {}
 
-    class Time_Project_Class (Ext_Class) :
+    class Time_Project_Class (Ext_Class):
         """ Create a time_project class with some default properties
         """
 
-        def __init__ (self, db, classname, ** properties) :
+        def __init__ (self, db, classname, ** properties):
             self.update_properties \
                 ( name                  = String    ()
                 , description           = String    ()
@@ -74,11 +74,11 @@ def init \
     # end class Time_Project_Class
     export.update (dict (Time_Project_Class = Time_Project_Class))
 
-    class Time_Project_Status_Class (Ext_Class) :
+    class Time_Project_Status_Class (Ext_Class):
         """ Create a time_project_status class with some default properties
         """
 
-        def __init__ (self, db, classname, ** properties) :
+        def __init__ (self, db, classname, ** properties):
             self.update_properties \
                 ( name                  = String    ()
                 , description           = String    ()
@@ -90,11 +90,11 @@ def init \
     # end class Time_Project_Status_Class
     export.update (dict (Time_Project_Status_Class = Time_Project_Status_Class))
 
-    class SAP_CC_Class (Ext_Class) :
+    class SAP_CC_Class (Ext_Class):
         """ Create a sap_cc class with some default properties
         """
 
-        def __init__ (self, db, classname, ** properties) :
+        def __init__ (self, db, classname, ** properties):
             self.update_properties \
                 ( name                  = String    ()
                 , description           = String    ()
@@ -113,11 +113,11 @@ def init \
     # end class SAP_CC_Class
     export.update (dict (SAP_CC_Class = SAP_CC_Class))
 
-    class O_Permission_Class (Ext_Class) :
+    class O_Permission_Class (Ext_Class):
         """ Create a o_permission class with some default properties
         """
 
-        def __init__ (self, db, classname, ** properties) :
+        def __init__ (self, db, classname, ** properties):
             self.update_properties \
                 ( user                  = Link      ("user")
                 )
@@ -136,12 +136,11 @@ def init \
     # See the configuration and customisation document for information
     # about security setup.
 
-def security (db, ** kw) :
+def security (db, ** kw):
     roles = \
         [ ("Project",           "Project Office")
         , ("Project_View",      "May view project data")
         , ("Controlling",       "Controlling")
-        , ("Procurement",       "Purchasing/Procurement")
         , ("O-Permission",      "Allowed org-location/organisation per user")
         , ("View-Roles",        "Allow to view user roles")
         ]
@@ -183,16 +182,7 @@ def security (db, ** kw) :
         , check       = o_permission.sap_cc_allowed_by_org
         , description = fixdoc (o_permission.sap_cc_allowed_by_org.__doc__)
         )
-    for role in ("User", "Procurement"):
-        db.security.addPermissionToRole (role, p)
-    p = db.security.addPermission \
-        ( name        = 'Edit'
-        , klass       = 'sap_cc'
-        , check       = o_permission.sap_cc_allowed_by_org
-        , properties  = ("purchasing_agents", "group_lead", "team_lead", "nosy")
-        , description = fixdoc (o_permission.sap_cc_allowed_by_org.__doc__)
-        )
-    db.security.addPermissionToRole ("Procurement", p)
+    db.security.addPermissionToRole ("User", p)
 
     schemadef.add_search_permission (db, 'time_project', 'User')
     p = db.security.addPermission \
@@ -202,7 +192,7 @@ def security (db, ** kw) :
         , description = fixdoc
             (o_permission.time_project_allowed_by_org.__doc__)
         )
-    for role in ("Project_View", "Project", "Controlling", "Procurement"):
+    for role in ("Project_View", "Project", "Controlling"):
         db.security.addPermissionToRole (role, p)
     p = db.security.addPermission \
         ( name        = 'View'
@@ -222,15 +212,6 @@ def security (db, ** kw) :
             (o_permission.time_project_allowed_by_org.__doc__)
         )
     db.security.addPermissionToRole ("Project", p)
-    p = db.security.addPermission \
-        ( name        = 'Edit'
-        , klass       = 'time_project'
-        , check       = o_permission.time_project_allowed_by_org
-        , properties  = ("purchasing_agents", "group_lead", "team_lead", "nosy")
-        , description = fixdoc
-            (o_permission.time_project_allowed_by_org.__doc__)
-        )
-    db.security.addPermissionToRole ("Procurement", p)
     db.security.addPermissionToRole ('Project', 'Create', 'time_project')
 
 # end def security

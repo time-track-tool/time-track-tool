@@ -21,6 +21,7 @@
 
 import prlib
 import common
+import o_permission
 from   html import escape
 try:
     from urllib.parse import urlencode
@@ -179,7 +180,7 @@ def pr_type_valid_agents (db, pr_type_id):
         pass
     pt = db.purchase_type.getnode (pr_type_id)
     users = set ()
-    for rid in pt.pr_view_roles:
+    for rid in pt.pr_edit_roles:
         r = db.pr_approval_order.getnode (rid)
         users.update (r.users)
     return list (users)
@@ -263,4 +264,5 @@ def init (instance):
     reg ('need_psp',                     need_psp)
     reg ('has_asset',                    has_asset)
     reg ('oi_key',                       oi_key)
+    reg ('may_purchase',                 o_permission.may_purchase)
 # end def init

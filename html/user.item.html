@@ -135,6 +135,11 @@
        </tr>
       </tal:block>
      </tal:block>
+     <tr tal:condition="python:'organisation' in props">
+      <th tal:content="structure python:
+          utils.fieldname (db, 'user', 'organisation')"/>
+      <td tal:content="structure python: context.organisation.menu ()"/>
+     </tr>
      <tr tal:condition="python:'company_name' in props">
       <th tal:content="structure python:
           utils.fieldname (db, 'user', 'company_name')"/>

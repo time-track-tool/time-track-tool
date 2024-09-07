@@ -252,7 +252,6 @@ Role "organisation":
 Role "pgp":
 Role "procurement":
  User may access sap cost center because organisation is allowed (Edit for "sap_cc": ('group_lead', 'nosy', 'purchasing_agents', 'team_lead') only)
- User may access sap cost center because organisation is allowed (View for "sap_cc" only)
  User may access time category because organisation is allowed (Edit for "time_project": ('group_lead', 'nosy', 'purchasing_agents', 'team_lead') only)
  User may access time category because organisation is allowed (View for "time_project" only)
 Role "project":

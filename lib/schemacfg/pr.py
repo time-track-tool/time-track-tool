@@ -1,5 +1,4 @@
-# -*- coding: iso-8859-1 -*-
-# Copyright (C) 2015-22 Dr. Ralf Schlatterbeck Open Source Consulting.
+# Copyright (C) 2015-24 Dr. Ralf Schlatterbeck Open Source Consulting.
 # Reichergasse 131, A-3411 Weidling.
 # Web: http://www.runtux.com Email: office@runtux.com
 # All rights reserved
@@ -31,8 +30,10 @@
 
 import common
 import prlib
+import o_permission
 from   schemacfg import schemadef
 from   roundup   import date
+from   prlib     import pr_edit_or_approve_role, pr_view_role
 
 def init \
     ( db
@@ -183,6 +184,7 @@ def init \
         , infosec_amount        = Number    ()
         , payment_type_amount   = Number    ()
         , oob_amount            = Number    ()
+        , quality_amount        = Number    ()
         , departments           = Multilink ("department")
         )
 
@@ -193,6 +195,7 @@ def init \
         , users                 = Multilink ("user")
         , is_finance            = Boolean   ()
         , is_board              = Boolean   ()
+        , is_quality            = Boolean   ()
         , want_no_messages      = Boolean   ()
         , only_nosy             = Boolean   ()
         )
@@ -266,18 +269,17 @@ def init \
         ( db, ''"purchase_type"
         , name                  = String    ()
         , order                 = Number    ()
-        , roles                 = String    ()
-        , forced_roles          = String    ()
-        , view_roles            = String    ()
         , description           = String    ()
         , valid                 = Boolean   ()
         , confidential          = Boolean   ()
         , pr_roles              = Multilink ("pr_approval_order")
         , pr_forced_roles       = Multilink ("pr_approval_order")
+        , pr_edit_roles         = Multilink ("pr_approval_order")
         , pr_view_roles         = Multilink ("pr_approval_order")
         , nosy                  = Multilink ("user")
         , purchasing_agents     = Multilink ("user")
         , allow_gl_account      = Boolean   ()
+        , organisations         = Multilink ("organisation")
         )
     purchase_type.setkey ('name')
 
@@ -463,13 +465,14 @@ def init \
             self.update_properties \
                 ( want_no_messages       = Boolean   ()
                 , subst_until            = Date      ()
+                , organisation           = Link      ("organisation")
                 )
             User_Ancestor.__init__ (self, db, classname, ** properties)
         # end def __init__
     # end class User_Class
     export.update (dict (User_Class = User_Class))
 
-    o_permission = O_Permission_Class \
+    o_perm = O_Permission_Class \
         ( db, ''"o_permission"
         , organisation = Multilink ("organisation")
         )
@@ -483,24 +486,12 @@ def security (db, ** kw):
     """
 
     roles = \
-        [ ("Board",                "Approvals over certain limits")
-        , ("Nosy",                 "Nosy list")
-        , ("Finance",              "Finance-related approvals")
-        , ("HR",                   "Approvals for staff/subcontracting")
-        , ("HR-Approval",          "Approvals for HR-related issues")
-        , ("IT-Approval",          "Approve IT-Related PRs")
-        , ("Procurement",          "Procurement department")
+        [ ("Nosy",                 "Nosy list")
         , ("Procurement-Admin",    "Procurement administration")
-        , ("Procure-Approval",     "Procurement approvals")
-        , ("Quality",              "Approvals for Safety issues")
-        , ("Subcontract",          "Approvals for staff/subcontracting")
-        , ("PR-View",              "See all Purchase Requests")
-        , ("Measurement-Approval", "Responsible for Measurement-Equipment")
-        , ("Training-Approval",    "Approvals for Training")
-        , ("Subcontract-Org",      "Approvals for Subcontracting")
         , ("CISO",                 "Editing of Security Tables")
         # LAS is 'List of Approved Suppliers'
         , ("LAS",                  "Supplier management")
+        , ("Reject",               "May reject PRs")
         ]
 
     #     classname        allowed to view   /  edit
@@ -512,21 +503,17 @@ def security (db, ** kw):
         , ("organisation",       ["User"],              [])
         , ("org_location",       ["User"],              [])
         , ("part_of_budget",     ["User"],              [])
-        , ("pr_approval_config", ["Procurement"],       ["Procurement-Admin"])
-        , ("pr_approval_order",  ["Procurement", "User"], ["Procurement-Admin"])
-        , ("pr_approval",        ["Procurement","PR-View"], [])
+        , ("pr_approval_config", ["Procurement-Admin"], ["Procurement-Admin"])
+        , ("pr_approval_order",  ["User"],              ["Procurement-Admin"])
         , ("pr_approval_status", ["User"],              [])
         , ("pr_currency",        ["User"],              ["Procurement-Admin"])
         , ("pr_status",          ["User"],              [])
         , ("pr_supplier",        ["User"],       ["Procurement-Admin", "LAS"])
         , ("pr_rating_category", ["User"],       ["Procurement-Admin", "LAS"])
-        , ("pr_supplier_rating", ["User"],       ["Procurement-Admin", "LAS"])
-        , ("psp_element",        ["User"],              [])
-        , ("purchase_type",      ["User"],              ["Procurement-Admin"])
+        , ("pr_supplier_rating", ["Procurement-Admin"], ["Procurement-Admin"])
+        , ("purchase_type",      ["Procurement-Admin"], ["Procurement-Admin"])
         , ("terms_conditions",   ["User"],              [])
         , ("user",               ["Procurement-Admin"], [])
-        , ("purchase_request",   ["PR-View"],           [])
-        , ("pr_offer_item",      ["PR-View"],           [])
         , ("internal_order",     ["User"],              [])
         , ("pr_ext_resource",    ["User"],              [])
         , ("security_req_group", ["User"],      ["Procurement-Admin", "CISO"])
@@ -534,7 +521,7 @@ def security (db, ** kw):
         , ("pg_category",        ["User"],              ["Procurement-Admin"])
         , ("supplier_risk_category", ["User"],          [])
         , ("purchase_risk_type", ["User"],              [])
-        , ("pr_supplier_risk",   ["User"],      ["Procurement-Admin", "CISO"])
+        , ("pr_supplier_risk",   ["Procurement-Admin"], ["Procurement-Admin"])
         , ("payment_type",       ["User"],              [])
         , ("purchase_security_risk", ["User"],          [])
         ]
@@ -555,13 +542,13 @@ def security (db, ** kw):
         , ( "pr_approval", "Edit", ["User"]
           , ("purchase_request", "date")
           )
-        , ( "purchase_request", "Edit", ["Procurement", "Procurement-Admin"]
+        , ( "purchase_request", "Edit", ["Procurement-Admin"]
           , ("renew_until",)
           )
-        , ( "time_project", "Edit", ["Procurement"]
+        , ( "time_project", "Edit", ["Procurement-Admin"]
           , ("deputy_gets_mail",)
           )
-        , ( "sap_cc", "Edit", ["Procurement"]
+        , ( "sap_cc", "Edit", ["Procurement-Admin"]
           , ("deputy_gets_mail",)
           )
         ]
@@ -610,38 +597,27 @@ def security (db, ** kw):
 
     fixdoc = schemadef.security_doc_from_docstring
 
-    def pr_pt_role (db, userid, itemid):
-        """ Users are allowed if they have one of the view roles
-            of the purchase type or one of the (forced) approval roles.
-        """
-        if not itemid or int (itemid) < 1:
-            return False
-        pr = db.purchase_request.getnode (itemid)
-        if not pr.purchase_type:
-            return False
-        pt = db.purchase_type.getnode (pr.purchase_type)
-        roles = set (pt.pr_view_roles)
-        roles.update (pt.pr_roles)
-        roles.update (pt.pr_forced_roles)
-        for r in roles:
-            if prlib.has_pr_role (db, userid, r):
-                return True
-        return False
-    # end def pr_pt_role
+    p = db.security.addPermission \
+        ( name = 'View'
+        , klass = 'purchase_request'
+        , check = pr_edit_or_approve_role
+        , description = fixdoc (pr_edit_or_approve_role.__doc__)
+        )
+    db.security.addPermissionToRole ('User', p)
 
     p = db.security.addPermission \
         ( name = 'View'
         , klass = 'purchase_request'
-        , check = pr_pt_role
-        , description = fixdoc (pr_pt_role.__doc__)
+        , check = pr_view_role
+        , description = fixdoc (pr_view_role.__doc__)
         )
     db.security.addPermissionToRole ('User', p)
 
     p = db.security.addPermission \
         ( name = 'Edit'
         , klass = 'purchase_request'
-        , check = pr_pt_role
-        , description = fixdoc (pr_pt_role.__doc__)
+        , check = pr_edit_or_approve_role
+        , description = fixdoc (pr_edit_or_approve_role.__doc__)
         , properties =
             ( 'sap_reference', 'terms_conditions', 'frame_purchase'
             , 'frame_purchase_end', 'nosy', 'messages', 'purchasing_agents'
@@ -652,13 +628,15 @@ def security (db, ** kw):
     db.security.addPermissionToRole ('User', p)
 
     def pt_role_offer_item (db, userid, itemid):
-        """ Users are allowed to view if they have one of the view roles
-            of the purchase type
+        """ Users are allowed to view if they have one of the view or
+            edit roles of the purchase type
         """
         pr  = get_pr_from_offer_item (db, itemid)
         if pr is None:
             return False
-        return pr_pt_role (db, userid, pr.id)
+        if pr_view_role (db, userid, pr.id):
+            return True
+        return pr_edit_or_approve_role (db, userid, pr.id)
     # end def pt_role_offer_item
 
     p = db.security.addPermission \
@@ -712,14 +690,16 @@ def security (db, ** kw):
     db.security.addPermissionToRole ('LAS', p)
 
     def view_role_approval (db, userid, itemid):
-        """ Users are allowed to view if they have one of the view roles
-            of the purchase type
+        """ Users are allowed to view if they have one of the view or
+            edit roles of the purchase type
         """
         sp = db.pr_approval.getnode (itemid)
         pr = db.purchase_request.getnode (sp.purchase_request)
         if pr is None:
             return False
-        return pr_pt_role (db, userid, pr.id)
+        if pr_view_role (db, userid, pr.id):
+            return True
+        return pr_edit_or_approve_role (db, userid, pr.id)
     # end def view_role_approval
 
     p = db.security.addPermission \
@@ -740,7 +720,9 @@ def security (db, ** kw):
         if own_pr (db, userid, itemid):
             return False
         # Finance may not change
-        if common.user_has_role (db, userid, 'finance'):
+        finance_roles = db.pr_approval_order.filter \
+            (None, dict (is_finance = True, users = userid))
+        if finance_roles:
             return False
         pr = db.purchase_request.getnode (itemid)
         st_approving = db.pr_status.lookup ('approving')
@@ -828,22 +810,28 @@ def security (db, ** kw):
         return False
     # end def open_or_approving
 
-    def open_approving_approved (db, userid, itemid):
+    def until_ordered (db, userid, itemid):
         if open_or_approving (db, userid, itemid):
             return True
         pr          = db.purchase_request.getnode (itemid)
-        st_approved = db.pr_status.lookup ('approved')
-        if pr.status == st_approved:
+        stati = []
+        unwanted = ('ordered', 'rejected', 'cancelled')
+        for st in db.pr_status.getnodeids (retired = False):
+            status = db.pr_status.getnode (st)
+            if status.name in unwanted:
+                continue
+            stati.append (st)
+        if pr.status in stati:
             return True
         return False
-    # end def open_approving_approved
+    # end def until_ordered
 
-    def open_approving_approved_oi (db, userid, itemid):
+    def until_ordered_oi (db, userid, itemid):
         pr  = get_pr_from_offer_item (db, itemid)
         if pr is None:
             return False
-        return open_approving_approved (db, userid, pr.id)
-    # def open_approving_approved_oi
+        return until_ordered (db, userid, pr.id)
+    # def until_ordered_oi
 
     def cancel_own_pr (db, userid, itemid):
         """ User is allowed to cancel their own PR.
@@ -864,9 +852,9 @@ def security (db, ** kw):
 
     def edit_pr_justification (db, userid, itemid):
         """ User is allowed to edit PR Justification
-            if the PR has appropriate status
-            and the user is creator or owner of the PR or has one of the
-            view roles.
+            until and including approved status
+            when the user is creator or owner of the PR or has one of the
+            edit roles.
         """
         st_open      = db.pr_status.lookup ('open')
         st_approving = db.pr_status.lookup ('approving')
@@ -878,7 +866,7 @@ def security (db, ** kw):
             return False
         if own_pr (db, userid, itemid):
             return True
-        if pr_pt_role (db, userid, itemid):
+        if pr_edit_or_approve_role (db, userid, itemid):
             return True
         return False
     # end def edit_pr_justification
@@ -900,7 +888,7 @@ def security (db, ** kw):
         if pr.status == st_open:
             return True
         return False
-    # end def cancel_own_pr
+    # end def cancel_open_pr
 
     p = db.security.addPermission \
         ( name = 'Edit'
@@ -1179,30 +1167,30 @@ def security (db, ** kw):
         )
     db.security.addPermissionToRole ('User', p)
 
-    def approved_or_ordered (db, userid, itemid):
-        """ User with view role is allowed editing if status
-            is 'approved' or 'ordered'
+    def after_approval (db, userid, itemid):
+        """ User with edit role is allowed editing if status
+            is not one of the in-progress stati
         """
-        if not pr_pt_role (db, userid, itemid):
+        if not pr_edit_or_approve_role (db, userid, itemid):
             return False
         pr = db.purchase_request.getnode (itemid)
+        unwanted = ('open', 'approving', 'rejected', 'cancelled')
         stati = []
-        for n in ('approved', 'ordered'):
-            try:
-                st = db.pr_status.lookup (n)
-                stati.append (st)
-            except KeyError:
-                pass
+        for st in db.pr_status.getnodeids (retired = False):
+            status = db.pr_status.getnode (st)
+            if status.name in unwanted:
+                continue
+            stati.append (st)
         if pr.status in stati:
             return True
         return False
-    # end def approved_or_ordered
+    # end def after_approval
 
     p = db.security.addPermission \
         ( name        = 'Edit'
         , klass       = 'purchase_request'
-        , check       = approved_or_ordered
-        , description = fixdoc (approved_or_ordered.__doc__)
+        , check       = after_approval
+        , description = fixdoc (after_approval.__doc__)
         , properties  = ('status', 'messages', 'files', 'nosy')
         )
     db.security.addPermissionToRole ('User', p)
@@ -1270,10 +1258,10 @@ def security (db, ** kw):
     db.security.addPermissionToRole ('User', p)
 
     def view_pr_risks (db, userid, itemid):
-        """ User is allowed to view special risks
-            if the PR has appropriate status
+        """ User is allowed to view special procurement risks
+            if the PR is signed
             and the user is creator or owner of the PR or has one of the
-            view roles.
+            view/edit roles.
         """
         st_open      = db.pr_status.lookup ('open')
         pr           = db.purchase_request.getnode (itemid)
@@ -1281,7 +1269,9 @@ def security (db, ** kw):
             return False
         if own_pr (db, userid, itemid):
             return True
-        if pr_pt_role (db, userid, itemid):
+        if pr_view_role (db, userid, itemid):
+            return True
+        if pr_edit_or_approve_role (db, userid, itemid):
             return True
         return False
     # end def view_pr_risks
@@ -1296,9 +1286,11 @@ def security (db, ** kw):
     db.security.addPermissionToRole ('User', p)
 
     def edit_pr_risks (db, userid, itemid):
-        """ User is allowed to edit special risks
-            if the PR has appropriate status.
+        """ User is allowed to edit special procurement risks
+            if the PR is signed.
         """
+        if not pr_edit_or_approve_role (db, userid, itemid):
+            return False
         st_open      = db.pr_status.lookup ('open')
         pr           = db.purchase_request.getnode (itemid)
         if pr.status == st_open:
@@ -1313,7 +1305,7 @@ def security (db, ** kw):
         , description = fixdoc (edit_pr_risks.__doc__)
         , properties = ('pr_risks',)
         )
-    db.security.addPermissionToRole ('Procurement', p)
+    db.security.addPermissionToRole ('User', p)
 
     p = db.security.addPermission \
         ( name        = 'View'
@@ -1324,24 +1316,24 @@ def security (db, ** kw):
         )
     db.security.addPermissionToRole ('User', p)
 
-    def not_ordered_and_purchasing (db, userid, itemid):
-        st = open_approving_approved (db, userid, itemid)
+    def until_ordered_and_purchasing (db, userid, itemid):
+        st = until_ordered (db, userid, itemid)
         if not st:
             return False
-        return pr_pt_role (db, userid, itemid)
-    # end def not_ordered_and_purchasing
+        return pr_edit_or_approve_role (db, userid, itemid)
+    # end def until_ordered_and_purchasing
 
-    def not_ordered_and_purchasing_oi (db, userid, itemid):
+    def until_ordered_and_purchasing_oi (db, userid, itemid):
         pr  = get_pr_from_offer_item (db, itemid)
         if pr is None:
             return False
-        return not_ordered_and_purchasing (db, userid, pr.id)
-    # end def not_ordered_and_purchasing_oi
+        return until_ordered_and_purchasing (db, userid, pr.id)
+    # end def until_ordered_and_purchasing_oi
 
     p = db.security.addPermission \
         ( name        = 'Edit'
         , klass       = 'purchase_request'
-        , check       = not_ordered_and_purchasing
+        , check       = until_ordered_and_purchasing
         , description = "Allowed to edit until ordered"
         , properties  = ('gl_account',)
         )
@@ -1349,7 +1341,7 @@ def security (db, ** kw):
     p = db.security.addPermission \
         ( name        = 'Edit'
         , klass       = 'pr_offer_item'
-        , check       = not_ordered_and_purchasing_oi
+        , check       = until_ordered_and_purchasing_oi
         , description = "Allowed to edit until ordered"
         , properties  = ('gl_account',)
         )
@@ -1358,7 +1350,7 @@ def security (db, ** kw):
     p = db.security.addPermission \
         ( name        = 'Edit'
         , klass       = 'purchase_request'
-        , check       = open_approving_approved
+        , check       = until_ordered
         , description = "Allowed to edit until ordered"
         , properties  = ('gl_account',)
         )
@@ -1366,10 +1358,98 @@ def security (db, ** kw):
     p = db.security.addPermission \
         ( name        = 'Edit'
         , klass       = 'pr_offer_item'
-        , check       = open_approving_approved_oi
+        , check       = until_ordered_oi
         , description = "Allowed to edit until ordered"
         , properties  = ('gl_account',)
         )
     db.security.addPermissionToRole ('Controlling', p)
+
+    tp_props = ('name', 'responsible', 'deputy', 'status', 'organisation')
+    p = db.security.addPermission \
+        ( name        = 'View'
+        , klass       = 'time_project'
+        , properties  = tp_props
+        , check       = o_permission.time_project_allowed_by_org
+        , description = fixdoc
+            (o_permission.time_project_allowed_by_org.__doc__)
+        )
+    db.security.addPermissionToRole ('User', p)
+
+    schemadef.add_search_permission (db, 'psp_element', 'User')
+    p = db.security.addPermission \
+        ( name        = 'View'
+        , klass       = 'psp_element'
+        , check       = o_permission.psp_element_allowed_by_org
+        , description = fixdoc (o_permission.psp_element_allowed_by_org.__doc__)
+        )
+    db.security.addPermissionToRole ("User", p)
+
+    schemadef.add_search_permission (db, 'pr_supplier_risk', 'User')
+    p = db.security.addPermission \
+        ( name        = 'View'
+        , klass       = 'pr_supplier_risk'
+        , check       = o_permission.supplier_risk_allowed_by_org
+        , description = fixdoc \
+            (o_permission.supplier_risk_allowed_by_org.__doc__)
+        )
+    db.security.addPermissionToRole ("User", p)
+    p = db.security.addPermission \
+        ( name        = 'Edit'
+        , klass       = 'pr_supplier_risk'
+        , check       = o_permission.supplier_risk_allowed_by_org
+        , description = fixdoc \
+            (o_permission.supplier_risk_allowed_by_org.__doc__)
+        )
+    db.security.addPermissionToRole ("CISO", p)
+    db.security.addPermissionToRole ('CISO', 'Create', 'pr_supplier_risk')
+
+    schemadef.add_search_permission (db, 'pr_supplier_rating', 'User')
+    p = db.security.addPermission \
+        ( name        = 'View'
+        , klass       = 'pr_supplier_rating'
+        , check       = o_permission.supplier_rating_allowed_by_org
+        , description = fixdoc \
+            (o_permission.supplier_rating_allowed_by_org.__doc__)
+        )
+    db.security.addPermissionToRole ("User", p)
+    p = db.security.addPermission \
+        ( name        = 'Edit'
+        , klass       = 'pr_supplier_rating'
+        , check       = o_permission.supplier_rating_allowed_by_org
+        , description = fixdoc \
+            (o_permission.supplier_rating_allowed_by_org.__doc__)
+        )
+    db.security.addPermissionToRole ("LAS", p)
+    db.security.addPermissionToRole ('LAS', 'Create', 'pr_supplier_rating')
+
+    p = db.security.addPermission \
+        ( name        = 'View'
+        , klass       = 'purchase_type'
+        , check       = o_permission.purchase_type_allowed_by_org
+        , description = fixdoc \
+            (o_permission.purchase_type_allowed_by_org.__doc__)
+        )
+    db.security.addPermissionToRole ("User", p)
+
+#    # Doesn't seem to be needed
+#    # Allow editing pr_approval.{date, msg} while open or approving
+#    # By user and by purchasing agent
+#    def allow_cancel (db, userid, itemid):
+#        """ Allow user to change attributes of approval needed for cancel
+#        """
+#        if own_pr (db, userid, itemid):
+#            return False
+#        if pr_pt_role (db, userid, itemid):
+#            return True
+#    # end def allow_cancel
+#
+#    p = db.security.addPermission \
+#        ( name        = 'Edit'
+#        , klass       = 'pr_approval'
+#        , check       = allow_cancel
+#        , description = fixdoc (allow_cancel.__doc__)
+#        , properties  = ('date', 'msg')
+#        )
+#    #db.security.addPermissionToRole ("User", p)
 
 # end def security

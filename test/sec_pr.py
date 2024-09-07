@@ -16,14 +16,13 @@ Role "admin":
  User may view everything (View)
 Role "anonymous":
  User may access the web interface (Web Access)
-Role "board":
 Role "ciso":
   (Edit for "pr_offer_item": ('add_to_las',) only)
   (View for "pr_offer_item": ('activity', 'actor', 'add_to_las', 'creation', 'creator', 'pr_supplier', 'supplier') only)
  User is allowed to create pr_supplier_risk (Create for "pr_supplier_risk" only)
  User is allowed to create security_req_group (Create for "security_req_group" only)
- User is allowed to edit pr_supplier_risk (Edit for "pr_supplier_risk" only)
  User is allowed to edit security_req_group (Edit for "security_req_group" only)
+ User may access supplier risk because organisation is allowed (Edit for "pr_supplier_risk" only)
 Role "controlling":
  Allowed to edit until ordered (Edit for "pr_offer_item": ('gl_account',) only)
  Allowed to edit until ordered (Edit for "purchase_request": ('gl_account',) only)
@@ -44,9 +43,6 @@ Role "dom-user-edit-hr":
 Role "dom-user-edit-office":
  Users may view/edit user records for ad_domain for which they are in the domain_permission for the user (Edit for "user": ['contacts', 'position_text', 'room'] only)
  Users may view/edit user records for ad_domain for which they are in the domain_permission for the user (View for "user": ['contacts', 'position_text', 'room'] only)
-Role "finance":
-Role "hr":
-Role "hr-approval":
 Role "it":
  User is allowed Edit on file if file is linked from an item with Edit permission (Edit for "file" only)
  User is allowed Edit on msg if msg is linked from an item with Edit permission (Edit for "msg" only)
@@ -54,7 +50,6 @@ Role "it":
  User is allowed to access domain_permission (View for "domain_permission" only)
  User is allowed to create domain_permission (Create for "domain_permission" only)
  User is allowed to edit domain_permission (Edit for "domain_permission" only)
-Role "it-approval":
 Role "las":
   (Edit for "pr_offer_item": ('add_to_las',) only)
   (View for "pr_offer_item": ('activity', 'actor', 'add_to_las', 'creation', 'creator', 'pr_supplier', 'supplier') only)
@@ -63,39 +58,26 @@ Role "las":
  User is allowed to create pr_supplier_rating (Create for "pr_supplier_rating" only)
  User is allowed to edit pr_rating_category (Edit for "pr_rating_category" only)
  User is allowed to edit pr_supplier (Edit for "pr_supplier" only)
- User is allowed to edit pr_supplier_rating (Edit for "pr_supplier_rating" only)
-Role "measurement-approval":
+ User may access supplier rating because organisation is allowed (Edit for "pr_supplier_rating" only)
 Role "nosy":
  User may get nosy messages for purchase_request (Nosy for "purchase_request" only)
 Role "o-permission":
  User is allowed to create o_permission (Create for "o_permission" only)
  User is allowed to edit o_permission (Edit for "o_permission" only)
 Role "pgp":
-Role "pr-view":
- User is allowed to access pr_approval (View for "pr_approval" only)
- User is allowed to access pr_offer_item (View for "pr_offer_item" only)
- User is allowed to access purchase_request (View for "purchase_request" only)
-Role "procure-approval":
-Role "procurement":
- User is allowed Edit on (Edit for "purchase_request": ('renew_until',) only)
- User is allowed Edit on (Edit for "sap_cc": ('deputy_gets_mail',) only)
- User is allowed Edit on (Edit for "time_project": ('deputy_gets_mail',) only)
- User is allowed to access pr_approval (View for "pr_approval" only)
- User is allowed to access pr_approval_config (View for "pr_approval_config" only)
- User is allowed to access pr_approval_order (View for "pr_approval_order" only)
- User is allowed to edit special risks if the PR has appropriate status (Edit for "purchase_request": ('pr_risks',) only)
- User is allowed to reject PR in state approving or approved (Edit for "purchase_request": ('messages', 'status') only)
- User may access sap cost center because organisation is allowed (Edit for "sap_cc": ('group_lead', 'nosy', 'purchasing_agents', 'team_lead') only)
- User may access sap cost center because organisation is allowed (View for "sap_cc" only)
- User may access time category because organisation is allowed (Edit for "time_project": ('group_lead', 'nosy', 'purchasing_agents', 'team_lead') only)
- User may access time category because organisation is allowed (View for "time_project" only)
 Role "procurement-admin":
   (Restore for "pr_approval_order" only)
   (Retire for "pr_approval_order" only)
   (Search for "user" only)
  User is allowed Edit on (Edit for "purchase_request": ('renew_until',) only)
+ User is allowed Edit on (Edit for "sap_cc": ('deputy_gets_mail',) only)
+ User is allowed Edit on (Edit for "time_project": ('deputy_gets_mail',) only)
  User is allowed Edit on (Edit for "user": ('clearance_by', 'password', 'roles', 'subst_until', 'substitute') only)
  User is allowed Edit on (Edit for "user": ('want_no_messages',) only)
+ User is allowed to access pr_approval_config (View for "pr_approval_config" only)
+ User is allowed to access pr_supplier_rating (View for "pr_supplier_rating" only)
+ User is allowed to access pr_supplier_risk (View for "pr_supplier_risk" only)
+ User is allowed to access purchase_type (View for "purchase_type" only)
  User is allowed to access user (View for "user" only)
  User is allowed to cancel a PR if it is open (Edit for "purchase_request": ('messages', 'status') only)
  User is allowed to create department (Create for "department" only)
@@ -135,11 +117,9 @@ Role "project":
  User may access time category because organisation is allowed (View for "time_project" only)
 Role "project_view":
  User may access time category because organisation is allowed (View for "time_project" only)
-Role "quality":
+Role "reject":
+ User is allowed to reject PR in state approving or approved (Edit for "purchase_request": ('messages', 'status') only)
 Role "sub-login":
-Role "subcontract":
-Role "subcontract-org":
-Role "training-approval":
 Role "user":
   (Search for "pr_approval" only)
   (Search for "pr_offer_item" only)
@@ -177,13 +157,9 @@ Role "user":
  User is allowed to access pr_rating_category (View for "pr_rating_category" only)
  User is allowed to access pr_status (View for "pr_status" only)
  User is allowed to access pr_supplier (View for "pr_supplier" only)
- User is allowed to access pr_supplier_rating (View for "pr_supplier_rating" only)
- User is allowed to access pr_supplier_risk (View for "pr_supplier_risk" only)
  User is allowed to access product_group (View for "product_group" only)
- User is allowed to access psp_element (View for "psp_element" only)
  User is allowed to access purchase_risk_type (View for "purchase_risk_type" only)
  User is allowed to access purchase_security_risk (View for "purchase_security_risk" only)
- User is allowed to access purchase_type (View for "purchase_type" only)
  User is allowed to access security_req_group (View for "security_req_group" only)
  User is allowed to access supplier_risk_category (View for "supplier_risk_category" only)
  User is allowed to access terms_conditions (View for "terms_conditions" only)
@@ -197,7 +173,8 @@ Role "user":
  User is allowed to create purchase_request (Create for "purchase_request" only)
  User is allowed to create queries (Create for "query" only)
  User is allowed to edit (some of) their own user details (Edit for "user": ('csv_delimiter', 'hide_message_files', 'password', 'queries', 'realname', 'subst_until', 'substitute', 'timezone') only)
- User is allowed to edit PR Justification if the PR has appropriate status and the user is creator or owner of the PR or has one of the view roles (Edit for "purchase_request": ('pr_justification',) only)
+ User is allowed to edit PR Justification until and including approved status when the user is creator or owner of the PR or has one of the edit roles (Edit for "purchase_request": ('pr_justification',) only)
+ User is allowed to edit special procurement risks if the PR is signed (Edit for "purchase_request": ('pr_risks',) only)
  User is allowed to edit their own PRs (creator or requester or supervisor of requester) while PR is open or rejected (Edit for "purchase_request" only)
  User is allowed to edit their queries (Edit for "query" only)
  User is allowed to reopen their own rejected PR (Edit for "purchase_request": ('messages', 'nosy', 'status') only)
@@ -205,31 +182,40 @@ Role "user":
  User is allowed to search for their own files (Search for "file" only)
  User is allowed to search for their own messages (Search for "msg" only)
  User is allowed to search for their queries (Search for "query" only)
+ User is allowed to search pr_supplier_rating (Search for "pr_supplier_rating" only)
+ User is allowed to search pr_supplier_risk (Search for "pr_supplier_risk" only)
+ User is allowed to search psp_element (Search for "psp_element" only)
  User is allowed to search sap_cc (Search for "sap_cc" only)
  User is allowed to search time_project (Search for "time_project" only)
  User is allowed to search user_status (Search for "user": ('status',) only)
  User is allowed to view (some of) their own user details (View for "user": ('activity', 'address', 'alternate_addresses', 'creation', 'csv_delimiter', 'hide_message_files', 'password', 'queries', 'realname', 'subst_until', 'substitute', 'timezone') only)
- User is allowed to view special risks if the PR has appropriate status and the user is creator or owner of the PR or has one of the view roles (View for "purchase_request": ('pr_risks',) only)
+ User is allowed to view special procurement risks if the PR is signed and the user is creator or owner of the PR or has one of the view/edit roles (View for "purchase_request": ('pr_risks',) only)
  User is allowed to view their own files (View for "file" only)
  User is allowed to view their own messages (View for "msg" only)
+ User may access PSP element because organisation is allowed (View for "psp_element" only)
+ User may access purchase type because organisation is allowed (View for "purchase_type" only)
  User may access sap cost center because organisation is allowed (View for "sap_cc" only)
+ User may access supplier rating because organisation is allowed (View for "pr_supplier_rating" only)
+ User may access supplier risk because organisation is allowed (View for "pr_supplier_risk" only)
  User may access the rest interface (Rest Access)
  User may access the web interface (Web Access)
  User may access the xmlrpc interface (Xmlrpc Access)
+ User may access time category because organisation is allowed (View for "time_project": ('deputy', 'name', 'organisation', 'responsible', 'status') only)
  User may use the email interface (Email Access)
  User may view time category if user is owner or deputy of time category or on nosy list of time category and if the view is permitted via the organisation (View for "time_project" only)
- User with view role is allowed editing if status is 'approved' or 'ordered' (Edit for "purchase_request": ('files', 'messages', 'nosy', 'status') only)
+ User with edit role is allowed editing if status is not one of the in-progress stati (Edit for "purchase_request": ('files', 'messages', 'nosy', 'status') only)
  Users are allowed if an approval from them is linked to the PR (Edit for "purchase_request": ('files', 'messages', 'nosy') only)
  Users are allowed if an approval from them is linked to the PR (View for "purchase_request" only)
- Users are allowed if they have one of the view roles of the purchase type or one of the (forced) approval roles (Edit for "purchase_request": ('delivery_address', 'frame_purchase', 'frame_purchase_end', 'internal_order', 'messages', 'nosy', 'payment_type', 'purchasing_agents', 'sap_reference', 'special_approval', 'terms_conditions') only)
- Users are allowed if they have one of the view roles of the purchase type or one of the (forced) approval roles (View for "purchase_request" only)
+ Users are allowed if they have one of the edit roles of the purchase type or one of the (forced) approval roles (Edit for "purchase_request": ('delivery_address', 'frame_purchase', 'frame_purchase_end', 'internal_order', 'messages', 'nosy', 'payment_type', 'purchasing_agents', 'sap_reference', 'special_approval', 'terms_conditions') only)
+ Users are allowed if they have one of the edit roles of the purchase type or one of the (forced) approval roles (View for "purchase_request" only)
+ Users are allowed if they have one of the view roles of the purchase type (View for "purchase_request" only)
  Users are allowed to edit if offer is linked from PR and PR is editable (Edit for "pr_offer_item" only)
  Users are allowed to edit message if a pending approval from them is linked to the PR (Edit for "purchase_request": ('files', 'messages', 'nosy') only)
  Users are allowed to view if approval is linked to viewable PR (View for "pr_approval" only)
  Users are allowed to view if offer is linked from PR (View for "pr_offer_item" only)
- Users are allowed to view if they have one of the view roles of the purchase type (Edit for "pr_offer_item": ('add_to_las', 'internal_order', 'is_asset', 'payment_type', 'pr_supplier', 'supplier') only)
- Users are allowed to view if they have one of the view roles of the purchase type (View for "pr_approval" only)
- Users are allowed to view if they have one of the view roles of the purchase type (View for "pr_offer_item" only)
+ Users are allowed to view if they have one of the view or edit roles of the purchase type (Edit for "pr_offer_item": ('add_to_las', 'internal_order', 'is_asset', 'payment_type', 'pr_supplier', 'supplier') only)
+ Users are allowed to view if they have one of the view or edit roles of the purchase type (View for "pr_approval" only)
+ Users are allowed to view if they have one of the view or edit roles of the purchase type (View for "pr_offer_item" only)
  Users are allowed to view some of their details (View for "user": ('clearance_by', 'supervisor', 'want_no_messages') only)
  Users are allowed to view their own and public queries for classes where they have search permission (View for "query" only)
 Role "user_view":

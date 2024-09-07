@@ -64,6 +64,19 @@
      </tr>
      <tr>
       <th tal:content="structure python:utils.fieldname
+          (db, classname, 'pr_edit_roles')"/>
+      <td>
+       <span tal:content="structure python:context.pr_edit_roles.field ()"/>
+       <span tal:content="structure python:db.pr_approval_order.classhelp
+        ( 'role'
+        , property = 'pr_edit_roles'
+        , width    = '600'
+        , filter   = 'id=%s' % ','.join (prs)
+        )"/>
+      </td>
+     </tr>
+     <tr>
+      <th tal:content="structure python:utils.fieldname
           (db, classname, 'pr_roles')"/>
       <td>
        <span tal:content="structure python:context.pr_roles.field ()"/>
@@ -87,6 +100,12 @@
         , filter   = 'id=%s' % ','.join (prs)
         )"/>
       </td>
+     </tr>
+     <tr>
+      <th tal:content="structure python:utils.fieldname
+          (db, classname, 'organisations')"/>
+      <td tal:content="structure python:context.organisations.menu
+          (**utils.valid_item (now))"/>
      </tr>
      <tr tal:condition="context/id">
       <th tal:content="structure python:utils.fieldname

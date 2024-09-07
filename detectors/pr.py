@@ -20,6 +20,7 @@
 import re
 import common
 import prlib
+import o_permission
 from   roundup.date                   import Date, Interval
 from   roundup.exceptions             import Reject
 from   roundup                        import roundupdb
@@ -402,6 +403,7 @@ def check_psp_cc_consistency (db, cl, nodeid, new_values, org = None):
     if psp:
         assert tc # Timecat *must be defined if psp element is defined
         node = db.psp_element.getnode (psp)
+        cls  = db.psp_element
         tp   = db.time_project.getnode (tc)
         st   = db.time_project_status.getnode (tp.status)
         if not node.valid or not st.active:
@@ -418,6 +420,7 @@ def check_psp_cc_consistency (db, cl, nodeid, new_values, org = None):
                 )
     else:
         node = db.sap_cc.getnode (cc)
+        cls  = db.sap_cc
         if not node.valid:
             sap_cc = _ ('sap_cc')
             name   = node.name
@@ -427,9 +430,15 @@ def check_psp_cc_consistency (db, cl, nodeid, new_values, org = None):
         if not node.organisation:
             raise Reject (_ ("Organisation of CC/TC is empty"))
         o2 = db.organisation.get (node.organisation, 'name')
+        classname = _ (cls.classname)
+        classname_item = _ (cl.classname)
+        name = node.name
         raise Reject \
-            ( _("Organisation must be consistent with CC/TC: got %s expect %s")
-            % (o1, o2)
+            ( _ ("%(classname_item)s: Organisation in %(classname)s %(name)s"
+                 " must be consistent with organisation of PR: "
+                 "got %(o2)s expect %(o1)s"
+                )
+            % locals ()
             )
 # end def check_psp_cc_consistency
 
@@ -615,14 +624,14 @@ def change_pr (db, cl, nodeid, new_values):
 
 def agent_in_approval_order_users (db, uid, ptid):
     pt = db.purchase_type.getnode (ptid)
-    for aoid in pt.pr_view_roles:
+    for aoid in pt.pr_edit_roles:
         ao = db.pr_approval_order.getnode (aoid)
         if uid in ao.users:
             return True
     return False
 # end def agent_in_approval_order_users
 
-def compute_agents (db, paset, pts):
+def compute_agents (db, paset, pts, org):
     pa = set ()
     for uid in paset:
         # Add only if allowed by *all* pts
@@ -630,7 +639,8 @@ def compute_agents (db, paset, pts):
             if not agent_in_approval_order_users (db, uid, pt):
                 break
         else:
-            pa.add (uid)
+            if org in o_permission.get_allowed_org (db, uid):
+                pa.add (uid)
     return pa
 # end def compute_agents
 
@@ -667,6 +677,20 @@ def set_agents (db, cl, nodeid, new_values):
         paset = set ()
     else:
         paset = set (new_values.get ('purchasing_agents', []))
+    org = None
+    if 'organisation' in new_values:
+        org = new_values ['organisation']
+    else:
+        if nodeid and cl.get (nodeid, 'organisation'):
+            org = cl.get (nodeid, 'organisation')
+        else:
+            for cn in 'sap_cc', 'psp_element':
+                cls = db.getclass (cn)
+                org = None
+                if a in new_values:
+                    org = cls.get (new_values [a], 'organisation')
+                elif nodeid and cl.get (nodeid, a):
+                    org = cls.get (cl.get (nodeid, a), 'organisation')
     # Loop over offer items and add pt if any, also add purchase agents
     ois = new_values.get ('offer_items', [])
     if pr and 'offer_items' not in new_values:
@@ -686,7 +710,7 @@ def set_agents (db, cl, nodeid, new_values):
     # This also means that if the list gets empty here we will compute
     # the default below.
     if 'purchasing_agents' in new_values and not force:
-        pa = compute_agents (db, pa, pts)
+        pa = compute_agents (db, pa, pts, org)
         if pa:
             new_values ['purchasing_agents'] = list (pa)
     if  (  not pa
@@ -716,7 +740,7 @@ def set_agents (db, cl, nodeid, new_values):
             paset.update (db.purchase_type.get (pt, 'purchasing_agents'))
         # Only put those agents into 'purchasing_agents' that have
         # necessary role from all the purchase_types in pts
-        pa = compute_agents (db, paset, pts)
+        pa = compute_agents (db, paset, pts, org)
         new_values ['purchasing_agents'] = list (pa)
     # Add agents to nosy list
     if set (new_values.get ('purchasing_agents', [])) != opa:
@@ -882,6 +906,25 @@ def nosy_for_approval (db, app, add = False):
     nosy.update (dict.fromkeys (nosy_dd))
     return nosy
 # end def nosy_for_approval
+
+def fix_agents (db, cl, nodeid, new_values):
+    """ When changing to approving state, make sure that the agents are
+        valid for the organisation of this PR.
+    """
+    pr_approving = db.pr_status.lookup ('approving')
+    if 'status' not in new_values or new_values ['status'] != pr_approving:
+        return
+    pua = 'purchasing_agents'
+    agents = new_values.get (pua, cl.get (nodeid, pua))
+    org = new_values.get ('organisation', cl.get (nodeid, 'organisation'))
+    assert org
+    new_agents = []
+    for a in agents:
+        prn = 'purchase_request'
+        if o_permission.organisation_allowed (db, a, nodeid, prn):
+            new_agents.append (a)
+    new_values [pua] = new_agents
+# end def fix_agents
 
 def fix_nosy (db, cl, nodeid, new_values):
     """ At the end of all nosy-list manipulations make sure that some
@@ -1205,27 +1248,6 @@ def requester_chg (db, cl, nodeid, new_values):
             raise Reject (_ ("Requester may not be changed"))
 # end def requester_chg
 
-def pt_check_roles (db, cl, nodeid, new_values):
-    _ = db.i18n.gettext
-    common.check_roles (db, cl, nodeid, new_values)
-    common.check_roles (db, cl, nodeid, new_values, 'view_roles')
-    common.check_roles (db, cl, nodeid, new_values, 'forced_roles')
-    # Ensure that all purchasing_agents have one of the view roles
-    if 'purchasing_agents' in new_values:
-        if 'pr_view_roles' in new_values:
-            roles = new_values ['pr_view_roles']
-        elif nodeid:
-            roles = cl.get (nodeid, 'pr_view_roles')
-        users = set ()
-        for rid in roles:
-            role = db.pr_approval_order.getnode (rid)
-            users.update (role.users)
-        for id in new_values ['purchasing_agents']:
-            if id not in users:
-                un = db.user.get (id, 'username')
-                raise Reject (_ ("User doesn't have a View-Role: %s") % un)
-# end def pt_check_roles
-
 def pao_check_roles (db, cl, nodeid, new_values):
     """ Now allow the role-name to not be a roundup role anymore
         Also check that only_nosy is set to a boolean value.
@@ -1233,6 +1255,8 @@ def pao_check_roles (db, cl, nodeid, new_values):
     _ = db.i18n.gettext
     if 'role' in new_values and ',' in new_values ['role']:
         raise Reject (_ ("No commas allowed in role name"))
+    common.require_attributes \
+        ( db.i18n.gettext, cl, nodeid, new_values, 'order')
     nosyflag   = new_values.get ('only_nosy')
     is_board   = new_values.get ('is_board')
     is_finance = new_values.get ('is_finance')
@@ -1448,11 +1472,94 @@ def fix_gl_account_oi (db, cl, nodeid, new_values):
                 break
 # end def fix_gl_account_oi
 
+def check_org_for_item (db, cl, nodeid, new_values, check_all, orgs):
+    """ Check that all linked items have an allowed organisation
+    """
+    _ = db.i18n.gettext
+    classname = _ (cl.classname)
+    pspid = new_values.get ('psp_element', None)
+    if 'psp_element' not in new_values and nodeid:
+        pspid = cl.get (nodeid, 'psp_element')
+    if pspid and (check_all or 'psp_element' in new_values):
+        psp = db.psp_element.getnode (pspid)
+        if psp.organisation not in orgs:
+            name = psp.name
+            raise Reject \
+                (_ ('Organisation of PSP element %(name)s of %(classname)s '
+                    'not allowed for this requester'
+                   )
+                % locals ()
+                )
+
+    sapid = new_values.get ('sap_cc', None)
+    if 'sap_cc' not in new_values and nodeid:
+        sapid = cl.get (nodeid, 'sap_cc')
+    if sapid and (check_all or 'sap_cc' in new_values):
+        sap = db.sap_cc.getnode (sapid)
+        if sap.organisation not in orgs:
+            name = sap.name
+            raise Reject \
+                (_ ('Organisation of SAP cost-center %(name)s '
+                    'of %(classname)s not allowed for this requester'
+                   )
+                % locals ()
+                )
+
+    ptid = new_values.get ('purchase_type', None)
+    if 'purchase_type' not in new_values and nodeid:
+        ptid = cl.get (nodeid, 'purchase_type')
+    if ptid and (check_all or 'purchase_type' in new_values):
+        pt = db.purchase_type.getnode (ptid)
+        if pt.organisations and not orgs.intersection (pt.organisations):
+            name = pt.name
+            raise Reject \
+                (_ ( 'None of the organisations of the purchase type %(name)s'
+                   ' of %(classname)s are allowed for this requester'
+                   )
+                % locals ()
+                )
+# end def check_org_for_item
+
+def check_org (db, cl, nodeid, new_values):
+    check_all = False
+    uid = new_values.get ('requester', None)
+    if 'requester' not in new_values:
+        uid = cl.get (nodeid, 'requester')
+    if 'requester' in new_values:
+        check_all = True
+    orgs = o_permission.get_allowed_org (db, uid)
+
+    orgid = new_values.get ('organisation', None)
+    if 'organisation' not in new_values:
+        orgid = cl.get (nodeid, 'organisation')
+    if orgid and (check_all or 'organisation' in new_values):
+        if orgid not in orgs:
+            name = db.organisation.get (orgid, 'name')
+            raise Reject \
+                ( 'Organisation %(name)s not allowed for this requester'
+                % locals ()
+                )
+
+    check_org_for_item (db, cl, nodeid, new_values, check_all, orgs)
+
+    if check_all:
+        offer_items = new_values.get ('offer_items', [])
+        if not offer_items and nodeid:
+            offer_items = cl.get (nodeid, 'offer_items')
+        for oiid in offer_items:
+            check_org_for_item (db, db.pr_offer_item, oiid, {}, True, orgs)
+# end def check_org
+
+def check_org_oi (db, cl, nodeid, new_values):
+    pr  = get_pr_from_offer_item (db, nodeid)
+    if pr and pr.requester:
+        orgs = o_permission.get_allowed_org (db, pr.requester)
+        check_org_for_item (db, cl, nodeid, new_values, False, orgs)
+# end def check_org_oi
+
 def init (db):
     if 'purchase_request' not in db.classes:
         return
-    db.purchase_type.audit      ("create", pt_check_roles)
-    db.purchase_type.audit      ("set",    pt_check_roles)
     db.purchase_request.audit   ("create", new_pr,          priority = 50)
     db.purchase_request.audit   ("set",    check_requester, priority = 50)
     db.purchase_request.audit   ("create", check_psp_cc,    priority = 80)
@@ -1469,6 +1576,7 @@ def init (db):
     db.purchase_request.react   ("set",    changed_pr)
     db.purchase_request.react   ("create", create_pr_approval)
     db.purchase_request.audit   ("set",    check_io_pr)
+    db.purchase_request.audit   ("set",    fix_agents,      priority = 180)
     db.purchase_request.audit   ("set",    fix_nosy,        priority = 200)
     db.purchase_request.audit   ("set",    set_infosec,     priority = 250)
     db.purchase_request.audit   ("create", check_issue_nums)
@@ -1476,6 +1584,8 @@ def init (db):
     db.purchase_request.audit   ("set",    pr_check_payment_type)
     db.purchase_request.audit   ("set",    fix_gl_account)
     db.purchase_request.audit   ("create", fix_gl_account)
+    db.purchase_request.audit   ("set",    check_org, priority = 300)
+    db.purchase_request.audit   ("create", check_org, priority = 300)
     db.pr_approval.audit        ("create", new_pr_approval)
     db.pr_approval.audit        ("set",    change_pr_approval)
     db.pr_approval.audit        ("set",    set_approval_pr, priority = 90)
@@ -1498,16 +1608,22 @@ def init (db):
     db.pr_offer_item.react      ("set",    send_las_email, priority = 150)
     db.pr_offer_item.audit      ("set",    fix_gl_account_oi)
     db.pr_offer_item.audit      ("create", fix_gl_account_oi)
+    db.pr_offer_item.audit      ("set",    check_org_oi, priority = 300)
+    db.pr_offer_item.audit      ("create", check_org_oi, priority = 300)
     db.pr_currency.audit        ("create", check_currency)
     db.pr_currency.audit        ("set",    check_currency)
     db.pr_approval_order.audit  ("create", pao_check_roles)
     db.pr_approval_order.audit  ("set",    pao_check_roles)
     db.pr_supplier_rating.audit ("create", check_supplier_rating)
     db.pr_supplier_rating.audit ("set",    check_supplier_rating)
+    db.pr_supplier_rating.audit ("create", o_permission.check_supplier_rating)
+    db.pr_supplier_rating.audit ("set",    o_permission.check_supplier_rating)
     db.pr_supplier.audit        ("create", namelen)
     db.pr_supplier.audit        ("set",    namelen)
     db.pr_supplier_risk.audit   ("create", check_supplier_risk)
     db.pr_supplier_risk.audit   ("set",    check_supplier_risk)
+    db.pr_supplier_risk.audit   ("create", o_permission.check_supplier_risk)
+    db.pr_supplier_risk.audit   ("set",    o_permission.check_supplier_risk)
     db.purchase_security_risk.audit ("create", check_psr)
     db.purchase_security_risk.audit ("set",    check_psr)
     db.product_group.audit      ("create", check_pg)

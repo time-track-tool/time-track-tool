@@ -708,6 +708,7 @@ def security (db, ** kw):
     roles = \
         [ ("Project",           "Project Office")
         , ("Project_View",      "May view project data")
+        , ("Procurement",       "Purchasing/Procurement")
         , ("HR-vacation",       "May approve vacation and special leave")
         , ("HR-leave-approval", "Approve paid vacation beyond normal vacation")
         , ("Staff-report",      "May view staff report")
@@ -1510,8 +1511,34 @@ def security (db, ** kw):
         db.security.addPermissionToRole (role, p)
         db.security.addPermissionToRole (role, 'Create', 'sap_cc')
 
+    p = db.security.addPermission \
+        ( name        = 'Edit'
+        , klass       = 'sap_cc'
+        , check       = o_permission.sap_cc_allowed_by_org
+        , properties  = ("purchasing_agents", "group_lead", "team_lead", "nosy")
+        , description = fixdoc (o_permission.sap_cc_allowed_by_org.__doc__)
+        )
+    db.security.addPermissionToRole ("Procurement", p)
+    p = db.security.addPermission \
+        ( name        = 'View'
+        , klass       = 'time_project'
+        , check       = o_permission.time_project_allowed_by_org
+        , description = fixdoc
+            (o_permission.time_project_allowed_by_org.__doc__)
+        )
+    db.security.addPermissionToRole ("Procurement", p)
+    p = db.security.addPermission \
+        ( name        = 'Edit'
+        , klass       = 'time_project'
+        , check       = o_permission.time_project_allowed_by_org
+        , properties  = ("purchasing_agents", "group_lead", "team_lead", "nosy")
+        , description = fixdoc
+            (o_permission.time_project_allowed_by_org.__doc__)
+        )
+    db.security.addPermissionToRole ("Procurement", p)
+
     schemadef.add_search_permission \
-	(db, 'time_activity_perm', 'HR-Org-Location')
+        (db, 'time_activity_perm', 'HR-Org-Location')
 
     p = db.security.addPermission \
         ( name        = 'Edit'

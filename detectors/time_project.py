@@ -102,6 +102,7 @@ def fix_wp (db, cl, nodeid, old_values):
 # end def fix_wp
 
 def check_o_permission (db, cl, nodeid, new_values):
+    _ = db.i18n.gettext
     # User is required and must not change later
     if nodeid:
         common.reject_attributes (db.i18n.gettext, new_values, 'user')
@@ -109,6 +110,11 @@ def check_o_permission (db, cl, nodeid, new_values):
     else:
         common.require_attributes (db.i18n.gettext, cl, new_values, 'user')
         uid = new_values ['user']
+    # No duplicate users
+    user = new_values.get ('user')
+    if not user:
+        user = cl.get (nodeid, 'user')
+    common.check_unique (_, cl, nodeid, user = user)
     dbuid = db.getuid ()
     # Allow all changes for admin user or admin role
     if dbuid == '1' or common.user_has_role (db, dbuid, 'admin'):
@@ -124,11 +130,11 @@ def check_o_permission (db, cl, nodeid, new_values):
         cls    = db.organisation
     if attr in new_values:
         if nodeid:
-            old_olo = set (cl.get (nodeid, attr))
+            old_oro = set (cl.get (nodeid, attr))
         else:
-            old_olo = {()}
-        olo = set (new_values [attr])
-        changed = (old_olo - olo).union (olo - old_olo)
+            old_oro = set ()
+        oro = set (new_values [attr])
+        changed = (old_oro - oro).union (oro - old_oro)
         allowed = method (db, dbuid)
         # If we try to change something that is not allowed:
         if changed - allowed:
