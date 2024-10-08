@@ -249,35 +249,12 @@
       <td tal:content="structure python:context.frame_purchase_end.field ()"/>
      </tr>
      <tr>
-      <tal:block tal:condition="context/id">
-       <th tal:content="structure python:utils.fieldname
-           (db, classname, 'status')"/>
-       <td tal:content="structure python:context.status.menu
-          (** utils.pr_filter_status_transitions (db, context))"/>
-      </tal:block>
-      <tal:block tal:condition="not:context/id">
-       <th/>
-       <td/>
-      </tal:block>
-      <th tal:content="structure python:utils.fieldname
-          (db, classname, 'pr_currency')"/>
-      <td tal:content="structure python:context.pr_currency.menu ()"/>
-     </tr>
-     <tr>
-      <th tal:content="structure python:utils.fieldname
-          (db, classname, 'date_approved')"/>
-      <td tal:content="structure python:context.date_approved.plain ()"/>
-      <th tal:content="structure python:utils.fieldname
-          (db, classname, 'payment_type')"/>
-      <td tal:content="structure python:context.payment_type.menu ()"/>
-     </tr>
-     <tr>
       <th tal:content="structure python:utils.fieldname
           (db, classname, 'renew_until')"/>
       <td tal:content="structure python:context.renew_until.field ()"/>
       <th tal:content="structure python:utils.fieldname
-          (db, classname, 'date_ordered')"/>
-      <td tal:content="structure python:context.date_ordered.plain ()"/>
+          (db, classname, 'pr_currency')"/>
+      <td tal:content="structure python:context.pr_currency.menu ()"/>
      </tr>
      <tr>
       <tal:block tal:condition="python:
@@ -300,8 +277,17 @@
        <td/>
       </tal:block>
       <th tal:content="structure python:utils.fieldname
+          (db, classname, 'payment_type')"/>
+      <td tal:content="structure python:context.payment_type.menu ()"/>
+     </tr>
+     <tr>
+      <th tal:content="structure python:utils.fieldname
+          (db, classname, 'charge_to')"/>
+      <td tal:content="structure python:context.charge_to.menu
+        (valid_from = ';.,-', valid_to = '.;,-')"/>
+      <th tal:content="structure python:utils.fieldname
           (db, classname, 'delivery_address')"/>
-      <td rowspan="2">
+      <td>
        <span tal:content="structure python:context.delivery_address.menu
         (valid_from = ';.,-', valid_to = '.;,-', sort_on = ('+', 'order'))"/>
        <br>
@@ -313,28 +299,29 @@
       </td>
      </tr>
      <tr>
+      <tal:block tal:condition="context/id">
+       <th tal:content="structure python:utils.fieldname
+           (db, classname, 'status')"/>
+       <td tal:content="structure python:context.status.menu
+          (** utils.pr_filter_status_transitions (db, context))"/>
+      </tal:block>
+      <tal:block tal:condition="not:context/id">
+       <th/>
+       <td/>
+      </tal:block>
+     </tr>
+     <tr>
       <th tal:content="structure python:utils.fieldname
-          (db, classname, 'charge_to')"/>
-      <td tal:content="structure python:context.charge_to.menu
-        (valid_from = ';.,-', valid_to = '.;,-')"/>
-      <!--
-      <td>
-       <tal:block tal:repeat="org python:
-            db.organisation.filter
-                ( None
-                , dict (valid_from = ';.,-', valid_to = '.;,-')
-                , sort = ('+', 'name')
-                )">
-        <input type="checkbox" name="charge_to" tal:attributes=
-            " id python:'org-' + org.id
-            ; value python: org.name
-            ; checked python: org.id in context.charge_to
-            ">
-        <label tal:attributes="for python:'org-' + org.id;"
-               tal:content="python: org.name" />
-       </tal:block>
-      </td>
-      -->
+          (db, classname, 'date_approved')"/>
+      <td tal:content="structure python:context.date_approved.plain ()"/>
+      <th tal:content="structure python:utils.fieldname
+          (db, classname, 'date_progress')"/>
+      <td tal:content="structure python:context.date_progress.plain ()"/>
+     </tr>
+     <tr>
+      <th tal:content="structure python:utils.fieldname
+          (db, classname, 'date_ordered')"/>
+      <td tal:content="structure python:context.date_ordered.plain ()"/>
      </tr>
      <tr>
       <th tal:content="structure python:utils.fieldname

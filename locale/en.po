@@ -7311,6 +7311,9 @@ msgstr "PR Justification"
 msgid "date_approved"
 msgstr "Approved on"
 
+msgid "date_progress"
+msgstr "In-Progress on"
+
 msgid "total_cost"
 msgstr "Total cost"
 

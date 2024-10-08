@@ -382,6 +382,7 @@ def init \
                                                     )
                 , date_approved         = Date      ()
                 , date_ordered          = Date      ()
+                , date_progress         = Date      ()
                 , renew_until           = Date      ()
                 , payment_type          = Link      ( "payment_type"
                                                     , do_journal = 'no'

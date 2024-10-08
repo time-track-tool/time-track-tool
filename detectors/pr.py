@@ -137,6 +137,7 @@ def reopen (db, cl, nodeid, new_values):
     if ost == rej and new_values ['status'] == opn:
         new_values ['date_ordered']       = None
         new_values ['date_approved']      = None
+        new_values ['date_progress']      = None
         new_values ['infosec_level']      = None
         new_values ['purchase_risk_type'] = None
 # end def reopen
@@ -592,6 +593,8 @@ def change_pr (db, cl, nodeid, new_values):
                 if ap.status != ap_appr:
                     raise Reject (_ ("Not all approvals in status approved"))
             new_values ['date_approved'] = now
+        elif new_values ['status'] == db.pr_status.lookup ('in progress'):
+            new_values ['date_progress'] = now
         elif new_values ['status'] == db.pr_status.lookup ('rejected'):
             for ap in approvals:
                 if ap.status == ap_rej:
@@ -602,6 +605,7 @@ def change_pr (db, cl, nodeid, new_values):
                     raise Reject (_ ("No rejected approval-record found"))
             new_values ['date_approved'] = None
             new_values ['date_ordered']  = None
+            new_values ['date_progress'] = None
         elif new_values ['status'] == db.pr_status.lookup ('open'):
             # If setting status to open again we need to retire *all*
             # approvals and re-create the (pending) approval of the
@@ -615,11 +619,13 @@ def change_pr (db, cl, nodeid, new_values):
             new_values ['total_cost']    = None
             new_values ['date_approved'] = None
             new_values ['date_ordered']  = None
+            new_values ['date_progress'] = None
         elif new_values ['status'] == db.pr_status.lookup ('ordered'):
             new_values ['date_ordered'] = now
         elif new_values ['status'] == db.pr_status.lookup ('cancelled'):
             new_values ['date_approved'] = None
             new_values ['date_ordered']  = None
+            new_values ['date_progress'] = None
 # end def change_pr
 
 def agent_in_approval_order_users (db, uid, ptid):
