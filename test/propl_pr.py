@@ -244,6 +244,7 @@ properties = \
         , 'contract_term'
         , 'date_approved'
         , 'date_ordered'
+        , 'date_progress'
         , 'delivery_address'
         , 'delivery_deadline'
         , 'department'

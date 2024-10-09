@@ -745,7 +745,9 @@ properties = \
             ]
           )
         , ( 'purchase_type'
-          , [ 'admin', 'procurement-admin'
+          , [ 'admin', 'ciso', 'controlling', 'dom-user-edit-facility', 'dom-user-edit-gtt', 'dom-user-edit-hr', 'dom-user-edit-office', 'it'
+            , 'las', 'o-permission', 'pgp', 'procurement-admin', 'project', 'project_view', 'reject'
+            , 'user', 'user_view', 'view-roles'
             ]
           )
         , ( 'sap_cc'
@@ -1000,6 +1002,12 @@ properties = \
             , 'user', 'user_view', 'view-roles'
             ]
           )
+        , ( 'date_progress'
+          , [ 'admin', 'ciso', 'controlling', 'dom-user-edit-facility', 'dom-user-edit-gtt', 'dom-user-edit-hr', 'dom-user-edit-office', 'it'
+            , 'las', 'o-permission', 'pgp', 'procurement-admin', 'project', 'project_view', 'reject'
+            , 'user', 'user_view', 'view-roles'
+            ]
+          )
         , ( 'delivery_address'
           , [ 'admin', 'ciso', 'controlling', 'dom-user-edit-facility', 'dom-user-edit-gtt', 'dom-user-edit-hr', 'dom-user-edit-office', 'it'
             , 'las', 'o-permission', 'pgp', 'procurement-admin', 'project', 'project_view', 'reject'
@@ -1145,7 +1153,9 @@ properties = \
             ]
           )
         , ( 'purchase_type'
-          , [ 'admin', 'procurement-admin'
+          , [ 'admin', 'ciso', 'controlling', 'dom-user-edit-facility', 'dom-user-edit-gtt', 'dom-user-edit-hr', 'dom-user-edit-office', 'it'
+            , 'las', 'o-permission', 'pgp', 'procurement-admin', 'project', 'project_view', 'reject'
+            , 'user', 'user_view', 'view-roles'
             ]
           )
         , ( 'purchasing_agents'
@@ -1278,55 +1288,81 @@ properties = \
       )
     , ( 'purchase_type'
       , [ ( 'allow_gl_account'
-          , [ 'admin', 'procurement-admin'
+          , [ 'admin', 'ciso', 'controlling', 'dom-user-edit-facility', 'dom-user-edit-gtt', 'dom-user-edit-hr', 'dom-user-edit-office', 'it'
+            , 'las', 'o-permission', 'pgp', 'procurement-admin', 'project', 'project_view', 'reject'
+            , 'user', 'user_view', 'view-roles'
             ]
           )
         , ( 'confidential'
-          , [ 'admin', 'procurement-admin'
+          , [ 'admin', 'ciso', 'controlling', 'dom-user-edit-facility', 'dom-user-edit-gtt', 'dom-user-edit-hr', 'dom-user-edit-office', 'it'
+            , 'las', 'o-permission', 'pgp', 'procurement-admin', 'project', 'project_view', 'reject'
+            , 'user', 'user_view', 'view-roles'
             ]
           )
         , ( 'description'
-          , [ 'admin', 'procurement-admin'
+          , [ 'admin', 'ciso', 'controlling', 'dom-user-edit-facility', 'dom-user-edit-gtt', 'dom-user-edit-hr', 'dom-user-edit-office', 'it'
+            , 'las', 'o-permission', 'pgp', 'procurement-admin', 'project', 'project_view', 'reject'
+            , 'user', 'user_view', 'view-roles'
             ]
           )
         , ( 'name'
-          , [ 'admin', 'procurement-admin'
+          , [ 'admin', 'ciso', 'controlling', 'dom-user-edit-facility', 'dom-user-edit-gtt', 'dom-user-edit-hr', 'dom-user-edit-office', 'it'
+            , 'las', 'o-permission', 'pgp', 'procurement-admin', 'project', 'project_view', 'reject'
+            , 'user', 'user_view', 'view-roles'
             ]
           )
         , ( 'nosy'
-          , [ 'admin', 'procurement-admin'
+          , [ 'admin', 'ciso', 'controlling', 'dom-user-edit-facility', 'dom-user-edit-gtt', 'dom-user-edit-hr', 'dom-user-edit-office', 'it'
+            , 'las', 'o-permission', 'pgp', 'procurement-admin', 'project', 'project_view', 'reject'
+            , 'user', 'user_view', 'view-roles'
             ]
           )
         , ( 'order'
-          , [ 'admin', 'procurement-admin'
+          , [ 'admin', 'ciso', 'controlling', 'dom-user-edit-facility', 'dom-user-edit-gtt', 'dom-user-edit-hr', 'dom-user-edit-office', 'it'
+            , 'las', 'o-permission', 'pgp', 'procurement-admin', 'project', 'project_view', 'reject'
+            , 'user', 'user_view', 'view-roles'
             ]
           )
         , ( 'organisations'
-          , [ 'admin', 'procurement-admin'
+          , [ 'admin', 'ciso', 'controlling', 'dom-user-edit-facility', 'dom-user-edit-gtt', 'dom-user-edit-hr', 'dom-user-edit-office', 'it'
+            , 'las', 'o-permission', 'pgp', 'procurement-admin', 'project', 'project_view', 'reject'
+            , 'user', 'user_view', 'view-roles'
             ]
           )
         , ( 'pr_edit_roles'
-          , [ 'admin', 'procurement-admin'
+          , [ 'admin', 'ciso', 'controlling', 'dom-user-edit-facility', 'dom-user-edit-gtt', 'dom-user-edit-hr', 'dom-user-edit-office', 'it'
+            , 'las', 'o-permission', 'pgp', 'procurement-admin', 'project', 'project_view', 'reject'
+            , 'user', 'user_view', 'view-roles'
             ]
           )
         , ( 'pr_forced_roles'
-          , [ 'admin', 'procurement-admin'
+          , [ 'admin', 'ciso', 'controlling', 'dom-user-edit-facility', 'dom-user-edit-gtt', 'dom-user-edit-hr', 'dom-user-edit-office', 'it'
+            , 'las', 'o-permission', 'pgp', 'procurement-admin', 'project', 'project_view', 'reject'
+            , 'user', 'user_view', 'view-roles'
             ]
           )
         , ( 'pr_roles'
-          , [ 'admin', 'procurement-admin'
+          , [ 'admin', 'ciso', 'controlling', 'dom-user-edit-facility', 'dom-user-edit-gtt', 'dom-user-edit-hr', 'dom-user-edit-office', 'it'
+            , 'las', 'o-permission', 'pgp', 'procurement-admin', 'project', 'project_view', 'reject'
+            , 'user', 'user_view', 'view-roles'
             ]
           )
         , ( 'pr_view_roles'
-          , [ 'admin', 'procurement-admin'
+          , [ 'admin', 'ciso', 'controlling', 'dom-user-edit-facility', 'dom-user-edit-gtt', 'dom-user-edit-hr', 'dom-user-edit-office', 'it'
+            , 'las', 'o-permission', 'pgp', 'procurement-admin', 'project', 'project_view', 'reject'
+            , 'user', 'user_view', 'view-roles'
             ]
           )
         , ( 'purchasing_agents'
-          , [ 'admin', 'procurement-admin'
+          , [ 'admin', 'ciso', 'controlling', 'dom-user-edit-facility', 'dom-user-edit-gtt', 'dom-user-edit-hr', 'dom-user-edit-office', 'it'
+            , 'las', 'o-permission', 'pgp', 'procurement-admin', 'project', 'project_view', 'reject'
+            , 'user', 'user_view', 'view-roles'
             ]
           )
         , ( 'valid'
-          , [ 'admin', 'procurement-admin'
+          , [ 'admin', 'ciso', 'controlling', 'dom-user-edit-facility', 'dom-user-edit-gtt', 'dom-user-edit-hr', 'dom-user-edit-office', 'it'
+            , 'las', 'o-permission', 'pgp', 'procurement-admin', 'project', 'project_view', 'reject'
+            , 'user', 'user_view', 'view-roles'
             ]
           )
         ]

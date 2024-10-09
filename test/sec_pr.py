@@ -68,7 +68,6 @@ Role "pgp":
 Role "procurement-admin":
   (Restore for "pr_approval_order" only)
   (Retire for "pr_approval_order" only)
-  (Search for "user" only)
  User is allowed Edit on (Edit for "purchase_request": ('renew_until',) only)
  User is allowed Edit on (Edit for "sap_cc": ('deputy_gets_mail',) only)
  User is allowed Edit on (Edit for "time_project": ('deputy_gets_mail',) only)
@@ -109,6 +108,7 @@ Role "procurement-admin":
  User is allowed to edit purchase_type (Edit for "purchase_type" only)
  User is allowed to edit security_req_group (Edit for "security_req_group" only)
  User is allowed to reject PR in state approving or approved (Edit for "purchase_request": ('messages', 'status') only)
+ User is allowed to search user (Search for "user" only)
 Role "project":
  User is allowed to create time_project (Create for "time_project" only)
  User is allowed to create time_project_status (Create for "time_project_status" only)
@@ -121,9 +121,6 @@ Role "reject":
  User is allowed to reject PR in state approving or approved (Edit for "purchase_request": ('messages', 'status') only)
 Role "sub-login":
 Role "user":
-  (Search for "pr_approval" only)
-  (Search for "pr_offer_item" only)
-  (Search for "purchase_request" only)
  Allow setting add_to_las from 'None' for orphanes offer items (Edit for "pr_offer_item": ('add_to_las',) only)
  Allowed to edit until ordered (Edit for "pr_offer_item": ('gl_account',) only)
  Allowed to edit until ordered (Edit for "purchase_request": ('gl_account',) only)
@@ -182,9 +179,13 @@ Role "user":
  User is allowed to search for their own files (Search for "file" only)
  User is allowed to search for their own messages (Search for "msg" only)
  User is allowed to search for their queries (Search for "query" only)
+ User is allowed to search pr_approval (Search for "pr_approval" only)
+ User is allowed to search pr_offer_item (Search for "pr_offer_item" only)
  User is allowed to search pr_supplier_rating (Search for "pr_supplier_rating" only)
  User is allowed to search pr_supplier_risk (Search for "pr_supplier_risk" only)
  User is allowed to search psp_element (Search for "psp_element" only)
+ User is allowed to search purchase_request (Search for "purchase_request" only)
+ User is allowed to search purchase_type (Search for "purchase_type" only)
  User is allowed to search sap_cc (Search for "sap_cc" only)
  User is allowed to search time_project (Search for "time_project" only)
  User is allowed to search user_status (Search for "user": ('status',) only)
