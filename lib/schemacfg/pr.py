@@ -569,29 +569,11 @@ def security (db, ** kw):
         , 'status', 'id'
         , 'creation', 'creator', 'activity', 'actor'
         )
-    p = db.security.addPermission \
-        ( name        = 'Search'
-        , klass       = 'user'
-        )
-    db.security.addPermissionToRole ('Procurement-Admin', p)
+    schemadef.add_search_permission (db, 'user', 'Procurement-Admin')
 
-    p = db.security.addPermission \
-        ( name        = 'Search'
-        , klass       = 'purchase_request'
-        )
-    db.security.addPermissionToRole ('User', p)
-
-    p = db.security.addPermission \
-        ( name        = 'Search'
-        , klass       = 'pr_approval'
-        )
-    db.security.addPermissionToRole ('User', p)
-
-    p = db.security.addPermission \
-        ( name        = 'Search'
-        , klass       = 'pr_offer_item'
-        )
-    db.security.addPermissionToRole ('User', p)
+    schemadef.add_search_permission (db, 'purchase_request', 'User')
+    schemadef.add_search_permission (db, 'pr_approval',      'User')
+    schemadef.add_search_permission (db, 'pr_offer_item',    'User')
 
     db.security.addPermissionToRole ('User', 'Create', 'pr_offer_item')
     db.security.addPermissionToRole ('User', 'Create', 'purchase_request')
@@ -1431,6 +1413,7 @@ def security (db, ** kw):
             (o_permission.purchase_type_allowed_by_org.__doc__)
         )
     db.security.addPermissionToRole ("User", p)
+    schemadef.add_search_permission (db, 'purchase_type', 'User')
 
 #    # Doesn't seem to be needed
 #    # Allow editing pr_approval.{date, msg} while open or approving
