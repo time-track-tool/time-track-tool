@@ -4322,7 +4322,7 @@ msgid ""
 msgstr ""
 
 msgid "safety_critical"
-msgstr "Safety critical"
+msgstr "LAS relevant Product Group"
 
 msgid ""
 "This field is used in the approval process to identify\n"
