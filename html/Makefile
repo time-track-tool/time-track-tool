@@ -1,12 +1,7 @@
-ifneq (,$(wildcard vue-frontend/dist))
-    VUE_FILES=dist daily_record.rest.html
-endif
-
 all: _generic.item.html person.item.html person.index.html \
      customer.index.html customer.item.html device.item.html \
      sensor.item.html sensor.index.html measurement.index.html \
-     device_group.item.html ext_tracker_state.ext_attr.html \
-     $(VUE_FILES)
+     device_group.item.html ext_tracker_state.ext_attr.html
 
 _generic.item.html: _generic.index.html
 	ln -s _generic.index.html _generic.item.html
@@ -40,9 +35,3 @@ device_group.item.html: device_group.index.html
 
 ext_tracker_state.ext_attr.html: issue.ext_attr.html
 	ln -s issue.ext_attr.html ext_tracker_state.ext_attr.html
-
-daily_record.rest.html: vue-frontend/dist/index.html
-	ln -s vue-frontend/dist/index.html daily_record.rest.html
-
-dist: vue-frontend/dist
-	ln -s vue-frontend/dist dist

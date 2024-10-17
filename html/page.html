@@ -756,12 +756,6 @@
         Time
        </a>
       </span>
-      <span class="classblock" tal:condition="python: request.user.new_tt_iface">
-       <a i18n:translate=""
-          tal:attributes="href python:'daily_record?:template=rest#/'+request.user.id+'/week/'+now.now().strftime('%Y/%W')">
-        TimeNew
-       </a> 
-      </span>
       <span class="classblock"
        tal:define="dyn python: utils.get_user_dynamic
           (db._db, db._db.getuid (), now)"

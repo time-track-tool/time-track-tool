@@ -452,16 +452,6 @@
           (db, 'user', 'tt_lines')"/>
       <td tal:content="structure context/tt_lines/field"/>
      </tr>
-     <tr tal:condition="python:'new_tt_iface' in bclass.properties">
-      <th tal:content="structure python:utils.fieldname
-          (db, 'user', 'new_tt_iface')"/>
-      <td tal:content="structure context/new_tt_iface/field"/>
-     </tr>
-     <tr tal:condition="python:'dark_mode' in bclass.properties">
-      <th tal:content="structure python:utils.fieldname
-          (db, 'user', 'dark_mode')"/>
-      <td tal:content="structure context/dark_mode/field"/>
-     </tr>
     </tal:block>
     <tr tal:condition="python:'call' in props">
      <th tal:content="structure python:utils.fieldname
