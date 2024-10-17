@@ -175,7 +175,7 @@ def security (db, ** kw) :
         ]
 
     prop_perms = \
-        [ ( "user", "View", ["Controlling"], ("roles",))
+        [
         ]
 
     schemadef.register_roles             (db, roles)

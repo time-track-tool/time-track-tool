@@ -33,7 +33,6 @@ Role "contact":
  User is allowed to edit contact (Edit for "contact" only)
 Role "controlling":
   (Search for "overtime_correction" only)
- User is allowed View on (View for "user": ('roles',) only)
  User is allowed to access contract_type (View for "contract_type" only)
  User is allowed to access query (View for "query" only)
  User is allowed to access time_report (View for "time_report" only)
@@ -160,7 +159,6 @@ Role "hr":
  User may access time category because organisation is allowed (Edit for "time_project": ('approval_hr', 'approval_required', 'is_extern', 'is_public_holiday', 'is_special_leave', 'is_vacation', 'no_overtime', 'no_overtime_day', 'only_hours', 'overtime_reduction') only)
  User may access time_record because org_location in dynamic user is allowed (Edit for "time_record" only)
  User may access time_record because org_location in dynamic user is allowed (View for "time_record" only)
- User may manipulate user Roles through the web (Web Roles)
 Role "hr-leave-approval":
  User is allowed to access contract_type (View for "contract_type" only)
  User may access item because org_location in dynamic user is allowed (Edit for "leave_submission": ('status',) only)

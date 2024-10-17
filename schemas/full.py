@@ -93,7 +93,6 @@ prop_perms = \
         , "timetracking_by", "username", "ad_domain"
         )
       )
-    , ( "user", "View", ["Controlling"], ("roles",))
     , ( "user", "View", ["User"]
       , ( "activity", "actor", "address", "alternate_addresses"
         , "clearance_by", "creation", "creator"
@@ -114,8 +113,7 @@ schemadef.allow_user_details         (db, 'User', 'Edit')
 db.security.addPermissionToRole ('User', 'Create', 'time_wp')
 
 # editing of roles:
-for r in "HR", "IT" :
-    db.security.addPermissionToRole (r, 'Web Roles')
+db.security.addPermissionToRole ('IT', 'Web Roles')
 
 # oh, g'wan, let anonymous access the web interface too
 # NOT really !!!

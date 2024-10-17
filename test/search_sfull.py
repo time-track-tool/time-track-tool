@@ -2115,7 +2115,7 @@ properties = \
           , ['admin']
           )
         , ( 'roles'
-          , ['admin', 'controlling', 'view-roles']
+          , ['admin', 'view-roles']
           )
         , ( 'room'
           , ['admin', 'cc-permission', 'contact', 'controlling', 'doc_admin', 'facility', 'functional-role', 'hr', 'hr-leave-approval', 'hr-vacation', 'issue_admin', 'it', 'itview', 'msgedit', 'msgsync', 'o-permission', 'office', 'organisation', 'procurement', 'project', 'project_view', 'sec-incident-nosy', 'sec-incident-responsible', 'summary-report', 'summary_view', 'supportadmin', 'time-report', 'type', 'user', 'vacation-report', 'view-roles']

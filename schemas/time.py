@@ -98,7 +98,6 @@ prop_perms = \
       , ( "roles", "password"
         )
       )
-    , ( "user", "View", ["Controlling"], ("roles",))
     , ( "user", "View", ["User"]
       , ( "activity", "actor", "address", "alternate_addresses"
         , "clearance_by", "creation", "creator"
@@ -122,10 +121,6 @@ schemadef.register_class_permissions (db, classes, prop_perms)
 schemadef.allow_user_details         (db, 'User', 'Edit')
 # the following is further checked in an auditor:
 db.security.addPermissionToRole ('User', 'Create', 'time_wp')
-
-# editing of roles:
-for r in "HR", :
-    db.security.addPermissionToRole (r, 'Web Roles')
 
 # oh, g'wan, let anonymous access the web interface too
 # NOT really !!!
