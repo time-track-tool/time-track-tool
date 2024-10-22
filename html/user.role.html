@@ -22,7 +22,7 @@
     <th class="group" tal:content="python:'%(name)s' % role.__dict__"/>
    </tr>
    <tr tal:repeat="perm python:
-       sorted (role.permissions, key = lambda p: p.__dict__ ['klass'] or '')">
+       role.permission_list()">
     <tal:block tal:define=
         "d python: utils.permdict (db, perm)
         ;x python: ' %(description)s (%(name)s'

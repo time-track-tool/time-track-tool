@@ -615,6 +615,31 @@ def pr_pt_role (db, userid, itemid, *rolenames):
     return False
 # end def pr_pt_role
 
+def pr_pt_role_filter (db, userid, klass, *rolenames):
+    """ Does the same as pr_pt_role above but produces a
+        filterspec that matches all PRs that fulfill the criteria
+        It may return None if the user doesn't have any relevant roles.
+    """
+    assert klass.classname == 'purchase_request'
+    orgs = o_permission.get_allowed_org (db, userid)
+    if not orgs:
+        return []
+    spec = dict (organisation = list (orgs))
+    # Get roles of user
+    r = db.pr_approval_order.filter (None, dict (users = userid))
+    if not r:
+        return []
+    # get purchase types where user has edit or approve role
+    filter = db.purchase_type.filter
+    rset   = set ()
+    for rn in rolenames:
+        rset.update (filter (None, dict (((rn, r),))))
+    if not rset:
+        return []
+    spec.update (purchase_type = list (rset))
+    return [dict (filterspec = spec)]
+# end def pr_pt_role_filter
+
 def pr_edit_or_approve_role (db, userid, itemid):
     """ Users are allowed if they have one of the edit roles
         of the purchase type or one of the (forced) approval roles.
@@ -622,6 +647,11 @@ def pr_edit_or_approve_role (db, userid, itemid):
     return pr_pt_role \
         (db, userid, itemid, 'pr_edit_roles', 'pr_roles', 'pr_forced_roles')
 # end def pr_edit_or_approve_role
+
+def pr_edit_or_approve_role_filter (db, userid, klass):
+    rl = ('pr_edit_roles', 'pr_roles', 'pr_forced_roles')
+    return pr_pt_role_filter (db, userid, klass, *rl)
+# end def pr_edit_or_approve_role_filter
 
 def pr_edit_role (db, userid, itemid):
     """ Users are allowed if they have the edit role of the purchase type
@@ -635,3 +665,7 @@ def pr_view_role (db, userid, itemid):
     """
     return pr_pt_role (db, userid, itemid, 'pr_view_roles')
 # end def pr_view_roles
+
+def pr_view_role_filter (db, userid, klass):
+    return pr_pt_role_filter (db, userid, klass, 'pr_view_roles')
+# end def pr_view_role_filter
