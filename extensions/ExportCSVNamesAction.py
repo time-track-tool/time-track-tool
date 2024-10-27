@@ -445,7 +445,7 @@ class Export_CSV_Names (Action, autosuper):
         self.build_repr ()
 
         # and search
-        for itemid in self.klass.filter_iter \
+        for itemid in self.klass.filter_with_permissions \
             (self.matches, filterspec, self.sort, self.group):
             self.client._socket_op \
                 ( writer.writerow 
