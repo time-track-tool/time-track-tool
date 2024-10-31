@@ -11,30 +11,36 @@
    l python:
     ( ('id',                                  {})
     , ('ratio',                               {})
-    , ('functional_role', dict (multiselect = 1))
     , ( 'functional_role', dict
-        ( searchname = 'functional_role.name_group'
-        , searchable = True
-        , sortable   = True
+        ( multiselect  = 1
+        , is_labelprop = False
         )
       )
     , ( 'functional_role', dict
-        ( searchname = 'functional_role.rank'
-        , searchable = True
-        , sortable   = True
+        ( searchname   = 'functional_role.name_group'
+        , searchable   = True
+        , sortable     = True
+        , is_labelprop = False
+        )
+      )
+    , ( 'functional_role', dict
+        ( searchname   = 'functional_role.rank'
+        , searchable   = True
+        , sortable     = True
+        , is_labelprop = False
         )
       )
     , ('user', dict (filter = dict (status = nosy_stati)))
     , ('user', dict
        ( searchname = 'user.firstname'
-        , searchable = True
-        , sortable   = True
+       , searchable = True
+       , sortable   = True
        )
       )
     , ('user', dict
        ( searchname = 'user.lastname'
-        , searchable = True
-        , sortable   = True
+       , searchable = True
+       , sortable   = True
        )
       )
     );

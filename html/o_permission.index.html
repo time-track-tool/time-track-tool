@@ -11,10 +11,42 @@
    prp python:
     ( ('id',                {})
     , ('user',              dict (is_labelprop = False))
+    , ( 'user'
+      , dict
+        ( searchname   = 'user.employee_number'
+        , searchable   = False
+        , sortable     = True
+        , is_labelprop = False
+        )
+      )
+    , ( 'user'
+      , dict
+        ( searchname   = 'user.firstname'
+        , searchable   = False
+        , sortable     = True
+        , is_labelprop = False
+        )
+      )
+    , ( 'user'
+      , dict
+        ( searchname   = 'user.lastname'
+        , searchable   = False
+        , sortable     = True
+        , is_labelprop = False
+        )
+      )
     , ( 'org_location'
       , dict
         ( multiselect = 1
         , filter      = utils.valid_item (now)
+        )
+      )
+    , ( 'org_location'
+      , dict
+        ( searchname  = 'org_location.organisation'
+        , searchable  = True
+        , sortable    = True
+        , multiselect = 1
         )
       )
     , ( 'organisation'
