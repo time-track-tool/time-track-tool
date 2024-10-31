@@ -6861,6 +6861,9 @@ msgstr "Functional role of user"
 msgid "org_group"
 msgstr "Organisation group"
 
+msgid "olo_group"
+msgstr "Org/Location group"
+
 msgid "umts"
 msgstr ""
 

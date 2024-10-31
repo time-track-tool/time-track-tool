@@ -63,6 +63,8 @@
         , filter      = utils.valid_item (now)
         )
       )
+    , ('org_group', dict (multiselect = 1))
+    , ('olo_group', dict (multiselect = 1))
     );
     props python: utils.filtered_properties (db, utils, context, prp)
    "

@@ -45,6 +45,16 @@
       <td tal:content="structure python:context.organisation.menu
           (**utils.valid_item (now))" />
      </tr>
+     <tr tal:condition="python: 'org_group' in props">
+      <th tal:content="structure python:utils.fieldname
+          (db, classname, 'org_group')"/>
+      <td tal:content="structure python:context.org_group.menu ()" />
+     </tr>
+     <tr tal:condition="python: 'olo_group' in props">
+      <th tal:content="structure python:utils.fieldname
+          (db, classname, 'olo_group')"/>
+      <td tal:content="structure python:context.olo_group.menu ()" />
+     </tr>
     </tal:block>
    </tal:block>
   </tal:block>

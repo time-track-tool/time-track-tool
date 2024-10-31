@@ -473,9 +473,16 @@ def init \
     # end class User_Class
     export.update (dict (User_Class = User_Class))
 
+    ogroup = Class \
+        ( db, ''"org_group"
+        , name                  = String    ()
+        , organisation          = Multilink ('organisation')
+        )
+
     o_perm = O_Permission_Class \
         ( db, ''"o_permission"
         , organisation = Multilink ("organisation")
+        , org_group    = Multilink ("org_group")
         )
 
     return export
@@ -525,6 +532,7 @@ def security (db, ** kw):
         , ("pr_supplier_risk",   ["Procurement-Admin"], ["Procurement-Admin"])
         , ("payment_type",       ["User"],              [])
         , ("purchase_security_risk", ["User"],          [])
+        , ("org_group",          ["User"],          ["Admin", "O-Permission"])
         ]
 
     prop_perms = \

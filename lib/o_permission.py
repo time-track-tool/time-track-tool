@@ -39,7 +39,11 @@ def get_allowed_olo (db, uid):
     assert len (ids) <= 1
     if ids:
         operm = db.o_permission.getnode (ids [0])
-        return set (operm.org_location)
+        olos  = set (operm.org_location)
+        for ogid in operm.olo_group:
+            og = db.olo_group.getnode (ogid)
+            olos.update (og.org_location)
+        return olos
     elif 'user_dynamic' in db.classes:
         now = Date ('.')
         dyn = user_dynamic.get_user_dynamic (db, uid, now)
@@ -64,7 +68,11 @@ def get_allowed_org (db, uid):
         else:
             return set ()
     operm = db.o_permission.getnode (ids [0])
-    return set (operm.organisation)
+    orgs  = set (operm.organisation)
+    for ogid in operm.org_group:
+        og = db.org_group.getnode (ogid)
+        orgs.update (og.organisation)
+    return orgs
 # end def get_allowed_org
 
 def organisation_allowed (db, userid, itemid, classname):
