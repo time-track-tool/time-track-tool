@@ -35,6 +35,14 @@
         , is_labelprop = False
         )
       )
+    , ( 'user'
+      , dict
+        ( searchname   = 'user.realname'
+        , searchable   = False
+        , sortable     = True
+        , is_labelprop = False
+        )
+      )
     , ( 'org_location'
       , dict
         ( multiselect = 1
@@ -56,10 +64,7 @@
         )
       )
     );
-    props python:
-        [ utils.ExtProperty (utils, pdict [p [0]], ** p [1])
-          for p in prp if p [0] in pdict
-        ]
+    props python: utils.filtered_properties (db, utils, context, prp)
    "
   tal:condition="context/is_view_ok">
 
