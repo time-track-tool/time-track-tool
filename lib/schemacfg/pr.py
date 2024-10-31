@@ -478,6 +478,7 @@ def init \
         , name                  = String    ()
         , organisation          = Multilink ('organisation')
         )
+    ogroup.setkey ("name")
 
     o_perm = O_Permission_Class \
         ( db, ''"o_permission"

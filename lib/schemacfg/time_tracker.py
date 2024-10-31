@@ -690,9 +690,17 @@ def init \
         )
     org_group.setkey ("name")
 
+    ologroup = Class \
+        ( db, ''"olo_group"
+        , name                  = String    ()
+        , org_location          = Multilink ('org_location')
+        )
+    ologroup.setkey ("name")
+
     o_permission = O_Permission_Class \
         ( db, ''"o_permission"
         , org_location          = Multilink ("org_location")
+        , olo_group             = Multilink ("olo_group")
         )
 
     return export
