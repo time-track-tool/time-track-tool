@@ -2630,6 +2630,26 @@ def aux_links (db) :
     return links
 # end def aux_links
 
+def artefact_info (db, context):
+    try :
+        db = db._db
+    except AttributeError :
+        pass
+    classes = \
+        ( 'artefact', 'doc', 'doc_category', 'doc_status'
+        , 'product_type', 'reference'
+        )
+    cn = getattr (context, 'classname', None)
+    if not cn:
+        cls = getattr (context, '_klass')
+        if cls:
+            cn = cls.classname
+    if cn not in classes:
+        return None
+    txt = getattr (db.config.ext, 'TEXT_ARTEFACT_INFO', None)
+    return txt
+# end def artefact_info
+
 def init_purchase_type (db) :
     # FIXME: one day this should go into a helptext method that has a db
     # as parameter.
@@ -2655,4 +2675,5 @@ def init (instance) :
     reg ('user_manual',     user_manual)
     reg ('user_manual_ok',  user_manual_ok)
     reg ('aux_links',       aux_links)
+    reg ('artefact_info',   artefact_info)
 # end def init

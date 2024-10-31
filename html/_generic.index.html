@@ -33,7 +33,11 @@
                        ]
     ; items     python: klass.list ()
     ; n         python: len (props) + 1
+    ; aux_txt   python: utils.artefact_info (db, context)
     ">
+  <p tal:condition="python: aux_txt">
+    <span tal:content="structure python: aux_txt"/>
+  </p>
   <table class="otherinfo" tal:condition="items">
    <tr>
     <tal:block tal:repeat="prop props">

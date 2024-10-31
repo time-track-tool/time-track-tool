@@ -6,9 +6,9 @@
 
  <title metal:fill-slot="head_title">Numbering System Index</title>
 
- <h3 metal:fill-slot="body_title">Numbering System Index</h3>
+ <tal:block metal:fill-slot="body_title">Numbering System Index</tal:block>
 
- <td class="content" metal:fill-slot="content"
+ <tal:block metal:fill-slot="content"
   tal:condition="context/is_view_ok"
   tal:define=
    "pdict python: utils.properties_dict (db, context);
@@ -26,9 +26,13 @@
         , help_props  = ['firstname', 'lastname']
         , help_filter = 'status=%s' % utils.valid_user_stati_filter (db)
         )
-    )
+    );
+    aux_txt python: utils.artefact_info (db, context)
    ">
+  <p tal:condition="python: aux_txt">
+    <span tal:content="structure python: aux_txt"/>
+  </p>
   <tal:block metal:use-macro="templates/page/macros/search_results"/>
   <tal:block metal:use-macro="templates/page/macros/simple_search_form"/>
- </td>
+ </tal:block>
 </tal:block>

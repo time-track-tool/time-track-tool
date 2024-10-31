@@ -24,9 +24,13 @@
                                utils.fieldname (db, classname, f);
     is_doc_admin        python:utils.user_has_role (db._db, uid, 'Doc_Admin');
     want_files          python:False;
-    has_resp            python:False
+    has_resp            python:False;
+    aux_txt             python: utils.artefact_info (db, context)
    "
   >
+  <p tal:condition="python: aux_txt">
+    <span tal:content="structure python: aux_txt"/>
+  </p>
   <tal:block metal:use-macro="templates/page/macros/formatted_class">
    <tal:block metal:fill-slot="formatted_class_content">
     <tr>
