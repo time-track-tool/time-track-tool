@@ -64,8 +64,14 @@ properties = \
         ]
       )
     , ( 'o_permission'
-      , [ 'organisation'
+      , [ 'org_group'
+        , 'organisation'
         , 'user'
+        ]
+      )
+    , ( 'org_group'
+      , [ 'name'
+        , 'organisation'
         ]
       )
     , ( 'org_location'

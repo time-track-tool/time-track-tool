@@ -225,7 +225,9 @@ Role "nosy":
  User may get nosy messages for doc (Nosy for "doc" only)
 Role "o-permission":
  User is allowed to create o_permission (Create for "o_permission" only)
+ User is allowed to create olo_group (Create for "olo_group" only)
  User is allowed to edit o_permission (Edit for "o_permission" only)
+ User is allowed to edit olo_group (Edit for "olo_group" only)
 Role "office":
   (Restore for "room" only)
   (Retire for "room" only)
@@ -306,6 +308,7 @@ Role "user":
  User is allowed to access leave_status (View for "leave_status" only)
  User is allowed to access location (View for "location" only)
  User is allowed to access o_permission (View for "o_permission" only)
+ User is allowed to access olo_group (View for "olo_group" only)
  User is allowed to access org_group (View for "org_group" only)
  User is allowed to access org_location (View for "org_location" only)
  User is allowed to access organisation (View for "organisation" only)

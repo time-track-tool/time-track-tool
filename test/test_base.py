@@ -1068,8 +1068,9 @@ class Test_Case_Timetracker (_Test_Case_Summary, unittest.TestCase) :
             group = None
             classname = 'summary_report'
 
+        class c: _ = lambda x: x
         sr = summary.Summary_Report \
-            (self.db, r, templating.TemplatingUtils (None))
+            (self.db, r, templating.TemplatingUtils (c))
         lines = tuple (csv.reader (StringIO (sr.as_csv ()), delimiter = ','))
         self.assertEqual (len (lines),     10)
         self.assertEqual (len (lines [0]),  5)
@@ -1171,8 +1172,9 @@ class Test_Case_Timetracker (_Test_Case_Summary, unittest.TestCase) :
         self.db.close ()
         self.db = self.tracker.open (self.username0)
         summary.init (self.tracker)
+        class c: _ = lambda x: x
         sr = summary.Summary_Report \
-            (self.db, r, templating.TemplatingUtils (None))
+            (self.db, r, templating.TemplatingUtils (c))
         lines = tuple (csv.reader (StringIO (sr.as_csv ()), delimiter = ','))
         self.assertEqual (len (lines),     5)
         self.assertEqual (len (lines [0]), 5)
@@ -1237,8 +1239,9 @@ class Test_Case_Timetracker (_Test_Case_Summary, unittest.TestCase) :
             group = None
             classname = 'summary_report'
 
+        class c: _ = lambda x: x
         sr = summary.Summary_Report \
-            (self.db, r, templating.TemplatingUtils (None))
+            (self.db, r, templating.TemplatingUtils (c))
         lines = tuple (csv.reader (StringIO (sr.as_csv ()), delimiter = ','))
         self.assertEqual (len (lines),     10)
         self.assertEqual (len (lines [0]), 10)
@@ -1354,8 +1357,9 @@ class Test_Case_Timetracker (_Test_Case_Summary, unittest.TestCase) :
         del cols [4]
         del cols [2]
         del cols [0]
+        class c: _ = lambda x: x
         sr = summary.Summary_Report \
-            (self.db, r, templating.TemplatingUtils (None))
+            (self.db, r, templating.TemplatingUtils (c))
         lines = tuple (csv.reader (StringIO (sr.as_csv ()), delimiter = ','))
         self.assertEqual (len (lines),     10)
         self.assertEqual (len (lines [0]),  7)
@@ -1446,8 +1450,9 @@ class Test_Case_Timetracker (_Test_Case_Summary, unittest.TestCase) :
               , 'summary_type': ['2', '4']
               }
             )
+        class c: _ = lambda x: x
         sr = summary.Summary_Report \
-            (self.db, r, templating.TemplatingUtils (None))
+            (self.db, r, templating.TemplatingUtils (c))
         lines = tuple (csv.reader (StringIO (sr.as_csv ()), delimiter = ','))
         self.assertEqual (len (lines),     1)
         self.assertEqual (len (lines [0]), 4)
@@ -1460,8 +1465,9 @@ class Test_Case_Timetracker (_Test_Case_Summary, unittest.TestCase) :
         #   [ 'reporting_group'
         #   ]
         cols [0] = 'reporting_group'
+        class c: _ = lambda x: x
         sr = summary.Summary_Report \
-            (self.db, r, templating.TemplatingUtils (None))
+            (self.db, r, templating.TemplatingUtils (c))
         lines = tuple (csv.reader (StringIO (sr.as_csv ()), delimiter = ','))
         self.assertEqual (len (lines),     3)
         self.assertEqual (len (lines [0]), 4)
@@ -1491,8 +1497,9 @@ class Test_Case_Timetracker (_Test_Case_Summary, unittest.TestCase) :
               , 'summary_type': ['2', '4']
               }
             )
+        class c: _ = lambda x: x
         sr = summary.Summary_Report \
-            (self.db, r, templating.TemplatingUtils (None))
+            (self.db, r, templating.TemplatingUtils (c))
         lines = tuple (csv.reader (StringIO (sr.as_csv ()), delimiter = ','))
         self.assertEqual (len (lines),     3)
         self.assertEqual (len (lines [0]), 4)
@@ -1522,8 +1529,9 @@ class Test_Case_Timetracker (_Test_Case_Summary, unittest.TestCase) :
               , 'summary_type': ['2', '4']
               }
             )
+        class c: _ = lambda x: x
         sr = summary.Summary_Report \
-            (self.db, r, templating.TemplatingUtils (None))
+            (self.db, r, templating.TemplatingUtils (c))
         lines = tuple (csv.reader (StringIO (sr.as_csv ()), delimiter = ','))
         self.assertEqual (len (lines),     3)
         self.assertEqual (len (lines [0]), 4)
@@ -1548,8 +1556,9 @@ class Test_Case_Timetracker (_Test_Case_Summary, unittest.TestCase) :
         cols.append ('organisation.id')
         cols.append ('time_wp.id')
         cols.append ('time_wp')
+        class c: _ = lambda x: x
         sr = summary.Summary_Report \
-            (self.db, r, templating.TemplatingUtils (None))
+            (self.db, r, templating.TemplatingUtils (c))
         lines = tuple (csv.reader (StringIO (sr.as_csv ()), delimiter = ','))
         self.assertEqual (len (lines),     5)
         self.assertEqual (len (lines [0]), 6)
@@ -1592,8 +1601,9 @@ class Test_Case_Timetracker (_Test_Case_Summary, unittest.TestCase) :
         cols [1] = 'organisation'
         self.assertEqual \
             (cols, ['project_type', 'organisation', 'time_wp.id', 'time_wp'])
+        class c: _ = lambda x: x
         sr = summary.Summary_Report \
-            (self.db, r, templating.TemplatingUtils (None))
+            (self.db, r, templating.TemplatingUtils (c))
         lines = tuple (csv.reader (StringIO (sr.as_csv ()), delimiter = ','))
         self.assertEqual (len (lines),     5)
         self.assertEqual (len (lines [0]), 6)
@@ -1665,24 +1675,28 @@ class Test_Case_Timetracker (_Test_Case_Summary, unittest.TestCase) :
              , 'summary_type' : ['4']
              }
         class r : filterspec = fs
+        class c: _ = lambda x: x
         sr = summary.Staff_Report \
-            (self.db, r, templating.TemplatingUtils (None))
+            (self.db, r, templating.TemplatingUtils (c))
         lines = tuple (csv.reader (StringIO (sr.as_csv ()), delimiter = ','))
         self.assertEqual (len (lines), 2)
-        self.assertEqual (lines  [0] [1], 'Time Period')
-        self.assertEqual (lines  [0] [2], 'Balance Start')
-        self.assertEqual (lines  [0] [6], 'Actual all')
-        self.assertEqual (lines  [0] [7], 'required')
-        self.assertEqual (lines  [0] [8], 'Supp. hours average')
-        self.assertEqual (lines  [0] [9], 'Supplementary hours')
-        self.assertEqual (lines  [0][11], 'Balance End')
-        self.assertEqual (lines  [0][12], 'Overtime period')
-        self.assertEqual (lines  [1] [1], '2013-01-01;2013-12-31')
-        self.assertEqual (lines  [1] [2], '0.00')
-        self.assertEqual (lines  [1] [6], '1791.47')
-        self.assertEqual (lines  [1] [7], '1663.25')
-        self.assertEqual (lines  [1] [8], '1720.35')
-        self.assertEqual (lines  [1][11], '71.13')
+        self.assertEqual (lines  [0] [1], 'SF System ID')
+        self.assertEqual (lines  [0] [2], 'First name')
+        self.assertEqual (lines  [0] [3], 'Last name')
+        self.assertEqual (lines  [0] [4], 'Time Period')
+        self.assertEqual (lines  [0] [5], 'Balance Start')
+        self.assertEqual (lines  [0] [9], 'Actual all')
+        self.assertEqual (lines  [0][10], 'required')
+        self.assertEqual (lines  [0][11], 'Supp. hours average')
+        self.assertEqual (lines  [0][12], 'Supplementary hours')
+        self.assertEqual (lines  [0][14], 'Balance End')
+        self.assertEqual (lines  [0][15], 'Overtime period')
+        self.assertEqual (lines  [1] [4], '2013-01-01;2013-12-31')
+        self.assertEqual (lines  [1] [5], '0.00')
+        self.assertEqual (lines  [1] [9], '1791.47')
+        self.assertEqual (lines  [1][10], '1663.25')
+        self.assertEqual (lines  [1][11], '1720.35')
+        self.assertEqual (lines  [1][14], '71.13')
         self.db.close ()
     # end def test_user12
 
@@ -1723,8 +1737,9 @@ class Test_Case_Timetracker (_Test_Case_Summary, unittest.TestCase) :
         summary.init (self.tracker)
         fs = { 'user' : [self.user13], 'date' : '2014-01-01;2015-12-31' }
         class r : filterspec = fs ; columns = {'additional_submitted'}
+        class c: _ = lambda x: x
         sr = summary.Vacation_Report \
-            (self.db, r, templating.TemplatingUtils (None))
+            (self.db, r, templating.TemplatingUtils (c))
         lines = tuple (csv.reader (StringIO (sr.as_csv ()), delimiter = ','))
         self.assertEqual (len (lines), 3)
         self.assertEqual (len (lines [0]), 10)
@@ -1737,7 +1752,7 @@ class Test_Case_Timetracker (_Test_Case_Summary, unittest.TestCase) :
         self.assertEqual (lines  [0] [6], 'approved days')
         self.assertEqual (lines  [0] [7], 'vacation corrections')
         self.assertEqual (lines  [0] [8], 'remaining vacation')
-        self.assertEqual (lines  [0] [9], 'additional submitted')
+        self.assertEqual (lines  [0] [9], 'Additional submitted')
         self.assertEqual (lines  [1] [0], 'testuser13')
         self.assertEqual (lines  [1] [1], '2014-12-31')
         self.assertEqual (lines  [1] [2], '25.00')
@@ -1813,8 +1828,9 @@ class Test_Case_Timetracker (_Test_Case_Summary, unittest.TestCase) :
              , 'date' : '2018-01-01;2018-12-31'
              }
         class r : filterspec = fs ; columns = {}
+        class c: _ = lambda x: x
         sr = summary.Vacation_Report \
-            (self.db, r, templating.TemplatingUtils (None))
+            (self.db, r, templating.TemplatingUtils (c))
         lines = tuple (csv.reader (StringIO (sr.as_csv ()), delimiter = ','))
         self.assertEqual (len (lines), 6)
         self.assertEqual (len (lines [0]), 9)
@@ -1876,8 +1892,9 @@ class Test_Case_Timetracker (_Test_Case_Summary, unittest.TestCase) :
              , 'date' : '2019-01-01;2019-12-31'
              }
         class r : filterspec = fs ; columns = {}
+        class c: _ = lambda x: x
         sr = summary.Vacation_Report \
-            (self.db, r, templating.TemplatingUtils (None))
+            (self.db, r, templating.TemplatingUtils (c))
         lines = tuple (csv.reader (StringIO (sr.as_csv ()), delimiter = ','))
         self.assertEqual (len (lines), 4)
         self.assertEqual (len (lines [0]), 9)
@@ -1922,8 +1939,9 @@ class Test_Case_Timetracker (_Test_Case_Summary, unittest.TestCase) :
              , 'date' : '2019-01-01;2019-02-03'
              }
         class r : filterspec = fs ; columns = {}
+        class c: _ = lambda x: x
         sr = summary.Vacation_Report \
-            (self.db, r, templating.TemplatingUtils (None))
+            (self.db, r, templating.TemplatingUtils (c))
         lines = tuple (csv.reader (StringIO (sr.as_csv ()), delimiter = ','))
         self.assertEqual (len (lines), 4)
         self.assertEqual (len (lines [0]), 9)
@@ -2223,8 +2241,9 @@ class Test_Case_Timetracker (_Test_Case_Summary, unittest.TestCase) :
         summary.init (self.tracker)
         fs = { 'user' : [self.user14], 'date' : '2015-01-01;2015-12-31' }
         class r : filterspec = fs ; columns = {'additional_submitted'}
+        class c: _ = lambda x: x
         sr = summary.Vacation_Report \
-            (self.db, r, templating.TemplatingUtils (None))
+            (self.db, r, templating.TemplatingUtils (c))
         lines = tuple (csv.reader (StringIO (sr.as_csv ()), delimiter = ','))
         self.assertEqual (len (lines), 2)
         self.assertEqual (len (lines [0]), 10)
@@ -2237,7 +2256,7 @@ class Test_Case_Timetracker (_Test_Case_Summary, unittest.TestCase) :
         self.assertEqual (lines  [0] [6], 'approved days')
         self.assertEqual (lines  [0] [7], 'vacation corrections')
         self.assertEqual (lines  [0] [8], 'remaining vacation')
-        self.assertEqual (lines  [0] [9], 'additional submitted')
+        self.assertEqual (lines  [0] [9], 'Additional submitted')
         self.assertEqual (lines  [1] [0], 'testuser14')
         self.assertEqual (lines  [1] [1], '2015-12-31')
         self.assertEqual (lines  [1] [2], '25.00')
@@ -2251,8 +2270,9 @@ class Test_Case_Timetracker (_Test_Case_Summary, unittest.TestCase) :
         self.db.close  ()
 
         self.db = self.tracker.open (self.username14)
+        class c: _ = lambda x: x
         sr = summary.Vacation_Report \
-            (self.db, r, templating.TemplatingUtils (None))
+            (self.db, r, templating.TemplatingUtils (c))
         lines = tuple (csv.reader (StringIO (sr.as_csv ()), delimiter = ','))
         self.assertEqual (len (lines), 2)
         self.assertEqual (len (lines [0]), 10)
@@ -2265,7 +2285,7 @@ class Test_Case_Timetracker (_Test_Case_Summary, unittest.TestCase) :
         self.assertEqual (lines  [0] [6], 'approved days')
         self.assertEqual (lines  [0] [7], 'vacation corrections')
         self.assertEqual (lines  [0] [8], 'remaining vacation')
-        self.assertEqual (lines  [0] [9], 'additional submitted')
+        self.assertEqual (lines  [0] [9], 'Additional submitted')
         self.assertEqual (lines  [1] [0], 'testuser14')
         self.assertEqual (lines  [1] [1], '2015-12-31')
         self.assertEqual (lines  [1] [2], '25.00')
@@ -4097,51 +4117,55 @@ class Test_Case_Timetracker (_Test_Case_Summary, unittest.TestCase) :
              , 'date'         : '2022-03-01;2022-04-03'
              , 'summary_type' : ['2', '3']
              }
-        class r : filterspec = fs
+        class r: filterspec = fs
+        class c: _ = lambda x: x
         sr = summary.Staff_Report \
-            (self.db, r, templating.TemplatingUtils (None))
+            (self.db, r, templating.TemplatingUtils (c))
         lines = tuple (csv.reader (StringIO (sr.as_csv ()), delimiter = ','))
         self.assertEqual (len (lines), 8)
-        self.assertEqual (lines  [0] [1], 'Time Period')
-        self.assertEqual (lines  [0] [2], 'Balance Start')
-        self.assertEqual (lines  [0] [6], 'Actual all')
-        self.assertEqual (lines  [0] [7], 'required')
-        self.assertEqual (lines  [0] [8], 'Supp. hours average')
-        self.assertEqual (lines  [0] [9], 'Supplementary hours')
-        self.assertEqual (lines  [0][11], 'Balance End')
-        self.assertEqual (lines  [0][12], 'Overtime period')
-        self.assertEqual (lines  [0][14], 'Supp. hours / period')
-        self.assertEqual (lines  [1] [1], 'WW 9/2022')
-        self.assertEqual (lines  [2] [1], 'WW 10/2022')
-        self.assertEqual (lines  [3] [1], 'WW 11/2022')
-        self.assertEqual (lines  [4] [1], 'WW 12/2022')
-        self.assertEqual (lines  [5] [1], 'WW 13/2022')
-        self.assertEqual (lines  [6] [1], 'March 2022')
-        self.assertEqual (lines  [7] [1], 'April 2022')
-        self.assertEqual (lines  [1] [2], '36.08')
-        self.assertEqual (lines  [4] [2], '39.95')
-        self.assertEqual (lines  [4] [6], '42.25')
-        self.assertEqual (lines  [4] [7], '38.50')
-        self.assertEqual (lines  [4] [8], '41.76')
-        self.assertEqual (lines  [4][11], '40.44')
-        self.assertEqual (lines  [5] [2], '40.44')
-        self.assertEqual (lines  [5] [6], '39.75')
-        self.assertEqual (lines  [5] [7], '38.50')
-        self.assertEqual (lines  [5] [8], '39.80')
-        self.assertEqual (lines  [5] [9], '23.10')
-        self.assertEqual (lines  [5][11], '40.39') # 36.02
-        self.assertEqual (lines  [6] [2], '36.08')
-        self.assertEqual (lines  [6] [6], '198.25')
-        self.assertEqual (lines  [6] [7], '177.25')
-        self.assertEqual (lines  [6] [8], '190.95')
-        self.assertEqual (lines  [6] [9], '15.40')
-        self.assertEqual (lines  [6][11], '43.49') # 39.12
-        self.assertEqual (lines  [7] [2], '43.49') # 39.12
-        self.assertEqual (lines  [7] [6], '4.50')
-        self.assertEqual (lines  [7] [7], '7.50')
-        self.assertEqual (lines  [7] [8], '0')
-        self.assertEqual (lines  [7] [9], '7.70')
-        self.assertEqual (lines  [7][11], '40.39') # 36.02
+        self.assertEqual (lines  [0] [1], 'SF System ID')
+        self.assertEqual (lines  [0] [2], 'First name')
+        self.assertEqual (lines  [0] [3], 'Last name')
+        self.assertEqual (lines  [0] [4], 'Time Period')
+        self.assertEqual (lines  [0] [5], 'Balance Start')
+        self.assertEqual (lines  [0] [9], 'Actual all')
+        self.assertEqual (lines  [0][10], 'required')
+        self.assertEqual (lines  [0][11], 'Supp. hours average')
+        self.assertEqual (lines  [0][12], 'Supplementary hours')
+        self.assertEqual (lines  [0][14], 'Balance End')
+        self.assertEqual (lines  [0][15], 'Overtime period')
+        self.assertEqual (lines  [0][17], 'Supp. hours / period')
+        self.assertEqual (lines  [1] [4], 'WW 9/2022')
+        self.assertEqual (lines  [2] [4], 'WW 10/2022')
+        self.assertEqual (lines  [3] [4], 'WW 11/2022')
+        self.assertEqual (lines  [4] [4], 'WW 12/2022')
+        self.assertEqual (lines  [5] [4], 'WW 13/2022')
+        self.assertEqual (lines  [6] [4], 'March 2022')
+        self.assertEqual (lines  [7] [4], 'April 2022')
+        self.assertEqual (lines  [1] [5], '36.08')
+        self.assertEqual (lines  [4] [5], '39.95')
+        self.assertEqual (lines  [4] [9], '42.25')
+        self.assertEqual (lines  [4][10], '38.50')
+        self.assertEqual (lines  [4][11], '41.76')
+        self.assertEqual (lines  [4][14], '40.44')
+        self.assertEqual (lines  [5] [5], '40.44')
+        self.assertEqual (lines  [5] [9], '39.75')
+        self.assertEqual (lines  [5][10], '38.50')
+        self.assertEqual (lines  [5][11], '39.80')
+        self.assertEqual (lines  [5][12], '23.10')
+        self.assertEqual (lines  [5][14], '40.39') # 36.02
+        self.assertEqual (lines  [6] [5], '36.08')
+        self.assertEqual (lines  [6] [9], '198.25')
+        self.assertEqual (lines  [6][10], '177.25')
+        self.assertEqual (lines  [6][11], '190.95')
+        self.assertEqual (lines  [6][12], '15.40')
+        self.assertEqual (lines  [6][14], '43.49') # 39.12
+        self.assertEqual (lines  [7] [5], '43.49') # 39.12
+        self.assertEqual (lines  [7] [9], '4.50')
+        self.assertEqual (lines  [7][10], '7.50')
+        self.assertEqual (lines  [7][11], '0')
+        self.assertEqual (lines  [7][12], '7.70')
+        self.assertEqual (lines  [7][14], '40.39') # 36.02
         # Now change the rest of April to use the first dyn params
         dynid = self.db.user_dynamic.create \
             ( additional_hours   = 38.5
@@ -4183,50 +4207,54 @@ class Test_Case_Timetracker (_Test_Case_Summary, unittest.TestCase) :
             , overtime_period   = '5'
             )
         self.db.commit ()
+        class c: _ = lambda x: x
         sr = summary.Staff_Report \
-            (self.db, r, templating.TemplatingUtils (None))
+            (self.db, r, templating.TemplatingUtils (c))
         lines = tuple (csv.reader (StringIO (sr.as_csv ()), delimiter = ','))
         self.assertEqual (len (lines), 8)
-        self.assertEqual (lines  [0] [1], 'Time Period')
-        self.assertEqual (lines  [0] [2], 'Balance Start')
-        self.assertEqual (lines  [0] [6], 'Actual all')
-        self.assertEqual (lines  [0] [7], 'required')
-        self.assertEqual (lines  [0] [8], 'Supp. hours average')
-        self.assertEqual (lines  [0] [9], 'Supplementary hours')
-        self.assertEqual (lines  [0][11], 'Balance End')
-        self.assertEqual (lines  [0][12], 'Overtime period')
-        self.assertEqual (lines  [0][14], 'Supp. hours / period')
-        self.assertEqual (lines  [1] [1], 'WW 9/2022')
-        self.assertEqual (lines  [2] [1], 'WW 10/2022')
-        self.assertEqual (lines  [3] [1], 'WW 11/2022')
-        self.assertEqual (lines  [4] [1], 'WW 12/2022')
-        self.assertEqual (lines  [5] [1], 'WW 13/2022')
-        self.assertEqual (lines  [6] [1], 'March 2022')
-        self.assertEqual (lines  [7] [1], 'April 2022')
-        self.assertEqual (lines  [1] [2], '36.08')
-        self.assertEqual (lines  [4] [2], '39.95')
-        self.assertEqual (lines  [4] [6], '42.25')
-        self.assertEqual (lines  [4] [7], '38.50')
-        self.assertEqual (lines  [4] [8], '41.76')
-        self.assertEqual (lines  [4][11], '40.44')
-        self.assertEqual (lines  [5] [2], '40.44')
-        self.assertEqual (lines  [5] [6], '39.75')
-        self.assertEqual (lines  [5] [7], '38.50')
-        self.assertEqual (lines  [5] [8], '41.11')
-        self.assertEqual (lines  [5] [9], '7.70')
-        self.assertEqual (lines  [5][11], '39.08')
-        self.assertEqual (lines  [6] [2], '36.08')
-        self.assertEqual (lines  [6] [6], '198.25')
-        self.assertEqual (lines  [6] [7], '177.25')
-        self.assertEqual (lines  [6] [8], '192.25')
-        self.assertEqual (lines  [6] [9], '0.00')
-        self.assertEqual (lines  [6][11], '42.08')
-        self.assertEqual (lines  [7] [2], '42.08')
-        self.assertEqual (lines  [7] [6], '4.50')
-        self.assertEqual (lines  [7] [7], '7.50')
-        self.assertEqual (lines  [7] [8], '0')
-        self.assertEqual (lines  [7] [9], '7.70')
-        self.assertEqual (lines  [7][11], '39.08')
+        self.assertEqual (lines  [0] [1], 'SF System ID')
+        self.assertEqual (lines  [0] [2], 'First name')
+        self.assertEqual (lines  [0] [3], 'Last name')
+        self.assertEqual (lines  [0] [4], 'Time Period')
+        self.assertEqual (lines  [0] [5], 'Balance Start')
+        self.assertEqual (lines  [0] [9], 'Actual all')
+        self.assertEqual (lines  [0][10], 'required')
+        self.assertEqual (lines  [0][11], 'Supp. hours average')
+        self.assertEqual (lines  [0][12], 'Supplementary hours')
+        self.assertEqual (lines  [0][14], 'Balance End')
+        self.assertEqual (lines  [0][15], 'Overtime period')
+        self.assertEqual (lines  [0][17], 'Supp. hours / period')
+        self.assertEqual (lines  [1] [4], 'WW 9/2022')
+        self.assertEqual (lines  [2] [4], 'WW 10/2022')
+        self.assertEqual (lines  [3] [4], 'WW 11/2022')
+        self.assertEqual (lines  [4] [4], 'WW 12/2022')
+        self.assertEqual (lines  [5] [4], 'WW 13/2022')
+        self.assertEqual (lines  [6] [4], 'March 2022')
+        self.assertEqual (lines  [7] [4], 'April 2022')
+        self.assertEqual (lines  [1] [5], '36.08')
+        self.assertEqual (lines  [4] [5], '39.95')
+        self.assertEqual (lines  [4] [9], '42.25')
+        self.assertEqual (lines  [4][10], '38.50')
+        self.assertEqual (lines  [4][11], '41.76')
+        self.assertEqual (lines  [4][14], '40.44')
+        self.assertEqual (lines  [5] [5], '40.44')
+        self.assertEqual (lines  [5] [9], '39.75')
+        self.assertEqual (lines  [5][10], '38.50')
+        self.assertEqual (lines  [5][11], '41.11')
+        self.assertEqual (lines  [5][12], '7.70')
+        self.assertEqual (lines  [5][14], '39.08')
+        self.assertEqual (lines  [6] [5], '36.08')
+        self.assertEqual (lines  [6] [9], '198.25')
+        self.assertEqual (lines  [6][10], '177.25')
+        self.assertEqual (lines  [6][11], '192.25')
+        self.assertEqual (lines  [6][12], '0.00')
+        self.assertEqual (lines  [6][14], '42.08')
+        self.assertEqual (lines  [7] [5], '42.08')
+        self.assertEqual (lines  [7] [9], '4.50')
+        self.assertEqual (lines  [7][10], '7.50')
+        self.assertEqual (lines  [7][11], '0')
+        self.assertEqual (lines  [7][12], '7.70')
+        self.assertEqual (lines  [7][14], '39.08')
 
         self.db.close ()
     # end def test_user20
@@ -4814,8 +4842,9 @@ class Test_Case_Timetracker (_Test_Case_Summary, unittest.TestCase) :
         summary.init (self.tracker)
         fs = { 'user' : [self.user27], 'date' : '2022-01-01;2023-12-31' }
         class r : filterspec = fs ; columns = {}
+        class c: _ = lambda x: x
         sr = summary.Vacation_Report \
-            (self.db, r, templating.TemplatingUtils (None))
+            (self.db, r, templating.TemplatingUtils (c))
         lines = tuple (csv.reader (StringIO (sr.as_csv ()), delimiter = ','))
         self.assertEqual (len (lines), 5)
         self.assertEqual (len (lines [0]), 9)
@@ -5568,35 +5597,39 @@ class Test_Case_Fulltracker (_Test_Case_Summary, unittest.TestCase) :
              , 'summary_type' : ['2', '3', '4']
              }
         class r : filterspec = fs
+        class c: _ = lambda x: x
         sr = summary.Staff_Report \
-            (self.db, r, templating.TemplatingUtils (None))
+            (self.db, r, templating.TemplatingUtils (c))
         lines = [x.strip ().split (',') for x in sr.as_csv ().split ('\n')]
         self.assertEqual (len (lines), 31)
-        self.assertEqual (lines [0]  [1], 'Time Period')
-        self.assertEqual (lines [0]  [6], 'Actual all')
-        self.assertEqual (lines [0]  [9], 'Supplementary hours')
-        self.assertEqual (lines [0] [11], 'Balance End')
-        self.assertEqual (lines [0] [13], 'Achieved supplementary hours')
-        self.assertEqual (lines [1]  [1], 'WW 53/2009')
-        self.assertEqual (lines [2]  [1], 'WW 1/2010')
-        self.assertEqual (lines [16] [6], '57.62')
-        self.assertEqual (lines [16] [9], '45.00')
-        self.assertEqual (lines [16][11], '12.62')
-        self.assertEqual (lines [16][13], '5.00')
-        self.assertEqual (lines [17] [6], '52.88')
-        self.assertEqual (lines [17] [9], '45.00')
-        self.assertEqual (lines [17][11], '20.50')
-        self.assertEqual (lines [17][13], '10.00')
-        self.assertEqual (lines [18] [1], 'WW 17/2010')
-        self.assertEqual (lines [18] [6], '38.50')
-        self.assertEqual (lines [18] [9], '45.00')
-        self.assertEqual (lines [18][11], '20.50')
-        self.assertEqual (lines [18][13], '10.00')
-        self.assertEqual (lines [19] [1], 'WW 18/2010')
-        self.assertEqual (lines [19] [6], '38.50')
-        self.assertEqual (lines [19] [9], '45.00')
-        self.assertEqual (lines [19][11], '20.50')
-        self.assertEqual (lines [19][13], '10.00')
+        self.assertEqual (lines [0]  [1], 'SF System ID')
+        self.assertEqual (lines [0]  [2], 'First name')
+        self.assertEqual (lines [0]  [3], 'Last name')
+        self.assertEqual (lines [0]  [4], 'Time Period')
+        self.assertEqual (lines [0]  [9], 'Actual all')
+        self.assertEqual (lines [0] [12], 'Supplementary hours')
+        self.assertEqual (lines [0] [14], 'Balance End')
+        self.assertEqual (lines [0] [16], 'Achieved supplementary hours')
+        self.assertEqual (lines [1]  [4], 'WW 53/2009')
+        self.assertEqual (lines [2]  [4], 'WW 1/2010')
+        self.assertEqual (lines [16] [9], '57.62')
+        self.assertEqual (lines [16][12], '45.00')
+        self.assertEqual (lines [16][14], '12.62')
+        self.assertEqual (lines [16][16], '5.00')
+        self.assertEqual (lines [17] [9], '52.88')
+        self.assertEqual (lines [17][12], '45.00')
+        self.assertEqual (lines [17][14], '20.50')
+        self.assertEqual (lines [17][16], '10.00')
+        self.assertEqual (lines [18] [4], 'WW 17/2010')
+        self.assertEqual (lines [18] [9], '38.50')
+        self.assertEqual (lines [18][12], '45.00')
+        self.assertEqual (lines [18][14], '20.50')
+        self.assertEqual (lines [18][16], '10.00')
+        self.assertEqual (lines [19] [4], 'WW 18/2010')
+        self.assertEqual (lines [19] [9], '38.50')
+        self.assertEqual (lines [19][12], '45.00')
+        self.assertEqual (lines [19][14], '20.50')
+        self.assertEqual (lines [19][16], '10.00')
     # end def test_user3
 
     def test_user4 (self) :
@@ -5625,103 +5658,108 @@ class Test_Case_Fulltracker (_Test_Case_Summary, unittest.TestCase) :
              , 'summary_type' : ['2', '3', '4']
              }
         class r : filterspec = fs
+        class c: _ = lambda x: x
         sr = summary.Staff_Report \
-            (self.db, r, templating.TemplatingUtils (None))
+            (self.db, r, templating.TemplatingUtils (c))
         lines = [x.strip ().split (',') for x in sr.as_csv ().split ('\n')]
         self.assertEqual (len (lines), 31)
-        self.assertEqual (lines  [0] [1], 'Time Period')
-        self.assertEqual (lines  [0] [6], 'Actual all')
-        self.assertEqual (lines  [0] [8], 'Supp. hours average')
-        self.assertEqual (lines  [0][11], 'Balance End')
-        self.assertEqual (lines  [1] [1], 'WW 52/2011')
-        self.assertEqual (lines  [2] [1], 'WW 1/2012')
-        self.assertEqual (lines [24] [1], 'January 2012')
-        self.assertEqual (lines [28] [1], 'May 2012')
-        self.assertEqual (lines [29] [1], '2012-01-01;2012-05-31')
-        self.assertEqual (lines  [1] [2], '0.00') # balance_start
+        self.assertEqual (lines  [0] [1], 'SF System ID')
+        self.assertEqual (lines  [0] [2], 'First name')
+        self.assertEqual (lines  [0] [3], 'Last name')
+        self.assertEqual (lines  [0] [4], 'Time Period')
+        self.assertEqual (lines  [0] [9], 'Actual all')
+        self.assertEqual (lines  [0][11], 'Supp. hours average')
+        self.assertEqual (lines  [0][14], 'Balance End')
+        self.assertEqual (lines  [1] [4], 'WW 52/2011')
+        self.assertEqual (lines  [2] [4], 'WW 1/2012')
+        self.assertEqual (lines [24] [4], 'January 2012')
+        self.assertEqual (lines [28] [4], 'May 2012')
+        self.assertEqual (lines [29] [4], '2012-01-01;2012-05-31')
+        self.assertEqual (lines  [1] [5], '0.00') # balance_start
 
-        self.assertEqual (lines  [1] [6], '0')
-        self.assertEqual (lines  [1] [8], '0.00')
+        self.assertEqual (lines  [1] [9], '0')
         self.assertEqual (lines  [1][11], '0.00')
-        self.assertEqual (lines  [2] [6], '40.00')
-        self.assertEqual (lines  [2] [8], '39.77')
-        self.assertEqual (lines  [2][11], '0.23')
-        self.assertEqual (lines  [3] [6], '38.75')
-        self.assertEqual (lines  [3] [8], '40.09')
-        self.assertEqual (lines  [3][11], '-1.11')
-        self.assertEqual (lines  [4] [6], '40.25')
-        self.assertEqual (lines  [4] [8], '40.09')
-        self.assertEqual (lines  [4][11], '-0.95')
-        self.assertEqual (lines  [5] [6], '40.75')
-        self.assertEqual (lines  [5] [8], '40.09')
-        self.assertEqual (lines  [5][11], '-0.30')
-        self.assertEqual (lines  [6] [6], '38.50')
-        self.assertEqual (lines  [6] [8], '40.14')
-        self.assertEqual (lines  [6][11], '-1.93')
-        self.assertEqual (lines  [7] [6], '38.50')
-        self.assertEqual (lines  [7] [8], '38.50')
-        self.assertEqual (lines  [7][11], '-1.93')
-        self.assertEqual (lines  [8] [6], '45.00')
-        self.assertEqual (lines  [8] [8], '40.17')
-        self.assertEqual (lines  [8][11], '2.90')
-        self.assertEqual (lines  [9] [6], '41.75')
-        self.assertEqual (lines  [9] [8], '40.17')
-        self.assertEqual (lines  [9][11], '4.48')
-        self.assertEqual (lines [10] [6], '40.75')
-        self.assertEqual (lines [10] [8], '40.14')
-        self.assertEqual (lines [10][11], '5.10')
-        self.assertEqual (lines [11] [6], '41.75')
-        self.assertEqual (lines [11] [8], '40.09')
-        self.assertEqual (lines [11][11], '6.76')
-        self.assertEqual (lines [12] [6], '41.75')
-        self.assertEqual (lines [12] [8], '40.09')
-        self.assertEqual (lines [12][11], '8.42')
-        self.assertEqual (lines [13] [6], '41.25')
-        self.assertEqual (lines [13] [8], '40.09')
-        self.assertEqual (lines [13][11], '9.58')
-        self.assertEqual (lines [14] [6], '40.00')
-        self.assertEqual (lines [14] [8], '40.09')
-        self.assertEqual (lines [14][11], '9.48')
-        self.assertEqual (lines [15] [6], '40.75')
-        self.assertEqual (lines [15] [8], '40.17')
-        self.assertEqual (lines [15][11], '10.07')
-        self.assertEqual (lines [16] [6], '42.50')
-        self.assertEqual (lines [16] [8], '39.83')
-        self.assertEqual (lines [16][11], '12.73')
-        self.assertEqual (lines [17] [6], '42.75')
-        self.assertEqual (lines [17] [8], '40.17')
-        self.assertEqual (lines [17][11], '15.32')
-        self.assertEqual (lines [18] [6], '41.75')
-        self.assertEqual (lines [18] [8], '40.17')
-        self.assertEqual (lines [18][11], '16.90')
-        self.assertEqual (lines [19] [6], '41.55')
-        self.assertEqual (lines [19] [8], '39.75')
-        self.assertEqual (lines [19][11], '18.71')
-        self.assertEqual (lines [20] [6], '43.00')
-        self.assertEqual (lines [20] [8], '40.02')
-        self.assertEqual (lines [20][11], '21.69')
-        self.assertEqual (lines [21] [6], '38.50')
-        self.assertEqual (lines [21] [8], '39.72')
-        self.assertEqual (lines [21][11], '20.47')
+        self.assertEqual (lines  [1][14], '0.00')
+        self.assertEqual (lines  [2] [9], '40.00')
+        self.assertEqual (lines  [2][11], '39.77')
+        self.assertEqual (lines  [2][14], '0.23')
+        self.assertEqual (lines  [3] [9], '38.75')
+        self.assertEqual (lines  [3][11], '40.09')
+        self.assertEqual (lines  [3][14], '-1.11')
+        self.assertEqual (lines  [4] [9], '40.25')
+        self.assertEqual (lines  [4][11], '40.09')
+        self.assertEqual (lines  [4][14], '-0.95')
+        self.assertEqual (lines  [5] [9], '40.75')
+        self.assertEqual (lines  [5][11], '40.09')
+        self.assertEqual (lines  [5][14], '-0.30')
+        self.assertEqual (lines  [6] [9], '38.50')
+        self.assertEqual (lines  [6][11], '40.14')
+        self.assertEqual (lines  [6][14], '-1.93')
 
-        self.assertEqual (lines [24] [6], '175.25')
-        self.assertEqual (lines [24] [8], '176.18')
-        self.assertEqual (lines [24][11], '-0.93')
-        self.assertEqual (lines [25] [6], '174.00')
-        self.assertEqual (lines [25] [8], '167.08')
-        self.assertEqual (lines [25][11], '5.98')
-        self.assertEqual (lines [26] [6], '179.25')
-        self.assertEqual (lines [26] [8], '176.25')
-        self.assertEqual (lines [26][11], '8.98')
-        self.assertEqual (lines [27] [6], '175.50')
-        self.assertEqual (lines [27] [8], '168.42')
-        self.assertEqual (lines [27][11], '16.07')
-        self.assertEqual (lines [28] [6], '185.30')
-        self.assertEqual (lines [28] [8], '183.64')
-        self.assertEqual (lines [28][11], '17.73')
-        self.assertEqual (lines [29] [6], '889.30')
-        self.assertEqual (lines [29] [8], '871.57')
-        self.assertEqual (lines [29][11], '17.73')
+        self.assertEqual (lines  [7] [9], '38.50')
+        self.assertEqual (lines  [7][11], '38.50')
+        self.assertEqual (lines  [7][14], '-1.93')
+        self.assertEqual (lines  [8] [9], '45.00')
+        self.assertEqual (lines  [8][11], '40.17')
+        self.assertEqual (lines  [8][14], '2.90')
+        self.assertEqual (lines  [9] [9], '41.75')
+        self.assertEqual (lines  [9][11], '40.17')
+        self.assertEqual (lines  [9][14], '4.48')
+        self.assertEqual (lines [10] [9], '40.75')
+        self.assertEqual (lines [10][11], '40.14')
+        self.assertEqual (lines [10][14], '5.10')
+        self.assertEqual (lines [11] [9], '41.75')
+        self.assertEqual (lines [11][11], '40.09')
+        self.assertEqual (lines [11][14], '6.76')
+        self.assertEqual (lines [12] [9], '41.75')
+        self.assertEqual (lines [12][11], '40.09')
+        self.assertEqual (lines [12][14], '8.42')
+        self.assertEqual (lines [13] [9], '41.25')
+        self.assertEqual (lines [13][11], '40.09')
+        self.assertEqual (lines [13][14], '9.58')
+        self.assertEqual (lines [14] [9], '40.00')
+        self.assertEqual (lines [14][11], '40.09')
+        self.assertEqual (lines [14][14], '9.48')
+        self.assertEqual (lines [15] [9], '40.75')
+        self.assertEqual (lines [15][11], '40.17')
+        self.assertEqual (lines [15][14], '10.07')
+        self.assertEqual (lines [16] [9], '42.50')
+        self.assertEqual (lines [16][11], '39.83')
+        self.assertEqual (lines [16][14], '12.73')
+        self.assertEqual (lines [17] [9], '42.75')
+        self.assertEqual (lines [17][11], '40.17')
+        self.assertEqual (lines [17][14], '15.32')
+        self.assertEqual (lines [18] [9], '41.75')
+        self.assertEqual (lines [18][11], '40.17')
+        self.assertEqual (lines [18][14], '16.90')
+        self.assertEqual (lines [19] [9], '41.55')
+        self.assertEqual (lines [19][11], '39.75')
+        self.assertEqual (lines [19][14], '18.71')
+        self.assertEqual (lines [20] [9], '43.00')
+        self.assertEqual (lines [20][11], '40.02')
+        self.assertEqual (lines [20][14], '21.69')
+        self.assertEqual (lines [21] [9], '38.50')
+        self.assertEqual (lines [21][11], '39.72')
+        self.assertEqual (lines [21][14], '20.47')
+
+        self.assertEqual (lines [24] [9], '175.25')
+        self.assertEqual (lines [24][11], '176.18')
+        self.assertEqual (lines [24][14], '-0.93')
+        self.assertEqual (lines [25] [9], '174.00')
+        self.assertEqual (lines [25][11], '167.08')
+        self.assertEqual (lines [25][14], '5.98')
+        self.assertEqual (lines [26] [9], '179.25')
+        self.assertEqual (lines [26][11], '176.25')
+        self.assertEqual (lines [26][14], '8.98')
+        self.assertEqual (lines [27] [9], '175.50')
+        self.assertEqual (lines [27][11], '168.42')
+        self.assertEqual (lines [27][14], '16.07')
+        self.assertEqual (lines [28] [9], '185.30')
+        self.assertEqual (lines [28][11], '183.64')
+        self.assertEqual (lines [28][14], '17.73')
+        self.assertEqual (lines [29] [9], '889.30')
+        self.assertEqual (lines [29][11], '871.57')
+        self.assertEqual (lines [29][14], '17.73')
     # end def test_user4
 
     def test_user5 (self) :
@@ -5739,22 +5777,26 @@ class Test_Case_Fulltracker (_Test_Case_Summary, unittest.TestCase) :
              , 'summary_type' : ['2', '3', '4']
              }
         class r : filterspec = fs
+        class c: _ = lambda x: x
         sr = summary.Staff_Report \
-            (self.db, r, templating.TemplatingUtils (None))
+            (self.db, r, templating.TemplatingUtils (c))
         lines = tuple (csv.reader (StringIO (sr.as_csv ()), delimiter = ','))
         self.assertEqual (len (lines), 51)
-        self.assertEqual (lines  [0] [1], 'Time Period')
-        self.assertEqual (lines  [0] [6], 'Actual all')
-        self.assertEqual (lines  [0] [8], 'Supp. hours average')
-        self.assertEqual (lines  [0] [9], 'Supplementary hours')
-        self.assertEqual (lines  [0][11], 'Balance End')
-        self.assertEqual (lines  [0][12], 'Overtime period')
-        self.assertEqual (lines  [1] [1], 'WW 52/2011')
-        self.assertEqual (lines  [2] [1], 'WW 1/2012')
-        self.assertEqual (lines [41] [1], 'January 2012')
-        self.assertEqual (lines [49] [1], 'September 2012')
-        self.assertEqual (lines [50] [1], '2012-01-01;2012-09-28')
-        self.assertEqual (lines  [1] [2], '0.00') # balance_start
+        self.assertEqual (lines  [0] [1], 'SF System ID')
+        self.assertEqual (lines  [0] [2], 'First name')
+        self.assertEqual (lines  [0] [3], 'Last name')
+        self.assertEqual (lines  [0] [4], 'Time Period')
+        self.assertEqual (lines  [0] [9], 'Actual all')
+        self.assertEqual (lines  [0][11], 'Supp. hours average')
+        self.assertEqual (lines  [0][12], 'Supplementary hours')
+        self.assertEqual (lines  [0][14], 'Balance End')
+        self.assertEqual (lines  [0][15], 'Overtime period')
+        self.assertEqual (lines  [1] [4], 'WW 52/2011')
+        self.assertEqual (lines  [2] [4], 'WW 1/2012')
+        self.assertEqual (lines [41] [4], 'January 2012')
+        self.assertEqual (lines [49] [4], 'September 2012')
+        self.assertEqual (lines [50] [4], '2012-01-01;2012-09-28')
+        self.assertEqual (lines  [1] [5], '0.00') # balance_start
 
         # Actual all
         for n, v in enumerate \
@@ -5768,7 +5810,7 @@ class Test_Case_Fulltracker (_Test_Case_Summary, unittest.TestCase) :
             ,  "188.00", "173.00", "182.75", "169.75", "173.50", "143.00"
             ,    "0.00", "1383.25"
             )) :
-            self.assertEqual (lines [n + 1][6], v)
+            self.assertEqual (lines [n + 1][9], v)
         # Supp. hours average
         for n, v in enumerate \
             ((   "0",      "0",      "0",     "0",     "0",    "0"
@@ -5781,7 +5823,7 @@ class Test_Case_Fulltracker (_Test_Case_Summary, unittest.TestCase) :
             ,  "173.07", "168.42", "183.34",  "0",     "0",     "0"
             ,    "0",   "1518.07"
             )) :
-            self.assertEqual (lines [n + 1][8], v)
+            self.assertEqual (lines [n + 1][11], v)
         # Supplementary hours
         for n, v in enumerate \
             ((   "0.00",  "38.50",  "38.50",  "38.50",  "38.50",  "38.50"
@@ -5794,7 +5836,7 @@ class Test_Case_Fulltracker (_Test_Case_Summary, unittest.TestCase) :
             ,   "77.00",   "0.00",   "0.00", "172.20", "180.40", "188.60"
             , "164.00", "1113.30"
             )) :
-            self.assertEqual (lines [n + 1][9], v)
+            self.assertEqual (lines [n + 1][12], v)
         for n, v in enumerate \
             ((    "0.00",    "0.00",    "3.00",    "5.50",  "5.50",  "7.50"
             ,    "12.50",   "16.00",   "22.00",   "22.00", "28.00", "34.51"
@@ -5806,58 +5848,58 @@ class Test_Case_Fulltracker (_Test_Case_Summary, unittest.TestCase) :
             ,    "37.08",   "41.67",   "41.08",   "44.88", "45.88",  "7.38"
             ,  "-146.62", "-146.62"
             )) :
-            self.assertEqual (lines [n + 1][11], v)
+            self.assertEqual (lines [n + 1][14], v)
         off = 1
         for n in range (11) :
-            self.assertEqual (lines [n + off][12], "week")
+            self.assertEqual (lines [n + off][15], "week")
         off += 11
-        self.assertEqual (lines [off][12], "week, monthly average required")
+        self.assertEqual (lines [off][15], "week, monthly average required")
         off += 1
         for n in range (10) :
-            self.assertEqual (lines [n + off][12], "monthly average required")
+            self.assertEqual (lines [n + off][15], "monthly average required")
         off += 10
-        self.assertEqual (lines [off][12], "monthly average required, week")
+        self.assertEqual (lines [off][15], "monthly average required, week")
         off += 1
         for n in range (19) :
-            self.assertEqual (lines [n + off][12], "week")
+            self.assertEqual (lines [n + off][15], "week")
         off += 19
-        self.assertEqual (lines [off][12], "week, monthly average required")
-        self.assertEqual (lines [off + 1][12], "monthly average required")
-        self.assertEqual (lines [off + 2][12], "monthly average required")
-        self.assertEqual (lines [off + 3][12], "week")
-        self.assertEqual (lines [off + 4][12], "week")
-        self.assertEqual (lines [off + 5][12], "week")
-        self.assertEqual (lines [off + 6][12], "week")
+        self.assertEqual (lines [off][15], "week, monthly average required")
+        self.assertEqual (lines [off + 1][15], "monthly average required")
+        self.assertEqual (lines [off + 2][15], "monthly average required")
+        self.assertEqual (lines [off + 3][15], "week")
+        self.assertEqual (lines [off + 4][15], "week")
+        self.assertEqual (lines [off + 5][15], "week")
+        self.assertEqual (lines [off + 6][15], "week")
         self.assertEqual \
-            (lines [off + 7][12], "week, monthly average required, week")
+            (lines [off + 7][15], "week, monthly average required, week")
 
         off = 1
         for n in range (11) :
-            self.assertEqual (lines [off + n][14], "")
+            self.assertEqual (lines [off + n][17], "")
         off += 11
-        self.assertEqual (lines [off]    [14], "7 => 3.82")
-        self.assertEqual (lines [off + 1][14], "7 => 3.82")
-        self.assertEqual (lines [off + 2][14], "7")
+        self.assertEqual (lines [off]    [17], "7 => 3.82")
+        self.assertEqual (lines [off + 1][17], "7 => 3.82")
+        self.assertEqual (lines [off + 2][17], "7")
         off += 3
         for n in range (4) :
-            self.assertEqual (lines [off + n][14], "7 => 6.67")
+            self.assertEqual (lines [off + n][17], "7 => 6.67")
         off += 4
-        self.assertEqual (lines [off][14], "7")
+        self.assertEqual (lines [off][17], "7")
         off += 1
         for n in range (4) :
-            self.assertEqual (lines [off + n][14], "7 => 6.09")
+            self.assertEqual (lines [off + n][17], "7 => 6.09")
         off += 4
         for n in range (19) :
-            self.assertEqual (lines [off + n][14], "")
+            self.assertEqual (lines [off + n][17], "")
         off += 19
-        self.assertEqual (lines [off]    [14], "7 => 3.82")
-        self.assertEqual (lines [off + 1][14], "7 => 6.67")
-        self.assertEqual (lines [off + 2][14], "7 => 6.09")
+        self.assertEqual (lines [off]    [17], "7 => 3.82")
+        self.assertEqual (lines [off + 1][17], "7 => 6.67")
+        self.assertEqual (lines [off + 2][17], "7 => 6.09")
         off += 3
         for n in range (4) :
-            self.assertEqual (lines [off + n][14], "")
+            self.assertEqual (lines [off + n][17], "")
         off += 4
-        self.assertEqual (lines [off]    [14], "7")
+        self.assertEqual (lines [off]    [17], "7")
     # end def test_user5
 
     def test_user6 (self) :
@@ -5875,22 +5917,26 @@ class Test_Case_Fulltracker (_Test_Case_Summary, unittest.TestCase) :
              , 'summary_type' : ['2', '3', '4']
              }
         class r : filterspec = fs
+        class c: _ = lambda x: x
         sr = summary.Staff_Report \
-            (self.db, r, templating.TemplatingUtils (None))
+            (self.db, r, templating.TemplatingUtils (c))
         lines = tuple (csv.reader (StringIO (sr.as_csv ()), delimiter = ','))
         self.assertEqual (len (lines), 11)
-        self.assertEqual (lines  [0] [1], 'Time Period')
-        self.assertEqual (lines  [0] [6], 'Actual all')
-        self.assertEqual (lines  [0] [8], 'Supp. hours average')
-        self.assertEqual (lines  [0] [9], 'Supplementary hours')
-        self.assertEqual (lines  [0][11], 'Balance End')
-        self.assertEqual (lines  [0][12], 'Overtime period')
-        self.assertEqual (lines  [1] [1], 'WW 35/2012')
-        self.assertEqual (lines  [8] [1], 'September 2012')
-        self.assertEqual (lines  [9] [1], 'October 2012')
-        self.assertEqual (lines [10] [1], '2012-09-01;2012-10-08')
-        self.assertEqual (lines  [1] [2], '0.00') # balance_start
-        self.assertEqual (lines [10][11], '9.59') # balance_end
+        self.assertEqual (lines  [0] [1], 'SF System ID')
+        self.assertEqual (lines  [0] [2], 'First name')
+        self.assertEqual (lines  [0] [3], 'Last name')
+        self.assertEqual (lines  [0] [4], 'Time Period')
+        self.assertEqual (lines  [0] [9], 'Actual all')
+        self.assertEqual (lines  [0][11], 'Supp. hours average')
+        self.assertEqual (lines  [0][12], 'Supplementary hours')
+        self.assertEqual (lines  [0][14], 'Balance End')
+        self.assertEqual (lines  [0][15], 'Overtime period')
+        self.assertEqual (lines  [1] [4], 'WW 35/2012')
+        self.assertEqual (lines  [8] [4], 'September 2012')
+        self.assertEqual (lines  [9] [4], 'October 2012')
+        self.assertEqual (lines [10] [4], '2012-09-01;2012-10-08')
+        self.assertEqual (lines  [1] [5], '0.00') # balance_start
+        self.assertEqual (lines [10][14], '9.59') # balance_end
     # end def test_user6
 
     def test_user7 (self) :
@@ -5908,24 +5954,28 @@ class Test_Case_Fulltracker (_Test_Case_Summary, unittest.TestCase) :
              , 'summary_type' : ['2', '3', '4']
              }
         class r : filterspec = fs
+        class c: _ = lambda x: x
         sr = summary.Staff_Report \
-            (self.db, r, templating.TemplatingUtils (None))
+            (self.db, r, templating.TemplatingUtils (c))
         lines = tuple (csv.reader (StringIO (sr.as_csv ()), delimiter = ','))
         self.assertEqual (len (lines), 10)
-        self.assertEqual (lines  [0] [1], 'Time Period')
-        self.assertEqual (lines  [0] [6], 'Actual all')
-        self.assertEqual (lines  [0] [8], 'Supp. hours average')
-        self.assertEqual (lines  [0] [9], 'Supplementary hours')
-        self.assertEqual (lines  [0][11], 'Balance End')
-        self.assertEqual (lines  [0][12], 'Overtime period')
-        self.assertEqual (lines  [1] [1], 'WW 46/2012')
-        self.assertEqual (lines  [7] [1], 'November 2012')
-        self.assertEqual (lines  [8] [1], 'December 2012')
-        self.assertEqual (lines  [9] [1], '2012-11-15;2012-12-18')
-        self.assertEqual (lines  [7] [7], '92.25')
-        self.assertEqual (lines  [7] [8], '100.43')
-        self.assertEqual (lines  [1] [2], '0.00') # balance_start
-        self.assertEqual (lines  [9][11], '3.80') # balance_end
+        self.assertEqual (lines  [0] [1], 'SF System ID')
+        self.assertEqual (lines  [0] [2], 'First name')
+        self.assertEqual (lines  [0] [3], 'Last name')
+        self.assertEqual (lines  [0] [4], 'Time Period')
+        self.assertEqual (lines  [0] [9], 'Actual all')
+        self.assertEqual (lines  [0][11], 'Supp. hours average')
+        self.assertEqual (lines  [0][12], 'Supplementary hours')
+        self.assertEqual (lines  [0][14], 'Balance End')
+        self.assertEqual (lines  [0][15], 'Overtime period')
+        self.assertEqual (lines  [1] [4], 'WW 46/2012')
+        self.assertEqual (lines  [7] [4], 'November 2012')
+        self.assertEqual (lines  [8] [4], 'December 2012')
+        self.assertEqual (lines  [9] [4], '2012-11-15;2012-12-18')
+        self.assertEqual (lines  [7][10], '92.25')
+        self.assertEqual (lines  [7][11], '100.43')
+        self.assertEqual (lines  [1] [5], '0.00') # balance_start
+        self.assertEqual (lines  [9][14], '3.80') # balance_end
     # end def test_user7
 
     def test_user8 (self) :
@@ -5997,23 +6047,27 @@ class Test_Case_Fulltracker (_Test_Case_Summary, unittest.TestCase) :
     # end def test_user8
 
     def user8_staff_report (self, r, balance_start, balance_end) :
+        class c: _ = lambda x: x
         sr = summary.Staff_Report \
-            (self.db, r, templating.TemplatingUtils (None))
+            (self.db, r, templating.TemplatingUtils (c))
         lines = tuple (csv.reader (StringIO (sr.as_csv ()), delimiter = ','))
         self.assertEqual (len (lines), 6)
-        self.assertEqual (lines  [0] [1], 'Time Period')
-        self.assertEqual (lines  [0] [6], 'Actual all')
-        self.assertEqual (lines  [0] [8], 'Supp. hours average')
-        self.assertEqual (lines  [0] [9], 'Supplementary hours')
-        self.assertEqual (lines  [0][11], 'Balance End')
-        self.assertEqual (lines  [0][12], 'Overtime period')
-        self.assertEqual (lines  [1] [1], 'WW 1/2013')
-        self.assertEqual (lines  [4] [1], 'January 2013')
-        self.assertEqual (lines  [5] [1], '2013-01-01;2013-01-16')
-        self.assertEqual (lines  [4] [7], '92.50')
-        self.assertEqual (lines  [4] [8], '95.85')
-        self.assertEqual (lines  [1] [2], balance_start)
-        self.assertEqual (lines  [5][11], balance_end)
+        self.assertEqual (lines  [0] [1], 'SF System ID')
+        self.assertEqual (lines  [0] [2], 'First name')
+        self.assertEqual (lines  [0] [3], 'Last name')
+        self.assertEqual (lines  [0] [4], 'Time Period')
+        self.assertEqual (lines  [0] [9], 'Actual all')
+        self.assertEqual (lines  [0][11], 'Supp. hours average')
+        self.assertEqual (lines  [0][12], 'Supplementary hours')
+        self.assertEqual (lines  [0][14], 'Balance End')
+        self.assertEqual (lines  [0][15], 'Overtime period')
+        self.assertEqual (lines  [1] [4], 'WW 1/2013')
+        self.assertEqual (lines  [4] [4], 'January 2013')
+        self.assertEqual (lines  [5] [4], '2013-01-01;2013-01-16')
+        self.assertEqual (lines  [4][10], '92.50')
+        self.assertEqual (lines  [4][11], '95.85')
+        self.assertEqual (lines  [1] [5], balance_start)
+        self.assertEqual (lines  [5][14], balance_end)
     # end def user8_staff_report
 
     def test_user9 (self) :
@@ -6033,26 +6087,30 @@ class Test_Case_Fulltracker (_Test_Case_Summary, unittest.TestCase) :
              , 'summary_type' : ['2', '3', '4']
              }
         class r : filterspec = fs
+        class c: _ = lambda x: x
         sr = summary.Staff_Report \
-            (self.db, r, templating.TemplatingUtils (None))
+            (self.db, r, templating.TemplatingUtils (c))
         lines = tuple (csv.reader (StringIO (sr.as_csv ()), delimiter = ','))
         self.assertEqual (len (lines), 6)
-        self.assertEqual (lines  [0] [1], 'Time Period')
-        self.assertEqual (lines  [0] [6], 'Actual all')
-        self.assertEqual (lines  [0] [8], 'Supp. hours average')
-        self.assertEqual (lines  [0] [9], 'Supplementary hours')
-        self.assertEqual (lines  [0][10], 'Overtime correction')
-        self.assertEqual (lines  [0][11], 'Balance End')
-        self.assertEqual (lines  [0][12], 'Overtime period')
-        self.assertEqual (lines  [1] [1], 'WW 1/2013')
-        self.assertEqual (lines  [1][10], '45.0')
-        self.assertEqual (lines  [4] [1], 'January 2013')
-        self.assertEqual (lines  [5] [1], '2013-01-01;2013-01-16')
-        self.assertEqual (lines  [5][10], '45.0')
-        self.assertEqual (lines  [4] [7], '0.00')
-        self.assertEqual (lines  [4] [8], '0')
-        self.assertEqual (lines  [1] [2], '0.00')
-        self.assertEqual (lines  [5][11], '45.00')
+        self.assertEqual (lines  [0] [1], 'SF System ID')
+        self.assertEqual (lines  [0] [2], 'First name')
+        self.assertEqual (lines  [0] [3], 'Last name')
+        self.assertEqual (lines  [0] [4], 'Time Period')
+        self.assertEqual (lines  [0] [9], 'Actual all')
+        self.assertEqual (lines  [0][11], 'Supp. hours average')
+        self.assertEqual (lines  [0][12], 'Supplementary hours')
+        self.assertEqual (lines  [0][13], 'Overtime correction')
+        self.assertEqual (lines  [0][14], 'Balance End')
+        self.assertEqual (lines  [0][15], 'Overtime period')
+        self.assertEqual (lines  [1] [4], 'WW 1/2013')
+        self.assertEqual (lines  [1][13], '45.0')
+        self.assertEqual (lines  [4] [4], 'January 2013')
+        self.assertEqual (lines  [5] [4], '2013-01-01;2013-01-16')
+        self.assertEqual (lines  [5][13], '45.0')
+        self.assertEqual (lines  [4][10], '0.00')
+        self.assertEqual (lines  [4][11], '0')
+        self.assertEqual (lines  [1] [5], '0.00')
+        self.assertEqual (lines  [5][14], '45.00')
     # end def test_user9
 
     def test_user10 (self) :
@@ -6071,34 +6129,38 @@ class Test_Case_Fulltracker (_Test_Case_Summary, unittest.TestCase) :
              , 'summary_type' : ['2', '3', '4']
              }
         class r : filterspec = fs
+        class c: _ = lambda x: x
         sr = summary.Staff_Report \
-            (self.db, r, templating.TemplatingUtils (None))
+            (self.db, r, templating.TemplatingUtils (c))
         lines = tuple (csv.reader (StringIO (sr.as_csv ()), delimiter = ','))
         self.assertEqual (len (lines), 14)
-        self.assertEqual (lines  [0] [1], 'Time Period')
-        self.assertEqual (lines  [0] [2], 'Balance Start')
-        self.assertEqual (lines  [0] [6], 'Actual all')
-        self.assertEqual (lines  [0] [7], 'required')
-        self.assertEqual (lines  [0] [8], 'Supp. hours average')
-        self.assertEqual (lines  [0] [9], 'Supplementary hours')
-        self.assertEqual (lines  [0][10], 'Overtime correction')
-        self.assertEqual (lines  [0][11], 'Balance End')
-        self.assertEqual (lines  [0][12], 'Overtime period')
-        self.assertEqual (lines  [1] [1], 'WW 48/2012')
-        self.assertEqual (lines  [5][10], '-76.38')
-        self.assertEqual (lines [11] [1], 'December 2012')
-        self.assertEqual (lines [12] [1], 'January 2013')
-        self.assertEqual (lines [13] [1], '2012-12-01;2013-01-31')
-        self.assertEqual (lines [13][10], '-76.38')
-        self.assertEqual (lines  [1] [7], '0.00')
-        self.assertEqual (lines [13] [7], '0.00')
-        self.assertEqual (lines  [1] [8], '0')
-        self.assertEqual (lines [13] [8], '0')
-        self.assertEqual (lines  [1] [9], '0.00')
-        self.assertEqual (lines [13] [9], '0.00')
-        self.assertEqual (lines  [1] [2], '76.38')
-        self.assertEqual (lines [13] [2], '76.38')
-        self.assertEqual (lines [13][11], '0.00')
+        self.assertEqual (lines  [0] [1], 'SF System ID')
+        self.assertEqual (lines  [0] [2], 'First name')
+        self.assertEqual (lines  [0] [3], 'Last name')
+        self.assertEqual (lines  [0] [4], 'Time Period')
+        self.assertEqual (lines  [0] [5], 'Balance Start')
+        self.assertEqual (lines  [0] [9], 'Actual all')
+        self.assertEqual (lines  [0][10], 'required')
+        self.assertEqual (lines  [0][11], 'Supp. hours average')
+        self.assertEqual (lines  [0][12], 'Supplementary hours')
+        self.assertEqual (lines  [0][13], 'Overtime correction')
+        self.assertEqual (lines  [0][14], 'Balance End')
+        self.assertEqual (lines  [0][15], 'Overtime period')
+        self.assertEqual (lines  [1] [4], 'WW 48/2012')
+        self.assertEqual (lines  [5][13], '-76.38')
+        self.assertEqual (lines [11] [4], 'December 2012')
+        self.assertEqual (lines [12] [4], 'January 2013')
+        self.assertEqual (lines [13] [4], '2012-12-01;2013-01-31')
+        self.assertEqual (lines [13][13], '-76.38')
+        self.assertEqual (lines  [1][10], '0.00')
+        self.assertEqual (lines [13][10], '0.00')
+        self.assertEqual (lines  [1][11], '0')
+        self.assertEqual (lines [13][11], '0')
+        self.assertEqual (lines  [1][12], '0.00')
+        self.assertEqual (lines [13][12], '0.00')
+        self.assertEqual (lines  [1] [5], '76.38')
+        self.assertEqual (lines [13] [5], '76.38')
+        self.assertEqual (lines [13][14], '0.00')
     # end def test_user10
 
     def test_extproperty (self) :
@@ -6528,45 +6590,50 @@ class Test_Case_Concurrency (_Test_Base, _Test_Base_Summary, unittest.TestCase) 
              , 'summary_type' : ['2', '4']
              }
         class r : filterspec = fs
+        class c: _ = lambda x: x
         summary.init (self.tracker)
         sr = summary.Staff_Report \
-            (self.db, r, templating.TemplatingUtils (None))
+            (self.db, r, templating.TemplatingUtils (c))
         lines = [x.strip ().split (',') for x in sr.as_csv ().split ('\n')]
         self.assertEqual (len (lines), 5)
         self.assertEqual (lines [0] [0], 'User')
-        self.assertEqual (lines [0] [1], 'Time Period')
-        self.assertEqual (lines [0] [2], 'Balance Start')
-        self.assertEqual (lines [0] [3], 'Actual open')
-        self.assertEqual (lines [0] [4], 'Actual submitted')
-        self.assertEqual (lines [0] [5], 'Actual accepted')
-        self.assertEqual (lines [0] [6], 'Actual all')
-        self.assertEqual (lines [0] [7], 'required')
-        self.assertEqual (lines [0] [8], 'Supp. hours average')
-        self.assertEqual (lines [0] [9], 'Supplementary hours')
-        self.assertEqual (lines [0][10], 'Overtime correction')
-        self.assertEqual (lines [0][11], 'Balance End')
-        self.assertEqual (lines [0][12], 'Overtime period')
-        self.assertEqual (lines [1] [1], 'WW 36/2008')
-        self.assertEqual (lines [2] [1], 'WW 37/2008')
-        self.assertEqual (lines [3] [1], '2008-09-01;2008-09-10')
-        self.assertEqual (lines [1][11], '-23.50')
-        self.assertEqual (lines [2][11], '-38.50')
-        self.assertEqual (lines [3][11], '-38.50')
-        self.assertEqual (lines [3][10], '910.0')
+        self.assertEqual (lines [0] [1], 'SF System ID')
+        self.assertEqual (lines [0] [2], 'First name')
+        self.assertEqual (lines [0] [3], 'Last name')
+        self.assertEqual (lines [0] [4], 'Time Period')
+        self.assertEqual (lines [0] [5], 'Balance Start')
+        self.assertEqual (lines [0] [6], 'Actual open')
+        self.assertEqual (lines [0] [7], 'Actual submitted')
+        self.assertEqual (lines [0] [8], 'Actual accepted')
+        self.assertEqual (lines [0] [9], 'Actual all')
+        self.assertEqual (lines [0][10], 'required')
+        self.assertEqual (lines [0][11], 'Supp. hours average')
+        self.assertEqual (lines [0][12], 'Supplementary hours')
+        self.assertEqual (lines [0][13], 'Overtime correction')
+        self.assertEqual (lines [0][14], 'Balance End')
+        self.assertEqual (lines [0][15], 'Overtime period')
+        self.assertEqual (lines [1] [4], 'WW 36/2008')
+        self.assertEqual (lines [2] [4], 'WW 37/2008')
+        self.assertEqual (lines [3] [4], '2008-09-01;2008-09-10')
+        self.assertEqual (lines [1][14], '-23.50')
+        self.assertEqual (lines [2][14], '-38.50')
+        self.assertEqual (lines [3][14], '-38.50')
+        self.assertEqual (lines [3][13], '910.0')
         fs = { 'user'         : [self.user1]
              , 'date'         : '2009-12-21;2010-01-03'
              , 'summary_type' : ['2', '4']
              }
         class r : filterspec = fs
+        class c: _ = lambda x: x
         sr = summary.Staff_Report \
-            (self.db, r, templating.TemplatingUtils (None))
+            (self.db, r, templating.TemplatingUtils (c))
         lines = [x.strip ().split (',') for x in sr.as_csv ().split ('\n')]
-        self.assertEqual (lines [1] [1], 'WW 52/2009')
-        self.assertEqual (lines [2] [1], 'WW 53/2009')
-        self.assertEqual (lines [3] [1], '2009-12-21;2010-01-03')
-        self.assertEqual (lines [1][11], '-38.50')
-        self.assertEqual (lines [2][11], '-38.50')
-        self.assertEqual (lines [3][11], '-38.50')
+        self.assertEqual (lines [1] [4], 'WW 52/2009')
+        self.assertEqual (lines [2] [4], 'WW 53/2009')
+        self.assertEqual (lines [3] [4], '2009-12-21;2010-01-03')
+        self.assertEqual (lines [1][14], '-38.50')
+        self.assertEqual (lines [2][14], '-38.50')
+        self.assertEqual (lines [3][14], '-38.50')
 
         for d in ('2006-12-31', '2007-12-31') :
             f = self.db.daily_record_freeze.create \
@@ -6623,15 +6690,16 @@ class Test_Case_Concurrency (_Test_Base, _Test_Base_Summary, unittest.TestCase) 
             (self.db, self.user1, date.Date ('2010-01-03'), not_after = True)
         self.assertEqual (bal, (-38.5, 0))
 
+        class c: _ = lambda x: x
         sr = summary.Staff_Report \
-            (self.db, r, templating.TemplatingUtils (None))
+            (self.db, r, templating.TemplatingUtils (c))
         lines = [x.strip ().split (',') for x in sr.as_csv ().split ('\n')]
-        self.assertEqual (lines [1] [1], 'WW 52/2009')
-        self.assertEqual (lines [2] [1], 'WW 53/2009')
-        self.assertEqual (lines [3] [1], '2009-12-21;2010-01-03')
-        self.assertEqual (lines [1][11], '-38.50')
-        self.assertEqual (lines [2][11], '-38.50')
-        self.assertEqual (lines [3][11], '-38.50')
+        self.assertEqual (lines [1] [4], 'WW 52/2009')
+        self.assertEqual (lines [2] [4], 'WW 53/2009')
+        self.assertEqual (lines [3] [4], '2009-12-21;2010-01-03')
+        self.assertEqual (lines [1][14], '-38.50')
+        self.assertEqual (lines [2][14], '-38.50')
+        self.assertEqual (lines [3][14], '-38.50')
 
         f = self.db.daily_record_freeze.create \
             ( user           = self.user1
@@ -6654,15 +6722,16 @@ class Test_Case_Concurrency (_Test_Base, _Test_Base_Summary, unittest.TestCase) 
 
         self.db.clearCache ()
 
+        class c: _ = lambda x: x
         sr = summary.Staff_Report \
-            (self.db, r, templating.TemplatingUtils (None))
+            (self.db, r, templating.TemplatingUtils (c))
         lines = [x.strip ().split (',') for x in sr.as_csv ().split ('\n')]
-        self.assertEqual (lines [1] [1], 'WW 52/2009')
-        self.assertEqual (lines [2] [1], 'WW 53/2009')
-        self.assertEqual (lines [3] [1], '2009-12-21;2010-01-03')
-        self.assertEqual (lines [1][11], '-38.50')
-        self.assertEqual (lines [2][11], '-38.50')
-        self.assertEqual (lines [3][11], '-38.50')
+        self.assertEqual (lines [1] [4], 'WW 52/2009')
+        self.assertEqual (lines [2] [4], 'WW 53/2009')
+        self.assertEqual (lines [3] [4], '2009-12-21;2010-01-03')
+        self.assertEqual (lines [1][14], '-38.50')
+        self.assertEqual (lines [2][14], '-38.50')
+        self.assertEqual (lines [3][14], '-38.50')
     # end def test_user1
 
     def test_user2 (self) :
@@ -6706,35 +6775,37 @@ class Test_Case_Concurrency (_Test_Base, _Test_Base_Summary, unittest.TestCase) 
              , 'summary_type' : ['2', '4']
              }
         class r : filterspec = fs
+        class c: _ = lambda x: x
         summary.init (self.tracker)
         ndr = self.db.daily_record.getnode ('51')
         self.assertEqual (len (ndr.time_record), 2)
         sr = summary.Staff_Report \
-            (self.db, r, templating.TemplatingUtils (None))
+            (self.db, r, templating.TemplatingUtils (c))
         lines = [x.strip ().split (',') for x in sr.as_csv ().split ('\n')]
         self.assertEqual (len (lines), 5)
-        self.assertEqual (lines [1] [1], 'WW 52/2008')
-        self.assertEqual (lines [2] [1], 'WW 1/2009')
-        self.assertEqual (lines [3] [1], '2008-12-22;2009-01-04')
-        self.assertEqual (lines [1][11], '0.00')
-        self.assertEqual (lines [2][11], '0.00')
-        self.assertEqual (lines [3][11], '0.00')
+        self.assertEqual (lines [1] [4], 'WW 52/2008')
+        self.assertEqual (lines [2] [4], 'WW 1/2009')
+        self.assertEqual (lines [3] [4], '2008-12-22;2009-01-04')
+        self.assertEqual (lines [1][14], '0.00')
+        self.assertEqual (lines [2][14], '0.00')
+        self.assertEqual (lines [3][14], '0.00')
 
         fs = { 'user'         : [self.user2]
              , 'date'         : '2009-12-21;2010-01-03'
              , 'summary_type' : ['2', '4']
              }
         class r : filterspec = fs
+        class c: _ = lambda x: x
         sr = summary.Staff_Report \
-            (self.db, r, templating.TemplatingUtils (None))
+            (self.db, r, templating.TemplatingUtils (c))
         lines = [x.strip ().split (',') for x in sr.as_csv ().split ('\n')]
         self.assertEqual (len (lines), 5)
-        self.assertEqual (lines [1] [1], 'WW 52/2009')
-        self.assertEqual (lines [2] [1], 'WW 53/2009')
-        self.assertEqual (lines [3] [1], '2009-12-21;2010-01-03')
-        self.assertEqual (lines [1][11], '113.12')
-        self.assertEqual (lines [2][11], '113.12')
-        self.assertEqual (lines [3][11], '113.12')
+        self.assertEqual (lines [1] [4], 'WW 52/2009')
+        self.assertEqual (lines [2] [4], 'WW 53/2009')
+        self.assertEqual (lines [3] [4], '2009-12-21;2010-01-03')
+        self.assertEqual (lines [1][14], '113.12')
+        self.assertEqual (lines [2][14], '113.12')
+        self.assertEqual (lines [3][14], '113.12')
         f = self.db.daily_record_freeze.create \
             ( user           = self.user2
             , frozen         = True

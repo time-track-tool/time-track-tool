@@ -1087,10 +1087,22 @@ properties = \
         ]
       )
     , ( 'o_permission'
-      , [ ( 'org_location'
+      , [ ( 'olo_group'
+          , ['admin', 'cc-permission', 'contact', 'controlling', 'doc_admin', 'facility', 'functional-role', 'hr', 'hr-leave-approval', 'hr-vacation', 'issue_admin', 'it', 'itview', 'msgedit', 'msgsync', 'o-permission', 'office', 'organisation', 'procurement', 'project', 'project_view', 'sec-incident-nosy', 'sec-incident-responsible', 'summary-report', 'summary_view', 'supportadmin', 'time-report', 'type', 'user', 'vacation-report', 'view-roles']
+          )
+        , ( 'org_location'
           , ['admin', 'cc-permission', 'contact', 'controlling', 'doc_admin', 'facility', 'functional-role', 'hr', 'hr-leave-approval', 'hr-vacation', 'issue_admin', 'it', 'itview', 'msgedit', 'msgsync', 'o-permission', 'office', 'organisation', 'procurement', 'project', 'project_view', 'sec-incident-nosy', 'sec-incident-responsible', 'summary-report', 'summary_view', 'supportadmin', 'time-report', 'type', 'user', 'vacation-report', 'view-roles']
           )
         , ( 'user'
+          , ['admin', 'cc-permission', 'contact', 'controlling', 'doc_admin', 'facility', 'functional-role', 'hr', 'hr-leave-approval', 'hr-vacation', 'issue_admin', 'it', 'itview', 'msgedit', 'msgsync', 'o-permission', 'office', 'organisation', 'procurement', 'project', 'project_view', 'sec-incident-nosy', 'sec-incident-responsible', 'summary-report', 'summary_view', 'supportadmin', 'time-report', 'type', 'user', 'vacation-report', 'view-roles']
+          )
+        ]
+      )
+    , ( 'olo_group'
+      , [ ( 'name'
+          , ['admin', 'cc-permission', 'contact', 'controlling', 'doc_admin', 'facility', 'functional-role', 'hr', 'hr-leave-approval', 'hr-vacation', 'issue_admin', 'it', 'itview', 'msgedit', 'msgsync', 'o-permission', 'office', 'organisation', 'procurement', 'project', 'project_view', 'sec-incident-nosy', 'sec-incident-responsible', 'summary-report', 'summary_view', 'supportadmin', 'time-report', 'type', 'user', 'vacation-report', 'view-roles']
+          )
+        , ( 'org_location'
           , ['admin', 'cc-permission', 'contact', 'controlling', 'doc_admin', 'facility', 'functional-role', 'hr', 'hr-leave-approval', 'hr-vacation', 'issue_admin', 'it', 'itview', 'msgedit', 'msgsync', 'o-permission', 'office', 'organisation', 'procurement', 'project', 'project_view', 'sec-incident-nosy', 'sec-incident-responsible', 'summary-report', 'summary_view', 'supportadmin', 'time-report', 'type', 'user', 'vacation-report', 'view-roles']
           )
         ]

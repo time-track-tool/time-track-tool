@@ -443,8 +443,14 @@ properties = \
         ]
       )
     , ( 'o_permission'
-      , [ 'org_location'
+      , [ 'olo_group'
+        , 'org_location'
         , 'user'
+        ]
+      )
+    , ( 'olo_group'
+      , [ 'name'
+        , 'org_location'
         ]
       )
     , ( 'org_group'

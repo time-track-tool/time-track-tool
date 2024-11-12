@@ -3,7 +3,9 @@ New Web users get the Roles "User,Nosy"
 New Email users get the Role "User"
 Role "admin":
  User is allowed to create o_permission (Create for "o_permission" only)
+ User is allowed to create org_group (Create for "org_group" only)
  User is allowed to edit o_permission (Edit for "o_permission" only)
+ User is allowed to edit org_group (Edit for "org_group" only)
  User may access the rest interface (Rest Access)
  User may access the web interface (Web Access)
  User may access the xmlrpc interface (Xmlrpc Access)
@@ -63,7 +65,9 @@ Role "nosy":
  User may get nosy messages for purchase_request (Nosy for "purchase_request" only)
 Role "o-permission":
  User is allowed to create o_permission (Create for "o_permission" only)
+ User is allowed to create org_group (Create for "org_group" only)
  User is allowed to edit o_permission (Edit for "o_permission" only)
+ User is allowed to edit org_group (Edit for "org_group" only)
 Role "pgp":
 Role "procurement-admin":
   (Restore for "pr_approval_order" only)
@@ -142,6 +146,7 @@ Role "user":
  User is allowed to access internal_order (View for "internal_order" only)
  User is allowed to access location (View for "location" only)
  User is allowed to access o_permission (View for "o_permission" only)
+ User is allowed to access org_group (View for "org_group" only)
  User is allowed to access org_location (View for "org_location" only)
  User is allowed to access organisation (View for "organisation" only)
  User is allowed to access part_of_budget (View for "part_of_budget" only)

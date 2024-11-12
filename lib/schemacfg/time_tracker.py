@@ -776,6 +776,10 @@ def security (db, ** kw):
           , ["User"]
           , []
           )
+        , ("olo_group"
+          , ["User"]
+          , ["O-Permission"]
+          )
         , ("organisation"
           , ["User"]
           , ["Controlling"]
