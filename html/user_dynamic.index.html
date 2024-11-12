@@ -11,6 +11,30 @@
    prp python:
     ( ('id',                {})
     , ('user',              {})
+    , ( 'user'
+      , dict
+        ( searchname   = 'user.employee_number'
+        , searchable   = False
+        , sortable     = True
+        , is_labelprop = False
+        )
+      )
+    , ( 'user'
+      , dict
+        ( searchname   = 'user.firstname'
+        , searchable   = False
+        , sortable     = True
+        , is_labelprop = False
+        )
+      )
+    , ( 'user'
+      , dict
+        ( searchname   = 'user.lastname'
+        , searchable   = False
+        , sortable     = True
+        , is_labelprop = False
+        )
+      )
     , ('valid_from',        {})
     , ('valid_to',          {})
     , ('booking_allowed',   {})

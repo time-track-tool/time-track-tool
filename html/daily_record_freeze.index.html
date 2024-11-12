@@ -8,22 +8,47 @@
  <tal:block tal:define=
   "batch request/batch;
    pdict python: utils.properties_dict (db, context);
-   props python:
-    ( utils.ExtProperty (utils, pdict ['id'])
-    , utils.ExtProperty (utils, pdict ['user'])
-    , utils.ExtProperty (utils, pdict ['date'])
-    , utils.ExtProperty (utils, pdict ['frozen'])
-    , utils.ExtProperty (utils, pdict ['week_balance'])
-    , utils.ExtProperty (utils, pdict ['month_balance'])
-    , utils.ExtProperty (utils, pdict ['balance'])
-    , utils.ExtProperty (utils, pdict ['month_validity_date'])
-    , utils.ExtProperty (utils, pdict ['validity_date'])
-    , utils.ExtProperty (utils, pdict ['achieved_hours'])
-    , utils.ExtProperty (utils, pdict ['activity'])
-    , utils.ExtProperty (utils, pdict ['actor'])
-    , utils.ExtProperty (utils, pdict ['creation'])
-    , utils.ExtProperty (utils, pdict ['creator'])
+   prp python:
+    ( ('id',                  {})
+    , ('user',                {})
+    , ( 'user'
+      , dict
+        ( searchname   = 'user.employee_number'
+        , searchable   = False
+        , sortable     = True
+        , is_labelprop = False
+        )
+      )
+    , ( 'user'
+      , dict
+        ( searchname   = 'user.firstname'
+        , searchable   = False
+        , sortable     = True
+        , is_labelprop = False
+        )
+      )
+    , ( 'user'
+      , dict
+        ( searchname   = 'user.lastname'
+        , searchable   = False
+        , sortable     = True
+        , is_labelprop = False
+        )
+      )
+    , ('date',                {})
+    , ('frozen',              {})
+    , ('week_balance',        {})
+    , ('month_balance',       {})
+    , ('balance',             {})
+    , ('month_validity_date', {})
+    , ('validity_date',       {})
+    , ('achieved_hours',      {})
+    , ('activity',            {})
+    , ('actor',               {})
+    , ('creation',            {})
+    , ('creator',             {})
     );
+   props python: utils.filtered_properties (db, utils, context, prp);
    "
   tal:condition="context/is_view_ok">
 
