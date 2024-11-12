@@ -1586,6 +1586,12 @@ class Staff_Report (_Report):
     def fill_container (self, container, user, dyn, start, end):
         db      = self.db
         u       = user
+        container ['user.employee_number'] = self.linked_type \
+            (u, 'user', 'employee_number')
+        container ['user.firstname'] = self.linked_type \
+            (u, 'user', 'firstname')
+        container ['user.lastname']  = self.linked_type \
+            (u, 'user', 'lastname')
         otp     = user_dynamic.overtime_periods (db, user, start, end)
         periods = [p [2] for p in otp]
         ov = db.overtime_correction.filter \
@@ -1702,6 +1708,9 @@ class Staff_Report (_Report):
         _ = self.db.i18n.gettext
         line = []
         line.append (formatter (_ ('user')))
+        line.append (formatter (_ ('user.employee_number')))
+        line.append (formatter (_ ('user.firstname')))
+        line.append (formatter (_ ('user.lastname')))
         line.append (formatter (_ ('time')))
         for f in self.fields:
             line.append (formatter (_ (f)))
@@ -1718,6 +1727,8 @@ class Staff_Report (_Report):
             for container in self.values [u]:
                 line  = []
                 line.append (item_formatter (user))
+                for f in 'employee_number', 'firstname', 'lastname':
+                    line.append (item_formatter (container ['user.' + f]))
                 line.append (item_formatter (container))
                 for f in self.fields:
                     line.append (item_formatter (container [f]))

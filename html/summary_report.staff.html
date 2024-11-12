@@ -12,28 +12,57 @@
    <tal:block tal:define=
     "batch request/batch;
      pdict python: utils.properties_dict (db, context);
-     myprops python: dict
-      ( date              = utils.ExtProperty 
-        (utils, pdict ['date'])
-      , user              = utils.ExtProperty 
-        (utils, pdict ['user'])
-      , org_location      = utils.ExtProperty
-        ( utils, pdict ['org_location']
-        , multiselect   = 1
-        , multi_selonly = 1
-        , filter        = utils.valid_item (now)
+     prp python:
+      ( ('date', {})
+      , ('user', {})
+      , ( 'user'
+	, dict
+	    ( searchname   = 'user.employee_number'
+	    , searchable   = False
+	    , sortable     = True
+	    , is_labelprop = False
+	    )
+	)
+      , ( 'user'
+	, dict
+	    ( searchname   = 'user.firstname'
+	    , searchable   = False
+	    , sortable     = True
+	    , is_labelprop = False
+	    )
+	)
+      , ( 'user'
+	, dict
+	    ( searchname   = 'user.lastname'
+	    , searchable   = False
+	    , sortable     = True
+	    , is_labelprop = False
+	    )
+	)
+      , ( 'org_location'
+        , dict
+            ( multiselect   = 1
+	    , multi_selonly = 1
+	    , filter        = utils.valid_item (now)
+            )
         )
-      , supervisor        = utils.ExtProperty
-        (utils, pdict ['supervisor'])
-      , status            = utils.ExtProperty
-        (utils, pdict ['status'],            multiselect = 1, multi_selonly = 1)
-      , summary_type      = utils.ExtProperty
-        ( utils, pdict ['summary_type']
-        , multiselect = 1, multi_selonly = 1
-        , filter      = dict (is_staff = True)
+      , ('supervisor', {})
+      , ( 'status'
+        , dict
+            ( multiselect   = 1
+            , multi_selonly = 1
+            )
         )
-      , all_in            = utils.ExtProperty (utils, pdict ['all_in'])
+      , ( 'summary_type'
+        , dict
+	    ( multiselect = 1, multi_selonly = 1
+	    , filter      = dict (is_staff = True)
+	    )
+        )
+      , ( 'all_in', {})
       );
+      myprops python: utils.filtered_properties
+       (db, utils, context, prp, as_dict = True, check_names = False);
       sr   python: utils.Staff_Report (db, request, utils)
      "
     tal:condition="context/is_view_ok">
