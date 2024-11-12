@@ -194,7 +194,8 @@
                           'sensor.do_logging&date=.-1w%3B&'
                           'sensor.is_app_sensor=yes&sensor.do_logging=yes'
    , ('measurement', ''): utils.measurement_query
-   , ('o_permission', '') : ':columns=id,user,org_location,organisation&'
+   , ('o_permission', '') : ':columns=id,user,org_location,organisation'
+                          ',olo_group,org_group&'
                           ':sort=user&:pagesize=50&:startwith=0'
    , ('org_location', '') : '@columns=id,name,organisation,location,'
                           'valid_from,valid_to,do_leave_process,'
