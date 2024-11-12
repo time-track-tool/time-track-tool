@@ -2168,6 +2168,8 @@ class Gap_Report (_Report):
         line = []
         line.append (formatter (_ ('user')))
         line.append (formatter (_ ('user.employee_number')))
+        line.append (formatter (_ ('user.firstname')))
+        line.append (formatter (_ ('user.lastname')))
         line.append (formatter (_ ('date')))
         line.append (formatter (_ ('org_location')))
         for f in self.fields:
@@ -2206,6 +2208,8 @@ class Gap_Report (_Report):
             line  = []
             line.append (item_formatter (self.linked_user (user.id)))
             line.append (item_formatter (user.employee_number))
+            line.append (item_formatter (user.firstname))
+            line.append (item_formatter (user.lastname))
             line.append (item_formatter (start.pretty (common.ymd)))
             line.append \
                 (item_formatter
