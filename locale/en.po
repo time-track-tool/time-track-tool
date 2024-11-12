@@ -2522,6 +2522,9 @@ msgstr "First day"
 msgid "firstname"
 msgstr "First name"
 
+msgid "user.firstname"
+msgstr "First name"
+
 msgid "fixed_in"
 msgstr "Fixed in"
 
@@ -3124,6 +3127,9 @@ msgid "Date when an invoice was last sent"
 msgstr ""
 
 msgid "lastname"
+msgstr "Last name"
+
+msgid "user.lastname"
 msgstr "Last name"
 
 msgid "ldap_group"
@@ -5674,7 +5680,7 @@ msgid "approved days"
 msgstr "approved days"
 
 msgid "approved_submissions"
-msgstr "approved submissions"
+msgstr "Approved submissions"
 
 msgid "vacation corrections"
 msgstr ""
@@ -5683,7 +5689,7 @@ msgid "remaining vacation"
 msgstr "remaining vacation"
 
 msgid "additional_submitted"
-msgstr "additional submitted"
+msgstr "Additional submitted"
 
 msgid "flexi_time"
 msgstr "Flexi-Time (approved)"
@@ -7582,7 +7588,7 @@ msgid "employee_number"
 msgstr "SF System ID"
 
 msgid "user.employee_number"
-msgstr "Employee number"
+msgstr "SF System ID"
 
 msgid "company_name"
 msgstr "Company"

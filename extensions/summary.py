@@ -1733,7 +1733,10 @@ class Staff_Report (_Report):
 class Vacation_Report (_Report):
     ''"Vacation Report" # for translation in web-interface
     fields = \
-        ( (""'yearly entitlement',   1)
+        ( (""'user.employee_number', 1)
+        , (""'user.firstname',       1.1)
+        , (""'user.lastname',        1.2)
+        , (""'yearly entitlement',   1.3)
         , (""'yearly prorated',      2)
         , (""'carry forward',        3)
         , (""'entitlement total',    4)
@@ -1791,6 +1794,9 @@ class Vacation_Report (_Report):
             , 'flexi_rem'
             , 'special_leave'
             , 'special_sub'
+            , 'user.employee_number'
+            , 'user.firstname'
+            , 'user.lastname'
             )
         for k in opt:
             if k not in request.columns:
@@ -1915,6 +1921,12 @@ class Vacation_Report (_Report):
                         fd = fd + day
                     container = Day_Container (d, i18n = db.i18n)
                     container ['is_obsolete'] = False
+                    container ['user.employee_number'] = self.linked_type \
+                        (u, 'user', 'employee_number')
+                    container ['user.firstname'] = self.linked_type \
+                        (u, 'user', 'firstname')
+                    container ['user.lastname']  = self.linked_type \
+                        (u, 'user', 'lastname')
                     uname = self.linked_user (u)
                     if not ctype:
                         container ['user'] = uname
