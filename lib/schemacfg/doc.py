@@ -105,13 +105,22 @@ def security (db, ** kw) :
     roles      = ( ("Doc_Admin", "Admin for documents (e.g. QM)")
                  , ("Nosy",      "Allowed on nosy list")
                  )
+    is_readonly = int (getattr (db.config.ext, 'TTT_ARTEFACT_READONLY', '0'))
+
+    if is_readonly:
+        doc_admin = ()
+        doc_admin_and_user = ()
+    else:
+        doc_admin = ("Doc_Admin",)
+        doc_admin_and_user = ("Doc_Admin", "User")
+
     classes    = \
-        ( ("doc"          , ("User",), ("Doc_Admin", "User"))
-        , ("artefact"     , ("User",), ("Doc_Admin",))
-        , ("product_type" , ("User",), ("Doc_Admin",))
-        , ("reference"    , ("User",), ("Doc_Admin",))
-        , ("doc_status"   , ("User",), ("Doc_Admin",))
-        , ("doc_category" , ("User",), ("Doc_Admin",))
+        ( ("doc"          , ("User",), doc_admin_and_user)
+        , ("artefact"     , ("User",), doc_admin)
+        , ("product_type" , ("User",), doc_admin)
+        , ("reference"    , ("User",), doc_admin)
+        , ("doc_status"   , ("User",), doc_admin)
+        , ("doc_category" , ("User",), doc_admin)
         )
 
     schemadef.register_roles             (db, roles)
