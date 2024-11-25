@@ -117,13 +117,15 @@
                           '@columns=id,customer,product,'
                           'product.product_family.name'
    , ('daily_record', '')
-                        : '@columns=id,user,date,status&@sort=-id&'
+                        : '@columns=id,user,date,status,user.employee_number'
+                          '&@sort=-id&'
                           '@filter=user,date&@pagesize=20&@startwith=0&'
                           'date=.-1d%%3B.%%2B1d&user=%s' % uid
    , ('device', '')     : '@columns=device_group,adr,name,dev,cls,version&'
                           '@sort=order&@pagesize=20&@startwith=0'
    , ('daily_record_freeze', '')
-                        : '@columns=id,date,balance,validity_date,frozen&'
+                        : '@columns=id,date,balance,validity_date,frozen'
+                          ',user.employee_number&'
                           '@sort=-date&@group=user&@filter=user&'
                           '@pagesize=20&@startwith=0&'
                           'user=%s' % uid
@@ -169,8 +171,9 @@
                           'kpm_hw_variant,safety_relevant,kpm_occurrence,'
                           'kpm_tag&@sort=-id&@pagesize=20&@startwith=0'
    , ('leave_submission', '')
-                        : '@columns=first_day,last_day,status,'
-                          'time_wp.project,time_wp&@filter=user&'
+                        : '@columns=first_day,last_day,status,user'
+                          ',user.employee_number,time_wp.project,time_wp'
+                          '&@filter=user&'
                           '@sort=-first_day&@pagesize=20&@startwith=0&'
                           'user=%s' % uid
    , ('leave_submission', 'approve_hr')
@@ -355,8 +358,10 @@
                               ['lastname' in db._db.user.properties]
                             )
    , ('user_dynamic', '')
-                       : '@columns=id,user,valid_from,org_location&@sort=-id&'
-                         '@filter=user&@pagesize=20&@startwith=0&user=%s' % uid
+                       :
+                          '@columns=id,user,valid_from,org_location'
+                          ',user.employee_number&@sort=-id&'
+                          '@filter=user&@pagesize=20&@startwith=0&user=%s' % uid
    , ('user_contact', '')
                         : '@columns=user.firstname,user.lastname,'
                           'contact,contact_type&'
@@ -377,7 +382,8 @@
                           'functional_role.name_group,user,user.firstname,'
                           'user.lastname&:pagesize=50&:startwith=0'
    , ('vacation_report', '')
-                        : '@columns=additional_submitted&@filter=user&'
+                        : '@columns=additional_submitted,user.employee_number&'
+                          '@filter=user&'
                           '@pagesize=200&@startwith=0&'
                           'user=%s' % uid
    , ('vacation_correction', '')
