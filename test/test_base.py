@@ -325,7 +325,7 @@ class _Test_Case (_Test_Base):
         for rolename, role in roles:
             s.append ('Role "%(name)s":' % role.__dict__)
             perms = []
-            for permission in role.permissions:
+            for permission in role.permission_list ():
                 d = permission.__dict__
                 if permission.klass:
                     if permission.properties:
