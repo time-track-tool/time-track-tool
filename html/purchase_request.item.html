@@ -20,7 +20,10 @@
 	    }
 	    signed = true;
 	    return true;
-	}
+	};
+        $(document).ready(function() {
+            submitted = false;
+        });
     </script>
     <tal:block
      metal:use-macro="templates/page/macros/create_or_query_new_tracker_item" />
