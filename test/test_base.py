@@ -58,12 +58,12 @@ Option = configuration.Option
 
 # Monkey-patch Database
 # Some trackers inject sql for generating indices or unique constraints
-def sql (self, s, *args) :
+def sql (self, s, *args):
     t = ('alter table', 'create index')
-    for x in t :
-        if s.lower ().startswith (t) :
+    for x in t:
+        if s.lower ().startswith (t):
             break
-    else :
+    else:
         assert False, "Unfakeable sql encountered"
 memorydb.Database.sql = sql
 
@@ -132,11 +132,11 @@ import vacation
 import vac
 
 header_regex = re.compile (r'\s*\n')
-def header_decode (h) :
+def header_decode (h):
     return header_regex.sub ('', h)
 # end def header_decode
 
-class _Test_Base :
+class _Test_Base:
     count = 0
     db = None
     roles = ['admin']
@@ -206,26 +206,26 @@ class _Test_Base :
         , 'view-roles'
         ))
 
-    def setup_tracker (self, backend = None) :
+    def setup_tracker (self, backend = None):
         """ Install and initialize tracker in dirname, return tracker instance.
             If directory exists, it is wiped out before the operation.
         """
         self.__class__.count += 1
         self.schemafile = self.schemafile or self.schemaname
         self.dirname = '_test_init_%s' % self.count
-        if backend :
+        if backend:
             self.backend = backend
         self.config  = config = configuration.CoreConfig ()
         config.DATABASE       = 'db'
         config.RDBMS_NAME     = "rounduptestttt"
         config.RDBMS_HOST     = "localhost"
-        if 'RDBMS_HOST' in os.environ :
+        if 'RDBMS_HOST' in os.environ:
             config.RDBMS_HOST     = os.environ ['RDBMS_HOST']
         config.RDBMS_USER     = "rounduptest"
-        if 'RDBMS_USER' in os.environ :
+        if 'RDBMS_USER' in os.environ:
             config.RDBMS_USER = os.environ ['RDBMS_USER']
         config.RDBMS_PASSWORD = "rounduptest"
-        if 'RDBMS_PASSWORD' in os.environ :
+        if 'RDBMS_PASSWORD' in os.environ:
             config.RDBMS_PASSWORD = os.environ ['RDBMS_PASSWORD']
         config.MAIL_DOMAIN    = "your.tracker.email.domain.example"
         config.TRACKER_WEB    = "http://localhost:4711/ttt/"
@@ -240,9 +240,9 @@ class _Test_Base :
                  , 'lib', 'locale', 'schema'
                  , 'schemas/%s.py' % self.schemafile
                  , 'TEMPLATE-INFO.txt', 'utils'
-                 ) :
+                 ):
             ft = f
-            if f.startswith ('schemas') :
+            if f.startswith ('schemas'):
                 ft = 'schema.py'
             os.symlink \
                 ( os.path.abspath (os.path.join (srcdir, f))
@@ -251,7 +251,7 @@ class _Test_Base :
         config.RDBMS_BACKEND = self.backend
         self.config.save (os.path.join (self.dirname, 'config.ini'))
         tracker = instance.open (self.dirname)
-        if tracker.exists () :
+        if tracker.exists ():
             tracker.nuke ()
         tracker.init (password.Password (self.config.RDBMS_PASSWORD))
         self.tracker = tracker
@@ -259,7 +259,7 @@ class _Test_Base :
             (tracker_home = tracker.tracker_home)
     # end def setup_tracker
 
-    def setUp (self) :
+    def setUp (self):
         self.log           = logging.getLogger ('roundup.test')
         self.properties    = globals () ['properties_' + self.schemaname]
         self.security_desc = globals () ['security_'   + self.schemaname]
@@ -267,51 +267,51 @@ class _Test_Base :
         self.setup_tracker ()
     # end def setUp
 
-    def tearDown (self) :
-        for k in 'db', 'db1', 'db2' :
+    def tearDown (self):
+        for k in 'db', 'db1', 'db2':
             db = getattr (self, k, None)
-            if db :
+            if db:
                 db.clearCache ()
                 db.close ()
         self.db = self.db1 = self.db2 = None
-        if os.path.exists (self.dirname) :
+        if os.path.exists (self.dirname):
             shutil.rmtree (self.dirname)
     # end def tearDown
 # end class _Test_Base
 
-class _Test_Case (_Test_Base) :
-    def test_0_roles (self) :
+class _Test_Case (_Test_Base):
+    def test_0_roles (self):
         self.log.debug ('test_0_roles')
         self.db = self.tracker.open ('admin')
         roles = list (sorted (self.db.security.role))
         self.assertEqual (roles, self.roles)
-        for r in roles :
+        for r in roles:
             self.assertEqual (r in self.allroles, True)
     # end def test_0_roles
 
-    def test_1_schema (self) :
+    def test_1_schema (self):
         self.log.debug ('test_1_schema')
         self.db = self.tracker.open ('admin')
         classnames = sorted (self.db.getclasses ())
-        for (cl, props), cls in zip (self.properties, classnames) :
+        for (cl, props), cls in zip (self.properties, classnames):
             self.assertEqual (cl, cls)
             clprops = sorted (list (self.db.getclass (cls).properties))
             self.assertEqual (props, clprops)
     # end def test_1_schema
 
-    def test_2_security (self) :
+    def test_2_security (self):
         self.log.debug ('test_2_security')
         self.db = self.tracker.open ('admin')
         secdesc = self.security_desc.split ('\n')
         sd2     = []
         # sorting: python dicts are no longer stable from call to call
-        for x in secdesc :
-            if '[' in x :
+        for x in secdesc:
+            if '[' in x:
                 x0, x1 =  x.split ('[', 1)
                 x1, x2 = x1.split (']', 1)
                 x1 = ', '.join (sorted (x1.split (', ')))
                 x = x0 + '[' + x1 + ']' + x2
-            if '": (' in x :
+            if '": (' in x:
                 x0, x1 =  x.split ('": (', 1)
                 x1, x2 = x1.split (') only', 1)
                 x1 = ', '.join (sorted (x1.split (', ')))
@@ -322,13 +322,13 @@ class _Test_Case (_Test_Base) :
         s.append (secdesc [0])
         s.append (secdesc [1])
         roles = sorted (list (self.db.security.role.items ()))
-        for rolename, role in roles :
+        for rolename, role in roles:
             s.append ('Role "%(name)s":' % role.__dict__)
             perms = []
-            for permission in role.permissions :
+            for permission in role.permissions:
                 d = permission.__dict__
-                if permission.klass :
-                    if permission.properties :
+                if permission.klass:
+                    if permission.properties:
                         p = { 'properties'
                             : type (d ['properties'])
                                    (sorted (d ['properties']))
@@ -337,7 +337,7 @@ class _Test_Case (_Test_Base) :
                             ( ' %(description)s (%(name)s for "%(klass)s"' %d
                             + ': %(properties)s only)' % p
                             )
-                    else :
+                    else:
                         perms.append \
                             (' %(description)s (%(name)s for "%(klass)s" only)'
                             % d
@@ -348,58 +348,58 @@ class _Test_Case (_Test_Base) :
         lr1 = lr2 = None
         l1 = len (secdesc)
         l2 = len (s)
-        if l1 < l2 :
-            for k in range (l2 - l1) :
+        if l1 < l2:
+            for k in range (l2 - l1):
                 secdesc.append ('')
-        if l2 < l1 :
-            for k in range (l1 - l2) :
+        if l2 < l1:
+            for k in range (l1 - l2):
                 s.append ('')
-        for s1, s2 in zip (secdesc, s) :
-            if s1.startswith ('Role') :
+        for s1, s2 in zip (secdesc, s):
+            if s1.startswith ('Role'):
                 lr1 = s1
-            if s2.startswith ('Role') :
+            if s2.startswith ('Role'):
                 lr2 = s2
             self.assertEqual ((lr1, s1), (lr2, s2))
     # end def test_2_security
 
-    def test_3_search (self) :
+    def test_3_search (self):
         self.log.debug ('test_3_search')
         self.db = self.tracker.open ('admin')
         self.create_test_users ()
         classnames = sorted (self.db.getclasses ())
         self.assertEqual (len (classnames), len (self.search_desc))
-        for (cl, props), cls in zip (self.search_desc, classnames) :
+        for (cl, props), cls in zip (self.search_desc, classnames):
             self.assertEqual (cl, cls)
             clprops = []
-            for p in sorted (self.db.getclass (cls).properties) :
+            for p in sorted (self.db.getclass (cls).properties):
                 users = []
-                for user in sorted (self.users) :
+                for user in sorted (self.users):
                     uid = self.users [user]
-                    if self.db.security.hasSearchPermission (uid, cl, p) :
+                    if self.db.security.hasSearchPermission (uid, cl, p):
                         users.append (user)
                 clprops.append ((p, users))
             self.assertEqual ((cl, props), (cl, clprops))
     # end def test_3_search
 
     transprop_perms = []
-    def test_4_transprops (self) :
+    def test_4_transprops (self):
         self.log.debug ('test_4_transprops')
         self.db = self.tracker.open ('admin')
         self.create_test_users ()
         perms = []
-        for cl in sorted (trans_classprops) :
+        for cl in sorted (trans_classprops):
             props = trans_classprops [cl]
-            if cl not in self.db.classes :
+            if cl not in self.db.classes:
                 continue
             klass = self.db.classes [cl]
-            for p in sorted (props) :
+            for p in sorted (props):
                 ps = p.split ('.')
-                if ps [0] not in klass.getprops () :
+                if ps [0] not in klass.getprops ():
                     continue
                 pusers = []
-                for user in sorted (self.users) :
+                for user in sorted (self.users):
                     uid = self.users [user]
-                    if self.db.security.hasSearchPermission (uid, cl, p) :
+                    if self.db.security.hasSearchPermission (uid, cl, p):
                         pusers.append (user)
                 perms.append (('.'.join ((cl, p)), pusers))
         for a, b in zip (self.transprop_perms, perms):
@@ -407,7 +407,7 @@ class _Test_Case (_Test_Base) :
         self.assertEqual (len (self.transprop_perms), len (perms))
     # end def test_4_transprops
 
-    def create_test_users (self) :
+    def create_test_users (self):
         nouserroles = dict.fromkeys \
             (( 'adr_readonly'
             ,  'external'
@@ -421,37 +421,37 @@ class _Test_Case (_Test_Base) :
             ,  'sub-login'
             ,  'user'
             ))
-        self.users = {'admin' : '1', 'anonymous' : '2'}
-        for u in self.allroles :
-            if u in self.users :
+        self.users = {'admin': '1', 'anonymous': '2'}
+        for u in self.allroles:
+            if u in self.users:
                 continue
             roles = u.split ('+')
-            if u not in nouserroles :
+            if u not in nouserroles:
                 roles.append ('user')
             # wired and :-)
             r_ok = min (r in self.db.security.role for r in roles)
-            if not r_ok :
+            if not r_ok:
                 continue
             params = dict \
                 ( username = u
                 , roles    = ','.join (roles)
                 )
-            if 'firstname' in self.db.user.properties :
+            if 'firstname' in self.db.user.properties:
                 params ['firstname'] = params ['lastname'] = u
-            try :
+            try:
                 status = self.db.user_status.lookup ('system')
                 params ['status'] = status
-            except ValueError :
+            except ValueError:
                 pass
-            try :
+            try:
                 self.users [u] = self.db.user.create (**params)
-            except ValueError :
+            except ValueError:
                 self.users [u] = self.db.user.lookup (u)
     # end def create_test_users
 # end class _Test_Case
 
-class _Test_Base_Summary :
-    def setup_db (self) :
+class _Test_Base_Summary:
+    def setup_db (self):
         self.db = self.tracker.open ('admin')
         self.db.overtime_period.create \
             ( name   = 'yearly/weekly'
@@ -514,9 +514,9 @@ class _Test_Base_Summary :
         cmin = 0xFFFF
         mail = self.db.uc_type.lookup ('Email')
         m    = None
-        for ctid in cts :
+        for ctid in cts:
             ct = self.db.user_contact.getnode (ctid)
-            if ct.contact_type == mail and ct.order < cmin :
+            if ct.contact_type == mail and ct.order < cmin:
                 cmin = ct.order
                 m    = ct.id
         self.db.user_contact.set (m, contact = 'user0@test.test')
@@ -537,9 +537,9 @@ class _Test_Base_Summary :
         cmin = 0xFFFF
         mail = self.db.uc_type.lookup ('Email')
         m    = None
-        for ctid in cts :
+        for ctid in cts:
             ct = self.db.user_contact.getnode (ctid)
-            if ct.contact_type == mail and ct.order < cmin :
+            if ct.contact_type == mail and ct.order < cmin:
                 cmin = ct.order
                 m    = ct.id
         self.db.user_contact.set (m, contact = 'user1@test.test')
@@ -809,7 +809,7 @@ class _Test_Base_Summary :
             , cost_center        = self.cc
             )
         self.wps = []
-        for i in range (40) :
+        for i in range (40):
             wp = self.db.time_wp.create \
                 ( name               = 'Work Package %s' % i
                 , project            = self.normal_tp
@@ -853,10 +853,10 @@ class _Test_Base_Summary :
     # end def setup_db
 # end class _Test_Base_Summary
 
-class _Test_Case_Summary (_Test_Base_Summary, _Test_Case) :
+class _Test_Case_Summary (_Test_Base_Summary, _Test_Case):
     pass
 
-class Test_Case_Support_Timetracker (_Test_Case, unittest.TestCase) :
+class Test_Case_Support_Timetracker (_Test_Case, unittest.TestCase):
     schemaname = 'sfull'
     roles = \
         [ 'admin', 'adr_readonly', 'anonymous', 'cc-permission', 'contact'
@@ -873,7 +873,7 @@ class Test_Case_Support_Timetracker (_Test_Case, unittest.TestCase) :
     transprop_perms = transprop_sfull
 # end class Test_Case_Support_Timetracker
 
-class Test_Case_Timetracker (_Test_Case_Summary, unittest.TestCase) :
+class Test_Case_Timetracker (_Test_Case_Summary, unittest.TestCase):
     schemaname = 'time'
     schemafile = 'time_ldap'
     roles = \
@@ -889,7 +889,7 @@ class Test_Case_Timetracker (_Test_Case_Summary, unittest.TestCase) :
         ]
     transprop_perms = transprop_time
 
-    def check_user_perms (self, ad_domain) :
+    def check_user_perms (self, ad_domain):
         roles    = 'User,Nosy'
         valid    = self.db.user_status.lookup ('valid')
         obsolete = self.db.user_status.lookup ('obsolete')
@@ -937,7 +937,7 @@ class Test_Case_Timetracker (_Test_Case_Summary, unittest.TestCase) :
         self.assertEqual (self.db.user_dynamic.get (id, 'vacation_yearly'), 23)
     # end def check_user_perms
 
-    def test_domain_user_edit (self) :
+    def test_domain_user_edit (self):
         self.log.debug ('test_domain_user_edit')
         self.setup_db ()
         self.db.user.set (self.user1, roles = 'User,Nosy,Dom-User-Edit-GTT')
@@ -970,7 +970,7 @@ class Test_Case_Timetracker (_Test_Case_Summary, unittest.TestCase) :
         self.check_user_perms (ad_domain)
     # end def test_domain_user_edit
 
-    def setup_user11 (self) :
+    def setup_user11 (self):
         self.username11 = 'testuser11'
         self.user11 = self.db.user.create \
             ( username     = self.username11
@@ -1029,7 +1029,7 @@ class Test_Case_Timetracker (_Test_Case_Summary, unittest.TestCase) :
         self.db.commit ()
     # end def setup_user11
 
-    def test_user11_sap_cc (self) :
+    def test_user11_sap_cc (self):
         self.log.debug ('test_user11_sap_cc')
         self.setup_db ()
         self.setup_user11 ()
@@ -1061,7 +1061,7 @@ class Test_Case_Timetracker (_Test_Case_Summary, unittest.TestCase) :
             , 'sap_cc'
             ]
 
-        class r :
+        class r:
             filterspec = fs
             columns = cols
             sort = None
@@ -1205,7 +1205,7 @@ class Test_Case_Timetracker (_Test_Case_Summary, unittest.TestCase) :
         self.assertEqual (lines [4][4], '1.00')
     # end def test_user11_sap_cc
 
-    def test_user11 (self) :
+    def test_user11 (self):
         self.log.debug ('test_user11')
         self.setup_db ()
         self.setup_user11 ()
@@ -1232,7 +1232,7 @@ class Test_Case_Timetracker (_Test_Case_Summary, unittest.TestCase) :
             , 'summary'
             ]
 
-        class r :
+        class r:
             filterspec = fs
             columns = cols
             sort = None
@@ -1639,7 +1639,7 @@ class Test_Case_Timetracker (_Test_Case_Summary, unittest.TestCase) :
         self.assertEqual (lines [4][5], '2.00')
     # end def test_user11
 
-    def setup_user12 (self) :
+    def setup_user12 (self):
         self.username12 = 'testuser12'
         self.user12 = self.db.user.create \
             ( username     = self.username12
@@ -1659,7 +1659,7 @@ class Test_Case_Timetracker (_Test_Case_Summary, unittest.TestCase) :
         self.db.commit ()
     # end def setup_user12
 
-    def test_user12 (self) :
+    def test_user12 (self):
         self.log.debug ('test_user12')
         self.setup_db ()
         self.setup_user12 ()
@@ -1674,7 +1674,7 @@ class Test_Case_Timetracker (_Test_Case_Summary, unittest.TestCase) :
              , 'date'         : '2013-01-01;2013-12-31'
              , 'summary_type' : ['4']
              }
-        class r : filterspec = fs
+        class r: filterspec = fs
         class c: _ = lambda x: x
         sr = summary.Staff_Report \
             (self.db, r, templating.TemplatingUtils (c))
@@ -1700,7 +1700,7 @@ class Test_Case_Timetracker (_Test_Case_Summary, unittest.TestCase) :
         self.db.close ()
     # end def test_user12
 
-    def setup_user13 (self) :
+    def setup_user13 (self):
         self.username13 = 'testuser13'
         self.user13 = self.db.user.create \
             ( username     = self.username13
@@ -1710,7 +1710,7 @@ class Test_Case_Timetracker (_Test_Case_Summary, unittest.TestCase) :
         self.db.commit ()
     # end def setup_user13
 
-    def test_user13_vacation (self) :
+    def test_user13_vacation (self):
         self.log.debug ('test_user13')
         self.setup_db ()
         self.setup_user13 ()
@@ -1735,8 +1735,8 @@ class Test_Case_Timetracker (_Test_Case_Summary, unittest.TestCase) :
         self.db.close  ()
         self.db = self.tracker.open (self.username0)
         summary.init (self.tracker)
-        fs = { 'user' : [self.user13], 'date' : '2014-01-01;2015-12-31' }
-        class r : filterspec = fs ; columns = {'additional_submitted'}
+        fs = { 'user': [self.user13], 'date': '2014-01-01;2015-12-31' }
+        class r: filterspec = fs ; columns = {'additional_submitted'}
         class c: _ = lambda x: x
         sr = summary.Vacation_Report \
             (self.db, r, templating.TemplatingUtils (c))
@@ -1782,11 +1782,11 @@ class Test_Case_Timetracker (_Test_Case_Summary, unittest.TestCase) :
         self.db.close ()
     # end def test_user13_vacation
 
-    def test_user15_19_vac_monthly (self) :
+    def test_user15_19_vac_monthly (self):
         self.log.debug ('test_user15_19_vac_monthly')
         self.setup_db ()
         self.uid_by_name = {}
-        for u in range (15, 20) :
+        for u in range (15, 20):
             un = 'testuser%s' % u
             uid = self.db.user.create \
                 ( username     = un
@@ -1824,10 +1824,10 @@ class Test_Case_Timetracker (_Test_Case_Summary, unittest.TestCase) :
         self.db.close  ()
         self.db = self.tracker.open (self.username0)
         summary.init (self.tracker)
-        fs = { 'user' : self.uid_by_name.values ()
-             , 'date' : '2018-01-01;2018-12-31'
+        fs = { 'user': self.uid_by_name.values ()
+             , 'date': '2018-01-01;2018-12-31'
              }
-        class r : filterspec = fs ; columns = {}
+        class r: filterspec = fs ; columns = {}
         class c: _ = lambda x: x
         sr = summary.Vacation_Report \
             (self.db, r, templating.TemplatingUtils (c))
@@ -1888,10 +1888,10 @@ class Test_Case_Timetracker (_Test_Case_Summary, unittest.TestCase) :
         self.assertEqual (lines  [5] [6], '0.0')
         self.assertEqual (lines  [5] [7], '0.0')
         self.assertEqual (lines  [5] [8], '17.50')
-        fs = { 'user' : self.uid_by_name.values ()
-             , 'date' : '2019-01-01;2019-12-31'
+        fs = { 'user': self.uid_by_name.values ()
+             , 'date': '2019-01-01;2019-12-31'
              }
-        class r : filterspec = fs ; columns = {}
+        class r: filterspec = fs ; columns = {}
         class c: _ = lambda x: x
         sr = summary.Vacation_Report \
             (self.db, r, templating.TemplatingUtils (c))
@@ -1935,10 +1935,10 @@ class Test_Case_Timetracker (_Test_Case_Summary, unittest.TestCase) :
         self.assertEqual (lines  [3] [7], '')
         self.assertEqual (lines  [3] [8], '47.50')
 
-        fs = { 'user' : self.uid_by_name.values ()
-             , 'date' : '2019-01-01;2019-02-03'
+        fs = { 'user': self.uid_by_name.values ()
+             , 'date': '2019-01-01;2019-02-03'
              }
-        class r : filterspec = fs ; columns = {}
+        class r: filterspec = fs ; columns = {}
         class c: _ = lambda x: x
         sr = summary.Vacation_Report \
             (self.db, r, templating.TemplatingUtils (c))
@@ -1985,7 +1985,7 @@ class Test_Case_Timetracker (_Test_Case_Summary, unittest.TestCase) :
         self.db.close ()
     # end def test_user15_19_vac_monthly
 
-    def setup_user14 (self) :
+    def setup_user14 (self):
         self.username14 = 'testuser14'
         self.user14 = self.db.user.create \
             ( username     = self.username14
@@ -1998,13 +1998,13 @@ class Test_Case_Timetracker (_Test_Case_Summary, unittest.TestCase) :
         self.db.commit ()
     # end def setup_user14
 
-    def test_user14_dyn_csv (self) :
+    def test_user14_dyn_csv (self):
         """  Test csv export for dynamic user data
         """
 
-        class FakeRequest (object) :
+        class FakeRequest (object):
             rfile = None
-            def start_response (self, a, b) :
+            def start_response (self, a, b):
                 pass
         # end class FakeRequest
         self.log.debug ('test_user14_dyn_csv')
@@ -2041,7 +2041,7 @@ class Test_Case_Timetracker (_Test_Case_Summary, unittest.TestCase) :
         exp.handle (outfile = io)
         # A way to test for python3
         v = io.getvalue ()
-        if isinstance (u'', str) :
+        if isinstance (u'', str):
             v = v.decode ('utf-8')
         lines = tuple (csv.reader (StringIO (v), delimiter = '\t'))
         self.assertEqual (len (lines), 4)
@@ -2076,13 +2076,13 @@ class Test_Case_Timetracker (_Test_Case_Summary, unittest.TestCase) :
         self.assertEqual (lines  [3] [6], 'TEST')
     # end def test_user14_dyn_csv
 
-    def test_user14_tr_csv (self) :
+    def test_user14_tr_csv (self):
         """  Test csv export for time_record
         """
 
-        class FakeRequest (object) :
+        class FakeRequest (object):
             rfile = None
-            def start_response (self, a, b) :
+            def start_response (self, a, b):
                 pass
         # end class FakeRequest
         self.log.debug ('test_user14_tr_csv')
@@ -2147,13 +2147,13 @@ class Test_Case_Timetracker (_Test_Case_Summary, unittest.TestCase) :
         self.assertEqual (lines  [1] [8], '')
     # end def test_user14_tr_csv
 
-    def test_user14_ar_csv (self) :
+    def test_user14_ar_csv (self):
         """  Test csv export for attendance_record
         """
 
-        class FakeRequest (object) :
+        class FakeRequest (object):
             rfile = None
-            def start_response (self, a, b) :
+            def start_response (self, a, b):
                 pass
         # end class FakeRequest
         self.log.debug ('test_user14_ar_csv')
@@ -2217,7 +2217,7 @@ class Test_Case_Timetracker (_Test_Case_Summary, unittest.TestCase) :
         self.assertEqual (lines  [2] [5], '17:00')
     # end def test_user14_ar_csv
 
-    def test_user14_vacation (self) :
+    def test_user14_vacation (self):
         self.log.debug ('test_user14')
         self.setup_db ()
         self.setup_user14 ()
@@ -2239,8 +2239,8 @@ class Test_Case_Timetracker (_Test_Case_Summary, unittest.TestCase) :
         self.db.close  ()
         self.db = self.tracker.open (self.username0)
         summary.init (self.tracker)
-        fs = { 'user' : [self.user14], 'date' : '2015-01-01;2015-12-31' }
-        class r : filterspec = fs ; columns = {'additional_submitted'}
+        fs = { 'user': [self.user14], 'date': '2015-01-01;2015-12-31' }
+        class r: filterspec = fs ; columns = {'additional_submitted'}
         class c: _ = lambda x: x
         sr = summary.Vacation_Report \
             (self.db, r, templating.TemplatingUtils (c))
@@ -2300,7 +2300,7 @@ class Test_Case_Timetracker (_Test_Case_Summary, unittest.TestCase) :
         self.db.close ()
     # end def test_user14_vacation
 
-    def test_vacation (self) :
+    def test_vacation (self):
         self.log.debug ('test_vacation')
         maildebug = os.path.join (self.dirname, 'maildebug')
         self.setup_db ()
@@ -2497,7 +2497,7 @@ class Test_Case_Timetracker (_Test_Case_Summary, unittest.TestCase) :
              'Responses to this address are not possible.\n'
             )
 
-        for d in '2008-11-03', '2008-11-30', '2008-12-31' :
+        for d in '2008-11-03', '2008-11-30', '2008-12-31':
             dt = date.Date (d)
             self.assertEqual \
                 ( vacation.consolidated_vacation (self.db, self.user2, None, dt)
@@ -2507,7 +2507,7 @@ class Test_Case_Timetracker (_Test_Case_Summary, unittest.TestCase) :
                 ( vacation.remaining_vacation (self.db, self.user2, None, dt)
                 , (28. + 31.) * 25. / 366.
                 )
-        for d in '2009-01-01', '2009-01-30', '2009-12-31' :
+        for d in '2009-01-01', '2009-01-30', '2009-12-31':
             dt = date.Date (d)
             self.assertEqual \
                 ( vacation.consolidated_vacation (self.db, self.user2, None, dt)
@@ -2525,7 +2525,7 @@ class Test_Case_Timetracker (_Test_Case_Summary, unittest.TestCase) :
             ,  ('2', (self.user1, date.Date ('2005-09-01')))
             ,  ('3', (self.user2, date.Date ('2008-01-01')))
             ))
-        for id in vcs :
+        for id in vcs:
             vc = self.db.vacation_correction.getnode (id)
             self.assertEqual (vc.user, d [id][0])
             self.assertEqual (vc.date, d [id][1])
@@ -2772,7 +2772,7 @@ class Test_Case_Timetracker (_Test_Case_Summary, unittest.TestCase) :
             , last_day  = date.Date ('2009-12-22')
             , time_wp   = self.vacation_wp
             )
-        for st in (st_accp, st_decl, st_carq) :
+        for st in (st_accp, st_decl, st_carq):
             self.assertRaises \
                 ( Reject, self.db.leave_submission.set
                 , vs
@@ -2817,7 +2817,7 @@ class Test_Case_Timetracker (_Test_Case_Summary, unittest.TestCase) :
             , ('precedence', 'bulk')
             , ('to',         'user1@test.test')
             , ('from',       'roundup-admin@your.tracker.email.domain.example')
-            ) :
+            ):
             self.assertEqual (header_decode (e [h]), t)
         # base64-encoded body
         self.assertEqual \
@@ -2832,7 +2832,7 @@ class Test_Case_Timetracker (_Test_Case_Summary, unittest.TestCase) :
               b'Responses to this address are not possible.'
             )
         os.unlink (maildebug)
-        for st in (st_accp, st_decl, st_carq, st_canc) :
+        for st in (st_accp, st_decl, st_carq, st_canc):
             self.assertRaises \
                 ( Reject, self.db.leave_submission.set
                 , vs
@@ -2849,7 +2849,7 @@ class Test_Case_Timetracker (_Test_Case_Summary, unittest.TestCase) :
             , ('precedence', 'bulk')
             , ('to',         'user1@test.test, user0@test.test')
             , ('from',       'roundup-admin@your.tracker.email.domain.example')
-            ) :
+            ):
             self.assertEqual (header_decode (e [h]), t)
         self.assertEqual \
             ( b64decode (e.get_payload ()).strip ()
@@ -2871,7 +2871,7 @@ class Test_Case_Timetracker (_Test_Case_Summary, unittest.TestCase) :
             , ('precedence', 'bulk')
             , ('to',         'user1@test.test, user0@test.test')
             , ('from',       'roundup-admin@your.tracker.email.domain.example')
-            ) :
+            ):
             self.assertEqual (header_decode (e [h]), t)
         self.assertEqual \
             ( b64decode (e.get_payload ()).strip ()
@@ -2893,7 +2893,7 @@ class Test_Case_Timetracker (_Test_Case_Summary, unittest.TestCase) :
             , ('precedence', 'bulk')
             , ('to',         'user1@test.test')
             , ('from',       'roundup-admin@your.tracker.email.domain.example')
-            ) :
+            ):
             self.assertEqual (header_decode (e [h]), t)
         self.assertEqual \
             ( b64decode (e.get_payload ()).strip ()
@@ -2910,8 +2910,8 @@ class Test_Case_Timetracker (_Test_Case_Summary, unittest.TestCase) :
         self.db.commit ()
         self.db.close ()
         self.db = self.tracker.open (self.username0)
-        for v in za, vs :
-            for st in (st_open, st_carq, st_canc) :
+        for v in za, vs:
+            for st in (st_open, st_carq, st_canc):
                 self.assertRaises \
                     ( Reject, self.db.leave_submission.set
                     , v
@@ -2945,8 +2945,8 @@ class Test_Case_Timetracker (_Test_Case_Summary, unittest.TestCase) :
               b'Please add this information to the time table,\n\n'
               b'many thanks!'
             ]
-        for n, e in enumerate (box) :
-            for h, t in headers [n] :
+        for n, e in enumerate (box):
+            for h, t in headers [n]:
                 self.assertEqual (header_decode (e [h]), t)
             self.assertEqual (b64decode (e.get_payload ()).strip (), body [n])
         os.unlink (maildebug)
@@ -2956,7 +2956,7 @@ class Test_Case_Timetracker (_Test_Case_Summary, unittest.TestCase) :
             (None, dict (user = self.user2, date = dt))
         self.assertEqual (len (dr), 1)
         tr = self.db.time_record.filter \
-            (None, {'daily_record' : dr, 'wp.project.approval_required' : True})
+            (None, {'daily_record': dr, 'wp.project.approval_required': True})
         self.assertEqual (len (tr), 1)
         self.assertEqual (self.db.time_record.get (tr [0], 'duration'), 0)
         self.db.commit ()
@@ -2967,7 +2967,7 @@ class Test_Case_Timetracker (_Test_Case_Summary, unittest.TestCase) :
         # reactor
         self.db.user.set (self.user1, roles='user,hr')
         self.db.commit ()
-        for st in (st_open, st_carq, st_canc) :
+        for st in (st_open, st_carq, st_canc):
             self.assertRaises \
                 ( Reject, self.db.leave_submission.set
                 , vs
@@ -3027,25 +3027,25 @@ class Test_Case_Timetracker (_Test_Case_Summary, unittest.TestCase) :
               b'Please add this information to the time table,\n\n'
               b'many thanks!'
             ]
-        for n, e in enumerate (box) :
-            for h, t in headers [n] :
+        for n, e in enumerate (box):
+            for h, t in headers [n]:
                 self.assertEqual (header_decode (e [h]), t)
             self.assertEqual (b64decode (e.get_payload ()).strip (), body [n])
         os.unlink (maildebug)
-        for st in (st_accp, st_decl) :
+        for st in (st_accp, st_decl):
             self.assertRaises \
                 ( Reject, self.db.leave_submission.set
                 , un
                 , status = st
                 )
-        for st in (st_decl, st_subm) :
+        for st in (st_decl, st_subm):
             self.assertRaises \
                 ( Reject, self.db.leave_submission.set
                 , vs
                 , status = st
                 )
-        for x in (vs, un) :
-            for st in (st_open, st_carq, st_canc) :
+        for x in (vs, un):
+            for st in (st_open, st_carq, st_canc):
                 self.assertRaises \
                     ( Reject, self.db.leave_submission.set
                     , x
@@ -3062,7 +3062,7 @@ class Test_Case_Timetracker (_Test_Case_Summary, unittest.TestCase) :
             , ('precedence', 'bulk')
             , ('to',         'test.user@example.com')
             , ('from',       'roundup-admin@your.tracker.email.domain.example')
-            ) :
+            ):
             self.assertEqual (header_decode (e [h]), t)
         self.assertEqual \
             ( b64decode (e.get_payload ()).strip ()
@@ -3100,12 +3100,12 @@ class Test_Case_Timetracker (_Test_Case_Summary, unittest.TestCase) :
               b'Please add this information to the time table,\n\n'
               b'many thanks!'
             ]
-        for n, e in enumerate (box) :
-            for h, t in headers [n] :
+        for n, e in enumerate (box):
+            for h, t in headers [n]:
                 self.assertEqual (header_decode (e [h]), t)
             self.assertEqual (b64decode (e.get_payload ()).strip (), body [n])
         os.unlink (maildebug)
-        for st in (st_open, st_subm, st_decl, st_carq, st_canc) :
+        for st in (st_open, st_subm, st_decl, st_carq, st_canc):
             self.assertRaises \
                 ( Reject, self.db.leave_submission.set
                 , za
@@ -3114,14 +3114,14 @@ class Test_Case_Timetracker (_Test_Case_Summary, unittest.TestCase) :
         self.db.commit ()
         self.db.close ()
         self.db = self.tracker.open (self.username2)
-        for x in (vs, un) :
-            for st in (st_open, st_subm, st_canc) :
+        for x in (vs, un):
+            for st in (st_open, st_subm, st_canc):
                 self.assertRaises \
                     ( Reject, self.db.leave_submission.set
                     , x
                     , status = st
                     )
-        for st in (st_accp, st_carq) :
+        for st in (st_accp, st_carq):
             self.assertRaises \
                 ( Reject, self.db.leave_submission.set
                 , un
@@ -3142,7 +3142,7 @@ class Test_Case_Timetracker (_Test_Case_Summary, unittest.TestCase) :
             , ('precedence', 'bulk')
             , ('to',         'user1@test.test')
             , ('from',       'roundup-admin@your.tracker.email.domain.example')
-            ) :
+            ):
             self.assertEqual (header_decode (e [h]), t)
         self.assertEqual \
             ( b64decode (e.get_payload ()).strip ()
@@ -3159,7 +3159,7 @@ class Test_Case_Timetracker (_Test_Case_Summary, unittest.TestCase) :
         self.db.commit ()
         self.db.close ()
         self.db = self.tracker.open (self.username0)
-        for st in (st_open, st_subm, st_decl) :
+        for st in (st_open, st_subm, st_decl):
             self.assertRaises \
                 ( Reject, self.db.leave_submission.set
                 , vs
@@ -3167,7 +3167,7 @@ class Test_Case_Timetracker (_Test_Case_Summary, unittest.TestCase) :
                 )
         self.db.close ()
         self.db = self.tracker.open (self.username1)
-        for st in (st_open, st_subm, st_decl) :
+        for st in (st_open, st_subm, st_decl):
             self.assertRaises \
                 ( Reject, self.db.leave_submission.set
                 , vs
@@ -3181,7 +3181,7 @@ class Test_Case_Timetracker (_Test_Case_Summary, unittest.TestCase) :
             , ('precedence', 'bulk')
             , ('to',         'test.user@example.com')
             , ('from',       'roundup-admin@your.tracker.email.domain.example')
-            ) :
+            ):
             self.assertEqual (header_decode (e [h]), t)
         self.assertEqual \
             ( b64decode (e.get_payload ()).strip ()
@@ -3229,8 +3229,8 @@ class Test_Case_Timetracker (_Test_Case_Summary, unittest.TestCase) :
               b'Please remove this information from the time table,\n\n'
               b'many thanks!'
             ]
-        for n, e in enumerate (box) :
-            for h, t in headers [n] :
+        for n, e in enumerate (box):
+            for h, t in headers [n]:
                 self.assertEqual (header_decode (e [h]), t)
             self.assertEqual (b64decode (e.get_payload ()).strip (), body [n])
         os.unlink (maildebug)
@@ -3248,7 +3248,7 @@ class Test_Case_Timetracker (_Test_Case_Summary, unittest.TestCase) :
         # half public holidays
         self.assertEqual (len (trs), 5)
         self.assertEqual (len (ars), 5)
-        for st in (st_open, st_subm, st_accp, st_decl, st_carq) :
+        for st in (st_open, st_subm, st_accp, st_decl, st_carq):
             self.assertRaises \
                 ( Reject, self.db.leave_submission.set
                 , vs
@@ -3257,7 +3257,7 @@ class Test_Case_Timetracker (_Test_Case_Summary, unittest.TestCase) :
         self.db.commit ()
         self.db.close ()
         self.db = self.tracker.open (self.username2)
-        for st in (st_open, st_subm, st_accp, st_decl, st_carq) :
+        for st in (st_open, st_subm, st_accp, st_decl, st_carq):
             self.assertRaises \
                 ( Reject, self.db.leave_submission.set
                 , vs
@@ -3287,7 +3287,7 @@ class Test_Case_Timetracker (_Test_Case_Summary, unittest.TestCase) :
             , ('precedence', 'bulk')
             , ('to',         'user1@test.test, user0@test.test')
             , ('from',       'roundup-admin@your.tracker.email.domain.example')
-            ) :
+            ):
             self.assertEqual (header_decode (e [h]), t)
         self.assertEqual \
             ( b64decode (e.get_payload ()).strip ()
@@ -3305,7 +3305,7 @@ class Test_Case_Timetracker (_Test_Case_Summary, unittest.TestCase) :
         self.db.close ()
         self.db = self.tracker.open (self.username1)
         # supervisor can't accept/decline this, 2008 already fully booked
-        for st in (st_open, st_accp, st_decl, st_carq, st_canc) :
+        for st in (st_open, st_accp, st_decl, st_carq, st_canc):
             self.assertRaises \
                 ( Reject, self.db.leave_submission.set
                 , v3
@@ -3376,8 +3376,8 @@ class Test_Case_Timetracker (_Test_Case_Summary, unittest.TestCase) :
               b"birth certificate for new child, death notice letter "
               b"(Parte).\n\nMany thanks!"
             ]
-        for n, e in enumerate (box) :
-            for h, t in headers [n] :
+        for n, e in enumerate (box):
+            for h, t in headers [n]:
                 self.assertEqual (header_decode (e [h]), t)
             self.assertEqual (b64decode (e.get_payload ()).strip (), body [n])
         os.unlink (maildebug)
@@ -3425,8 +3425,8 @@ class Test_Case_Timetracker (_Test_Case_Summary, unittest.TestCase) :
               b'Please put it into the paid absence data sheet\n'
               b'many thanks!'
             ]
-        for n, e in enumerate (box) :
-            for h, t in headers [n] :
+        for n, e in enumerate (box):
+            for h, t in headers [n]:
                 self.assertEqual (header_decode (e [h]), t)
             self.assertEqual (b64decode (e.get_payload ()).strip (), body [n])
         os.unlink (maildebug)
@@ -3443,7 +3443,7 @@ class Test_Case_Timetracker (_Test_Case_Summary, unittest.TestCase) :
         dt  = common.pretty_range (vs2.first_day, vs2.last_day)
         drs = self.db.daily_record.filter \
             (None, dict (user = self.user2, date = dt))
-        for did in drs :
+        for did in drs:
             dr = self.db.daily_record.getnode (did)
             self.assertEqual (dr.status, dr_opn)
         os.unlink (maildebug)
@@ -3464,7 +3464,7 @@ class Test_Case_Timetracker (_Test_Case_Summary, unittest.TestCase) :
         self.db.user_dynamic.set ('3', valid_to = to)
     # end def test_vacation
 
-    def setup_user16 (self) :
+    def setup_user16 (self):
         self.username16 = 'testuser16'
         self.user16 = self.db.user.create \
             ( username     = self.username16
@@ -3486,7 +3486,7 @@ class Test_Case_Timetracker (_Test_Case_Summary, unittest.TestCase) :
         self.db.commit ()
     # end def setup_user16
 
-    def setup_user17 (self) :
+    def setup_user17 (self):
         self.username17 = 'testuser17'
         self.user17 = self.db.user.create \
             ( username     = self.username17
@@ -3496,7 +3496,7 @@ class Test_Case_Timetracker (_Test_Case_Summary, unittest.TestCase) :
         self.db.commit ()
     # end def setup_user17
 
-    def setup_user18 (self) :
+    def setup_user18 (self):
         self.username18 = 'testuser18'
         self.user18 = self.db.user.create \
             ( username     = self.username18
@@ -3506,7 +3506,7 @@ class Test_Case_Timetracker (_Test_Case_Summary, unittest.TestCase) :
         self.db.commit ()
     # end def setup_user18
 
-    def test_edit_dynuser_leave (self) :
+    def test_edit_dynuser_leave (self):
         self.log.debug ('test_edit_dynuser_leave')
         self.setup_db ()
         self.setup_user16 ()
@@ -3527,9 +3527,9 @@ class Test_Case_Timetracker (_Test_Case_Summary, unittest.TestCase) :
         # simulate edit of valid from
         # from 2018-10-02 to 2018-10-03 in user dynamic
         # should fail, because there is a leave request on 2018-10-02
-        try :
+        try:
             self.db.user_dynamic.set (id, valid_from = date.Date ('2018-10-03'))
-        except Reject as err :
+        except Reject as err:
            self.assertEqual \
                ( str (err)
                , "There are open leave requests before 2018-10-03"
@@ -3583,9 +3583,9 @@ class Test_Case_Timetracker (_Test_Case_Summary, unittest.TestCase) :
 
         # simulate edit of valid from from 2018-11-29 to 2018-11-30 in user dynamic
         # should fail, because there is a time record on 2019-11-29
-        try :
+        try:
             self.db.user_dynamic.set (id, valid_from = date.Date ('2018-11-30'))
-        except Reject as err :
+        except Reject as err:
            self.assertEqual \
                ( str (err)
                , "There are (non public holiday) time records before 2018-11-30"
@@ -3599,9 +3599,9 @@ class Test_Case_Timetracker (_Test_Case_Summary, unittest.TestCase) :
         # interval, the valid_to date is *not* included in the validity span of
         # the dyn_user) in user dynamic should fail, because there are leave
         # requests after 2018-12-31
-        try :
+        try:
             self.db.user_dynamic.set (id, valid_to = date.Date ('2018-12-31'))
-        except Reject as err :
+        except Reject as err:
            self.assertEqual \
                ( str (err)
                , "There are open leave requests at or after 2018-12-31"
@@ -3635,9 +3635,9 @@ class Test_Case_Timetracker (_Test_Case_Summary, unittest.TestCase) :
         # now settings the end date is possible
         self.db.user_dynamic.set (id, valid_to = date.Date ('2018-12-31'))
 
-        try :
+        try:
             self.db.user_dynamic.set (id, valid_to = date.Date ('2018-12-13'))
-        except Reject as err :
+        except Reject as err:
            self.assertEqual \
                ( str (err)
                , "There are (non public holiday) time records at or after 2018-12-13"
@@ -3651,12 +3651,12 @@ class Test_Case_Timetracker (_Test_Case_Summary, unittest.TestCase) :
             )
         # check that only one time_record is found
         self.assertEqual (2, len (trs))
-        for tr in trs :
+        for tr in trs:
             self.db.time_record.retire (tr)
         self.db.user_dynamic.set (id, valid_to = date.Date ('2018-12-13'))
     # end def test_edit_dynuser_leave
 
-    def test_dynuser_create_modify (self) :
+    def test_dynuser_create_modify (self):
         self.log.debug ('test_dynuser_create_modify')
         self.setup_db ()
         otp = self.db.overtime_period.create \
@@ -3769,11 +3769,11 @@ class Test_Case_Timetracker (_Test_Case_Summary, unittest.TestCase) :
         self.assertEqual (prev.valid_to,   date.Date ('2019-10-01'))
     # end def test_dynuser_create_modify
 
-    def test_auto_wp (self) :
+    def test_auto_wp (self):
         self.setup_db ()
         self.db.commit ()
         # Now we have 3 users.
-        for id in (self.holiday_tp, self.vacation_tp) :
+        for id in (self.holiday_tp, self.vacation_tp):
             tp = self.db.time_project.getnode (id)
             self.db.auto_wp.create \
                 ( is_valid     = True
@@ -3812,7 +3812,7 @@ class Test_Case_Timetracker (_Test_Case_Summary, unittest.TestCase) :
         # All WPs created so far only have user '4' in bookers.
         wps = self.db.time_wp.filter \
             (None, dict (bookers = '3'), sort = ('+', 'auto_wp.id'))
-        for w in wps :
+        for w in wps:
             wp = self.db.time_wp.getnode (w)
             actual.append ((wp.auto_wp, wp.name, wp.time_start, wp.time_end))
         self.assertEqual (expected, actual)
@@ -3829,7 +3829,7 @@ class Test_Case_Timetracker (_Test_Case_Summary, unittest.TestCase) :
         actual = []
         wps = self.db.time_wp.filter \
             (None, dict (bookers = '3'), sort = ('+', 'auto_wp.id'))
-        for w in wps :
+        for w in wps:
             wp = self.db.time_wp.getnode (w)
             actual.append ((wp.auto_wp, wp.name, wp.time_start, wp.time_end))
         self.assertEqual (expected, actual)
@@ -3863,7 +3863,7 @@ class Test_Case_Timetracker (_Test_Case_Summary, unittest.TestCase) :
             , ('3', n2, date.Date ('2013-02-02'), date.Date ('2013-02-23'))
             ]
         actual = []
-        for w in wps :
+        for w in wps:
             wp = self.db.time_wp.getnode (w)
             actual.append ((wp.auto_wp, wp.name, wp.time_start, wp.time_end))
         self.assertEqual (expected, actual)
@@ -3884,7 +3884,7 @@ class Test_Case_Timetracker (_Test_Case_Summary, unittest.TestCase) :
         actual = []
         wps = self.db.time_wp.filter \
             (None, dict (bookers = '3'), sort = ('+', 'auto_wp.id'))
-        for w in wps :
+        for w in wps:
             wp = self.db.time_wp.getnode (w)
             actual.append ((wp.auto_wp, wp.name, wp.time_start, wp.time_end))
         self.assertEqual (expected, actual)
@@ -3898,7 +3898,7 @@ class Test_Case_Timetracker (_Test_Case_Summary, unittest.TestCase) :
         actual = []
         wps = self.db.time_wp.filter \
             (None, dict (bookers = '3'), sort = ('+', 'auto_wp.id'))
-        for w in wps :
+        for w in wps:
             wp = self.db.time_wp.getnode (w)
             actual.append ((wp.auto_wp, wp.name, wp.time_start, wp.time_end))
         self.assertEqual (expected, actual)
@@ -3914,7 +3914,7 @@ class Test_Case_Timetracker (_Test_Case_Summary, unittest.TestCase) :
         actual = []
         wps = self.db.time_wp.filter \
             (None, dict (bookers = '3'), sort = ('+', 'auto_wp.id'))
-        for w in wps :
+        for w in wps:
             wp = self.db.time_wp.getnode (w)
             actual.append ((wp.auto_wp, wp.name, wp.time_start, wp.time_end))
         self.assertEqual (expected, actual)
@@ -3928,7 +3928,7 @@ class Test_Case_Timetracker (_Test_Case_Summary, unittest.TestCase) :
         actual = []
         wps = self.db.time_wp.filter \
             (None, dict (bookers = '3'), sort = ('+', 'auto_wp.id'))
-        for w in wps :
+        for w in wps:
             wp = self.db.time_wp.getnode (w)
             actual.append ((wp.auto_wp, wp.name, wp.time_start, wp.time_end))
         self.assertEqual (expected, actual)
@@ -3939,7 +3939,7 @@ class Test_Case_Timetracker (_Test_Case_Summary, unittest.TestCase) :
         actual = []
         wps = self.db.time_wp.filter \
             (None, dict (bookers = '3'), sort = ('+', 'auto_wp.id'))
-        for w in wps :
+        for w in wps:
             wp = self.db.time_wp.getnode (w)
             actual.append ((wp.auto_wp, wp.name, wp.time_start, wp.time_end))
         self.assertEqual (expected, actual)
@@ -3953,7 +3953,7 @@ class Test_Case_Timetracker (_Test_Case_Summary, unittest.TestCase) :
         actual = []
         wps = self.db.time_wp.filter \
             (None, dict (bookers = '3'), sort = ('+', 'auto_wp.id'))
-        for w in wps :
+        for w in wps:
             wp = self.db.time_wp.getnode (w)
             actual.append ((wp.auto_wp, wp.name, wp.time_start, wp.time_end))
         self.assertEqual (expected, actual)
@@ -3968,7 +3968,7 @@ class Test_Case_Timetracker (_Test_Case_Summary, unittest.TestCase) :
         actual = []
         wps = self.db.time_wp.filter \
             (None, dict (bookers = '3'), sort = ('+', 'auto_wp.id'))
-        for w in wps :
+        for w in wps:
             wp = self.db.time_wp.getnode (w)
             actual.append ((wp.auto_wp, wp.name, wp.time_start, wp.time_end))
         self.assertEqual (expected, actual)
@@ -3979,7 +3979,7 @@ class Test_Case_Timetracker (_Test_Case_Summary, unittest.TestCase) :
         actual = []
         wps = self.db.time_wp.filter \
             (None, dict (bookers = '3'), sort = ('+', 'auto_wp.id'))
-        for w in wps :
+        for w in wps:
             wp = self.db.time_wp.getnode (w)
             actual.append ((wp.auto_wp, wp.name, wp.time_start, wp.time_end))
         self.assertEqual (expected, actual)
@@ -3993,7 +3993,7 @@ class Test_Case_Timetracker (_Test_Case_Summary, unittest.TestCase) :
         actual = []
         wps = self.db.time_wp.filter \
             (None, dict (bookers = '3'), sort = ('+', 'auto_wp.id'))
-        for w in wps :
+        for w in wps:
             wp = self.db.time_wp.getnode (w)
             actual.append ((wp.auto_wp, wp.name, wp.time_start, wp.time_end))
         self.assertEqual (expected, actual)
@@ -4003,7 +4003,7 @@ class Test_Case_Timetracker (_Test_Case_Summary, unittest.TestCase) :
         actual = []
         wps = self.db.time_wp.filter \
             (None, dict (bookers = '3'), sort = ('+', 'auto_wp.id'))
-        for w in wps :
+        for w in wps:
             wp = self.db.time_wp.getnode (w)
             actual.append ((wp.auto_wp, wp.name, wp.time_start, wp.time_end))
         self.assertEqual (expected, actual)
@@ -4034,9 +4034,9 @@ class Test_Case_Timetracker (_Test_Case_Summary, unittest.TestCase) :
         actual = []
         wps = self.db.time_wp.filter \
             (None, dict (bookers = '4'), sort = ('+', 'auto_wp.id'))
-        for w in wps :
+        for w in wps:
             wp = self.db.time_wp.getnode (w)
-            if not wp.auto_wp :
+            if not wp.auto_wp:
                 continue
             actual.append ((wp.auto_wp, wp.name, wp.time_start, wp.time_end))
         self.assertEqual (expected, actual)
@@ -4050,9 +4050,9 @@ class Test_Case_Timetracker (_Test_Case_Summary, unittest.TestCase) :
             (('3', n3, date.Date ('2005-10-01'), date.Date ('2005-10-13')))
         wps = self.db.time_wp.filter \
             (None, dict (bookers = '4'), sort = ('+', 'auto_wp.id'))
-        for w in wps :
+        for w in wps:
             wp = self.db.time_wp.getnode (w)
-            if not wp.auto_wp :
+            if not wp.auto_wp:
                 continue
             actual.append ((wp.auto_wp, wp.name, wp.time_start, wp.time_end))
         self.assertEqual (expected, actual)
@@ -4067,16 +4067,16 @@ class Test_Case_Timetracker (_Test_Case_Summary, unittest.TestCase) :
             ]
         wps = self.db.time_wp.filter \
             (None, dict (bookers = '4'), sort = ('+', 'auto_wp.id'))
-        for w in wps :
+        for w in wps:
             wp = self.db.time_wp.getnode (w)
-            if not wp.auto_wp :
+            if not wp.auto_wp:
                 continue
             actual.append ((wp.auto_wp, wp.name, wp.time_start, wp.time_end))
         self.assertEqual (expected, actual)
 
     # end def test_auto_wp
 
-    def setup_user20 (self) :
+    def setup_user20 (self):
         self.username20 = 'testuser20'
         self.user20 = self.db.user.create \
             ( username     = self.username20
@@ -4096,7 +4096,7 @@ class Test_Case_Timetracker (_Test_Case_Summary, unittest.TestCase) :
         self.db.commit ()
     # end def setup_user20
 
-    def test_user20 (self) :
+    def test_user20 (self):
         self.log.debug ('test_user20')
         self.setup_db ()
         self.setup_user20 ()
@@ -4259,7 +4259,7 @@ class Test_Case_Timetracker (_Test_Case_Summary, unittest.TestCase) :
         self.db.close ()
     # end def test_user20
 
-    def setup_user21 (self) :
+    def setup_user21 (self):
         self.username21 = 'testuser21'
         self.user21 = self.db.user.create \
             ( username     = self.username21
@@ -4328,7 +4328,7 @@ class Test_Case_Timetracker (_Test_Case_Summary, unittest.TestCase) :
         assert "%.2f" % v == "0.00"
     # end def user21_inner
 
-    def test_user21 (self) :
+    def test_user21 (self):
         self.log.debug ('test_user21')
         self.setup_db ()
         self.setup_user21 ()
@@ -4346,7 +4346,7 @@ class Test_Case_Timetracker (_Test_Case_Summary, unittest.TestCase) :
         self.user21_inner ()
     # end def test_user21
 
-    def setup_user22 (self) :
+    def setup_user22 (self):
         self.username22 = 'testuser22'
         self.user22 = self.db.user.create \
             ( username     = self.username22
@@ -4381,7 +4381,7 @@ class Test_Case_Timetracker (_Test_Case_Summary, unittest.TestCase) :
         self.db.commit ()
     # end def setup_user22
 
-    def test_user22 (self) :
+    def test_user22 (self):
         self.log.debug ('test_user22')
         self.setup_db ()
         self.setup_user22 ()
@@ -4455,7 +4455,7 @@ class Test_Case_Timetracker (_Test_Case_Summary, unittest.TestCase) :
         self.db.close ()
     # end def test_user22
 
-    def setup_user23 (self) :
+    def setup_user23 (self):
         self.username23 = 'testuser23'
         self.user23 = self.db.user.create \
             ( username     = self.username23
@@ -4501,7 +4501,7 @@ class Test_Case_Timetracker (_Test_Case_Summary, unittest.TestCase) :
         stat_open = self.db.time_project_status.lookup ('Open')
     # end def setup_user23
 
-    def test_user23 (self) :
+    def test_user23 (self):
         self.log.debug ('test_user23')
         self.setup_db ()
         self.setup_user23 ()
@@ -4531,7 +4531,7 @@ class Test_Case_Timetracker (_Test_Case_Summary, unittest.TestCase) :
         self.db.close ()
     # end def test_user23
 
-    def setup_user24 (self) :
+    def setup_user24 (self):
         self.username24 = 'testuser24'
         self.user24 = self.db.user.create \
             ( username     = self.username24
@@ -4645,7 +4645,7 @@ class Test_Case_Timetracker (_Test_Case_Summary, unittest.TestCase) :
         self.db.close ()
     # end def test_user24
 
-    def setup_user25 (self) :
+    def setup_user25 (self):
         self.username25 = 'testuser25'
         self.user25 = self.db.user.create \
             ( username     = self.username25
@@ -4741,7 +4741,7 @@ class Test_Case_Timetracker (_Test_Case_Summary, unittest.TestCase) :
         self.db.close ()
     # end def test_user25
 
-    def setup_user26 (self) :
+    def setup_user26 (self):
         self.username26 = 'testuser26'
         self.user26 = self.db.user.create \
             ( username     = self.username26
@@ -4803,7 +4803,7 @@ class Test_Case_Timetracker (_Test_Case_Summary, unittest.TestCase) :
         self.db.close ()
     # end def test_user26
 
-    def setup_user27 (self) :
+    def setup_user27 (self):
         self.username27 = 'testuser27'
         self.user27 = self.db.user.create \
             ( username     = self.username27
@@ -4840,8 +4840,8 @@ class Test_Case_Timetracker (_Test_Case_Summary, unittest.TestCase) :
         self.db.close ()
         self.db = self.tracker.open (self.username0)
         summary.init (self.tracker)
-        fs = { 'user' : [self.user27], 'date' : '2022-01-01;2023-12-31' }
-        class r : filterspec = fs ; columns = {}
+        fs = { 'user': [self.user27], 'date': '2022-01-01;2023-12-31' }
+        class r: filterspec = fs ; columns = {}
         class c: _ = lambda x: x
         sr = summary.Vacation_Report \
             (self.db, r, templating.TemplatingUtils (c))
@@ -4911,7 +4911,7 @@ class Test_Case_Timetracker (_Test_Case_Summary, unittest.TestCase) :
         self.db.close ()
     # end def test_user27
 
-    def setup_user28 (self) :
+    def setup_user28 (self):
         self.username28 = 'testuser28'
         self.user28 = self.db.user.create \
             ( username     = self.username28
@@ -5111,7 +5111,7 @@ class Test_Case_Timetracker (_Test_Case_Summary, unittest.TestCase) :
 
 # end class Test_Case_Timetracker
 
-class Test_Case_Tracker (_Test_Case, unittest.TestCase) :
+class Test_Case_Tracker (_Test_Case, unittest.TestCase):
     schemaname = 'track'
     schemafile = 'trackers'
     roles = \
@@ -5127,7 +5127,7 @@ class Test_Case_Tracker (_Test_Case, unittest.TestCase) :
     transprop_perms = transprop_track
 # end class Test_Case_Tracker
 
-class Test_Case_Fulltracker (_Test_Case_Summary, unittest.TestCase) :
+class Test_Case_Fulltracker (_Test_Case_Summary, unittest.TestCase):
     schemaname = 'full'
     roles = \
         [ 'admin', 'anonymous', 'cc-permission', 'contact', 'controlling'
@@ -5145,7 +5145,7 @@ class Test_Case_Fulltracker (_Test_Case_Summary, unittest.TestCase) :
         ]
     transprop_perms = transprop_full
 
-    def setup_user3 (self) :
+    def setup_user3 (self):
         self.username3 = 'testuser3'
         self.user3 = self.db.user.create \
             ( username     = self.username3
@@ -5183,7 +5183,7 @@ class Test_Case_Fulltracker (_Test_Case_Summary, unittest.TestCase) :
         self.db.commit ()
     # end def setup_user3
 
-    def setup_user4 (self) :
+    def setup_user4 (self):
         self.username4 = 'testuser4'
         self.user4 = self.db.user.create \
             ( username     = self.username4
@@ -5226,7 +5226,7 @@ class Test_Case_Fulltracker (_Test_Case_Summary, unittest.TestCase) :
         self.db.commit ()
     # end def setup_user4
 
-    def setup_user5 (self) :
+    def setup_user5 (self):
         self.username5 = 'testuser5'
         self.user5 = self.db.user.create \
             ( username     = self.username5
@@ -5253,7 +5253,7 @@ class Test_Case_Fulltracker (_Test_Case_Summary, unittest.TestCase) :
             , ("Corpus Christi", "Fronleichnam",        "2012-06-07")
             , ("Assumption",     "Himmelfahrt",         "2012-08-15")
             )
-        for name, desc, dt in hd :
+        for name, desc, dt in hd:
             dt = date.Date (dt)
             self.db.public_holiday.create \
                 ( name        = name
@@ -5326,7 +5326,7 @@ class Test_Case_Fulltracker (_Test_Case_Summary, unittest.TestCase) :
         self.db.commit ()
     # end def setup_user5
 
-    def setup_user6 (self) :
+    def setup_user6 (self):
         self.username6 = 'testuser6'
         self.user6 = self.db.user.create \
             ( username     = self.username6
@@ -5369,7 +5369,7 @@ class Test_Case_Fulltracker (_Test_Case_Summary, unittest.TestCase) :
         self.db.commit ()
     # end def setup_user6
 
-    def setup_user7 (self) :
+    def setup_user7 (self):
         self.username7 = 'testuser7'
         self.user7 = self.db.user.create \
             ( username     = self.username7
@@ -5416,7 +5416,7 @@ class Test_Case_Fulltracker (_Test_Case_Summary, unittest.TestCase) :
         self.db.commit ()
     # end def setup_user7
 
-    def setup_user8 (self) :
+    def setup_user8 (self):
         self.username8 = 'testuser8'
         self.user8 = self.db.user.create \
             ( username     = self.username8
@@ -5457,7 +5457,7 @@ class Test_Case_Fulltracker (_Test_Case_Summary, unittest.TestCase) :
         self.db.commit ()
     # end def setup_user8
 
-    def setup_user9 (self) :
+    def setup_user9 (self):
         self.username9 = 'testuser9'
         self.user9 = self.db.user.create \
             ( username     = self.username9
@@ -5496,7 +5496,7 @@ class Test_Case_Fulltracker (_Test_Case_Summary, unittest.TestCase) :
         self.db.commit ()
     # end def setup_user9
 
-    def setup_user10 (self) :
+    def setup_user10 (self):
         self.username10 = 'testuser10'
         self.user10 = self.db.user.create \
             ( username     = self.username10
@@ -5560,7 +5560,7 @@ class Test_Case_Fulltracker (_Test_Case_Summary, unittest.TestCase) :
         self.db.commit ()
     # end def setup_user10
 
-    def test_rename_status (self) :
+    def test_rename_status (self):
         self.log.debug ('test_rename_status')
         self.setup_db ()
         # test that renaming the 'New' cost_center status will still work
@@ -5582,7 +5582,7 @@ class Test_Case_Fulltracker (_Test_Case_Summary, unittest.TestCase) :
             )
     # end def test_rename_status
 
-    def test_user3 (self) :
+    def test_user3 (self):
         self.log.debug ('test_user3')
         self.setup_db ()
         self.setup_user3 ()
@@ -5596,7 +5596,7 @@ class Test_Case_Fulltracker (_Test_Case_Summary, unittest.TestCase) :
              , 'date'         : '2010-01-01;2010-05-31'
              , 'summary_type' : ['2', '3', '4']
              }
-        class r : filterspec = fs
+        class r: filterspec = fs
         class c: _ = lambda x: x
         sr = summary.Staff_Report \
             (self.db, r, templating.TemplatingUtils (c))
@@ -5632,7 +5632,7 @@ class Test_Case_Fulltracker (_Test_Case_Summary, unittest.TestCase) :
         self.assertEqual (lines [19][16], '10.00')
     # end def test_user3
 
-    def test_user4 (self) :
+    def test_user4 (self):
         self.log.debug ('test_user4')
         self.setup_db ()
         self.setup_user4 ()
@@ -5657,7 +5657,7 @@ class Test_Case_Fulltracker (_Test_Case_Summary, unittest.TestCase) :
              , 'date'         : '2012-01-01;2012-05-31'
              , 'summary_type' : ['2', '3', '4']
              }
-        class r : filterspec = fs
+        class r: filterspec = fs
         class c: _ = lambda x: x
         sr = summary.Staff_Report \
             (self.db, r, templating.TemplatingUtils (c))
@@ -5762,7 +5762,7 @@ class Test_Case_Fulltracker (_Test_Case_Summary, unittest.TestCase) :
         self.assertEqual (lines [29][14], '17.73')
     # end def test_user4
 
-    def test_user5 (self) :
+    def test_user5 (self):
         self.log.debug ('test_user5')
         self.setup_db ()
         self.setup_user5 ()
@@ -5776,7 +5776,7 @@ class Test_Case_Fulltracker (_Test_Case_Summary, unittest.TestCase) :
              , 'date'         : '2012-01-01;2012-09-28'
              , 'summary_type' : ['2', '3', '4']
              }
-        class r : filterspec = fs
+        class r: filterspec = fs
         class c: _ = lambda x: x
         sr = summary.Staff_Report \
             (self.db, r, templating.TemplatingUtils (c))
@@ -5809,7 +5809,7 @@ class Test_Case_Fulltracker (_Test_Case_Summary, unittest.TestCase) :
             ,    "0",      "0",      "0",      "0.00", "176.25", "177.00"
             ,  "188.00", "173.00", "182.75", "169.75", "173.50", "143.00"
             ,    "0.00", "1383.25"
-            )) :
+            )):
             self.assertEqual (lines [n + 1][9], v)
         # Supp. hours average
         for n, v in enumerate \
@@ -5822,7 +5822,7 @@ class Test_Case_Fulltracker (_Test_Case_Summary, unittest.TestCase) :
             ,    "0",      "0",      "0",     "0",     "0",     "0"
             ,  "173.07", "168.42", "183.34",  "0",     "0",     "0"
             ,    "0",   "1518.07"
-            )) :
+            )):
             self.assertEqual (lines [n + 1][11], v)
         # Supplementary hours
         for n, v in enumerate \
@@ -5835,7 +5835,7 @@ class Test_Case_Fulltracker (_Test_Case_Summary, unittest.TestCase) :
             ,   "41.00",  "41.00",  "41.00",  "41.00", "169.40", "161.70"
             ,   "77.00",   "0.00",   "0.00", "172.20", "180.40", "188.60"
             , "164.00", "1113.30"
-            )) :
+            )):
             self.assertEqual (lines [n + 1][12], v)
         for n, v in enumerate \
             ((    "0.00",    "0.00",    "3.00",    "5.50",  "5.50",  "7.50"
@@ -5847,20 +5847,20 @@ class Test_Case_Fulltracker (_Test_Case_Summary, unittest.TestCase) :
             ,   "-31.12",  "-69.62", "-108.12", "-146.62",  "6.85", "22.15"
             ,    "37.08",   "41.67",   "41.08",   "44.88", "45.88",  "7.38"
             ,  "-146.62", "-146.62"
-            )) :
+            )):
             self.assertEqual (lines [n + 1][14], v)
         off = 1
-        for n in range (11) :
+        for n in range (11):
             self.assertEqual (lines [n + off][15], "week")
         off += 11
         self.assertEqual (lines [off][15], "week, monthly average required")
         off += 1
-        for n in range (10) :
+        for n in range (10):
             self.assertEqual (lines [n + off][15], "monthly average required")
         off += 10
         self.assertEqual (lines [off][15], "monthly average required, week")
         off += 1
-        for n in range (19) :
+        for n in range (19):
             self.assertEqual (lines [n + off][15], "week")
         off += 19
         self.assertEqual (lines [off][15], "week, monthly average required")
@@ -5874,35 +5874,35 @@ class Test_Case_Fulltracker (_Test_Case_Summary, unittest.TestCase) :
             (lines [off + 7][15], "week, monthly average required, week")
 
         off = 1
-        for n in range (11) :
+        for n in range (11):
             self.assertEqual (lines [off + n][17], "")
         off += 11
         self.assertEqual (lines [off]    [17], "7 => 3.82")
         self.assertEqual (lines [off + 1][17], "7 => 3.82")
         self.assertEqual (lines [off + 2][17], "7")
         off += 3
-        for n in range (4) :
+        for n in range (4):
             self.assertEqual (lines [off + n][17], "7 => 6.67")
         off += 4
         self.assertEqual (lines [off][17], "7")
         off += 1
-        for n in range (4) :
+        for n in range (4):
             self.assertEqual (lines [off + n][17], "7 => 6.09")
         off += 4
-        for n in range (19) :
+        for n in range (19):
             self.assertEqual (lines [off + n][17], "")
         off += 19
         self.assertEqual (lines [off]    [17], "7 => 3.82")
         self.assertEqual (lines [off + 1][17], "7 => 6.67")
         self.assertEqual (lines [off + 2][17], "7 => 6.09")
         off += 3
-        for n in range (4) :
+        for n in range (4):
             self.assertEqual (lines [off + n][17], "")
         off += 4
         self.assertEqual (lines [off]    [17], "7")
     # end def test_user5
 
-    def test_user6 (self) :
+    def test_user6 (self):
         self.log.debug ('test_user6')
         self.setup_db ()
         self.setup_user6 ()
@@ -5916,7 +5916,7 @@ class Test_Case_Fulltracker (_Test_Case_Summary, unittest.TestCase) :
              , 'date'         : '2012-09-01;2012-10-08'
              , 'summary_type' : ['2', '3', '4']
              }
-        class r : filterspec = fs
+        class r: filterspec = fs
         class c: _ = lambda x: x
         sr = summary.Staff_Report \
             (self.db, r, templating.TemplatingUtils (c))
@@ -5939,7 +5939,7 @@ class Test_Case_Fulltracker (_Test_Case_Summary, unittest.TestCase) :
         self.assertEqual (lines [10][14], '9.59') # balance_end
     # end def test_user6
 
-    def test_user7 (self) :
+    def test_user7 (self):
         self.log.debug ('test_user7')
         self.setup_db ()
         self.setup_user7 ()
@@ -5953,7 +5953,7 @@ class Test_Case_Fulltracker (_Test_Case_Summary, unittest.TestCase) :
              , 'date'         : '2012-11-15;2012-12-18'
              , 'summary_type' : ['2', '3', '4']
              }
-        class r : filterspec = fs
+        class r: filterspec = fs
         class c: _ = lambda x: x
         sr = summary.Staff_Report \
             (self.db, r, templating.TemplatingUtils (c))
@@ -5978,7 +5978,7 @@ class Test_Case_Fulltracker (_Test_Case_Summary, unittest.TestCase) :
         self.assertEqual (lines  [9][14], '3.80') # balance_end
     # end def test_user7
 
-    def test_user8 (self) :
+    def test_user8 (self):
         self.log.debug ('test_user8')
         self.setup_db ()
         self.setup_user8 ()
@@ -5993,7 +5993,7 @@ class Test_Case_Fulltracker (_Test_Case_Summary, unittest.TestCase) :
              , 'date'         : '2013-01-01;2013-01-16'
              , 'summary_type' : ['2', '3', '4']
              }
-        class r : filterspec = fs
+        class r: filterspec = fs
         self.user8_staff_report (r, '-0.33', '2.32')
         self.db.close ()
 
@@ -6046,7 +6046,7 @@ class Test_Case_Fulltracker (_Test_Case_Summary, unittest.TestCase) :
         self.user8_staff_report (r, '-71.00', '-68.35')
     # end def test_user8
 
-    def user8_staff_report (self, r, balance_start, balance_end) :
+    def user8_staff_report (self, r, balance_start, balance_end):
         class c: _ = lambda x: x
         sr = summary.Staff_Report \
             (self.db, r, templating.TemplatingUtils (c))
@@ -6070,7 +6070,7 @@ class Test_Case_Fulltracker (_Test_Case_Summary, unittest.TestCase) :
         self.assertEqual (lines  [5][14], balance_end)
     # end def user8_staff_report
 
-    def test_user9 (self) :
+    def test_user9 (self):
         self.log.debug ('test_user9')
         self.setup_db ()
         self.setup_user9 ()
@@ -6086,7 +6086,7 @@ class Test_Case_Fulltracker (_Test_Case_Summary, unittest.TestCase) :
              , 'date'         : '2013-01-01;2013-01-16'
              , 'summary_type' : ['2', '3', '4']
              }
-        class r : filterspec = fs
+        class r: filterspec = fs
         class c: _ = lambda x: x
         sr = summary.Staff_Report \
             (self.db, r, templating.TemplatingUtils (c))
@@ -6113,7 +6113,7 @@ class Test_Case_Fulltracker (_Test_Case_Summary, unittest.TestCase) :
         self.assertEqual (lines  [5][14], '45.00')
     # end def test_user9
 
-    def test_user10 (self) :
+    def test_user10 (self):
         self.log.debug ('test_user10')
         self.setup_db ()
         self.setup_user10 ()
@@ -6128,7 +6128,7 @@ class Test_Case_Fulltracker (_Test_Case_Summary, unittest.TestCase) :
              , 'date'         : '2012-12-01;2013-01-31'
              , 'summary_type' : ['2', '3', '4']
              }
-        class r : filterspec = fs
+        class r: filterspec = fs
         class c: _ = lambda x: x
         sr = summary.Staff_Report \
             (self.db, r, templating.TemplatingUtils (c))
@@ -6163,12 +6163,12 @@ class Test_Case_Fulltracker (_Test_Case_Summary, unittest.TestCase) :
         self.assertEqual (lines [13][14], '0.00')
     # end def test_user10
 
-    def test_extproperty (self) :
+    def test_extproperty (self):
         self.log.debug ('test_extproperty')
-        class Request :
+        class Request:
             """ Fake html request """
             rfile = None
-            def start_response (self, a, b) :
+            def start_response (self, a, b):
                 pass
         # end class Request
         self.setup_db ()
@@ -6247,7 +6247,7 @@ class Test_Case_Fulltracker (_Test_Case_Summary, unittest.TestCase) :
         self.assertEqual (e.as_listentry (), r)
     # end def test_extproperty
 
-    def test_maturity_index (self) :
+    def test_maturity_index (self):
         self.log.debug ('test_maturity_index')
         self.db = self.tracker.open ('admin')
         d = dict \
@@ -6255,7 +6255,7 @@ class Test_Case_Fulltracker (_Test_Case_Summary, unittest.TestCase) :
             , status = self.db.user_status.lookup ('system')
             , roles = 'User,Nosy'
             )
-        if 'firstname' in self.db.user.properties :
+        if 'firstname' in self.db.user.properties:
             d ['firstname'] = d ['lastname'] = 'm.i.user'
         user = self.db.user.create (** d)
         pending = self.db.category.lookup ('pending')
@@ -6359,7 +6359,7 @@ class Test_Case_Fulltracker (_Test_Case_Summary, unittest.TestCase) :
         self.assertEqual (self.db2.issue.get (mc, 'maturity_index'), 20.0)
     # end def test_maturity_index
 
-    def test_tr_duration (self) :
+    def test_tr_duration (self):
         self.log.debug ('test_tr_duration')
         trid = '4'
         self.setup_db ()
@@ -6397,11 +6397,11 @@ class Test_Case_Fulltracker (_Test_Case_Summary, unittest.TestCase) :
     # end def test_tr_duration
 # end class Test_Case_Fulltracker
 
-class Test_Case_Concurrency (_Test_Base, _Test_Base_Summary, unittest.TestCase) :
+class Test_Case_Concurrency (_Test_Base, _Test_Base_Summary, unittest.TestCase):
     schemaname = 'full'
     backend = 'postgresql'
 
-    def concurrency (self, method) :
+    def concurrency (self, method):
         """ Ensure that no cached values from previous transaction are used.
             It is no concurrency test (which would fail due to a
             concurrent update) in the sense that we have two concurrent
@@ -6460,7 +6460,7 @@ class Test_Case_Concurrency (_Test_Base, _Test_Base_Summary, unittest.TestCase) 
         j  = list \
             ( sorted
                 ( self.db1.getjournal ('daily_record', drid)
-                , key = lambda x : x [1]
+                , key = lambda x: x [1]
                 )
             )
         l3 = len (j)
@@ -6472,34 +6472,34 @@ class Test_Case_Concurrency (_Test_Base, _Test_Base_Summary, unittest.TestCase) 
             )
     # end def concurrency
 
-    def concurrency_create (self, drid, trid) :
+    def concurrency_create (self, drid, trid):
         self.db1.time_record.create (duration = 5, daily_record = drid)
     # end def concurrency_set
 
-    def concurrency_retire (self, drid, trid) :
+    def concurrency_retire (self, drid, trid):
         self.db1.time_record.set (trid, duration = None)
     # end def concurrency_set
 
-    def concurrency_set (self, drid, trid) :
+    def concurrency_set (self, drid, trid):
         self.db1.time_record.set (trid, duration = 5)
     # end def concurrency_set
 
-    def test_concurrency_create (self) :
+    def test_concurrency_create (self):
         self.log.debug ('test_concurrency_create')
         self.concurrency (self.concurrency_create)
     # end def test_concurrency_create
 
-    def test_concurrency_retire (self) :
+    def test_concurrency_retire (self):
         self.log.debug ('test_concurrency_retire')
         self.concurrency (self.concurrency_retire)
     # end def test_concurrency_retire
 
-    def test_concurrency_set (self) :
+    def test_concurrency_set (self):
         self.log.debug ('test_concurrency_set')
         self.concurrency (self.concurrency_set)
     # end def test_concurrency_set
 
-    def test_user1 (self) :
+    def test_user1 (self):
         self.log.debug ('test_user1')
         self.setup_db ()
         self.db.close ()
@@ -6589,7 +6589,7 @@ class Test_Case_Concurrency (_Test_Base, _Test_Base_Summary, unittest.TestCase) 
              , 'date'         : '2008-09-01;2008-09-10'
              , 'summary_type' : ['2', '4']
              }
-        class r : filterspec = fs
+        class r: filterspec = fs
         class c: _ = lambda x: x
         summary.init (self.tracker)
         sr = summary.Staff_Report \
@@ -6623,7 +6623,7 @@ class Test_Case_Concurrency (_Test_Base, _Test_Base_Summary, unittest.TestCase) 
              , 'date'         : '2009-12-21;2010-01-03'
              , 'summary_type' : ['2', '4']
              }
-        class r : filterspec = fs
+        class r: filterspec = fs
         class c: _ = lambda x: x
         sr = summary.Staff_Report \
             (self.db, r, templating.TemplatingUtils (c))
@@ -6635,7 +6635,7 @@ class Test_Case_Concurrency (_Test_Base, _Test_Base_Summary, unittest.TestCase) 
         self.assertEqual (lines [2][14], '-38.50')
         self.assertEqual (lines [3][14], '-38.50')
 
-        for d in ('2006-12-31', '2007-12-31') :
+        for d in ('2006-12-31', '2007-12-31'):
             f = self.db.daily_record_freeze.create \
                 ( user           = self.user1
                 , frozen         = True
@@ -6734,7 +6734,7 @@ class Test_Case_Concurrency (_Test_Base, _Test_Base_Summary, unittest.TestCase) 
         self.assertEqual (lines [3][14], '-38.50')
     # end def test_user1
 
-    def test_user2 (self) :
+    def test_user2 (self):
         self.log.debug ('test_user2')
         self.setup_db ()
         self.db.close ()
@@ -6774,7 +6774,7 @@ class Test_Case_Concurrency (_Test_Base, _Test_Base_Summary, unittest.TestCase) 
              , 'date'         : '2008-12-22;2009-01-04'
              , 'summary_type' : ['2', '4']
              }
-        class r : filterspec = fs
+        class r: filterspec = fs
         class c: _ = lambda x: x
         summary.init (self.tracker)
         ndr = self.db.daily_record.getnode ('51')
@@ -6794,7 +6794,7 @@ class Test_Case_Concurrency (_Test_Base, _Test_Base_Summary, unittest.TestCase) 
              , 'date'         : '2009-12-21;2010-01-03'
              , 'summary_type' : ['2', '4']
              }
-        class r : filterspec = fs
+        class r: filterspec = fs
         class c: _ = lambda x: x
         sr = summary.Staff_Report \
             (self.db, r, templating.TemplatingUtils (c))
@@ -6861,7 +6861,7 @@ class Test_Case_Concurrency (_Test_Base, _Test_Base_Summary, unittest.TestCase) 
 
 # end class Test_Case_Concurrency
 
-class Test_Case_Abo (_Test_Case, unittest.TestCase) :
+class Test_Case_Abo (_Test_Case, unittest.TestCase):
     schemaname = 'abo'
     roles = \
         [ 'abo', 'admin', 'adr_readonly', 'anonymous', 'contact'
@@ -6870,7 +6870,7 @@ class Test_Case_Abo (_Test_Case, unittest.TestCase) :
     transprop_perms = transprop_abo
 # end class Test_Case_Abo
 
-class Test_Case_Adr (_Test_Case, unittest.TestCase) :
+class Test_Case_Adr (_Test_Case, unittest.TestCase):
     schemaname = 'adr'
     roles = \
         [ 'admin', 'adr_readonly', 'anonymous', 'contact', 'letter'
@@ -6879,7 +6879,7 @@ class Test_Case_Adr (_Test_Case, unittest.TestCase) :
     transprop_perms = transprop_adr
 # end class Test_Case_Adr
 
-class Test_Case_ERP (_Test_Case, unittest.TestCase) :
+class Test_Case_ERP (_Test_Case, unittest.TestCase):
     schemaname = 'erp'
     roles = \
         [ 'admin', 'adr_readonly', 'anonymous', 'contact', 'discount'
@@ -6888,7 +6888,7 @@ class Test_Case_ERP (_Test_Case, unittest.TestCase) :
     transprop_perms = transprop_erp
 # end class Test_Case_ERP
 
-class Test_Case_IT (_Test_Case, unittest.TestCase) :
+class Test_Case_IT (_Test_Case, unittest.TestCase):
     schemaname = 'it'
     roles = \
         [ 'admin', 'anonymous'
@@ -6898,7 +6898,7 @@ class Test_Case_IT (_Test_Case, unittest.TestCase) :
         ]
 # end class Test_Case_IT
 
-class Test_Case_ITAdr (_Test_Case, unittest.TestCase) :
+class Test_Case_ITAdr (_Test_Case, unittest.TestCase):
     schemaname = 'itadr'
     roles = \
         [ 'admin', 'adr_readonly', 'anonymous', 'contact', 'it'
@@ -6909,7 +6909,7 @@ class Test_Case_ITAdr (_Test_Case, unittest.TestCase) :
     transprop_perms = transprop_itadr
 # end class Test_Case_ITAdr
 
-class Test_Case_Kvats (_Test_Case, unittest.TestCase) :
+class Test_Case_Kvats (_Test_Case, unittest.TestCase):
     schemaname = 'kvats'
     roles = \
         [ 'admin', 'anonymous', 'issue_admin'
@@ -6918,13 +6918,13 @@ class Test_Case_Kvats (_Test_Case, unittest.TestCase) :
     transprop_perms = transprop_kvats
 # end class Test_Case_Kvats
 
-class Test_Case_Lielas (_Test_Case, unittest.TestCase) :
+class Test_Case_Lielas (_Test_Case, unittest.TestCase):
     schemaname = 'lielas'
     roles = ['admin', 'anonymous', 'guest', 'logger', 'user', 'user_view']
     transprop_perms = transprop_lielas
 # end class Test_Case_Lielas
 
-class Test_Case_PR (_Test_Case, unittest.TestCase) :
+class Test_Case_PR (_Test_Case, unittest.TestCase):
     schemaname = 'pr'
     roles = \
         [ 'admin', 'anonymous', 'ciso', 'controlling'
@@ -6937,7 +6937,7 @@ class Test_Case_PR (_Test_Case, unittest.TestCase) :
     transprop_perms = transprop_pr
 # end class Test_Case_PR
 
-def test_suite () :
+def test_suite ():
     suite = unittest.TestSuite ()
     suite.addTest (unittest.makeSuite (Test_Case_Abo))
     suite.addTest (unittest.makeSuite (Test_Case_Adr))
