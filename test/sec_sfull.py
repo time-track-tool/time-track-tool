@@ -33,6 +33,7 @@ Role "contact":
  User is allowed to edit contact (Edit for "contact" only)
 Role "controlling":
   (Search for "overtime_correction" only)
+ Allowed to see absolute vacation correction without dynamic user (View for "vacation_correction" only)
  User is allowed to access contract_type (View for "contract_type" only)
  User is allowed to access query (View for "query" only)
  User is allowed to access time_report (View for "time_report" only)
@@ -110,6 +111,7 @@ Role "hr":
   (Restore for "room" only)
   (Retire for "room" only)
   (Search for "overtime_correction" only)
+ Allowed to see absolute vacation correction without dynamic user (View for "vacation_correction" only)
  User is allowed Edit on (Edit for "user": ('address', 'alternate_addresses', 'nickname', 'password', 'timezone', 'username') only)
  User is allowed Edit on (Edit for "user": ('clearance_by', 'firstname', 'job_description', 'lastname', 'lunch_duration', 'lunch_start', 'pictures', 'position_text', 'realname', 'room', 'sex', 'status', 'subst_active', 'substitute', 'supervisor', 'title', 'roles', 'tt_lines') only)
  User is allowed to access contract_type (View for "contract_type" only)
@@ -160,6 +162,7 @@ Role "hr":
  User may access time_record because org_location in dynamic user is allowed (Edit for "time_record" only)
  User may access time_record because org_location in dynamic user is allowed (View for "time_record" only)
 Role "hr-leave-approval":
+ Allowed to see absolute vacation correction without dynamic user (View for "vacation_correction" only)
  User is allowed to access contract_type (View for "contract_type" only)
  User may access item because org_location in dynamic user is allowed (Edit for "leave_submission": ('status',) only)
  User may access item because org_location in dynamic user is allowed (View for "leave_submission" only)
@@ -177,6 +180,7 @@ Role "hr-org-location":
  User may access time_record because org_location in dynamic user is allowed (Edit for "time_record" only)
  User may access time_record because org_location in dynamic user is allowed (View for "time_record" only)
 Role "hr-vacation":
+ Allowed to see absolute vacation correction without dynamic user (View for "vacation_correction" only)
  User is allowed to access contract_type (View for "contract_type" only)
  User is allowed to create contract_type (Create for "contract_type" only)
  User is allowed to create leave_submission (Create for "leave_submission" only)
