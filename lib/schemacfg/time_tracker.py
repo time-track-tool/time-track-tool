@@ -1263,6 +1263,16 @@ def security (db, ** kw):
         return False
     # end def own_file
 
+    def abs_vacation_corr_no_dyn (db, userid, itemid):
+        """ Allowed to see absolute vacation correction without dynamic user
+        """
+        vc = db.vacation_correction.getnode (itemid)
+        if not vc.absolute:
+            return False
+        dyn = user_dynamic.get_user_dynamic (db, userid, vc.date)
+        return not dyn
+    # end def abs_vacation_corr_no_dyn
+
     for perm in 'View', 'Edit':
         p = db.security.addPermission \
             ( name        = perm
@@ -1826,6 +1836,14 @@ def security (db, ** kw):
         , check       = o_permission.vacation_corr_allowed_by_olo
         , description = fixdoc
             (o_permission.vacation_corr_allowed_by_olo.__doc__)
+        )
+    for role in ("HR", "HR-vacation", "HR-leave-approval", "controlling"):
+        db.security.addPermissionToRole (role, p)
+    p = db.security.addPermission \
+        ( name        = 'View'
+        , klass       = 'vacation_correction'
+        , check       = abs_vacation_corr_no_dyn
+        , description = fixdoc (abs_vacation_corr_no_dyn.__doc__)
         )
     for role in ("HR", "HR-vacation", "HR-leave-approval", "controlling"):
         db.security.addPermissionToRole (role, p)
