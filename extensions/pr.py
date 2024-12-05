@@ -47,12 +47,15 @@ class PR_Submit (EditCommon, autosuper):
                 if int (id) < 0 and list (val) == ['is_asset']:
                     del props [(cl, id)]
             if cl == 'pr_approval':
-                if list (val) == ['msg'] or list (val) == []:
+                v = list (sorted (val))
+                if v == ['date'] or v == ['msg'] or v == []:
                     del props [(cl, id)]
                     # find it in links
+                    ndel = 0
                     for n, (c, i, p, r) in enumerate (links [:]):
-                        if c == cl and i == id and p == 'msg':
-                            del links [n]
+                        if c == cl and i == id:
+                            del links [n - ndel]
+                            ndel += 1
         return EditCommon._editnodes (self, props, links)
     # end def _editnodes
 
