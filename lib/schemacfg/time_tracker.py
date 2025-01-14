@@ -1269,7 +1269,7 @@ def security (db, ** kw):
         vc = db.vacation_correction.getnode (itemid)
         if not vc.absolute:
             return False
-        dyn = user_dynamic.get_user_dynamic (db, userid, vc.date)
+        dyn = user_dynamic.get_user_dynamic (db, vc.user, vc.date)
         return not dyn
     # end def abs_vacation_corr_no_dyn
 
