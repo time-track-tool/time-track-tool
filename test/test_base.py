@@ -1029,6 +1029,23 @@ class Test_Case_Timetracker (_Test_Case_Summary, unittest.TestCase):
         self.db.commit ()
     # end def setup_user11
 
+    def test_user11_create_daily (self):
+        self.log.debug ('test_user11_create_daily')
+        self.setup_db ()
+        self.setup_user11 ()
+        # The first date created should be 2011-12-01 due to dyn user
+        s = date.Date ('2011-11-01')
+        e = date.Date ('2012-01-05')
+        vacation.create_daily_recs (self.db, self.user11, s, e)
+        # Again, should not make a difference but checks if ok
+        vacation.create_daily_recs (self.db, self.user11, s, e)
+        r = self.db.daily_record.filter (None, dict (user = self.user11))
+        assert len (r) == 36
+        # Compute first date with unsubmitted DRs
+        s, e = user_dynamic.first_unsubmitted (self.db, self.user11, e)
+        assert common.pretty_range (s, e) == '2011-11-28;2011-12-04'
+    # end def test_user11_create_daily
+
     def test_user11_sap_cc (self):
         self.log.debug ('test_user11_sap_cc')
         self.setup_db ()

@@ -205,7 +205,14 @@ class Daily_Record_Common (Action, autosuper):
         filterspec      = request.filterspec
         columns         = request.columns
         assert (request.classname == 'daily_record')
-        start, end      = common.date_range (self.db, filterspec)
+        if 'user' in filterspec:
+            self.user = filterspec ['user'][0]
+        else:
+            self.user = self.db.getuid ()
+        if 'date' not in filterspec:
+            start, end  = user_dynamic.first_unsubmitted (self.db, self.user)
+        else:
+            start, end  = common.date_range (self.db, filterspec)
         self.start      = start
         self.end        = end
         max             = start + Interval ('31d')
@@ -228,10 +235,6 @@ class Daily_Record_Common (Action, autosuper):
                   }
                 )
             raise Redirect (url)
-        if 'user' in filterspec:
-            self.user = filterspec ['user'][0]
-        else:
-            self.user = self.db.getuid ()
         vacation.create_daily_recs (self.db, self.user, start, end)
         self.db.commit ()
     # end def create_daily_records

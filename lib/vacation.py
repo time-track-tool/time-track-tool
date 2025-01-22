@@ -179,14 +179,31 @@ def update_public_holidays (db, dyn):
 # end def update_public_holidays
 
 def create_daily_recs (db, user, first_day, last_day):
-    d = first_day
+    """ This *can* take a long time when the daily records do not exist.
+        It should be faster when they are already existing because
+        filter_iter populates the node cache
+    """
+    pr   = common.pretty_range (first_day, last_day)
+    fsp  = dict (user = user, date = pr)
+    itr  = db.daily_record.filter_iter (None, fsp, sort = [('+', 'date')])
+    itr  = iter (itr)
+    drid = None
+    d    = first_day
     while d <= last_day:
-        pr = common.pretty_range (d, d)
-        x = db.daily_record.filter (None, dict (user = user, date = pr))
-        if x:
-            assert len (x) == 1
-            x = x [0]
+        dr = None
+        if drid is None:
+            try:
+                drid = next (itr)
+                dr = db.daily_record.getnode (drid)
+            except StopIteration:
+                pass
         else:
+            dr = db.daily_record.getnode (drid)
+        if dr is not None and d == dr.date:
+            x    = drid
+            drid = None
+        else:
+            assert dr is None or dr.date > d
             dyn = user_dynamic.get_user_dynamic (db, user, d)
             if not dyn:
                 d += common.day

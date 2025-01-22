@@ -8,12 +8,12 @@
 # it under the terms of the GNU General Public License as published by
 # the Free Software Foundation; either version 2 of the License, or
 # (at your option) any later version.
-# 
+#
 # This program is distributed in the hope that it will be useful,
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 # GNU General Public License for more details.
-# 
+#
 # You should have received a copy of the GNU General Public License
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
@@ -38,6 +38,7 @@ from roundup.date import Date
 import freeze
 import common
 import o_permission
+import vacation
 ymd = common.ymd
 day = common.day
 
@@ -76,7 +77,7 @@ def get_user_dynamic (db, user, date):
 def first_user_dynamic (db, user, direction = '+', date = None):
     """Search for first user_dynamic record, optionally starting at
        date.
-       
+
        The direction may be specified as '-' to search for the last
        record, see last_user_dynamic
     """
@@ -280,7 +281,7 @@ def travel_worktime (full_hours, half_hours, daily_hours):
     """Compute the time taking halved travel into account. Return a
        tuple consisting of the travel work-time and the ratio by which
        the work-time was reduced.
-    
+
        >>> travel_worktime ( 8,  4, 8)
        (8, 1.0)
        >>> print ("%d %.6f" % travel_worktime (12,  6, 8))
@@ -318,7 +319,7 @@ def update_tr_duration (db, dr):
         return dr.tr_duration_ok
     hours   = 0.0
     hhours  = 0.0
-    dyn     = get_user_dynamic (db, dr.user, dr.date) 
+    dyn     = get_user_dynamic (db, dr.user, dr.date)
     tr_full = True
     wh      = 0
     if dyn:
@@ -396,7 +397,7 @@ def get_daily_record (db, user, date):
 
 def req_overtime_quotient (db, dyn, user, date):
     """ Compute the required overtime for this day as a quotient of
-        - duration of packages without overtime_reduction 
+        - duration of packages without overtime_reduction
         - overall duration of day
         we use a cache.
     """
@@ -766,7 +767,7 @@ def overtime_period (db, user, start, end, period):
 def compute_saved_balance (db, user, start, date, not_after = False):
     """ Compute the saved overtime balance before or at the given day
         and the date on which this balance is valid.
-        
+
         This looks through saved values in freeze records and determines
         a matching freeze record and returns the value for the given
         weekly/monthly period.
@@ -1186,4 +1187,34 @@ def find_dynuser_company_changes (db, start_date):
     return ret
 # end def find_dynuser_company_changes
 
+def first_unsubmitted (db, uid, end_date = None):
+    """ Get the first week where we have unfrozen open daily records
+    """
+    if end_date is None:
+        now = Date ('.')
+    else:
+        now = end_date
+    # Get most recent freeze date
+    f = freeze.freeze_date (db, uid)
+    if f:
+        f = f + common.day
+    dyn = first_user_dynamic (db, uid, date = f)
+    if not dyn:
+        return common.week_from_date (now)
+    f = dyn.valid_from
+    # Create daily recs for the range until now
+    vacation.create_daily_recs (db, uid, f, now)
+    # Search forward from date for first open daily record
+    op   = db.daily_record_status.lookup ('open')
+    pr   = common.pretty_range (f, now)
+    d    = dict (status = op, date = pr, user = uid)
+    s    = [('+', 'date')]
+    drid = db.daily_record.filter (None, d, sort = s)
+    if drid:
+        dr = db.daily_record.getnode (drid [0])
+        dt = dr.date
+    else:
+        dt = now
+    return common.week_from_date (dt)
+# end def first_unsubmitted
 #END
