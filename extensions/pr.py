@@ -246,7 +246,11 @@ def oi_key (offer_item):
         return 0.0
     if not offer_item.index:
         return 0.0
-    return offer_item.index
+    try:
+        return float (offer_item.index)
+    except ValueError:
+        pass
+    return 0.0
 # end def oi_key
 
 def init (instance):
