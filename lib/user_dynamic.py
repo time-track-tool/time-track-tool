@@ -37,8 +37,8 @@ from roundup.date import Date
 
 import freeze
 import common
-import o_permission
 import vacation
+import o_permission
 ymd = common.ymd
 day = common.day
 
@@ -1217,4 +1217,29 @@ def first_unsubmitted (db, uid, end_date = None):
         dt = now
     return common.week_from_date (dt)
 # end def first_unsubmitted
+
+def approval_for_record (db, cl, userid, itemid, dr = None):
+    """User is allowed to view record if he is the supervisor
+       or the person to whom approvals are delegated.
+
+       Viewing is allowed by the supervisor or the person to whom
+       approvals are delegated.
+    """
+    if dr is None:
+        dr    = cl.get (itemid, 'daily_record')
+    ownerid   = db.daily_record.get (dr, 'user')
+    clearance = common.tt_clearance_by (db, ownerid)
+    return userid in clearance
+# end def approval_for_record
+
+def approval_for_time_record (db, userid, itemid):
+    return approval_for_record (db, db.time_record, userid, itemid)
+# end def approval_for_time_record
+approval_for_time_record.__doc__ = approval_for_record.__doc__
+
+def approval_for_attendance_record (db, userid, itemid):
+    return approval_for_record (db, db.attendance_record, userid, itemid)
+# end def approval_for_attendance_record
+approval_for_attendance_record.__doc__ = approval_for_record.__doc__
+
 #END

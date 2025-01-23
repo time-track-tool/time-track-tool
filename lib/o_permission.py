@@ -355,6 +355,11 @@ def check_new_tr_or_ar_allowed (db, cl, nodeid, new_values):
     dr = db.daily_record.getnode (new_values ['daily_record'])
     if dr.user == uid:
         return
+    # Supervisor (or whoever this is delegated to) may create new time
+    # records for vacation approval, more checks are in the respective
+    # detectors.
+    if user_dynamic.approval_for_record (db, cl, uid, nodeid, dr.id):
+        return
     _  = db.i18n.gettext
     if not daily_record_allowed_by_olo (db, uid, dr.id):
         classname = dict (classname = _ (cl.classname))

@@ -1107,29 +1107,6 @@ def security (db, ** kw):
         return False
     # end def time_project_responsible_and_open
 
-    def approval_for_record (db, cl, userid, itemid):
-        """User is allowed to view record if he is the supervisor
-           or the person to whom approvals are delegated.
-
-           Viewing is allowed by the supervisor or the person to whom
-           approvals are delegated.
-        """
-        dr        = cl.get (itemid, 'daily_record')
-        ownerid   = db.daily_record.get (dr, 'user')
-        clearance = tt_clearance_by (db, ownerid)
-        return userid in clearance
-    # end def approval_for_record
-
-    def approval_for_time_record (db, userid, itemid):
-        return approval_for_record (db, db.time_record, userid, itemid)
-    # end def approval_for_time_record
-    approval_for_time_record.__doc__ = approval_for_record.__doc__
-
-    def approval_for_attendance_record (db, userid, itemid):
-        return approval_for_record (db, db.attendance_record, userid, itemid)
-    # end def approval_for_attendance_record
-    approval_for_attendance_record.__doc__ = approval_for_record.__doc__
-
     def overtime_thawed (db, userid, itemid):
         """User is allowed to edit overtime correction if the overtime
            correction is not frozen.
@@ -1302,8 +1279,9 @@ def security (db, ** kw):
     p = db.security.addPermission \
         ( name        = 'View'
         , klass       = 'attendance_record'
-        , check       = approval_for_attendance_record
-        , description = fixdoc (approval_for_attendance_record.__doc__)
+        , check       = user_dynamic.approval_for_attendance_record
+        , description = fixdoc \
+            (user_dynamic.approval_for_attendance_record.__doc__)
         )
     db.security.addPermissionToRole ('User', p)
     p = db.security.addPermission \
@@ -1652,8 +1630,8 @@ def security (db, ** kw):
     p = db.security.addPermission \
         ( name        = 'View'
         , klass       = 'time_record'
-        , check       = approval_for_time_record
-        , description = fixdoc (approval_for_time_record.__doc__)
+        , check       = user_dynamic.approval_for_time_record
+        , description = fixdoc (user_dynamic.approval_for_time_record.__doc__)
         )
     db.security.addPermissionToRole ('User', p)
     p = db.security.addPermission \
