@@ -1241,11 +1241,12 @@ default_attributes = dict \
          ' purchase_type renegotiations requester safety_critical'
          ' sap_cc termination_date terms_conditions'
          ' psp_element title pr_currency intended_duration'
-         ' pr_ext_resource'
+         ' pr_ext_resource internal_order gl_account delivery_address'
+         ' payment_type'
         ).split ()
     , pr_supplier_risk = 'supplier organisation'.split ()
     )
-do_not_add_retired = dict.fromkeys \
+do_not_add_retired = set \
     (( 'department'
      , 'infosec_level'
      , 'internal_order'
@@ -1254,32 +1255,56 @@ do_not_add_retired = dict.fromkeys \
      , 'pr_currency'
      , 'purchase_type'
      , 'requester'
-     , 'sap_cc'
      , 'terms_conditions'
      , 'time_project'
     ))
-do_not_add_invalid = dict.fromkeys \
+try_newer_unretired = set \
+    (( 'sap_cc'
+     , 'psp_element'
+    ))
+do_not_add_invalid = set \
     (( 'internal_order'
      , 'purchase_type'
      , 'sap_cc'
     ))
-do_not_add_not_in_range = dict.fromkeys \
+do_not_add_not_in_range = set \
     (( 'location'
      , 'org_location'
      , 'organisation'
     ))
+
+def lookup_new_item (db, cln, id, key = 'name'):
+    """ In the sync process it could happen that an item was retired and
+        a new one (with the same key) was added.
+        So for retired items we can check if there is a newer item with
+        the same key.
+    """
+    val = None
+    cls = db.getclass (cln)
+    try:
+        sc  = cls.getnode (id)
+        val = cls.lookup (sc [key])
+    except KeyError:
+        pass
+    return val
+# end def lookup_new_item
 
 def copy_url (context, attributes = None):
     """ Create URL for copying (most attributes of) an item """
     cls = context._classname
     url = ['%(cls)s?:template=item' % locals ()]
     atr = attributes or default_attributes [cls]
+    db  = context._db
     for a in atr:
         val = ''
         if isinstance (context [a], MultilinkHTMLProperty):
             if context [a]:
                 val = ','.join (p.id for p in context [a])
         elif isinstance (context [a], LinkHTMLProperty):
+            linkprop = 'id'
+            if not context [a]._prop.try_id_parsing:
+                lcls = db.getclass (context [a]._prop.classname)
+                linkprop = lcls.getkey ()
             retired = False
             if  (context [a].id and str (context [a].id).isdigit ()):
                 try:
@@ -1290,9 +1315,15 @@ def copy_url (context, attributes = None):
                     # Do not add some retired attributes
                     if a in do_not_add_retired:
                         continue
-                    val = escape (context [a].plain ())
+                    elif a in try_newer_unretired:
+                        # This asumes that a is also the class
+                        val = lookup_new_item (db, a, context [a].id)
+                        if not val:
+                            continue
+                    else:
+                        val = escape (context [a].plain ())
                 else:
-                    val = context [a].id
+                    val = escape (str (context [a][linkprop]))
             else:
                 if a in do_not_add_retired and context [a].is_retired ():
                     continue
@@ -1328,8 +1359,9 @@ def copy_url (context, attributes = None):
 
         atrs = \
             ( 'index', 'supplier', 'description', 'offer_number'
-            , 'units', 'price_per_unit', 'vat', 'sap_cc', 'time_project'
-            , 'purchase_type', 'product_group'
+            , 'units', 'price_per_unit', 'vat', 'sap_cc', 'psp_element'
+            , 'purchase_type', 'product_group', 'internal_order'
+            , 'gl_account', 'payment_type'
             )
         n = -1
         for n, ofr in enumerate (context ['offer_items']):
@@ -1339,8 +1371,18 @@ def copy_url (context, attributes = None):
                     if ofr [a]:
                         val = ','.join (p.id for p in ofr [a])
                 elif isinstance (ofr [a], LinkHTMLProperty):
-                    if ofr [a] and not ofr [a].is_retired ():
-                        val = ofr [a].id
+                    linkprop = 'id'
+                    if not ofr [a]._prop.try_id_parsing:
+                        lcls = db.getclass (ofr [a]._prop.classname)
+                        linkprop = lcls.getkey ()
+                    if ofr [a]:
+                        if ofr [a].is_retired ():
+                            if a in try_newer_unretired:
+                                val = lookup_new_item (db, a, ofr [a].id)
+                        elif a in do_not_add_invalid and not ofr [a].valid:
+                            continue
+                        else:
+                            val = escape (str (ofr [a][linkprop]))
                 else:
                     val = escape (ofr [a].plain ())
                 if val is not None:
