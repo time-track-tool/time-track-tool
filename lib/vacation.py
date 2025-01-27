@@ -186,7 +186,9 @@ def create_daily_recs (db, user, first_day, last_day):
     pr   = common.pretty_range (first_day, last_day)
     fsp  = dict (user = user, date = pr)
     itr  = db.daily_record.filter_iter (None, fsp, sort = [('+', 'date')])
-    itr  = iter (itr)
+    # If this isn't a generator, make one (happens for non-sql backends)
+    if not getattr (itr, '__next__', None):
+        itr  = iter (itr)
     drid = None
     d    = first_day
     while d <= last_day:
@@ -216,6 +218,13 @@ def create_daily_recs (db, user, first_day, last_day):
                 )
         try_create_public_holiday (db, x, d, user)
         d += common.day
+    # This should'nt have any left, the real fix is to correctly deal
+    # with named cursors in the postgres backend, to close the cursor
+    # when the iterator is re-called. Closing the iterators doesn't seem
+    # to do the trick.
+    for d in itr:
+        pass
+    itr.close ()
 # end def create_daily_recs
 
 def leave_submissions_on_date (db, user, date, filter = None):

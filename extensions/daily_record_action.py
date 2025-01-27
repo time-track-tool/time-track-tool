@@ -204,6 +204,8 @@ class Daily_Record_Common (Action, autosuper):
         request         = self.request
         filterspec      = request.filterspec
         columns         = request.columns
+        msg             = ''
+        do_redirect     = False
         assert (request.classname == 'daily_record')
         if 'user' in filterspec:
             self.user = filterspec ['user'][0]
@@ -211,6 +213,9 @@ class Daily_Record_Common (Action, autosuper):
             self.user = self.db.getuid ()
         if 'date' not in filterspec:
             start, end  = user_dynamic.first_unsubmitted (self.db, self.user)
+            do_redirect = True
+            filterspec ['date'] = common.pretty_range (start, end)
+            filterspec ['user'] = [self.user]
         else:
             start, end  = common.date_range (self.db, filterspec)
         self.start      = start
@@ -223,17 +228,19 @@ class Daily_Record_Common (Action, autosuper):
                 )
             end = max
             request.filterspec ['date'] = common.pretty_range (start, end)
-            url = request.indexargs_url \
-                ( ''
-                , { ':action'        : 'search'
-                  , ':template'      : 'edit'
-                  , ':sort'          : 'date'
-                  , ':group'         : 'user'
-                  , ':filter'        : ','.join (request.filterspec)
-                  , ':startwith'     : '0'
-                  , ':error_message' : msg
-                  }
-                )
+            do_redirect = True
+        if do_redirect:
+            d = { ':action'        : 'search'
+                , ':template'      : 'edit'
+                , ':sort'          : 'date'
+                , ':group'         : 'user'
+                , ':filter'        : ','.join (request.filterspec)
+                , ':startwith'     : '0'
+                }
+            if msg:
+                d [':error_message'] = msg
+            self.db.commit ()
+            url = request.indexargs_url ('', d)
             raise Redirect (url)
         vacation.create_daily_recs (self.db, self.user, start, end)
         self.db.commit ()

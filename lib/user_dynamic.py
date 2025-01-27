@@ -1201,7 +1201,7 @@ def first_unsubmitted (db, uid, end_date = None):
     dyn = first_user_dynamic (db, uid, date = f)
     if not dyn:
         return common.week_from_date (now)
-    f = dyn.valid_from
+    f = max (f, dyn.valid_from)
     # Create daily recs for the range until now
     vacation.create_daily_recs (db, uid, f, now)
     # Search forward from date for first open daily record
