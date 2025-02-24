@@ -280,7 +280,7 @@
              context.business_responsible.field ()"/>
        <span tal:content="structure python:utils.user_classhelp
              ( db, property   = 'business_responsible'
-             , form           = 'user_form'
+             , form           = formname
              , exclude_system = True
              , internal_only  = True
              )"/>
@@ -293,7 +293,7 @@
        <span tal:content="structure python:context.supervisor.field ()"/>
        <span tal:content="structure python:utils.user_classhelp
              ( db, property = 'supervisor'
-             , form = 'user_form'
+             , form = formname
              )"/>
       </td>
      </tr>
@@ -304,7 +304,7 @@
        <span tal:content="structure python: context.substitute.field ()"/>
        <span tal:content="structure python:utils.user_classhelp
              ( db, property   = 'substitute'
-             , form           = 'user_form'
+             , form           = formname
              , exclude_system = True
              , internal_only  = True
              )"/>
@@ -319,12 +319,8 @@
      <tr tal:condition="python:'subst_until' in bclass.properties">
       <th tal:content="structure python:utils.fieldname
           (db, 'user', 'subst_until')"/>
-      <td>
-       <span tal:content="structure python:context.subst_until.field
-             (popcal = False)"/>
-       <span tal:content="structure python:context.subst_until.popcal
-             (form = 'user_form')"/>
-      </td>
+      <td tal:content="structure python:context.subst_until.field
+          (form = formname)"/>
      </tr>
      <tr tal:condition="python:'timetracking_by' in bclass.properties">
       <th tal:content="structure python:utils.fieldname
@@ -333,7 +329,7 @@
        <span tal:content="structure python: context.timetracking_by.field ()"/>
        <span tal:content="structure python:utils.user_classhelp
              ( db, property   = 'timetracking_by'
-             , form           = 'user_form'
+             , form           = formname
              , exclude_system = True
              , internal_only  = True
              )"/>
@@ -348,7 +344,7 @@
        <span tal:content="structure python: context.clearance_by.field ()"/>
        <span tal:content="structure python:utils.user_classhelp
              ( db, property   = 'clearance_by'
-             , form           = 'user_form'
+             , form           = formname
              , exclude_system = True
              , internal_only  = True
              )"/>
@@ -364,7 +360,7 @@
         <span tal:content="structure python: context.vie_user.field ()"/>
         <span tal:content="structure python:utils.user_classhelp
              ( db, property   = 'vie_user'
-             , form           = 'user_form'
+             , form           = formname
              , internal_only  = True
              , exclude_system = True
              )"/>
@@ -531,7 +527,7 @@
             , width     = '600'
             , pagesize  = 500
             , inputtype = 'radio'
-            , form      = 'user_form'
+            , form      = formname
             )" />
      </td>
     </tr>

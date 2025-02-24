@@ -241,7 +241,8 @@
       <td tal:content="structure python:context.renegotiations.field ()"/>
       <th tal:content="structure python:utils.fieldname
           (db, classname, 'delivery_deadline')"/>
-      <td tal:content="structure python:context.delivery_deadline.field ()"/>
+      <td tal:content="structure python:context.delivery_deadline.field
+          (display_time=False)"/>
      </tr>
      <tr>
       <th tal:content="structure python:utils.fieldname
@@ -249,12 +250,14 @@
       <td tal:content="structure python:context.frame_purchase.field ()"/>
       <th tal:content="structure python:utils.fieldname
           (db, classname, 'frame_purchase_end')"/>
-      <td tal:content="structure python:context.frame_purchase_end.field ()"/>
+      <td tal:content="structure python:context.frame_purchase_end.field
+          (display_time=False)"/>
      </tr>
      <tr>
       <th tal:content="structure python:utils.fieldname
           (db, classname, 'renew_until')"/>
-      <td tal:content="structure python:context.renew_until.field ()"/>
+      <td tal:content="structure python:context.renew_until.field
+          (display_time=False)"/>
       <th tal:content="structure python:utils.fieldname
           (db, classname, 'pr_currency')"/>
       <td tal:content="structure python:context.pr_currency.menu ()"/>
