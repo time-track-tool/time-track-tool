@@ -1309,8 +1309,8 @@ def copy_url (context, attributes = None):
             if  (context [a].id and str (context [a].id).isdigit ()):
                 try:
                     retired = context [a].is_retired ()
-                except TypeError:
-                    retired = True
+                except (ValueError, TypeError):
+                    continue
                 if retired:
                     # Do not add some retired attributes
                     if a in do_not_add_retired:
@@ -1325,9 +1325,18 @@ def copy_url (context, attributes = None):
                 else:
                     val = escape (str (context [a][linkprop]))
             else:
-                if a in do_not_add_retired and context [a].is_retired ():
+                try:
+                    if  (   a in do_not_add_retired
+                        and getattr (context [a], 'valid', None) is not None
+                        and context [a].is_retired ()
+                        ):
+                        continue
+                except (ValueError, TypeError):
                     continue
-            if a in do_not_add_invalid and not context [a].valid:
+            try:
+                if a in do_not_add_invalid and not context [a].valid:
+                    continue
+            except (ValueError, TypeError):
                 continue
 
             if a in do_not_add_not_in_range:
@@ -1372,17 +1381,20 @@ def copy_url (context, attributes = None):
                         val = ','.join (p.id for p in ofr [a])
                 elif isinstance (ofr [a], LinkHTMLProperty):
                     linkprop = 'id'
-                    if not ofr [a]._prop.try_id_parsing:
-                        lcls = db.getclass (ofr [a]._prop.classname)
-                        linkprop = lcls.getkey ()
-                    if ofr [a]:
-                        if ofr [a].is_retired ():
-                            if a in try_newer_unretired:
-                                val = lookup_new_item (db, a, ofr [a].id)
-                        elif a in do_not_add_invalid and not ofr [a].valid:
-                            continue
-                        else:
-                            val = escape (str (ofr [a][linkprop]))
+                    try:
+                        if not ofr [a]._prop.try_id_parsing:
+                            lcls = db.getclass (ofr [a]._prop.classname)
+                            linkprop = lcls.getkey ()
+                        if ofr [a]:
+                            if ofr [a].is_retired ():
+                                if a in try_newer_unretired:
+                                    val = lookup_new_item (db, a, ofr [a].id)
+                            elif a in do_not_add_invalid and not ofr [a].valid:
+                                continue
+                            else:
+                                val = escape (str (ofr [a][linkprop]))
+                    except (ValueError, TypeError):
+                        continue
                 else:
                     val = escape (ofr [a].plain ())
                 if val is not None:
