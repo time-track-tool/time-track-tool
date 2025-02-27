@@ -224,7 +224,6 @@ def create_daily_recs (db, user, first_day, last_day):
     # to do the trick.
     for d in itr:
         pass
-    itr.close ()
 # end def create_daily_recs
 
 def leave_submissions_on_date (db, user, date, filter = None):
