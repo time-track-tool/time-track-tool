@@ -166,7 +166,7 @@ def check_auto_wp (db, auto_wp_id, userid):
                       or not end_time and wp.time_end
                       )
                   ):
-                if wps [0].time_start > end_time:
+                if end_time and wps [0].time_start > end_time:
                     break
                 assert not wps [0].time_end or wp.time_end <= wps [0].time_end
                 if wp.time_end != wps [0].time_start:

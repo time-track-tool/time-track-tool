@@ -298,6 +298,8 @@ def wp_check_auto_wp (db, cl, nodeid, new_values):
             if dur_end and dur_end <= next.valid_to:
                 break
             n  = user_dynamic.next_user_dynamic (db, next)
+            if n is None:
+                break
             if  (  n.valid_from != next.valid_to
                 or not lib_auto_wp.is_correct_dyn (n, auto_wp)
                 ):

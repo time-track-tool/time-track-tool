@@ -36,7 +36,7 @@ from . import user6_time, user7_time, user8_time, user10_time, user11_time
 from . import user12_time, user13_time, user14_time, user15_19_vac, user16_leave
 from . import user17_time, user18_time, user20_time, user21_time, user22_time
 from . import user23_time, user24_time, user25_time, user26_time, user27_time
-from . import user28_time
+from . import user28_time, user29_time
 
 from operator     import mul
 from email.parser import Parser
@@ -5022,8 +5022,67 @@ class Test_Case_Timetracker (_Test_Case_Summary, unittest.TestCase):
         self.db.close ()
     # end def test_user28
 
+    def setup_user29 (self):
+        self.username29 = 'testuser29'
+        self.user29 = self.db.user.create \
+            ( username     = self.username29
+            , firstname    = 'Nummer29'
+            , lastname     = 'User29'
+            , supervisor   = self.user0
+            , address      = 'testuser29@example.com'
+            )
+        self.db.time_wp.set ('44', bookers = [self.user29])
+        # We need to import the data *before* we create public holidays,
+        # otherwise the time records for these would be created during
+        # import
+        # Monkey-patch the detector list to remove auto wp checks
+        old_priolist_wp = self.db.time_wp.auditors ['create']
+        pl = deepcopy (old_priolist_wp)
+        dl = []
+        # Priolist has (prio, name, function) tuples
+        for i, item in enumerate (pl.list):
+            if item [1] == 'wp_check_auto_wp':
+                del pl.list [i]
+                break
+        self.db.time_wp.auditors ['create'] = pl
+        old_priolist_ph = self.db.public_holiday.reactors ['create']
+        pl = deepcopy (old_priolist_ph)
+        # Priolist has (prio, name, function) tuples
+        for i, item in enumerate (pl.list):
+            if item [1] == 'fix_daily_recs':
+                del pl.list [i]
+                break
+        self.db.public_holiday.reactors ['create'] = pl
+        user29_time.import_data_29 (self.db, self.user29, self.olo, self)
+        # Restore detectors
+        self.db.time_wp.auditors        ['create'] = old_priolist_wp
+        self.db.public_holiday.reactors ['create'] = old_priolist_ph
+    # end def setup_user29
+
+    def test_user29 (self):
+        self.log.debug ('test_user29')
+        self.setup_db ()
+        self.setup_user29 ()
+        self.db.commit ()
+        # Now change the last dyn user record to unlimited
+        dt = date.Date ('2025-05-01')
+        assert self.db.user_dynamic.get ('9','valid_from') == dt
+        self.db.user_dynamic.set ('9', valid_to = None)
+        # Now the (already-existing) wps must be unlimited
+        for k in range (54, 61):
+            wp = self.db.time_wp.getnode (str (k))
+            assert wp.name == 'testuser29'
+            assert wp.time_end is None
+        # And the previous ones should be unchanged
+        for k in range (47, 54):
+            wp = self.db.time_wp.getnode (str (k))
+            assert wp.name == 'testuser29 -2024-10-17'
+            assert wp.time_end == date.Date ('2024-10-17')
+        self.db.close ()
+    # end def test_user29
+
     def test_duplicate_public_holiday (self):
-        self.log.debug ('test_user28')
+        self.log.debug ('test_duplicate_public_holiday')
         self.setup_db ()
         self.db.commit ()
         self.db.close ()
