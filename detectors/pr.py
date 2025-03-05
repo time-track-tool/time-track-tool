@@ -691,12 +691,13 @@ def set_agents (db, cl, nodeid, new_values):
             org = cl.get (nodeid, 'organisation')
         else:
             for cn in 'sap_cc', 'psp_element':
+                import pdb; pdb.set_trace ()
                 cls = db.getclass (cn)
                 org = None
-                if a in new_values:
-                    org = cls.get (new_values [a], 'organisation')
-                elif nodeid and cl.get (nodeid, a):
-                    org = cls.get (cl.get (nodeid, a), 'organisation')
+                if cn in new_values:
+                    org = cls.get (new_values [cn], 'organisation')
+                elif nodeid and cl.get (nodeid, cn):
+                    org = cls.get (cl.get (nodeid, cn), 'organisation')
     # Loop over offer items and add pt if any, also add purchase agents
     ois = new_values.get ('offer_items', [])
     if pr and 'offer_items' not in new_values:
