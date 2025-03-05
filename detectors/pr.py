@@ -1536,7 +1536,7 @@ def check_org (db, cl, nodeid, new_values):
     orgs = o_permission.get_allowed_org (db, uid)
 
     orgid = new_values.get ('organisation', None)
-    if 'organisation' not in new_values:
+    if orgid is None and nodeid:
         orgid = cl.get (nodeid, 'organisation')
     if orgid and (check_all or 'organisation' in new_values):
         if orgid not in orgs:
