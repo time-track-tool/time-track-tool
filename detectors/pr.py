@@ -691,7 +691,6 @@ def set_agents (db, cl, nodeid, new_values):
             org = cl.get (nodeid, 'organisation')
         else:
             for cn in 'sap_cc', 'psp_element':
-                import pdb; pdb.set_trace ()
                 cls = db.getclass (cn)
                 org = None
                 if cn in new_values:
