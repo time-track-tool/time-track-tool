@@ -206,11 +206,15 @@
           </tr>
           <tal:block tal:repeat="ar python: utils.sorted
            (i ['attendance_record'], ('start','time_record.wp'))">
-           <tal:block tal:define="tr python: ar.time_record">
+           <tal:block tal:define=
+               " tr python: ar.time_record
+               ; ed python: editable and not tr.wp.project.is_public_holiday
+               ">
             <tr tal:attributes="class cls"
              tal:define="dur python: '' if not tr else utils.ExtProperty
               ( utils, tr.duration, item = tr
-              , editable = editable, fieldwidth = 5
+              , editable = ed
+              , fieldwidth = 5
               , format = '%.2f'
               )">
              <tal:block tal:repeat="pn python: [('start', 2),('end', 1)]">
@@ -223,9 +227,9 @@
                 [ ''
                 , utils.ExtProperty
                   ( utils, ar [pn [0]], item = ar
-                  , editable = editable, fieldwidth = 5
+                  , editable = ed, fieldwidth = 5
                   ).as_listentry ()
-                ][not gen or editable]"/>
+                ][not gen or ed]"/>
              </tal:block>
              <td tal:condition="python: not tr" style="text-align:right;"
                  class="nb"/>
@@ -233,7 +237,7 @@
                  tal:content="structure dur/as_listentry"
                  style="text-align:right;" class="nb" />
              <td style="text-align:right;">
-              <span tal:condition="python:editable and dur"
+              <span tal:condition="python:ed and dur"
                title="Mark line for deletion by removing duration">
                <img src="@@file/del.png" alt="D" border="0"
                 tal:attributes="onclick
@@ -243,14 +247,14 @@
              <td tal:condition="python: not tr" colspan="2"/>
              <td tal:condition="python: tr" colspan="2">
               <tal:block tal:define="name python:'time_record%s@wp'%tr.id">
-               <select class="dropdown-wp" tal:condition="editable"
+               <select class="dropdown-wp" tal:condition="ed"
                  tal:attributes="name name">
                 <tal:block tal:content="structure wpsopt"/>
                </select>
-               <tal:block tal:condition="editable"
+               <tal:block tal:condition="ed"
                    tal:content="structure python: utils.work_packages_javascript
                      (name, wpsdict, tr.wp.id or -1)"/>
-               <span tal:condition="not:editable" tal:content="structure python:
+               <span tal:condition="not:ed" tal:content="structure python:
                 tr.wp and '&nbsp;'.join
                  ([utils.ExtProperty
                    ( utils, i [0]
@@ -269,22 +273,22 @@
              <td tal:condition="python: not tr" class="nb"/>
              <td tal:condition="python: tr"
                  class="nb" tal:content="structure python: utils.ExtProperty
-                 (utils, tr.time_activity, item = tr, editable = editable)
+                 (utils, tr.time_activity, item = tr, editable = ed)
                  .menu (id = utils.valid_activities (db, i.date))"/>
              <td style="text-align:right;"
-              tal:condition="python:editable or (tr and tr.comment)"
+              tal:condition="python:ed or (tr and tr.comment)"
               tal:content="structure python: utils.ExtProperty
-              (utils, tr.comment, item = tr, editable = editable)
+              (utils, tr.comment, item = tr, editable = ed)
               .comment_edit (form='edit_daily_record')"/>
              <td style="text-align:right;" tal:condition="python:
-                 not editable and (not tr or not tr.comment)"/>
+                 not ed and (not tr or not tr.comment)"/>
              <td tal:content="structure python: utils.ExtProperty
-              ( utils, ar.work_location, item = ar, editable = editable
+              ( utils, ar.work_location, item = ar, editable = ed
               ).menu (is_valid = True)"/>
              <td tal:condition="python:is_open and edit_ok">
-              <tal:block tal:condition="editable"
+              <tal:block tal:condition="ed"
                tal:replace="structure python: utils.ExtProperty
-               ( utils, ar.dist, item = ar, editable = editable, fieldwidth = 5
+               ( utils, ar.dist, item = ar, editable = ed, fieldwidth = 5
                ).as_listentry ()"/>
              </td>
             </tr>
@@ -294,17 +298,19 @@
            ( [tr for tr in i ['time_record'] if not tr.attendance_record]
            , ('wp', 'duration')
            )">
-            <tr tal:attributes="class cls"
-             tal:define="dur python: utils.ExtProperty
-              ( utils, tr.duration, item = tr
-              , editable = editable, fieldwidth = 5
-              , format = '%.2f'
-              )">
+            <tr tal:attributes="class cls" tal:define=
+                 "dur python: utils.ExtProperty
+                      ( utils, tr.duration, item = tr
+                      , editable = ed, fieldwidth = 5
+                      , format = '%.2f'
+                      )
+                 ;ed  python: editable and not tr.wp.project.is_public_holiday
+                 ">
              <td colspan="2" class="start"/><td class="end"/>
              <td tal:content="structure dur/as_listentry"
               style="text-align:right;" class="nb" />
              <td style="text-align:right;">
-              <span tal:condition="editable"
+              <span tal:condition="ed"
                title="Mark line for deletion by removing duration">
                <img src="@@file/del.png" alt="D" border="0"
                 tal:attributes="onclick
@@ -335,7 +341,7 @@
               tal:content="structure python: utils.ExtProperty
               (utils, tr.comment, item = tr, editable = 0)
               .comment_edit (form='edit_daily_record')"/>
-             <td tal:condition="python: not editable and not tr.comment"/>
+             <td tal:condition="python: not ed and not tr.comment"/>
              <td/>
              <td tal:condition="python:is_open and edit_ok"/>
             </tr>

@@ -253,7 +253,9 @@ def work_packages (db, daily_record, editable = True):
         return []
     date = daily_record.date._value # is a html prop
     user = daily_record.user.id
-    filt = {'project.approval_required' : False}
+    filt = { 'project.approval_required' : False
+           , 'project.is_public_holiday' : False
+           }
     srt  = [('+', 'project.name'), ('+', 'name')]
     wps  = vacation.valid_wps \
         (db._db, filter = filt, date = date, user = user, srt = srt)
