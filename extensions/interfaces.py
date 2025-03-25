@@ -586,6 +586,26 @@ def get_allowed_olo (db):
     return list (o_permission.get_allowed_olo (db, db.getuid ()))
 # end def get_allowed_olo
 
+def dr_is_public_holiday (dr):
+    """ Return True if this daily record has a time record which is a
+        public holiday which is *not* a half public holiday.
+    """
+    db  = dr._db
+    trs = db.time_record.filter (None, dict (daily_record = dr.id))
+    for trid in trs:
+        tr = db.time_record.getnode (trid)
+        if not tr.wp:
+            continue
+        wp = db.time_wp.getnode (tr.wp)
+        pr = db.time_project.getnode (wp.project)
+        if pr.is_public_holiday:
+            dyn = user_dynamic.get_user_dynamic (db, dr.user.id, dr.date._value)
+            ph  = vacation.get_public_holiday (db, dyn, dr.date._value)
+            if ph and not ph.is_half:
+                return True
+    return False
+# end def dr_is_public_holiday
+
 def init (instance):
     reg = instance.registerUtil
     reg ("correct_midnight_date_string", correct_midnight_date_string)
@@ -627,4 +647,5 @@ def init (instance):
     reg ("valid_item",                   valid_item)
     reg ("valid_olo",                    valid_olo)
     reg ("get_allowed_olo",              get_allowed_olo)
+    reg ("dr_is_public_holiday",         dr_is_public_holiday)
 # end def init

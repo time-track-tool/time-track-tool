@@ -160,7 +160,8 @@
            ;w_allowed python:i.weekend_allowed
                              or utils.weekend_allowed (db._db, i)
            ;is_wend   python:i ['date'].pretty ('%a') in ('Sat','Sun')
-           ;allowed   python: (w_allowed or not is_wend) and edit_ok
+           ;is_ph     python: utils.dr_is_public_holiday (i)
+           ;allowed   python: (w_allowed or not (is_wend or is_ph)) and edit_ok
            ;wps       python:utils.work_packages (db, i, editable)
            ;wpsopt_d  python:utils.work_packages_selector (wps)
            ;wpsopt    python:wpsopt_d [0]
@@ -191,10 +192,18 @@
              tal:content="structure python:
                  pdict ['w_allo'].colonlabel (':&nbsp;')
                  + i.weekend_allowed.field ()"/>
+            <tal:block
+             tal:condition="python:is_ph and i.weekend_allowed.is_edit_ok ()
+                                   and str (i.status) == 'open'
+                                   and not frozen"
+             tal:content="structure python:
+                 i18n.gettext ('Public holiday allowed:&nbsp;')
+                 + i.weekend_allowed.field ()"/>
            </td>
            <td colspan="2" nowrap>
             <tal:block
-             tal:condition="python:is_wend and i.required_overtime.is_edit_ok ()
+             tal:condition="python:(is_wend or is_ph)
+                                   and i.required_overtime.is_edit_ok ()
                                    and str (i.status) != 'accepted'
                                    and not frozen"
              tal:content="structure python:
