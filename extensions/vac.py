@@ -784,7 +784,8 @@ class Rest_Request (RestfulInstance):
 
     @Routing.route ("/aux/timesheet", 'GET')
     @_data_decorator
-    def timesheet (self, input, *args, **kw):
+    def timesheet (self, input_payload, *args, **kw):
+        input = input_payload
         supervisor = user = date = types = abstypes = None
         if 'supervisor' in input:
             supervisor = lookup_users (self.db, input ['supervisor'].value)
