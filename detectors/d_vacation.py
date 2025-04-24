@@ -650,7 +650,7 @@ def handle_submit (db, vs):
     ctype   = dyn.contract_type
     hr_only = vacation.need_hr_approval \
         (db, tp, vs.user, ctype, vs.first_day, vs.last_day, 'submitted')
-    handle_crq_or_submit (db, vs, now, 'SUBMIT', hr_only or tp.is_special_leave)
+    handle_crq_or_submit (db, vs, now, 'SUBMIT', hr_only)
     if tp.is_special_leave:
         try_send_mail \
             ( db, vs, now

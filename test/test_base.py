@@ -3362,7 +3362,7 @@ class Test_Case_Timetracker (_Test_Case_Summary, unittest.TestCase):
             [ ( ('subject',    'Leave request "Special Leave/Special" '
                                '2010-12-22 to 2010-12-30 from Test User2')
               , ('precedence', 'bulk')
-              , ('to',         'user1@test.test, user0@test.test')
+              , ('to',         'user1@test.test')
               , ('from',       'roundup-admin@'
                                'your.tracker.email.domain.example')
               )
@@ -3378,7 +3378,7 @@ class Test_Case_Timetracker (_Test_Case_Summary, unittest.TestCase):
             [ b'Test User2 has submitted a leave request\n'
               b'"Special Leave/Special".\n'
               b'Comment from user: Special leave comment\n'
-              b'Needs approval by HR.\n'
+              b'Please approve or decline at\n'
               b'http://localhost:4711/ttt/leave_submission?@template=approve'
               b'\nMany thanks!'
               b'\n\nThis is an automatically generated message.\n'
