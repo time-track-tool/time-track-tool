@@ -308,12 +308,12 @@
            , ('wp', 'duration')
            )">
             <tr tal:attributes="class cls" tal:define=
-                 "dur python: utils.ExtProperty
+                 "ed  python: editable and not tr.wp.project.is_public_holiday
+                 ;dur python: utils.ExtProperty
                       ( utils, tr.duration, item = tr
                       , editable = ed, fieldwidth = 5
                       , format = '%.2f'
                       )
-                 ;ed  python: editable and not tr.wp.project.is_public_holiday
                  ">
              <td colspan="2" class="start"/><td class="end"/>
              <td tal:content="structure dur/as_listentry"
