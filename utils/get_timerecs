@@ -639,7 +639,7 @@ def main ():
     cmd.add_argument \
         ( '-U', '--url'
         , help    = 'URL of tracker (without rest path) default: %(default)s'
-        , default = 'http:s//tracker.example.com/ttt/'
+        , default = 'https://tracker.example.com/ttt/'
         )
     cmd.add_argument \
         ( '-t', '--no-timerecs'

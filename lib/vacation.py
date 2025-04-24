@@ -738,7 +738,9 @@ def consolidated_vacation \
                 sd = ed
                 vac += dyn.vacation_yearly * md / 12.0
             d = ed
-    return vac
+    # Round to ten digits: The computations above can produce errors due
+    # to repeated additions
+    return round (vac, 10)
 # end def consolidated_vacation
 
 def valid_wps \
