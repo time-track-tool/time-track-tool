@@ -2518,21 +2518,21 @@ class Test_Case_Timetracker (_Test_Case_Summary, unittest.TestCase):
             dt = date.Date (d)
             self.assertEqual \
                 ( vacation.consolidated_vacation (self.db, self.user2, None, dt)
-                , (28. + 31.) * 25. / 366.
+                , round ((28. + 31.) * 25. / 366., 10)
                 )
             self.assertEqual \
                 ( vacation.remaining_vacation (self.db, self.user2, None, dt)
-                , (28. + 31.) * 25. / 366.
+                , round ((28. + 31.) * 25. / 366., 10)
                 )
         for d in '2009-01-01', '2009-01-30', '2009-12-31':
             dt = date.Date (d)
             self.assertEqual \
                 ( vacation.consolidated_vacation (self.db, self.user2, None, dt)
-                , (28. + 31.) * 25. / 366. + 25.
+                , round ((28. + 31.) * 25. / 366. + 25., 10)
                 )
             self.assertEqual \
                 ( vacation.remaining_vacation (self.db, self.user2, None, dt)
-                , (28. + 31.) * 25. / 366. + 25.
+                , round ((28. + 31.) * 25. / 366. + 25., 10)
                 )
         s   = [('+', 'user'), ('+', 'date')]
         vcs = self.db.vacation_correction.filter (None, {}, sort = s)
