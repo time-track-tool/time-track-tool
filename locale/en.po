@@ -7584,6 +7584,9 @@ msgstr "New Timetracker"
 msgid "attendance_record"
 msgstr "Attendance record"
 
+msgid "attendance_record.id"
+msgstr "Attendance record"
+
 msgid "employee_number"
 msgstr "SF System ID"
 

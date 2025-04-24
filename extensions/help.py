@@ -360,6 +360,8 @@ _helptext          = \
             Manual, Specification etc.
          '''
       ]
+    , ""'attendance_record.id'        :
+      [""'''Attendance record id''']
     , ""'author'                      :
       [""'''Author of this %(Classname)s''']
     , ""'authors'                     :
