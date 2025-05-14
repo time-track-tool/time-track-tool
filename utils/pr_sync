@@ -350,7 +350,11 @@ class PR_Sync (Requester):
                                 )
                             v = None
                         if v is None:
-                            continue
+                            # We *want* empty purchasing agents if empty in tt
+                            if p == 'purchasing_agents':
+                                v = []
+                            else:
+                                continue
                         if v != litem [p]:
                             d [p] = v
                     if (d):
