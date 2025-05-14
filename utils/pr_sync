@@ -509,7 +509,7 @@ def main ():
         ( "-p", "--default-purchasing-agent"
         , dest    = "purchasing_agent"
         , help    = "Default for purchasing_agent if none specified"
-        , default = '921'
+        , default = ''
         )
     cmd.add_argument \
         ( "-r", "--remote-user"
