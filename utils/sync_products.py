@@ -2,6 +2,7 @@
 import os
 import re
 import requests
+from requests.packages.urllib3.exceptions import InsecureRequestWarning
 import codecs
 
 from csv      import DictReader
@@ -84,6 +85,9 @@ class Product_Sync (object):
 
     def __init__ (self, args):
         self.args     = args
+        self.chk      = not self.args.no_check_certificate
+        if not self.chk:
+            requests.packages.urllib3.disable_warnings(InsecureRequestWarning)
         self._url     = None
         tracker       = instance.open (args.dir)
         self.db       = db = tracker.open (args.user)
@@ -171,7 +175,7 @@ class Product_Sync (object):
             pattern. We sort these by name (the date format above is
             sortable) and return the latest and greatest.
         """
-        ans  = requests.get (self.url)
+        ans  = requests.get (self.url, verify = self.chk)
         if not (200 <= ans.status_code <= 299):
             raise RuntimeError \
                 ( 'Invalid get result: %s: %s\n    %s'
@@ -216,7 +220,7 @@ class Product_Sync (object):
         else:
             fn  = self.get_latest_export_url ()
             url = '/'.join ((self.url, fn))
-            gr  = requests.get (url)
+            gr  = requests.get (url, verify = self.chk)
             if self.args.encoding:
                 gr.encoding = self.args.encoding
             for line in gr.iter_lines (decode_unicode = True):
@@ -408,6 +412,11 @@ def main ():
         ( '--debug'
         , dest    = 'debug'
         , help    = 'Debug output'
+        , action  = 'store_true'
+        )
+    cmd.add_argument \
+        ( '-C', '--no-check-certificate'
+        , help    = 'Do not check issuer certificate for https url'
         , action  = 'store_true'
         )
     cmd.add_argument \
