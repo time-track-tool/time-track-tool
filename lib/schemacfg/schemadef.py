@@ -212,7 +212,7 @@ def allow_user_details (db, role, permission, *additional_props) :
     own_user_detail_permission (db, role, permission, *props)
 # end def allow_user_details
 
-whitespace = re.compile ('(\s+)')
+whitespace = re.compile (r'(\s+)')
 
 def security_doc_from_docstring (doc) :
     """ Take given docstring (from security function) and use first
