@@ -68,7 +68,7 @@ class Repr_Number (Repr_Str):
     def conv (self, x):
         if x is None:
             return ""
-        return locale.format ("%2.2f", x)
+        return locale.format_string ("%2.2f", x)
     # end def conv
 
     def __call__ (self, itemid, col, x = None):
@@ -703,7 +703,7 @@ class Export_CSV_Lielas (Export_CSV_Names, SearchAction):
                     dt   = datetime (tzinfo = UTC, *dt.timetuple ()[:6])
                     line [0] = dt.astimezone (TZ).strftime \
                         ('%02d.%02m.%04Y %H:%M:%S')
-                line [index_by_sid [sens]] = locale.format ("%2.2f", val)
+                line [index_by_sid [sens]] = locale.format_string ("%2.2f", val)
         else:
             for itemid in self.klass.filter_iter \
                 (self.matches, self.filterspec, sort):
@@ -716,7 +716,7 @@ class Export_CSV_Lielas (Export_CSV_Names, SearchAction):
                     d = item.date.local (tz)
                     line [0] = '%02d.%02d.%04d %02d:%02d:%02d' \
                         % (d.day, d.month, d.year, d.hour, d.minute, d.second)
-                line [index_by_sid [item.sensor]] = locale.format \
+                line [index_by_sid [item.sensor]] = locale.format_string \
                     ("%2.2f", item.val)
         if line:
             self.client._socket_op (writer.writerow, line)
