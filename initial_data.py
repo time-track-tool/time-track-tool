@@ -872,6 +872,13 @@ if 'pr_approval_order' in db.classes :
     hr      = db.pr_approval_order.create (role = 'hr',          order = 50)
     finance = db.pr_approval_order.create (role = 'finance',     order = 60)
     board   = db.pr_approval_order.create (role = 'board',       order = 70)
+if 'pr_approval' in db.classes and hasattr (db, 'sql'):
+    db.sql \
+        ('create index _pr_approval_purchase_request_idx on _pr_approval'
+         '(_purchase_request);)
+        )
+    db.sql ('create index _pr_approval_msg_idx on _pr_approval (_msg);')
+
 if 'purchase_type' in db.classes :
     db.purchase_type.create \
         ( name          = 'Service'
