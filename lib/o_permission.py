@@ -407,7 +407,10 @@ def check_supplier_rating (db, cl, nodeid, new_values):
         return
     if common.user_has_role (db, uid, 'Procurement-Admin'):
         return
-    if new_values ['organisation'] in get_allowed_org (db, uid):
+    org = new_values.get ('organisation')
+    if not org and nodeid:
+        org = cl.get (nodeid, 'organisation')
+    if org in get_allowed_org (db, uid):
         return
     _  = db.i18n.gettext
     d = dict (rating = _ ('pr_supplier_rating'), org = _ ('organisation'))
@@ -421,7 +424,10 @@ def check_supplier_risk (db, cl, nodeid, new_values):
         return
     if common.user_has_role (db, uid, 'Procurement-Admin'):
         return
-    if new_values ['organisation'] in get_allowed_org (db, uid):
+    org = new_values.get ('organisation')
+    if not org and nodeid:
+        org = cl.get (nodeid, 'organisation')
+    if org in get_allowed_org (db, uid):
         return
     _  = db.i18n.gettext
     d = dict (risk = _ ('pr_supplier_risk'), org = _ ('organisation'))
