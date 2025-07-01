@@ -676,7 +676,7 @@ def consolidated_vacation \
               % dyn.id
               )
         assert dyn.vac_aliq == va.id, msg
-        if dyn.valid_to and dyn.valid_to <= ed and dyn.valid_to < eoy:
+        if dyn.valid_to and dyn.valid_to <= ed and dyn.valid_to <= eoy:
             if va.name == 'Daily':
                 yd = float (common.ydays (dyn.valid_to))
                 vac += interval_days \
