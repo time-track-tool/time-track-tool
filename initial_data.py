@@ -875,7 +875,7 @@ if 'pr_approval_order' in db.classes :
 if 'pr_approval' in db.classes and hasattr (db, 'sql'):
     db.sql \
         ('create index _pr_approval_purchase_request_idx on _pr_approval'
-         '(_purchase_request);)
+         '(_purchase_request);'
         )
     db.sql ('create index _pr_approval_msg_idx on _pr_approval (_msg);')
 
