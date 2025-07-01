@@ -724,7 +724,7 @@ def consolidated_vacation \
                 sd_day = 0
                 vac += dyn.vacation_yearly * md / 12.0
             d  = eoy + common.day
-            if dyn.valid_to <= d:
+            if dyn.valid_to == d:
                 dyn = vac_next_user_dynamic (db, dyn)
         else:
             if va.name == 'Daily':
