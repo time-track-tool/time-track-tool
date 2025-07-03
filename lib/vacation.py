@@ -540,9 +540,10 @@ def vacation_time_sum (db, user, ctype, start, end):
         # A dyn user record might have been modified to change the days
         # a person needs to work. This results in the duration of a time
         # record to become zero. This case is OK, we do not need to
-        # ensure that the work hours on that day are non-zero.
+        # ensure that the work hours on that day are non-zero. Note that
+        # we cannot assert wh == 0 because that happens also when the
+        # day is a public holiday.
         if tr.duration == 0:
-            assert wh == 0
             continue
         assert wh
         if dr.id not in by_dr:
