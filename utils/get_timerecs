@@ -305,6 +305,9 @@ class Getter ():
     def print_timerecs (self):
         h_done  = False
         tp_done = False
+        if self.args.vacation_timerecs_only:
+            tp_done = True
+            h_done  = True
         j = self.get ('user?' + urlencode ({'username:': self.args.user}))
         j = j ['data']['collection']
         assert len (j) == 1
@@ -490,6 +493,16 @@ class Getter ():
                         do_create = False
                         is_leave = lft [2] in ('4', '6')
                         break
+                if self.args.vacation_timerecs_only and not is_leave:
+                    while (   aridx < arl
+                          and ars [aridx]['daily_record']['id'] == dr ['id']
+                          ):
+                        aridx += 1
+                    while (   tridx < trl
+                          and trs [tridx]['daily_record']['id'] == dr ['id']
+                          ):
+                        tridx += 1
+                    continue
                 if do_create:
                     print (ind, "dr = db.daily_record.create \\")
                     print (ind, "    ( user = user")
@@ -529,6 +542,9 @@ class Getter ():
                       and trs [tridx]['daily_record']['id'] == dr ['id']
                       ):
                     tr = trs [tridx]
+                    if self.args.vacation_timerecs_only and not tr ['wp']:
+                        tridx += 1
+                        continue
                     tact = 'time_activity'
                     if tr [tact] and tr [tact]['id'] == '10' and not tp_done:
                         print (ind, 'tatp = db.time_activity.create \\')
@@ -537,12 +553,6 @@ class Getter ():
                         print (ind, "    , is_valid = True")
                         print (ind, "    )")
                         tp_done = True
-                    print (ind, "tr = db.time_record.create \\")
-                    print (ind, "    ( daily_record  = dr")
-                    print \
-                        (" %s    , duration      = %s" % (ind, tr ['duration']))
-                    if tr [tact] and tr [tact]['id'] == '10':
-                        print (ind, "    , time_activity = tatp")
                     w_id  = None
                     if tr ['wp']:
                         wpid = tr ['wp']['id']
@@ -571,16 +581,29 @@ class Getter ():
                             new_wpid = wpmax
                         wpdict [tr ['wp']['id']] = new_wpid
                         new_wpid = "'%s'" % new_wpid
+                    if self.args.vacation_timerecs_only:
+                        assert new_wpid
+                        # vacation or public holiday
+                        if new_wpid not in ("'44'", "'1'"):
+                            tridx += 1
+                            continue
+                    print (ind, "tr = db.time_record.create \\")
+                    print (ind, "    ( daily_record  = dr")
+                    print \
+                        (" %s    , duration      = %s" % (ind, tr ['duration']))
+                    if tr [tact] and tr [tact]['id'] == '10':
+                        print (ind, "    , time_activity = tatp")
                     if new_wpid:
                         print (ind, "    , wp            = %s" % new_wpid)
                     print (ind, "    )")
                     self.print_attendance_rec (ar_by_tr [tr ['id']])
                     tridx += 1
-                for ar in ar_no_tr:
-                    # See above, if the ar contains a time_record link
-                    # it will already have been output
-                    assert not ar ['time_record']
-                    self.print_attendance_rec (ar)
+                if not self.args.vacation_timerecs_only:
+                    for ar in ar_no_tr:
+                        # See above, if the ar contains a time_record link
+                        # it will already have been output
+                        assert not ar ['time_record']
+                        self.print_attendance_rec (ar)
                 if is_leave:
                     print (ind, 'db.daily_record.set (dr, status = leave)')
         print (ind, "db.commit ()")
@@ -647,6 +670,11 @@ def main ():
         , help    = 'Do not export time records (and daily records)'
         , action  = 'store_false'
         , default = True
+        )
+    cmd.add_argument \
+        ( '--vacation-timerecs-only'
+        , help    = 'Only export vacation time records'
+        , action  = 'store_true'
         )
     args = cmd.parse_args ()
     # auto_wp implies dynuser

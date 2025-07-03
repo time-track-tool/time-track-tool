@@ -537,6 +537,13 @@ def vacation_time_sum (db, user, ctype, start, end):
         if not dyn or dyn.contract_type != ctype:
             continue
         wh  = user_dynamic.day_work_hours (dyn, dr.date)
+        # A dyn user record might have been modified to change the days
+        # a person needs to work. This results in the duration of a time
+        # record to become zero. This case is OK, we do not need to
+        # ensure that the work hours on that day are non-zero.
+        if tr.duration == 0:
+            assert wh == 0
+            continue
         assert wh
         if dr.id not in by_dr:
             by_dr [dr.id] = (wh, [])

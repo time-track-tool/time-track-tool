@@ -36,7 +36,7 @@ from . import user6_time, user7_time, user8_time, user10_time, user11_time
 from . import user12_time, user13_time, user14_time, user15_19_vac, user16_leave
 from . import user17_time, user18_time, user20_time, user21_time, user22_time
 from . import user23_time, user24_time, user25_time, user26_time, user27_time
-from . import user28_time, user29_time, user30_time, user31_time
+from . import user28_time, user29_time, user30_time, user31_time, user32_time
 
 from operator     import mul
 from email.parser import Parser
@@ -5391,7 +5391,93 @@ class Test_Case_Timetracker (_Test_Case_Summary, unittest.TestCase):
         self.assertEqual (lines  [3] [8], '14.67')
         self.assertEqual (lines  [3] [9], '0.00')
         self.db.close ()
-    # end def test_user30_vacation
+    # end def test_user31_vacation
+
+    def setup_user32 (self):
+        self.username32 = 'testuser32'
+        self.user32 = self.db.user.create \
+            ( username     = self.username32
+            , firstname    = 'Nummer32'
+            , lastname     = 'User32'
+            )
+        # Allow user to create their own dyn user rec
+        self.db.o_permission.create \
+            (user = self.user32, org_location = [self.olo, self.olo2])
+        p = self.db.overtime_period.create \
+            ( name              = 'monthly average required'
+            , months            = 1
+            , weekly            = False
+            , required_overtime = True
+            , order             = 3
+            )
+        # allow user32 to book on wp 44
+        self.db.time_wp.set (self.vacation_wp, bookers = [self.user32])
+        user32_time.import_data_32 (self.db, self.user32, self.olo)
+        self.db.commit ()
+    # end def setup_user32
+
+    def test_user32_vacation (self):
+        self.log.debug ('test_user32')
+        self.setup_db ()
+        self.setup_user32 ()
+        # Allow report
+        rl = self.db.user.get (self.user0, 'roles')
+        self.db.user.set (self.user0, roles = ','.join ((rl, 'hr-vacation')))
+        self.db.commit ()
+        self.db.close  ()
+        # First query with a HR user
+        self.db = self.tracker.open (self.username0)
+        summary.init (self.tracker)
+        fs = { 'user': [self.user32], 'date': '2023-01-01;2025-12-31' }
+        class r: filterspec = fs ; columns = {'additional_submitted'}
+        class c: _ = lambda x: x
+        sr = summary.Vacation_Report \
+            (self.db, r, templating.TemplatingUtils (c))
+        lines = tuple (csv.reader (StringIO (sr.as_csv ()), delimiter = ','))
+        self.assertEqual (len (lines), 4)
+        self.assertEqual (len (lines [0]), 10)
+        self.assertEqual (lines  [0] [0], 'User')
+        self.assertEqual (lines  [0] [1], 'Time Period')
+        self.assertEqual (lines  [0] [2], 'yearly entitlement')
+        self.assertEqual (lines  [0] [3], 'yearly prorated')
+        self.assertEqual (lines  [0] [4], 'carry forward from previous year')
+        self.assertEqual (lines  [0] [5], 'entitlement total')
+        self.assertEqual (lines  [0] [6], 'approved days')
+        self.assertEqual (lines  [0] [7], 'vacation corrections')
+        self.assertEqual (lines  [0] [8], 'remaining vacation')
+        self.assertEqual (lines  [0] [9], 'Additional submitted')
+        self.assertEqual (lines  [1] [0], 'testuser32')
+        self.assertEqual (lines  [1] [1], '2023-12-31')
+        self.assertEqual (lines  [1] [2], '25.00')
+        self.assertEqual (lines  [1] [3], '24.45')
+        self.assertEqual (lines  [1] [4], '76.41')
+        self.assertEqual (lines  [1] [5], '100.86')
+        self.assertEqual (lines  [1] [6], '16.0')
+        self.assertEqual (lines  [1] [7], '')
+        self.assertEqual (lines  [1] [8], '84.86')
+        self.assertEqual (lines  [1] [9], '0.00')
+        self.assertEqual (lines  [2] [0], 'testuser32')
+        self.assertEqual (lines  [2] [1], '2024-12-31')
+        self.assertEqual (lines  [2] [2], '25.00')
+        self.assertEqual (lines  [2] [3], '11.95')
+        self.assertEqual (lines  [2] [4], '84.86')
+        self.assertEqual (lines  [2] [5], '96.82')
+        self.assertEqual (lines  [2] [6], '27.0')
+        self.assertEqual (lines  [2] [7], '')
+        self.assertEqual (lines  [2] [8], '69.82')
+        self.assertEqual (lines  [2] [9], '0.00')
+        self.assertEqual (lines  [3] [0], 'testuser32')
+        self.assertEqual (lines  [3] [1], '2025-12-31')
+        self.assertEqual (lines  [3] [2], '25.00')
+        self.assertEqual (lines  [3] [3], '25.00')
+        self.assertEqual (lines  [3] [4], '69.82')
+        self.assertEqual (lines  [3] [5], '94.82')
+        self.assertEqual (lines  [3] [6], '2.0')
+        self.assertEqual (lines  [3] [7], '')
+        self.assertEqual (lines  [3] [8], '92.82')
+        self.assertEqual (lines  [3] [9], '0.00')
+        self.db.close ()
+    # end def test_user32_vacation
 
     def test_duplicate_public_holiday (self):
         self.log.debug ('test_duplicate_public_holiday')
