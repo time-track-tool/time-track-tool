@@ -744,6 +744,22 @@ def set_agents (db, cl, nodeid, new_values):
             paset.update (item.purchasing_agents)
         if pt:
             paset.update (db.purchase_type.get (pt, 'purchasing_agents'))
+        # Last resort: Get default agent if configured
+        if not paset:
+            optname = 'MISC_DEFAULT_PURCHASING_AGENT'
+            agent = getattr (db.config.ext, optname, None)
+            if agent:
+                if hasattr (db, 'sql'):
+                    db.sql ('savepoint p_agent')
+                try:
+                    user = db.user.getnode (agent)
+                    stat = user.status
+                except (ValueError, IndexError):
+                    stat = None
+                    if hasattr (db, 'sql'):
+                        db.sql ('rollback to savepoint p_agent')
+                if stat and db.user_status.get (stat, 'is_nosy'):
+                    paset.add (user.id)
         # Only put those agents into 'purchasing_agents' that have
         # necessary role from all the purchase_types in pts
         pa = compute_agents (db, paset, pts, org)

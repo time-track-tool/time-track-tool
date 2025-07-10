@@ -212,3 +212,5 @@ artefact=^http
 
 [misc]
 create_nickname=False
+# This takes a userid:
+default_purchasing_agent=2000
