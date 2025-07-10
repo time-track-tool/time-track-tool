@@ -197,9 +197,11 @@
       </td>
       <td tal:condition="not:context/part_of_budget/is_edit_ok"
           tal:content="context/part_of_budget/plain" />
-      <th tal:content="structure python:utils.fieldname
-          (db, classname, 'safety_critical')"/>
-      <td tal:content="structure python:context.safety_critical.field ()"/>
+      <tal:block tal:condition="python: context.safety_critical">
+          <th tal:content="structure python:utils.fieldname
+              (db, classname, 'safety_critical')"/>
+          <td tal:content="structure python:context.safety_critical.field ()"/>
+      </tal:block>
      </tr>
      <tr>
       <th tal:content="structure python:utils.fieldname

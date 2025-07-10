@@ -4133,6 +4133,9 @@ msgstr "DXCC CQ Zone"
 msgid "qso.dxcc_entity.itu_zone"
 msgstr "DXCC ITU Zone"
 
+msgid "quality_relevant"
+msgstr "Quality relevant"
+
 msgid "query++tmplate"
 msgstr "Query template"
 

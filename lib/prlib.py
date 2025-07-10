@@ -1,6 +1,5 @@
 #! /usr/bin/python
-# -*- coding: iso-8859-1 -*-
-# Copyright (C) 2006-21 Dr. Ralf Schlatterbeck Open Source Consulting.
+# Copyright (C) 2006-25 Dr. Ralf Schlatterbeck Open Source Consulting.
 # Reichergasse 131, A-3411 Weidling.
 # Web: http://www.runtux.com Email: office@runtux.com
 # All rights reserved
@@ -329,10 +328,18 @@ class Approval_Logic:
             supplier_approved = True
             ptypes = set ()
             ptypes.add (pr.purchase_type)
+            quality_relevant = False
             for id in pr.offer_items:
                 oi = db.pr_offer_item.getnode (id)
                 if not self.supplier_is_approved (oi.pr_supplier):
                     supplier_approved = False
+                    # product group with quality_relevant flag set:
+                    # We set quality_relevant only if the supplier is
+                    # not approved!
+                    if oi.product_group:
+                        pg = db.product_group.getnode (oi.product_group)
+                        if pg.quality_relevant:
+                            quality_relevant = True
                 if oi.purchase_type:
                     ptypes.add (oi.purchase_type)
             for prcid in prc_ids:
@@ -373,6 +380,13 @@ class Approval_Logic:
                        and pob.name.lower () == 'no'
                        and s > prc.oob_amount
                        )
+                    or (   prc.quality_amount is not None
+                       and quality_relevant
+                       and not supplier_approved
+                       and s > prc.quality_amount
+                       )
+                    # Legacy: safety_critical aka "LAS relevant Product
+                    # Group" can no longer be set.
                     or (   prc.quality_amount is not None
                        and pr.safety_critical
                        and not supplier_approved

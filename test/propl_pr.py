@@ -230,6 +230,7 @@ properties = \
       , [ 'infosec_level'
         , 'name'
         , 'pg_category'
+        , 'quality_relevant'
         , 'sap_ref'
         , 'security_req_group'
         ]

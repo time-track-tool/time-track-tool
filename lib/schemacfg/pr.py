@@ -1,4 +1,4 @@
-# Copyright (C) 2015-24 Dr. Ralf Schlatterbeck Open Source Consulting.
+# Copyright (C) 2015-25 Dr. Ralf Schlatterbeck Open Source Consulting.
 # Reichergasse 131, A-3411 Weidling.
 # Web: http://www.runtux.com Email: office@runtux.com
 # All rights reserved
@@ -87,6 +87,7 @@ def init \
         , infosec_level         = Link      ('infosec_level')
         , sap_ref               = String    ()
         , pg_category           = Link      ('pg_category')
+        , quality_relevant      = Boolean   ()
         )
     product_group.setkey ('name')
     product_group.setorderprop ('sap_ref')

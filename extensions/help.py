@@ -1,5 +1,5 @@
 #! /usr/bin/python3
-# Copyright (C) 2006-22 Dr. Ralf Schlatterbeck Open Source Consulting.
+# Copyright (C) 2006-25 Dr. Ralf Schlatterbeck Open Source Consulting.
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -1731,6 +1731,12 @@ _helptext          = \
       [""'''%(Property)s for this %(Classname)s''']
     , ""'qso.dxcc_entity.itu_zone'    :
       [""'''%(Property)s for this %(Classname)s''']
+    , ""'quality_relevant'            :
+      [""'''Set this flag to require quality approval if the supplier is
+            not approved and a quality role is configured in the approval
+            configuration.
+          '''
+      ]
     , ""'query++tmplate'              :
       [""'''HTML-template that is used for this %(Classname)s''']
     , ""'queries'                     :

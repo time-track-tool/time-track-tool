@@ -933,6 +933,12 @@ properties = \
             , 'user', 'user_view', 'view-roles'
             ]
           )
+        , ( 'quality_relevant'
+          , [ 'admin', 'ciso', 'controlling', 'dom-user-edit-facility', 'dom-user-edit-gtt', 'dom-user-edit-hr', 'dom-user-edit-office', 'it'
+            , 'las', 'o-permission', 'pgp', 'procurement-admin', 'project', 'project_view', 'reject'
+            , 'user', 'user_view', 'view-roles'
+            ]
+          )
         , ( 'sap_ref'
           , [ 'admin', 'ciso', 'controlling', 'dom-user-edit-facility', 'dom-user-edit-gtt', 'dom-user-edit-hr', 'dom-user-edit-office', 'it'
             , 'las', 'o-permission', 'pgp', 'procurement-admin', 'project', 'project_view', 'reject'
