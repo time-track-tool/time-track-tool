@@ -178,6 +178,7 @@ def init \
         , role                  = Link      ("pr_approval_order")
         , amount                = Number    ()
         , if_not_in_las         = Boolean   ()
+        , if_is_asset           = Boolean   ()
         , valid                 = Boolean   ()
         , organisations         = Multilink ("organisation")
         , pr_ext_resource       = Link      ("pr_ext_resource")

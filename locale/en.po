@@ -2663,6 +2663,9 @@ msgstr "Sun"
 msgid "if_not_in_las"
 msgstr "only if not in LAS"
 
+msgid "if_is_asset"
+msgstr "only if asset"
+
 msgid ""
 "If this is set, the rule matches only for purchase requests\n"
 "            where the supplier ist not in the list of approved suppliers\n"

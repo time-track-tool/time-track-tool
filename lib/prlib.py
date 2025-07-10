@@ -329,8 +329,11 @@ class Approval_Logic:
             ptypes = set ()
             ptypes.add (pr.purchase_type)
             quality_relevant = False
+            is_asset = False
             for id in pr.offer_items:
                 oi = db.pr_offer_item.getnode (id)
+                if oi.is_asset:
+                    is_asset = True
                 if not self.supplier_is_approved (oi.pr_supplier):
                     supplier_approved = False
                     # product group with quality_relevant flag set:
@@ -360,6 +363,9 @@ class Approval_Logic:
                     continue
                 if  (   prc.departments and pr.department
                     and pr.department not in prc.departments
+                    ):
+                    continue
+                if  (   prc.if_is_asset and not is_asset
                     ):
                     continue
                 if  (      prc.amount         is not None and s > prc.amount
