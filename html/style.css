@@ -981,6 +981,70 @@ span.nobreak {
   -webkit-hyphens: none;
   -ms-hyphens: none;
 }
+/* Purchase Request Layout Styles */
+.pr-layout-container {
+  display: flex;
+  gap: 20px;
+  margin: 10px 0;
+  align-items: flex-start;
+  align-content: flex-start;
+  flex-wrap: wrap;
+}
+
+.pr-section {
+  padding: 15px;
+  border-radius: 8px;
+  border: 2px solid;
+  width: fit-content;
+}
+
+.pr-section-requestor {
+  background-color: #e6f3ff;
+  border-color: #0066cc;
+}
+
+.pr-section-procurement {
+  background-color: #f0e6ff;
+  border-color: #6600cc;
+}
+
+.pr-section-calculated {
+  background-color: #e6ffe6;
+  border-color: #00cc00;
+}
+
+.pr-section-title {
+  font-weight: bold;
+  font-size: 14px;
+  margin-bottom: 10px;
+  color: #333;
+}
+
+.pr-section table.form {
+  width: 100%;
+}
+
+.pr-section table.form th {
+  text-align: left;
+}
+
+.pr-section table.form td {
+  text-align: left;
+}
+
+.pr-section-requestor .pr-section-content {
+  display: flex;
+  row-gap: 40px;
+  column-gap: 20px;
+  flex-wrap: wrap;
+}
+
+.pr-section-requestor .pr-left-side {
+}
+
+.pr-section-requestor .pr-right-side {
+}
+
 /* Tooltip text */
 .tooltip .tooltiptext {
   visibility: hidden;
