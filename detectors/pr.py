@@ -527,15 +527,6 @@ def change_pr (db, cl, nodeid, new_values):
             if fp:
                 common.require_attributes \
                     (_, cl, nodeid, new_values, 'frame_purchase_end')
-            co = new_values.get \
-                ( 'continuous_obligation'
-                , cl.get (nodeid, 'continuous_obligation')
-                )
-            if co:
-                common.require_attributes \
-                    ( _, cl, nodeid, new_values
-                    , 'contract_term', 'intended_duration'
-                    )
             if not oitems:
                 raise Reject (_ ("Need at least one offer item"))
             for oi in oitems:
@@ -807,13 +798,6 @@ def approvalchange (db, cl, nodeid, new_values):
 def check_late_changes (db, cl, nodeid, new_values):
     """ Check that attributes changed late in the process are consistent
     """
-    if 'continuous_obligation' in new_values:
-        co = new_values ['continuous_obligation']
-        if co:
-            common.require_attributes \
-                ( db.i18n.gettext, cl, nodeid, new_values
-                , 'contract_term', 'intended_duration'
-                )
     if 'frame_purchase' in new_values:
         fp = new_values ['frame_purchase']
         if fp:
