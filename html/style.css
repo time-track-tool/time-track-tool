@@ -1020,6 +1020,11 @@ span.nobreak {
   color: #333;
 }
 
+div.pr-section-title a[href],
+div.pr-section-title a[href]:link {
+  color: #333;
+}
+
 .pr-section table.form {
   width: 100%;
 }
