@@ -96,12 +96,17 @@ def try_create_public_holiday (db, daily_record, date, user):
     dyn = user_dynamic.get_user_dynamic (db, user, date)
     wh  = get_holiday_duration (db, dyn, date)
     holiday = get_public_holiday (db, dyn, date)
-    if holiday and wh:
-        # Check if there already is a public-holiday time_record
-        # Update duration (and wp) if wrong
-        trs = db.time_record.filter \
-            (None, dict (daily_record = daily_record))
+    # Check if there already is a public-holiday time_record
+    # Update duration (and wp) if wrong
+    d = dict (daily_record = daily_record)
+    d ['wp.project.is_public_holiday'] = 1
+    trs = db.time_record.filter (None, d)
+    if (holiday and wh) or trs:
         seen = False
+        # re-use the seen flag: If there is no public holiday on that
+        # date we want to retire *all* public-holiday time recs.
+        if not wh:
+            seen = True
         for trid in trs:
             tr = db.time_record.getnode (trid)
             if tr.wp is None:

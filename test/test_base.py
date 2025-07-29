@@ -37,7 +37,7 @@ from . import user12_time, user13_time, user14_time, user15_19_vac, user16_leave
 from . import user17_time, user18_time, user20_time, user21_time, user22_time
 from . import user23_time, user24_time, user25_time, user26_time, user27_time
 from . import user28_time, user29_time, user30_time, user31_time, user32_time
-from . import user33_time
+from . import user33_time, user34_time
 
 from operator     import mul
 from email.parser import Parser
@@ -5526,6 +5526,105 @@ class Test_Case_Timetracker (_Test_Case_Summary, unittest.TestCase):
         assert r == 5.0
         self.db.close ()
     # end def test_user33_vacation
+
+    def setup_user34 (self):
+        self.username34 = 'testuser34'
+        self.user34 = self.db.user.create \
+            ( username     = self.username34
+            , firstname    = 'Nummer34'
+            , lastname     = 'User34'
+            )
+        # Allow user to create their own dyn user rec
+        self.db.o_permission.create \
+            (user = self.user34, org_location = [self.olo, self.olo2])
+        p = self.db.overtime_period.create \
+            ( name              = 'monthly average required'
+            , months            = 1
+            , weekly            = False
+            , required_overtime = True
+            , order             = 3
+            )
+        # allow user34 to book on wp 44
+        self.db.time_wp.set (self.vacation_wp, bookers = [self.user34])
+        # allow user34 to book on wp 1 (public holiday)
+        self.db.time_wp.set (self.holiday_wp, bookers = [self.user34])
+        # Need to import data *before* creating public holidays
+        user34_time.import_data_34 (self.db, self.user34, self.olo)
+        # Create public holidays
+        ph = self.db.public_holiday.create \
+            ( date        = date.Date ('2024-12-24')
+            , description = 'Heiligabend'
+            , name        = "Christmas Eve Heiligabend - ganztags"
+            , is_half     = False
+            , locations   = [self.loc]
+            )
+        ph = self.db.public_holiday.create \
+            ( date        = date.Date ('2024-12-25')
+            , description = '1. Weihnachtfeiertag'
+            , name        = "Christmas Day 1. Weihnachtfeiertag"
+            , is_half     = False
+            , locations   = [self.loc]
+            )
+        ph = self.db.public_holiday.create \
+            ( date        = date.Date ('2024-12-26')
+            , description = '2. Weihnachtfeiertag'
+            , name        = "Boxing Day 2. Weihnachtsfeiertag"
+            , is_half     = False
+            , locations   = [self.loc]
+            )
+        ph = self.db.public_holiday.create \
+            ( date        = date.Date ('2024-12-31')
+            , description = 'Silvester'
+            , name        = "New Year's Eve Silvester"
+            , is_half     = False
+            , locations   = [self.loc]
+            )
+        ph = self.db.public_holiday.create \
+            ( date        = date.Date ('2025-01-01')
+            , description = 'Neujahr'
+            , name        = "New Year's Day"
+            , is_half     = False
+            , locations   = [self.loc]
+            )
+        ph = self.db.public_holiday.create \
+            ( date        = date.Date ('2025-01-06')
+            , description = 'Epiphany'
+            , name        = "Heilige Drei Könige"
+            , is_half     = False
+            , locations   = [self.loc]
+            )
+        self.db.commit ()
+    # end def setup_user34
+
+    def test_user34_vacation (self):
+        self.log.debug ('test_user34')
+        self.setup_db ()
+        self.setup_user34 ()
+        # Allow report
+        rl = self.db.user.get (self.user0, 'roles')
+        self.db.user.set (self.user0, roles = ','.join ((rl, 'hr-vacation')))
+        self.db.commit ()
+        self.db.close  ()
+        # Query remaining flexi as user
+        self.db = self.tracker.open (self.username34)
+        dts = date.Date ('2024-12-23')
+        dte = date.Date ('2025-01-06')
+        r = vacation.leave_days (self.db, self.user34, dts, dte)
+        assert r == 0.0
+        d = dts
+        while (d <= dte):
+            dt = common.pretty_range (d, d)
+            dr = self.db.daily_record.filter \
+                (None, dict (date = dt, user = self.user34))
+            assert len (dr) == 1
+            dr = dr [0]
+            vacation.try_create_public_holiday (self.db, dr, d, self.user34)
+            d = d + common.day
+        # Now mis-placed public holidays should have been deleted
+        r = vacation.leave_days (self.db, self.user34, dts, dte)
+        assert r == 5.0
+        self.db.close ()
+    # end def test_user34_vacation
 
     def test_duplicate_public_holiday (self):
         self.log.debug ('test_duplicate_public_holiday')
