@@ -37,6 +37,7 @@ from . import user12_time, user13_time, user14_time, user15_19_vac, user16_leave
 from . import user17_time, user18_time, user20_time, user21_time, user22_time
 from . import user23_time, user24_time, user25_time, user26_time, user27_time
 from . import user28_time, user29_time, user30_time, user31_time, user32_time
+from . import user33_time
 
 from operator     import mul
 from email.parser import Parser
@@ -5485,6 +5486,46 @@ class Test_Case_Timetracker (_Test_Case_Summary, unittest.TestCase):
         self.assertEqual (lines  [3] [9], '0.00')
         self.db.close ()
     # end def test_user32_vacation
+
+    def setup_user33 (self):
+        self.username33 = 'testuser33'
+        self.user33 = self.db.user.create \
+            ( username     = self.username33
+            , firstname    = 'Nummer33'
+            , lastname     = 'User33'
+            )
+        # Allow user to create their own dyn user rec
+        self.db.o_permission.create \
+            (user = self.user33, org_location = [self.olo, self.olo2])
+        p = self.db.overtime_period.create \
+            ( name              = 'monthly average required'
+            , months            = 1
+            , weekly            = False
+            , required_overtime = True
+            , order             = 3
+            )
+        # allow user33 to book on wp 44
+        self.db.time_wp.set (self.vacation_wp, bookers = [self.user33])
+        user33_time.import_data_33 (self.db, self.user33, self.olo)
+        self.db.commit ()
+    # end def setup_user33
+
+    def test_user33_vacation (self):
+        self.log.debug ('test_user33')
+        self.setup_db ()
+        self.setup_user33 ()
+        # Allow report
+        rl = self.db.user.get (self.user0, 'roles')
+        self.db.user.set (self.user0, roles = ','.join ((rl, 'hr-vacation')))
+        self.db.commit ()
+        self.db.close  ()
+        # Query remaining flexi as user
+        self.db = self.tracker.open (self.username33)
+        dt = date.Date ('2025-01-01')
+        r = vacation.flexi_remain (self.db, self.user33, dt, None)
+        assert r == 5.0
+        self.db.close ()
+    # end def test_user33_vacation
 
     def test_duplicate_public_holiday (self):
         self.log.debug ('test_duplicate_public_holiday')

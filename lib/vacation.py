@@ -1068,7 +1068,7 @@ def flexi_remain (db, user, date_in_year, ctype):
             else:
                 e -= common.day
             ct = dyn.contract_type
-            if dyn.all_in:
+            if b <= e and dyn.all_in:
                 sd += flexitime_submission_days (db, user, ct, b, e, acpt, cnrq)
         dyn = user_dynamic.next_user_dynamic (db, dyn)
     return fa - sd
