@@ -5527,7 +5527,7 @@ class Test_Case_Timetracker (_Test_Case_Summary, unittest.TestCase):
         self.db.close ()
     # end def test_user33_vacation
 
-    def setup_user34 (self):
+    def setup_user34 (self, with_holidays = True):
         self.username34 = 'testuser34'
         self.user34 = self.db.user.create \
             ( username     = self.username34
@@ -5550,6 +5550,14 @@ class Test_Case_Timetracker (_Test_Case_Summary, unittest.TestCase):
         self.db.time_wp.set (self.holiday_wp, bookers = [self.user34])
         # Need to import data *before* creating public holidays
         user34_time.import_data_34 (self.db, self.user34, self.olo)
+        # Remove absolute vacation correction which was created automagically
+        vc = self.db.vacation_correction.filter \
+            (None, dict (user = self.user34))
+        assert len (vc) == 1
+        self.db.vacation_correction.retire (vc [0])
+        if not with_holidays:
+            self.db.commit ()
+            return
         # Create public holidays
         ph = self.db.public_holiday.create \
             ( date        = date.Date ('2024-12-24')
@@ -5600,6 +5608,42 @@ class Test_Case_Timetracker (_Test_Case_Summary, unittest.TestCase):
         self.log.debug ('test_user34')
         self.setup_db ()
         self.setup_user34 ()
+        # Setup initial vacation correction for that user
+        vcorr = self.db.vacation_correction.create \
+            ( user     = self.user34
+            , date     = date.Date ('2024-08-01.00:00:00')
+            , absolute = 1
+            , days     = 7.765
+            )
+        # Allow report
+        rl = self.db.user.get (self.user0, 'roles')
+        self.db.user.set (self.user0, roles = ','.join ((rl, 'hr-vacation')))
+        self.db.commit ()
+        self.db.close  ()
+        self.db = self.tracker.open (self.username34)
+        dts = date.Date ('2024-12-23')
+        dte = date.Date ('2025-01-06')
+        r = vacation.leave_days (self.db, self.user34, dts, dte)
+        assert r == 0.0
+        d = dts
+        while (d <= dte):
+            dt = common.pretty_range (d, d)
+            dr = self.db.daily_record.filter \
+                (None, dict (date = dt, user = self.user34))
+            assert len (dr) == 1
+            dr = dr [0]
+            vacation.try_create_public_holiday (self.db, dr, d, self.user34)
+            d = d + common.day
+        # Now mis-placed public holidays should have been deleted
+        r = vacation.leave_days (self.db, self.user34, dts, dte)
+        assert r == 5.0
+        self.db.close ()
+    # end def test_user34_vacation
+
+    def test_user34_no_vac_corr (self):
+        self.log.debug ('test_user34')
+        self.setup_db ()
+        self.setup_user34 (with_holidays = False)
         # Allow report
         rl = self.db.user.get (self.user0, 'roles')
         self.db.user.set (self.user0, roles = ','.join ((rl, 'hr-vacation')))
@@ -5620,11 +5664,12 @@ class Test_Case_Timetracker (_Test_Case_Summary, unittest.TestCase):
             dr = dr [0]
             vacation.try_create_public_holiday (self.db, dr, d, self.user34)
             d = d + common.day
-        # Now mis-placed public holidays should have been deleted
+        # User is not part of the leave process.
+        # So no public holidays should have been deleted
         r = vacation.leave_days (self.db, self.user34, dts, dte)
-        assert r == 5.0
+        assert r == 0.0
         self.db.close ()
-    # end def test_user34_vacation
+    # end def test_user34_no_vac_corr
 
     def test_duplicate_public_holiday (self):
         self.log.debug ('test_duplicate_public_holiday')

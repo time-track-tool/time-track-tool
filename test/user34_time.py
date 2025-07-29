@@ -32,12 +32,6 @@ def import_data_34 (db, user, olo):
         , user               = user
         , vac_aliq           = '1'
         )
-    vcorr = db.vacation_correction.create \
-        ( user     = user
-        , date     = date.Date ('2024-08-01.00:00:00')
-        , absolute = 1
-        , days     = 7.765
-        )
     leave = db.daily_record_status.lookup ('leave')
     ls = db.leave_submission.create \
         ( user      = user
