@@ -1240,7 +1240,29 @@
    <input type="hidden" name="@template" tal:attributes="value form_template">
    <tal:block metal:define-slot="formatted_class_content"/>
    <table tal:attributes="class python:form_class">
-    <tal:block metal:use-macro="templates/page/macros/nosy_etc"/>
+    <tal:block metal:use-macro="templates/page/macros/nosy_etc">
+     <!-- fill-slot/define-slot to make slots of sub-macro available yucc -->
+     <tal:block metal:fill-slot="below-nosy">
+      <tal:block metal:define-slot="below-nosy"/>
+     </tal:block>
+     <tal:block metal:fill-slot="after-message-box">
+      <tal:block metal:define-slot="after-message-box"/>
+     </tal:block>
+     <tal:block metal:fill-slot="button_slot">
+      <tal:block metal:define-slot="button_slot">
+       <tal:block metal:use-macro="templates/page/macros/default-submit" />
+      </tal:block>
+     </tal:block>
+     <tal:block metal:fill-slot="additional_button">
+      <tal:block metal:define-slot="additional_button"/>
+     </tal:block>
+     <tal:block metal:fill-slot="right_of_show_history">
+      <tal:block metal:define-slot="right_of_show_history"/>
+     </tal:block>
+     <tal:block metal:fill-slot="formatted_class_listentry">
+      <tal:block metal:define-slot="formatted_class_listentry"/>
+     </tal:block>
+    </tal:block>
    </table>
    <tal:block metal:use-macro="templates/page/macros/end_of_form"/>
   </form>
@@ -1277,7 +1299,29 @@
     </tr>
     <tal:block metal:use-macro="templates/page/macros/responsible"/>
     <tal:block metal:define-slot="formatted_class_content"/>
-    <tal:block metal:use-macro="templates/page/macros/nosy_etc"/>
+    <tal:block metal:use-macro="templates/page/macros/nosy_etc">
+     <!-- fill-slot/define-slot to make slots of sub-macro available yucc -->
+     <tal:block metal:fill-slot="below-nosy">
+      <tal:block metal:define-slot="below-nosy"/>
+     </tal:block>
+     <tal:block metal:fill-slot="after-message-box">
+      <tal:block metal:define-slot="after-message-box"/>
+     </tal:block>
+     <tal:block metal:fill-slot="button_slot">
+      <tal:block metal:define-slot="button_slot">
+       <tal:block metal:use-macro="templates/page/macros/default-submit" />
+      </tal:block>
+     </tal:block>
+     <tal:block metal:fill-slot="additional_button">
+      <tal:block metal:define-slot="additional_button"/>
+     </tal:block>
+     <tal:block metal:fill-slot="right_of_show_history">
+      <tal:block metal:define-slot="right_of_show_history"/>
+     </tal:block>
+     <tal:block metal:fill-slot="formatted_class_listentry">
+      <tal:block metal:define-slot="formatted_class_listentry"/>
+     </tal:block>
+    </tal:block>
    </table>
    <tal:block metal:use-macro="templates/page/macros/end_of_form"/>
   </form>
@@ -1285,6 +1329,11 @@
  </div>
  <tal:block metal:define-slot="before_messages"/>
  <tal:block metal:use-macro="templates/page/macros/messages_display"/>
+</tal:block>
+
+<tal:block metal:define-macro="default-submit">
+       tal:condition="context/is_edit_ok">
+          <tal:block tal:replace="structure context/submit"/>
 </tal:block>
 
 <tal:block metal:define-macro="nosy_etc">
@@ -1325,9 +1374,8 @@
     <tr>
      <th></th>
      <td colspan="3">
-      <tal:block metal:define-slot="button_slot"
-       tal:condition="context/is_edit_ok">
-          <tal:block tal:replace="structure context/submit"/>
+      <tal:block metal:define-slot="button_slot">
+       <tal:block metal:use-macro="templates/page/macros/default-submit" />
       </tal:block>
       <tal:block metal:define-slot="additional_button"/>
       <input tal:condition="context/id"
@@ -1393,7 +1441,7 @@
           ))"/>
      </tr>
     </tal:block>
-</tal:block>
+</tal:block> <!-- end macro nosy_etc -->
 
 <tal:block metal:define-macro="messages_display">
  <table metal:use-macro="templates/page/macros/note_required" />
