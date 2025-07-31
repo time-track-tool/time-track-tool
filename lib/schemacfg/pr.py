@@ -397,6 +397,7 @@ def init \
                                                     , do_journal = 'no'
                                                     )
                 , contract_info         = String    ()
+                , delivery_date         = Date      ()
                 )
             self.__super.__init__ (db, classname, ** properties)
         # end def __init__

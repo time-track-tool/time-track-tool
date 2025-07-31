@@ -349,11 +349,16 @@
               (db, classname, 'gl_account')"/>
           <td tal:content="structure python:context.gl_account.field ()"/>
          </tr>
-         <tr>
+         <tr tal:condition="context/id">
           <th tal:content="structure python:utils.fieldname
               (db, classname, 'renew_until')"/>
           <td tal:content="structure python:context.renew_until.field
               (display_time=False)"/>
+         </tr>
+         <tr tal:condition="context/id">
+          <th tal:content="structure python:utils.fieldname
+              (db, classname, 'delivery_date')"/>
+          <td tal:content="structure python:context.delivery_date.field ()"/>
          </tr>
         </table>
        </div>
