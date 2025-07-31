@@ -1332,8 +1332,9 @@
 </tal:block>
 
 <tal:block metal:define-macro="default-submit">
-       tal:condition="context/is_edit_ok">
+       <tal:block tal:condition="context/is_edit_ok">
           <tal:block tal:replace="structure context/submit"/>
+       </tal:block>
 </tal:block>
 
 <tal:block metal:define-macro="nosy_etc">
