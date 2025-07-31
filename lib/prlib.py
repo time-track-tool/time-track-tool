@@ -606,6 +606,18 @@ pr_justification = \
       )
     )
 
+contract_info = \
+    ( ( 'Type of continuous obligation'
+      , 'content or runtime'
+      )
+    , ( 'Duration'
+      , 'years, etc.'
+      )
+    , ( 'Termination'
+      , 'Conditions of termination (earliest possibility, etc.)'
+      )
+    )
+
 reject_roles = ('Procurement-Admin', 'Reject')
 
 def compute_approvals (db, pr, do_create = False, email_only = False):

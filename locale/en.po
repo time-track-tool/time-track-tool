@@ -7614,3 +7614,6 @@ msgstr "Allowed Organisation/Location"
 msgid "carry_on_date"
 msgstr "Vacation on Date"
 
+msgid "contract_info"
+msgstr "Contract Information"
+

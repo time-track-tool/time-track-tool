@@ -263,7 +263,26 @@
          </div>
         </div>
        </div>
+     </div> <!-- pr-layout-container -->
+     <div class="pr-layout-container">
+       <div class="pr-section">
+        <div class="pr-section-title">Contract Data</div>
+        <table class="form">
+         <tr>
+          <th tal:content="structure python:utils.fieldname
+              (db, classname, 'contract_info')"/>
+          <td tal:condition="context/contract_info/is_edit_ok"
+              tal:content="structure python:
+              context.contract_info.multiline (rows=6, cols=40)"/>
+          <td tal:condition="not:context/contract_info/is_edit_ok">
+            <div class="prewrap" tal:content="context/contract_info" />
+          </td>
+         </tr>
+        </table>
+       </div>
+     </div> <!-- pr-layout-container -->
        
+     <div class="pr-layout-container">
        <div class="pr-section pr-section-procurement">
         <div class="pr-section-title">Data Input by Procurement</div>
         <table class="form">
@@ -434,6 +453,8 @@
          </tr>
         </table>
        </div>
+     </div> <!-- pr-layout-container -->
+     <div class="pr-layout-container">
        <div class="pr-section pr-section-offer-items">
         <div class="pr-section-title"
              tal:content="structure python:utils.fieldname

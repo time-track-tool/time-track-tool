@@ -172,7 +172,13 @@ def pr_justification ():
     r = []
     for k, v in prlib.pr_justification:
         r.append (': '.join ((k, '(' + v + ')')))
-    q = {'@template': 'item', 'pr_justification': '\r\n'.join (r)}
+    r2 = []
+    for k, v in prlib.contract_info:
+        r2.append (': '.join ((k, '(' + v + ')')))
+    q = { '@template':        'item'
+        , 'pr_justification': '\r\n'.join (r)
+        , 'contract_info':    '\r\n'.join (r2)
+        }
     return '?' + urlencode (q)
 # end def pr_justification
 

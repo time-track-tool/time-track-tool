@@ -396,6 +396,7 @@ def init \
                 , delivery_address      = Link      ('location'
                                                     , do_journal = 'no'
                                                     )
+                , contract_info         = String    ()
                 )
             self.__super.__init__ (db, classname, ** properties)
         # end def __init__
