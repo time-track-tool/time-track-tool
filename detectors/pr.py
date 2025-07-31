@@ -508,7 +508,7 @@ def change_pr (db, cl, nodeid, new_values):
                 ( _, cl, nodeid, new_values
                 , 'department',  'organisation'
                 , 'offer_items', 'delivery_deadline', 'purchase_type'
-                , 'part_of_budget', 'frame_purchase'
+                , 'part_of_budget'
                 , 'pr_currency', 'purchasing_agents', 'pr_ext_resource'
                 , 'delivery_address'
                 )
