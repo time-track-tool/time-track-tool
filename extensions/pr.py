@@ -259,6 +259,21 @@ def oi_key (offer_item):
     return 0.0
 # end def oi_key
 
+def allow_gl_account (offer_item, pr):
+    """ both, offer_item and pr are html items """
+    if offer_item.is_asset:
+        return False
+    if offer_item.purchase_type:
+        if offer_item.purchase_type.allow_gl_account:
+            return True
+        return False
+    if pr.purchase_type:
+        if pr.purchase_type.allow_gl_account:
+            return True
+        return False
+    return True
+# end def allow_gl_account
+
 def init (instance):
     act = instance.registerAction
     act ('pr_sign', Sign_Purchase_Request)
@@ -278,4 +293,5 @@ def init (instance):
     reg ('has_asset',                    has_asset)
     reg ('oi_key',                       oi_key)
     reg ('may_purchase',                 o_permission.may_purchase)
+    reg ('allow_gl_account',             allow_gl_account)
 # end def init

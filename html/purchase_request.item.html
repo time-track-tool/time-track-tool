@@ -369,8 +369,7 @@
          <tr>
           <th tal:content="structure python:utils.fieldname
               (db, classname, 'purchase_risk_type')"/>
-          <td tal:content="structure python:
-              context.purchase_risk_type.plain ()"/>
+          <td tal:content="python: context.purchase_risk_type.plain ()"/>
          </tr>
          <tr>
           <th tal:content="structure python:utils.fieldname
@@ -459,8 +458,586 @@
         <div class="pr-section-title"
              tal:content="structure python:utils.fieldname
              (db, classname, 'offer_items')"/>
+        <div class="pr-offeritem-container"
+             tal:define="cond python:
+                 bool(context.id and context.offer_items.is_edit_ok ())">
+         <tal:block tal:repeat="i python:sorted
+             (context.offer_items, key = utils.oi_key)">
+          <div class="pr-section pr-section-content"> <!-- offer item -->
+           <div class="pr-section pr-section-requestor"> <!-- required attrs -->
+            <table class="form" border="0">
+             <tr>
+              <th style="text-align:left"
+                  tal:content="structure python:utils.fieldname
+                  (db, 'pr_offer_item', 'index')"/>
+             </tr>
+             <tr>
+              <td tal:content="structure python:i.index.field (size=3)"/>
+             </tr>
+             <tr>
+              <th style="text-align:left"
+                  tal:content="structure python:utils.fieldname
+                  (db, 'pr_offer_item', 'offer_number')"/>
+             </tr>
+             <tr>
+              <td tal:content="structure python:i.offer_number.field(size=10)"/>
+             </tr>
+             <tr>
+              <th style="text-align:left"
+                  tal:content="structure python:utils.fieldname
+                  (db, 'pr_offer_item', 'is_asset')"/>
+             </tr>
+             <tr>
+              <td tal:content="structure python:i.is_asset.field ()"/>
+             </tr>
+             <tr tal:condition="cond">
+              <th i18n:translate="">
+                  remove
+              </th>
+             </tr>
+             <tr tal:condition="cond">
+              <td>
+               <input tabindex="-1" type="checkbox" name="@remove@offer_items"
+                      tal:attributes="value i/id">
+              </td>
+             </tr>
+            </table>
+           </div> <!-- pr-section required attrs -->
+           <div class="pr-section pr-section-requestor"> <!-- required attrs -->
+            <table class="form" border="0">
+             <tr>
+              <th style="text-align:left"
+                  tal:content="structure python:utils.fieldname
+                      (db, 'pr_offer_item', 'supplier')"/>
+             </tr>
+             <tr>
+              <td>
+               <span tal:content="structure python:i.supplier.field ()"/>
+               <span tal:condition="i/supplier/is_edit_ok"
+                     tal:content="structure python:db.pr_supplier.classhelp
+                ( 'name,sap_ref'
+                , property  = 'pr_offer_item%s@supplier' % i.id
+                , inputtype = 'radio'
+                , width     = '600'
+                , pagesize  = '5000'
+                )"/>
+              </td>
+             </tr>
+             <tr>
+              <th tal:condition="python: not i.pr_supplier"
+                  style="text-align:left" i18n:translate="">
+               Add to LAS
+              </th>
+              <th tal:condition="python: i.pr_supplier"
+                  style="text-align:left" i18n:translate="">
+               Approved
+              </th>
+             </tr>
+             <tr>
+              <td tal:condition="python: not i.pr_supplier">
+               <span i18n:translate="">Not in LAS, add?</span>
+               <span tal:content="structure python:i.add_to_las.field ()"/>
+              </td>
+              <td tal:condition="python: i.pr_supplier"
+                  tal:content="structure python: utils.supplier_approved
+                      (db, context, i.pr_supplier) "/>
+             </tr>
+             <tr>
+              <th style="text-align:left"
+                  tal:content="structure python:utils.fieldname
+                  (db, 'pr_offer_item', 'description')"/>
+             </tr>
+             <tr>
+              <td>
+               <textarea wrap="soft" cols="30" rows="3"
+                tal:attributes=
+                 " name python:'pr_offer_item%s@description' % i.id
+                 ; readonly python:not i.is_edit_ok()
+                 "
+                tal:content="python:i.description.plain () or ''"/>
+              </td>
+             </tr>
+             <tr>
+              <th style="text-align:left"
+                  tal:content="structure python:utils.fieldname
+                  (db, 'pr_offer_item', 'product_group')"/>
+             </tr>
+             <tr>
+              <td class="tooltip" tal:define="
+                   ep python:utils.ExtProperty
+                     ( utils
+                     , i.product_group
+                     , item = i
+                     , help_groupby = 'pg_category'
+                     , do_classhelp = True
+                     , editable     = True
+                     , fieldwidth   = 25
+                     )">
+               <span tal:content="structure python: ep.as_listentry ()"/>
+               <span tal:content="structure python:db.product_group.classhelp
+                ( 'name,sap_ref'
+                , property  = ep.prop._formname
+                , inputtype = 'radio'
+                , width     = '800'
+                , pagesize  = '1500'
+                , group     = 'pg_category'
+                )"/>
+               <span class="tooltiptext"
+                     tal:condition="python:not i.product_group.is_edit_ok ()"
+                     tal:content="python:
+                         'SAP: ' + str (i.product_group.sap_ref)"/>
+              </td>
+             </tr>
+            </table>
+           </div> <!-- pr-section required attrs -->
+           <div class="pr-section"> <!-- optional attrs -->
+            <table class="form" border="0">
+             <tr tal:condition="python: utils.need_psp (context)">
+              <th style="text-align:left"
+                  tal:content="structure python:utils.fieldname
+                  (db, 'pr_offer_item', 'psp_element')"/>
+             </tr>
+             <tr tal:condition="python: not utils.need_psp (context)">
+              <th style="text-align:left"
+                  tal:content="structure python:utils.fieldname
+                  (db, 'pr_offer_item', 'time_project')"/>
+             </tr>
+             <tr>
+              <td tal:condition="python: utils.need_psp (context)">
+               <span tal:condition="python: i.psp_element.is_edit_ok ()"
+                     tal:content="structure python:i.psp_element.field ()"/>
+               <a tal:condition="python: not i.psp_element.is_edit_ok ()"
+                  tal:attributes="title python: i.psp_element.name"
+                  tal:content="structure python:i.psp_element.plain ()"/>
+               <span tal:condition="python: i.psp_element.is_edit_ok ()"
+                     tal:attributes="title python: i.psp_element.name"
+                     tal:content="structure python:db.psp_element.classhelp
+                     ( 'number,name,organisation'
+                     , property  = 'pr_offer_item%s@psp_element' % i.id
+                     , inputtype = 'radio'
+                     , width     = '800'
+                     , filter    = cc_filt
+                     )"/>
+              </td>
+             </tr>
+             <tr>
+              <td tal:condition="python: not utils.need_psp (context)">
+               <tal:block tal:content="structure python:i.time_project.menu
+                   ( sort_on = ('+', 'description')
+                   , additional=('description',)
+                   , ** tc_filt
+                   )"/>
+               <tal:block tal:condition="python:
+                          i.time_project and not i.time_project.is_edit_ok ()"
+                          tal:replace="i/time_project/description"/>
+         
+              </td>
+             </tr>
+             <tr>
+              <th style="text-align:left"
+                  tal:content="structure python:utils.fieldname
+                  (db, 'pr_offer_item', 'sap_cc')"/>
+             </tr>
+             <tr>
+              <td>
+                <span tal:condition="python: i.sap_cc.is_edit_ok ()"
+                      tal:replace="structure python:i.sap_cc.field ()"/>
+                <a tal:condition="python: not i.sap_cc.is_edit_ok ()"
+                   tal:attributes="title python: i.sap_cc.description"
+                   tal:content="structure python:i.sap_cc.plain ()"/>
+                <span tal:condition="python: i.sap_cc.is_edit_ok ()"
+                      tal:replace="structure python:db.sap_cc.classhelp
+                      ( 'name,description,responsible,deputy,organisation'
+                      , property  = 'pr_offer_item%s@sap_cc' % i.id
+                      , inputtype = 'radio'
+                      , width     = '800'
+                      , filter    = cc_filt
+                      )"/>
+              </td>
+             </tr>
+             <tr>
+              <th style="text-align:left"
+                  tal:content="structure python:utils.fieldname
+                  (db, 'pr_offer_item', 'purchase_type')"/>
+             </tr>
+             <tr>
+              <td tal:content="structure python:i.purchase_type.menu
+                  (valid = True)"/>
+             </tr>
+             <tr>
+              <th style="text-align:left"
+                  tal:content="structure python:utils.fieldname
+                  (db, 'pr_offer_item', 'internal_order')"/>
+             </tr>
+             <tr>
+              <td>
+               <span class="nobreak">
+                <span tal:content="structure python:
+                      i.internal_order.field (size=8)"/>
+                <span tal:condition="i/internal_order/is_edit_ok"
+                      tal:content="structure python:db.internal_order.classhelp
+                           ( 'order_number,name'
+                           , property='pr_offer_item%s@internal_order' % i.id
+                           , inputtype='radio'
+                           , width='800'
+                           , pagesize=1000
+                           , filter='valid=True'
+                           )"/>
+               </span>
+              </td>
+             </tr>
+             <tal:block
+              tal:condition="python: utils.allow_gl_account (i, context)">
+              <tr>
+               <th style="text-align:left" colspan="2"
+                   tal:content="structure python:utils.fieldname
+                   (db, 'pr_offer_item', 'gl_account')"/>
+              </tr>
+              <tr>
+               <td tal:content="structure python: i.gl_account.field ()"/>
+              </tr>
+             </tal:block>
+            </table>
+           </div> <!-- pr-section optional attrs -->
+           <div class="pr-section"> <!-- optional attrs (security) -->
+            <table class="form" border="0">
+             <tr>
+              <th style="text-align:left"
+                  tal:content="structure python:utils.fieldname
+                  (db, 'pr_offer_item', 'infosec_level')"/>
+             </tr>
+             <tr>
+              <td class="tooltip">
+               <span tal:content="structure python:i.infosec_level.menu ()"
+                     tal:attributes="class python:
+                         ['', 'warn']
+                         [i.infosec_level.name != utils.orig_infosec_level (i)]
+                         "/>
+               <span class="tooltiptext"
+                     tal:condition="python:
+                         not i.product_group.is_edit_ok ()
+                         and utils.orig_infosec_level (i)"
+                     tal:content="python:utils.orig_infosec_level (i)"/>
+              </td>
+             </tr>
+             <tal:block tal:define="rt python:utils.risk_type (db, i)"
+                  tal:condition="python: rt">
+              <tr>
+               <th style="text-align:left"
+                   tal:content="structure python:utils.fieldname
+                   (db, context, 'purchase_security_risk')"/>
+              </tr>
+              <tr>
+               <td class="emphasized" tal:content="python:rt"/>
+              </tr>
+             </tal:block>
+            </table>
+           </div> <!-- pr-section optional attrs (security) -->
+           <div class="pr-section pr-section-requestor"> <!-- required attrs -->
+            <table class="form" border="0">
+             <tr>
+              <th tal:content="structure python:utils.fieldname
+                  (db, 'pr_offer_item', 'units')"/>
+             </tr>
+             <tr>
+              <td tal:content="structure python:i.units.field (size=5)"/>
+             </tr>
+             <tr>
+              <th tal:content="structure python:utils.fieldname
+                  (db, 'pr_offer_item', 'price_per_unit')"/>
+             </tr>
+             <tr>
+              <td>
+               <span style="text-align:right"
+                tal:content="structure python:i.price_per_unit.field (size=7)"/>
+               <span tal:content="python:context.pr_currency.plain ()"/>
+              </td>
+             </tr>
+             <tr>
+              <th tal:content="structure python:utils.fieldname
+                  (db, 'pr_offer_item', 'vat')"/>
+             </tr>
+             <tr>
+              <td tal:content="structure python:i.vat.field (size=7)"/>
+             </tr>
+             <tr>
+              <th tal:content="structure python:utils.fieldname
+                  (db, context, 'payment_type')"/>
+             </tr>
+             <tr>
+              <td tal:content="structure python:i.payment_type.menu ()"
+                  colspan="2" />
+             </tr>
+            </table>
+           </div> <!-- pr-section required attrs -->
+          </div> <!-- pr-section offer item -->
+          <div class="pr-section pr-section-fullwidth">
+             <span tal:condition="python:
+                   (    i.price_per_unit.plain ()
+                   and i.units.plain ()
+                   and i.price_per_unit.is_view_ok ()
+                   and i.units.is_view_ok ()
+                   )">
+              <tal:block tal:replace=
+                  "python: '%.2f' %
+                    ( float (i.price_per_unit.plain ())
+                    * float (i.units.plain ())
+                    )"/>
+             </span>
+             <span tal:content="python:context.pr_currency.plain ()"/>
+          </div>
+         </tal:block>
+         <tal:block
+          tal:condition="python:
+            not context.id
+            or (context.status.plain () == 'open' and context.is_edit_ok ())"
+          tal:repeat="idx python:range(1,offer_list_length + 1)">
+          <div class="pr-section pr-section-content"> <!-- offer item -->
+           <input type="hidden" name="@link@offer_items"
+                  tal:attributes="value python:'pr_offer_item-%s' % idx" />
+           <div class="pr-section pr-section-requestor"> <!-- required attrs -->
+            <table class="form" border="0">
+             <tr>
+              <th style="text-align:left"
+                  tal:content="structure python:utils.fieldname
+                  (db, 'pr_offer_item', 'index')"/>
+             </tr>
+             <tr>
+              <td tal:content="structure python:utils.new_property
+                (context, db, 'pr_offer_item', -idx, 'index').field (size=3)"/>
+             </tr>
+             <tr>
+              <th style="text-align:left"
+                  tal:content="structure python:utils.fieldname
+                  (db, 'pr_offer_item', 'offer_number')"/>
+             </tr>
+             <tr>
+              <td tal:content="structure python:utils.new_property
+                (context, db, 'pr_offer_item', -idx, 'offer_number').field
+                (size=10)"/>
+             </tr>
+             <tr>
+              <th style="text-align:left"
+                  tal:content="structure python:utils.fieldname
+                  (db, 'pr_offer_item', 'is_asset')"/>
+             </tr>
+             <tr>
+              <td tal:content="structure python:utils.new_property
+                  (context, db, 'pr_offer_item', -idx, 'is_asset').field ()"/>
+             </tr>
+            </table>
+           </div> <!-- pr-section required attrs -->
+           <div class="pr-section pr-section-requestor"> <!-- required attrs -->
+            <table class="form" border="0">
+             <tr>
+              <th style="text-align:left"
+                  tal:content="structure python:utils.fieldname
+                      (db, 'pr_offer_item', 'supplier')"/>
+             </tr>
+             <tr>
+              <td>
+               <span tal:content="structure python:utils.new_property
+                  (context, db, 'pr_offer_item', -idx, 'supplier').field ()"/>
+               <span tal:content="structure python:db.pr_supplier.classhelp
+                ( 'name,sap_ref'
+                , property  = 'pr_offer_item-%s@supplier' % idx
+                , inputtype = 'radio'
+                , width     = '600'
+                , pagesize  = '5000'
+                )"/>
+              </td>
+             </tr>
+             <tr>
+              <th style="text-align:left"
+                  tal:content="structure python:utils.fieldname
+                  (db, 'pr_offer_item', 'description')"/>
+             </tr>
+             <tr>
+              <td>
+               <textarea wrap="soft" cols="30" rows="3"
+                tal:attributes=
+                 " name python:'pr_offer_item%s@description' % (-idx)
+                 "
+                tal:content="python:
+                   request.form.getvalue
+                    ('pr_offer_item%s@description' % (-idx))
+                   or ''">
+               </textarea>
+              </td>
+             </tr>
+             <tr>
+              <th style="text-align:left"
+                  tal:content="structure python:utils.fieldname
+                  (db, 'pr_offer_item', 'product_group')"/>
+             </tr>
+             <tr>
+              <td>
+               <span tal:content="structure python:utils.new_property
+                (context, db, 'pr_offer_item', -idx, 'product_group').field
+                (size = 25)"/>
+               <span tal:content="structure python:db.product_group.classhelp
+                ( 'name,sap_ref'
+                , property = 'pr_offer_item-%s@product_group' % idx
+                , inputtype = 'radio'
+                , width = '800'
+                , pagesize = 1500
+                , group = 'pg_category'
+                )"/>
+              </td>
+             </tr>
+            </table>
+           </div> <!-- pr-section required attrs -->
+           <div class="pr-section"> <!-- optional attrs -->
+            <table class="form" border="0">
+             <tr tal:condition="python: utils.need_psp (context)">
+              <th style="text-align:left"
+                  tal:content="structure python:utils.fieldname
+                  (db, 'pr_offer_item', 'psp_element')"/>
+             </tr>
+             <tr>
+              <td>
+               <span tal:content="structure python:utils.new_property
+                 (context, db, 'pr_offer_item', -idx, 'psp_element').field ()"/>
+               <span tal:content="structure python:db.psp_element.classhelp
+                     ( 'number,name,organisation'
+                     , property  = 'pr_offer_item-%s@psp_element' % idx
+                     , inputtype = 'radio'
+                     , width     = '800'
+                     , filter    = cc_filt
+                     )"/>
+              </td>
+             </tr>
+             <tr>
+              <th style="text-align:left"
+                  tal:content="structure python:utils.fieldname
+                  (db, 'pr_offer_item', 'sap_cc')"/>
+             </tr>
+             <tr>
+              <td>
+               <span tal:content="structure python:utils.new_property
+                   (context, db, 'pr_offer_item', -idx, 'sap_cc').field ()"/>
+               <span tal:content="structure python:db.sap_cc.classhelp
+                     ( 'name,description,responsible,deputy,organisation'
+                     , property  = 'pr_offer_item-%s@sap_cc' % idx
+                     , inputtype = 'radio'
+                     , width     = '800'
+                     , filter    = cc_filt
+                     )"/>
+              </td>
+             </tr>
+             <tr>
+              <th style="text-align:left"
+                  tal:content="structure python:utils.fieldname
+                  (db, 'pr_offer_item', 'purchase_type')"/>
+             </tr>
+             <tr>
+              <td tal:content="structure python:utils.new_property
+                  (context, db, 'pr_offer_item', -idx, 'purchase_type').menu
+                     (valid = True)"/>
+             </tr>
+             <tr>
+              <th style="text-align:left"
+                  tal:content="structure python:utils.fieldname
+                  (db, 'pr_offer_item', 'internal_order')"/>
+             </tr>
+             <tr>
+              <td>
+               <span class="nobreak">
+                <span tal:content="structure python:utils.new_property
+                    (context, db, 'pr_offer_item', -idx, 'internal_order')
+                    .field (size=8) "/>
+                <span tal:content="structure python:db.internal_order.classhelp
+                           ( 'order_number,name'
+                           , property='pr_offer_item-%s@internal_order' % idx
+                           , inputtype='radio'
+                           , width='800'
+                           , pagesize=1000
+                           , filter='valid=True'
+                           )"/>
+               </span>
+              </td>
+             </tr>
+             <tr>
+              <th style="text-align:left" colspan="2"
+                  tal:content="structure python:utils.fieldname
+                  (db, 'pr_offer_item', 'gl_account')"/>
+             </tr>
+             <tr>
+              <td colspan="2" tal:content="structure python:utils.new_property
+                  (context, db, 'pr_offer_item', -idx, 'gl_account')
+                  .field ()"/>
+             </tr>
+            </table>
+           </div> <!-- pr-section optional attrs -->
+           <div class="pr-section"> <!-- optional attrs (security) -->
+            <table class="form" border="0">
+             <tr>
+              <th style="text-align:left"
+                  tal:content="structure python:utils.fieldname
+                  (db, 'pr_offer_item', 'infosec_level')"/>
+             </tr>
+             <tr>
+              <td tal:content="structure python:utils.new_property
+                (context, db, 'pr_offer_item', -idx, 'infosec_level').menu ()"/>
+             </tr>
+            </table>
+           </div> <!-- pr-section optional attrs (security) -->
+           <div class="pr-section pr-section-requestor"> <!-- required attrs -->
+            <table class="form" border="0">
+             <tr>
+              <th
+                  tal:content="structure python:utils.fieldname
+                  (db, 'pr_offer_item', 'units')"/>
+             </tr>
+             <tr>
+              <td tal:content="structure python:utils.new_property
+                (context, db, 'pr_offer_item', -idx, 'units').field (size=5)"/>
+             </tr>
+             <tr>
+              <th tal:content="structure python:utils.fieldname
+                  (db, 'pr_offer_item', 'price_per_unit')"/>
+             </tr>
+             <tr>
+              <td>
+               <span style="text-align:right"
+                   tal:content="structure python:utils.new_property
+                   (context, db, 'pr_offer_item', -idx, 'price_per_unit').field
+                   (size=7)"/>
+               <span tal:content="python:context.pr_currency.plain ()"/>
+              </td>
+             </tr>
+             <tr>
+              <th tal:content="structure python:utils.fieldname
+                  (db, 'pr_offer_item', 'vat')"/>
+             </tr>
+             <tr>
+              <td tal:content="structure python:utils.new_property
+                  (context, db, 'pr_offer_item', -idx, 'vat').field (size=7)"/>
+             </tr>
+             <tr>
+              <th tal:content="structure python:utils.fieldname
+                  (db, context, 'payment_type')"/>
+             </tr>
+             <tr>
+              <td colspan="2" tal:content="structure python:utils.new_property
+                (context, db, 'pr_offer_item', -idx, 'payment_type').menu ()"/>
+             </tr>
+            </table>
+           </div> <!-- pr-section required attrs -->
+          </div> <!-- pr-section offer item -->
+         </tal:block>
+         <div class="pr-section pr-section-fullwidth"
+              tal:condition="context/id">
+          <span>Sum</span>
+          <span tal:content="python:
+                '%.2f' % utils.pr_offer_item_sum (db._db, context.id)"/>
+          <span tal:content="python:context.pr_currency.plain ()"/>
+         </div>
+        </div> <!-- pr-offeritem-container -->
+        <!--
         <table class="form rule" border="0"
                style="border-spacing:0px;padding-top:0px;padding-left:0px"
+               zoppel="old"
                tal:define="cond python:
                bool(context.id and context.offer_items.is_edit_ok ())">
          <tr>
@@ -717,7 +1294,7 @@
                    tal:content="python:utils.orig_infosec_level (i)"/>
             </td>
             <td class="emphasized"
-                tal:content="structure python:utils.risk_type (db, i)"/>
+                tal:content="python:utils.risk_type (db, i)"/>
             <td tal:content="structure python:i.payment_type.menu ()"
                 colspan="2" />
             <td/>
@@ -859,6 +1436,7 @@
           <td tal:condition="cond"/>
          </tr>
         </table>
+        -->
        </div>
        <div class="pr-section pr-section-approvals"
             tal:condition="python:

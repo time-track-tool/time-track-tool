@@ -991,11 +991,28 @@ span.nobreak {
   flex-wrap: wrap;
 }
 
+.pr-offeritem-container {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  margin: 10px 0;
+  align-items: flex-start;
+  align-content: flex-start;
+}
+
 .pr-section {
   padding: 15px;
   border-radius: 8px;
   border: 2px solid;
   width: fit-content;
+}
+
+.pr-section-fullwidth {
+  min-width: calc(100% - 32px);
+  display: flex;
+  align-content: flex-end;
+  justify-content: flex-end;
+  gap: 10px;
 }
 
 .pr-section-requestor {
@@ -1037,7 +1054,7 @@ div.pr-section-title a[href]:link {
   text-align: left;
 }
 
-.pr-section-requestor .pr-section-content {
+.pr-section-content {
   display: flex;
   row-gap: 40px;
   column-gap: 20px;
