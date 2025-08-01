@@ -998,6 +998,7 @@ span.nobreak {
   margin: 10px 0;
   align-items: flex-start;
   align-content: flex-start;
+  background-color: white;
 }
 
 .pr-section {
@@ -1005,6 +1006,22 @@ span.nobreak {
   border-radius: 8px;
   border: 2px solid;
   width: fit-content;
+}
+
+.pr-section-default {
+  background-color: white;
+}
+
+.pr-section-obsolete {
+  background-color: white;
+}
+
+.pr-section-offer-items {
+  background-color: white;
+}
+
+.pr-section-approvals {
+  background-color: white;
 }
 
 .pr-section-fullwidth {
