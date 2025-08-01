@@ -290,6 +290,7 @@ def init \
         , name                  = String    ()
         , order                 = Number    ()
         , description           = String    ()
+        , is_valid              = Boolean   ()
         )
     t_c.setkey ('name')
 

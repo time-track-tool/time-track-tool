@@ -301,16 +301,8 @@
           <th tal:content="structure python:utils.fieldname
               (db, classname, 'terms_conditions')"/>
           <td tal:condition="context/terms_conditions/is_edit_ok"
-              tal:define="value context/terms_conditions"><!--
-           --><tal:block tal:repeat="choice db/terms_conditions/list"><!--
-            --><input type="radio" name="terms_conditions" tal:attributes="
-                checked python:choice.id == value;
-                value   choice/name/plain"><!--
-            --><span tal:content="structure choice/name/plain" /><!--
-           --></tal:block>
-          </td>
-          <td tal:condition="not:context/terms_conditions/is_edit_ok"
-              tal:content="context/terms_conditions/plain" />
+              tal:content="structure
+              python:context.terms_conditions.menu (is_valid = True)"/>
          </tr>
          <tr>
           <th tal:content="structure python:utils.fieldname
@@ -397,9 +389,6 @@
             tal:condition="python:
              (  context.safety_critical
              or (url_template and context.issue_ids)
-             or (   context.terms_conditions
-                and context.terms_conditions.id != '1'
-                )
              or context.intended_duration or context.contract_term
              or context.renegotiations
              )">
@@ -421,12 +410,6 @@
                tal:attributes="href python: url_template % id.strip ()"/>
            </tal:block>
           </td>
-         </tr>
-         <tr tal:condition="python:
-             context.terms_conditions and context.terms_conditions.id != '1'">
-          <th tal:content="structure python:utils.fieldname
-              (db, classname, 'terms_conditions')"/>
-          <td tal:content="context/terms_conditions/plain" />
          </tr>
          <tr tal:condition="python: context.contract_term">
           <th tal:content="structure python:utils.fieldname
