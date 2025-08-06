@@ -354,7 +354,7 @@
                tal:content="structure python:
                context.comment_pr.multiline (rows=5, cols=40)"/>
            <td tal:condition="not:context/comment_pr/is_edit_ok">
-             <div class="prewrap" tal:content="comment_pr/pr_risks" />
+             <div class="prewrap" tal:content="context/comment_pr" />
            </td>
           </tr>
          </table>
