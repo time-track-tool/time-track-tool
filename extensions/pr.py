@@ -280,7 +280,8 @@ def init (instance):
     act ('pr_edit', Edit_Purchase_Request)
     act ('pr_new',  New_Purchase_Request)
     reg = instance.registerUtil
-    reg ('pr_offer_item_sum',            prlib.pr_offer_item_sum)
+    reg ('pr_offer_item_sum',            prlib.pr_offer_item_sum_formatted)
+    reg ('pr_offer_item_formatted',      prlib.pr_offer_item_formatted)
     reg ('compute_approvals',            prlib.compute_approvals)
     reg ('supplier_approved',            supplier_approved)
     reg ('pr_edit_button',               pr_edit_button)

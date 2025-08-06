@@ -45,6 +45,14 @@ def pr_offer_item_sum (db, pr):
     return total
 # end def pr_offer_item_sum
 
+def pr_offer_item_formatted (v):
+    return '{:,.2f}'.format (v).replace (',', ' ')
+# end def pr_offer_item_formatted
+
+def pr_offer_item_sum_formatted (db, pr):
+    return pr_offer_item_formatted (pr_offer_item_sum (db, pr))
+# end def pr_offer_item_sum_formatted
+
 def gen_pr_approval (db, do_create, ** values):
     """ If do_create is set, create a new approval with the given
         values. If unset we only return a dict of the given values.

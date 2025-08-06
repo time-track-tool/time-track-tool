@@ -1002,6 +1002,8 @@ span.nobreak {
 }
 
 .pr-section {
+  display: flex;
+  flex-direction: column;
   padding: 15px;
   border-radius: 8px;
   border: 2px solid;
@@ -1034,6 +1036,10 @@ span.nobreak {
   align-content: flex-end;
   justify-content: flex-end;
   gap: 10px;
+  padding: 15px;
+  border-radius: 8px;
+  border: 2px solid;
+  width: fit-content;
 }
 
 .pr-section-requestor {
@@ -1082,10 +1088,26 @@ div.pr-section-title a[href]:link {
   flex-wrap: wrap;
 }
 
+.pr-section-offeritem {
+  display: flex;
+  row-gap: 40px;
+  column-gap: 20px;
+  flex-wrap: wrap;
+  padding: 15px;
+  border-radius: 8px;
+  border: 2px solid;
+  width: fit-content;
+}
+
 .pr-section-requestor .pr-left-side {
 }
 
 .pr-section-requestor .pr-right-side {
+}
+
+.pr-item-sum {
+  padding-top: 20px;
+  align-self: flex-end;
 }
 
 /* Tooltip text */
