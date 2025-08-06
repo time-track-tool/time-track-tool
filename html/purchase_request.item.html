@@ -49,10 +49,9 @@
    <tal:block metal:use-macro="templates/page/macros/formatted_class_no_table">
     <tal:block metal:fill-slot="formatted_class_content">
      <div class="pr-layout-container">
-       <div class="pr-section pr-section-requestor">
-        <div class="pr-section-title">Data Input by Requestor</div>
-        <div class="pr-section-content">
-         <div class="pr-left-side">
+      <div class="pr-section-content">
+         <div class="pr-section pr-section-requestor">
+          <div class="pr-section-title">Data Input by Requestor</div>
           <table class="form">
            <tr>
             <th tal:content="structure python:utils.fieldname
@@ -135,8 +134,8 @@
             </td>
            </tr>
           </table>
-         </div>
-         <div class="pr-right-side">
+        </div> <!-- pr-section pr-section-requestor -->
+        <div class="pr-section pr-section-requestor">
           <table class="form">
            <tr>
             <th tal:content="structure python:utils.fieldname
@@ -259,103 +258,111 @@
                 (db, classname, 'payment_type')"/>
             <td tal:content="structure python:context.payment_type.menu ()"/>
            </tr>
+           <tr>
+            <th tal:content="structure python:utils.fieldname
+                (db, classname, 'contract_info')"/>
+            <td tal:condition="context/contract_info/is_edit_ok"
+                tal:content="structure python:
+                context.contract_info.multiline (rows=6, cols=40)"/>
+            <td tal:condition="not:context/contract_info/is_edit_ok">
+              <div class="prewrap" tal:content="context/contract_info" />
+            </td>
+           </tr>
           </table>
-         </div>
-        </div>
-       </div>
+        </div> <!-- pr-section pr-section-requestor -->
+      </div> <!-- pr-section-content -->
      </div> <!-- pr-layout-container -->
      <div class="pr-layout-container">
-       <div class="pr-section pr-section-default">
-        <div class="pr-section-title">Contract Data</div>
-        <table class="form">
-         <tr>
-          <th tal:content="structure python:utils.fieldname
-              (db, classname, 'contract_info')"/>
-          <td tal:condition="context/contract_info/is_edit_ok"
-              tal:content="structure python:
-              context.contract_info.multiline (rows=6, cols=40)"/>
-          <td tal:condition="not:context/contract_info/is_edit_ok">
-            <div class="prewrap" tal:content="context/contract_info" />
-          </td>
-         </tr>
-        </table>
-       </div>
-     </div> <!-- pr-layout-container -->
-       
-     <div class="pr-layout-container">
-       <div class="pr-section pr-section-procurement">
-        <div class="pr-section-title">Data Input by Procurement</div>
-        <table class="form">
-         <tr tal:condition="python:
-             context.id and context.status != db._db.pr_status.lookup ('open')">
-          <th tal:content="structure python:utils.fieldname
-              (db, classname, 'pr_risks')"/>
-          <td tal:condition="context/pr_risks/is_edit_ok"
-              tal:content="structure python:
-              context.pr_risks.multiline (rows=6, cols=40)"/>
-          <td tal:condition="not:context/pr_risks/is_edit_ok">
-            <div class="prewrap" tal:content="context/pr_risks" />
-          </td>
-         </tr>
-         <tr>
-          <th tal:content="structure python:utils.fieldname
-              (db, classname, 'terms_conditions')"/>
-          <td tal:condition="context/terms_conditions/is_edit_ok"
-              tal:content="structure
-              python:context.terms_conditions.menu (is_valid = True)"/>
-         </tr>
-         <tr>
-          <th tal:content="structure python:utils.fieldname
-              (db, classname, 'purchasing_agents')"/>
-          <td>
-            <span tal:content="structure
-                      python:context.purchasing_agents.field ()"/>
-            <span tal:condition="context/is_edit_ok"
-                  tal:replace="structure python:utils.user_classhelp
-                    ( db, property='purchasing_agents'
-                    , inputtype='checkbox'
-                    , ids = utils.pr_agents
-                            (db, context.organisation.id or None)
-                    )"/><br>
-          </td>
-         </tr>
-         <tr>
-          <th tal:content="structure python:utils.fieldname
-              (db, classname, 'sap_reference')"/>
-          <td tal:content="structure python:context.sap_reference.field ()"/>
-         </tr>
-         <tr>
-          <tal:block tal:condition="context/id">
+       <div class="pr-section-content">
+        <div class="pr-section pr-section-procurement">
+         <div class="pr-section-title">Data Input by Procurement</div>
+         <table class="form">
+          <tr>
            <th tal:content="structure python:utils.fieldname
-               (db, classname, 'status')"/>
-           <td tal:content="structure python:context.status.menu
-              (** utils.pr_filter_status_transitions (db, context))"/>
-          </tal:block>
-          <tal:block tal:condition="not:context/id">
-           <th/>
-           <td/>
-          </tal:block>
-         </tr>
-         <tr>
-          <th tal:content="structure python:utils.fieldname
-              (db, classname, 'gl_account')"/>
-          <td tal:content="structure python:context.gl_account.field ()"/>
-         </tr>
-         <tr tal:condition="context/id">
-          <th tal:content="structure python:utils.fieldname
-              (db, classname, 'renew_until')"/>
-          <td tal:content="structure python:context.renew_until.field
-              (display_time=False)"/>
-         </tr>
-         <tr tal:condition="context/id">
-          <th tal:content="structure python:utils.fieldname
-              (db, classname, 'delivery_date')"/>
-          <td tal:content="structure python:context.delivery_date.field ()"/>
-         </tr>
-        </table>
-       </div>
+               (db, classname, 'terms_conditions')"/>
+           <td tal:condition="context/terms_conditions/is_edit_ok"
+               tal:content="structure
+               python:context.terms_conditions.menu (is_valid = True)"/>
+          </tr>
+          <tr>
+           <th tal:content="structure python:utils.fieldname
+               (db, classname, 'purchasing_agents')"/>
+           <td>
+             <span tal:content="structure
+                       python:context.purchasing_agents.field ()"/>
+             <span tal:condition="context/is_edit_ok"
+                   tal:replace="structure python:utils.user_classhelp
+                     ( db, property='purchasing_agents'
+                     , inputtype='checkbox'
+                     , ids = utils.pr_agents
+                             (db, context.organisation.id or None)
+                     )"/><br>
+           </td>
+          </tr>
+          <tr>
+           <th tal:content="structure python:utils.fieldname
+               (db, classname, 'sap_reference')"/>
+           <td tal:content="structure python:context.sap_reference.field ()"/>
+          </tr>
+          <tr>
+           <tal:block tal:condition="context/id">
+            <th tal:content="structure python:utils.fieldname
+                (db, classname, 'status')"/>
+            <td tal:content="structure python:context.status.menu
+               (** utils.pr_filter_status_transitions (db, context))"/>
+           </tal:block>
+           <tal:block tal:condition="not:context/id">
+            <th/>
+            <td/>
+           </tal:block>
+          </tr>
+          <tr>
+           <th tal:content="structure python:utils.fieldname
+               (db, classname, 'gl_account')"/>
+           <td tal:content="structure python:context.gl_account.field ()"/>
+          </tr>
+          <tr tal:condition="context/id">
+           <th tal:content="structure python:utils.fieldname
+               (db, classname, 'renew_until')"/>
+           <td tal:content="structure python:context.renew_until.field
+               (display_time=False)"/>
+          </tr>
+          <tr tal:condition="context/id">
+           <th tal:content="structure python:utils.fieldname
+               (db, classname, 'delivery_date')"/>
+           <td tal:content="structure python:context.delivery_date.field ()"/>
+          </tr>
+         </table>
+        </div> <!-- pr-section pr-section-procurement -->
+        <div class="pr-section pr-section-procurement" tal:condition="python:
+             context.id and context.status != db._db.pr_status.lookup ('open')">
+         <table class="form">
+          <tr>
+           <th tal:content="structure python:utils.fieldname
+               (db, classname, 'pr_risks')"/>
+           <td tal:condition="context/pr_risks/is_edit_ok"
+               tal:content="structure python:
+               context.pr_risks.multiline (rows=5, cols=40)"/>
+           <td tal:condition="not:context/pr_risks/is_edit_ok">
+             <div class="prewrap" tal:content="context/pr_risks" />
+           </td>
+          </tr>
+          <tr>
+           <th tal:content="structure python:utils.fieldname
+               (db, classname, 'comment_pr')"/>
+           <td tal:condition="context/comment_pr/is_edit_ok"
+               tal:content="structure python:
+               context.comment_pr.multiline (rows=5, cols=40)"/>
+           <td tal:condition="not:context/comment_pr/is_edit_ok">
+             <div class="prewrap" tal:content="comment_pr/pr_risks" />
+           </td>
+          </tr>
+         </table>
+        </div> <!-- pr-section pr-section-procurement -->
+       </div> <!-- pr-section-content -->
       
-       <div class="pr-section pr-section-calculated">
+      <div class="pr-section pr-section-calculated" tal:condition="python:
+             context.id and context.status != db._db.pr_status.lookup ('open')">
         <div class="pr-section-title">Data calculated</div>
         <table class="form">
          <tr>
@@ -384,8 +391,8 @@
           <td tal:content="structure python:context.date_ordered.plain ()"/>
          </tr>
         </table>
-       </div>
-       <div class="pr-section pr-section-obsolete"
+      </div> <!-- pr-section pr-section-calculated -->
+      <div class="pr-section pr-section-obsolete"
             tal:condition="python:
              (  context.safety_critical
              or (url_template and context.issue_ids)
@@ -439,7 +446,7 @@
           <td tal:content="context/renegotiations/plain" />
          </tr>
         </table>
-       </div>
+      </div>
      </div> <!-- pr-layout-container -->
      <div class="pr-layout-container">
        <div class="pr-section pr-section-offer-items">

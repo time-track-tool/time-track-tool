@@ -1008,6 +1008,10 @@ span.nobreak {
   width: fit-content;
 }
 
+.pr-container {
+  width: fit-content;
+}
+
 .pr-section-default {
   background-color: white;
 }

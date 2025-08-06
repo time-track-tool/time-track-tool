@@ -399,6 +399,7 @@ def init \
                                                     )
                 , contract_info         = String    ()
                 , delivery_date         = Date      ()
+                , comment_pr            = String    ()
                 )
             self.__super.__init__ (db, classname, ** properties)
         # end def __init__
