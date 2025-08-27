@@ -264,21 +264,31 @@ def work_packages (db, daily_record, editable = True):
     return sorted (wps, key = srt)
 # end def work_packages
 
-def work_packages_selector (wps):
+def work_packages_selector (wps, prop):
     """ Generate all options for wps inside a selector. Return html and
         a dict containing id to option number mapping
     """
+    v    = prop._value
+    if v == '-1':
+        v = None
     d    = { -1 : 0 }
-    html = [' <option value="-1">- no selection -</option>']
+    s    = ''
+    if v is None:
+        s = 'selected="selected" '
+    html = [' <option %svalue="-1">- no selection -</option>' % s]
     for n, wp in enumerate (wps):
         d [wp.id] = n + 1
+        s = ''
+        if v in [wp.id, wp.name]:
+            s = 'selected="selected" '
         html.append \
-            ( ' <option value="%s">%s %s %s</option>'
-            % tuple ([escape (str (s)) for s in
-                      (wp.id, wp.project, wp.wp_no, wp.name)]
-                    )
+            ( ' <option %svalue="%s">%s %s %s</option>'
+            % ((s,) + tuple ([escape (str (v)) for v in
+                              (wp.id, wp.project, wp.wp_no, wp.name)]
+                            )
+              )
             )
-    return '\n'.join (html), d
+    return '\n'.join (html)
 # end def work_packages_selector
 
 def work_packages_javascript (name, wpsdict, id):

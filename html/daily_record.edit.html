@@ -163,9 +163,6 @@
            ;is_ph     python: utils.dr_is_public_holiday (i)
            ;allowed   python: (w_allowed or not (is_wend or is_ph)) and edit_ok
            ;wps       python:utils.work_packages (db, i, editable)
-           ;wpsopt_d  python:utils.work_packages_selector (wps)
-           ;wpsopt    python:wpsopt_d [0]
-           ;wpsdict   python:wpsopt_d [1]
            ">
           <tr tal:attributes="class cls">
            <td class="subhead-nb" width="1%"
@@ -258,11 +255,9 @@
               <tal:block tal:define="name python:'time_record%s@wp'%tr.id">
                <select class="dropdown-wp" tal:condition="ed"
                  tal:attributes="name name">
-                <tal:block tal:content="structure wpsopt"/>
+                <tal:block tal:content="structure python:
+                    utils.work_packages_selector (wps, tr.wp)"/>
                </select>
-               <tal:block tal:condition="ed"
-                   tal:content="structure python: utils.work_packages_javascript
-                     (name, wpsdict, tr.wp.id or -1)"/>
                <span tal:condition="not:ed" tal:content="structure python:
                 tr.wp and '&nbsp;'.join
                  ([utils.ExtProperty
@@ -374,7 +369,12 @@
             <td colspan="2">
              <select class="dropdown-wp"
                tal:attributes="name python:'time_record-%d@wp'%n">
-              <tal:block tal:content="structure wpsopt"/>
+              <tal:block tal:content="structure python:
+                  utils.work_packages_selector
+                   ( wps
+                   , utils.new_property
+                       (context, db, 'time_record', -n, 'wp')
+                   )"/>
              </select>
             </td>
             <td class="nb" tal:content="structure python:utils.new_property
