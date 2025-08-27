@@ -869,6 +869,10 @@ def set_approval_pr (db, cl, nodeid, new_values):
     common.require_attributes \
         (_, cl, nodeid, new_values, 'purchase_request')
 
+    # Special case of status: If the status would become empty (because
+    # someone has selected '-1') we keep the previous status.
+    if 'status' in new_values and new_values ['status'] is None:
+        del new_values ['status']
     if 'date' in new_values and 'status' not in new_values:
         del new_values ['date']
     if 'purchase_request' in new_values and 'status' not in new_values:
