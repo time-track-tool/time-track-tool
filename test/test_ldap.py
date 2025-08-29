@@ -39,12 +39,12 @@ backends.memorydb = memorydb
 
 # Monkey-patch Database
 # Some trackers inject sql for generating indices or unique constraints
-def sql (self, s, *args) :
+def sql (self, s, *args):
     t = ('alter table', 'create index')
-    for x in t :
-        if s.lower ().startswith (t) :
+    for x in t:
+        if s.lower ().startswith (t):
             break
-    else :
+    else:
         assert False, "Unfakeable sql encountered"
 memorydb.Database.sql = sql
 
@@ -57,58 +57,58 @@ from ldap_sync import LDAP_Roundup_Sync
 import common
 import summary
 
-class LDAP_Property :
+class LDAP_Property:
 
-    def __init__ (self, *args) :
+    def __init__ (self, *args):
         self.args = args
     # end def __init__
 
-    def __len__ (self) :
+    def __len__ (self):
         return len (self.args)
     # end def __len__
 
-    def __repr__ (self) :
-        if len (self.args) == 1 :
+    def __repr__ (self):
+        if len (self.args) == 1:
             return self.args [0]
         return self.args
     # end def __repr__
     __str__ = __repr__
 
-    def __getitem__ (self, idx) :
+    def __getitem__ (self, idx):
         return self.args [idx]
     # end def __getitem__
 
     @property
-    def value (self) :
+    def value (self):
         return repr (self)
     # end def value
 
 # end class LDAP_Property
 
-class default_dict (dict) :
-    def __getitem__ (self, name) :
-        try :
+class default_dict (dict):
+    def __getitem__ (self, name):
+        try:
             return dict.__getitem__ (self, name)
-        except KeyError :
+        except KeyError:
             pass
         return MockNull ()
     # end def __getitem__
 # end class default_dict
 
-class Mock_Guid :
+class Mock_Guid:
 
-    def __init__ (self, value) :
+    def __init__ (self, value):
         self.value = value
         self.raw_values = [value]
     # end def __init__
 
-    def __len__ (self) :
+    def __len__ (self):
         return 1
     # end def __len__
 
 # end class Mock_Guid
 
-class _Test_Base :
+class _Test_Base:
     count = 0
     db = None
     backend = 'memorydb'
@@ -117,25 +117,25 @@ class _Test_Base :
     verbose = 0
     log = ldap = None
 
-    def setup_tracker (self, backend = None) :
+    def setup_tracker (self, backend = None):
         """ Install and initialize tracker in dirname, return tracker instance.
             If directory exists, it is wiped out before the operation.
         """
         self.__class__.count += 1
         self.dirname = '_test_init_%s' % self.count
-        if backend :
+        if backend:
             self.backend = backend
         self.config  = config = configuration.CoreConfig ()
         config.DATABASE       = 'db'
         config.RDBMS_NAME     = "rounduptestttt"
         config.RDBMS_HOST     = "localhost"
-        if 'RDBMS_HOST' in os.environ :
+        if 'RDBMS_HOST' in os.environ:
             config.RDBMS_HOST     = os.environ ['RDBMS_HOST']
         config.RDBMS_USER     = "rounduptest"
-        if 'RDBMS_USER' in os.environ :
+        if 'RDBMS_USER' in os.environ:
             config.RDBMS_USER = os.environ ['RDBMS_USER']
         config.RDBMS_PASSWORD = "rounduptest"
-        if 'RDBMS_PASSWORD' in os.environ :
+        if 'RDBMS_PASSWORD' in os.environ:
             config.RDBMS_PASSWORD = os.environ ['RDBMS_PASSWORD']
         config.MAIL_DOMAIN    = "your.tracker.email.domain.example"
         config.TRACKER_WEB    = "http://localhost:4711/ttt/"
@@ -149,9 +149,9 @@ class _Test_Base :
                  , 'lib', 'locale', 'schema'
                  , 'schemas/%s.py' % self.schemafile
                  , 'TEMPLATE-INFO.txt', 'utils'
-                 ) :
+                 ):
             ft = f
-            if f.startswith ('schemas') :
+            if f.startswith ('schemas'):
                 ft = 'schema.py'
             os.symlink \
                 ( os.path.abspath (os.path.join (srcdir, f))
@@ -160,7 +160,7 @@ class _Test_Base :
         config.RDBMS_BACKEND = self.backend
         self.config.save (os.path.join (self.dirname, 'config.ini'))
         tracker = instance.open (self.dirname)
-        if tracker.exists () :
+        if tracker.exists ():
             tracker.nuke ()
         tracker.init (password.Password (self.config.RDBMS_PASSWORD))
         self.tracker = tracker
@@ -187,11 +187,11 @@ class _Test_Base :
             #, picture_quality   = '80'
             )
         config.ext = UserConfig ()
-        for k in ldap_settings :
+        for k in ldap_settings:
             o = Option (config.ext, 'LDAP', k)
             config.ext.add_option (o)
             config.ext ['LDAP_' + k.upper ()] = ldap_settings [k]
-        for k in limit_settings :
+        for k in limit_settings:
             o = Option (config.ext, 'LIMIT', k)
             config.ext.add_option (o)
             config.ext ['LIMIT_' + k.upper ()] = limit_settings [k]
@@ -199,20 +199,20 @@ class _Test_Base :
         self.aux_ldap_parameters = {}
     # end def setup_tracker
 
-    def setUp (self) :
+    def setUp (self):
         self.setup_tracker ()
     # end def setUp
 
-    def setup_ldap (self) :
+    def setup_ldap (self):
         # Create user-stati for ldap sync
         self.db = self.tracker.open ('admin')
         # This is used by mock_log which is not used by default
         self.messages = []
-        for g in self.ldap_groups :
+        for g in self.ldap_groups:
             self.db.user_status.create (ldap_group = g, ** self.ldap_groups [g])
         self.ustatus_valid_ad = self.db.user_status.lookup ('valid-ad')
         self.ustatus_valid = self.db.user_status.lookup ('valid')
-        for n, name in enumerate (('external Phone', 'Mobile short')) :
+        for n, name in enumerate (('external Phone', 'Mobile short')):
             self.db.uc_type.create (name = name, order = n + 5)
         # Create a test-user
         self.testuser1 = self.db.user.create \
@@ -331,9 +331,9 @@ class _Test_Base :
             , ad_domain = str ('ext1.internal')
             , vie_user  = self.testuser5
             )
-        if not self.log :
+        if not self.log:
             self.log = MockNull ()
-        if not self.ldap :
+        if not self.ldap:
             sv = MockNull
             sv.single_value = True
             self.ldap = MockNull ()
@@ -361,14 +361,14 @@ class _Test_Base :
         self.ldap_modify_dn_result = {}
     # end def setup_ldap
 
-    def mock_connection (self, *args, **kw) :
+    def mock_connection (self, *args, **kw):
         """ Called when a new ldap connection or server object is created
             We just return our mock ldap object
         """
         return self.ldap
     # end def mock_connection
 
-    def mock_ldap_search (self, dn, s, attributes = None, search_scope = None) :
+    def mock_ldap_search (self, dn, s, attributes = None, search_scope = None):
         """ Emulate an ldap search. We get a Mock object as the first
             parameter, then the base dn (which is currently not used) and
             the query string. Depending on the query string we return
@@ -376,7 +376,7 @@ class _Test_Base :
         """
         self.ldap.entries = []
         # Searching by DN
-        if search_scope :
+        if search_scope:
             username = self.person_username_by_dn [dn]
             entry = self.mock_users_by_username [username]
             m = {}
@@ -386,30 +386,30 @@ class _Test_Base :
             return
 
         # Searching for groups
-        for g in self.ldap_groups :
+        for g in self.ldap_groups:
             t  = '(&(sAMAccountName=%s)(objectclass=group))' % g
             # We don't care about dn syntax, we're parsing our own
             # output later on.
             dn = g
-            if s == t :
+            if s == t:
                 m = MockNull ()
                 m.entry_dn = dn
                 self.ldap.entries = [m]
                 return
         # Searching for members of a group including groups in groups
-        if s.startswith ('(&(memberOf:1.2.840.113556.1.4.1941:=') :
-            if s.endswith ('objectclass=group))') :
+        if s.startswith ('(&(memberOf:1.2.840.113556.1.4.1941:='):
+            if s.endswith ('objectclass=group))'):
                 return
             assert s.endswith ('objectclass=person))')
             g = s [37:].split (')') [0]
-            for udn in self.person_dn_by_group.get (g, []) :
+            for udn in self.person_dn_by_group.get (g, []):
                 m = MockNull ()
                 m.entry_dn = udn
                 self.ldap.entries.append (m)
             return
         if  (   s.startswith ('(&(UserPrincipalName=')
             and s.endswith (')(objectclass=user))')
-            ) :
+            ):
             username = s [21:-20]
             entry = self.mock_users_by_username [username]
             m = {}
@@ -419,14 +419,14 @@ class _Test_Base :
             return
     # end def mock_ldap_search
 
-    def mock_paged_search (self, base_dn, filter, **d) :
+    def mock_paged_search (self, base_dn, filter, **d):
         self.assertEqual (filter, '(objectclass=user)')
         self.assertIn ('attributes', d)
         self.assertEqual (base_dn, self.base_dn)
         self.assertEqual (d ['attributes'], ['UserPrincipalName'])
         # Loop over *all* ldap users
         l = []
-        for username in self.mock_users_by_username :
+        for username in self.mock_users_by_username:
             m = {}
             m ['attributes'] = CaseInsensitiveDict \
                 (UserPrincipalName = username)
@@ -435,33 +435,33 @@ class _Test_Base :
         return l
     # end def mock_paged_search
 
-    def mock_ldap_modify (self, dn, moddict) :
+    def mock_ldap_modify (self, dn, moddict):
         self.ldap_modify_result [dn] = moddict
     # end def mock_ldap_modify
 
-    def mock_ldap_modify_dn (self, dn, newdn) :
+    def mock_ldap_modify_dn (self, dn, newdn):
         self.ldap_modify_dn_result [dn] = newdn
     # end def mock_ldap_modify_dn
 
-    def mock_log (self, *msg) :
+    def mock_log (self, *msg):
         """ Not used by default, needs mockup in test
         """
         self.messages.append (msg)
     # end def mock_log
 
-    def tearDown (self) :
-        for k in 'db', 'db1', 'db2' :
+    def tearDown (self):
+        for k in 'db', 'db1', 'db2':
             db = getattr (self, k, None)
-            if db :
+            if db:
                 db.clearCache ()
                 db.close ()
         self.db = self.db1 = self.db2 = None
-        if os.path.exists (self.dirname) :
+        if os.path.exists (self.dirname):
             shutil.rmtree (self.dirname)
     # end def tearDown
 # end class _Test_Base
 
-class Test_Case_LDAP_Sync (_Test_Base, unittest.TestCase) :
+class Test_Case_LDAP_Sync (_Test_Base, unittest.TestCase):
 
     # Used for creating user_status objects
     ldap_groups = \
@@ -575,8 +575,8 @@ class Test_Case_LDAP_Sync (_Test_Base, unittest.TestCase) :
         ((v [0], k) for k, v in mock_users_by_username.items ())
 
 
-    def set_testuser1_testpic (self) :
-        with open ('test/240px-Bald_Man.svg.png', 'rb') as f :
+    def set_testuser1_testpic (self):
+        with open ('test/240px-Bald_Man.svg.png', 'rb') as f:
             fid = self.db.file.create \
                 ( name    = 'picture'
                 , type    = 'image/png'
@@ -585,7 +585,7 @@ class Test_Case_LDAP_Sync (_Test_Base, unittest.TestCase) :
             self.db.user.set (self.testuser1, pictures = [fid])
     # end def set_testuser1_testpic
 
-    def test_sync_contact_to_roundup (self) :
+    def test_sync_contact_to_roundup (self):
         """ Test that modification of firstname and lastname is synced
             to LDAP
         """
@@ -610,7 +610,7 @@ class Test_Case_LDAP_Sync (_Test_Base, unittest.TestCase) :
         self.assertEqual (cts, ['testuser1@example.com'])
     # end def test_sync_contact_to_roundup
 
-    def test_sync_new_user_to_roundup (self) :
+    def test_sync_new_user_to_roundup (self):
         self.setup_ldap ()
         self.ldap_sync.sync_user_from_ldap ('nonexistingrup@ds1.internal')
         newuser = self.db.user.lookup ('nonexistingrup@ds1.internal')
@@ -623,7 +623,7 @@ class Test_Case_LDAP_Sync (_Test_Base, unittest.TestCase) :
         self.assertEqual (user.ad_domain, 'ds1.internal')
     # end def test_sync_new_user_to_roundup
 
-    def test_sync_to_roundup_all (self) :
+    def test_sync_to_roundup_all (self):
         # Change behavior so that names are updated in roundup
         self.aux_ldap_parameters ['update_ldap'] = False
         self.setup_ldap ()
@@ -637,7 +637,7 @@ class Test_Case_LDAP_Sync (_Test_Base, unittest.TestCase) :
         self.assertEqual (user.lastname,  'Usernameold')
     # end def test_sync_to_roundup_all
 
-    def test_sync_to_roundup_all_dry (self) :
+    def test_sync_to_roundup_all_dry (self):
         # Change behavior so that names are updated in roundup
         self.aux_ldap_parameters ['update_ldap']     = False
         self.aux_ldap_parameters ['dry_run_roundup'] = True
@@ -652,7 +652,7 @@ class Test_Case_LDAP_Sync (_Test_Base, unittest.TestCase) :
         self.assertEqual (user.lastname,  'User')
     # end def test_sync_to_roundup_all_dry
 
-    def test_sync_to_roundup_all_limit (self) :
+    def test_sync_to_roundup_all_limit (self):
         # Change behavior so that names are updated in roundup
         self.aux_ldap_parameters ['update_ldap']     = False
         self.setup_ldap ()
@@ -667,7 +667,7 @@ class Test_Case_LDAP_Sync (_Test_Base, unittest.TestCase) :
         self.assertEqual (user.lastname,  'User')
     # end def test_sync_to_roundup_all_dry
 
-    def test_sync_realname_to_ldap (self) :
+    def test_sync_realname_to_ldap (self):
         self.setup_ldap ()
         self.ldap_sync.sync_user_to_ldap ('testuser1@ds1.internal')
         olddn = 'CN=Test Middlename Usernameold,OU=internal'
@@ -676,7 +676,7 @@ class Test_Case_LDAP_Sync (_Test_Base, unittest.TestCase) :
         self.assertEqual (list (self.ldap_modify_result), [newdn])
         d = self.ldap_modify_result [newdn]
         self.assertEqual (len (d), 5)
-        for k in d :
+        for k in d:
             self.assertEqual (len (d [k]), 1)
         self.assertEqual (d ['givenname'][0][0], 'MODIFY_REPLACE')
         self.assertEqual (d ['givenname'][0][1], [u'Test'])
@@ -693,7 +693,7 @@ class Test_Case_LDAP_Sync (_Test_Base, unittest.TestCase) :
         self.assertEqual (changed, newcn)
     # end def test_sync_realname_to_ldap
 
-    def test_sync_cn_if_no_dynuser (self) :
+    def test_sync_cn_if_no_dynuser (self):
         # This used to test that no sync is performed when there is no
         # dynamic user record. This is no longer true: We sync even if
         # there is no dynamic user record
@@ -710,7 +710,7 @@ class Test_Case_LDAP_Sync (_Test_Base, unittest.TestCase) :
         assert len (self.messages) == 0
     # end def test_sync_cn_if_no_dynuser
 
-    def test_sync_cn_if_no_dynuser_but_system (self) :
+    def test_sync_cn_if_no_dynuser_but_system (self):
         self.setup_ldap ()
         self.log.error = self.mock_log
         self.db.user_dynamic.retire (self.user_dynamic1_1)
@@ -729,7 +729,7 @@ class Test_Case_LDAP_Sync (_Test_Base, unittest.TestCase) :
         self.assertEqual (changed, newcn)
     # end def test_sync_cn_if_no_dynuser_but_system
 
-    def test_sync_no_cn (self) :
+    def test_sync_no_cn (self):
         self.tracker.config.ext.LDAP_DO_NOT_SYNC_LDAP_PROPERTIES = 'cn'
         self.setup_ldap ()
         self.ldap_sync.sync_user_to_ldap ('testuser1@ds1.internal')
@@ -751,7 +751,7 @@ class Test_Case_LDAP_Sync (_Test_Base, unittest.TestCase) :
         self.assertEqual (u.realname, 'Test User')
     # end def test_sync_no_cn
 
-    def test_sync_realname_to_ldap_all (self) :
+    def test_sync_realname_to_ldap_all (self):
         self.setup_ldap ()
         nusers = len (self.db.user.filter (None, {})) // 2 - 1
         self.log.info = self.mock_log
@@ -763,7 +763,7 @@ class Test_Case_LDAP_Sync (_Test_Base, unittest.TestCase) :
         self.assertEqual (self.messages [-2][0], msg)
     # end def test_sync_realname_to_ldap_all
 
-    def test_sync_realname_to_ldap_all_dryrun (self) :
+    def test_sync_realname_to_ldap_all_dryrun (self):
         self.aux_ldap_parameters ['dry_run_ldap'] = True
         self.setup_ldap ()
         nusers = len (self.db.user.filter (None, {})) // 2 - 1
@@ -774,7 +774,7 @@ class Test_Case_LDAP_Sync (_Test_Base, unittest.TestCase) :
         self.assertEqual (self.messages [-2][0], msg)
     # end def test_sync_realname_to_ldap_all
 
-    def test_sync_realname_to_ldap_all_limit (self) :
+    def test_sync_realname_to_ldap_all_limit (self):
         self.setup_ldap ()
         nusers = len (self.db.user.filter (None, {})) // 2 - 1
         self.log.error = self.mock_log
@@ -785,7 +785,7 @@ class Test_Case_LDAP_Sync (_Test_Base, unittest.TestCase) :
         self.assertEqual (self.messages [-1][0], msg)
     # end def test_sync_realname_to_ldap_all
 
-    def test_sync_room_to_ldap (self) :
+    def test_sync_room_to_ldap (self):
         # Room is no longer synced!
         self.setup_ldap ()
         self.db.user.set (self.testuser1, room = self.room1)
@@ -799,7 +799,7 @@ class Test_Case_LDAP_Sync (_Test_Base, unittest.TestCase) :
         #self.assertEqual (office [1], [u'ASD.OIZ.501'])
     # end test_sync_room_to_ldap
 
-    def test_dont_sync_if_vie_user_and_dyn_user (self) :
+    def test_dont_sync_if_vie_user_and_dyn_user (self):
         self.setup_ldap ()
         self.log.error = self.mock_log
         self.assertEqual \
@@ -813,7 +813,7 @@ class Test_Case_LDAP_Sync (_Test_Base, unittest.TestCase) :
         self.assertEqual (self.ldap_modify_result, {})
     # end test_dont_sync_if_vie_user_and_dyn_user
 
-    def test_sync_if_vie_user_and_dyn_user_when_bl_override (self) :
+    def test_sync_if_vie_user_and_dyn_user_when_bl_override (self):
         self.setup_ldap ()
         self.log.error = self.mock_log
         self.assertEqual \
@@ -847,11 +847,11 @@ class Test_Case_LDAP_Sync (_Test_Base, unittest.TestCase) :
             ( ('displayname', 'Test2 NewLastname')
             , ('sn',          'NewLastname')
             )
-        for k, v in results :
+        for k, v in results:
             self.assertEqual (self.ldap_modify_result [dn][k][0][1][0], v)
     # end test_dont_sync_if_vie_user_and_dyn_user
 
-    def test_sync_email_only_from_ad (self) :
+    def test_sync_email_only_from_ad (self):
         self.setup_ldap ()
         # check initial sync to Roundup
         def get_contacts ():
@@ -879,7 +879,7 @@ class Test_Case_LDAP_Sync (_Test_Base, unittest.TestCase) :
         self.assertEqual (user_contact, 'roman.case@example.com')
     # end test_sync_email_only_from_ad
 
-    def test_sync_supervisor (self) :
+    def test_sync_supervisor (self):
         self.setup_ldap ()
         self.ldap_sync.sync_user_to_ldap ('jdoe@ds1.internal')
         dn = 'CN=Jane Doe,OU=external'
@@ -898,7 +898,7 @@ class Test_Case_LDAP_Sync (_Test_Base, unittest.TestCase) :
         self.assertEqual (new_secretary, 'CN=Roman Case,OU=internal')
     # end test_sync_supervisor
 
-    def test_sync_department (self) :
+    def test_sync_department (self):
         self.setup_ldap ()
         self.ldap_sync.sync_user_from_ldap ('rcase@ds1.internal')
         self.ldap_sync.sync_user_to_ldap ('rcase@ds1.internal')
@@ -930,7 +930,7 @@ class Test_Case_LDAP_Sync (_Test_Base, unittest.TestCase) :
         self.assertEqual (new_department, department_temp_name)
     # end test_sync_department
 
-    def test_sync_company (self) :
+    def test_sync_company (self):
         self.setup_ldap ()
         self.ldap_sync.sync_user_from_ldap ('rcase@ds1.internal')
         self.ldap_sync.sync_user_to_ldap ('rcase@ds1.internal')
@@ -948,7 +948,7 @@ class Test_Case_LDAP_Sync (_Test_Base, unittest.TestCase) :
         self.assertEqual (new_company, new_org_location)
     # end test_sync_company
 
-    def test_sync_sap_cc (self) :
+    def test_sync_sap_cc (self):
         self.setup_ldap ()
         self.sap_cc1 = self.db.sap_cc.create \
             ( name = 'cc_test_name'
@@ -980,7 +980,7 @@ class Test_Case_LDAP_Sync (_Test_Base, unittest.TestCase) :
             (new_extAttr3, self.db.sap_cc.get (self.sap_cc1, 'name'))
     # end test_sync_sap_cc
 
-    def test_position_text_sync (self) :
+    def test_position_text_sync (self):
         self.setup_ldap ()
         position = 'Developer'
         self.db.user.set (self.testuser3, position_text = position)
@@ -991,7 +991,7 @@ class Test_Case_LDAP_Sync (_Test_Base, unittest.TestCase) :
         self.assertEqual (new_position, position)
     # end test_position_text_sync
 
-    def test_sync_attributes_not_directly_updating_vie_user (self) :
+    def test_sync_attributes_not_directly_updating_vie_user (self):
         self.setup_ldap ()
         intname = 'jdoe@ds1.internal'
         self.ldap_sync.sync_user_to_ldap   (intname)
@@ -1072,7 +1072,7 @@ class Test_Case_LDAP_Sync (_Test_Base, unittest.TestCase) :
          , '2c22826feabcf4b3072a176fced9d009'
         ))
 
-    def test_pic_convert_no_resize (self) :
+    def test_pic_convert_no_resize (self):
         # Although the original pic is > 15k in size it will be smaller
         # than the 9k limit after conversion to JPEG.
         self.setup_ldap ()
@@ -1094,7 +1094,7 @@ class Test_Case_LDAP_Sync (_Test_Base, unittest.TestCase) :
         assert m.hexdigest () in self.digests
     # end def test_pic_convert_no_resize
 
-    def test_pic_convert_with_resize (self) :
+    def test_pic_convert_with_resize (self):
         # Although the original pic is > 15k in size it will be smaller
         # than the 9k limit after conversion to JPEG. So we need to set
         # the limit lower to trigger the resizing mechanism
@@ -1123,7 +1123,7 @@ class Test_Case_LDAP_Sync (_Test_Base, unittest.TestCase) :
 
 # end class Test_Case_LDAP_Sync
 
-def test_suite () :
+def test_suite ():
     suite = unittest.TestSuite ()
     suite.addTest (unittest.makeSuite (Test_Case_LDAP_Sync))
     return suite
