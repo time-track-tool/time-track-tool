@@ -1,6 +1,5 @@
 #! /usr/bin/python
-# -*- coding: iso-8859-1 -*-
-# Copyright (C) 2006-10 Dr. Ralf Schlatterbeck Open Source Consulting.
+# Copyright (C) 2006-25 Dr. Ralf Schlatterbeck Open Source Consulting.
 # Reichergasse 131, A-3411 Weidling.
 # Web: http://www.runtux.com Email: office@runtux.com
 # All rights reserved
@@ -61,7 +60,6 @@ def init \
                 , valid               = Link      ("valid")
                 , lookalike_city      = String    (indexme = do_index)
                 , lookalike_street    = String    (indexme = do_index)
-                , uid                 = String    (indexme = "no")
                 )
             self.__super.__init__ (db, classname, ** properties)
             self.setlabelprop ('country')

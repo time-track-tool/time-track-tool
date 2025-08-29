@@ -1,5 +1,4 @@
-# -*- coding: iso-8859-1 -*-
-# Copyright (C) 2006-21 Dr. Ralf Schlatterbeck Open Source Consulting.
+# Copyright (C) 2006-25 Dr. Ralf Schlatterbeck Open Source Consulting.
 # 
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -271,6 +270,9 @@ class Importer (object) :
             # end def __init__
         # end class Ext_Class
 
+        # For backward compatibility, this may be re-defined somewhere else
+        Address_Class = Ext_Class
+
         Category_Class = Ext_Class
         globals ['Category_Class'] = Category_Class
 
@@ -372,6 +374,7 @@ class Importer (object) :
         globals ['Optional_Doc_Issue_Class'] = Optional_Doc_Issue_Class
         globals ['IT_Issue_Baseclass']       = IT_Issue_Baseclass
         globals ['User_Status_Class']        = User_Status_Class
+        globals ['Address_Class']            = Address_Class
 
         for s in schemas :
             m = __import__ ('.'.join (('schemacfg', s)))

@@ -1,5 +1,5 @@
 #! /usr/bin/python
-# Copyright (C) 2004-13 Dr. Ralf Schlatterbeck Open Source Consulting.
+# Copyright (C) 2004-25 Dr. Ralf Schlatterbeck Open Source Consulting.
 # Reichergasse 131, A-3411 Weidling.
 # Web: http://www.runtux.com Email: office@runtux.com
 # All rights reserved
@@ -43,6 +43,7 @@ schemas = \
     , 'it_tracker'
     , 'msg_header'
     , 'address'
+    , 'uid_adr'
     , 'contact'
     , 'callerid'
     , 'adr_ext'

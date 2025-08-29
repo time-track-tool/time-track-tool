@@ -1,6 +1,5 @@
 #! /usr/bin/python
-# -*- coding: iso-8859-1 -*-
-# Copyright (C) 2010 Dr. Ralf Schlatterbeck Open Source Consulting.
+# Copyright (C) 2025 Dr. Ralf Schlatterbeck Open Source Consulting.
 # Reichergasse 131, A-3411 Weidling.
 # Web: http://www.runtux.com Email: office@runtux.com
 # All rights reserved
@@ -22,24 +21,24 @@
 # ****************************************************************************
 #++
 # Name
-#    min_adr
+#    uid_adr
 #
 # Purpose
-#    Minimal address class without any properties
+#    Add uid attribute to address
 
-def init (db, Ext_Class, Multilink, ** kw) :
+def init (db, Ext_Class, String, Multilink, ** kw) :
     export   = {}
-    class Address_Class (Ext_Class) :
-        """ Create address class with minimum default attributes
+    class Address_Class_Uid (kw ['Address_Class']) :
+        """ Add uid
         """
         def __init__ (self, db, classname, ** properties) :
             self.update_properties \
-                ( contacts            = Multilink ("contact")
+                ( uid                 = String (indexme = "no")
                 )
             self.__super.__init__ (db, classname, ** properties)
         # end def __init__
-    # end class Address_Class
+    # end class Address_Class_Uid
 
-    export ['Address_Class'] = Address_Class
+    export ['Address_Class'] = Address_Class_Uid
     return export
 # end def init

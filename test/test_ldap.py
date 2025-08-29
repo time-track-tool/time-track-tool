@@ -1,4 +1,4 @@
-# Copyright (C) 2021 Ralf Schlatterbeck. All rights reserved
+# Copyright (C) 2025 Ralf Schlatterbeck. All rights reserved
 # Reichergasse 131, A-3411 Weidling
 # ****************************************************************************
 # This program is free software; you can redistribute it and/or modify
@@ -276,8 +276,8 @@ class _Test_Base:
         self.telephone_for_102 = self.db.user_contact.create \
             ( contact      = '08154711'
             , contact_type = self.db.uc_type.lookup ('mobile Phone')
+            , user         = self.testuser102
             )
-        self.db.user.set (self.testuser102, contacts = [self.telephone_for_102])
         self.user_dynamic102_1 = self.db.user_dynamic.create \
             ( user            = self.testuser102
             , org_location    = self.org_location1
@@ -866,8 +866,8 @@ class Test_Case_LDAP_Sync (_Test_Base, unittest.TestCase):
         self.user_contact1 = self.db.user_contact.create \
             ( contact = 'case@example.com'
             , contact_type = str ('1')
+            , user = self.testuser3
             )
-        self.db.user.set (self.testuser3, contacts = [self.user_contact1])
         self.ldap_sync.sync_user_to_ldap ('rcase@ds1.internal')
         dn = 'CN=Roman Case,OU=internal'
         self.assertNotIn ('mail', self.ldap_modify_result [dn])

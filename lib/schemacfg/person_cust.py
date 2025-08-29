@@ -1,6 +1,5 @@
 #! /usr/bin/python
-# -*- coding: iso-8859-1 -*-
-# Copyright (C) 2010-13 Dr. Ralf Schlatterbeck Open Source Consulting.
+# Copyright (C) 2010-25 Dr. Ralf Schlatterbeck Open Source Consulting.
 # Reichergasse 131, A-3411 Weidling.
 # Web: http://www.runtux.com Email: office@runtux.com
 # All rights reserved
@@ -32,7 +31,9 @@ def init (db, Address_Class, Contact_Class, Contact_Type_Class, Link, ** kw) :
 
     contact = Contact_Class \
         ( db, ''"contact"
-        , customer            = Link      ('customer')
+        , customer            = Link      ( 'customer'
+                                          , rev_multilink = 'contacts'
+                                          )
         , contact_type        = Link      ("contact_type")
         )
     contact_type = Contact_Type_Class (db, ''"contact_type")

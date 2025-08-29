@@ -26,6 +26,7 @@ properties = \
         , 'salutation'
         , 'street'
         , 'title'
+        , 'uid'
         , 'valid'
         ]
       )

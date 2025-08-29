@@ -1,6 +1,5 @@
 #! /usr/bin/python
-# -*- coding: iso-8859-1 -*-
-# Copyright (C) 2006-10 Dr. Ralf Schlatterbeck Open Source Consulting.
+# Copyright (C) 2006-25 Dr. Ralf Schlatterbeck Open Source Consulting.
 # Reichergasse 131, A-3411 Weidling.
 # Web: http://www.runtux.com Email: office@runtux.com
 # All rights reserved
@@ -48,7 +47,6 @@ def init (db, Ext_Class, Person_Class, String, Link, Multilink, Number, ** kw) :
                 , lookalike_lastname  = String    (indexme = do_index)
                 , lookalike_firstname = String    (indexme = do_index)
                 , lookalike_function  = String    (indexme = do_index)
-                , contacts            = Multilink ("contact")
                 )
             self.__super.__init__ (db, classname, ** properties)
             self.setlabelprop ('lastname')

@@ -78,6 +78,9 @@ properties = \
         , ( 'title'
           , ['admin', 'adr_readonly', 'contact', 'it', 'itview', 'pbx', 'sec-incident-nosy', 'sec-incident-responsible', 'type', 'user', 'user_view']
           )
+        , ( 'uid'
+          , ['admin', 'adr_readonly', 'contact', 'it', 'itview', 'pbx', 'sec-incident-nosy', 'sec-incident-responsible', 'type', 'user', 'user_view']
+          )
         , ( 'valid'
           , ['admin', 'adr_readonly', 'contact', 'it', 'itview', 'pbx', 'sec-incident-nosy', 'sec-incident-responsible', 'type', 'user', 'user_view']
           )

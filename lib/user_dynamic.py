@@ -1,5 +1,5 @@
 #! /usr/bin/python
-# Copyright (C) 2006-21 Dr. Ralf Schlatterbeck Open Source Consulting.
+# Copyright (C) 2006-25 Dr. Ralf Schlatterbeck Open Source Consulting.
 # Reichergasse 131, A-3411 Weidling.
 # Web: http://www.runtux.com Email: office@runtux.com
 # All rights reserved
@@ -1050,14 +1050,6 @@ def is_tt_user_status (db, status):
     return True
 # end def is_tt_user_status
 
-def check_email (db, contacts, email, t_email):
-    for c in contacts:
-        contact = db.user_contact.getnode (c)
-        if (contact.contact == email and contact.contact_type == t_email):
-            return True
-    return False
-# end def check_email
-
 def user_create_magic (db, uid, olo):
     """ Perform magic on new user creation
         We used to create a dynamic user record here, this is no longer
@@ -1107,21 +1099,17 @@ def user_create_magic (db, uid, olo):
                 email = db.uc_type.lookup ('Email')
             except KeyError:
                 email = None
-            contacts = []
             ms = \
                 ( '@'.join (('.'.join ((lfn, lln)), maildomain))
                 , '@'.join ((user.username, maildomain))
                 )
             for n, m in enumerate (ms):
-                if not check_email (db, contacts, m, email):
-                    c = db.user_contact.create \
-                        ( contact      = m
-                        , contact_type = email
-                        , order        = 1 + n
-                        )
-                    contacts.append (c)
-            if contacts:
-                update_dict ['contacts'] = contacts
+                c = db.user_contact.create \
+                    ( contact      = m
+                    , contact_type = email
+                    , order        = 1 + n
+                    , user         = uid
+                    )
     if 'lunch_duration' in cl.properties:
         if not user.lunch_duration:
             update_dict ['lunch_duration'] = .5

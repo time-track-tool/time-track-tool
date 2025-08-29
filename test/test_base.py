@@ -1,4 +1,4 @@
-# Copyright (C) 2010-23 Ralf Schlatterbeck. All rights reserved
+# Copyright (C) 2010-25 Ralf Schlatterbeck. All rights reserved
 # Reichergasse 131, A-3411 Weidling
 # ****************************************************************************
 #
@@ -2928,6 +2928,7 @@ class Test_Case_Timetracker (_Test_Case_Summary, unittest.TestCase):
         self.db.commit ()
         self.db.close ()
         self.db = self.tracker.open (self.username0)
+        assert self.db.user.get (self.user0, 'address')
         for v in za, vs:
             for st in (st_open, st_carq, st_canc):
                 self.assertRaises \

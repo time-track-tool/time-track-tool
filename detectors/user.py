@@ -1,5 +1,5 @@
 #! /usr/bin/python
-# Copyright (C) 2006-21 Dr. Ralf Schlatterbeck Open Source Consulting.
+# Copyright (C) 2006-25 Dr. Ralf Schlatterbeck Open Source Consulting.
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -286,19 +286,16 @@ def domain_user_edit (db, cl, nodeid, new_values):
 def domain_user_check (db, cl, nodeid, new_values):
     """ This checks for items that are editable if the linked user (in
         the property 'user') has the correct ad_domain. Currently used
-        for user_dynamic user_contact classes. For user_contact we check
-        this only on modify not on creation because user_contact items
-        are first created without a user and later added to the user.
+        for user_dynamic user_contact classes. We require a user during
+        creation.
     """
     _ = db.i18n.gettext
+    common.require_attributes (_, cl, nodeid, new_values, 'user')
     if not _domain_user_role_check (db):
         return
     uid = new_values.get ('user', None)
     if nodeid and not uid:
         uid = cl.get (nodeid, 'user')
-    # Allow creation of empty user
-    if not uid:
-        return
     ad_domain = db.user.get (uid, 'ad_domain')
     if not check_domain_permission (db, db.getuid (), ad_domain):
         raise Reject \

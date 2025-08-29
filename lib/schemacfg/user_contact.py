@@ -1,6 +1,5 @@
 #! /usr/bin/python
-# -*- coding: iso-8859-1 -*-
-# Copyright (C) 2010-11 Dr. Ralf Schlatterbeck Open Source Consulting.
+# Copyright (C) 2010-25 Dr. Ralf Schlatterbeck Open Source Consulting.
 # Reichergasse 131, A-3411 Weidling.
 # Web: http://www.runtux.com Email: office@runtux.com
 # All rights reserved
@@ -44,7 +43,10 @@ def init \
 
     contact = Contact_Class \
         ( db, ''"user_contact"
-        , user                = Link      ('user',    do_journal = "no")
+        , user                = Link ( 'user'
+                                     , do_journal = "no"
+                                     , rev_multilink = 'contacts'
+                                     )
         , contact_type        = Link      ("uc_type", do_journal = "no")
         , order               = Number    ()
         , visible             = Boolean   ()
@@ -55,18 +57,6 @@ def init \
         # Sync to user address/alternate_addresses if this is set
         , is_email            = Boolean   ()
         )
-
-    class User_Class (kw ['User_Class']) :
-        """ add contacts to user class
-        """
-        def __init__ (self, db, classname, ** properties) :
-            self.update_properties \
-                ( contacts               = Multilink ("user_contact")
-                )
-            kw ['User_Class'].__init__ (self, db, classname, ** properties)
-        # end def __init__
-    # end class User_Class
-    export ['User_Class'] = User_Class
 
     return export
 # end def init
