@@ -197,8 +197,11 @@
          <td tal:condition="ct/contact_type/visible"
              tal:content="structure ct/visible/plain"/>
          <td tal:condition="context/contacts/is_edit_ok">
-          <input tabindex="-1" type="checkbox" name="@remove@contacts"
-                 tal:attributes="value ct/id">
+          <input tabindex="-1" type="checkbox"
+                 tal:attributes=
+                    " value ct/id
+                    ; name  python: '@retire%s@user_contact' % ct.id
+                    ;"/>
          </td>
         </tr>
         <tr tal:condition="python: db.user_contact.is_edit_ok ()">
@@ -211,7 +214,10 @@
          <td tal:content="structure python:utils.new_property
              (context, db, 'user_contact', -1, 'description').field (size=25)"/>
          <td/>
-         <input type="hidden" name="@link@contacts" value="user_contact-1"/>
+         <input type="hidden" tal:attributes=
+                " name  python: 'user_contact-1@link@user'
+                ; value python: 'user%s' % context.id
+                "/>
         </tr>
        </table>
       </td>
@@ -480,8 +486,6 @@
         <th style="vertical-align:top;text-align:left"
             tal:content="structure python:utils.ExtProperty
             (utils, ct.name, item = ct).formatlink () + '&nbsp;'">
-         <input type="hidden" tal:attributes=
-                "value context/id;name python:'%s@user' % ct.designator()"/>
         </th>
         <td tal:content="ct/call/plain"/>
         <td tal:content="ct/qth/plain"/>
@@ -532,6 +536,11 @@
      </td>
     </tr>
    </tal:block><!-- formatted_class_content -->
+   <tal:block metal:fill-slot="button_slot">
+    <tal:block tal:condition="context/is_edit_ok"
+     tal:content="structure python: context.submit
+         (action=utils.adr_edit_button (context))"/>
+   </tal:block>
   </tal:block><!-- formatted_class -->
  </tal:block><!-- content -->
 

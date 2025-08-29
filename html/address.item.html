@@ -243,7 +243,6 @@
          (utils, context.address.street, item=context.address).formatlink ()"/>
        </tal:block>
        <tal:block tal:condition="not:context/address">
-        <input type="hidden" name="@link@address" value="address-1"/>
         <td tal:content="structure python:utils.new_property
             (context, db, 'address', -1, 'street').field (onChange=onch)"/>
        </tal:block>
@@ -399,15 +398,14 @@
              ct.contact_type.url_template.plain () % ct" tabindex="-1"/>
           <span tal:condition="python: not ct.contact_type.url_template"
                 tal:content="ct/contact/plain"/>
-          <input type="hidden" tal:attributes=
-                 "value context/id
-                 ;name python:
-                   '%s@%s' % (ct.designator(), utils.contact_backlink(db))"/>
          </td>
          <td tal:content="ct/description/plain" colspan="2"/>
          <td tal:condition="context/contacts/is_edit_ok">
-          <input tabindex="-1" type="checkbox" name="@remove@contacts"
-                 tal:attributes="value ct/id">
+          <input tabindex="-1" type="checkbox"
+                 tal:attributes=
+                    " value ct/id
+                    ; name  python: '@retire%s@contact' % ct.id
+                    ;"/>
          </td>
         </tr>
         <tr tal:condition="python:'contacts' in props">
@@ -418,7 +416,10 @@
          <td colspan="2"
              tal:content="structure python:utils.new_property
              (context, db, 'contact', -1, 'description').field (size=25)"/>
-         <input type="hidden" name="@link@contacts" value="contact-1"/>
+         <input type="hidden" tal:attributes=
+            " name  python: 'contact-1@link@%s' % utils.contact_backlink(db)
+            ; value python: '%s%s' % (utils.contact_backlink(db), context.id)
+            "/>
         </tr>
        </table>
       </td>
@@ -604,6 +605,11 @@
        </table>
       </tal:block>
      </tal:block>
+    </tal:block>
+    <tal:block metal:fill-slot="button_slot">
+     <tal:block tal:condition="context/is_edit_ok"
+      tal:content="structure python: context.submit
+          (action=utils.adr_edit_button (context))"/>
     </tal:block>
 
     <tal:block metal:fill-slot="before_messages">

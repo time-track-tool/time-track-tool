@@ -34,11 +34,13 @@ import time
 import os
 import re
 import locale
-from roundup.cgi.templating         import HTMLClass
-from roundup.date                   import Date, Interval
-from roundup.hyperdb                import Database as hyperdb_database
-from copy                           import copy
-from xml.sax.saxutils               import escape
+from rsclib.autosuper       import autosuper
+from roundup.cgi.templating import HTMLClass, _HTMLItem
+from roundup.cgi.actions    import EditItemAction, NewItemAction, EditCommon
+from roundup.date           import Date, Interval
+from roundup.hyperdb        import Database as hyperdb_database
+from copy                   import copy
+from xml.sax.saxutils       import escape
 
 import common
 import freeze
@@ -616,7 +618,50 @@ def dr_is_public_holiday (dr):
     return False
 # end def dr_is_public_holiday
 
+def adr_edit_button (context):
+    if isinstance (context, _HTMLItem):
+        return 'adr_edit'
+    elif isinstance (context, HTMLClass):
+        return 'adr_new'
+    assert None
+# end def adr_edit_button
+
+class Adr_Submit (EditCommon, autosuper):
+    """ Handle retire actions and maybe in the future remove items to
+        not create contacts.
+    """
+
+    def _editnodes (self, props, links):
+        """ We search for @retire@<classname> form elements, the value
+            of that should be the item to retire.
+        """
+        for k in self.form:
+            if k.startswith ('@retire'):
+                clname = k.rsplit ('@', 1)[-1]
+                if clname not in self.db.classes:
+                    continue
+                cls = self.db.classes [clname]
+                cls.retire (self.form [k].value)
+        return EditCommon._editnodes (self, props, links)
+    # end def _editnodes
+# end class Adr_Submit
+
+class Edit_Address (EditItemAction, Adr_Submit):
+    def _editnodes (self, props, links):
+        return Adr_Submit._editnodes (self, props, links)
+    # end def _editnodes
+# end class Edit_Address
+
+class New_Address (NewItemAction, Adr_Submit):
+    def _editnodes (self, props, links):
+        return Adr_Submit._editnodes (self, props, links)
+    # end def _editnodes
+# end class New_Address
+
 def init (instance):
+    act = instance.registerAction
+    act ('adr_edit', Edit_Address)
+    act ('adr_new',  New_Address)
     reg = instance.registerUtil
     reg ("correct_midnight_date_string", correct_midnight_date_string)
     reg ("rough_date_diff",              rough_date_diff)
@@ -658,4 +703,5 @@ def init (instance):
     reg ("valid_olo",                    valid_olo)
     reg ("get_allowed_olo",              get_allowed_olo)
     reg ("dr_is_public_holiday",         dr_is_public_holiday)
+    reg ("adr_edit_button",              adr_edit_button)
 # end def init
