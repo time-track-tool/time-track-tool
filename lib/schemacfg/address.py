@@ -61,6 +61,7 @@ def init \
                 , valid               = Link      ("valid")
                 , lookalike_city      = String    (indexme = do_index)
                 , lookalike_street    = String    (indexme = do_index)
+                , uid                 = String    (indexme = "no")
                 )
             self.__super.__init__ (db, classname, ** properties)
             self.setlabelprop ('country')

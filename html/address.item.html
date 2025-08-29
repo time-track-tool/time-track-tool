@@ -180,7 +180,7 @@
       <tal:block tal:condition="python:'birthdate' in props">
        <th tal:content="structure python:utils.fieldname
            (db, classname, 'birthdate')"/>
-       <td colspan="2" tal:content="structure context/birthdate/field"/>
+       <td tal:content="structure context/birthdate/field"/>
       </tal:block>
      </tr>
      <tr tal:condition="python:'title' in props">
@@ -189,7 +189,7 @@
       <td tal:content="structure context/title/field"/>
       <th tal:content="structure python:utils.fieldname
           (db, classname, 'lettertitle')"/>
-      <td tal:content="structure context/lettertitle/field" colspan="2"/>
+      <td tal:content="structure context/lettertitle/field"/>
      </tr>
      <tr tal:condition="python:'lastname' in props">
       <th tal:content="structure python:utils.fieldname
@@ -197,7 +197,7 @@
       <td tal:content="structure context/lastname/field"/>
       <th tal:content="structure python:utils.fieldname
           (db, classname, 'firstname')"/>
-      <td colspan="2">
+      <td>
        <table border="0" cellspacing="0" cellpadding="0">
         <tr>
          <td tal:content="structure python:context.firstname.field (size=24)"/>
@@ -324,25 +324,32 @@
       </td>
       <th tal:content="structure python:utils.fieldname
           (db, classname, 'city')"/>
-      <td tal:content="structure context/city/field" colspan="2"/>
+      <td tal:content="structure context/city/field"/>
      </tr>
      <tr tal:condition="python:'province' in props">
       <th tal:content="structure python:utils.fieldname 
           (db, classname, 'province')" />
       <td tal:content="structure context/province/field"/>
      </tr>
-     <tr tal:condition="python:'parent' in props">
-      <th tal:content="structure python:utils.fieldname
-          (db, classname, 'parent')"/>
-      <td nowrap colspan="3">
-       <span tal:content="structure python:context.parent.field (size=4)"/>
-       <span tal:content="structure python:utils.ExtProperty
-        (utils, context.parent.firstname, item=context.parent).formatlink ()"/>
-       <span tal:content="structure python:utils.ExtProperty
-        (utils, context.parent.lastname,  item=context.parent).formatlink ()"/>
-       <span tal:content="structure python:utils.ExtProperty
-        (utils, context.parent.function,  item=context.parent).formatlink ()"/>
-      </td>
+     <tr tal:condition="python:'parent' in props or 'uid' in props">
+      <tal:block tal:condition="python:'parent' in props">
+       <th tal:content="structure python:utils.fieldname
+           (db, classname, 'parent')"/>
+       <td nowrap>
+        <span tal:content="structure python:context.parent.field (size=4)"/>
+        <span tal:content="structure python:utils.ExtProperty
+         (utils, context.parent.firstname, item=context.parent).formatlink ()"/>
+        <span tal:content="structure python:utils.ExtProperty
+         (utils, context.parent.lastname,  item=context.parent).formatlink ()"/>
+        <span tal:content="structure python:utils.ExtProperty
+         (utils, context.parent.function,  item=context.parent).formatlink ()"/>
+       </td>
+      </tal:block>
+      <tal:block tal:condition="python:'uid' in props">
+       <th tal:content="structure python:utils.fieldname
+           (db, classname, 'uid')"/>
+       <td tal:content="structure context/uid/field"/>
+      </tal:block>
      </tr>
      <tr tal:condition="python:'adr_type' in props">
       <th tal:content="structure python:utils.fieldname
@@ -353,7 +360,7 @@
       </td>
       <th tal:content="structure python:utils.fieldname
           (db, classname, 'valid')"/>
-      <td tal:content="structure context/valid/menu" colspan="2"/>
+      <td tal:content="structure context/valid/menu"/>
      </tr>
      <tr><td>&nbsp;</td></tr>
      <tr>
