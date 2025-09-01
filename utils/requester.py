@@ -20,8 +20,9 @@ except ImportError:
 
 class Requester (autosuper) :
 
-    def __init__ (self, args) :
+    def __init__ (self, args, **kw) :
         self.args    = args
+        super ().__init__ (**kw)
         if args.disable_cert_check_warning :
             urllib3.disable_warnings (urllib3.exceptions.InsecureRequestWarning)
         self.session = requests.session ()
