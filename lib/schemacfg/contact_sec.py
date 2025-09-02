@@ -44,4 +44,7 @@ def security (db, ** kw) :
 
     schemadef.register_roles             (db, roles)
     schemadef.register_class_permissions (db, classes, [])
+    for perm in 'Retire', 'Restore':
+        p = db.security.addPermission (name = perm, klass = 'contact')
+        db.security.addPermissionToRole ('Contact', p)
 # end def security
