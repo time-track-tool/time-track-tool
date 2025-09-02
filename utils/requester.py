@@ -55,6 +55,18 @@ class Requester (autosuper) :
         return r.json ()
     # end def get
 
+    def get_file (self, link):
+        """ Get the file from the content 'link' attribute
+        """
+        r = self.session.get (link)
+        if not (200 <= r.status_code <= 299):
+            raise RuntimeError \
+                ( 'Invalid get result: %s: %s\n    %s'
+                % (r.status_code, r.reason, r.text)
+                )
+        return r.content
+    # end def get_file
+
     def get_pw (self) :
         """ Password given as option takes precedence.
             Next we try password via .netrc. If that doesn't work we ask.
