@@ -362,13 +362,13 @@
       <td tal:content="structure context/valid/menu"/>
      </tr>
      <tr><td>&nbsp;</td></tr>
-     <tr>
+     <tr tal:condition="python: 'contacts' in props and context.id">
       <th tal:content="structure python:utils.fieldname
           (db, classname, 'contacts')"/>
       <td colspan="3">
        <table class="form" border="0"
               style="border-spacing:0px;padding-top:0px;padding-left:0px">
-        <tr tal:condition="python:'contacts' in props">
+        <tr>
          <th style="text-align:left"
              tal:content="structure python:utils.fieldname
              (db, 'contact', 'contact_type')"/>
@@ -384,8 +384,7 @@
              remove
          </th>
         </tr>
-        <tr tal:condition="python:'contacts' in props"
-            tal:repeat="ct python:sorted
+        <tr tal:repeat="ct python:sorted
             ( context.contacts
             , key = lambda x : (x.contact_type.order, x.contact)
             )">
@@ -408,7 +407,7 @@
                     ;"/>
          </td>
         </tr>
-        <tr tal:condition="python:'contacts' in props">
+        <tr>
          <td tal:content="structure python:utils.new_property
              (context, db, 'contact', -1, 'contact_type').menu ()"/>
          <td tal:content="structure python:utils.new_property
@@ -416,9 +415,11 @@
          <td colspan="2"
              tal:content="structure python:utils.new_property
              (context, db, 'contact', -1, 'description').field (size=25)"/>
+         <!-- Doesn't work on creation -->
          <input type="hidden" tal:attributes=
-            " name  python: 'contact-1@link@%s' % utils.contact_backlink(db)
-            ; value python: '%s%s' % (utils.contact_backlink(db), context.id)
+            " name  python: 'contact-1@link@%s' % utils.contact_backlink (db)
+            ; value python:
+                '%s%s' % (utils.contact_backlink(db), context.id or '')
             "/>
         </tr>
        </table>
