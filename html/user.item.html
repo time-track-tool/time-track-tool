@@ -63,7 +63,8 @@
          (db, 'user', 'aux_username')"/>
      <td tal:content="structure context/aux_username/field"/>
     </tr>
-    <tal:block tal:condition="python:'user_dynamic' in db._db.classes">
+    <tal:block tal:condition="python:
+        'user_dynamic' in db._db.classes and context.id">
      <tal:block tal:define="ud python:
          utils.act_or_latest_user_dynamic (db._db, context.id)"
          tal:condition="python:context.id">
@@ -155,7 +156,7 @@
           utils.fieldname (db, 'user', 'department_temp')"/>
       <td tal:content="structure python: context.department_temp.field ()"/>
      </tr>
-     <tr tal:condition="python:'contacts' in props">
+     <tr tal:condition="python:'contacts' in props and context.id">
       <th tal:content="structure python:utils.fieldname
           (db, 'user', 'contacts')"/>
       <td colspan="3">
