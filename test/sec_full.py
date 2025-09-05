@@ -22,6 +22,8 @@ Role "cc-permission":
  User is allowed to create cost_center_permission_group (Create for "cost_center_permission_group" only)
  User is allowed to edit cost_center_permission_group (Edit for "cost_center_permission_group" only)
 Role "contact":
+  (Restore for "contact" only)
+  (Retire for "contact" only)
  User is allowed to create contact (Create for "contact" only)
  User is allowed to edit contact (Edit for "contact" only)
 Role "controlling":

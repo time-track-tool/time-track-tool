@@ -23,6 +23,8 @@ Role "adr_readonly":
 Role "anonymous":
  User may access the web interface (Web Access)
 Role "contact":
+  (Restore for "contact" only)
+  (Retire for "contact" only)
  User is allowed to create address (Create for "address" only)
  User is allowed to create bank_account (Create for "bank_account" only)
  User is allowed to create contact (Create for "contact" only)

@@ -40,6 +40,8 @@ Role "adr_readonly":
 Role "anonymous":
  User may access the web interface (Web Access)
 Role "contact":
+  (Restore for "contact" only)
+  (Retire for "contact" only)
  User is allowed to access address (View for "address" only)
  User is allowed to access contact (View for "contact" only)
  User is allowed to access opening_hours (View for "opening_hours" only)
