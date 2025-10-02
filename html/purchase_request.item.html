@@ -56,7 +56,12 @@
            <tr>
             <th tal:content="structure python:utils.fieldname
                 (db, classname, 'title')"/>
-            <td tal:content="structure python:context.title.field ()"/>
+            <td>
+             <span tal:content="structure python:context.title.field ()"/>
+             <input tal:condition="python:not context.title.is_edit_ok ()"
+              type="hidden" name="title"
+              tal:attributes="value python:context.title">
+            </td>
            </tr>
            <tr>
             <th tal:content="structure python:utils.fieldname
