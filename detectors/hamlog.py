@@ -30,56 +30,56 @@ from   roundup.exceptions             import Reject
 from   hamlib                         import fix_qsl_status
 import common
 
-def check_qso_empty (db, cl, nodeid, old_values) :
+def check_qso_empty (db, cl, nodeid, old_values):
     """ Retire qsl if qso Link is removed """
-    if 'qso' in old_values and not cl.get (nodeid, 'qso') :
+    if 'qso' in old_values and not cl.get (nodeid, 'qso'):
         cl.retire (nodeid)
 # end def check_qso_empty
 
-def check_dupe_qsl_type (db, cl, nodeid, new_values) :
+def check_dupe_qsl_type (db, cl, nodeid, new_values):
     _ = db.i18n.gettext
     common.require_attributes (_, cl, nodeid, new_values, 'qsl_type', 'qso')
     type = new_values ['qsl_type']
     qso  = new_values ['qso']
     qsl  = db.qsl.filter (None, dict (qso = qso, qsl_type = type))
     qn   = db.qsl_type.get (type, 'name')
-    if qsl :
+    if qsl:
         raise Reject (_ ('Duplicate QSL type "%s" for QSO' % qn))
 # end def check_dupe_qsl_type
 
-def check_owner_has_qsos (db, cl, nodeid, new_values) :
+def check_owner_has_qsos (db, cl, nodeid, new_values):
     _ = db.i18n.gettext
-    if 'call' not in new_values :
+    if 'call' not in new_values:
         return
     oldcalls = set (cl.get (nodeid, 'call'))
     newcalls = set (new_values ['call'])
     deleted  = oldcalls - newcalls
-    if not deleted :
+    if not deleted:
         return
-    for call in deleted :
+    for call in deleted:
         qsos = db.qso.filter (None, dict (owner = call))
-        if qsos :
+        if qsos:
             name = db.ham_call.get (call, 'name')
             raise Reject \
                 (_ ('Cant\'t delete "%(name)s" Call has QSOs') % locals ())
-        else :
+        else:
             db.ham_call.retire (call)
 # end def check_owner_has_qsos
 
-def fix_stati_qsl (db, cl, nodeid, old_values) :
+def fix_stati_qsl (db, cl, nodeid, old_values):
     fix_qsl_status (db, cl.get (nodeid, 'qso'))
 # end def fix_stati_qsl
 
-def fix_stati_qso (db, cl, nodeid, old_values) :
+def fix_stati_qso (db, cl, nodeid, old_values):
     w = 'wont_qsl_via'
     if  (  not old_values
         or (w in old_values and old_values [w] != cl.get (nodeid, w))
-        ) :
+        ):
         fix_qsl_status (db, nodeid)
 # end def fix_stati_qso
 
-def init (db) :
-    if 'qso' not in db.classes :
+def init (db):
+    if 'qso' not in db.classes:
         return
     db.qsl.react  ('set',    check_qso_empty)
     db.qsl.audit  ('create', check_dupe_qsl_type)
