@@ -47,6 +47,14 @@ def check_dupe_qsl_type (db, cl, nodeid, new_values):
         raise Reject (_ ('Duplicate QSL type "%s" for QSO' % qn))
 # end def check_dupe_qsl_type
 
+def set_want_no_paper (db, cl, nodeid, new_values):
+    wn = new_values.get ('want_no_paper')
+    if wn is None and nodeid:
+        wn = cl.get (nodeid, 'want_no_paper')
+    if wn is None:
+        new_values ['want_no_paper'] = False
+# end def set_want_no_paper
+
 def check_owner_has_qsos (db, cl, nodeid, new_values):
     _ = db.i18n.gettext
     if 'call' not in new_values:
@@ -83,6 +91,8 @@ def init (db):
         return
     db.qsl.react  ('set',    check_qso_empty)
     db.qsl.audit  ('create', check_dupe_qsl_type)
+    db.qso.audit  ('create', set_want_no_paper)
+    db.qso.audit  ('set',    set_want_no_paper)
     db.qsl.react  ('create', fix_stati_qsl)
     db.qsl.react  ('set',    fix_stati_qsl)
     db.qso.react  ('create', fix_stati_qso)

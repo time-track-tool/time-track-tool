@@ -1,5 +1,5 @@
 #! /usr/bin/python
-# Copyright (C) 2012-21 Dr. Ralf Schlatterbeck Open Source Consulting.
+# Copyright (C) 2012-25 Dr. Ralf Schlatterbeck Open Source Consulting.
 # Reichergasse 131, A-3411 Weidling.
 # Web: http://www.runtux.com Email: office@runtux.com
 # All rights reserved
@@ -157,6 +157,7 @@ def init \
         , qsl_via               = String    ()
         , qso2                  = Link      ("qso")
         , wont_qsl_via          = Multilink ("qsl_type",   do_journal = "no")
+        , want_no_paper         = Boolean   ()
         , qsl_r_status          = Link      ("qsl_status", do_journal = "no")
         , qsl_s_status          = Link      ("qsl_status", do_journal = "no")
         , no_qsl_status         = Link      ("qsl_status", do_journal = "no")

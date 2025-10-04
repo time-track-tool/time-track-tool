@@ -7437,6 +7437,9 @@ msgstr "State"
 msgid "wont_qsl_via"
 msgstr "Won't QSL via"
 
+msgid "want_no_paper"
+msgstr "Want no paper"
+
 msgid "reject"
 msgstr "Reject"
 
