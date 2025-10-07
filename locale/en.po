@@ -699,7 +699,7 @@ msgid "%(classname)s may not be changed"
 msgstr ""
 
 msgid "delivery_deadline"
-msgstr "Delivery deadline"
+msgstr "Req. delivery date"
 
 #, python-format
 msgid "%(deadline)s may not be in the past"
