@@ -249,6 +249,7 @@ def init \
         ( db, ''"pr_rating_category"
         , name                  = String    ()
         , order                 = Number    ()
+        , quality_relevant      = Boolean   ()
         )
     pr_rating_category.setkey ('name')
 
