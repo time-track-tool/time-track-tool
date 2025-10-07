@@ -532,7 +532,7 @@ class Approval_Logic:
         if len (ratings):
             sr = self.db.pr_supplier_rating.getnode (ratings [0])
             rating = self.db.pr_rating_category.getnode (sr.rating)
-            if rating is None or rating.order > 2:
+            if rating is None or rating.quality_relevant:
                 return False
             return True
         return False
