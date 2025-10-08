@@ -21,9 +21,13 @@ import re
 import common
 import prlib
 import o_permission
-from   roundup.date                   import Date, Interval
-from   roundup.exceptions             import Reject
-from   roundup                        import roundupdb
+from   roundup.date       import Date, Interval
+from   roundup.exceptions import Reject
+from   roundup            import roundupdb
+from   roundup.test       import memorydb
+from   roundup.mailer     import Mailer, MessageSendError
+
+memdb = memorydb.Database
 
 def prjust (db, cl, nodeid, new_values):
     """ Field pr_justification must be edited when signing
@@ -740,14 +744,14 @@ def set_agents (db, cl, nodeid, new_values):
             optname = 'MISC_DEFAULT_PURCHASING_AGENT'
             agent = getattr (db.config.ext, optname, None)
             if agent:
-                if hasattr (db, 'sql'):
+                if hasattr (db, 'sql') and not isinstance (db, memdb):
                     db.sql ('savepoint p_agent')
                 try:
                     user = db.user.getnode (agent)
                     stat = user.status
                 except (ValueError, IndexError):
                     stat = None
-                    if hasattr (db, 'sql'):
+                    if hasattr (db, 'sql') and not isinstance (db, memdb):
                         db.sql ('rollback to savepoint p_agent')
                 if stat and db.user_status.get (stat, 'is_nosy'):
                     paset.add (user.id)
@@ -998,7 +1002,8 @@ def set_infosec (db, cl, nodeid, new_values):
         new_values ['infosec_level'] = ilm.id
 # end def set_infosec
 
-def update_pr (db, pr, ap, nosy, txt, ** kw):
+def update_pr (db, pr, ap, nosy, txt, subj, ** kw):
+    to  = []
     uor = ''
     if ap:
         if ap.user:
@@ -1010,20 +1015,26 @@ def update_pr (db, pr, ap, nosy, txt, ** kw):
                 uor += ' and role %s' % ap.role
             else:
                 uor = 'role %s' % ap.role
+        to = list (nosy_for_approval (db, ap))
+    if not to:
+        to = list (nosy)
+    to  = [db.user.get (id, 'address') for id in to]
     txt = (txt.replace ('$', '%') % dict (title = pr.title, user_or_role = uor))
-    # Note: We can't use the current db user as the
-    # author of the message, otherwise the nosy auditor
-    # will prevent the user from being removed from the
-    # nosy list (!)
-    msg = db.msg.create \
-        ( content = txt
-        , author  = '1' # admin
-        , date    = Date ('.')
-        )
-    msgs = set (pr.messages)
-    msgs.add (msg)
-    d = kw
-    d.update (nosy = list (nosy), messages = list (msgs))
+    # Note: In the old implementation we could not use the current db
+    # user as the author of the message, otherwise the nosy auditor
+    # would prevent the user from being removed from the nosy list (!)
+    # Note: We now use the db user as the sender (but with the
+    # TRACKER_EMAIL address)
+    charset  = getattr (db.config, 'EMAIL_CHARSET', 'utf-8')
+    mailer   = Mailer (db.config)
+    message  = mailer.get_standard_message (multipart = False)
+    # Use current user as author but with TRACKER_EMAIL
+    fromaddr = db.config.TRACKER_EMAIL
+    author   = (db.user.get (db.getuid (), 'realname'), fromaddr)
+    mailer.set_message_attributes (message, to, subj, author)
+    message.set_payload (txt, charset)
+    mailer.smtp_send (to, message.as_string (), fromaddr)
+    d = dict (kw , nosy = list (nosy))
     db.purchase_request.set (pr.id, ** d)
 # end def update_pr
 
@@ -1054,22 +1065,34 @@ def approved_pr_approval (db, cl, nodeid, old_values):
                 agents = pr.purchasing_agents
                 if agents and not pt.confidential:
                     nosy.update (dict.fromkeys (agents))
+            designator = pr.cl.classname + str (pr.id)
             for a in apps:
                 ap = cl.getnode (a)
                 if ap.status != apr:
                     assert ap.status == und
                     nosy.update (nosy_for_approval (db, ap, add = True))
                     uor = ''
+                    subj = getattr \
+                        ( db.config.ext
+                        , 'MAIL_PR_APPROVAL_SUBJECT'
+                        , '[%s] needs approval'
+                        ).replace ('$', '%')
                     update_pr \
-                        (db, pr, ap, nosy, db.config.ext.MAIL_PR_APPROVAL_TEXT)
+                        ( db, pr, ap, nosy
+                        , db.config.ext.MAIL_PR_APPROVAL_TEXT
+                        , subj % designator
+                        )
                     break
             else:
+                subj = getattr \
+                    ( db.config.ext
+                    , 'MAIL_PR_APPROVED_SUBJECT'
+                    , '[%s] has been approved'
+                    ).replace ('$', '%')
                 update_pr \
-                    ( db
-                    , pr
-                    , None
-                    , nosy
+                    ( db, pr, None, nosy
                     , db.config.ext.MAIL_PR_APPROVED_TEXT
+                    , subj % designator
                     , status = db.pr_status.lookup ('approved')
                     )
         elif ns == rej:

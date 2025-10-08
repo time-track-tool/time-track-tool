@@ -7892,4 +7892,219 @@ class Test_Case_PR (_Test_Case, unittest.TestCase):
         , 'sub-login', 'user', 'user_view', 'view-roles'
         ]
     transprop_perms = transprop_pr
+
+    def setup_pr (self):
+        """ Set up a normal user and a procurement person
+            Create minimal approval config
+        """
+        self.db = self.tracker.open ('admin')
+        self.org = self.db.organisation.create \
+            ( description  = 'The Org'
+            , may_purchase = True
+            , name         = 'The Org'
+            , valid_from   = date.Date ('2025-10-05')
+            , sync_id      = '4711'
+            , company_code = 'The Org'
+            )
+        self.test1 = self.db.user.create \
+            ( username     = 'testuser1'
+            , realname     = 'Test User1'
+            , organisation = self.org
+            , roles        = 'User,Nosy'
+            , address      = 'testuser1@example.com'
+            )
+        self.procure1 = self.db.user.create \
+            ( username     = 'test-procure'
+            , realname     = 'Test Procure1'
+            , organisation = self.org
+            , roles        = 'User,Nosy'
+            , address      = 'test-procure@example.com'
+            )
+        self.board1 = self.db.user.create \
+            ( username     = 'test-board'
+            , realname     = 'Test Board1'
+            , organisation = self.org
+            , roles        = 'User,Nosy'
+            , address      = 'test-board@example.com'
+            )
+        self.quality1 = self.db.user.create \
+            ( username     = 'test-quality'
+            , realname     = 'Test Quality1'
+            , organisation = self.org
+            , roles        = 'User,Nosy'
+            , address      = 'test-quality@example.com'
+            )
+        self.finance1 = self.db.user.create \
+            ( username     = 'test-finance'
+            , realname     = 'Test Finance1'
+            , organisation = self.org
+            , roles        = 'User,Nosy'
+            , address      = 'test-finance@example.com'
+            )
+        board = self.db.pr_approval_order.lookup ('board')
+        self.db.pr_approval_order.set (board, users = [self.board1])
+        finance = self.db.pr_approval_order.lookup ('finance')
+        self.db.pr_approval_order.set (finance, users = [self.finance1])
+        quality = self.db.pr_approval_order.lookup ('quality')
+        self.db.pr_approval_order.set (quality, users = [self.quality1])
+        procurement = self.db.pr_approval_order.lookup ('procurement')
+        self.db.pr_approval_order.set (procurement, users = [self.procure1])
+        app_cfg = self.db.pr_approval_config.getnodeids (retired = False)
+        assert len (app_cfg) == 0
+        self.db.pr_approval_config.create \
+            ( quality_amount = 1000
+            , valid          = True
+            , role           = quality
+            )
+        self.db.pr_approval_config.create \
+            ( valid          = True
+            , role           = board
+            , amount         = 50000
+            , oob_amount     = 1000
+            )
+        self.db.pr_approval_config.create \
+            ( valid          = True
+            , role           = finance
+            )
+        supp = self.db.pr_supplier.getnodeids (retired = False)
+        assert len (supp) == 0
+        self.the_supplier = self.db.pr_supplier.create \
+            ( name    = 'The supplier'
+            , sap_ref = 'sap-ref'
+            )
+        # Put supplier in LAS
+        self.db.pr_supplier_rating.create \
+            ( organisation = self.org
+            , rating       = '1'
+            , scope        = 'always'
+            , supplier     = self.the_supplier
+            )
+        # Fix risks
+        scat = self.db.supplier_risk_category.lookup ('Low')
+        sgrp = self.db.security_req_group.lookup ('Cloud based services')
+        self.db.pr_supplier_risk.create \
+            ( organisation           = self.org
+            , security_req_group     = sgrp
+            , supplier               = self.the_supplier
+            , supplier_risk_category = scat
+            )
+        self.pgroup = self.db.product_group.lookup ('Software buy')
+        self.db.product_group.set (self.pgroup, quality_relevant = True)
+        self.sap_cc1 = self.db.sap_cc.create \
+            ( name              = 'SAP CC 1'
+            , purchasing_agents = [self.procure1]
+            , organisation      = self.org
+            , responsible       = self.procure1
+            , valid             = True
+            )
+        self.dep = self.db.department.create \
+            ( name       = 'The Department'
+            , manager    = self.procure1
+            , valid_from = date.Date ('2025-10-05')
+            )
+        self.loc = self.db.location.create \
+            ( name    = 'The Location'
+            , address = 'Somewhere'
+            , valid_from = date.Date ('2025-10-05')
+            )
+        self.db.commit ()
+        self.db.close  ()
+    # end def setup_pr
+
+    def test_pr (self):
+        self.setup_pr ()
+        ext = self.db.config.ext
+        ext.add_option (Option (ext, 'MAIL', 'PR_APPROVAL_TEXT'))
+        ext.add_option (Option (ext, 'MAIL', 'PR_APPROVAL_SUBJECT'))
+        ext.add_option (Option (ext, 'MAIL', 'PR_APPROVED_TEXT'))
+        ext.add_option (Option (ext, 'MAIL', 'PR_APPROVED_SUBJECT'))
+        ext.MAIL_PR_APPROVAL_TEXT = \
+            ('The purchase request "$(title)s"\n'
+             'needs to be approved by $(user_or_role)s.\n'
+             'many thanks!'
+            )
+        ext.MAIL_PR_APPROVAL_SUBJECT = '[$s] needs approval'
+        ext.MAIL_PR_APPROVED_TEXT = \
+            ('The purchase request "$(title)s" has been approved.\n'
+             'many thanks!'
+            )
+        ext.MAIL_PR_APPROVED_SUBJECT = '[$s] has been approved'
+        self.db = self.tracker.open ('testuser1')
+        sup = self.db.pr_supplier.getnode ('1')
+        oi  = self.db.pr_offer_item.create \
+            ( description    = "test"
+            , index          = 1
+            , offer_number   = '1'
+            , pr_currency    = '1'
+            , pr_supplier    = self.the_supplier
+            , price_per_unit = 4711
+            , units          = 1
+            , product_group  = self.pgroup
+            , supplier       = sup.name
+            )
+        pr = self.db.purchase_request.create \
+            ( offer_items       = [oi]
+            , sap_cc            = self.sap_cc1
+            , organisation      = self.org
+            , department        = self.dep
+            , delivery_deadline = date.Date ('.+2w')
+            , purchase_type     = '1'
+            , part_of_budget    = self.db.part_of_budget.lookup ('Yes')
+            , pr_currency       = '1'
+            , pr_ext_resource   = self.db.pr_ext_resource.lookup ('no')
+            , delivery_address  = self.loc
+            , title             = 'Just a test'
+            )
+        # Now submit
+        approving = self.db.pr_status.lookup ('approving')
+        d  = dict (purchase_request = pr, user = self.test1)
+        ap = self.db.pr_approval.filter (None, d)
+        assert len (ap) == 1
+        ap = self.db.pr_approval.getnode (ap [0])
+        st_ap = self.db.pr_approval_status.lookup ('approved')
+        self.db.pr_approval.set (ap.id, status = st_ap)
+        self.db.purchase_request.set (pr, status = approving)
+        # Verify that we haven email in maildebug
+        maildebug = os.path.join (self.dirname, 'maildebug')
+        e = Parser ().parse (open (maildebug, 'r'))
+        # Since *all* approvals produce the same text to the same person
+        # we factor this.
+        headers = \
+            ( ('subject', '[purchase_request1] needs approval')
+            , ('to',      'test-procure@example.com')
+            , ('from',    'issue_tracker@your.tracker.email.domain.example')
+            )
+        body = \
+            ( b'The purchase request "Just a test"\n'
+              b'needs to be approved by Test Procure1.\n'
+              b'many thanks!'
+            )
+        for h, t in headers:
+            assert header_decode (e [h]) == t
+        self.assertEqual (b64decode (e.get_payload ()).strip (), body)
+        os.unlink (maildebug)
+        # Approve next approval
+        self.db.pr_approval.set ('2', status = '2')
+        e = Parser ().parse (open (maildebug, 'r'))
+        for h, t in headers:
+            assert header_decode (e [h]) == t
+        self.assertEqual (b64decode (e.get_payload ()).strip (), body)
+        os.unlink (maildebug)
+        # Approve next approval
+        self.db.pr_approval.set ('3', status = '2')
+        e = Parser ().parse (open (maildebug, 'r'))
+        headers = \
+            ( ('subject', '[purchase_request1] has been approved')
+            , ('to',      'testuser1@example.com')
+            , ('from',    'issue_tracker@your.tracker.email.domain.example')
+            )
+        body = \
+            ( b'The purchase request "Just a test" has been approved.\n'
+              b'many thanks!'
+            )
+        for h, t in headers:
+            assert header_decode (e [h]) == t
+        self.assertEqual (b64decode (e.get_payload ()).strip (), body)
+        os.unlink (maildebug)
+    # end def test_pr
 # end class Test_Case_PR

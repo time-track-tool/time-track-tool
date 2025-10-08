@@ -867,11 +867,14 @@ if 'pr_approval_order' in db.classes :
     db.pr_approval_order.create (role = '',            order = 10)
     procure = db.pr_approval_order.create (role = 'procurement', order = 20)
     itapr   = db.pr_approval_order.create (role = 'it-approval', order = 30)
-    quality = db.pr_approval_order.create (role = 'quality',     order = 35)
     subcont = db.pr_approval_order.create (role = 'subcontract', order = 40)
     hr      = db.pr_approval_order.create (role = 'hr',          order = 50)
-    finance = db.pr_approval_order.create (role = 'finance',     order = 60)
-    board   = db.pr_approval_order.create (role = 'board',       order = 70)
+    board   = db.pr_approval_order.create \
+        (role = 'board',   order = 70, is_board = True)
+    finance = db.pr_approval_order.create \
+        (role = 'finance', order = 60, is_finance = True)
+    quality = db.pr_approval_order.create \
+        (role = 'quality', order = 35, is_quality = True)
 if 'pr_approval' in db.classes and hasattr (db, 'sql'):
     db.sql \
         ('create index _pr_approval_purchase_request_idx on _pr_approval'
@@ -1501,3 +1504,10 @@ if 'daily_record_freeze' in db.classes:
           'drf_date_user_unique unique '
           '(_date, _user, __retired__);'
         )
+if 'part_of_budget' in db.classes:
+    db.part_of_budget.create (name = 'Yes', order = 1)
+    db.part_of_budget.create (name = 'No',  order = 2)
+    db.part_of_budget.create (name = 'SCM', order = 3)
+if 'pr_rating_category' in db.classes:
+    db.pr_rating_category.create \
+        (name = 'good impression', order = 1, quality_relevant = False)
