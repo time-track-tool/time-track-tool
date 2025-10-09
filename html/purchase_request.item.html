@@ -1151,8 +1151,11 @@
      <tr>
       <th tal:content="structure python:utils.fieldname
           (db, classname, 'no_offer')"/>
-      <td tal:content="structure python:utils.bool_checkbox
+      <td tal:condition="python: context.no_offer.is_edit_ok ()"
+          tal:content="structure python:utils.bool_checkbox
           (context.no_offer)"/>
+      <td tal:condition="python: not context.no_offer.is_edit_ok ()"
+          tal:content="python: context.no_offer.plain ()"/>
      </tr>
     </tal:block>
     <tal:block metal:fill-slot="button_slot">
