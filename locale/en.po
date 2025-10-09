@@ -7622,3 +7622,6 @@ msgstr "Expected Delivery"
 
 msgid "comment_pr"
 msgstr "Comment Procurement"
+
+msgid "no_offer"
+msgstr "No offer"

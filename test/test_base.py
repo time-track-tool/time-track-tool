@@ -8054,10 +8054,12 @@ class Test_Case_PR (_Test_Case, unittest.TestCase):
             , pr_ext_resource   = self.db.pr_ext_resource.lookup ('no')
             , delivery_address  = self.loc
             , title             = 'Just a test'
+            , no_offer          = True
             )
         # Now submit
         approving = self.db.pr_status.lookup ('approving')
         d  = dict (purchase_request = pr, user = self.test1)
+        # Approve our own approval (sign&send)
         ap = self.db.pr_approval.filter (None, d)
         assert len (ap) == 1
         ap = self.db.pr_approval.getnode (ap [0])

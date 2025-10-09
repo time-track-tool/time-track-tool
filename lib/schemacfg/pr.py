@@ -401,6 +401,7 @@ def init \
                 , contract_info         = String    ()
                 , delivery_date         = Date      ()
                 , comment_pr            = String    ()
+                , no_offer              = Boolean   ()
                 )
             self.__super.__init__ (db, classname, ** properties)
         # end def __init__
@@ -624,7 +625,7 @@ def security (db, ** kw):
             , 'frame_purchase_end', 'nosy', 'messages', 'purchasing_agents'
             , 'internal_order', 'special_approval', 'payment_type'
             , 'delivery_address', 'contract_info', 'delivery_date'
-            , 'comment_pr'
+            , 'comment_pr', 'no_offer'
             )
         )
     db.security.addPermissionToRole ('User', p)

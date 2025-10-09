@@ -1141,6 +1141,21 @@
      </div> <!-- pr-layout-container -->
     </tal:block> <!-- formatted_class_content -->
     <input type="hidden" name="@action" value="pr_submit">
+    <tal:block metal:fill-slot="after-message-box">
+     <tr>
+      <th/>
+      <td i18n:translate="">
+       Please either attach an offer or tick "No offer"
+      </td>
+     </tr>
+     <tr>
+      <th tal:content="structure python:utils.fieldname
+          (db, classname, 'no_offer')"/>
+      <td tal:content="structure python:utils.bool_checkbox
+          (context.no_offer)"/>
+      <td tal:content="python: context.no_offer.plain ()"/>
+     </tr>
+    </tal:block>
     <tal:block metal:fill-slot="button_slot">
          <tal:block tal:condition="context/is_edit_ok"
               tal:content="structure python:context.submit

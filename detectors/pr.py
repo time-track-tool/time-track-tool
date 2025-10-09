@@ -579,6 +579,15 @@ def change_pr (db, cl, nodeid, new_values):
                     break
             else:
                 raise Reject ( _ ("No approval by requester found"))
+            # Check that either an attachment exists or 'No offer' is
+            # checked.
+            files = new_values.get ('files', cl.get (nodeid, 'files'))
+            if not files:
+                no_offer = new_values.get \
+                    ('no_offer', cl.get (nodeid, 'no_offer'))
+                if not no_offer:
+                    raise Reject \
+                        (_ ('Please either attach an offer or tick "No offer"'))
             new_values ['total_cost']  = prlib.pr_offer_item_sum (db, nodeid)
             check_psp_cc_consistency (db, cl, nodeid, new_values)
             update_nosy (db, cl, nodeid, new_values)

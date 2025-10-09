@@ -212,7 +212,7 @@ Role "user":
  User with edit role is allowed editing if status is not one of the in-progress stati (Edit for "purchase_request": ('files', 'messages', 'nosy', 'status') only)
  Users are allowed if an approval from them is linked to the PR (Edit for "purchase_request": ('files', 'messages', 'nosy') only)
  Users are allowed if an approval from them is linked to the PR (View for "purchase_request" only)
- Users are allowed if they have one of the edit roles of the purchase type or one of the (forced) approval roles (Edit for "purchase_request": ('comment_pr', 'contract_info', 'delivery_address', 'delivery_date', 'frame_purchase', 'frame_purchase_end', 'internal_order', 'messages', 'nosy', 'payment_type', 'purchasing_agents', 'sap_reference', 'special_approval', 'terms_conditions') only)
+ Users are allowed if they have one of the edit roles of the purchase type or one of the (forced) approval roles (Edit for "purchase_request": ('comment_pr', 'contract_info', 'delivery_address', 'delivery_date', 'frame_purchase', 'frame_purchase_end', 'internal_order', 'messages', 'no_offer', 'nosy', 'payment_type', 'purchasing_agents', 'sap_reference', 'special_approval', 'terms_conditions') only)
  Users are allowed if they have one of the edit roles of the purchase type or one of the (forced) approval roles (View for "purchase_request" only)
  Users are allowed if they have one of the view roles of the purchase type (View for "purchase_request" only)
  Users are allowed to edit if offer is linked from PR and PR is editable (Edit for "pr_offer_item" only)

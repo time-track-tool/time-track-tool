@@ -270,6 +270,7 @@ properties = \
         , 'internal_order'
         , 'issue_ids'
         , 'messages'
+        , 'no_offer'
         , 'nosy'
         , 'offer_items'
         , 'organisation'
