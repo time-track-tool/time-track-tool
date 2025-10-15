@@ -682,7 +682,10 @@ def bool_checkbox (item):
                   ">
     '''
     checked = ''
-    if int (item._value or 0):
+    if isinstance (item._value, str):
+        if item._value in ('true', 'yes', '1'):
+            checked = ' checked="checked"'
+    elif int (item._value or 0):
         checked = ' checked="checked"'
     id1 = item._name + '_hidden'
     id2 = item._name + '_checkbox'
