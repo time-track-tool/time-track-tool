@@ -575,7 +575,8 @@
                      , fieldwidth   = 25
                      )">
                <span tal:content="structure python: ep.as_listentry ()"/>
-               <span tal:content="structure python:db.product_group.classhelp
+               <span tal:condition="python: i.product_group.is_edit_ok ()"
+                     tal:content="structure python:db.product_group.classhelp
                 ( 'name,sap_ref'
                 , property  = ep.prop._formname
                 , inputtype = 'radio'
@@ -593,18 +594,21 @@
            </div> <!-- pr-section required attrs -->
            <div class="pr-section"> <!-- optional attrs -->
             <table class="form" border="0">
-             <tr tal:condition="python: utils.need_psp (context)">
+             <tr tal:condition="python: utils.need_psp (context) and
+                  (i.psp_element.is_edit_ok () or i.psp_element.plain ())">
               <th style="text-align:left"
                   tal:content="structure python:utils.fieldname
                   (db, 'pr_offer_item', 'psp_element')"/>
              </tr>
-             <tr tal:condition="python: not utils.need_psp (context)">
+             <tr tal:condition="python: not utils.need_psp (context) and
+                 (i.time_project.is_edit_ok () or i.time_project.plain ())">
               <th style="text-align:left"
                   tal:content="structure python:utils.fieldname
                   (db, 'pr_offer_item', 'time_project')"/>
              </tr>
-             <tr>
-              <td tal:condition="python: utils.need_psp (context)">
+             <tr tal:condition="python: utils.need_psp (context) and
+                  (i.psp_element.is_edit_ok () or i.psp_element.plain ())">
+              <td>
                <span tal:condition="python: i.psp_element.is_edit_ok ()"
                      tal:content="structure python:i.psp_element.field ()"/>
                <a tal:condition="python: not i.psp_element.is_edit_ok ()"
@@ -621,8 +625,9 @@
                      )"/>
               </td>
              </tr>
-             <tr>
-              <td tal:condition="python: not utils.need_psp (context)">
+             <tr tal:condition="python: not utils.need_psp (context) and
+                 (i.time_project.is_edit_ok () or i.time_project.plain ())">
+              <td>
                <tal:block tal:content="structure python:i.time_project.menu
                    ( sort_on = ('+', 'description')
                    , additional=('description',)
@@ -634,37 +639,43 @@
          
               </td>
              </tr>
-             <tr>
-              <th style="text-align:left"
-                  tal:content="structure python:utils.fieldname
-                  (db, 'pr_offer_item', 'sap_cc')"/>
-             </tr>
-             <tr>
-              <td>
-                <span tal:condition="python: i.sap_cc.is_edit_ok ()"
-                      tal:replace="structure python:i.sap_cc.field ()"/>
-                <a tal:condition="python: not i.sap_cc.is_edit_ok ()"
-                   tal:attributes="title python: i.sap_cc.description"
-                   tal:content="structure python:i.sap_cc.plain ()"/>
-                <span tal:condition="python: i.sap_cc.is_edit_ok ()"
-                      tal:replace="structure python:db.sap_cc.classhelp
-                      ( 'name,description,responsible,deputy,organisation'
-                      , property  = 'pr_offer_item%s@sap_cc' % i.id
-                      , inputtype = 'radio'
-                      , width     = '800'
-                      , filter    = cc_filt
-                      )"/>
-              </td>
-             </tr>
-             <tr>
-              <th style="text-align:left"
-                  tal:content="structure python:utils.fieldname
-                  (db, 'pr_offer_item', 'purchase_type')"/>
-             </tr>
-             <tr>
-              <td tal:content="structure python:i.purchase_type.menu
-                  (valid = True)"/>
-             </tr>
+             <tal:block tal:condition="python:
+                  (i.sap_cc.is_edit_ok () or i.sap_cc.plain ())">
+              <tr>
+               <th style="text-align:left"
+                   tal:content="structure python:utils.fieldname
+                   (db, 'pr_offer_item', 'sap_cc')"/>
+              </tr>
+              <tr>
+               <td>
+                 <span tal:condition="python: i.sap_cc.is_edit_ok ()"
+                       tal:replace="structure python:i.sap_cc.field ()"/>
+                 <a tal:condition="python: not i.sap_cc.is_edit_ok ()"
+                    tal:attributes="title python: i.sap_cc.description"
+                    tal:content="structure python:i.sap_cc.plain ()"/>
+                 <span tal:condition="python: i.sap_cc.is_edit_ok ()"
+                       tal:replace="structure python:db.sap_cc.classhelp
+                       ( 'name,description,responsible,deputy,organisation'
+                       , property  = 'pr_offer_item%s@sap_cc' % i.id
+                       , inputtype = 'radio'
+                       , width     = '800'
+                       , filter    = cc_filt
+                       )"/>
+               </td>
+              </tr>
+             </tal:block>
+             <tal:block tal:condition="python:
+                  (i.purchase_type.is_edit_ok () or i.purchase_type.plain ())">
+                  <tr>
+               <th style="text-align:left"
+                   tal:content="structure python:utils.fieldname
+                   (db, 'pr_offer_item', 'purchase_type')"/>
+              </tr>
+              <tr>
+               <td tal:content="structure python:i.purchase_type.menu
+                   (valid = True)"/>
+              </tr>
+             </tal:block>
              <tr>
               <th style="text-align:left"
                   tal:content="structure python:utils.fieldname
@@ -694,15 +705,18 @@
            </div> <!-- pr-section optional attrs -->
            <div class="pr-section"> <!-- optional attrs (security) -->
             <table class="form" border="0">
-             <tr>
-              <th style="text-align:left" colspan="2"
-                  tal:content="structure python:utils.fieldname
-                  (db, 'pr_offer_item', 'gl_account')"/>
-             </tr>
-             <tr>
-              <td tal:content="structure python: i.gl_account.field
-              (size=15)"/>
-             </tr>
+             <tal:block tal:condition="python:
+                  (i.gl_account.is_edit_ok () or i.gl_account.plain ())">
+              <tr>
+               <th style="text-align:left" colspan="2"
+                   tal:content="structure python:utils.fieldname
+                   (db, 'pr_offer_item', 'gl_account')"/>
+              </tr>
+              <tr>
+               <td tal:content="structure python: i.gl_account.field
+               (size=15)"/>
+              </tr>
+             </tal:block>
              <tr>
               <th style="text-align:left"
                   tal:content="structure python:utils.fieldname
