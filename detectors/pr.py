@@ -1129,6 +1129,9 @@ def new_pr_offer_item (db, cl, nodeid, new_values):
 # end def new_pr_offer_item
 
 def check_pr_offer_item (db, cl, nodeid, new_values):
+    # Special case of modifying sap_cc by admin
+    if list (new_values) == ['sap_cc'] and db.getuid () == '1':
+        return
     common.require_attributes \
         ( db.i18n.gettext, cl, nodeid, new_values, 'units'
         , 'price_per_unit', 'product_group', 'supplier'
@@ -1220,12 +1223,14 @@ def check_supplier (db, cl, nodeid, new_values):
         # Need to check if the supplier was added to LAS after creation
         # of this offer item. In that case we need to update pr_supplier.
         oi = cl.getnode (nodeid)
-        try:
-            prsup = db.pr_supplier.lookup (oi.supplier)
-            if oi.pr_supplier != prsup:
-                new_values ['pr_supplier'] = prsup
-        except KeyError:
-            new_values ['pr_supplier'] = None
+        # Special case of admin modifying sap_cc
+        if db.getuid () != '1' or list (new_values) != ['sap_cc']:
+            try:
+                prsup = db.pr_supplier.lookup (oi.supplier)
+                if oi.pr_supplier != prsup:
+                    new_values ['pr_supplier'] = prsup
+            except KeyError:
+                new_values ['pr_supplier'] = None
 # end def check_supplier
 
 def check_pr_update (db, cl, nodeid, old_values):
@@ -1244,10 +1249,16 @@ def check_pr_update (db, cl, nodeid, old_values):
 
 def check_agent_change (db, cl, nodeid, old_values):
     do_check = False
+    seen = {}
     for k in 'purchase_type', 'sap_cc', 'time_project':
         if cl.get (nodeid, k) != old_values.get (k, None):
             do_check = True
-            break
+            seen [k] = True
+    # Do not check if admin is updating retired sap_cc
+    if db.getuid () == '1' and list (seen) == ['sap_cc']:
+        ov = old_values.get ('sap_cc', None)
+        if ov and db.sap_cc.is_retired (ov):
+            do_check = False
     if do_check:
         prs = db.purchase_request.filter (None, dict (offer_items = nodeid))
         assert len (prs) == 1
@@ -1533,12 +1544,19 @@ def check_org_for_item (db, cl, nodeid, new_values, check_all, orgs):
                 % locals ()
                 )
 
-    sapid = new_values.get ('sap_cc', None)
+    osapid = None
+    if nodeid:
+        osapid = cl.get (nodeid, 'sap_cc')
+    sapid  = new_values.get ('sap_cc', None)
     if 'sap_cc' not in new_values and nodeid:
-        sapid = cl.get (nodeid, 'sap_cc')
+        sapid = osapid
     if sapid and (check_all or 'sap_cc' in new_values):
+        # Special case: admin replacing a retired sap_cc
+        ok = False
+        if db.getuid () == '1' and osapid and db.sap_cc.is_retired (osapid):
+            ok = True
         sap = db.sap_cc.getnode (sapid)
-        if sap.organisation not in orgs:
+        if not ok and sap.organisation not in orgs:
             name = sap.name
             raise Reject \
                 (_ ('Organisation of SAP cost-center %(name)s '
