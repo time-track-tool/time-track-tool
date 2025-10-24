@@ -42,7 +42,7 @@
     ; cc_filt             python:
         ['valid=yes', 'valid=yes\x3borganisation=%s' % context.organisation.id]
         [bool (context.organisation)]
-    ; url_template      python: 
+    ; url_template      python:
          getattr (db.config.ext, 'LINK_ISSUE_URL_TEMPLATE', None)
     ; use_highlighting  python: False
     ">
@@ -321,10 +321,24 @@
             <td/>
            </tal:block>
           </tr>
-          <tr>
+          <tr tal:condition="python:
+              (   not utils.has_asset (context)
+              and (not context.purchase_type
+                  or  context.purchase_type.allow_gl_account
+                  )
+              )">
            <th tal:content="structure python:utils.fieldname
                (db, classname, 'gl_account')"/>
            <td tal:content="structure python:context.gl_account.field ()"/>
+          </tr>
+          <tr tal:condition="python:
+              not (   not utils.has_asset (context)
+                  and (not context.purchase_type
+                      or  context.purchase_type.allow_gl_account
+                      )
+                  )">
+           <th/>
+           <td/>
           </tr>
           <tr tal:condition="context/id">
            <th tal:content="structure python:utils.fieldname
@@ -365,7 +379,7 @@
          </table>
         </div> <!-- pr-section pr-section-procurement -->
        </div> <!-- pr-section-content -->
-      
+
       <div class="pr-section pr-section-calculated" tal:condition="python:
              context.id and context.status != db._db.pr_status.lookup ('open')">
         <div class="pr-section-title">Data calculated</div>
@@ -636,7 +650,7 @@
                <tal:block tal:condition="python:
                           i.time_project and not i.time_project.is_edit_ok ()"
                           tal:replace="i/time_project/description"/>
-         
+
               </td>
              </tr>
              <tal:block tal:condition="python:
@@ -698,15 +712,14 @@
                </span>
               </td>
              </tr>
-             <tal:block
-              tal:condition="python: utils.allow_gl_account (i, context)">
-             </tal:block>
             </table>
            </div> <!-- pr-section optional attrs -->
            <div class="pr-section"> <!-- optional attrs (security) -->
             <table class="form" border="0">
              <tal:block tal:condition="python:
-                  (i.gl_account.is_edit_ok () or i.gl_account.plain ())">
+                  (   utils.allow_gl_account (i, context)
+                  and (i.gl_account.is_edit_ok () or i.gl_account.plain ())
+                  )">
               <tr>
                <th style="text-align:left" colspan="2"
                    tal:content="structure python:utils.fieldname

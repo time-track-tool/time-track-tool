@@ -89,7 +89,7 @@
       <td>
        <span class="nobreak">
 	<span tal:content="structure python:
-	      context.internal_order.field (size=8)"/> 
+	      context.internal_order.field (size=8)"/>
 	<span tal:condition="context/internal_order/is_edit_ok"
 	      tal:content="structure python:db.internal_order.classhelp
 		   ( 'order_number,name'
