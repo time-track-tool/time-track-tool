@@ -109,6 +109,23 @@ textarea {
     font-family: monospace;
 }
 
+/* PR-Tracker all should be the same font */
+textarea.pr {
+    font-family: sans-serif,Arial,Helvetica;
+    font-size: 9pt;
+}
+
+/* PR-Tracker all should be the same font */
+div.formdiv input {
+    font-family: sans-serif,Arial,Helvetica;
+    font-size: 9pt;
+}
+
+/* PR-Tracker sums bold */
+div.pr-item-sum span {
+    font-weight: bold;
+}
+
 td.sidebar p.classblock {
   padding: 2px 5px 2px 5px;
   margin: 1px;

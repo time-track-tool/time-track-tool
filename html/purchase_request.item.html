@@ -45,6 +45,7 @@
     ; url_template      python:
          getattr (db.config.ext, 'LINK_ISSUE_URL_TEMPLATE', None)
     ; use_highlighting  python: False
+    ; cld               python: {'class': 'pr'}
     ">
    <tal:block metal:use-macro="templates/page/macros/formatted_class_no_table">
     <tal:block metal:fill-slot="formatted_class_content">
@@ -113,7 +114,7 @@
                 (db, classname, 'pr_justification')"/>
             <td tal:condition="context/pr_justification/is_edit_ok"
                 tal:content="structure python:
-                context.pr_justification.multiline (rows=6, cols=40)"/>
+                context.pr_justification.multiline (rows=6, cols=40, **cld)"/>
             <td tal:condition="not:context/pr_justification/is_edit_ok">
               <div class="prewrap" tal:content="context/pr_justification" />
             </td>
@@ -268,7 +269,7 @@
                 (db, classname, 'contract_info')"/>
             <td tal:condition="context/contract_info/is_edit_ok"
                 tal:content="structure python:
-                context.contract_info.multiline (rows=6, cols=40)"/>
+                context.contract_info.multiline (rows=6, cols=40, **cld)"/>
             <td tal:condition="not:context/contract_info/is_edit_ok">
               <div class="prewrap" tal:content="context/contract_info" />
             </td>
@@ -361,7 +362,7 @@
                (db, classname, 'pr_risks')"/>
            <td tal:condition="context/pr_risks/is_edit_ok"
                tal:content="structure python:
-               context.pr_risks.multiline (rows=5, cols=40)"/>
+               context.pr_risks.multiline (rows=5, cols=40, **cld)"/>
            <td tal:condition="not:context/pr_risks/is_edit_ok">
              <div class="prewrap" tal:content="context/pr_risks" />
            </td>
@@ -371,7 +372,7 @@
                (db, classname, 'comment_pr')"/>
            <td tal:condition="context/comment_pr/is_edit_ok"
                tal:content="structure python:
-               context.comment_pr.multiline (rows=5, cols=40)"/>
+               context.comment_pr.multiline (rows=5, cols=40, **cld)"/>
            <td tal:condition="not:context/comment_pr/is_edit_ok">
              <div class="prewrap" tal:content="context/comment_pr" />
            </td>
@@ -564,7 +565,7 @@
              </tr>
              <tr>
               <td>
-               <textarea wrap="soft" cols="30" rows="3"
+               <textarea class="pr" wrap="soft" cols="30" rows="3"
                 tal:attributes=
                  " name python:'pr_offer_item%s@description' % i.id
                  ; readonly python:not i.is_edit_ok()
@@ -882,7 +883,7 @@
              </tr>
              <tr>
               <td>
-               <textarea wrap="soft" cols="30" rows="3"
+               <textarea class="pr" wrap="soft" cols="30" rows="3"
                 tal:attributes=
                  " name python:'pr_offer_item%s@description' % (-idx)
                  "
@@ -1054,7 +1055,7 @@
            </div> <!-- pr-section required attrs -->
           </div> <!-- pr-section offer item -->
          </tal:block>
-         <div class="pr-section-fullwidth"
+         <div class="pr-section-fullwidth pr-item-sum"
               tal:condition="context/id">
           <span>Sum</span>
           <span tal:content="python:
