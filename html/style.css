@@ -316,7 +316,7 @@ table.form td.optional {
 }
 
 table.form td.emphasized {
-  font-weight: bold;
+  /*font-weight: bold; no longer bold*/
 }
 
 table.form td.warn {
