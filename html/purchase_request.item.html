@@ -484,7 +484,7 @@
              <tr>
               <th style="text-align:left"
                   tal:content="structure python:utils.fieldname
-                  (db, 'pr_offer_item', 'index')"/>
+                  (db, 'pr_offer_item', 'index', endswith=':')"/>
              </tr>
              <tr>
               <td tal:content="structure python:i.index.field (size=3)"/>
@@ -492,7 +492,7 @@
              <tr>
               <th style="text-align:left"
                   tal:content="structure python:utils.fieldname
-                  (db, 'pr_offer_item', 'offer_number')"/>
+                  (db, 'pr_offer_item', 'offer_number', endswith=':')"/>
              </tr>
              <tr>
               <td tal:content="structure python:i.offer_number.field(size=10)"/>
@@ -501,7 +501,7 @@
              <tr>
               <th style="text-align:left"
                   tal:content="structure python:utils.fieldname
-                  (db, 'pr_offer_item', 'is_asset')"/>
+                  (db, 'pr_offer_item', 'is_asset', endswith=':')"/>
              </tr>
              <tr>
               <td tal:content="structure python:i.is_asset.field ()"/>
@@ -524,7 +524,7 @@
              <tr>
               <th style="text-align:left"
                   tal:content="structure python:utils.fieldname
-                      (db, 'pr_offer_item', 'supplier')"/>
+                      (db, 'pr_offer_item', 'supplier', endswith=':')"/>
              </tr>
              <tr>
               <td>
@@ -542,7 +542,7 @@
              <tr>
               <th tal:condition="python: not i.pr_supplier"
                   style="text-align:left" i18n:translate="">
-               Add to LAS
+               Add to LAS:
               </th>
               <th tal:condition="python: i.pr_supplier"
                   style="text-align:left" i18n:translate="">
@@ -561,7 +561,7 @@
              <tr>
               <th style="text-align:left"
                   tal:content="structure python:utils.fieldname
-                  (db, 'pr_offer_item', 'description')"/>
+                  (db, 'pr_offer_item', 'description', endswith=':')"/>
              </tr>
              <tr>
               <td>
@@ -576,7 +576,7 @@
              <tr>
               <th style="text-align:left"
                   tal:content="structure python:utils.fieldname
-                  (db, 'pr_offer_item', 'product_group')"/>
+                  (db, 'pr_offer_item', 'product_group', endswith=':')"/>
              </tr>
              <tr>
               <td class="tooltip" tal:define="
@@ -613,13 +613,13 @@
                   (i.psp_element.is_edit_ok () or i.psp_element.plain ())">
               <th style="text-align:left"
                   tal:content="structure python:utils.fieldname
-                  (db, 'pr_offer_item', 'psp_element')"/>
+                  (db, 'pr_offer_item', 'psp_element', endswith=':')"/>
              </tr>
              <tr tal:condition="python: not utils.need_psp (context) and
                  (i.time_project.is_edit_ok () or i.time_project.plain ())">
               <th style="text-align:left"
                   tal:content="structure python:utils.fieldname
-                  (db, 'pr_offer_item', 'time_project')"/>
+                  (db, 'pr_offer_item', 'time_project', endswith=':')"/>
              </tr>
              <tr tal:condition="python: utils.need_psp (context) and
                   (i.psp_element.is_edit_ok () or i.psp_element.plain ())">
@@ -659,7 +659,7 @@
               <tr>
                <th style="text-align:left"
                    tal:content="structure python:utils.fieldname
-                   (db, 'pr_offer_item', 'sap_cc')"/>
+                   (db, 'pr_offer_item', 'sap_cc', endswith=':')"/>
               </tr>
               <tr>
                <td>
@@ -684,7 +684,7 @@
                   <tr>
                <th style="text-align:left"
                    tal:content="structure python:utils.fieldname
-                   (db, 'pr_offer_item', 'purchase_type')"/>
+                   (db, 'pr_offer_item', 'purchase_type', endswith=':')"/>
               </tr>
               <tr>
                <td tal:content="structure python:i.purchase_type.menu
@@ -694,7 +694,7 @@
              <tr>
               <th style="text-align:left"
                   tal:content="structure python:utils.fieldname
-                  (db, 'pr_offer_item', 'internal_order')"/>
+                  (db, 'pr_offer_item', 'internal_order', endswith=':')"/>
              </tr>
              <tr>
               <td>
@@ -724,7 +724,7 @@
               <tr>
                <th style="text-align:left" colspan="2"
                    tal:content="structure python:utils.fieldname
-                   (db, 'pr_offer_item', 'gl_account')"/>
+                   (db, 'pr_offer_item', 'gl_account', endswith=':')"/>
               </tr>
               <tr>
                <td tal:content="structure python: i.gl_account.field
@@ -734,7 +734,7 @@
              <tr>
               <th style="text-align:left"
                   tal:content="structure python:utils.fieldname
-                  (db, 'pr_offer_item', 'infosec_level')"/>
+                  (db, 'pr_offer_item', 'infosec_level', endswith=':')"/>
              </tr>
              <tr>
               <td class="tooltip">
@@ -755,7 +755,7 @@
               <tr>
                <th style="text-align:left"
                    tal:content="structure python:utils.fieldname
-                   (db, context, 'purchase_security_risk')"/>
+                   (db, context, 'purchase_security_risk', endswith=':')"/>
               </tr>
               <tr>
                <td class="emphasized" tal:content="python:rt"/>
@@ -767,14 +767,14 @@
             <table class="form" border="0">
              <tr>
               <th tal:content="structure python:utils.fieldname
-                  (db, 'pr_offer_item', 'units')"/>
+                  (db, 'pr_offer_item', 'units', endswith=':')"/>
              </tr>
              <tr>
               <td tal:content="structure python:i.units.field (size=5)"/>
              </tr>
              <tr>
               <th tal:content="structure python:utils.fieldname
-                  (db, 'pr_offer_item', 'price_per_unit')"/>
+                  (db, 'pr_offer_item', 'price_per_unit', endswith=':')"/>
              </tr>
              <tr>
               <td>
@@ -785,14 +785,14 @@
              </tr>
              <tr>
               <th tal:content="structure python:utils.fieldname
-                  (db, 'pr_offer_item', 'vat')"/>
+                  (db, 'pr_offer_item', 'vat', endswith=':')"/>
              </tr>
              <tr>
               <td tal:content="structure python:i.vat.field (size=7)"/>
              </tr>
              <tr>
               <th tal:content="structure python:utils.fieldname
-                  (db, context, 'payment_type')"/>
+                  (db, context, 'payment_type', endswith=':')"/>
              </tr>
              <tr>
               <td tal:content="structure python:i.payment_type.menu ()"
@@ -829,7 +829,7 @@
              <tr>
               <th style="text-align:left"
                   tal:content="structure python:utils.fieldname
-                  (db, 'pr_offer_item', 'index')"/>
+                  (db, 'pr_offer_item', 'index', endswith=':')"/>
              </tr>
              <tr>
               <td tal:content="structure python:utils.new_property
@@ -838,7 +838,7 @@
              <tr>
               <th style="text-align:left"
                   tal:content="structure python:utils.fieldname
-                  (db, 'pr_offer_item', 'offer_number')"/>
+                  (db, 'pr_offer_item', 'offer_number', endswith=':')"/>
              </tr>
              <tr>
               <td tal:content="structure python:utils.new_property
@@ -848,7 +848,7 @@
              <tr>
               <th style="text-align:left"
                   tal:content="structure python:utils.fieldname
-                  (db, 'pr_offer_item', 'is_asset')"/>
+                  (db, 'pr_offer_item', 'is_asset', endswith=':')"/>
              </tr>
              <tr>
               <td tal:content="structure python:utils.new_property
@@ -861,7 +861,7 @@
              <tr>
               <th style="text-align:left"
                   tal:content="structure python:utils.fieldname
-                      (db, 'pr_offer_item', 'supplier')"/>
+                      (db, 'pr_offer_item', 'supplier', endswith=':')"/>
              </tr>
              <tr>
               <td>
@@ -879,7 +879,7 @@
              <tr>
               <th style="text-align:left"
                   tal:content="structure python:utils.fieldname
-                  (db, 'pr_offer_item', 'description')"/>
+                  (db, 'pr_offer_item', 'description', endswith=':')"/>
              </tr>
              <tr>
               <td>
@@ -897,7 +897,7 @@
              <tr>
               <th style="text-align:left"
                   tal:content="structure python:utils.fieldname
-                  (db, 'pr_offer_item', 'product_group')"/>
+                  (db, 'pr_offer_item', 'product_group', endswith=':')"/>
              </tr>
              <tr>
               <td>
@@ -921,7 +921,7 @@
              <tr tal:condition="python: utils.need_psp (context)">
               <th style="text-align:left"
                   tal:content="structure python:utils.fieldname
-                  (db, 'pr_offer_item', 'psp_element')"/>
+                  (db, 'pr_offer_item', 'psp_element', endswith=':')"/>
              </tr>
              <tr>
               <td>
@@ -939,7 +939,7 @@
              <tr>
               <th style="text-align:left"
                   tal:content="structure python:utils.fieldname
-                  (db, 'pr_offer_item', 'sap_cc')"/>
+                  (db, 'pr_offer_item', 'sap_cc', endswith=':')"/>
              </tr>
              <tr>
               <td>
@@ -957,7 +957,7 @@
              <tr>
               <th style="text-align:left"
                   tal:content="structure python:utils.fieldname
-                  (db, 'pr_offer_item', 'purchase_type')"/>
+                  (db, 'pr_offer_item', 'purchase_type', endswith=':')"/>
              </tr>
              <tr>
               <td tal:content="structure python:utils.new_property
@@ -967,7 +967,7 @@
              <tr>
               <th style="text-align:left"
                   tal:content="structure python:utils.fieldname
-                  (db, 'pr_offer_item', 'internal_order')"/>
+                  (db, 'pr_offer_item', 'internal_order', endswith=':')"/>
              </tr>
              <tr>
               <td>
@@ -989,7 +989,7 @@
              <tr>
               <th style="text-align:left" colspan="2"
                   tal:content="structure python:utils.fieldname
-                  (db, 'pr_offer_item', 'gl_account')"/>
+                  (db, 'pr_offer_item', 'gl_account', endswith=':')"/>
              </tr>
              <tr>
               <td colspan="2" tal:content="structure python:utils.new_property
@@ -1003,7 +1003,7 @@
              <tr>
               <th style="text-align:left"
                   tal:content="structure python:utils.fieldname
-                  (db, 'pr_offer_item', 'infosec_level')"/>
+                  (db, 'pr_offer_item', 'infosec_level', endswith=':')"/>
              </tr>
              <tr>
               <td tal:content="structure python:utils.new_property
@@ -1016,7 +1016,7 @@
              <tr>
               <th
                   tal:content="structure python:utils.fieldname
-                  (db, 'pr_offer_item', 'units')"/>
+                  (db, 'pr_offer_item', 'units', endswith=':')"/>
              </tr>
              <tr>
               <td tal:content="structure python:utils.new_property
@@ -1024,7 +1024,7 @@
              </tr>
              <tr>
               <th tal:content="structure python:utils.fieldname
-                  (db, 'pr_offer_item', 'price_per_unit')"/>
+                  (db, 'pr_offer_item', 'price_per_unit', endswith=':')"/>
              </tr>
              <tr>
               <td>
@@ -1037,7 +1037,7 @@
              </tr>
              <tr>
               <th tal:content="structure python:utils.fieldname
-                  (db, 'pr_offer_item', 'vat')"/>
+                  (db, 'pr_offer_item', 'vat', endswith=':')"/>
              </tr>
              <tr>
               <td tal:content="structure python:utils.new_property
@@ -1045,7 +1045,7 @@
              </tr>
              <tr>
               <th tal:content="structure python:utils.fieldname
-                  (db, context, 'payment_type')"/>
+                  (db, context, 'payment_type', endswith=':')"/>
              </tr>
              <tr>
               <td colspan="2" tal:content="structure python:utils.new_property
