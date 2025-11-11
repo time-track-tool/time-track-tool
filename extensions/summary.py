@@ -1526,9 +1526,13 @@ class Staff_Report (_Report):
             if not sdyn:
                 sdyn = user_dynamic.first_user_dynamic (db, u, date = start)
             # We already established above that for the end date we have
-            # a dynamic user record
-            while not dynamic_user_allowed_by_olo (db, self.uid, sdyn.id):
+            # a dynamic user record but we might not have permission
+            while (   sdyn
+                  and not dynamic_user_allowed_by_olo (db, self.uid, sdyn.id)
+                  ):
                 sdyn = user_dynamic.next_user_dynamic (db, sdyn)
+            if not sdyn:
+                continue
             if sdyn.valid_from > ustart:
                 ustart = sdyn.valid_from
 
@@ -1724,6 +1728,9 @@ class Staff_Report (_Report):
     def _output (self, line_formatter, item_formatter):
         for u in self.users:
             user = self.linked_user (u)
+            # User not visible due to permission issue
+            if u not in self.values:
+                continue
             for container in self.values [u]:
                 line  = []
                 line.append (item_formatter (user))
