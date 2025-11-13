@@ -1,6 +1,6 @@
 /* main page styles */
 body.body {
-  font-family: sans-serif, Arial, Helvetica;
+  font-family: sans-serif, Arial;
   background-color: white;
   color: #333;
   margin: 0;
@@ -111,7 +111,7 @@ textarea {
 
 /* PR-Tracker all should be the same font */
 textarea.pr {
-    font-family: sans-serif,Arial,Helvetica;
+    font-family: sans-serif,Arial;
     font-size: 9pt;
 }
 
@@ -128,7 +128,7 @@ textarea.pr {
 
 /* PR-Tracker all should be the same font */
 div.formdiv input {
-    font-family: sans-serif,Arial,Helvetica;
+    font-family: sans-serif,Arial;
     font-size: 9pt;
 }
 
@@ -180,6 +180,11 @@ div.prewrap {
   white-space: pre-wrap;
   margin-top: 12px;
   margin-bottom: 12px;
+}
+
+div.prewrap.pr {
+  font-family: sans-serif,Arial;
+  font-size: 10pt;
 }
 
 td.content div.prewrap div.attachment {

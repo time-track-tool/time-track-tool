@@ -116,7 +116,7 @@
                 tal:content="structure python:
                 context.pr_justification.multiline (rows=6, cols=40, **cld)"/>
             <td tal:condition="not:context/pr_justification/is_edit_ok">
-              <div class="prewrap" tal:content="context/pr_justification" />
+              <div class="prewrap pr" tal:content="context/pr_justification" />
             </td>
            </tr>
            <tr>
@@ -271,7 +271,7 @@
                 tal:content="structure python:
                 context.contract_info.multiline (rows=6, cols=40, **cld)"/>
             <td tal:condition="not:context/contract_info/is_edit_ok">
-              <div class="prewrap" tal:content="context/contract_info" />
+              <div class="prewrap pr" tal:content="context/contract_info" />
             </td>
            </tr>
           </table>
@@ -364,7 +364,7 @@
                tal:content="structure python:
                context.pr_risks.multiline (rows=5, cols=40, **cld)"/>
            <td tal:condition="not:context/pr_risks/is_edit_ok">
-             <div class="prewrap" tal:content="context/pr_risks" />
+             <div class="prewrap pr" tal:content="context/pr_risks" />
            </td>
           </tr>
           <tr>
@@ -374,7 +374,7 @@
                tal:content="structure python:
                context.comment_pr.multiline (rows=5, cols=40, **cld)"/>
            <td tal:condition="not:context/comment_pr/is_edit_ok">
-             <div class="prewrap" tal:content="context/comment_pr" />
+             <div class="prewrap pr" tal:content="context/comment_pr" />
            </td>
           </tr>
          </table>
