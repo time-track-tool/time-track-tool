@@ -15,6 +15,11 @@ def main ():
             v = False
         if rc.quality_relevant is None:
             db.pr_rating_category.set (id, quality_relevant = v)
+    for id in db.pr_ext_resource.getnodeids (retired = False):
+        er = db.pr_ext_resource.getnode (id)
+        if er.name == er.name.lower ():
+            db.pr_ext_resource.set \
+                (id, name = er.name [0].upper () + er.name [1:])
     db.commit ()
 # end def main
 
