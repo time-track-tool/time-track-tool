@@ -1,6 +1,6 @@
 # -*- coding: iso-8859-1 -*-
 # Copyright (C) 2007 Philipp Gortan <gortan@tttech.com>
-# Copyright (C) 2009 Dr. Ralf Schlatterbeck Open Source Consulting.
+# Copyright (C) 2009-25 Dr. Ralf Schlatterbeck Open Source Consulting.
 # Reichergasse 131, A-3411 Weidling.
 # Web: http://www.runtux.com Email: office@runtux.com
 # All rights reserved
@@ -104,6 +104,7 @@ def init \
 def security (db, ** kw) :
     roles      = ( ("Doc_Admin", "Admin for documents (e.g. QM)")
                  , ("Nosy",      "Allowed on nosy list")
+                 , ("Artefact",  "Allowed to see artefact tracker")
                  )
     is_readonly = int (getattr (db.config.ext, 'TTT_ARTEFACT_READONLY', '0'))
 
@@ -112,15 +113,15 @@ def security (db, ** kw) :
         doc_admin_and_user = ()
     else:
         doc_admin = ("Doc_Admin",)
-        doc_admin_and_user = ("Doc_Admin", "User")
+        doc_admin_and_user = ("Doc_Admin", "Artefact")
 
     classes    = \
-        ( ("doc"          , ("User",), doc_admin_and_user)
-        , ("artefact"     , ("User",), doc_admin)
-        , ("product_type" , ("User",), doc_admin)
-        , ("reference"    , ("User",), doc_admin)
-        , ("doc_status"   , ("User",), doc_admin)
-        , ("doc_category" , ("User",), doc_admin)
+        ( ("doc"          , ("Artefact",), doc_admin_and_user)
+        , ("artefact"     , ("Artefact",), doc_admin)
+        , ("product_type" , ("Artefact",), doc_admin)
+        , ("reference"    , ("Artefact",), doc_admin)
+        , ("doc_status"   , ("Artefact",), doc_admin)
+        , ("doc_category" , ("Artefact",), doc_admin)
         )
 
     schemadef.register_roles             (db, roles)
