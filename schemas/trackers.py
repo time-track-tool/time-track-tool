@@ -49,15 +49,12 @@ schemas = \
     , 'ext_tracker'
     , 'msg_header'
     , 'issue'
-    , 'it_part_of'
-    , 'it_tracker'
     , 'contact'
     , 'person_cust'
     , 'support'
     , 'ldap'
     , 'core'
     , 'extuser'
-    , 'ituser'
     , 'rouser'
     )
 

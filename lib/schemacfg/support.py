@@ -242,7 +242,7 @@ def security (db, ** kw) :
         , ("support",        ["SupportAdmin"],         ["SupportAdmin"])
         , ("customer",       ["User", "SupportAdmin"], ["SupportAdmin"])
         , ("contact",        ["User", "SupportAdmin"], ["SupportAdmin"])
-        , ("mailgroup",      ["User", "SupportAdmin"], ["SupportAdmin", "IT"])
+        , ("mailgroup",      ["User", "SupportAdmin"], ["SupportAdmin"])
         , ("sup_classification",
                              ["User", "SupportAdmin"], ["SupportAdmin"])
         , ("customer_agreement",
