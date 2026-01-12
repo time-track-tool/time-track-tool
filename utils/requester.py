@@ -75,7 +75,11 @@ class Requester (autosuper) :
             return self.args.password
         a = n = None
         try :
-            n = netrc ()
+            e = os.environ.get ('NETRC')
+            if e:
+                n = netrc (e)
+            else:
+                n = netrc ()
         except IOError :
             pass
         if n and self.args.url :
