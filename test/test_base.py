@@ -1,4 +1,4 @@
-# Copyright (C) 2010-25 Ralf Schlatterbeck. All rights reserved
+# Copyright (C) 2010-26 Ralf Schlatterbeck. All rights reserved
 # Reichergasse 131, A-3411 Weidling
 # ****************************************************************************
 #
@@ -150,6 +150,7 @@ class _Test_Base:
         , 'admin'
         , 'adr_readonly'
         , 'anonymous'
+        , 'artefact'
         , 'cc-permission'
         , 'ciso'
         , 'contact'
@@ -860,7 +861,8 @@ class _Test_Case_Summary (_Test_Base_Summary, _Test_Case):
 class Test_Case_Support_Timetracker (_Test_Case, unittest.TestCase):
     schemaname = 'sfull'
     roles = \
-        [ 'admin', 'adr_readonly', 'anonymous', 'cc-permission', 'contact'
+        [ 'admin', 'adr_readonly', 'anonymous', 'artefact', 'cc-permission'
+        , 'contact'
         , 'controlling' , 'doc_admin', 'facility', 'functional-role', 'hr'
         , 'hr-leave-approval', 'hr-org-location'
         , 'hr-vacation', 'issue_admin', 'it', 'itview'
@@ -878,7 +880,8 @@ class Test_Case_Timetracker (_Test_Case_Summary, unittest.TestCase):
     schemaname = 'time'
     schemafile = 'time_ldap'
     roles = \
-        [ 'admin', 'anonymous', 'cc-permission', 'controlling', 'doc_admin'
+        [ 'admin', 'anonymous', 'artefact', 'cc-permission', 'controlling'
+        , 'doc_admin'
         , 'dom-user-edit-facility', 'dom-user-edit-gtt', 'dom-user-edit-hr'
         , 'dom-user-edit-office', 'facility', 'functional-role', 'hr'
         , 'hr-leave-approval', 'hr-org-location', 'hr-vacation', 'it', 'nosy'
@@ -5785,10 +5788,9 @@ class Test_Case_Tracker (_Test_Case, unittest.TestCase):
         [ 'admin', 'anonymous', 'dom-user-edit-facility'
         , 'dom-user-edit-gtt', 'dom-user-edit-hr'
         , 'dom-user-edit-office', 'external'
-        , 'issue_admin', 'it', 'ituser'
-        , 'itview', 'kpm-admin', 'msgedit', 'msgsync', 'nosy', 'pgp'
-        , 'readonly-user', 'sec-incident-nosy'
-        , 'sec-incident-responsible', 'sub-login', 'supportadmin'
+        , 'issue_admin', 'it'
+        , 'kpm-admin', 'msgedit', 'msgsync', 'nosy', 'pgp'
+        , 'readonly-user', 'sub-login', 'supportadmin'
         , 'user', 'user_view'
         ]
     transprop_perms = transprop_track
@@ -5797,7 +5799,8 @@ class Test_Case_Tracker (_Test_Case, unittest.TestCase):
 class Test_Case_Fulltracker (_Test_Case_Summary, unittest.TestCase):
     schemaname = 'full'
     roles = \
-        [ 'admin', 'anonymous', 'cc-permission', 'contact', 'controlling'
+        [ 'admin', 'anonymous', 'artefact', 'cc-permission', 'contact'
+        , 'controlling'
         , 'doc_admin', 'dom-user-edit-facility', 'dom-user-edit-gtt'
         , 'dom-user-edit-hr', 'dom-user-edit-office'
         , 'external', 'facility', 'functional-role', 'hr'
