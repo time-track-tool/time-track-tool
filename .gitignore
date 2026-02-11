@@ -28,5 +28,7 @@ maildebug
 db
 t.py
 *.csv
+!test/pub_holidays.csv
+!test/pub_holidays_olo.csv
 stuff
 .nfs*

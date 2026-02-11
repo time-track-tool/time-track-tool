@@ -1122,9 +1122,3 @@ class Test_Case_LDAP_Sync (_Test_Base, unittest.TestCase):
     # end def test_pic_convert_with_resize
 
 # end class Test_Case_LDAP_Sync
-
-def test_suite ():
-    suite = unittest.TestSuite ()
-    suite.addTest (unittest.makeSuite (Test_Case_LDAP_Sync))
-    return suite
-# end def test_suite

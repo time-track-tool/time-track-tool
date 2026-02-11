@@ -37,7 +37,7 @@ from . import user12_time, user13_time, user14_time, user15_19_vac, user16_leave
 from . import user17_time, user18_time, user20_time, user21_time, user22_time
 from . import user23_time, user24_time, user25_time, user26_time, user27_time
 from . import user28_time, user29_time, user30_time, user31_time, user32_time
-from . import user33_time, user34_time
+from . import user33_time, user34_time, user35_time
 
 from operator     import mul
 from email.parser import Parser
@@ -5675,6 +5675,150 @@ class Test_Case_Timetracker (_Test_Case_Summary, unittest.TestCase):
         self.db.close ()
     # end def test_user34_no_vac_corr
 
+    def create_public_holidays (self, start):
+        """ Create all public holidays starting with start, current end
+            date is Jan 2026. Holidays are Vienna.
+        """
+        with open ('test/pub_holidays.csv', 'r') as f:
+            dr = csv.DictReader (f)
+            for rec in dr:
+                dt = date.Date (rec ['date'])
+                if dt < start:
+                    continue
+                try:
+                    h  = bool (rec ['is_half'])
+                except ValueError:
+                    h = False
+                self.db.public_holiday.create \
+                    ( date = dt
+                    , description = rec ['description']
+                    , name        = rec ['name']
+                    , is_half     = h
+                    , locations   = [self.loc]
+                    )
+        with open ('test/pub_holidays_olo.csv', 'r') as f:
+            dr = csv.DictReader (f)
+            for rec in dr:
+                dt = date.Date (rec ['date'])
+                if dt < start:
+                    continue
+                try:
+                    h  = bool (rec ['is_half'])
+                except ValueError:
+                    h = False
+                self.db.public_holiday.create \
+                    ( date = dt
+                    , description  = rec ['description']
+                    , name         = rec ['name']
+                    , is_half      = h
+                    , org_location = [self.olo]
+                    )
+    # end def create_public_holidays
+
+    def setup_user35 (self):
+        self.username35 = 'testuser35'
+        self.user35 = self.db.user.create \
+            ( username     = self.username35
+            , firstname    = 'Nummer35'
+            , lastname     = 'User35'
+            )
+        # Allow user to create their own dyn user rec
+        self.db.o_permission.create \
+            (user = self.user35, org_location = [self.olo, self.olo2])
+        p = self.db.overtime_period.create \
+            ( name              = 'monthly average required'
+            , months            = 1
+            , weekly            = False
+            , required_overtime = True
+            , order             = 3
+            )
+        # allow user35 to book on wp 44
+        self.db.time_wp.set (self.vacation_wp, bookers = [self.user35])
+        # allow user35 to book on wp 1 (public holiday)
+        self.db.time_wp.set (self.holiday_wp, bookers = [self.user35])
+        # Need to import data *before* creating public holidays
+        user35_time.import_data_35 (self.db, self.user35, self.olo)
+        # Remove absolute vacation correction which was created automagically
+        vc = self.db.vacation_correction.filter \
+            (None, dict (user = self.user35, date = ';2019-01-01'))
+        assert len (vc) == 1
+        self.db.vacation_correction.retire (vc [0])
+        self.create_public_holidays (date.Date ('2019-01-01'))
+        self.db.commit ()
+    # end def setup_user35
+
+    def test_user35_vacation (self):
+        self.log.debug ('test_user35')
+        self.setup_db ()
+        self.setup_user35 ()
+        # Allow report
+        rl = self.db.user.get (self.user0, 'roles')
+        self.db.user.set (self.user0, roles = ','.join ((rl, 'hr-vacation')))
+        self.db.commit ()
+        self.db.close  ()
+        # Get vacation report for 2026 for this user *as HR-vacation*
+        self.db = self.tracker.open (self.username0)
+        summary.init (self.tracker)
+        fs = { 'user': [self.user35], 'date': '2026-01-01;2026-12-31' }
+        class r: filterspec = fs ; columns = {}
+        class c: _ = lambda x: x
+        sr = summary.Vacation_Report \
+            (self.db, r, templating.TemplatingUtils (c))
+        lines = tuple (csv.reader (StringIO (sr.as_csv ()), delimiter = ','))
+        self.assertEqual (len (lines), 2)
+        self.assertEqual (len (lines [0]), 9)
+        self.assertEqual (lines  [0] [0], 'User')
+        self.assertEqual (lines  [0] [1], 'Time Period')
+        self.assertEqual (lines  [0] [2], 'yearly entitlement')
+        self.assertEqual (lines  [0] [3], 'yearly prorated')
+        self.assertEqual (lines  [0] [4], 'carry forward from previous year')
+        self.assertEqual (lines  [0] [5], 'entitlement total')
+        self.assertEqual (lines  [0] [6], 'approved days')
+        self.assertEqual (lines  [0] [7], 'vacation corrections')
+        self.assertEqual (lines  [0] [8], 'remaining vacation')
+        self.assertEqual (lines  [1] [0], 'testuser35')
+        self.assertEqual (lines  [1] [1], '2026-12-31')
+        self.assertEqual (lines  [1] [2], '30.00')
+        self.assertEqual (lines  [1] [3], '30.00')
+        self.assertEqual (lines  [1] [4], '-0.43')
+        self.assertEqual (lines  [1] [5], '29.57')
+        self.assertEqual (lines  [1] [6], '16.0')
+        self.assertEqual (lines  [1] [7], '')
+        self.assertEqual (lines  [1] [8], '13.57')
+        self.db.close ()
+        # Get vacation report for 2026 for this user *as this user*
+        self.db = self.tracker.open (self.username35)
+        summary.init (self.tracker)
+        fs = { 'user': [self.user35], 'date': '2026-01-01;2026-12-31' }
+        class r: filterspec = fs ; columns = {}
+        class c: _ = lambda x: x
+        sr = summary.Vacation_Report \
+            (self.db, r, templating.TemplatingUtils (c))
+        lines = tuple (csv.reader (StringIO (sr.as_csv ()), delimiter = ','))
+        self.assertEqual (len (lines), 2)
+        self.assertEqual (len (lines [0]), 9)
+        self.assertEqual (lines  [0] [0], 'User')
+        self.assertEqual (lines  [0] [1], 'Time Period')
+        self.assertEqual (lines  [0] [2], 'yearly entitlement')
+        self.assertEqual (lines  [0] [3], 'yearly prorated')
+        self.assertEqual (lines  [0] [4], 'carry forward from previous year')
+        self.assertEqual (lines  [0] [5], 'entitlement total')
+        self.assertEqual (lines  [0] [6], 'approved days')
+        self.assertEqual (lines  [0] [7], 'vacation corrections')
+        self.assertEqual (lines  [0] [8], 'remaining vacation')
+        self.assertEqual (lines  [1] [0], 'testuser35')
+        self.assertEqual (lines  [1] [1], '2026-12-31')
+        self.assertEqual (lines  [1] [2], '30.00')
+        self.assertEqual (lines  [1] [3], '30.00')
+        self.assertEqual (lines  [1] [4], '0.00')
+        self.assertEqual (lines  [1] [5], '30.00')
+        self.assertEqual (lines  [1] [6], '16.00')
+        self.assertEqual (lines  [1] [7], '')
+        self.assertEqual (lines  [1] [8], '14.00')
+        self.db.close ()
+    # end def test_user35_vacation
+
+
     def test_duplicate_public_holiday (self):
         self.log.debug ('test_duplicate_public_holiday')
         self.setup_db ()
@@ -7606,20 +7750,3 @@ class Test_Case_PR (_Test_Case, unittest.TestCase):
         ]
     transprop_perms = transprop_pr
 # end class Test_Case_PR
-
-def test_suite ():
-    suite = unittest.TestSuite ()
-    suite.addTest (unittest.makeSuite (Test_Case_Abo))
-    suite.addTest (unittest.makeSuite (Test_Case_Adr))
-    suite.addTest (unittest.makeSuite (Test_Case_ERP))
-    suite.addTest (unittest.makeSuite (Test_Case_IT))
-    suite.addTest (unittest.makeSuite (Test_Case_ITAdr))
-    suite.addTest (unittest.makeSuite (Test_Case_Kvats))
-    suite.addTest (unittest.makeSuite (Test_Case_Lielas))
-    suite.addTest (unittest.makeSuite (Test_Case_PR))
-    suite.addTest (unittest.makeSuite (Test_Case_Tracker))
-    suite.addTest (unittest.makeSuite (Test_Case_Timetracker))
-    suite.addTest (unittest.makeSuite (Test_Case_Support_Timetracker))
-    suite.addTest (unittest.makeSuite (Test_Case_Fulltracker))
-    return suite
-# end def test_suite

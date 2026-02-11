@@ -529,6 +529,8 @@ def flexi_wps (db):
 # end def flexi_wps
 
 def vacation_time_sum (db, user, ctype, start, end):
+    """ Note that the end date is *included* in the sum
+    """
     dt  = common.pretty_range (start, end)
     dr  = db.daily_record.filter (None, dict (user = user, date = dt))
     dtt = [('+', 'daily_record.date')]
@@ -607,7 +609,7 @@ def remaining_vacation \
     if cons is None:
         cons = consolidated_vacation (db, user, ctype, date, vc, to_eoy)
     vac = cons
-    vac -= vacation_time_sum (db, user, ctype, vc.date, ed)
+    vac -= vacation_time_sum (db, user, ctype, vc.date, min (ed, date))
     # All vacation_correction records up to date but starting with one
     # day later (otherwise we'll find the absolute correction)
     # Also one day *earlier* than ed for the same reason.
