@@ -218,9 +218,8 @@ def _get_stati (db, statusname):
     return st
 # end def _get_stati
 
-def vacation_with_status (db, user, start, end, statusname):
+def vacation_with_status (db, user, ctype, start, end, statusname):
     stati = _get_stati (db, statusname)
-    ctype = _get_ctype (db, user, start, end)
     return vacation.vacation_submission_days \
         (db, user, ctype, start, end, * stati)
 # end def vacation_with_status
@@ -764,20 +763,27 @@ def lookup_users (db, userstring):
 # end def lookup_users
 
 def ct_for_year (db, user, now = None):
-    ct = set ()
+    """ Get all contract types for a given year.
+        Note that we also check if there is an absolute vacation
+        correction for the year and we return only the contract types
+        for which this is true.
+    """
+    cts = set ()
     if now is None:
         now = Date ('.')
     jan = Date ('%s-01-01' % now.year)
     dec = Date ('%s-12-31' % now.year)
     dyn = user_dynamic.first_user_dynamic (db, user, date = jan)
     while dyn:
-        ct.add (dyn.contract_type)
+        ct = dyn.contract_type
+        if vacation.get_vacation_correction (db, user, ct, dyn.valid_from):
+            cts.add (dyn.contract_type)
         dyn = user_dynamic.next_user_dynamic (db, dyn)
         if not dyn or dyn.valid_from > dec:
             break
-    ct = [db.contract_type.getnode (x) if x else None for x in ct]
-    ct.sort (key = lambda x : (x and x.name or ''))
-    return ct
+    cts = [db.contract_type.getnode (x) if x else None for x in cts]
+    cts.sort (key = lambda x : (x and x.name or ''))
+    return cts
 # end def ct_for_year
 
 class Rest_Request (RestfulInstance):

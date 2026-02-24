@@ -231,10 +231,6 @@
   <tal:block tal:condition="python:remdate is not None">
    <tal:block tal:define=
     " jandate python: remdate - utils.year + utils.day
-    ; vapr    python: utils.vacation_time_sum
-              (db._db, db._db.getuid (), -1, jandate, remdate)
-    ; vsub    python: utils.vacation_with_status
-              (db._db, db._db.getuid (), jandate, remdate, 'submitted')
     ; fapr    python: utils.flexitime_with_status
               (db._db, db._db.getuid (), jandate, remdate, 'accepted')
     ; fsub    python: utils.flexitime_with_status
@@ -248,33 +244,45 @@
        <span tal:content="python:jandate.pretty (utils.ymd)"/>
       </th>
      </tr>
-     <tr tal:repeat="ct python:cts">
-      <th tal:content="python: 'Contract type: '
-                               + ('Default' if ct is None else ct.name)"/>
-      <td class="number" tal:content="python:
-          utils.eoy_vacation (db._db, db._db.getuid (), remdate, ct and ct.id)
-          "/>
-     </tr>
-     <tr>
-      <th i18n:translate="">Approved&nbsp;</th>
-      <td class="number" tal:content="vapr"/>
-     </tr>
-     <tr>
-      <th i18n:translate="">Submitted&nbsp;</th>
-      <td class="number" tal:content="vsub"/>
-     </tr>
-     <tr>
-      <th i18n:translate="">Remaining Vacation
-       <span tal:content="python:remdate.pretty (utils.ymd)"/>
-      </th>
-      <th i18n:translate="">(including submissions)</th>
-     </tr>
-     <tr tal:repeat="ct python:cts">
-      <th tal:content="python: 'Contract type: '
-                               + ('Default' if ct is None else ct.name)"/>
-      <td class="number" tal:content="python:utils.remaining_vacation
-          (db._db, db._db.getuid (), ct and ct.id, date = remdate) - vsub"/>
-     </tr>
+     <tal:block tal:repeat="ct python:cts">
+      <tal:block tal:define=
+           " ctid python: ct and ct.id
+           ; eoyv python:utils.eoy_vacation
+                (db._db, db._db.getuid (), remdate, ctid)
+           ; vapr python: utils.vacation_time_sum
+                (db._db, db._db.getuid (), ctid, jandate, remdate)
+           ; vsub python: utils.vacation_with_status
+                (db._db, db._db.getuid (), ctid, jandate, remdate, 'submitted')
+           ; rem python:utils.remaining_vacation
+                (db._db, db._db.getuid (), ctid, date = remdate) - vsub
+           ">
+        <tr>
+         <th tal:content="python: 'Contract type: '
+                                  + ('Default' if ct is None else ct.name)"/>
+        </tr>
+        <tr>
+         <th i18n:translate="">Entitlement</th>
+         <td class="number" tal:content="eoyv"/>
+        </tr>
+        <tr>
+         <th i18n:translate="">Approved</th>
+         <td class="number" tal:content="vapr"/>
+        </tr>
+        <tr>
+         <th i18n:translate="">Submitted</th>
+         <td class="number" tal:content="vsub"/>
+        </tr>
+        <tr>
+         <th i18n:translate="">Remaining Vacation
+          <span tal:content="python:remdate.pretty (utils.ymd)"/>
+         </th>
+         <td class="number" tal:content="rem"/>
+        </tr>
+        <tr>
+         <th i18n:translate="">(including submissions)</th>
+        </tr>
+      </tal:block>
+     </tal:block>
     </table>
     <h3 i18n:translate="">Overview comp/flexitime days</h3>
     <table class="form">

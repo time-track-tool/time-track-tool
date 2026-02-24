@@ -197,9 +197,9 @@ class Getter ():
             aw = self.auto_wp [awid]
             ct = None
             if aw ['contract_type']:
-                ct = "'" + aw ['contract_type'] + "'"
+                ct = repr (aw ['contract_type'])
             print (ind, "id = db.auto_wp.create \\")
-            print (ind, "    ( name              = '%s'" % aw ['name'])
+            print (ind, "    ( name              = %r" % aw ['name'])
             if ct:
                 print (ind, "    , contract_type     = ct_by_name [%s]" % ct)
             if aw ['duration']:
@@ -214,20 +214,20 @@ class Getter ():
             tp = self.get_tp_name (aw)
             print (ind, "    , time_project      = %s" % tp)
             print (ind, "    )")
-            print (ind, "aw_by_ct_name [(%s, '%s')] = id" % (ct, aw ['name']))
+            print (ind, "aw_by_ct_name [(%s, %r)] = id" % (ct, aw ['name']))
         for n, wpid in enumerate (sorted (self.auto_wp_wp)):
             self.wp_map [wpid] = n
             wp = self.auto_wp_wp [wpid]
             ct = None
             if wp ['contract_type']:
-                ct = "'" + wp ['contract_type'] + "'"
+                ct = repr (wp ['contract_type'])
             print (ind, "au_wp_%d = db.time_wp.create \\" % n)
             wpnamefmt = "'%%s %s' %% " % wp ['name'] if wp ['name'] else ''
             assert self.args.username not in wpnamefmt
             print (ind, "    ( name              = %susername"
                   % wpnamefmt
                   )
-            print (ind, "    , auto_wp           = aw_by_ct_name [(%s, '%s')]"
+            print (ind, "    , auto_wp           = aw_by_ct_name [(%s, %r)]"
                   % (ct, wp ['auto_wp'])
                   )
             print (ind, "    , bookers           = [user]")
@@ -256,7 +256,7 @@ class Getter ():
                 ct = "'" + aw ['contract_type'] + "'"
             if aw ['is_valid']:
                 print \
-                    (ind, "id = aw_by_ct_name [(%s, '%s')]" % (ct, aw ['name']))
+                    (ind, "id = aw_by_ct_name [(%s, %r)]" % (ct, aw ['name']))
                 print (ind , "db.auto_wp.set (id, is_valid = True)")
     # end def generate_set_auto_wp_valid
 
@@ -584,7 +584,9 @@ class Getter ():
                     if self.args.vacation_timerecs_only:
                         assert new_wpid
                         # vacation or public holiday
-                        if new_wpid not in ("'44'", "'1'"):
+                        if  (   new_wpid not in ("'44'", "'1'")
+                            and not new_wpid.startswith ('au_wp_')
+                            ):
                             tridx += 1
                             continue
                     print (ind, "tr = db.time_record.create \\")
@@ -673,13 +675,15 @@ def main ():
         )
     cmd.add_argument \
         ( '--vacation-timerecs-only'
-        , help    = 'Only export vacation time records'
+        , help    = 'Only export vacation time records, implies --leaves'
         , action  = 'store_true'
         )
     args = cmd.parse_args ()
     # auto_wp implies dynuser
     if args.auto_wp:
         args.dynuser = True
+    if args.vacation_timerecs_only:
+        args.leaves = True
     g = Getter (args)
     g.print_timerecs ()
 # end def main

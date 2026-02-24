@@ -539,6 +539,7 @@ def vacation_time_sum (db, user, ctype, start, end):
         (None, dict (daily_record = dr, wp = vwp), sort = dtt)
     vac = 0.0
     if ctype == -1:
+        # Maybe this should be something from start to end?
         ctype = _get_ctype (db, user, Date ('.'))
     by_dr = {}
     for tid in trs:
