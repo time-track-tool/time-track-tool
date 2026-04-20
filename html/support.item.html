@@ -342,7 +342,7 @@
           ( [c for c in context.customer.contacts
              if c.contact_type.name != 'Email'
             ]
-          , key = lambda x : (x.contact_type.order, x.contact)
+          , key = lambda x : (x.contact_type.order or 0, x.contact)
           )">
        <th style="vertical-align:top"
            tal:content="structure python:utils.ExtProperty
