@@ -282,7 +282,7 @@
        </td>
        <td tal:condition="not:context/address">
          <span tal:content="structure python:utils.new_property
-          (context, db, 'address', -1, 'country').field 
+          (context, db, 'address', -1, 'country').field
           (size=4, onChange=onch)"/>
            -
          <span tal:content="structure python:utils.new_property
@@ -326,7 +326,7 @@
       <td tal:content="structure context/city/field"/>
      </tr>
      <tr tal:condition="python:'province' in props">
-      <th tal:content="structure python:utils.fieldname 
+      <th tal:content="structure python:utils.fieldname
           (db, classname, 'province')" />
       <td tal:content="structure context/province/field"/>
      </tr>
@@ -386,7 +386,7 @@
         </tr>
         <tr tal:repeat="ct python:sorted
             ( context.contacts
-            , key = lambda x : (x.contact_type.order, x.contact)
+            , key = lambda x : (x.contact_type.order or 0, x.contact)
             )">
          <th style="vertical-align:top;text-align:left"
              tal:content="structure python:utils.ExtProperty
