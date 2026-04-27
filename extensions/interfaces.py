@@ -284,7 +284,7 @@ def allowed_wp_dict (db, batch, edit_ok):
             html [(str (wp.id), str (wp.name))] = \
                 ( 'value="%s">%s %s %s</option>'
                 % (tuple ([escape (str (x)) for x in
-                           (wp.id, prj.name, wp.wp_no, wp.name)]
+                           (wp.id, prj.name, wp.wp_no or '', wp.name)]
                          )
                   )
                 )
