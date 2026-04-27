@@ -240,7 +240,6 @@ def daily_record_check_batch (db, request):
 # end def daily_record_check_batch
 
 def batch_has_status (batch, status):
-    b = copy (batch)
     for i in batch:
         if str (i.status) == status:
             return True
@@ -266,30 +265,39 @@ def work_packages (db, daily_record, editable = True):
     return sorted (wps, key = srt)
 # end def work_packages
 
-def work_packages_selector (wps, prop):
+def allowed_wp_dict (db, batch, edit_ok):
+    d = {}
+    for item in batch:
+        frozen = freeze.frozen (db._db, item.user.id, item.date)
+        editable = edit_ok and not frozen and str (item.status) == 'open'
+        wps  = work_packages (db, item, editable)
+        html = {(None, None): 'value="-1">- no selection -</option>'}
+        for wp in wps:
+            html [(str (wp.id), str (wp.name))] = \
+                ( 'value="%s">%s %s %s</option>'
+                % (tuple ([escape (str (x)) for x in
+                           (wp.id, wp.project, wp.wp_no, wp.name)]
+                         )
+                  )
+                )
+        d [item.id] = html
+    return d
+# end def allowed_wp_dict
+
+def work_packages_selector (optiondict, prop):
     """ Generate all options for wps inside a selector. Return html and
         a dict containing id to option number mapping
     """
     v    = prop._value
     if v == '-1':
         v = None
-    d    = { -1 : 0 }
-    s    = ''
-    if v is None:
-        s = 'selected="selected" '
-    html = [' <option %svalue="-1">- no selection -</option>' % s]
-    for n, wp in enumerate (wps):
-        d [wp.id] = n + 1
+    html = []
+    for (wpid, wpname) in optiondict:
+        p = optiondict [(wpid, wpname)]
         s = ''
-        if v in [wp.id, wp.name]:
+        if v == wpid or v == wpname:
             s = 'selected="selected" '
-        html.append \
-            ( ' <option %svalue="%s">%s %s %s</option>'
-            % ((s,) + tuple ([escape (str (v)) for v in
-                              (wp.id, wp.project, wp.wp_no, wp.name)]
-                            )
-              )
-            )
+        html.append (' <option %s%s' % (s, p))
     return '\n'.join (html)
 # end def work_packages_selector
 
@@ -672,6 +680,7 @@ def init (instance):
     reg ("batch_has_status",             batch_has_status)
     reg ("daily_record_check_batch",     daily_record_check_batch)
     reg ("work_packages",                work_packages)
+    reg ("allowed_wp_dict",              allowed_wp_dict)
     reg ("work_packages_selector",       work_packages_selector)
     reg ("work_packages_javascript",     work_packages_javascript)
     reg ("sorted",                       u_sorted)

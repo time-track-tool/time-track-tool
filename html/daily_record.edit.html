@@ -56,7 +56,8 @@
        is_accepted  python:utils.batch_has_status (batch, 'accepted');
        form_date    python:request.form.getvalue ('date') or nothing;
        frozen       python:utils.range_frozen (db._db, user, form_date);
-       daterange    python:request.filterspec.get('date')
+       daterange    python:request.filterspec.get('date');
+       optdict      python:utils.allowed_wp_dict (db, batch, edit_ok)
       ">
       <table class="list">
        <tr class="time-nav">
@@ -162,7 +163,7 @@
            ;is_wend   python:i ['date'].pretty ('%a') in ('Sat','Sun')
            ;is_ph     python: utils.dr_is_public_holiday (i)
            ;allowed   python: (w_allowed or not (is_wend or is_ph)) and edit_ok
-           ;wps       python:utils.work_packages (db, i, editable)
+           ;wpopt     python: optdict [i.id]
            ">
           <tr tal:attributes="class cls">
            <td class="subhead-nb" width="1%"
@@ -256,7 +257,7 @@
                <select class="dropdown-wp" tal:condition="ed"
                  tal:attributes="name name">
                 <tal:block tal:content="structure python:
-                    utils.work_packages_selector (wps, tr.wp)"/>
+                    utils.work_packages_selector (wpopt, tr.wp)"/>
                </select>
                <span tal:condition="not:ed" tal:content="structure python:
                 tr.wp and '&nbsp;'.join
@@ -371,7 +372,7 @@
                tal:attributes="name python:'time_record-%d@wp'%n">
               <tal:block tal:content="structure python:
                   utils.work_packages_selector
-                   ( wps
+                   ( wpopt
                    , utils.new_property
                        (context, db, 'time_record', -n, 'wp')
                    )"/>
