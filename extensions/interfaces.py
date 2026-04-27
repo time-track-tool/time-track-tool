@@ -250,6 +250,10 @@ def work_packages (db, daily_record, editable = True):
     """ Compute allowed work packages for this date and user of the
         given daily_record. Needs a HTML db and a HTML daily_record.
     """
+    try:
+        db  = db._db
+    except AttributeError:
+        pass
     if not editable:
         return []
     date = daily_record.date._value # is a html prop
@@ -259,24 +263,28 @@ def work_packages (db, daily_record, editable = True):
            }
     srt  = [('+', 'project.name'), ('+', 'name')]
     wps  = vacation.valid_wps \
-        (db._db, filter = filt, date = date, user = user, srt = srt)
-    wps  = (db.time_wp.getItem (k) for k in wps)
-    srt  = lambda z: (localecollate (z.project), localecollate (z.name))
-    return sorted (wps, key = srt)
+        (db, filter = filt, date = date, user = user, srt = srt)
+    wps = [db.time_wp.getnode (k) for k in wps]
+    return wps
 # end def work_packages
 
 def allowed_wp_dict (db, batch, edit_ok):
+    try:
+        db  = db._db
+    except AttributeError:
+        pass
     d = {}
     for item in batch:
-        frozen = freeze.frozen (db._db, item.user.id, item.date)
+        frozen = freeze.frozen (db, item.user.id, item.date)
         editable = edit_ok and not frozen and str (item.status) == 'open'
         wps  = work_packages (db, item, editable)
         html = {(None, None): 'value="-1">- no selection -</option>'}
         for wp in wps:
+            prj = db.time_project.getnode (wp.project)
             html [(str (wp.id), str (wp.name))] = \
                 ( 'value="%s">%s %s %s</option>'
                 % (tuple ([escape (str (x)) for x in
-                           (wp.id, wp.project, wp.wp_no, wp.name)]
+                           (wp.id, prj.name, wp.wp_no, wp.name)]
                          )
                   )
                 )
@@ -679,7 +687,6 @@ def init (instance):
     reg ("html_calendar",                html_calendar)
     reg ("batch_has_status",             batch_has_status)
     reg ("daily_record_check_batch",     daily_record_check_batch)
-    reg ("work_packages",                work_packages)
     reg ("allowed_wp_dict",              allowed_wp_dict)
     reg ("work_packages_selector",       work_packages_selector)
     reg ("work_packages_javascript",     work_packages_javascript)
