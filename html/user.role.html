@@ -19,7 +19,7 @@
          ">
   <tal:block tal:repeat="role roles">
    <tr>
-    <th class="group" tal:content="python:'%(name)s' % role.__dict__"/>
+    <th class="group" tal:content="python:'%s' % role.name"/>
    </tr>
    <tr tal:repeat="perm python:
        role.permission_list()">

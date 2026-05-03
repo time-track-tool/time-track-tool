@@ -2591,7 +2591,11 @@ def permdict (db, perm):
        We also put a quote into the dict for the web-interface.
     """
     _ = db._db.i18n.gettext
-    d = dict (perm.__dict__)
+    d = {}
+    d ['name'] = perm.name
+    d ['description'] = perm.description
+    d ['klass'] = getattr (perm, 'klass', None)
+    d ['properties'] = perm.properties
     d ['quote'] = '"'
     if d ['klass']:
         d ['klass'] = _ (d ['klass'])
