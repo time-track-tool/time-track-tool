@@ -25,17 +25,17 @@ from roundup.anypy.strings          import s2u
 from maturity_index                 import maturity_table
 import os
 import textwrap
-try :
+try:
     from docutils.core import publish_parts
-except ImportError :
+except ImportError:
     publish_parts = None
 
-if not publish_parts :
-    def publish_parts (text, writer_name = 'html') :
+if not publish_parts:
+    def publish_parts (text, writer_name = 'html'):
         return dict (body = text)
     # end def publish_parts
 
-def Structured_Text (text) :
+def Structured_Text (text):
     return publish_parts (text, writer_name = 'html') ['body'].replace \
         ('%', '%%').replace ('%%(', '%(')
 # end def Structured_Text
@@ -233,7 +233,7 @@ wp_no              = \
 
 _helptext          = \
     { ""'VIEW'                        : [view]
-    , ""'abbreviation'                        :
+    , ""'abbreviation'                :
       [""'''Abbreviated name''']
     , ""'abo'                         :
       [""'''Subscription to which this invoice belongs''']
@@ -2469,7 +2469,7 @@ _helptext          = \
     , ""'work_location.id'            : [help_id]
     }
 
-def combined_name (cls, attr, searchname = None) :
+def combined_name (cls, attr, searchname = None):
     """ Produce a combined name of class and attribute of the class. If
         a help-text exists for the combination, return the combination,
         otherwise return only the attribute. In this way we can override
@@ -2480,17 +2480,17 @@ def combined_name (cls, attr, searchname = None) :
     """
     if searchname:
         pname = '%s++%s' % (cls, searchname)
-        if pname in _helptext :
+        if pname in _helptext:
             return pname
-        if searchname in _helptext :
+        if searchname in _helptext:
             return searchname
     pname = '%s++%s' % (cls, attr)
-    if pname in _helptext :
+    if pname in _helptext:
         return pname
     return attr
 # end def combined_name
 
-def help_properties (klass) :
+def help_properties (klass):
     """Return all class properties plus some more for which help texts
        should be displayed (e.g., "message" which describes the message
        window). The parameter klass is a html klass.
@@ -2498,34 +2498,34 @@ def help_properties (klass) :
     _ = klass._klass.db.i18n.gettext
     p = []
     properties = klass._klass.getprops ()
-    if 'messages' in properties :
+    if 'messages' in properties:
         mc = '++'.join ((klass.classname, 'msg'))
-        if mc in _helptext :
+        if mc in _helptext:
             p.append (mc)
-        else :
+        else:
             p.append ('msg')
-    if klass.classname == 'user' :
+    if klass.classname == 'user':
         p.append ('confirm')
-    if klass.classname == 'daily_record' :
+    if klass.classname == 'daily_record':
         p.append ('week')
-    if klass.classname == 'file' :
+    if klass.classname == 'file':
         p.append (""'remove')
-    if klass.classname == 'user_dynamic' :
+    if klass.classname == 'user_dynamic':
         p.append (""'daily_hours')
-    if 'announcements' in properties :
+    if 'announcements' in properties:
         p.append ('add_announcement')
-    if 'files' in properties :
+    if 'files' in properties:
         p.append ('add_file')
     v = combined_name (klass.classname, 'VIEW')
-    if v in _helptext :
+    if v in _helptext:
         p.append (v)
-    else :
+    else:
         p.append ('VIEW')
-    for i in properties :
+    for i in properties:
         pname = combined_name (klass.classname, i)
-        if pname in _helptext :
+        if pname in _helptext:
             p.append (pname)
-    return list (sorted (p, key = lambda x : _ (s2u (x))))
+    return list (sorted (p, key = lambda x: _ (s2u (x))))
 # end def help_properties
 
 def fieldlabel \
@@ -2536,11 +2536,12 @@ def fieldlabel \
     , csscls     = 'desc'
     , startswith = ''
     , endswith   = ':'
-    ) :
+    ):
     _ = db._db.i18n.gettext
-    if not searchname : searchname = name
+    if not searchname:
+        searchname = name
     prop  = combined_name (cls, name, searchname)
-    if csscls :
+    if csscls:
         csscls = 'class="%s"' % csscls
     return "<label %s>%s%s%s</label>" % (csscls, startswith, _ (prop), endswith)
 # end def fieldlabel
@@ -2551,23 +2552,24 @@ def fieldname \
     , endswith   = '&nbsp;'
     , csscls     = ''
     , label      = None
-    ) :
-    try :
+    ):
+    try:
         db = db._db
-    except AttributeError :
+    except AttributeError:
         pass
     _ = db.i18n.gettext
-    if not searchname : searchname = name
+    if not searchname:
+        searchname = name
     prop  = combined_name (cls, name, searchname)
     label1 = label2 = ''
-    if label is not None :
+    if label is not None:
         label1 = '<label for="%s">' % label
         label2 = '</label>'
     i18nprop = _ (prop)
-    if prop not in _helptext :
+    if prop not in _helptext:
         return "%s%s%s%s" % (label1, i18nprop, endswith, label2)
     href  = prop.split ('.')[-1].split ('++')[-1]
-    if csscls :
+    if csscls:
         csscls = 'class="%s"' % csscls
     return (_ (''"""<a %(csscls)s title=\"Help for %(i18nprop)s\" """
                """href=\"javascript:help_window"""
@@ -2579,63 +2581,63 @@ def fieldname \
            )
 # end def fieldname
 
-def helptext (db, key) :
+def helptext (db, key):
     _ = db._db.i18n.gettext
     return ' '.join (_ (h) for h in _helptext [key])
 # end def helptext
 
-def permdict (db, perm) :
+def permdict (db, perm):
     """From a permission object compute a localized version of the dict.
        We also put a quote into the dict for the web-interface.
     """
     _ = db._db.i18n.gettext
     d = dict (perm.__dict__)
     d ['quote'] = '"'
-    if d ['klass'] :
+    if d ['klass']:
         d ['klass'] = _ (d ['klass'])
-    if d ['properties'] :
+    if d ['properties']:
         d ['properties'] = [_ (x) for x in d ['properties']]
     return d
 # end def permdict
 
-def user_manual_ok (db) :
+def user_manual_ok (db):
     return bool (user_manual (db))
 # end def user_manual_ok
 
-def user_manual (db) :
-    try :
+def user_manual (db):
+    try:
         db = db._db
-    except AttributeError :
+    except AttributeError:
         pass
     fn = getattr (db.config.ext, 'LINK_PR_MANUAL', None)
-    if fn :
+    if fn:
         return fn
     fn = os.path.join (db.config.TRACKER_HOME, "html", "User-Manual.pdf")
-    try :
+    try:
         stbuf = os.stat (fn)
-    except OSError :
+    except OSError:
         return None
     return fn
 # end def user_manual
 
-def aux_links (db) :
-    try :
+def aux_links (db):
+    try:
         db = db._db
-    except AttributeError :
+    except AttributeError:
         pass
     aux = getattr (db.config.ext, 'LINK_AUX_LINKS', None)
     links = []
-    if aux :
-        for l in aux.split (';') :
+    if aux:
+        for l in aux.split (';'):
             name, link = l.split ('+', 1)
             links.append ((name, link))
     return links
 # end def aux_links
 
 def artefact_info (db, context):
-    try :
+    try:
         db = db._db
-    except AttributeError :
+    except AttributeError:
         pass
     classes = \
         ( 'artefact', 'doc', 'doc_category', 'doc_status'
@@ -2652,21 +2654,21 @@ def artefact_info (db, context):
     return txt
 # end def artefact_info
 
-def init_purchase_type (db) :
+def init_purchase_type (db):
     # FIXME: one day this should go into a helptext method that has a db
     # as parameter.
-    if 'purchase_type' not in db.classes :
+    if 'purchase_type' not in db.classes:
         return
     global purchase_types
     pt = []
-    for id in db.purchase_type.filter (None, dict (valid = True)) :
+    for id in db.purchase_type.filter (None, dict (valid = True)):
         pr = db.purchase_type.getnode (id)
         pt.append ('\n    '.join ((pr.name, pr.description or '')))
     p = Structured_Text (purchase_types + '\n\n' + '\n\n'.join (sorted (pt)))
     _helptext ['purchase_type'] = [p]
 # end def init_purchase_type
 
-def init (instance) :
+def init (instance):
     reg = instance.registerUtil
     reg ('helptext',        helptext)
     reg ('help_properties', help_properties)
