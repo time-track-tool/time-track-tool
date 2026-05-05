@@ -673,7 +673,7 @@ def consolidated_vacation \
     msg = "vac_aliq None for user_dynamic%s" % dyn.id
     assert dyn.vac_aliq, msg
     va = db.vac_aliq.getnode (dyn.vac_aliq)
-    assert va.name in ('Daily', 'Monthly')
+    assert va.name in ('Austria', 'Germany')
     # Need to skip first period without a dyn user record
     # sd is the current start date for german aliquotation
     # We subtract 1 day to easily compare the day of the ending-date
@@ -700,11 +700,16 @@ def consolidated_vacation \
               )
         assert dyn.vac_aliq == va.id, msg
         if dyn.valid_to and dyn.valid_to <= ed and dyn.valid_to <= eoy:
-            if va.name == 'Daily':
+            # Daily alliquotation in Austria:
+            if va.name == 'Austria':
                 yd = float (common.ydays (dyn.valid_to))
                 vac += interval_days \
                     (dyn.valid_to - d) * dyn.vacation_yearly / yd
-            else:
+            # Monthly alliquotation in Germany, special case here, the
+            # start date matters. In other countries we simply count
+            # whole months and leave it to manual corrections to handle
+            # the rest.
+            elif va.name == 'Germany':
                 md  = month_diff (sd, dyn.valid_to)
                 dy  = sd_day or sd.day
                 if dyn.valid_to.day < dy:
@@ -729,13 +734,15 @@ def consolidated_vacation \
                     sd_day = 0
                 d = dyn.valid_to
                 vac += dyn.vacation_yearly * md / 12.0
+            else:
+                assert 0, 'Invalid country setting for vac_aliq'
             dyn = vac_next_user_dynamic (db, dyn)
         elif eoy < ed:
-            if va.name == 'Daily':
+            if va.name == 'Austria':
                 yd = float (common.ydays (eoy))
                 iv = eoy + common.day - d
                 vac += interval_days (iv) * dyn.vacation_yearly / yd
-            else:
+            elif va.name == 'Germany':
                 md  = month_diff (sd, eoy)
                 dy  = sd_day or sd.day
                 assert eoy.day >= dy
@@ -746,20 +753,24 @@ def consolidated_vacation \
                     sd = Date (eoy.pretty ("%%Y-%%m-%s" % sd.day))
                 sd_day = 0
                 vac += dyn.vacation_yearly * md / 12.0
+            else:
+                assert 0, 'Invalid country setting for vac_aliq'
             d  = eoy + common.day
             if dyn.valid_to == d:
                 dyn = vac_next_user_dynamic (db, dyn)
         else:
-            if va.name == 'Daily':
+            if va.name == 'Austria':
                 yd = float (common.ydays (ed - common.day))
                 vac += interval_days (ed - d) * dyn.vacation_yearly / yd
-            else:
+            elif va.name == 'Germany':
                 md = month_diff (sd, ed)
                 dy  = sd_day or sd.day
                 if ed.day < dy:
                     md -= 1
                 sd = ed
                 vac += dyn.vacation_yearly * md / 12.0
+            else:
+                assert 0, 'Invalid country setting for vac_aliq'
             d = ed
     # Round to ten digits: The computations above can produce errors due
     # to repeated additions

@@ -1067,8 +1067,8 @@ if 'daily_record' in db.classes and hasattr (db, 'sql') :
           'daily_record_user_date unique (_user, _date, __retired__);'
         )
 if 'vac_aliq' in db.classes :
-    db.vac_aliq.create (name  = 'Daily')
-    db.vac_aliq.create (name  = 'Monthly')
+    db.vac_aliq.create (name  = 'Austria')
+    db.vac_aliq.create (name  = 'Germany')
 if 'pr_ext_resource' in db.classes :
     db.pr_ext_resource.create (name  = 'yes')
     db.pr_ext_resource.create (name  = 'no')
