@@ -1904,8 +1904,9 @@ class Vacation_Report (_Report):
                 continue
             for ctype in self.user_ctypes [u]:
                 vc = user_vc [(u, ctype)]
-                yday, pd, carry, ltot = vacation.vacation_params \
+                lst = vacation.ly_vacation_params \
                     (db, u, min_user_date [(u, ctype)], vc, hv)
+                yday, pd, carry, carry_h, ltot, ltot_acr, ltot_h = lst
                 ld    = None
                 d     = yday
                 if hv:
@@ -1926,8 +1927,9 @@ class Vacation_Report (_Report):
                     vci = db.vacation_correction.filter (None, vcd, sort = srt)
                     if vci [0] != vc.id:
                         vc = db.vacation_correction.getnode (vci [0])
-                        yday, pd, carry, ltot = vacation.vacation_params \
+                        lst = vacation.ly_vacation_params \
                             (db, u, min_user_date [(u, ctype)], vc, hv)
+                        yday, pd, carry, carry_h, ltot, ltot_acr, ltot_h = lst
                     rcarry = carry
                     if not hv:
                         rcarry = float (ceil (carry))
@@ -1974,13 +1976,14 @@ class Vacation_Report (_Report):
                     else:
                         container ['yearly entitlement'] = 0.0
                     container ['carry forward'] = rcarry
-                    cons = vacation.consolidated_vacation \
+                    cons, cons_acr, cons_h = vacation.consolidated_vacation \
                         (db, u, ctype, d, to_eoy = not hv)
                     et = float (cons - ltot + carry)
                     yp = float (cons - ltot)
                     # new carry and remaining vacation
-                    carry = rv = vacation.remaining_vacation \
+                    carry, carry_h = vacation.remaining_vacation \
                         (db, u, ctype, d, cons, to_eoy = not hv)
+                    rv = carry
                     if not hv:
                         # ceil in Py3 will return an int if possible ugh
                         et = float (ceil (et))
@@ -1990,7 +1993,7 @@ class Vacation_Report (_Report):
                     container ['entitlement total']  = et
                     container ['yearly prorated']    = yp
                     container ['remaining vacation'] = rv
-                    val = vacation.vacation_time_sum (db, u, ctype, fd, d)
+                    val = vacation.vacation_time_sum (db, u, ctype, fd, d) [0]
                     r   = ('HR-vacation', 'HR-leave-approval')
                     if common.user_has_role (self.db, self.uid, *r):
                         dt   = common.pretty_range (ld, d)
@@ -2006,7 +2009,7 @@ class Vacation_Report (_Report):
                     if 'additional_submitted' in self.fields:
                         container ['additional_submitted'] = \
                             vacation.vacation_submission_days \
-                                (db, u, ctype, fd, d, st_subm)
+                                (db, u, ctype, fd, d, st_subm) [0]
                     if 'flexi_time' in self.fields:
                         container ['flexi_time'] = \
                             vacation.flexitime_submission_days \
@@ -2034,7 +2037,7 @@ class Vacation_Report (_Report):
                     if 'approved_submissions' in self.fields:
                         container ['approved_submissions'] = \
                             vacation.vacation_submission_days \
-                                (db, u, ctype, fd, d, st_accp, st_cnrq)
+                                (db, u, ctype, fd, d, st_accp, st_cnrq) [0]
 
                     vd = common.pretty_range (fd, d)
                     vcids = db.vacation_correction.filter \
@@ -2209,7 +2212,7 @@ class Gap_Report (_Report):
             contr ['carry_on_date'] = ''
             self.format_vac_corr (vc, contr)
             if ndyn.vac_aliq is not None and odyn.vac_aliq is not None:
-                carry = vacation.remaining_vacation \
+                carry, carry_h = vacation.remaining_vacation \
                     (db, user.id, date = start, to_eoy = False)
                 contr ['carry_on_date'] = carry
             line  = []

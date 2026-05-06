@@ -192,14 +192,22 @@ def remaining_until (db, uid = None, now = None):
 
 def remaining_vacation (db, user, ctype = -1, date = None):
     remain = vacation.remaining_vacation
-    c = ceil (remain (db, user, ctype = ctype, date = date))
-    if c == 0:
+    r, r_h = remain (db, user, ctype = ctype, date = date)
+    dyn = user_dynamic.find_user_dynamic \
+        (db, user, date, direction = '-', ct = ctype)
+    if dyn is None:
+        assert not r and not r_h
         return 0.0
-    return float (c)
-# end def remaining_vacation
-
-def consolidated_vacation (db, user, date):
-    return ceil (vacation.consolidated_vacation (db, user, date = date))
+    va = db.vac_aliq.get (dyn.vac_aliq, 'name')
+    if r is not None:
+        assert r_h is None
+        assert va != 'Czechia'
+        c = r
+    else:
+        assert r is None
+        assert va == 'Czechia'
+        c = r_h * dyn.weekly_hours / 5
+    return float (vacation.round_vacation (dyn, c))
 # end def remaining_vacation
 
 def _get_ctype (db, user, start, end):
@@ -221,7 +229,7 @@ def _get_stati (db, statusname):
 def vacation_with_status (db, user, ctype, start, end, statusname):
     stati = _get_stati (db, statusname)
     return vacation.vacation_submission_days \
-        (db, user, ctype, start, end, * stati)
+        (db, user, ctype, start, end, * stati) [0]
 # end def vacation_with_status
 
 def flexitime_with_status (db, user, start, end, statusname):
@@ -253,6 +261,9 @@ class New_Leave_Action (NewItemAction):
 # end class New_Leave_Action
 
 def leave_days (db, user, first_day, last_day):
+    """ Return number of leave days
+        vacation.leave_days returns a tuple now, we return only the days.
+    """
     if first_day is None or last_day is None:
         return 0
     if not isinstance (first_day, Date):
@@ -266,18 +277,31 @@ def leave_days (db, user, first_day, last_day):
         except AttributeError:
             last_day = Date (last_day)
     try:
-        return vacation.leave_days (db, user, first_day, last_day)
+        return vacation.leave_days (db, user, first_day, last_day) [0]
     except AssertionError:
         return 'Invalid data'
 # end def leave_days
 
 def eoy_vacation (db, user, date, ctype = -1):
     eoy = Date (date.pretty ('%Y-12-31'))
+    dyn = user_dynamic.find_user_dynamic \
+        (db, user, eoy, direction = '-', ct = ctype)
+    if dyn is None:
+        return 0.0
     vc  = vacation.get_vacation_correction (db, user, ctype, date)
     assert vc
-    yday, pd, carry, ltot = vacation.vacation_params (db, user, eoy, vc)
-    cons  = vacation.consolidated_vacation (db, user, vc.contract_type, eoy)
-    return float (ceil (cons - ltot + carry))
+    _, _, cry, cry_h, ltot, _, ltot_h = vacation.ly_vacation_params \
+        (db, user, eoy, vc)
+    cons, _, cons_h  = vacation.consolidated_vacation \
+        (db, user, vc.contract_type, eoy)
+    if cons is not None:
+        assert cons_h is None
+        v = vacation.round_vacation (dyn, cons - ltot + cry)
+    else:
+        assert cons_h is not None
+        v = vacation.round_vacation (dyn, cons_h - ltot_h + cry_h)
+        v = v * dyn.weekly_hours / 5
+    return float (v)
 # end def eoy_vacation
 
 def month_name (date):
@@ -830,7 +854,6 @@ def init (instance):
     reg ('Leave_Buttons',                Leave_Buttons)
     reg ('remaining_until',              remaining_until)
     reg ('remaining_vacation',           remaining_vacation)
-    reg ('consolidated_vacation',        consolidated_vacation)
     reg ('vacation_with_status',         vacation_with_status)
     reg ('flexitime_with_status',        flexitime_with_status)
     reg ('vacation_time_sum',            vacation.vacation_time_sum)

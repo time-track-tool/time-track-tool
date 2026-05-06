@@ -2531,21 +2531,25 @@ class Test_Case_Timetracker (_Test_Case_Summary, unittest.TestCase):
         for d in '2008-11-03', '2008-11-30', '2008-12-31':
             dt = date.Date (d)
             self.assertEqual \
-                ( vacation.consolidated_vacation (self.db, self.user2, None, dt)
+                ( vacation.consolidated_vacation \
+                    (self.db, self.user2, None, dt) [0]
                 , round ((28. + 31.) * 25. / 366., 6)
                 )
             self.assertEqual \
-                ( vacation.remaining_vacation (self.db, self.user2, None, dt)
+                ( vacation.remaining_vacation
+                    (self.db, self.user2, None, dt) [0]
                 , round ((28. + 31.) * 25. / 366., 6)
                 )
         for d in '2009-01-01', '2009-01-30', '2009-12-31':
             dt = date.Date (d)
             self.assertEqual \
-                ( vacation.consolidated_vacation (self.db, self.user2, None, dt)
+                ( vacation.consolidated_vacation \
+                    (self.db, self.user2, None, dt) [0]
                 , round ((28. + 31.) * 25. / 366. + 25., 6)
                 )
             self.assertEqual \
-                ( vacation.remaining_vacation (self.db, self.user2, None, dt)
+                ( vacation.remaining_vacation
+                    (self.db, self.user2, None, dt) [0]
                 , round ((28. + 31.) * 25. / 366. + 25., 6)
                 )
         s   = [('+', 'user'), ('+', 'date')]
@@ -2749,7 +2753,7 @@ class Test_Case_Timetracker (_Test_Case_Summary, unittest.TestCase):
         vac2 = self.db.leave_submission.getnode (v2)
         self.assertEqual \
             ( vacation.leave_days
-                (self.db, self.user2, vac2.first_day, vac2.last_day)
+                (self.db, self.user2, vac2.first_day, vac2.last_day) [0]
             , 4.5
             )
         os.unlink (maildebug)
@@ -5598,7 +5602,7 @@ class Test_Case_Timetracker (_Test_Case_Summary, unittest.TestCase):
         self.db = self.tracker.open (self.username34)
         dts = date.Date ('2024-12-23')
         dte = date.Date ('2025-01-06')
-        r = vacation.leave_days (self.db, self.user34, dts, dte)
+        r = vacation.leave_days (self.db, self.user34, dts, dte) [0]
         assert r == 0.0
         d = dts
         while (d <= dte):
@@ -5610,7 +5614,7 @@ class Test_Case_Timetracker (_Test_Case_Summary, unittest.TestCase):
             vacation.try_create_public_holiday (self.db, dr, d, self.user34)
             d = d + common.day
         # Now mis-placed public holidays should have been deleted
-        r = vacation.leave_days (self.db, self.user34, dts, dte)
+        r = vacation.leave_days (self.db, self.user34, dts, dte) [0]
         assert r == 5.0
         self.db.close ()
     # end def test_user34_vacation
@@ -5628,7 +5632,7 @@ class Test_Case_Timetracker (_Test_Case_Summary, unittest.TestCase):
         self.db = self.tracker.open (self.username34)
         dts = date.Date ('2024-12-23')
         dte = date.Date ('2025-01-06')
-        r = vacation.leave_days (self.db, self.user34, dts, dte)
+        r = vacation.leave_days (self.db, self.user34, dts, dte) [0]
         assert r == 0.0
         d = dts
         while (d <= dte):
@@ -5641,7 +5645,7 @@ class Test_Case_Timetracker (_Test_Case_Summary, unittest.TestCase):
             d = d + common.day
         # User is not part of the leave process.
         # So no public holidays should have been deleted
-        r = vacation.leave_days (self.db, self.user34, dts, dte)
+        r = vacation.leave_days (self.db, self.user34, dts, dte) [0]
         assert r == 0.0
         self.db.close ()
     # end def test_user34_no_vac_corr
@@ -5841,7 +5845,7 @@ class Test_Case_Timetracker (_Test_Case_Summary, unittest.TestCase):
             eoy  = eoy_vacation \
                 (self.db, self.user36, dt, ctid)
             vapr = vacation_time_sum \
-                (self.db, self.user36, ctid, jandt, dt)
+                (self.db, self.user36, ctid, jandt, dt) [0]
             vsub = vacation_with_status \
                 (self.db, self.user36, ctid, jandt, dt, 'submitted')
             rem  = remaining_vacation \

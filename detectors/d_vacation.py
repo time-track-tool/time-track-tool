@@ -127,7 +127,7 @@ def new_submission (db, cl, nodeid, new_values):
         raise Reject \
             (_ ("Only special role may create submission for other user"))
     vacation.create_daily_recs (db, user, first_day, last_day)
-    if vacation.leave_days (db, user, first_day, last_day) == 0:
+    if vacation.leave_days (db, user, first_day, last_day) [0] == 0:
         raise Reject (_ ("Vacation request for 0 days"))
     check_dr_status (db, user, first_day, last_day, 'open')
     check_dyn_user_params (db, user, first_day, last_day)
@@ -227,7 +227,7 @@ def check_submission (db, cl, nodeid, new_values):
     if old_status in ('open', 'submitted'):
         vacation.create_daily_recs (db, user, first_day, last_day)
     if 'first_day' in new_values or 'last_day' in new_values:
-        if vacation.leave_days (db, user, first_day, last_day) == 0:
+        if vacation.leave_days (db, user, first_day, last_day) [0] == 0:
             raise Reject (_ ("Vacation request for 0 days"))
         check_dyn_user_params (db, user, first_day, last_day)
     if old_status in ('open', 'submitted'):
