@@ -2327,6 +2327,9 @@ properties = \
       , [ ( 'absolute'
           , ['admin', 'artefact', 'cc-permission', 'contact', 'controlling', 'doc_admin', 'facility', 'functional-role', 'hr', 'hr-leave-approval', 'hr-vacation', 'issue_admin', 'it', 'itview', 'msgedit', 'msgsync', 'o-permission', 'office', 'organisation', 'procurement', 'project', 'project_view', 'sec-incident-nosy', 'sec-incident-responsible', 'summary-report', 'summary_view', 'supportadmin', 'time-report', 'type', 'user', 'vacation-report', 'view-roles']
           )
+        , ( 'accrued'
+          , ['admin', 'artefact', 'cc-permission', 'contact', 'controlling', 'doc_admin', 'facility', 'functional-role', 'hr', 'hr-leave-approval', 'hr-vacation', 'issue_admin', 'it', 'itview', 'msgedit', 'msgsync', 'o-permission', 'office', 'organisation', 'procurement', 'project', 'project_view', 'sec-incident-nosy', 'sec-incident-responsible', 'summary-report', 'summary_view', 'supportadmin', 'time-report', 'type', 'user', 'vacation-report', 'view-roles']
+          )
         , ( 'comment'
           , ['admin', 'artefact', 'cc-permission', 'contact', 'controlling', 'doc_admin', 'facility', 'functional-role', 'hr', 'hr-leave-approval', 'hr-vacation', 'issue_admin', 'it', 'itview', 'msgedit', 'msgsync', 'o-permission', 'office', 'organisation', 'procurement', 'project', 'project_view', 'sec-incident-nosy', 'sec-incident-responsible', 'summary-report', 'summary_view', 'supportadmin', 'time-report', 'type', 'user', 'vacation-report', 'view-roles']
           )
@@ -2337,6 +2340,9 @@ properties = \
           , ['admin', 'artefact', 'cc-permission', 'contact', 'controlling', 'doc_admin', 'facility', 'functional-role', 'hr', 'hr-leave-approval', 'hr-vacation', 'issue_admin', 'it', 'itview', 'msgedit', 'msgsync', 'o-permission', 'office', 'organisation', 'procurement', 'project', 'project_view', 'sec-incident-nosy', 'sec-incident-responsible', 'summary-report', 'summary_view', 'supportadmin', 'time-report', 'type', 'user', 'vacation-report', 'view-roles']
           )
         , ( 'days'
+          , ['admin', 'artefact', 'cc-permission', 'contact', 'controlling', 'doc_admin', 'facility', 'functional-role', 'hr', 'hr-leave-approval', 'hr-vacation', 'issue_admin', 'it', 'itview', 'msgedit', 'msgsync', 'o-permission', 'office', 'organisation', 'procurement', 'project', 'project_view', 'sec-incident-nosy', 'sec-incident-responsible', 'summary-report', 'summary_view', 'supportadmin', 'time-report', 'type', 'user', 'vacation-report', 'view-roles']
+          )
+        , ( 'hours'
           , ['admin', 'artefact', 'cc-permission', 'contact', 'controlling', 'doc_admin', 'facility', 'functional-role', 'hr', 'hr-leave-approval', 'hr-vacation', 'issue_admin', 'it', 'itview', 'msgedit', 'msgsync', 'o-permission', 'office', 'organisation', 'procurement', 'project', 'project_view', 'sec-incident-nosy', 'sec-incident-responsible', 'summary-report', 'summary_view', 'supportadmin', 'time-report', 'type', 'user', 'vacation-report', 'view-roles']
           )
         , ( 'user'

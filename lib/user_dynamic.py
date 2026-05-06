@@ -211,18 +211,26 @@ def act_or_latest_user_dynamic (db, user, check_o_perm = True):
     return None
 # end def act_or_latest_user_dynamic
 
+def wday_num (date):
+    return gmtime (date.timestamp ()) [6]
+# end def wday_num
+
 wdays = ['mon', 'tue', 'wed', 'thu', 'fri', 'sat', 'sun']
+
+def wday_name (wday):
+    return wdays [wday]
+# end def wday_name
 
 def day_work_hours (dynuser, date):
     """ Compute hours for a holiday etc from the date """
-    wday  = gmtime (date.timestamp ())[6]
+    wday  = wday_num (date)
     return _day_work_hours (dynuser, wday)
 # end def day_work_hours
 
 def _day_work_hours (dynuser, wday):
     if not dynuser:
         return 0
-    hours = dynuser ['hours_' + wdays [wday]]
+    hours = dynuser ['hours_' + wday_name (wday)]
     if hours is not None:
         return hours
     if wday in (5, 6) or not dynuser.weekly_hours:

@@ -647,6 +647,110 @@ def month_diff (d1, d2):
     return md + 12 * yd
 # end def month_diff
 
+def first_month_finland (dyn, sd, d):
+    """ If sd the start date isn't a first, we need to compute the
+        vacation for the first month
+    """
+    if sd.day == 0:
+        return sd, 0
+    # If both dates are in same month, do nothing
+    if sd.month == d.month:
+        return sd, 0
+    # First check if sd.day > 1 in that case the first month only counts
+    # if person worked at least 14 days
+    acr = 0
+    next = end_of_month (sd) + common.day
+    assert next <= d
+    if (next - sd).day >= 14:
+        acr += dyn.vacation_yearly / 12
+    sd = next
+    return sd, acr
+# end def first_month_finland
+
+def first_month_romania (dyn, sd, d):
+    """ If sd the start date isn't a first, we need to compute the
+        vacation for the first month, it is alliquot the number of days
+        worked in the month divided by days in that month
+    """
+    if sd.day == 0:
+        return sd, 0
+    # If both dates are in same month, do nothing
+    if sd.month == d.month:
+        return sd, 0
+    # First check if sd.day > 1 in that case the first month is used
+    # alliquot by days in month
+    acr = 0
+    next = end_of_month (sd) + common.day
+    assert next <= d
+    acr += (next - sd).day / end_of_month (sd).day * dyn.vacation_yearly / 12
+    sd = next
+    return sd, acr
+# end def first_month_romania
+
+def first_week_cz (dyn, sd, d):
+    wday = user_dynamic.wday_num (sd)
+    if wday == 0:
+        return sd, 0
+    if common.weekno_year_from_day (dyn) == common.weekno_year_from_day (d):
+        return sd, 0
+    acc_h = 0
+    days = 7 - wday
+    assert days < 7
+    assert sd + common.day * days <= d
+    # FIXME
+    # For now first non-full week alliquot
+    yd = float (common.ydays (sd))
+    acc_h = days * dyn.vacation_yearly / yd * dyn.weekly_hours
+    return sd, acc_h
+# end def first_week_cz
+
+def accrue_cz (dyn, sd, d):
+    sd, acc_h = first_week_cz (dyn, sd, d)
+    assert user_dynamic.wday_num (sd) == 0
+    if common.weekno_year_from_day (dyn) == common.weekno_year_from_day (d):
+        return sd, 0
+    wday = user_dynamic.wday_num (d)
+    ed   = d - common.day * wday
+    assert ed >= sd
+    days = (ed - sd).day
+    assert day % 7 == 0
+    yd = float (common.ydays (sd))
+    acc_h += dyn.vacation_yearly / yd * days * dyn.weekly_hours
+    return ed, acc_h
+# end def accrue_cz
+
+def accrue (dyn, sd, d):
+    """ Accrual for time from sd to d (Finland)
+    """
+    assert sd.day == 1
+    # If both dates are in same month, do nothing
+    if sd.month == d.month:
+        return sd, 0
+    acr = 0
+    first  = '%s-%02d-01' % (d.year, d.month)
+    months = first.month - sd.month
+    acr += dyn.vacation_yearly / 12 * months
+    return sd, acr
+# end def accrue
+
+def accrue_finland (dyn, sd, d):
+    acr = 0
+    sd, a = first_month_finland (dyn, sd, d)
+    acr += a
+    sd, a = accrue (dyn, sd, d)
+    acr += a
+    return sd, a
+# end def accrue_finland
+
+def accrue_romania (dyn, sd, d):
+    acr = 0
+    sd, a = first_month_romania (dyn, sd, d)
+    acr += a
+    sd, a = accrue (dyn, sd, d)
+    acr += a
+    return sd, a
+# end def accrue_romania
+
 def consolidated_vacation \
     (db, user, ctype = -1, date = None, vc = None, to_eoy = True):
     """ Compute remaining vacation on the given date
@@ -673,12 +777,21 @@ def consolidated_vacation \
     msg = "vac_aliq None for user_dynamic%s" % dyn.id
     assert dyn.vac_aliq, msg
     va = db.vac_aliq.getnode (dyn.vac_aliq)
-    assert va.name in ('Austria', 'Germany')
+    vac_h = vac_acr = None
+    assert va.name in ('Austria', 'Germany', 'Czechia', 'Finland', 'Romania')
+    if va.name == 'Finland':
+        vac_acr = float (vc.accrued)
+    if va.name == 'Czechia':
+        vac_h = float (vc.hours)
+
     # Need to skip first period without a dyn user record
     # sd is the current start date for german aliquotation
-    # We subtract 1 day to easily compare the day of the ending-date
-    # with the day of the start date
+    # It is also used for other monthly alliquotations that start on the
+    # 1st of the month: If the user started on a day different from a
+    # 1st it is used for alliquotation, then it is set to the next 1st
+    # that is not already summed up.
     sd = d
+    # German alliquotation:
     # This is used for corrections if the start day lies beyond 28 -- in
     # that case there are months that simply don't have that date. So we
     # must correct for this in months with less days.
@@ -699,6 +812,14 @@ def consolidated_vacation \
               % dyn.id
               )
         assert dyn.vac_aliq == va.id, msg
+        # Special case Finland: 1st of April
+        # is the day accrued vacation becomes vacation
+        if va.name == 'Finland':
+            assert dyn.vacation_day == 1
+            assert dyn.vacation_month == 4
+            rollover = Date ('%s-04-01' % d.year)
+
+        # dyn end date before eoy and before end
         if dyn.valid_to and dyn.valid_to <= ed and dyn.valid_to <= eoy:
             # Daily alliquotation in Austria:
             if va.name == 'Austria':
@@ -734,6 +855,25 @@ def consolidated_vacation \
                     sd_day = 0
                 d = dyn.valid_to
                 vac += dyn.vacation_yearly * md / 12.0
+            elif name == 'Czechia':
+                sd, a = accrue_cz (dyn, sd, d)
+                vac_h += a
+            elif name == 'Finland':
+                if d < rollover and dyn.valid_to >= rollover:
+                    sd, a = accrue_finland (dyn, sd, rollover)
+                    vac_acr += a
+                    vac += vac_acr
+                    vac_acr = 0.0
+                    d = rollover
+                    if dyn.valid_to == d:
+                        dyn = vac_next_user_dynamic (db, dyn)
+                    continue
+                else:
+                    sd, a = accrue_finland (dyn, sd, d)
+                    vac_acr += a
+            elif name == 'Romania':
+                sd, a = accrue_romania (dyn, sd, d)
+                vac += a
             else:
                 assert 0, 'Invalid country setting for vac_aliq'
             dyn = vac_next_user_dynamic (db, dyn)
@@ -753,6 +893,25 @@ def consolidated_vacation \
                     sd = Date (eoy.pretty ("%%Y-%%m-%s" % sd.day))
                 sd_day = 0
                 vac += dyn.vacation_yearly * md / 12.0
+            elif name == 'Czechia':
+                sd, a = accrue_cz (dyn, sd, d)
+                vac_h += a
+            elif name == 'Finland':
+                if d < rollover and dyn.valid_to >= rollover:
+                    sd, a = accrue_finland (dyn, sd, rollover)
+                    vac_acr += a
+                    vac += vac_acr
+                    vac_acr = 0.0
+                    d = rollover
+                    if dyn.valid_to == d:
+                        dyn = vac_next_user_dynamic (db, dyn)
+                    continue
+                else:
+                    sd, a = accrue_finland (dyn, sd, d)
+                    vac_acr += a
+            elif name == 'Romania':
+                sd, a = accrue_romania (dyn, sd, d)
+                vac += a
             else:
                 assert 0, 'Invalid country setting for vac_aliq'
             d  = eoy + common.day
@@ -769,6 +928,23 @@ def consolidated_vacation \
                     md -= 1
                 sd = ed
                 vac += dyn.vacation_yearly * md / 12.0
+            elif name == 'Czechia':
+                sd, a = accrue_cz (dyn, sd, d)
+                vac_h += a
+            elif name == 'Finland':
+                if d < rollover and dyn.valid_to >= rollover:
+                    sd, a = accrue_finland (dyn, sd, rollover)
+                    vac_acr += a
+                    vac += vac_acr
+                    vac_acr = 0.0
+                    d = rollover
+                    continue
+                else:
+                    sd, a = accrue_finland (dyn, sd, d)
+                    vac_acr += a
+            elif name == 'Romania':
+                sd, a = accrue_romania (dyn, sd, d)
+                vac += a
             else:
                 assert 0, 'Invalid country setting for vac_aliq'
             d = ed

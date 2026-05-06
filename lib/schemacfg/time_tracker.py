@@ -511,6 +511,11 @@ def init \
         , date                  = Date      (offset = 0)
         , absolute              = Boolean   ()
         , days                  = Number    ()
+        # For countries calculating in hours, CZ
+        , hours                 = Number    ()
+        # For countries where accrued vacation cannot be taken immediately
+        # e.g. Finland
+        , accrued               = Number    ()
         , contract_type         = Link      ('contract_type')
         , comment               = String    ()
         )
