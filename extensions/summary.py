@@ -590,18 +590,18 @@ class DR_Container (Comparable_Container):
 
 class _Report (autosuper):
 
+    float_fmt = '%2.02f'
     def html_item (self, item, **kw):
         if not item and not isinstance (item, dict) and not item == 0:
             return "   <td/>"
+        fmt = '  <td %%sstyle="text-align:right;">%s</td>' \
+            % self.float_fmt
         if isinstance (item, PM_Value):
             if item.missing and not item:
                 return ('  <td class="missing"/>')
-            return \
-                ('  <td %sstyle="text-align:right;">%2.02f</td>'
-                % (['class="missing" ', ''][not item.missing], item)
-                )
+            return (fmt % (['class="missing" ', ''][not item.missing], item))
         if isinstance (item, type (0.0)) or isinstance (item, type (0)):
-            return ('  <td style="text-align:right;">%2.02f</td>' % item)
+            return (fmt % ('', item))
         if isinstance (item, str):
             return ('  <td>%s</td>' % item)
         if isinstance (item, list):
@@ -633,9 +633,9 @@ class _Report (autosuper):
         if isinstance (item, PM_Value):
             if item.missing and not item:
                 return "-"
-            return '%2.02f' % item
+            return self.float_fmt % item
         if isinstance (item, type (0.0)):
-            return '%2.02f' % item
+            return self.float_fmt % item
         if isinstance (item, list):
             return '/'.join (str (i) for i in item)
         return str (item)
@@ -708,7 +708,9 @@ class _Report (autosuper):
             container ['vacation corrections'] = vcs
         except AttributeError:
             container ['vacation corrections'] = ' + '.join \
-                (str (self.db.vacation_correction.get (i, 'days')) for i in vc)
+                (self.float_fmt % self.db.vacation_correction.get (i, 'days')
+                 for i in vc
+                )
     # end def format_vac_corr
 
 # end class _Report
@@ -1750,6 +1752,7 @@ class Staff_Report (_Report):
 
 class Vacation_Report (_Report):
     ''"Vacation Report" # for translation in web-interface
+    float_fmt = '%2.03f'
     fields = \
         ( (""'user.employee_number', 1)
         , (""'user.firstname',       1.1)
@@ -1930,9 +1933,6 @@ class Vacation_Report (_Report):
                         lst = vacation.ly_vacation_params \
                             (db, u, min_user_date [(u, ctype)], vc, hv)
                         yday, pd, carry, carry_h, ltot, ltot_acr, ltot_h = lst
-                    rcarry = carry
-                    if not hv:
-                        rcarry = float (ceil (carry))
                     if (u, ctype) in max_user_date:
                         if max_user_date [(u, ctype)] <= ld:
                             break
@@ -1975,7 +1975,7 @@ class Vacation_Report (_Report):
                         container ['yearly entitlement'] = v [0]
                     else:
                         container ['yearly entitlement'] = 0.0
-                    container ['carry forward'] = rcarry
+                    container ['carry forward'] = carry
                     cons, cons_acr, cons_h = vacation.consolidated_vacation \
                         (db, u, ctype, d, to_eoy = not hv)
                     et = float (cons - ltot + carry)
@@ -1987,7 +1987,6 @@ class Vacation_Report (_Report):
                     if not hv:
                         # ceil in Py3 will return an int if possible ugh
                         et = float (ceil (et))
-                        yp = float (ceil (yp))
                         rc = float (ceil (cons))
                         rv = float (ceil (carry))
                     container ['entitlement total']  = et
