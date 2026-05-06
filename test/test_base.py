@@ -2526,25 +2526,27 @@ class Test_Case_Timetracker (_Test_Case_Summary, unittest.TestCase):
              'Responses to this address are not possible.\n'
             )
 
+        # Round to 6 digits after decimal point, see implementation
+        # of consolidated_vacation in lib/vacation.py
         for d in '2008-11-03', '2008-11-30', '2008-12-31':
             dt = date.Date (d)
             self.assertEqual \
                 ( vacation.consolidated_vacation (self.db, self.user2, None, dt)
-                , round ((28. + 31.) * 25. / 366., 10)
+                , round ((28. + 31.) * 25. / 366., 6)
                 )
             self.assertEqual \
                 ( vacation.remaining_vacation (self.db, self.user2, None, dt)
-                , round ((28. + 31.) * 25. / 366., 10)
+                , round ((28. + 31.) * 25. / 366., 6)
                 )
         for d in '2009-01-01', '2009-01-30', '2009-12-31':
             dt = date.Date (d)
             self.assertEqual \
                 ( vacation.consolidated_vacation (self.db, self.user2, None, dt)
-                , round ((28. + 31.) * 25. / 366. + 25., 10)
+                , round ((28. + 31.) * 25. / 366. + 25., 6)
                 )
             self.assertEqual \
                 ( vacation.remaining_vacation (self.db, self.user2, None, dt)
-                , round ((28. + 31.) * 25. / 366. + 25., 10)
+                , round ((28. + 31.) * 25. / 366. + 25., 6)
                 )
         s   = [('+', 'user'), ('+', 'date')]
         vcs = self.db.vacation_correction.filter (None, {}, sort = s)

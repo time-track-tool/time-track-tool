@@ -948,9 +948,9 @@ def consolidated_vacation \
             else:
                 assert 0, 'Invalid country setting for vac_aliq'
             d = ed
-    # Round to ten digits: The computations above can produce errors due
+    # Round to six digits: The computations above can produce errors due
     # to repeated additions
-    return round (vac, 10)
+    return round (vac, 6)
 # end def consolidated_vacation
 
 def valid_wps \
