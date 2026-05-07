@@ -662,21 +662,22 @@ def handle_submit (db, vs):
 def check_correction (db, cl, nodeid, new_values):
     _ = db.i18n.gettext
     common.require_attributes \
-        (_, cl, nodeid, new_values, 'user', 'date', 'day')
+        (_, cl, nodeid, new_values, 'user', 'date')
     if nodeid:
         common.require_attributes \
-            (_, cl, nodeid, new_values, 'absolute')
+            (_, cl, nodeid, new_values, 'absolute', 'days', 'hours', 'accrued')
         for i in 'user',:
             if i in new_values:
                 raise Reject \
                     (_ ("%(attr)s may not be changed") % {'attr': _ (i)})
     else:
-        common.require_attributes \
-            (_, cl, nodeid, new_values, 'user', 'date')
         date = new_values ['date']
         o_permission.check_valid_user (db, cl, nodeid, new_values, date = date)
         if 'absolute' not in new_values:
             new_values ['absolute'] = False
+        for k in 'days', 'hours', 'accrued':
+            if k not in new_values:
+                new_values [k] = 0
     user = new_values.get ('user')
     if user is None:
         user = cl.get (nodeid, 'user')
@@ -698,16 +699,14 @@ def check_correction (db, cl, nodeid, new_values):
     # Check that vacation parameters exist in dyn. user records
     dyn  = user_dynamic.get_user_dynamic (db, user, date)
     fdyn = dyn
-    ndyn = dyn
     username = db.user.get (user, 'username')
     # Check for initial creation of user/dynamic user record where
     # the creation of a vacation correction is triggered
     if not dyn:
         dyn  = user_dynamic.first_user_dynamic (db, user)
-        ndyn = user_dynamic.first_user_dynamic (db, user, date = date)
-    if not fdyn and ndyn.valid_from < date - common.day:
-        raise Reject \
-            (_ ('No current dyn. user record for "%(username)s"') % locals ())
+    # Allow creation before any dyn user record exists
+    if not dyn:
+        return
     # Check that no vacation correction is created in a year before the
     # first dynamic user record
     if dyn.valid_from.year > date.year:
