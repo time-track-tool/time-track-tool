@@ -590,18 +590,32 @@ class DR_Container (Comparable_Container):
 
 class _Report (autosuper):
 
-    float_fmt = '%2.02f'
+    float_fmt      = '%.2f'
+    float_fmt_long = float_fmt
+    truncate_zeros = False
+
+    def format_float (self, f, float_fmt = None):
+        if float_fmt is None:
+            float_fmt = self.float_fmt
+        s = float_fmt % f
+        if self.truncate_zeros:
+            l = int (float_fmt.rsplit ('.', 1) [-1][:-1])
+            if s.endswith ('.' + '0' * l):
+                s = '%.1f' % f
+        return s
+    # end def format_float
+
     def html_item (self, item, **kw):
         if not item and not isinstance (item, dict) and not item == 0:
             return "   <td/>"
-        fmt = '  <td %%sstyle="text-align:right;">%s</td>' \
-            % self.float_fmt
+        fmt = '  <td %sstyle="text-align:right;">%s</td>'
         if isinstance (item, PM_Value):
             if item.missing and not item:
                 return ('  <td class="missing"/>')
-            return (fmt % (['class="missing" ', ''][not item.missing], item))
+            v = self.format_float (item)
+            return (fmt % (['class="missing" ', ''][not item.missing], v))
         if isinstance (item, type (0.0)) or isinstance (item, type (0)):
-            return (fmt % ('', item))
+            return (fmt % ('', self.format_float (item)))
         if isinstance (item, str):
             return ('  <td>%s</td>' % item)
         if isinstance (item, list):
@@ -628,14 +642,17 @@ class _Report (autosuper):
     # end def html_line
 
     def csv_item (self, item, **kw):
+        fmt = self.float_fmt
+        if getattr (self, 'hv', False):
+            fmt = self.float_fmt_long
         if not item and not isinstance (item, dict) and not item == 0:
             return ''
         if isinstance (item, PM_Value):
             if item.missing and not item:
                 return "-"
-            return self.float_fmt % item
-        if isinstance (item, type (0.0)):
-            return self.float_fmt % item
+            return self.format_float (item, fmt)
+        if isinstance (item, (type (0.0), type (0))):
+            return self.format_float (item, fmt)
         if isinstance (item, list):
             return '/'.join (str (i) for i in item)
         return str (item)
@@ -707,8 +724,12 @@ class _Report (autosuper):
                     )
             container ['vacation corrections'] = vcs
         except AttributeError:
+            fmt = self.float_fmt
+            if getattr (self, 'hv', False):
+                fmt = self.float_fmt_long
             container ['vacation corrections'] = ' + '.join \
-                (self.float_fmt % self.db.vacation_correction.get (i, 'days')
+                (self.format_float
+                    (self.db.vacation_correction.get (i, 'days'), fmt)
                  for i in vc
                 )
     # end def format_vac_corr
@@ -1752,7 +1773,9 @@ class Staff_Report (_Report):
 
 class Vacation_Report (_Report):
     ''"Vacation Report" # for translation in web-interface
-    float_fmt = '%2.03f'
+    float_fmt      = '%.3f'
+    float_fmt_long = '%.6f'
+    truncate_zeros = True
     #         name                       sort-key
     fields = \
         ( (""'user.employee_number',           1)
@@ -2103,6 +2126,24 @@ class Vacation_Report (_Report):
                         d = nd - day
     # end def __init__
 
+    def html_item (self, item, **kw):
+        if not self.hv:
+            return super ().html_item (item, **kw)
+        if not isinstance (item, (PM_Value, float, int)):
+            return super ().html_item (item, **kw)
+        fmt = '  <td %sstyle="text-align:right;" title="%s">%s</td>'
+        if isinstance (item, PM_Value):
+            if item.missing and not item:
+                return ('  <td class="missing"/>')
+            sv = self.format_float (item)
+            lv = self.format_float (item, self.float_fmt_long)
+            return (fmt % (['class="missing" ', ''][not item.missing], lv, sv))
+        if isinstance (item, type (0.0)) or isinstance (item, type (0)):
+            sv = self.format_float (item)
+            lv = self.format_float (item, self.float_fmt_long)
+            return (fmt % ('', lv, sv))
+    # end def html_item
+
     def is_obsolete (self, dyn, date):
         """ Check if user becomes obsolete during this reporting period.
         """
@@ -2254,6 +2295,11 @@ class Gap_Report (_Report):
             if ndyn.vac_aliq is not None and odyn.vac_aliq is not None:
                 carry, carry_h = vacation.remaining_vacation \
                     (db, user.id, date = start, to_eoy = False)
+                if carry_h is None:
+                    assert carry is None
+                    carry = carry_h * ndyn.weekly_hours / 5
+                else:
+                    assert carry is not None
                 contr ['carry_on_date'] = carry
             line  = []
             line.append (item_formatter (self.linked_user (user.id)))
