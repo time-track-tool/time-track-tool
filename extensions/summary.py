@@ -712,7 +712,9 @@ class _Report (autosuper):
         fmt = self.float_fmt
         if getattr (self, 'hv', False):
             fmt = self.float_fmt_long
-        vaname = self.db.vac_aliq.get (dyn.vac_aliq, 'name')
+        vaname = None
+        if dyn.vac_aliq is not None:
+            vaname = self.db.vac_aliq.get (dyn.vac_aliq, 'name')
         attr = 'days'
         if vaname == 'Czechia':
             attr = 'hours'
@@ -2302,11 +2304,9 @@ class Gap_Report (_Report):
             if ndyn.vac_aliq is not None and odyn.vac_aliq is not None:
                 carry, carry_h = vacation.remaining_vacation \
                     (db, user.id, date = start, to_eoy = False)
-                if carry_h is None:
+                if carry_h is not None:
                     assert carry is None
                     carry = carry_h * ndyn.weekly_hours / 5
-                else:
-                    assert carry is not None
                 contr ['carry_on_date'] = carry
             line  = []
             line.append (item_formatter (self.linked_user (user.id)))
