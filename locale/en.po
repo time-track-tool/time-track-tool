@@ -7631,3 +7631,21 @@ msgstr "Hours"
 
 msgid "accrued"
 msgstr "Days accrued"
+
+msgid "accrued_vacation"
+msgstr "Entitlement (accrued)"
+
+msgid "hourly_entitlement"
+msgstr "entitlement (hourly)"
+
+msgid "hourly_prorated"
+msgstr "prorated (hourly)"
+
+msgid "hourly_remaining"
+msgstr "remaining (hourly)"
+
+msgid "rounded_entitlement"
+msgstr "entitlement total (rounded)"
+
+msgid "rounded_remaining"
+msgstr "remaining vacation (rounded)"

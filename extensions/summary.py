@@ -1,5 +1,5 @@
 #! /usr/bin/python
-# Copyright (C) 2006-24 Dr. Ralf Schlatterbeck Open Source Consulting.
+# Copyright (C) 2006-26 Dr. Ralf Schlatterbeck Open Source Consulting.
 # Reichergasse 131, A-3411 Weidling.
 # Web: http://www.runtux.com Email: office@runtux.com
 # All rights reserved
@@ -1753,25 +1753,32 @@ class Staff_Report (_Report):
 class Vacation_Report (_Report):
     ''"Vacation Report" # for translation in web-interface
     float_fmt = '%2.03f'
+    #         name                       sort-key
     fields = \
-        ( (""'user.employee_number', 1)
-        , (""'user.firstname',       1.1)
-        , (""'user.lastname',        1.2)
-        , (""'yearly entitlement',   1.3)
-        , (""'yearly prorated',      2)
-        , (""'carry forward',        3)
-        , (""'entitlement total',    4)
-        , (""'approved days',        5)
-        , (""'approved_submissions', 6)
-        , (""'vacation corrections', 7)
-        , (""'remaining vacation',   8)
-        , (""'additional_submitted', 9)
-        , (""'flexi_time',          10)
-        , (""'flexi_sub',           11)
-        , (""'flexi_max',           12)
-        , (""'flexi_rem',           13)
-        , (""'special_leave',       14)
-        , (""'special_sub',         15)
+        ( (""'user.employee_number',           1)
+        , (""'user.firstname',                 1.1)
+        , (""'user.lastname',                  1.2)
+        , (""'yearly entitlement',             1.3)
+        , (""'accrued_vacation',               1.4)
+        , (""'yearly prorated',                2)
+        , (""'hourly_prorated',                2.5)
+        , (""'carry forward',                  3)
+        , (""'entitlement total',              4)
+        , (""'rounded_entitlement',            4.5)
+        , (""'hourly_entitlement',             4.6)
+        , (""'approved days',                  5)
+        , (""'approved_submissions',           6)
+        , (""'vacation corrections',           7)
+        , (""'remaining vacation',             8)
+        , (""'rounded_remaining',              8.5)
+        , (""'hourly_remaining',               8.6)
+        , (""'additional_submitted',           9)
+        , (""'flexi_time',                    10)
+        , (""'flexi_sub',                     11)
+        , (""'flexi_max',                     12)
+        , (""'flexi_rem',                     13)
+        , (""'special_leave',                 14)
+        , (""'special_sub',                   15)
         )
     header_classes = \
         { 'remaining vacation' : 'emphasized'
@@ -1807,12 +1814,18 @@ class Vacation_Report (_Report):
         if 'show_obsolete' in filterspec:
             self.show_obsolete = filterspec ['show_obsolete'] == 'yes'
         opt = \
-            ( 'approved_submissions'
-            , 'additional_submitted'
+            ( 'additional_submitted'
+            , 'accrued_vacation'
+            , 'approved_submissions'
             , 'flexi_time'
             , 'flexi_sub'
             , 'flexi_max'
             , 'flexi_rem'
+            , 'hourly_entitlement'
+            , 'hourly_prorated'
+            , 'hourly_remaining'
+            , 'rounded_entitlement'
+            , 'rounded_remaining'
             , 'special_leave'
             , 'special_sub'
             , 'user.employee_number'
@@ -1996,10 +2009,20 @@ class Vacation_Report (_Report):
                         et = et_h * dyn.weekly_hours / 5
                         yp = yp_h * dyn.weekly_hours / 5
                         rv = rv_h * dyn.weekly_hours / 5
-                    # FIXME: Put rounded values in own containers if hv
-                    # and these are selected
-                    # HERE
-                    # FIXME: Put hourly values in own containers if selected
+                    if hv and 'rounded_entitlement' in self.fields:
+                        container ['rounded_entitlement'] = \
+                            vacation.round_vacation (dyn, et)
+                    if hv and 'rounded_remaining' in self.fields:
+                        container ['rounded_remaining'] = \
+                            vacation.round_vacation (dyn, rv)
+                    if 'hourly_entitlement' in self.fields:
+                        container ['hourly_entitlement'] = et_h
+                    if 'hourly_remaining' in self.fields:
+                        container ['hourly_remaining'] = rv_h
+                    if 'hourly_prorated' in self.fields:
+                        container ['hourly_prorated'] = yp_h
+                    if 'accrued_vacation' in self.fields:
+                        container ['accrued_vacation'] = cons_acr
 
                     if not hv:
                         # ceil in Py3 will return an int if possible ugh

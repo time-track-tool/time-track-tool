@@ -1485,7 +1485,10 @@ properties = \
         ]
       )
     , ( 'vacation_report'
-      , [ ( 'additional_submitted'
+      , [ ( 'accrued_vacation'
+          , ['admin', 'artefact', 'cc-permission', 'controlling', 'doc_admin', 'dom-user-edit-facility', 'dom-user-edit-gtt', 'dom-user-edit-hr', 'dom-user-edit-office', 'facility', 'functional-role', 'hr', 'hr-leave-approval', 'hr-vacation', 'it', 'o-permission', 'office', 'organisation', 'pgp', 'procurement', 'project', 'project_view', 'summary-report', 'summary_view', 'time-report', 'user', 'user_view', 'vacation-report', 'view-roles']
+          )
+        , ( 'additional_submitted'
           , ['admin', 'artefact', 'cc-permission', 'controlling', 'doc_admin', 'dom-user-edit-facility', 'dom-user-edit-gtt', 'dom-user-edit-hr', 'dom-user-edit-office', 'facility', 'functional-role', 'hr', 'hr-leave-approval', 'hr-vacation', 'it', 'o-permission', 'office', 'organisation', 'pgp', 'procurement', 'project', 'project_view', 'summary-report', 'summary_view', 'time-report', 'user', 'user_view', 'vacation-report', 'view-roles']
           )
         , ( 'approved_submissions'
@@ -1506,11 +1509,26 @@ properties = \
         , ( 'flexi_time'
           , ['admin', 'artefact', 'cc-permission', 'controlling', 'doc_admin', 'dom-user-edit-facility', 'dom-user-edit-gtt', 'dom-user-edit-hr', 'dom-user-edit-office', 'facility', 'functional-role', 'hr', 'hr-leave-approval', 'hr-vacation', 'it', 'o-permission', 'office', 'organisation', 'pgp', 'procurement', 'project', 'project_view', 'summary-report', 'summary_view', 'time-report', 'user', 'user_view', 'vacation-report', 'view-roles']
           )
+        , ( 'hourly_entitlement'
+          , ['admin', 'artefact', 'cc-permission', 'controlling', 'doc_admin', 'dom-user-edit-facility', 'dom-user-edit-gtt', 'dom-user-edit-hr', 'dom-user-edit-office', 'facility', 'functional-role', 'hr', 'hr-leave-approval', 'hr-vacation', 'it', 'o-permission', 'office', 'organisation', 'pgp', 'procurement', 'project', 'project_view', 'summary-report', 'summary_view', 'time-report', 'user', 'user_view', 'vacation-report', 'view-roles']
+          )
+        , ( 'hourly_prorated'
+          , ['admin', 'artefact', 'cc-permission', 'controlling', 'doc_admin', 'dom-user-edit-facility', 'dom-user-edit-gtt', 'dom-user-edit-hr', 'dom-user-edit-office', 'facility', 'functional-role', 'hr', 'hr-leave-approval', 'hr-vacation', 'it', 'o-permission', 'office', 'organisation', 'pgp', 'procurement', 'project', 'project_view', 'summary-report', 'summary_view', 'time-report', 'user', 'user_view', 'vacation-report', 'view-roles']
+          )
+        , ( 'hourly_remaining'
+          , ['admin', 'artefact', 'cc-permission', 'controlling', 'doc_admin', 'dom-user-edit-facility', 'dom-user-edit-gtt', 'dom-user-edit-hr', 'dom-user-edit-office', 'facility', 'functional-role', 'hr', 'hr-leave-approval', 'hr-vacation', 'it', 'o-permission', 'office', 'organisation', 'pgp', 'procurement', 'project', 'project_view', 'summary-report', 'summary_view', 'time-report', 'user', 'user_view', 'vacation-report', 'view-roles']
+          )
         , ( 'org_location'
           , ['admin', 'artefact', 'cc-permission', 'controlling', 'doc_admin', 'dom-user-edit-facility', 'dom-user-edit-gtt', 'dom-user-edit-hr', 'dom-user-edit-office', 'facility', 'functional-role', 'hr', 'hr-leave-approval', 'hr-vacation', 'it', 'o-permission', 'office', 'organisation', 'pgp', 'procurement', 'project', 'project_view', 'summary-report', 'summary_view', 'time-report', 'user', 'user_view', 'vacation-report', 'view-roles']
           )
         , ( 'organisation'
           , ['admin', 'artefact', 'cc-permission', 'controlling', 'doc_admin', 'dom-user-edit-facility', 'dom-user-edit-gtt', 'dom-user-edit-hr', 'dom-user-edit-office', 'facility', 'functional-role', 'hr', 'hr-leave-approval', 'hr-vacation', 'it', 'o-permission', 'office', 'organisation', 'pgp', 'procurement', 'project', 'project_view', 'summary-report', 'summary_view', 'time-report', 'user', 'user_view', 'vacation-report', 'view-roles']
+          )
+        , ( 'rounded_entitlement'
+          , ['admin', 'hr-vacation', 'vacation-report']
+          )
+        , ( 'rounded_remaining'
+          , ['admin', 'hr-vacation', 'vacation-report']
           )
         , ( 'show_obsolete'
           , ['admin', 'artefact', 'cc-permission', 'controlling', 'doc_admin', 'dom-user-edit-facility', 'dom-user-edit-gtt', 'dom-user-edit-hr', 'dom-user-edit-office', 'facility', 'functional-role', 'hr', 'hr-leave-approval', 'hr-vacation', 'it', 'o-permission', 'office', 'organisation', 'pgp', 'procurement', 'project', 'project_view', 'summary-report', 'summary_view', 'time-report', 'user', 'user_view', 'vacation-report', 'view-roles']

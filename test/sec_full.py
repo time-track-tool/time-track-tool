@@ -257,6 +257,7 @@ Role "hr-org-location":
  User may access time_record because org_location in dynamic user is allowed (View for "time_record" only)
 Role "hr-vacation":
  Allowed to see absolute vacation correction without dynamic user (View for "vacation_correction" only)
+ User is allowed View on (View for "vacation_report": ('rounded_entitlement', 'rounded_remaining') only)
  User is allowed to access contract_type (View for "contract_type" only)
  User is allowed to create contract_type (Create for "contract_type" only)
  User is allowed to create leave_submission (Create for "leave_submission" only)
@@ -450,6 +451,7 @@ Role "user":
  User is allowed View on (View for "user": ('activity', 'actor', 'address', 'alternate_addresses', 'creation', 'creator', 'id', 'queries', 'realname', 'status', 'timezone', 'username') only)
  User is allowed View on (View for "user": ('business_responsible', 'company_code', 'company_name', 'department_temp', 'employee_number', 'timetracking_by', 'vie_user', 'vie_user_bl_override', 'vie_user_ml') only)
  User is allowed View on (View for "user": ('contacts',) only)
+ User is allowed View on (View for "vacation_report": ('accrued_vacation', 'additional_submitted', 'approved_submissions', 'date', 'flexi_max', 'flexi_rem', 'flexi_sub', 'flexi_time', 'hourly_entitlement', 'hourly_prorated', 'hourly_remaining', 'org_location', 'organisation', 'show_obsolete', 'special_leave', 'special_sub', 'supervisor', 'time_project', 'user') only)
  User is allowed View on file if file is linked from an item with View permission (View for "file" only)
  User is allowed View on issue if issue is non-confidential or user is on nosy list (View for "issue" only)
  User is allowed View on it_issue if it_issue is non-confidential or user is on nosy list (View for "it_issue" only)
@@ -529,7 +531,6 @@ Role "user":
  User is allowed to access uc_type (View for "uc_type" only)
  User is allowed to access user_status (View for "user_status" only)
  User is allowed to access vac_aliq (View for "vac_aliq" only)
- User is allowed to access vacation_report (View for "vacation_report" only)
  User is allowed to access work_location (View for "work_location" only)
  User is allowed to create attendance_record (Create for "attendance_record" only)
  User is allowed to create daily_record (Create for "daily_record" only)
@@ -615,6 +616,7 @@ Role "user":
 Role "user_view":
  User is allowed to access user (View for "user" only)
 Role "vacation-report":
+ User is allowed View on (View for "vacation_report": ('rounded_entitlement', 'rounded_remaining') only)
 Role "view-roles":
  User is allowed View on (View for "user": ('roles',) only)
 """.strip ()
