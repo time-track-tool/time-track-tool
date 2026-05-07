@@ -195,6 +195,7 @@ class ExtProperty:
         filter: A dictionary of properties / values to filter on when
             displaying a menu (in a search mask) or help.
         force_link: make this property a link (e.g. in index view)
+        format: how to format the item (default '%s')
         help_filter: deprecated, a string of property/value pairs
             usually computed from filter and used in classhelp
         help_props: Properties used for classhelp

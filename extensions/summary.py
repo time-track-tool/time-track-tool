@@ -708,28 +708,35 @@ class _Report (autosuper):
             supi = self.db.user.get (supi, 'supervisor')
     # end def supi_clearance
 
-    def format_vac_corr (self, vc, container):
+    def format_vac_corr (self, dyn, vc, container):
+        fmt = self.float_fmt
+        if getattr (self, 'hv', False):
+            fmt = self.float_fmt_long
+        vaname = self.db.vac_aliq.get (dyn.vac_aliq, 'name')
+        attr = 'days'
+        if vaname == 'Czechia':
+            attr = 'hours'
+        if attr == 'hours':
+            fmt = fmt + ' hours'
         try:
             vcs = HTML_List ()
             for x in vc:
                 item  = self.htmldb.vacation_correction.getItem (x)
-                days  = item.days
+                val   = item [attr]
                 ep    = self.utils.ExtProperty
                 vcs.append \
                     ( ep
-                        ( self.utils, days
+                        ( self.utils, val
                         , item         = item
                         , is_labelprop = True
+                        , format       = fmt
                         )
                     )
             container ['vacation corrections'] = vcs
         except AttributeError:
-            fmt = self.float_fmt
-            if getattr (self, 'hv', False):
-                fmt = self.float_fmt_long
             container ['vacation corrections'] = ' + '.join \
                 (self.format_float
-                    (self.db.vacation_correction.get (i, 'days'), fmt)
+                    (self.db.vacation_correction.get (i, attr), fmt)
                  for i in vc
                 )
     # end def format_vac_corr
@@ -2111,7 +2118,7 @@ class Vacation_Report (_Report):
                             , contract_type = ctype
                             )
                         )
-                    self.format_vac_corr (vcids, container)
+                    self.format_vac_corr (dyn, vcids, container)
                     if (u, ctype) not in self.values:
                         self.values [(u, ctype)] = []
                     self.values [(u, ctype)].append (container)
@@ -2291,7 +2298,7 @@ class Gap_Report (_Report):
             contr = ccls (start, i18n = db.i18n)
             contr ['balance_start'] = bal
             contr ['carry_on_date'] = ''
-            self.format_vac_corr (vc, contr)
+            self.format_vac_corr (ndyn, vc, contr)
             if ndyn.vac_aliq is not None and odyn.vac_aliq is not None:
                 carry, carry_h = vacation.remaining_vacation \
                     (db, user.id, date = start, to_eoy = False)
