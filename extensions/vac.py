@@ -207,7 +207,7 @@ def remaining_vacation (db, user, ctype = -1, date = None):
         assert r is None
         assert va == 'Czechia'
         c = r_h * dyn.weekly_hours / 5
-    return float (vacation.round_vacation (dyn, c))
+    return vacation.round_vacation (dyn, c)
 # end def remaining_vacation
 
 def _get_ctype (db, user, start, end):
@@ -301,7 +301,7 @@ def eoy_vacation (db, user, date, ctype = -1):
         assert cons_h is not None
         v = vacation.round_vacation (dyn, cons_h - ltot_h + cry_h)
         v = v * dyn.weekly_hours / 5
-    return float (v)
+    return v
 # end def eoy_vacation
 
 def month_name (date):

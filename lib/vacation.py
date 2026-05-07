@@ -38,8 +38,8 @@ import user_dynamic
 def round_vacation (dyn, value):
     va_name = dyn.cl.db.vac_aliq.get (dyn.vac_aliq, 'name')
     if va_name == 'Romania':
-        return round (value)
-    return ceil (value)
+        return float (round (value))
+    return float (ceil (value))
 # end def round_vacation
 
 def public_holiday_wp (db, user, date):
@@ -599,8 +599,7 @@ def _get_ctype (db, user, date):
     return dyn.contract_type
 # end def _get_ctype
 
-def remaining_vacation \
-    (db, user, ctype = -1, date = None, cons = None, to_eoy = True):
+def remaining_vacation (db, user, ctype = -1, date = None, to_eoy = True):
     """ Compute remaining vacation on the given date
     """
     if date is None:

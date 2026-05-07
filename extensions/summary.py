@@ -1965,6 +1965,8 @@ class Vacation_Report (_Report):
                         ent [dyn.vacation_yearly] = 1
                         dyn = vacation.vac_next_user_dynamic (db, dyn)
                     container ['is_obsolete'] = self.is_obsolete (dyn, d)
+                    if not dyn:
+                        dyn = lastdyn
                     v = list (sorted (ent))
                     # Use '..' as separator to prevent excel from computing
                     # difference if exported to excel
@@ -1978,20 +1980,36 @@ class Vacation_Report (_Report):
                     container ['carry forward'] = carry
                     cons, cons_acr, cons_h = vacation.consolidated_vacation \
                         (db, u, ctype, d, to_eoy = not hv)
-                    et = float (cons - ltot + carry)
-                    yp = float (cons - ltot)
-                    # new carry and remaining vacation
-                    carry, carry_h = vacation.remaining_vacation \
-                        (db, u, ctype, d, cons, to_eoy = not hv)
-                    rv = carry
+                    rem, rem_h = vacation.remaining_vacation \
+                        (db, u, ctype, d, to_eoy = not hv)
+                    if cons_h is None:
+                        assert cons is not None
+                        et = float (cons - ltot + carry)
+                        yp = float (cons - ltot)
+                        rv = rem
+                        et_h = yp_h = rv_h = None
+                    else:
+                        assert cons is None
+                        et_h = float (cons_h - ltot_h + carry_h)
+                        yp_h = float (cons_h - ltot_h)
+                        rv_h = rem_h
+                        et = et_h * dyn.weekly_hours / 5
+                        yp = yp_h * dyn.weekly_hours / 5
+                        rv = rv_h * dyn.weekly_hours / 5
+                    # FIXME: Put rounded values in own containers if hv
+                    # and these are selected
+                    # HERE
+                    # FIXME: Put hourly values in own containers if selected
+
                     if not hv:
                         # ceil in Py3 will return an int if possible ugh
-                        et = float (ceil (et))
-                        rc = float (ceil (cons))
-                        rv = float (ceil (carry))
+                        et = vacation.round_vacation (dyn, et)
+                        rv = vacation.round_vacation (dyn, rv)
                     container ['entitlement total']  = et
                     container ['yearly prorated']    = yp
                     container ['remaining vacation'] = rv
+                    # remaining vacation becomes new carry
+                    carry, carry_h = rem, rem_h
                     val = vacation.vacation_time_sum (db, u, ctype, fd, d) [0]
                     r   = ('HR-vacation', 'HR-leave-approval')
                     if common.user_has_role (self.db, self.uid, *r):
