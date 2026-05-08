@@ -604,17 +604,18 @@ def remaining_vacation \
     vc = get_vacation_correction (db, user, ctype, date)
     if not vc:
         return
-    ed  = next_yearly_vacation_date (db, user, ctype, date)
+    ed  = next_yearly_vacation_date (db, user, ctype, date) - common.day
     if not to_eoy:
         ed = min (ed, date)
     if cons is None:
         cons = consolidated_vacation (db, user, ctype, date, vc, to_eoy)
     vac = cons
-    vac -= vacation_time_sum (db, user, ctype, vc.date, min (ed, date))
+    vac -= vacation_time_sum (db, user, ctype, vc.date, ed)
     # All vacation_correction records up to date but starting with one
     # day later (otherwise we'll find the absolute correction)
     # Also one day *earlier* than ed for the same reason.
-    dt  = common.pretty_range (vc.date + common.day, ed - common.day)
+    # But see above: ed is now the start of next year *minus* common.day
+    dt  = common.pretty_range (vc.date + common.day, ed)
     d   = dict (user = user, date = dt)
     if ctype is not None:
         d ['contract_type'] = ctype
