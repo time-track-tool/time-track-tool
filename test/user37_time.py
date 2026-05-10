@@ -1,6 +1,6 @@
 from roundup import date
 
-def import_data_37 (db, user, olo):
+def import_data_37 (db, user, olo, vac_aliq = '1'):
     otp = None
     db.user_dynamic.create \
         ( all_in             = 1
@@ -26,7 +26,7 @@ def import_data_37 (db, user, olo):
         , org_location       = olo
         , overtime_period    = otp
         , user               = user
-        , vac_aliq           = '1'
+        , vac_aliq           = vac_aliq
         )
     otp = None
     db.user_dynamic.create \
@@ -54,7 +54,7 @@ def import_data_37 (db, user, olo):
         , org_location       = olo
         , overtime_period    = otp
         , user               = user
-        , vac_aliq           = '1'
+        , vac_aliq           = vac_aliq
         )
     otp = None
     db.user_dynamic.create \
@@ -82,8 +82,14 @@ def import_data_37 (db, user, olo):
         , org_location       = olo
         , overtime_period    = otp
         , user               = user
-        , vac_aliq           = '1'
+        , vac_aliq           = vac_aliq
         )
+    if vac_aliq != '1':
+        vc = db.vacation_correction.create \
+            ( user     = user
+            , date     = date.Date ('2021-03-25')
+            , absolute = True
+            )
     otp = None
     db.user_dynamic.create \
         ( all_in             = 1
@@ -110,7 +116,7 @@ def import_data_37 (db, user, olo):
         , org_location       = olo
         , overtime_period    = otp
         , user               = user
-        , vac_aliq           = '1'
+        , vac_aliq           = vac_aliq
         )
     otp = None
     db.user_dynamic.create \
@@ -138,7 +144,7 @@ def import_data_37 (db, user, olo):
         , org_location       = olo
         , overtime_period    = otp
         , user               = user
-        , vac_aliq           = '1'
+        , vac_aliq           = vac_aliq
         )
     otp = None
     db.user_dynamic.create \
@@ -165,7 +171,7 @@ def import_data_37 (db, user, olo):
         , org_location       = olo
         , overtime_period    = otp
         , user               = user
-        , vac_aliq           = '1'
+        , vac_aliq           = vac_aliq
         )
     leave = db.daily_record_status.lookup ('leave')
     ls = db.leave_submission.create \

@@ -700,17 +700,18 @@ def first_month_romania (dyn, sd, d):
         vacation for the first month, it is alliquot the number of days
         worked in the month divided by days in that month
     """
-    if sd.day == 0:
+    if sd.day == 1:
         return sd, 0
     # If both dates are in same month, do nothing
     if sd.month == d.month:
         return sd, 0
     # First check if sd.day > 1 in that case the first month is used
     # alliquot by days in month
-    acr = 0
-    next = end_of_month (sd) + common.day
+    acr  = 0
+    eom  = common.end_of_month (sd)
+    next = eom + common.day
     assert next <= d
-    acr += (next - sd).day / end_of_month (sd).day * dyn.vacation_yearly / 12
+    acr += (next - sd).day / eom.day * dyn.vacation_yearly / 12
     sd = next
     return sd, acr
 # end def first_month_romania
@@ -748,17 +749,21 @@ def accrue_cz (dyn, sd, d):
 # end def accrue_cz
 
 def accrue (dyn, sd, d):
-    """ Accrual for time from sd to d (Finland)
+    """ Accrual for time from sd to d (first of month)
     """
-    assert sd.day == 1
     # If both dates are in same month, do nothing
-    if sd.month == d.month:
+    if sd.month == d.month and sd.year == d.year:
         return sd, 0
-    acr = 0
-    first  = '%s-%02d-01' % (d.year, d.month)
-    months = first.month - sd.month
+    assert sd.day == 1
+    acr  = 0
+    next = Date ('%s-%02d-01' % (d.year, d.month))
+    months = next.month - sd.month
+    years  = next.year  - sd.year
+    if years:
+        assert years == 1
+        months += (12 * years)
     acr += dyn.vacation_yearly / 12 * months
-    return sd, acr
+    return next, acr
 # end def accrue
 
 def accrue_finland (dyn, sd, d):
@@ -767,7 +772,7 @@ def accrue_finland (dyn, sd, d):
     acr += a
     sd, a = accrue (dyn, sd, d)
     acr += a
-    return sd, a
+    return sd, acr
 # end def accrue_finland
 
 def accrue_romania (dyn, sd, d):
@@ -776,7 +781,7 @@ def accrue_romania (dyn, sd, d):
     acr += a
     sd, a = accrue (dyn, sd, d)
     acr += a
-    return sd, a
+    return sd, acr
 # end def accrue_romania
 
 def consolidated_vacation \
@@ -883,10 +888,10 @@ def consolidated_vacation \
                     sd_day = 0
                 d = dyn.valid_to
                 vac += dyn.vacation_yearly * md / 12.0
-            elif name == 'Czechia':
-                sd, a = accrue_cz (dyn, sd, d)
+            elif va.name == 'Czechia':
+                sd, a = accrue_cz (dyn, sd, dyn.valid_to)
                 vac_h += a
-            elif name == 'Finland':
+            elif va.name == 'Finland':
                 if d < rollover and dyn.valid_to >= rollover:
                     sd, a = accrue_finland (dyn, sd, rollover)
                     vac_acr += a
@@ -897,10 +902,10 @@ def consolidated_vacation \
                         dyn = vac_next_user_dynamic (db, dyn)
                     continue
                 else:
-                    sd, a = accrue_finland (dyn, sd, d)
+                    sd, a = accrue_finland (dyn, sd, dyn.valid_to)
                     vac_acr += a
-            elif name == 'Romania':
-                sd, a = accrue_romania (dyn, sd, d)
+            elif va.name == 'Romania':
+                sd, a = accrue_romania (dyn, sd, dyn.valid_to)
                 vac += a
             else:
                 assert 0, 'Invalid country setting for vac_aliq'
@@ -921,10 +926,10 @@ def consolidated_vacation \
                     sd = Date (eoy.pretty ("%%Y-%%m-%s" % sd.day))
                 sd_day = 0
                 vac += dyn.vacation_yearly * md / 12.0
-            elif name == 'Czechia':
-                sd, a = accrue_cz (dyn, sd, d)
+            elif va.name == 'Czechia':
+                sd, a = accrue_cz (dyn, sd, eoy + common.day)
                 vac_h += a
-            elif name == 'Finland':
+            elif va.name == 'Finland':
                 if d < rollover and dyn.valid_to >= rollover:
                     sd, a = accrue_finland (dyn, sd, rollover)
                     vac_acr += a
@@ -935,10 +940,10 @@ def consolidated_vacation \
                         dyn = vac_next_user_dynamic (db, dyn)
                     continue
                 else:
-                    sd, a = accrue_finland (dyn, sd, d)
+                    sd, a = accrue_finland (dyn, sd, eoy + common.day)
                     vac_acr += a
-            elif name == 'Romania':
-                sd, a = accrue_romania (dyn, sd, d)
+            elif va.name == 'Romania':
+                sd, a = accrue_romania (dyn, sd, eoy + common.day)
                 vac += a
             else:
                 assert 0, 'Invalid country setting for vac_aliq'
@@ -946,6 +951,7 @@ def consolidated_vacation \
             if dyn.valid_to == d:
                 dyn = vac_next_user_dynamic (db, dyn)
         else:
+            # This happens, when ed is not year-end
             if va.name == 'Austria':
                 yd = float (common.ydays (ed - common.day))
                 vac += interval_days (ed - d) * dyn.vacation_yearly / yd
@@ -956,10 +962,10 @@ def consolidated_vacation \
                     md -= 1
                 sd = ed
                 vac += dyn.vacation_yearly * md / 12.0
-            elif name == 'Czechia':
-                sd, a = accrue_cz (dyn, sd, d)
+            elif va.name == 'Czechia':
+                sd, a = accrue_cz (dyn, sd, ed)
                 vac_h += a
-            elif name == 'Finland':
+            elif va.name == 'Finland':
                 if d < rollover and dyn.valid_to >= rollover:
                     sd, a = accrue_finland (dyn, sd, rollover)
                     vac_acr += a
@@ -968,11 +974,12 @@ def consolidated_vacation \
                     d = rollover
                     continue
                 else:
-                    sd, a = accrue_finland (dyn, sd, d)
+                    sd, a = accrue_finland (dyn, sd, ed)
                     vac_acr += a
-            elif name == 'Romania':
-                sd, a = accrue_romania (dyn, sd, d)
+            elif va.name == 'Romania':
+                sd, a = accrue_romania (dyn, sd, ed)
                 vac += a
+                # FIXME: If ed is middle of a month we need alliquotation
             else:
                 assert 0, 'Invalid country setting for vac_aliq'
             d = ed

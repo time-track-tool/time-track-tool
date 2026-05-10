@@ -473,7 +473,7 @@ def check_avc (db, cl, nodeid, new_values):
     if vaname and vaname != 'Austria':
         if prev_dyn.valid_to and prev_dyn.valid_to < valid_from:
             vc = vacation.get_vacation_correction (db, user, date = valid_from)
-            if vc and vc.date < prev.valid_to:
+            if vc and vc.date < prev_dyn.valid_to:
                 raise Reject \
                     ('Need abs. vacation correction: There is a gap between'
                      ' previous and this dynamic user record'

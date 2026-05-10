@@ -5967,6 +5967,117 @@ class Test_Case_Timetracker (_Test_Case_Summary, unittest.TestCase):
         self.db.close ()
     # end def test_user37_vacation
 
+    def setup_user37_rom (self):
+        self.username37 = 'testuser37'
+        self.user37 = self.db.user.create \
+            ( username     = self.username37
+            , firstname    = 'Nummer37'
+            , lastname     = 'User37'
+            )
+        # Allow user to create their own dyn user rec
+        self.db.o_permission.create \
+            (user = self.user37, org_location = [self.olo, self.olo2])
+        p = self.db.overtime_period.create \
+            ( name              = 'monthly average required'
+            , months            = 1
+            , weekly            = False
+            , required_overtime = True
+            , order             = 3
+            )
+        # allow user37 to book on wp 44
+        self.db.time_wp.set (self.vacation_wp, bookers = [self.user37])
+        # allow user37 to book on wp 1 (public holiday)
+        self.db.time_wp.set (self.holiday_wp, bookers = [self.user37])
+        # Need to import data *before* creating public holidays
+        vaid = self.db.vac_aliq.lookup ('Romania')
+        user37_time.import_data_37 \
+            (self.db, self.user37, self.olo, vac_aliq = vaid)
+        self.create_public_holidays (date.Date ('2018-04-01'))
+        self.db.commit ()
+    # end def setup_user37_rom
+
+    def test_user37_rom_vacation (self):
+        self.log.debug ('test_user37')
+        self.setup_db ()
+        self.setup_user37_rom ()
+        # Allow report
+        rl = self.db.user.get (self.user0, 'roles')
+        self.db.user.set (self.user0, roles = ','.join ((rl, 'hr-vacation')))
+        self.db.commit ()
+        self.db.close  ()
+        # Get vacation report for 2026 for this user *as HR-vacation*
+        self.db = self.tracker.open (self.username0)
+        summary.init (self.tracker)
+        fs = { 'user': [self.user37], 'date': '2026-01-01;2026-12-31' }
+        class r: filterspec = fs ; columns = {}
+        class c: _ = lambda x: x
+        sr = summary.Vacation_Report \
+            (self.db, r, templating.TemplatingUtils (c))
+        lines = tuple (csv.reader (StringIO (sr.as_csv ()), delimiter = ','))
+        for l in lines:
+            print (l)
+        self.assertEqual (len (lines), 2)
+        self.assertEqual (len (lines [0]), 9)
+        self.assertEqual (lines  [0] [0], 'User')
+        self.assertEqual (lines  [0] [1], 'Time Period')
+        self.assertEqual (lines  [0] [2], 'yearly entitlement')
+        self.assertEqual (lines  [0] [3], 'yearly prorated')
+        self.assertEqual (lines  [0] [4], 'carry forward from previous year')
+        self.assertEqual (lines  [0] [5], 'entitlement total')
+        self.assertEqual (lines  [0] [6], 'approved days')
+        self.assertEqual (lines  [0] [7], 'vacation corrections')
+        self.assertEqual (lines  [0] [8], 'remaining vacation')
+        self.assertEqual (lines  [1] [0], 'testuser37')
+        self.assertEqual (lines  [1] [1], '2026-12-31')
+        self.assertEqual (lines  [1] [2], '25.0')
+        self.assertEqual (lines  [1] [3], '25.0')
+        self.assertEqual (lines  [1] [4], '0.220430')
+        self.assertEqual (lines  [1] [5], '25.220430')
+        self.assertEqual (lines  [1] [6], '23.0')
+        self.assertEqual (lines  [1] [7], '')
+        self.assertEqual (lines  [1] [8], '2.220430')
+        # Get remaining vacation as user0
+        dt = date.Date ('2026-04-02')
+        v = vac.remaining_vacation (self.db, self.user37, None, dt)
+        #assert v == 0.0
+        self.db.close ()
+
+        # Get vacation report for 2026 for this user *as this user*
+        self.db = self.tracker.open (self.username37)
+        summary.init (self.tracker)
+        fs = { 'user': [self.user37], 'date': '2026-01-01;2026-12-31' }
+        class r: filterspec = fs ; columns = {}
+        class c: _ = lambda x: x
+        sr = summary.Vacation_Report \
+            (self.db, r, templating.TemplatingUtils (c))
+        lines = tuple (csv.reader (StringIO (sr.as_csv ()), delimiter = ','))
+        self.assertEqual (len (lines), 2)
+        self.assertEqual (len (lines [0]), 9)
+        self.assertEqual (lines  [0] [0], 'User')
+        self.assertEqual (lines  [0] [1], 'Time Period')
+        self.assertEqual (lines  [0] [2], 'yearly entitlement')
+        self.assertEqual (lines  [0] [3], 'yearly prorated')
+        self.assertEqual (lines  [0] [4], 'carry forward from previous year')
+        self.assertEqual (lines  [0] [5], 'entitlement total')
+        self.assertEqual (lines  [0] [6], 'approved days')
+        self.assertEqual (lines  [0] [7], 'vacation corrections')
+        self.assertEqual (lines  [0] [8], 'remaining vacation')
+        self.assertEqual (lines  [1] [0], 'testuser37')
+        self.assertEqual (lines  [1] [1], '2026-12-31')
+        self.assertEqual (lines  [1] [2], '25.0')
+        self.assertEqual (lines  [1] [3], '25.0')
+        self.assertEqual (lines  [1] [4], '0.220') # Rounded *down*!
+        self.assertEqual (lines  [1] [5], '25.0')
+        self.assertEqual (lines  [1] [6], '23.0')
+        self.assertEqual (lines  [1] [7], '')
+        self.assertEqual (lines  [1] [8], '2.0')
+        # Get remaining vacation as this user
+        dt = date.Date ('2026-04-02')
+        v = vac.remaining_vacation (self.db, self.user37, None, dt)
+        assert v == 2.0
+        self.db.close ()
+    # end def test_user37_rom_vacation
+
 
     def test_duplicate_public_holiday (self):
         self.log.debug ('test_duplicate_public_holiday')

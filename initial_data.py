@@ -1069,6 +1069,9 @@ if 'daily_record' in db.classes and hasattr (db, 'sql') :
 if 'vac_aliq' in db.classes :
     db.vac_aliq.create (name  = 'Austria')
     db.vac_aliq.create (name  = 'Germany')
+    db.vac_aliq.create (name  = 'Finland')
+    db.vac_aliq.create (name  = 'Czechia')
+    db.vac_aliq.create (name  = 'Romania')
 if 'pr_ext_resource' in db.classes :
     db.pr_ext_resource.create (name  = 'yes')
     db.pr_ext_resource.create (name  = 'no')
