@@ -159,22 +159,22 @@ def import_data_23 (db, user, olo, parent):
         )
     aw_by_ct_name [('Internship', 'Vacation')] = id
     id = db.auto_wp.create \
-        ( name              = 'Comp\Flexi-Time'
+        ( name              = 'Comp\\Flexi-Time'
         , contract_type     = ct_by_name ['Internship']
         , durations_allowed = 1
         , is_valid          = 0
         , org_location      = olo
         , time_project      = parent.flexi_tp
         )
-    aw_by_ct_name [('Internship', 'Comp\Flexi-Time')] = id
+    aw_by_ct_name [('Internship', 'Comp\\Flexi-Time')] = id
     id = db.auto_wp.create \
-        ( name              = 'Comp\Flexi-Time'
+        ( name              = 'Comp\\Flexi-Time'
         , durations_allowed = 1
         , is_valid          = 0
         , org_location      = olo
         , time_project      = parent.flexi_tp
         )
-    aw_by_ct_name [(None, 'Comp\Flexi-Time')] = id
+    aw_by_ct_name [(None, 'Comp\\Flexi-Time')] = id
     id = db.auto_wp.create \
         ( name              = 'Medical-Consultation'
         , contract_type     = ct_by_name ['Internship']
@@ -244,7 +244,7 @@ def import_data_23 (db, user, olo, parent):
         )
     au_wp_5 = db.time_wp.create \
         ( name              = '%s -2021-09-01' % username
-        , auto_wp           = aw_by_ct_name [('Internship', 'Comp\Flexi-Time')]
+        , auto_wp           = aw_by_ct_name [('Internship', 'Comp\\Flexi-Time')]
         , bookers           = [user]
         , durations_allowed = 1
         , time_start        = date.Date ('2021-07-01.00:00:00')
@@ -314,7 +314,7 @@ def import_data_23 (db, user, olo, parent):
         )
     au_wp_12 = db.time_wp.create \
         ( name              = '%s -2022-07-01' % username
-        , auto_wp           = aw_by_ct_name [('Internship', 'Comp\Flexi-Time')]
+        , auto_wp           = aw_by_ct_name [('Internship', 'Comp\\Flexi-Time')]
         , bookers           = [user]
         , durations_allowed = 1
         , time_start        = date.Date ('2022-03-01.00:00:00')
@@ -379,7 +379,7 @@ def import_data_23 (db, user, olo, parent):
         )
     au_wp_19 = db.time_wp.create \
         ( name              = username
-        , auto_wp           = aw_by_ct_name [(None, 'Comp\Flexi-Time')]
+        , auto_wp           = aw_by_ct_name [(None, 'Comp\\Flexi-Time')]
         , bookers           = [user]
         , durations_allowed = 1
         , time_start        = date.Date ('2022-07-01.00:00:00')
@@ -415,9 +415,9 @@ def import_data_23 (db, user, olo, parent):
     db.auto_wp.set (id, is_valid = True)
     id = aw_by_ct_name [('Internship', 'Vacation')]
     db.auto_wp.set (id, is_valid = True)
-    id = aw_by_ct_name [('Internship', 'Comp\Flexi-Time')]
+    id = aw_by_ct_name [('Internship', 'Comp\\Flexi-Time')]
     db.auto_wp.set (id, is_valid = True)
-    id = aw_by_ct_name [(None, 'Comp\Flexi-Time')]
+    id = aw_by_ct_name [(None, 'Comp\\Flexi-Time')]
     db.auto_wp.set (id, is_valid = True)
     id = aw_by_ct_name [('Internship', 'Medical-Consultation')]
     db.auto_wp.set (id, is_valid = True)

@@ -20,7 +20,6 @@
 # Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 # ****************************************************************************
 
-from   math   import ceil
 from   time   import gmtime
 try:
     from urllib.parse import urlencode

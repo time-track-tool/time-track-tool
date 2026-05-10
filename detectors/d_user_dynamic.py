@@ -399,9 +399,10 @@ def check_avc (db, cl, nodeid, new_values):
     """ Check that an absolute vacation correction exists at the date of
         the user_dynamic record if either the vac_aliq changed or the
         vac_aliq is monthly and the vacation changed (compared to the
-        last user_dynamic record). We currently do not require a
-        vacation correction if one already exists *and* there is a gap
-        in user_dynamic record validity ranges.
+        last user_dynamic record).
+
+        We also require a vacation correction if one already exists
+        *and* there is a gap in user_dynamic record validity ranges.
     """
     _ = db.i18n.gettext
     # At least one of the following attributes must be in new_values
@@ -460,12 +461,23 @@ def check_avc (db, cl, nodeid, new_values):
             % locals ()
             )
     vyo = prev_dyn.vacation_yearly
-    if db.vac_aliq.get (va, 'name') == 'Monthly' and vy != vyo:
+    vaname = None
+    if va:
+        vaname = db.vac_aliq.get (va, 'name')
+    if vaname == 'Germany' and vy != vyo:
         vyn = _ ('vacation_yearly')
         raise Reject \
             ( _ ('Change of "%(vyn)s" without absolute vacation correction')
             % locals ()
             )
+    if vaname and vaname != 'Austria':
+        if prev_dyn.valid_to and prev_dyn.valid_to < valid_from:
+            vc = vacation.get_vacation_correction (db, user, date = valid_from)
+            if vc and vc.date < prev.valid_to:
+                raise Reject \
+                    ('Need abs. vacation correction: There is a gap between'
+                     ' previous and this dynamic user record'
+                    )
 # end def check_avc
 
 def new_user_dynamic (db, cl, nodeid, new_values):

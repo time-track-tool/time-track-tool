@@ -722,6 +722,66 @@ def check_correction (db, cl, nodeid, new_values):
             raise Reject \
                 (_ ('Missing vacation parameters in dyn. user record(s)'))
         dyn = user_dynamic.prev_user_dynamic (db, dyn)
+    # Special checks apply only if there is a *previous* *absolute*
+    # vacation correction.
+    vc = vacation.get_vacation_correction (db, user, date = date)
+    if not vc:
+        return
+
+    # Get dyn immediately before correction
+    dyn = user_dynamic.find_user_dynamic \
+        (db, user, direction = '-', date = date)
+    if not dyn:
+        return
+    # If dyn ends before date we have a gap and allow the creation
+    if dyn.valid_to and dyn.valid_to <= date:
+        return
+    is_abs = new_values.get ('absolute')
+    if is_abs is None:
+        assert nodeid
+        is_abs = cl.get (nodeid, 'absolute')
+    # Compute vac_aliq name
+    vacname = None
+    if dyn and dyn.vac_aliq:
+        vacname = db.vac_aliq.get (dyn.vac_aliq, 'name')
+
+    # For Finland and Romania allow abs. vacation correction only on 1st
+    # of month unless it's the very first abs. vacation correction
+    if vacname in ('Romania', 'Finland') and is_abs and date.day != 1:
+        raise Reject \
+            (_ ('Absolute vacation correction must be on 1st of'
+                ' month, otherwise alliquotation would start again'
+               )
+            )
+    # FIXME: We probably need a similar check for Czechia (weekly alliquotation)
+    if vacname == 'Germany':
+        # Search reverse through dyn user recs and find first or first
+        # after a gap. Take start date of this one and ensure the vc is
+        # on that day-of-month
+        last_dyn  = dyn
+        startdate = None
+        while 1:
+            dyn = user_dynamic.prev_user_dynamic (db, dyn)
+            if not dyn:
+                break
+            if dyn.valid_from < vc.date:
+                startdate = vc.date
+                break
+            assert dyn.valid_to
+            if dyn.valid_to < last_dyn.valid_from:
+                # There really should have been a vc
+                break
+            last_dyn = dyn
+        if startdate is None:
+            startdate = last_dyn.valid_from
+        if date.day != startdate.day:
+            raise Reject \
+                (_ ('Absolute vacation correction must be on same day'
+                    ' of month as start day of the user (%s.),'
+                    ' otherwise alliquotation would start again'
+                   )
+                % startdate.day
+                )
 # end def check_correction
 
 def init (db):

@@ -106,6 +106,15 @@ def import_data_28 (db, user, olo, parent):
     otp = db.overtime_period.filter (None, sd)
     assert len (otp) == 1
     otp = otp [0]
+    # Create a vacation correction, otherwise creation of user_dynamic
+    # with a gap will fail
+    vcid = db.vacation_correction.create \
+        ( user     = user
+        , date     = date.Date ("2023-08-01")
+        , absolute = 1
+        , days     = 0
+        )
+
     db.user_dynamic.create \
         ( additional_hours   = 15.0
         , all_in             = 0
@@ -133,6 +142,8 @@ def import_data_28 (db, user, olo, parent):
         , user               = user
         , vac_aliq           = '2'
         )
+    # Retire the vc above
+    db.vacation_correction.retire (vcid)
     username = db.user.get (user, 'username')
     aw_by_ct_name = {}
     id = db.auto_wp.create \
@@ -144,13 +155,13 @@ def import_data_28 (db, user, olo, parent):
         )
     aw_by_ct_name [(None, 'Nursing-leave')] = id
     id = db.auto_wp.create \
-        ( name              = 'Comp\Flexi-Time'
+        ( name              = 'Comp\\Flexi-Time'
         , durations_allowed = 1
         , is_valid          = 0
         , org_location      = olo
         , time_project      = parent.flexi_tp
         )
-    aw_by_ct_name [(None, 'Comp\Flexi-Time')] = id
+    aw_by_ct_name [(None, 'Comp\\Flexi-Time')] = id
     id = db.auto_wp.create \
         ( name              = 'Medical-Consultation'
         , durations_allowed = 0
@@ -195,7 +206,7 @@ def import_data_28 (db, user, olo, parent):
         )
     au_wp_1 = db.time_wp.create \
         ( name              = '%s -2023-08-01' % username
-        , auto_wp           = aw_by_ct_name [(None, 'Comp\Flexi-Time')]
+        , auto_wp           = aw_by_ct_name [(None, 'Comp\\Flexi-Time')]
         , bookers           = [user]
         , durations_allowed = 1
         , time_start        = date.Date ('2020-09-01.00:00:00')
@@ -254,7 +265,7 @@ def import_data_28 (db, user, olo, parent):
         )
     au_wp_7 = db.time_wp.create \
         ( name              = username
-        , auto_wp           = aw_by_ct_name [(None, 'Comp\Flexi-Time')]
+        , auto_wp           = aw_by_ct_name [(None, 'Comp\\Flexi-Time')]
         , bookers           = [user]
         , durations_allowed = 1
         , time_start        = date.Date ('2023-10-01.00:00:00')
@@ -335,7 +346,7 @@ def import_data_28 (db, user, olo, parent):
         )
     id = aw_by_ct_name [(None, 'Nursing-leave')]
     db.auto_wp.set (id, is_valid = True)
-    id = aw_by_ct_name [(None, 'Comp\Flexi-Time')]
+    id = aw_by_ct_name [(None, 'Comp\\Flexi-Time')]
     db.auto_wp.set (id, is_valid = True)
     id = aw_by_ct_name [(None, 'Medical-Consultation')]
     db.auto_wp.set (id, is_valid = True)
