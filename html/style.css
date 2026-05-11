@@ -1,6 +1,6 @@
 /* main page styles */
 body.body {
-  font-family: sans-serif, Arial, Helvetica;
+  font-family: sans-serif, Arial;
   background-color: white;
   color: #333;
   margin: 0;
@@ -109,6 +109,34 @@ textarea {
     font-family: monospace;
 }
 
+/* PR-Tracker all should be the same font */
+textarea.pr {
+    font-family: sans-serif,Arial;
+    font-size: 9pt;
+}
+
+.pr-section-offeritem table.form td {
+    font-size: 10pt;
+}
+
+.pr-section-offeritem table.form th {
+    /*font-weight: bold;*/
+}
+.pr-section-offeritem table.form th a:link {
+    /*font-weight: bold;*/
+}
+
+/* PR-Tracker all should be the same font */
+div.formdiv input {
+    font-family: sans-serif,Arial;
+    font-size: 9pt;
+}
+
+/* PR-Tracker sums bold */
+div.pr-item-sum span {
+    font-weight: bold;
+}
+
 td.sidebar p.classblock {
   padding: 2px 5px 2px 5px;
   margin: 1px;
@@ -152,6 +180,11 @@ div.prewrap {
   white-space: pre-wrap;
   margin-top: 12px;
   margin-bottom: 12px;
+}
+
+div.prewrap.pr {
+  font-family: sans-serif,Arial;
+  font-size: 10pt;
 }
 
 td.content div.prewrap div.attachment {
@@ -316,7 +349,7 @@ table.form td.optional {
 }
 
 table.form td.emphasized {
-  font-weight: bold;
+  /*font-weight: bold; no longer bold*/
 }
 
 table.form td.warn {
@@ -981,6 +1014,135 @@ span.nobreak {
   -webkit-hyphens: none;
   -ms-hyphens: none;
 }
+/* Purchase Request Layout Styles */
+.pr-layout-container {
+  display: flex;
+  gap: 20px;
+  margin: 10px 0;
+  align-items: flex-start;
+  align-content: flex-start;
+  flex-wrap: wrap;
+}
+
+.pr-offeritem-container {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  margin: 10px 0;
+  align-items: flex-start;
+  align-content: flex-start;
+  background-color: white;
+}
+
+.pr-section {
+  display: flex;
+  flex-direction: column;
+  padding: 15px;
+  border-radius: 8px;
+  border: 2px solid;
+  width: fit-content;
+}
+
+.pr-container {
+  width: fit-content;
+}
+
+.pr-section-default {
+  background-color: white;
+}
+
+.pr-section-obsolete {
+  background-color: white;
+}
+
+.pr-section-offer-items {
+  background-color: white;
+}
+
+.pr-section-approvals {
+  background-color: white;
+}
+
+.pr-section-fullwidth {
+  min-width: calc(100% - 32px);
+  display: flex;
+  align-content: flex-end;
+  justify-content: flex-end;
+  gap: 10px;
+  padding: 15px;
+  border-radius: 8px;
+  border: 2px solid;
+  width: fit-content;
+}
+
+.pr-section-requestor {
+  background-color: #e6f3ff;
+  border-color: #0066cc;
+}
+
+.pr-section-procurement {
+  background-color: #f0e6ff;
+  border-color: #6600cc;
+}
+
+.pr-section-calculated {
+  background-color: #e6ffe6;
+  border-color: #00cc00;
+}
+
+.pr-section-title {
+  font-weight: bold;
+  font-size: 14px;
+  margin-bottom: 10px;
+  color: #333;
+}
+
+div.pr-section-title a[href],
+div.pr-section-title a[href]:link {
+  color: #333;
+}
+
+.pr-section table.form {
+  width: 100%;
+}
+
+.pr-section table.form th {
+  text-align: left;
+}
+
+.pr-section table.form td {
+  text-align: left;
+}
+
+.pr-section-content {
+  display: flex;
+  row-gap: 40px;
+  column-gap: 20px;
+  flex-wrap: wrap;
+}
+
+.pr-section-offeritem {
+  display: flex;
+  row-gap: 40px;
+  column-gap: 20px;
+  flex-wrap: wrap;
+  padding: 15px;
+  border-radius: 8px;
+  border: 2px solid;
+  width: fit-content;
+}
+
+.pr-section-requestor .pr-left-side {
+}
+
+.pr-section-requestor .pr-right-side {
+}
+
+.pr-item-sum {
+  padding-top: 20px;
+  align-self: flex-end;
+}
+
 /* Tooltip text */
 .tooltip .tooltiptext {
   visibility: hidden;

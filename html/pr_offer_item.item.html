@@ -60,8 +60,78 @@
      </tr>
      <tr>
       <th tal:content="structure python:utils.fieldname
+          (db, classname, 'vat')"/>
+      <td tal:content="structure python:context.vat.field ()"/>
+     </tr>
+     <tr>
+      <th tal:content="structure python:utils.fieldname
           (db, classname, 'price_per_unit')"/>
       <td tal:content="structure python:context.price_per_unit.field ()"/>
+     </tr>
+     <tr>
+      <th tal:content="structure python:utils.fieldname
+          (db, classname, 'is_asset')"/>
+      <td tal:content="structure python:context.is_asset.field ()"/>
+     </tr>
+     <tr>
+      <th tal:content="structure python:utils.fieldname
+          (db, classname, 'gl_account')"/>
+      <td tal:content="structure python:context.gl_account.field ()"/>
+     </tr>
+     <tr>
+      <th tal:content="structure python:utils.fieldname
+          (db, classname, 'infosec_level')"/>
+      <td tal:content="structure python:context.infosec_level.menu ()"/>
+     </tr>
+     <tr>
+      <th tal:content="structure python:utils.fieldname
+          (db, classname, 'internal_order')"/>
+      <td>
+       <span class="nobreak">
+	<span tal:content="structure python:
+	      context.internal_order.field (size=8)"/>
+	<span tal:condition="context/internal_order/is_edit_ok"
+	      tal:content="structure python:db.internal_order.classhelp
+		   ( 'order_number,name'
+		   , property='internal_order'
+		   , inputtype='radio'
+		   , width='800'
+		   , pagesize=1000
+		   , filter='valid=True'
+		   )"/>
+       </span>
+      </td>
+     </tr>
+     <tr>
+      <th tal:content="structure python:utils.fieldname
+          (db, classname, 'payment_type')"/>
+      <td tal:content="structure python:context.payment_type.menu ()"/>
+     </tr>
+     <tr>
+      <th tal:content="structure python:utils.fieldname
+          (db, classname, 'pr_currency')"/>
+      <td tal:content="structure python:context.pr_currency.menu ()"/>
+     </tr>
+     <tr>
+      <th tal:content="structure python:utils.fieldname
+          (db, classname, 'product_group')"/>
+      <td tal:content="structure python:context.product_group.menu ()"/>
+     </tr>
+     <tr>
+      <th tal:content="structure python:utils.fieldname
+          (db, classname, 'psp_element')"/>
+      <td tal:content="structure python:context.psp_element.menu ()"/>
+     </tr>
+     <tr>
+      <th tal:content="structure python:utils.fieldname
+          (db, classname, 'purchase_type')"/>
+      <td tal:content="structure python:context.purchase_type.menu
+          (valid=True)"/>
+     </tr>
+     <tr>
+      <th tal:content="structure python:utils.fieldname
+          (db, classname, 'sap_cc')"/>
+      <td tal:content="structure python:context.sap_cc.menu ()"/>
      </tr>
 
     </tal:block>

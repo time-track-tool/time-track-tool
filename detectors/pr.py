@@ -21,9 +21,13 @@ import re
 import common
 import prlib
 import o_permission
-from   roundup.date                   import Date, Interval
-from   roundup.exceptions             import Reject
-from   roundup                        import roundupdb
+from   roundup.date       import Date, Interval
+from   roundup.exceptions import Reject
+from   roundup            import roundupdb
+from   roundup.test       import memorydb
+from   roundup.mailer     import Mailer, MessageSendError
+
+memdb = memorydb.Database
 
 def prjust (db, cl, nodeid, new_values):
     """ Field pr_justification must be edited when signing
@@ -508,7 +512,7 @@ def change_pr (db, cl, nodeid, new_values):
                 ( _, cl, nodeid, new_values
                 , 'department',  'organisation'
                 , 'offer_items', 'delivery_deadline', 'purchase_type'
-                , 'part_of_budget', 'terms_conditions', 'frame_purchase'
+                , 'part_of_budget'
                 , 'pr_currency', 'purchasing_agents', 'pr_ext_resource'
                 , 'delivery_address'
                 )
@@ -527,15 +531,6 @@ def change_pr (db, cl, nodeid, new_values):
             if fp:
                 common.require_attributes \
                     (_, cl, nodeid, new_values, 'frame_purchase_end')
-            co = new_values.get \
-                ( 'continuous_obligation'
-                , cl.get (nodeid, 'continuous_obligation')
-                )
-            if co:
-                common.require_attributes \
-                    ( _, cl, nodeid, new_values
-                    , 'contract_term', 'intended_duration'
-                    )
             if not oitems:
                 raise Reject (_ ("Need at least one offer item"))
             for oi in oitems:
@@ -584,6 +579,15 @@ def change_pr (db, cl, nodeid, new_values):
                     break
             else:
                 raise Reject ( _ ("No approval by requester found"))
+            # Check that either an attachment exists or 'No offer' is
+            # checked.
+            files = new_values.get ('files', cl.get (nodeid, 'files'))
+            if not files:
+                no_offer = new_values.get \
+                    ('no_offer', cl.get (nodeid, 'no_offer'))
+                if not no_offer:
+                    raise Reject \
+                        (_ ('Please either attach an offer or tick "No offer"'))
             new_values ['total_cost']  = prlib.pr_offer_item_sum (db, nodeid)
             check_psp_cc_consistency (db, cl, nodeid, new_values)
             update_nosy (db, cl, nodeid, new_values)
@@ -744,6 +748,22 @@ def set_agents (db, cl, nodeid, new_values):
             paset.update (item.purchasing_agents)
         if pt:
             paset.update (db.purchase_type.get (pt, 'purchasing_agents'))
+        # Last resort: Get default agent if configured
+        if not paset:
+            optname = 'MISC_DEFAULT_PURCHASING_AGENT'
+            agent = getattr (db.config.ext, optname, None)
+            if agent:
+                if hasattr (db, 'sql') and not isinstance (db, memdb):
+                    db.sql ('savepoint p_agent')
+                try:
+                    user = db.user.getnode (agent)
+                    stat = user.status
+                except (ValueError, IndexError):
+                    stat = None
+                    if hasattr (db, 'sql') and not isinstance (db, memdb):
+                        db.sql ('rollback to savepoint p_agent')
+                if stat and db.user_status.get (stat, 'is_nosy'):
+                    paset.add (user.id)
         # Only put those agents into 'purchasing_agents' that have
         # necessary role from all the purchase_types in pts
         pa = compute_agents (db, paset, pts, org)
@@ -791,13 +811,6 @@ def approvalchange (db, cl, nodeid, new_values):
 def check_late_changes (db, cl, nodeid, new_values):
     """ Check that attributes changed late in the process are consistent
     """
-    if 'continuous_obligation' in new_values:
-        co = new_values ['continuous_obligation']
-        if co:
-            common.require_attributes \
-                ( db.i18n.gettext, cl, nodeid, new_values
-                , 'contract_term', 'intended_duration'
-                )
     if 'frame_purchase' in new_values:
         fp = new_values ['frame_purchase']
         if fp:
@@ -869,6 +882,10 @@ def set_approval_pr (db, cl, nodeid, new_values):
     common.require_attributes \
         (_, cl, nodeid, new_values, 'purchase_request')
 
+    # Special case of status: If the status would become empty (because
+    # someone has selected '-1') we keep the previous status.
+    if 'status' in new_values and new_values ['status'] is None:
+        del new_values ['status']
     if 'date' in new_values and 'status' not in new_values:
         del new_values ['date']
     if 'purchase_request' in new_values and 'status' not in new_values:
@@ -994,7 +1011,8 @@ def set_infosec (db, cl, nodeid, new_values):
         new_values ['infosec_level'] = ilm.id
 # end def set_infosec
 
-def update_pr (db, pr, ap, nosy, txt, ** kw):
+def update_pr (db, pr, ap, nosy, txt, subj, ** kw):
+    to  = []
     uor = ''
     if ap:
         if ap.user:
@@ -1006,20 +1024,26 @@ def update_pr (db, pr, ap, nosy, txt, ** kw):
                 uor += ' and role %s' % ap.role
             else:
                 uor = 'role %s' % ap.role
+        to = list (nosy_for_approval (db, ap))
+    if not to:
+        to = list (nosy)
+    to  = [db.user.get (id, 'address') for id in to]
     txt = (txt.replace ('$', '%') % dict (title = pr.title, user_or_role = uor))
-    # Note: We can't use the current db user as the
-    # author of the message, otherwise the nosy auditor
-    # will prevent the user from being removed from the
-    # nosy list (!)
-    msg = db.msg.create \
-        ( content = txt
-        , author  = '1' # admin
-        , date    = Date ('.')
-        )
-    msgs = set (pr.messages)
-    msgs.add (msg)
-    d = kw
-    d.update (nosy = list (nosy), messages = list (msgs))
+    # Note: In the old implementation we could not use the current db
+    # user as the author of the message, otherwise the nosy auditor
+    # would prevent the user from being removed from the nosy list (!)
+    # Note: We now use the db user as the sender (but with the
+    # TRACKER_EMAIL address)
+    charset  = getattr (db.config, 'EMAIL_CHARSET', 'utf-8')
+    mailer   = Mailer (db.config)
+    message  = mailer.get_standard_message (multipart = False)
+    # Use current user as author but with TRACKER_EMAIL
+    fromaddr = db.config.TRACKER_EMAIL
+    author   = (db.user.get (db.getuid (), 'realname'), fromaddr)
+    mailer.set_message_attributes (message, to, subj, author)
+    message.set_payload (txt, charset)
+    mailer.smtp_send (to, message.as_string (), fromaddr)
+    d = dict (kw , nosy = list (nosy))
     db.purchase_request.set (pr.id, ** d)
 # end def update_pr
 
@@ -1050,22 +1074,34 @@ def approved_pr_approval (db, cl, nodeid, old_values):
                 agents = pr.purchasing_agents
                 if agents and not pt.confidential:
                     nosy.update (dict.fromkeys (agents))
+            designator = pr.cl.classname + str (pr.id)
             for a in apps:
                 ap = cl.getnode (a)
                 if ap.status != apr:
                     assert ap.status == und
                     nosy.update (nosy_for_approval (db, ap, add = True))
                     uor = ''
+                    subj = getattr \
+                        ( db.config.ext
+                        , 'MAIL_PR_APPROVAL_SUBJECT'
+                        , '[%s] needs approval'
+                        ).replace ('$', '%')
                     update_pr \
-                        (db, pr, ap, nosy, db.config.ext.MAIL_PR_APPROVAL_TEXT)
+                        ( db, pr, ap, nosy
+                        , db.config.ext.MAIL_PR_APPROVAL_TEXT
+                        , subj % designator
+                        )
                     break
             else:
+                subj = getattr \
+                    ( db.config.ext
+                    , 'MAIL_PR_APPROVED_SUBJECT'
+                    , '[%s] has been approved'
+                    ).replace ('$', '%')
                 update_pr \
-                    ( db
-                    , pr
-                    , None
-                    , nosy
+                    ( db, pr, None, nosy
                     , db.config.ext.MAIL_PR_APPROVED_TEXT
+                    , subj % designator
                     , status = db.pr_status.lookup ('approved')
                     )
         elif ns == rej:
@@ -1093,6 +1129,9 @@ def new_pr_offer_item (db, cl, nodeid, new_values):
 # end def new_pr_offer_item
 
 def check_pr_offer_item (db, cl, nodeid, new_values):
+    # Special case of modifying sap_cc by admin
+    if list (new_values) == ['sap_cc'] and db.getuid () == '1':
+        return
     common.require_attributes \
         ( db.i18n.gettext, cl, nodeid, new_values, 'units'
         , 'price_per_unit', 'product_group', 'supplier'
@@ -1184,12 +1223,14 @@ def check_supplier (db, cl, nodeid, new_values):
         # Need to check if the supplier was added to LAS after creation
         # of this offer item. In that case we need to update pr_supplier.
         oi = cl.getnode (nodeid)
-        try:
-            prsup = db.pr_supplier.lookup (oi.supplier)
-            if oi.pr_supplier != prsup:
-                new_values ['pr_supplier'] = prsup
-        except KeyError:
-            new_values ['pr_supplier'] = None
+        # Special case of admin modifying sap_cc
+        if db.getuid () != '1' or list (new_values) != ['sap_cc']:
+            try:
+                prsup = db.pr_supplier.lookup (oi.supplier)
+                if oi.pr_supplier != prsup:
+                    new_values ['pr_supplier'] = prsup
+            except KeyError:
+                new_values ['pr_supplier'] = None
 # end def check_supplier
 
 def check_pr_update (db, cl, nodeid, old_values):
@@ -1208,10 +1249,16 @@ def check_pr_update (db, cl, nodeid, old_values):
 
 def check_agent_change (db, cl, nodeid, old_values):
     do_check = False
+    seen = {}
     for k in 'purchase_type', 'sap_cc', 'time_project':
         if cl.get (nodeid, k) != old_values.get (k, None):
             do_check = True
-            break
+            seen [k] = True
+    # Do not check if admin is updating retired sap_cc
+    if db.getuid () == '1' and list (seen) == ['sap_cc']:
+        ov = old_values.get ('sap_cc', None)
+        if ov and db.sap_cc.is_retired (ov):
+            do_check = False
     if do_check:
         prs = db.purchase_request.filter (None, dict (offer_items = nodeid))
         assert len (prs) == 1
@@ -1497,12 +1544,19 @@ def check_org_for_item (db, cl, nodeid, new_values, check_all, orgs):
                 % locals ()
                 )
 
-    sapid = new_values.get ('sap_cc', None)
+    osapid = None
+    if nodeid:
+        osapid = cl.get (nodeid, 'sap_cc')
+    sapid  = new_values.get ('sap_cc', None)
     if 'sap_cc' not in new_values and nodeid:
-        sapid = cl.get (nodeid, 'sap_cc')
+        sapid = osapid
     if sapid and (check_all or 'sap_cc' in new_values):
+        # Special case: admin replacing a retired sap_cc
+        ok = False
+        if db.getuid () == '1' and osapid and db.sap_cc.is_retired (osapid):
+            ok = True
         sap = db.sap_cc.getnode (sapid)
-        if sap.organisation not in orgs:
+        if not ok and sap.organisation not in orgs:
             name = sap.name
             raise Reject \
                 (_ ('Organisation of SAP cost-center %(name)s '

@@ -516,6 +516,9 @@ properties = \
         , ( 'departments'
           , ['admin', 'procurement-admin']
           )
+        , ( 'if_is_asset'
+          , ['admin', 'procurement-admin']
+          )
         , ( 'if_not_in_las'
           , ['admin', 'procurement-admin']
           )
@@ -816,6 +819,12 @@ properties = \
             , 'user', 'user_view', 'view-roles'
             ]
           )
+        , ( 'quality_relevant'
+          , [ 'admin', 'ciso', 'controlling', 'dom-user-edit-facility', 'dom-user-edit-gtt', 'dom-user-edit-hr', 'dom-user-edit-office', 'it'
+            , 'las', 'o-permission', 'pgp', 'procurement-admin', 'project', 'project_view', 'reject'
+            , 'user', 'user_view', 'view-roles'
+            ]
+          )
         ]
       )
     , ( 'pr_status'
@@ -933,6 +942,12 @@ properties = \
             , 'user', 'user_view', 'view-roles'
             ]
           )
+        , ( 'quality_relevant'
+          , [ 'admin', 'ciso', 'controlling', 'dom-user-edit-facility', 'dom-user-edit-gtt', 'dom-user-edit-hr', 'dom-user-edit-office', 'it'
+            , 'las', 'o-permission', 'pgp', 'procurement-admin', 'project', 'project_view', 'reject'
+            , 'user', 'user_view', 'view-roles'
+            ]
+          )
         , ( 'sap_ref'
           , [ 'admin', 'ciso', 'controlling', 'dom-user-edit-facility', 'dom-user-edit-gtt', 'dom-user-edit-hr', 'dom-user-edit-office', 'it'
             , 'las', 'o-permission', 'pgp', 'procurement-admin', 'project', 'project_view', 'reject'
@@ -999,7 +1014,19 @@ properties = \
             , 'user', 'user_view', 'view-roles'
             ]
           )
+        , ( 'comment_pr'
+          , [ 'admin', 'ciso', 'controlling', 'dom-user-edit-facility', 'dom-user-edit-gtt', 'dom-user-edit-hr', 'dom-user-edit-office', 'it'
+            , 'las', 'o-permission', 'pgp', 'procurement-admin', 'project', 'project_view', 'reject'
+            , 'user', 'user_view', 'view-roles'
+            ]
+          )
         , ( 'continuous_obligation'
+          , [ 'admin', 'ciso', 'controlling', 'dom-user-edit-facility', 'dom-user-edit-gtt', 'dom-user-edit-hr', 'dom-user-edit-office', 'it'
+            , 'las', 'o-permission', 'pgp', 'procurement-admin', 'project', 'project_view', 'reject'
+            , 'user', 'user_view', 'view-roles'
+            ]
+          )
+        , ( 'contract_info'
           , [ 'admin', 'ciso', 'controlling', 'dom-user-edit-facility', 'dom-user-edit-gtt', 'dom-user-edit-hr', 'dom-user-edit-office', 'it'
             , 'las', 'o-permission', 'pgp', 'procurement-admin', 'project', 'project_view', 'reject'
             , 'user', 'user_view', 'view-roles'
@@ -1030,6 +1057,12 @@ properties = \
             ]
           )
         , ( 'delivery_address'
+          , [ 'admin', 'ciso', 'controlling', 'dom-user-edit-facility', 'dom-user-edit-gtt', 'dom-user-edit-hr', 'dom-user-edit-office', 'it'
+            , 'las', 'o-permission', 'pgp', 'procurement-admin', 'project', 'project_view', 'reject'
+            , 'user', 'user_view', 'view-roles'
+            ]
+          )
+        , ( 'delivery_date'
           , [ 'admin', 'ciso', 'controlling', 'dom-user-edit-facility', 'dom-user-edit-gtt', 'dom-user-edit-hr', 'dom-user-edit-office', 'it'
             , 'las', 'o-permission', 'pgp', 'procurement-admin', 'project', 'project_view', 'reject'
             , 'user', 'user_view', 'view-roles'
@@ -1102,6 +1135,12 @@ properties = \
             ]
           )
         , ( 'messages'
+          , [ 'admin', 'ciso', 'controlling', 'dom-user-edit-facility', 'dom-user-edit-gtt', 'dom-user-edit-hr', 'dom-user-edit-office', 'it'
+            , 'las', 'o-permission', 'pgp', 'procurement-admin', 'project', 'project_view', 'reject'
+            , 'user', 'user_view', 'view-roles'
+            ]
+          )
+        , ( 'no_offer'
           , [ 'admin', 'ciso', 'controlling', 'dom-user-edit-facility', 'dom-user-edit-gtt', 'dom-user-edit-hr', 'dom-user-edit-office', 'it'
             , 'las', 'o-permission', 'pgp', 'procurement-admin', 'project', 'project_view', 'reject'
             , 'user', 'user_view', 'view-roles'
@@ -1528,6 +1567,12 @@ properties = \
       )
     , ( 'terms_conditions'
       , [ ( 'description'
+          , [ 'admin', 'ciso', 'controlling', 'dom-user-edit-facility', 'dom-user-edit-gtt', 'dom-user-edit-hr', 'dom-user-edit-office', 'it'
+            , 'las', 'o-permission', 'pgp', 'procurement-admin', 'project', 'project_view', 'reject'
+            , 'user', 'user_view', 'view-roles'
+            ]
+          )
+        , ( 'is_valid'
           , [ 'admin', 'ciso', 'controlling', 'dom-user-edit-facility', 'dom-user-edit-gtt', 'dom-user-edit-hr', 'dom-user-edit-office', 'it'
             , 'las', 'o-permission', 'pgp', 'procurement-admin', 'project', 'project_view', 'reject'
             , 'user', 'user_view', 'view-roles'

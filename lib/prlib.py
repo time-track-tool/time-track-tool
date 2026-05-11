@@ -1,6 +1,5 @@
 #! /usr/bin/python
-# -*- coding: iso-8859-1 -*-
-# Copyright (C) 2006-21 Dr. Ralf Schlatterbeck Open Source Consulting.
+# Copyright (C) 2006-25 Dr. Ralf Schlatterbeck Open Source Consulting.
 # Reichergasse 131, A-3411 Weidling.
 # Web: http://www.runtux.com Email: office@runtux.com
 # All rights reserved
@@ -45,6 +44,14 @@ def pr_offer_item_sum (db, pr):
         assert abs (pr.total_cost - total) < 0.0001
     return total
 # end def pr_offer_item_sum
+
+def pr_offer_item_formatted (v):
+    return '{:,.2f}'.format (v).replace (',', ' ')
+# end def pr_offer_item_formatted
+
+def pr_offer_item_sum_formatted (db, pr):
+    return pr_offer_item_formatted (pr_offer_item_sum (db, pr))
+# end def pr_offer_item_sum_formatted
 
 def gen_pr_approval (db, do_create, ** values):
     """ If do_create is set, create a new approval with the given
@@ -329,10 +336,21 @@ class Approval_Logic:
             supplier_approved = True
             ptypes = set ()
             ptypes.add (pr.purchase_type)
+            quality_relevant = False
+            is_asset = False
             for id in pr.offer_items:
                 oi = db.pr_offer_item.getnode (id)
+                if oi.is_asset:
+                    is_asset = True
                 if not self.supplier_is_approved (oi.pr_supplier):
                     supplier_approved = False
+                    # product group with quality_relevant flag set:
+                    # We set quality_relevant only if the supplier is
+                    # not approved!
+                    if oi.product_group:
+                        pg = db.product_group.getnode (oi.product_group)
+                        if pg.quality_relevant:
+                            quality_relevant = True
                 if oi.purchase_type:
                     ptypes.add (oi.purchase_type)
             for prcid in prc_ids:
@@ -355,6 +373,9 @@ class Approval_Logic:
                     and pr.department not in prc.departments
                     ):
                     continue
+                if  (   prc.if_is_asset and not is_asset
+                    ):
+                    continue
                 if  (      prc.amount         is not None and s > prc.amount
                     or (   prc.infosec_amount is not None
                        and s > prc.infosec_amount
@@ -373,6 +394,13 @@ class Approval_Logic:
                        and pob.name.lower () == 'no'
                        and s > prc.oob_amount
                        )
+                    or (   prc.quality_amount is not None
+                       and quality_relevant
+                       and not supplier_approved
+                       and s > prc.quality_amount
+                       )
+                    # Legacy: safety_critical aka "LAS relevant Product
+                    # Group" can no longer be set.
                     or (   prc.quality_amount is not None
                        and pr.safety_critical
                        and not supplier_approved
@@ -504,7 +532,7 @@ class Approval_Logic:
         if len (ratings):
             sr = self.db.pr_supplier_rating.getnode (ratings [0])
             rating = self.db.pr_rating_category.getnode (sr.rating)
-            if rating is None or rating.order > 2:
+            if rating is None or rating.quality_relevant:
                 return False
             return True
         return False
@@ -583,6 +611,18 @@ pr_justification = \
       )
     , ( 'Impact on the project in case of rejection'
       , 'please state possible consequences of rejecting the purchase'
+      )
+    )
+
+contract_info = \
+    ( ( 'Type of continuous obligation'
+      , 'content or runtime'
+      )
+    , ( 'Duration'
+      , 'years, etc.'
+      )
+    , ( 'Termination'
+      , 'Conditions of termination (earliest possibility, etc.)'
       )
     )
 

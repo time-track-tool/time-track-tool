@@ -128,6 +128,7 @@ properties = \
     , ( 'pr_approval_config'
       , [ 'amount'
         , 'departments'
+        , 'if_is_asset'
         , 'if_not_in_las'
         , 'infosec_amount'
         , 'oob_amount'
@@ -198,6 +199,7 @@ properties = \
     , ( 'pr_rating_category'
       , [ 'name'
         , 'order'
+        , 'quality_relevant'
         ]
       )
     , ( 'pr_status'
@@ -230,6 +232,7 @@ properties = \
       , [ 'infosec_level'
         , 'name'
         , 'pg_category'
+        , 'quality_relevant'
         , 'sap_ref'
         , 'security_req_group'
         ]
@@ -246,12 +249,15 @@ properties = \
     , ( 'purchase_request'
       , [ 'approvals'
         , 'charge_to'
+        , 'comment_pr'
         , 'continuous_obligation'
+        , 'contract_info'
         , 'contract_term'
         , 'date_approved'
         , 'date_ordered'
         , 'date_progress'
         , 'delivery_address'
+        , 'delivery_date'
         , 'delivery_deadline'
         , 'department'
         , 'files'
@@ -264,6 +270,7 @@ properties = \
         , 'internal_order'
         , 'issue_ids'
         , 'messages'
+        , 'no_offer'
         , 'nosy'
         , 'offer_items'
         , 'organisation'
@@ -355,6 +362,7 @@ properties = \
       )
     , ( 'terms_conditions'
       , [ 'description'
+        , 'is_valid'
         , 'name'
         , 'order'
         ]

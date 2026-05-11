@@ -674,6 +674,24 @@ class New_Address (NewItemAction, Adr_Submit):
     # end def _editnodes
 # end class New_Address
 
+def bool_checkbox (item):
+    checkbox = '''
+                  <input type="hidden" name="%s", value="%s" id="%s">
+                  <input type=checkbox value="1" id="%s"%s onchange="
+                   $('#%s').val ($('#%s').is (':checked'));
+                  ">
+    '''
+    checked = ''
+    if isinstance (item._value, str):
+        if item._value in ('true', 'yes', '1'):
+            checked = ' checked="checked"'
+    elif int (item._value or 0):
+        checked = ' checked="checked"'
+    id1 = item._name + '_hidden'
+    id2 = item._name + '_checkbox'
+    return checkbox % (item._name, item._value, id1, id2, checked, id1, id2)
+# end def bool_checkbox
+
 def init (instance):
     act = instance.registerAction
     act ('adr_edit', Edit_Address)
@@ -720,4 +738,5 @@ def init (instance):
     reg ("get_allowed_olo",              get_allowed_olo)
     reg ("dr_is_public_holiday",         dr_is_public_holiday)
     reg ("adr_edit_button",              adr_edit_button)
+    reg ("bool_checkbox",                bool_checkbox)
 # end def init

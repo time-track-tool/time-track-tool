@@ -236,7 +236,8 @@
                           'payment_type_amount,oob_amount,quality_amount,'
                           'pr_ext_resource,role,'
                           'purchase_type,organisations,departments,'
-                          'if_not_in_las,valid&:filter=valid&valid=yes&'
+                          'if_not_in_las,if_is_asset,valid&'
+                          ':filter=valid&valid=yes&'
                           ':pagesize=50&:startwith=0'
    , ('pr_offer_item', '')
                         : '@columns=id,add_to_las,supplier,product_group&'
@@ -1152,8 +1153,123 @@
    </tr>
 </tal:block>
 
+<!-- Macros used in the form macros below -->
+
+<tal:block metal:define-macro="end_of_form">
+   <p tal:condition="python:context.id and show_creation" i18n:translate="">
+    Created on
+    <b i18n:name="creation" tal:content="python:context.creation.pretty
+       ('%Y-%m-%d %H:%M:%S')"/> by
+    <b i18n:name="creator"  tal:content="context/creator"/>, last changed
+    <b i18n:name="activity" tal:content="python:context.activity.pretty
+       ('%Y-%m-%d %H:%M:%S')"/> by
+    <b i18n:name="actor"    tal:content="context/actor"/>.
+   </p>
+   <input type="hidden" name="@required"
+          tal:attributes="value required_attributes | labelprop">
+
+</tal:block>
+
+<tal:block metal:define-macro="message_display">
+ <table class="messages" tal:condition="python:
+  has_msgs and context.messages and context.is_view_ok ()">
+  <tr>
+   <th class="header" tal:attributes="colspan python:3+may_remove_msgs"
+       tal:content="structure python:
+           utils.fieldname (db, classname, 'messages')"/>
+  </tr>
+  <tal:block tal:repeat="msg context/messages/reverse">
+   <tr>
+    <th><a tal:attributes=
+           "href string:msg${msg/id};
+            class python: ['messages','external']
+                          [bool(utils.has_x_roundup_header (db, msg))]
+           "
+           tal:content="string:msg${msg/id}"></a>
+    </th>
+    <th>
+     <tal:block i18n:translate="">Author:</tal:block>
+     <a tal:attributes="href string:user${msg/author/id}"
+        tal:content="msg/author"/>
+    </th>
+    <th>
+     <tal:block i18n:translate="">Date:</tal:block>
+     <tal:block tal:content="msg/date"/>
+    </th>
+    <th tal:condition="may_remove_msgs">
+     <form style="padding:0" method="POST" tal:condition="context/is_edit_ok"
+           tal:attributes="action string:issue${context/id}">
+      <input type="hidden" name="@remove@messages"
+             tal:attributes="value msg/id">
+      <input type="hidden" name="@action" value="edit">
+      <input type="submit" value="remove">
+     </form>
+    </th>
+   </tr>
+   <tr>
+    <td tal:attributes="colspan python:3+may_remove_msgs" class="content">
+     <div class="prewrap"
+          tal:content="structure python:msg.content.hyperlinked ()"/>
+    </td>
+   </tr>
+   <tal:block tal:define="files python:msg.files"
+              tal:condition="python:
+              files and not request.user.hide_message_files">
+    <tal:block metal:use-macro="templates/page/macros/parametric_file_list"/>
+   </tal:block>
+  </tal:block>
+ </table>
+</tal:block>
+
+
 <!-- the following macro is used for all pages which display a
-     class that needs some more formatting -->
+     class that needs some more formatting
+     There is a variant with table and one without.
+  -->
+
+<tal:block metal:define-macro="formatted_class_no_table">
+ <span tal:condition="python:not (context.is_view_ok() or context.is_edit_ok())">
+ You are not allowed to view this page.
+ </span>
+ <div class="formdiv" id="formdiv">
+  <form method="POST"
+        onSubmit="return submit_once()"
+        enctype="multipart/form-data"
+        tal:attributes="action context/designator; name formname"
+        tal:condition="python:context.is_view_ok() or context.is_edit_ok()">
+   <input type="hidden" name="@template" tal:attributes="value form_template">
+   <tal:block metal:define-slot="formatted_class_content"/>
+   <table tal:attributes="class python:form_class">
+    <tal:block metal:use-macro="templates/page/macros/nosy_etc">
+     <!-- fill-slot/define-slot to make slots of sub-macro available yucc -->
+     <tal:block metal:fill-slot="below-nosy">
+      <tal:block metal:define-slot="below-nosy"/>
+     </tal:block>
+     <tal:block metal:fill-slot="after-message-box">
+      <tal:block metal:define-slot="after-message-box"/>
+     </tal:block>
+     <tal:block metal:fill-slot="button_slot">
+      <tal:block metal:define-slot="button_slot">
+       <tal:block metal:use-macro="templates/page/macros/default-submit" />
+      </tal:block>
+     </tal:block>
+     <tal:block metal:fill-slot="additional_button">
+      <tal:block metal:define-slot="additional_button"/>
+     </tal:block>
+     <tal:block metal:fill-slot="right_of_show_history">
+      <tal:block metal:define-slot="right_of_show_history"/>
+     </tal:block>
+     <tal:block metal:fill-slot="formatted_class_listentry">
+      <tal:block metal:define-slot="formatted_class_listentry"/>
+     </tal:block>
+    </tal:block>
+   </table>
+   <tal:block metal:use-macro="templates/page/macros/end_of_form"/>
+  </form>
+ </div>
+ <tal:block metal:define-slot="before_messages"/>
+ <tal:block metal:use-macro="templates/page/macros/messages_display"/>
+</tal:block>
 
 <tal:block metal:define-macro="formatted_class">
  <span tal:condition="python:not (context.is_view_ok() or context.is_edit_ok())">
@@ -1183,7 +1299,45 @@
     </tr>
     <tal:block metal:use-macro="templates/page/macros/responsible"/>
     <tal:block metal:define-slot="formatted_class_content"/>
+    <tal:block metal:use-macro="templates/page/macros/nosy_etc">
+     <!-- fill-slot/define-slot to make slots of sub-macro available yucc -->
+     <tal:block metal:fill-slot="below-nosy">
+      <tal:block metal:define-slot="below-nosy"/>
+     </tal:block>
+     <tal:block metal:fill-slot="after-message-box">
+      <tal:block metal:define-slot="after-message-box"/>
+     </tal:block>
+     <tal:block metal:fill-slot="button_slot">
+      <tal:block metal:define-slot="button_slot">
+       <tal:block metal:use-macro="templates/page/macros/default-submit" />
+      </tal:block>
+     </tal:block>
+     <tal:block metal:fill-slot="additional_button">
+      <tal:block metal:define-slot="additional_button"/>
+     </tal:block>
+     <tal:block metal:fill-slot="right_of_show_history">
+      <tal:block metal:define-slot="right_of_show_history"/>
+     </tal:block>
+     <tal:block metal:fill-slot="formatted_class_listentry">
+      <tal:block metal:define-slot="formatted_class_listentry"/>
+     </tal:block>
+    </tal:block>
+   </table>
+   <tal:block metal:use-macro="templates/page/macros/end_of_form"/>
+  </form>
+  <tal:block metal:define-slot="after-form"/>
+ </div>
+ <tal:block metal:define-slot="before_messages"/>
+ <tal:block metal:use-macro="templates/page/macros/messages_display"/>
+</tal:block>
 
+<tal:block metal:define-macro="default-submit">
+       <tal:block tal:condition="context/is_edit_ok">
+          <tal:block tal:replace="structure context/submit"/>
+       </tal:block>
+</tal:block>
+
+<tal:block metal:define-macro="nosy_etc">
     <tr tal:condition="python:has_nosy and context.nosy.is_view_ok ()">
      <th tal:content="structure python:utils.fieldname
          (db, classname, 'nosy')"/>
@@ -1221,9 +1375,8 @@
     <tr>
      <th></th>
      <td colspan="3">
-      <tal:block metal:define-slot="button_slot"
-       tal:condition="context/is_edit_ok">
-          <tal:block tal:replace="structure context/submit"/>
+      <tal:block metal:define-slot="button_slot">
+       <tal:block metal:use-macro="templates/page/macros/default-submit" />
       </tal:block>
       <tal:block metal:define-slot="additional_button"/>
       <input tal:condition="context/id"
@@ -1289,25 +1442,9 @@
           ))"/>
      </tr>
     </tal:block>
-   </table>
-   <p tal:condition="python:context.id and show_creation" i18n:translate="">
-    Created on
-    <b i18n:name="creation" tal:content="python:context.creation.pretty
-       ('%Y-%m-%d %H:%M:%S')"/> by
-    <b i18n:name="creator"  tal:content="context/creator"/>, last changed
-    <b i18n:name="activity" tal:content="python:context.activity.pretty
-       ('%Y-%m-%d %H:%M:%S')"/> by
-    <b i18n:name="actor"    tal:content="context/actor"/>.
-   </p>
-   <input type="hidden" name="@required"
-          tal:attributes="value required_attributes | labelprop">
+</tal:block> <!-- end macro nosy_etc -->
 
-  </form>
-  <tal:block metal:define-slot="after-form"/>
- </div>
-
- <tal:block metal:define-slot="before_messages"/>
-
+<tal:block metal:define-macro="messages_display">
  <table metal:use-macro="templates/page/macros/note_required" />
  <table metal:use-macro="templates/page/macros/message_display" />
  <table class="files" tal:condition="python:
@@ -1377,57 +1514,6 @@
   <th class="required" i18n:translate="">highlighted</th>
   <td i18n:translate="">&nbsp;fields are required.</td>
  </tr>
- </table>
-</tal:block>
-
-<tal:block metal:define-macro="message_display">
- <table class="messages" tal:condition="python:
-  has_msgs and context.messages and context.is_view_ok ()">
-  <tr>
-   <th class="header" tal:attributes="colspan python:3+may_remove_msgs"
-       tal:content="structure python:
-           utils.fieldname (db, classname, 'messages')"/>
-  </tr>
-  <tal:block tal:repeat="msg context/messages/reverse">
-   <tr>
-    <th><a tal:attributes=
-           "href string:msg${msg/id};
-            class python: ['messages','external']
-                          [bool(utils.has_x_roundup_header (db, msg))]
-           "
-           tal:content="string:msg${msg/id}"></a>
-    </th>
-    <th>
-     <tal:block i18n:translate="">Author:</tal:block>
-     <a tal:attributes="href string:user${msg/author/id}"
-        tal:content="msg/author"/>
-    </th>
-    <th>
-     <tal:block i18n:translate="">Date:</tal:block>
-     <tal:block tal:content="msg/date"/>
-    </th>
-    <th tal:condition="may_remove_msgs">
-     <form style="padding:0" method="POST" tal:condition="context/is_edit_ok"
-           tal:attributes="action string:issue${context/id}">
-      <input type="hidden" name="@remove@messages"
-             tal:attributes="value msg/id">
-      <input type="hidden" name="@action" value="edit">
-      <input type="submit" value="remove">
-     </form>
-    </th>
-   </tr>
-   <tr>
-    <td tal:attributes="colspan python:3+may_remove_msgs" class="content">
-     <div class="prewrap"
-          tal:content="structure python:msg.content.hyperlinked ()"/>
-    </td>
-   </tr>
-   <tal:block tal:define="files python:msg.files"
-              tal:condition="python:
-              files and not request.user.hide_message_files">
-    <tal:block metal:use-macro="templates/page/macros/parametric_file_list"/>
-   </tal:block>
-  </tal:block>
  </table>
 </tal:block>
 

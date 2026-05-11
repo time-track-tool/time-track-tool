@@ -172,7 +172,13 @@ def pr_justification ():
     r = []
     for k, v in prlib.pr_justification:
         r.append (': '.join ((k, '(' + v + ')')))
-    q = {'@template': 'item', 'pr_justification': '\r\n'.join (r)}
+    r2 = []
+    for k, v in prlib.contract_info:
+        r2.append (': '.join ((k, '(' + v + ')')))
+    q = { '@template':        'item'
+        , 'pr_justification': '\r\n'.join (r)
+        , 'contract_info':    '\r\n'.join (r2)
+        }
     return '?' + urlencode (q)
 # end def pr_justification
 
@@ -253,13 +259,29 @@ def oi_key (offer_item):
     return 0.0
 # end def oi_key
 
+def allow_gl_account (offer_item, pr):
+    """ both, offer_item and pr are html items """
+    if offer_item.is_asset:
+        return False
+    if offer_item.purchase_type:
+        if offer_item.purchase_type.allow_gl_account:
+            return True
+        return False
+    if pr.purchase_type:
+        if pr.purchase_type.allow_gl_account:
+            return True
+        return False
+    return True
+# end def allow_gl_account
+
 def init (instance):
     act = instance.registerAction
     act ('pr_sign', Sign_Purchase_Request)
     act ('pr_edit', Edit_Purchase_Request)
     act ('pr_new',  New_Purchase_Request)
     reg = instance.registerUtil
-    reg ('pr_offer_item_sum',            prlib.pr_offer_item_sum)
+    reg ('pr_offer_item_sum',            prlib.pr_offer_item_sum_formatted)
+    reg ('pr_offer_item_formatted',      prlib.pr_offer_item_formatted)
     reg ('compute_approvals',            prlib.compute_approvals)
     reg ('supplier_approved',            supplier_approved)
     reg ('pr_edit_button',               pr_edit_button)
@@ -272,4 +294,5 @@ def init (instance):
     reg ('has_asset',                    has_asset)
     reg ('oi_key',                       oi_key)
     reg ('may_purchase',                 o_permission.may_purchase)
+    reg ('allow_gl_account',             allow_gl_account)
 # end def init

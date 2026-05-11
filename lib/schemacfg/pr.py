@@ -1,4 +1,4 @@
-# Copyright (C) 2015-24 Dr. Ralf Schlatterbeck Open Source Consulting.
+# Copyright (C) 2015-25 Dr. Ralf Schlatterbeck Open Source Consulting.
 # Reichergasse 131, A-3411 Weidling.
 # Web: http://www.runtux.com Email: office@runtux.com
 # All rights reserved
@@ -87,6 +87,7 @@ def init \
         , infosec_level         = Link      ('infosec_level')
         , sap_ref               = String    ()
         , pg_category           = Link      ('pg_category')
+        , quality_relevant      = Boolean   ()
         )
     product_group.setkey ('name')
     product_group.setorderprop ('sap_ref')
@@ -177,6 +178,7 @@ def init \
         , role                  = Link      ("pr_approval_order")
         , amount                = Number    ()
         , if_not_in_las         = Boolean   ()
+        , if_is_asset           = Boolean   ()
         , valid                 = Boolean   ()
         , organisations         = Multilink ("organisation")
         , pr_ext_resource       = Link      ("pr_ext_resource")
@@ -247,6 +249,7 @@ def init \
         ( db, ''"pr_rating_category"
         , name                  = String    ()
         , order                 = Number    ()
+        , quality_relevant      = Boolean   ()
         )
     pr_rating_category.setkey ('name')
 
@@ -288,6 +291,7 @@ def init \
         , name                  = String    ()
         , order                 = Number    ()
         , description           = String    ()
+        , is_valid              = Boolean   ()
         )
     t_c.setkey ('name')
 
@@ -394,6 +398,10 @@ def init \
                 , delivery_address      = Link      ('location'
                                                     , do_journal = 'no'
                                                     )
+                , contract_info         = String    ()
+                , delivery_date         = Date      ()
+                , comment_pr            = String    ()
+                , no_offer              = Boolean   ()
                 )
             self.__super.__init__ (db, classname, ** properties)
         # end def __init__
@@ -616,7 +624,8 @@ def security (db, ** kw):
             ( 'sap_reference', 'terms_conditions', 'frame_purchase'
             , 'frame_purchase_end', 'nosy', 'messages', 'purchasing_agents'
             , 'internal_order', 'special_approval', 'payment_type'
-            , 'delivery_address'
+            , 'delivery_address', 'contract_info', 'delivery_date'
+            , 'comment_pr', 'no_offer'
             )
         )
     db.security.addPermissionToRole ('User', p)

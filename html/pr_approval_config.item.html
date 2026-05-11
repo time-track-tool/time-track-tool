@@ -83,6 +83,11 @@
      </tr>
      <tr>
       <th tal:content="structure python:utils.fieldname
+          (db, classname, 'if_is_asset')"/>
+      <td tal:content="structure python:context.if_is_asset.field ()"/>
+     </tr>
+     <tr>
+      <th tal:content="structure python:utils.fieldname
           (db, classname, 'valid')"/>
       <td tal:content="structure python:context.valid.field ()"/>
      </tr>
