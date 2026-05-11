@@ -20,7 +20,10 @@ for i, name in enumerate (names):
     un  = nn.lower () 
     sup = '1434'
     try:
-        uid = db.user.lookup (un)
+        uid  = db.user.lookup (un)
+        user = db.user.getnode (uid)
+        if not user.roles:
+            db.user.set (uid, roles = 'user,nosy')
     except KeyError:
         uid = db.user.create \
             ( username  = un
