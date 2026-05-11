@@ -29,6 +29,16 @@ for c in sorted (countries):
     db.vac_aliq.create (name = c)
 
 # Permission for a user
+user = db.user.getnode ('304')
+roles = set (x.strip () for x in user.roles.split (',') if x)
+update_roles = False
+for r in ('hr-leave-approval', 'hr-vacation'):
+    if r not in roles:
+        roles.add (r)
+        update_roles = True
+if update_roles:
+    db.user.set (user.id, roles = ','.join (sorted (roles)))
+
 
 # Unfreeze existing users until jan
 # First find dyn users for org_location
