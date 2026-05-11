@@ -29,8 +29,12 @@ for c in sorted (countries):
     db.vac_aliq.create (name = c)
 
 # Permission for a user
-user = db.user.getnode ('304')
-roles = set (x.strip () for x in user.roles.split (',') if x)
+user  = db.user.getnode ('304')
+roles = user.roles
+if roles:
+    roles = set (x.strip () for x in user.roles.split (',') if x)
+else:
+    roles = set (('user', 'nosy'))
 update_roles = False
 for r in ('hr-leave-approval', 'hr-vacation'):
     if r not in roles:
@@ -57,5 +61,17 @@ for f in freeze:
     frz = db.daily_record_freeze.getnode (f)
     if frz.date > cutoff and frz.frozen:
         db.daily_record_freeze.set (f, frozen = False)
+
+# Enable do_leave_process in relevant org_location(s)
+va = { '34': db.vac_aliq.lookup ('Romania') }
+for id in ('34',):
+    olo = db.org_location.getnode (id)
+    d   = {}
+    if not olo.do_leave_process:
+        d.update (do_leave_process = True)
+    if not olo.vac_aliq:
+        d.update (vac_aliq = va [id])
+    if d:
+        db.org_location.set (id, **d)
 
 db.commit()
