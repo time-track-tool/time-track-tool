@@ -62,5 +62,15 @@ for i, name in enumerate (names):
             , vacation_month  = 1
             , weekly_hours    = 40
             )
+    vcs = db.vacation_correction.filter (None, dict (user = dyn.user))
+    if not vcs:
+        vc = db.vacation_correction.create \
+            ( user     = dyn.user
+            , date     = dyn.valid_from
+            , absolute = True
+            )
+    else:
+        assert len (vcs) == 1
+        vc = vcs [0]
 
 db.commit()
