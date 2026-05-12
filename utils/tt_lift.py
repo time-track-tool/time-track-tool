@@ -5,6 +5,10 @@ from roundup import instance, date
 dir     = os.getcwd ()
 tracker = instance.open (dir)
 db      = tracker.open ('admin')
+sys.path.insert (1, 'lib')
+
+import vacation
+import user_dynamic
 
 countries = set (('Austria', 'Germany', 'Finland', 'Czechia', 'Romania'))
 
@@ -73,5 +77,46 @@ for id in ('34',):
         d.update (vac_aliq = va [id])
     if d:
         db.org_location.set (id, **d)
+
+# Vacation and vac correction per user:
+# User vac/year vac_corr '26
+user_v = \
+    [ ( '918', 25,  5) #
+    , ( '181', 25,  8) #
+    , ('2256', 25,  3) #
+    , ( '192', 25, 38) #
+    , ('1466', 25,  3) #
+    , ( '365', 25,  1) #
+    , ( '304', 25,  2) #
+    , ( '432', 25, -1) #
+    , ('3048', 24,  9) #
+    , ( '179', 25,  0) #
+    , ('6737', 21,  0) #
+    , ( '290', 25, -2) #
+    ]
+for u, vac, corr in user_v:
+    # Get dyn user on jan 2026
+    dt = date.Date ('2026-01-01')
+    dyn = user_dynamic.get_user_dynamic (db, u, date = dt)
+    if not dyn:
+        print ('No dyn user for user%s' % u)
+        continue
+    while dyn:
+        if dyn.vacation_yearly != vac:
+            print ( 'vacation %s expect: %s, got: %s'
+                  % (u, vac, dyn.vacation_yearly)
+                  )
+        dyn = user_dynamic.next_user_dynamic (db, dyn)
+    # Vacation correction on jan 1 2026
+    vc = vacation.get_vacation_correction (db, u)
+    if vc:
+        assert vc.days == corr
+    else:
+        db.vacation_correction.create \
+            ( user     = u
+            , date     = dt
+            , absolute = True
+            , days     = corr
+            )
 
 db.commit()
