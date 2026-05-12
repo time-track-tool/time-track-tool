@@ -103,9 +103,10 @@ for u, vac, corr in user_v:
         continue
     while dyn:
         if dyn.vacation_yearly != vac:
-            print ( 'vacation %s expect: %s, got: %s'
-                  % (u, vac, dyn.vacation_yearly)
+            print ( 'user_dynamic%s user%s vacation %s->%s'
+                  % (dyn.id, u, dyn.vacation_yearly, vac)
                   )
+        db.user_dynamic.set (dyn.id, vacation_yearly = vac)
         dyn = user_dynamic.next_user_dynamic (db, dyn)
     # Vacation correction on jan 1 2026
     vc = vacation.get_vacation_correction (db, u)
