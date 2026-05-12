@@ -61,6 +61,32 @@ try:
 except (ImportError, SyntaxError):
     pass
 
+def week_day (date):
+    """ Numerical day of week, Monday is 0
+    >>> week_day (Date ('2026-05-11'))
+    0
+    >>> week_day (Date ('2026-05-12'))
+    1
+    >>> week_day (Date ('2026-05-13'))
+    2
+    >>> week_day (Date ('2026-05-14'))
+    3
+    >>> week_day (Date ('2026-05-15'))
+    4
+    >>> week_day (Date ('2026-05-16'))
+    5
+    >>> week_day (Date ('2026-05-17'))
+    6
+    """
+    return gmtime (date.timestamp ()) [6]
+# end def week_day
+
+wdays = ['mon', 'tue', 'wed', 'thu', 'fri', 'sat', 'sun']
+
+def wday_name (wday):
+    return wdays [wday]
+# end def wday_name
+
 ymd = '%Y-%m-%d'
 day = Interval ('1d')
 
@@ -308,7 +334,7 @@ def week_from_date (date):
         >>> week_from_date (Date ('2006-01-01'))
         (<Date 2005-12-26.00:00:00.000>, <Date 2006-01-01.00:00:00.000>)
     """
-    wday        = gmtime (date.timestamp ())[6]
+    wday        = week_day (date)
     start       = date + Interval ("%sd" % -wday)
     end         = date + Interval ("%sd" % (6 - wday))
     start       = Date (start.pretty (ymd))
@@ -417,7 +443,7 @@ def first_thursday (year):
     """
     for i in range (1, 8):
         date = Date ('%s-01-%02d' % (year, i))
-        if gmtime (date.timestamp ()) [6] == 3: # Thursday
+        if week_day (date) == 3: # Thursday
             return date
     assert (0)
 # end def first_thursday
@@ -615,7 +641,7 @@ def weekno_year_from_day (date):
         (52, 2010)
     """
     date   = Date (str (date))
-    wday   = gmtime (date.timestamp ())[6]
+    wday   = week_day (date)
     date   = date + Interval ('%dd' % (3 - wday)) # Thursday that week
     yday2  = gmtime (date.timestamp ())[7]
     d      = first_thursday (date.year)

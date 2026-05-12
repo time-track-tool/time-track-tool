@@ -6031,11 +6031,11 @@ class Test_Case_Timetracker (_Test_Case_Summary, unittest.TestCase):
         self.assertEqual (lines  [1] [1], '2026-12-31')
         self.assertEqual (lines  [1] [2], '25.0')
         self.assertEqual (lines  [1] [3], '25.0')
-        self.assertEqual (lines  [1] [4], '0.220430')
-        self.assertEqual (lines  [1] [5], '25.220430')
+        self.assertEqual (lines  [1] [4], '-0.342388')
+        self.assertEqual (lines  [1] [5], '24.657612')
         self.assertEqual (lines  [1] [6], '23.0')
         self.assertEqual (lines  [1] [7], '')
-        self.assertEqual (lines  [1] [8], '2.220430')
+        self.assertEqual (lines  [1] [8], '1.657612')
         # Get remaining vacation as user0
         dt = date.Date ('2026-04-02')
         v = vac.remaining_vacation (self.db, self.user37, None, dt)
@@ -6066,7 +6066,7 @@ class Test_Case_Timetracker (_Test_Case_Summary, unittest.TestCase):
         self.assertEqual (lines  [1] [1], '2026-12-31')
         self.assertEqual (lines  [1] [2], '25.0')
         self.assertEqual (lines  [1] [3], '25.0')
-        self.assertEqual (lines  [1] [4], '0.220') # Rounded *down*!
+        self.assertEqual (lines  [1] [4], '-0.342')
         self.assertEqual (lines  [1] [5], '25.0')
         self.assertEqual (lines  [1] [6], '23.0')
         self.assertEqual (lines  [1] [7], '')
@@ -6182,6 +6182,29 @@ class Test_Case_Timetracker (_Test_Case_Summary, unittest.TestCase):
                 , user = self.user11
                 )
     # end def test_duplicate_freeze_record
+
+    def test_public_holidays (self):
+        """ Count expected public holidays in some years
+        """
+        self.setup_db ()
+        self.create_public_holidays (2024)
+        jan_2024 = date.Date ('2024-01-01')
+        dec_2024 = date.Date ('2024-12-31')
+        jan_2025 = date.Date ('2025-01-01')
+        dec_2025 = date.Date ('2025-12-31')
+        jan_2026 = date.Date ('2026-01-01')
+        dec_2026 = date.Date ('2026-12-31')
+
+        ph = vacation.pub_holidays_in_period \
+            (self.db, self.olo, jan_2024, dec_2024)
+        assert ph == 13
+        ph = vacation.pub_holidays_in_period \
+            (self.db, self.olo, jan_2025, dec_2025)
+        assert ph == 14
+        ph = vacation.pub_holidays_in_period \
+            (self.db, self.olo, jan_2026, dec_2026)
+        assert ph == 13
+    # end def test_public_holidays
 
 # end class Test_Case_Timetracker
 

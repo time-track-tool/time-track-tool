@@ -170,7 +170,7 @@ def check_vacation (db, cl, nodeid, attr, new_values):
 # end def check_vacation
 
 def hours_iter ():
-    return ('hours_' + wday for wday in user_dynamic.wdays)
+    return ('hours_' + wday for wday in common.wdays)
 # end def hours_iter
 
 def distribute_weekly_hours (h):

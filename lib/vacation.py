@@ -276,6 +276,78 @@ def leave_days (db, user, first_day, last_day):
     return s, s_h
 # end def leave_days
 
+def work_days_year (year):
+    """ Work days over whole year minus public holidays for that work location
+        We might want to do some caching.
+    >>> work_days_year (2024)
+    262.0
+    >>> work_days_year (2025)
+    261.0
+    >>> work_days_year (2026)
+    261.0
+    """
+    wdsum = 0
+    # Forward from 1st jan to first Sunday
+    d = Date ('%s-01-01' % year)
+    while common.week_day (d) != 6:
+        if common.week_day (d) <= 4:
+            wdsum += 1
+        d += common.day
+    start = d + common.day # Monday starts the first full week
+    # Backward from 31th dec to last Saturday
+    d = Date ('%s-12-31' % year)
+    while common.week_day (d) != 5:
+        if common.week_day (d) <= 4:
+            wdsum += 1
+        d -= common.day
+    end = d + common.day + common.day # Monday after last friday in year
+    # Count full weeks, 5 days the week
+    wdsum += (end - start).day / 7 * 5
+    return wdsum
+# end def work_days_year
+
+def work_days (db, user, first_day, last_day):
+    """ Work days for this user accoring to dynamic user record, public
+        holidays are *not* subtracted. The last_day *is included*.
+    """
+    wdsum = 0
+    d = first_day
+    while d <= last_day:
+        dyn  = user_dynamic.get_user_dynamic (db, user, d)
+        if not dyn:
+            continue
+        wday = common.week_day (d)
+        wdn  = common.wday_name (wday)
+        if getattr (dyn, 'hours_' + wdn):
+            wdsum += 1
+        d += common.day
+    return wdsum
+# end def work_days
+
+def pub_holidays_in_period (db, org_location, start, end):
+    """ Get public holidays in given range, end *is* included
+    """
+    olo = db.org_location.getnode (org_location)
+    dt  = common.pretty_range (start, end)
+    ph_olo = db.public_holiday.filter \
+        (None, dict (date = dt, org_location = olo.id))
+    ph_loc = db.public_holiday.filter \
+        (None, dict (date = dt, locations = olo.location))
+    ph = [db.public_holiday.getnode (x) for x in ph_olo + ph_loc]
+    last = None
+    hsum = 0
+    for d in sorted (ph, key = lambda x: x.date):
+        # Don't count Sat+Sun
+        if common.week_day (d.date) >= 5:
+            continue
+        # Dupe
+        if d.date == last:
+            assert 0, 'Duplicate pub holiday'
+        last = d.date
+        hsum += 1
+    return hsum
+# end def pub_holidays_in_period
+
 def leave_duration (db, user, date, ignore_public_holiday = False):
     """ Duration of leave on a single day to be booked. """
     dyn = user_dynamic.get_user_dynamic (db, user, date)
@@ -695,29 +767,8 @@ def first_month_finland (dyn, sd, d):
     return sd, acr
 # end def first_month_finland
 
-def first_month_romania (dyn, sd, d):
-    """ If sd the start date isn't a first, we need to compute the
-        vacation for the first month, it is alliquot the number of days
-        worked in the month divided by days in that month
-    """
-    if sd.day == 1:
-        return sd, 0
-    # If both dates are in same month, do nothing
-    if sd.month == d.month:
-        return sd, 0
-    # First check if sd.day > 1 in that case the first month is used
-    # alliquot by days in month
-    acr  = 0
-    eom  = common.end_of_month (sd)
-    next = eom + common.day
-    assert next <= d
-    acr += (next - sd).day / eom.day * dyn.vacation_yearly / 12
-    sd = next
-    return sd, acr
-# end def first_month_romania
-
 def first_week_cz (dyn, sd, d):
-    wday = user_dynamic.wday_num (sd)
+    wday = common.week_day (sd)
     if wday == 0:
         return sd, 0
     if common.weekno_year_from_day (dyn) == common.weekno_year_from_day (d):
@@ -735,10 +786,10 @@ def first_week_cz (dyn, sd, d):
 
 def accrue_cz (dyn, sd, d):
     sd, acc_h = first_week_cz (dyn, sd, d)
-    assert user_dynamic.wday_num (sd) == 0
+    assert common.week_day (sd) == 0
     if common.weekno_year_from_day (dyn) == common.weekno_year_from_day (d):
         return sd, 0
-    wday = user_dynamic.wday_num (d)
+    wday = common.week_day (d)
     ed   = d - common.day * wday
     assert ed >= sd
     days = (ed - sd).day
@@ -775,13 +826,17 @@ def accrue_finland (dyn, sd, d):
     return sd, acr
 # end def accrue_finland
 
-def accrue_romania (dyn, sd, d):
-    acr = 0
-    sd, a = first_month_romania (dyn, sd, d)
-    acr += a
-    sd, a = accrue (dyn, sd, d)
-    acr += a
-    return sd, acr
+def accrue_romania (dyn, frm, to):
+    """ 'to' is *not* included """
+    assert frm.year == (to - common.day).year
+    db  = dyn.cl.db
+    y   = work_days_year (frm.year)
+    to  = to - common.day # Do *not* include end date
+    olo = dyn.org_location
+    y  -= pub_holidays_in_period (db, olo, frm, to)
+    wd  = work_days (db, dyn.user, frm, to)
+    wd -= pub_holidays_in_period (db, olo, frm, to)
+    return dyn.vacation_yearly * wd / y
 # end def accrue_romania
 
 def consolidated_vacation \
@@ -905,8 +960,7 @@ def consolidated_vacation \
                     sd, a = accrue_finland (dyn, sd, dyn.valid_to)
                     vac_acr += a
             elif va.name == 'Romania':
-                sd, a = accrue_romania (dyn, sd, dyn.valid_to)
-                vac += a
+                vac += accrue_romania (dyn, d, dyn.valid_to)
             else:
                 assert 0, 'Invalid country setting for vac_aliq'
             dyn = vac_next_user_dynamic (db, dyn)
@@ -943,8 +997,8 @@ def consolidated_vacation \
                     sd, a = accrue_finland (dyn, sd, eoy + common.day)
                     vac_acr += a
             elif va.name == 'Romania':
-                sd, a = accrue_romania (dyn, sd, eoy + common.day)
-                vac += a
+                vac += accrue_romania (dyn, d, eoy + common.day)
+                # FIXME: Need to round vac here, there is *yearly rounding*
             else:
                 assert 0, 'Invalid country setting for vac_aliq'
             d  = eoy + common.day
@@ -977,12 +1031,14 @@ def consolidated_vacation \
                     sd, a = accrue_finland (dyn, sd, ed)
                     vac_acr += a
             elif va.name == 'Romania':
-                sd, a = accrue_romania (dyn, sd, ed)
-                vac += a
-                # FIXME: If ed is middle of a month we need alliquotation
+                vac += accrue_romania (dyn, d, ed)
             else:
                 assert 0, 'Invalid country setting for vac_aliq'
             d = ed
+    # For Romania we round *immediately*.
+    # Turned off for now FIXME: Turn on
+    #if va.name == 'Romania':
+    #    return round_vacation (dyn, vac), None, None
     # Round to six digits: The computations above can produce errors due
     # to repeated additions
     if vac_h is not None:
