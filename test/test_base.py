@@ -8021,12 +8021,18 @@ class Test_Case_PR (_Test_Case, unittest.TestCase):
         ext.MAIL_PR_APPROVAL_TEXT = \
             ('The purchase request "$(title)s"\n'
              'needs to be approved by $(user_or_role)s.\n'
-             'many thanks!'
+             'many thanks!\n'
+             '___________________________________________________________\n'
+             '<$(url)spurchase_request$(prid)s>\n'
+             '___________________________________________________________'
             )
         ext.MAIL_PR_APPROVAL_SUBJECT = '[$s] needs approval'
         ext.MAIL_PR_APPROVED_TEXT = \
             ('The purchase request "$(title)s" has been approved.\n'
-             'many thanks!'
+             'many thanks!\n'
+             '___________________________________________________________\n'
+             '<$(url)spurchase_request$(prid)s>\n'
+             '___________________________________________________________'
             )
         ext.MAIL_PR_APPROVED_SUBJECT = '[$s] has been approved'
         self.db = self.tracker.open ('testuser1')
@@ -8079,7 +8085,10 @@ class Test_Case_PR (_Test_Case, unittest.TestCase):
         body = \
             ( b'The purchase request "Just a test"\n'
               b'needs to be approved by Test Procure1.\n'
-              b'many thanks!'
+              b'many thanks!\n'
+              b'___________________________________________________________\n'
+              b'<http://localhost:4711/ttt/purchase_request1>\n'
+              b'___________________________________________________________'
             )
         for h, t in headers:
             assert header_decode (e [h]) == t
@@ -8102,7 +8111,10 @@ class Test_Case_PR (_Test_Case, unittest.TestCase):
             )
         body = \
             ( b'The purchase request "Just a test" has been approved.\n'
-              b'many thanks!'
+              b'many thanks!\n'
+              b'___________________________________________________________\n'
+              b'<http://localhost:4711/ttt/purchase_request1>\n'
+              b'___________________________________________________________'
             )
         for h, t in headers:
             assert header_decode (e [h]) == t

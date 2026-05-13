@@ -1027,8 +1027,13 @@ def update_pr (db, pr, ap, nosy, txt, subj, ** kw):
         to = list (nosy_for_approval (db, ap))
     if not to:
         to = list (nosy)
-    to  = [db.user.get (id, 'address') for id in to]
-    txt = (txt.replace ('$', '%') % dict (title = pr.title, user_or_role = uor))
+    to    = [db.user.get (id, 'address') for id in to]
+    prid  = pr.id
+    url   = db.config.TRACKER_WEB
+    title = pr.title
+    user_or_role = uor
+    d   = dict (locals ())
+    txt = (txt.replace ('$', '%') % d)
     # Note: In the old implementation we could not use the current db
     # user as the author of the message, otherwise the nosy auditor
     # would prevent the user from being removed from the nosy list (!)

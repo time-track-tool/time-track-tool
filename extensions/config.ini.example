@@ -184,10 +184,18 @@ leave_user_not_cancelled_text =
 pr_approval_text    = The purchase request "$(title)s"
  needs to be approved by $(user_or_role)s.
  many thanks!
+ ___________________________________________________________
+ Tracker <tracker@example.com>
+ <$(url)spurchase_request$(prid)s>
+ ___________________________________________________________
 pr_approval_subject = [$s] needs approval
 
 pr_approved_text    = The purchase request "$(title)s" has been approved.
  many thanks!
+ ___________________________________________________________
+ Tracker <tracker@example.com>
+ <$(url)spurchase_request$(prid)s>
+ ___________________________________________________________
 pr_approved_subject = [$s] has been approved
 
 las_text = In purchase request "$(title)s"
