@@ -315,6 +315,10 @@ def work_days (db, user, first_day, last_day):
     while d <= last_day:
         dyn  = user_dynamic.get_user_dynamic (db, user, d)
         if not dyn:
+            dyn = user_dynamic.find_user_dynamic (db, user, d, '+')
+            if not dyn:
+                break
+            d = dyn.valid_from
             continue
         wday = common.week_day (d)
         wdn  = common.wday_name (wday)
@@ -833,7 +837,9 @@ def accrue_romania (dyn, frm, to):
     y   = work_days_year (frm.year)
     to  = to - common.day # Do *not* include end date
     olo = dyn.org_location
-    y  -= pub_holidays_in_period (db, olo, frm, to)
+    jan = Date ('%s-01-01' % frm.year)
+    dec = Date ('%s-12-31' % frm.year)
+    y  -= pub_holidays_in_period (db, olo, jan, dec)
     wd  = work_days (db, dyn.user, frm, to)
     wd -= pub_holidays_in_period (db, olo, frm, to)
     return dyn.vacation_yearly * wd / y
