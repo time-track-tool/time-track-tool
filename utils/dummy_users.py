@@ -48,6 +48,8 @@ for i, name in enumerate (names):
                 d.update (vacation_month = 1)
             if not dyn.weekly_hours:
                 d.update (weekly_hours = 40)
+            if not dyn.do_auto_wp:
+                d.update (do_auto_wp = True)
             if d:
                 db.user_dynamic.set (dyn.id, **d)
     else:
