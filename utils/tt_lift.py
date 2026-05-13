@@ -171,6 +171,7 @@ user_v = \
     , ('6737', 21,  0) #
     ]
 dt_jan = date.Date ('2026-01-01')
+va = db.vac_aliq.lookup ('Romania')
 for u, vac, corr in user_v:
     first = True
     # Get dyn user on jan 2026
@@ -197,6 +198,8 @@ for u, vac, corr in user_v:
             d.update (vacation_day = 1)
 #        if dyn.vacation_month != 1:
 #            d.update (vacation_month = 1)
+        if dyn.vac_aliq != va:
+            d.update (vac_aliq = va)
         if d:
             db.user_dynamic.set (dyn.id, **d)
         dyn = user_dynamic.next_user_dynamic (db, dyn)
