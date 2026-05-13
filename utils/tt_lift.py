@@ -73,34 +73,119 @@ for id in ('34',):
     d   = {}
     if not olo.do_leave_process:
         d.update (do_leave_process = True)
+    if not olo.vacation_legal_year:
+        d.update (vacation_legal_year = True)
     if not olo.vac_aliq:
         d.update (vac_aliq = va [id])
     if d:
         db.org_location.set (id, **d)
 
+# Intermediate commit
+db.commit ()
+
+# Disable old and create new auto wps for vacation, special leave, flexi-time
+a_vac = db.auto_wp.filter \
+    (None, dict (org_location = '34', time_project = '1429', is_valid = True))
+for a in a_vac:
+    db.auto_wp.set (a, is_valid = False)
+a_vac = db.auto_wp.filter (None, dict (org_location = '34', time_project = '6'))
+if not a_vac:
+    db.auto_wp.create \
+        ( org_location      = '34'
+        , time_project      = '6'
+        , name              = 'Vacation Romania'
+        , is_valid          = True
+        , durations_allowed = True
+        , all_in            = True
+        )
+    db.auto_wp.create \
+        ( org_location      = '34'
+        , time_project      = '6'
+        , name              = 'Vacation Romania'
+        , is_valid          = True
+        , durations_allowed = True
+        , all_in            = True
+        , contract_type     = '3'
+        )
+a_sp = db.auto_wp.filter \
+    (None, dict (org_location = '34', time_project = '1450', is_valid = True))
+for a in a_sp:
+    db.auto_wp.set (a, is_valid = False)
+a_sp = db.auto_wp.filter (None, dict (org_location = '34', time_project = '7'))
+if not a_sp:
+    a_sp = db.auto_wp.create \
+        ( org_location      = '34'
+        , time_project      = '7'
+        , name              = 'Special Leave Romania'
+        , is_valid          = True
+        , durations_allowed = True
+        , all_in            = True
+        )
+    a_sp = db.auto_wp.create \
+        ( org_location      = '34'
+        , time_project      = '7'
+        , name              = 'Special Leave Romania'
+        , is_valid          = True
+        , durations_allowed = True
+        , all_in            = True
+        , contract_type     = '3'
+        )
+a_fl = db.auto_wp.filter \
+    (None, dict (org_location = '34', time_project = '1430', is_valid = True))
+for a in a_fl:
+    db.auto_wp.set (a, is_valid = False)
+a_fl = db.auto_wp.filter (None, dict (org_location = '34', time_project = '1'))
+if not a_fl:
+    a_fl = db.auto_wp.create \
+        ( org_location      = '34'
+        , time_project      = '1'
+        , name              = 'Flexi-Time Romania'
+        , is_valid          = True
+        , durations_allowed = True
+        , all_in            = True
+        )
+    a_fl = db.auto_wp.create \
+        ( org_location      = '34'
+        , time_project      = '1'
+        , name              = 'Flexi-Time Romania'
+        , is_valid          = True
+        , durations_allowed = True
+        , all_in            = True
+        , contract_type     = '3'
+        )
+
 # Vacation and vac correction per user:
 # User vac/year vac_corr '26
 user_v = \
-    [ ( '918', 25,  5) #
+    [ ( '179', 25,  0) #
     , ( '181', 25,  8) #
-    , ('2256', 25,  3) #
     , ( '192', 25, 38) #
-    , ('1466', 25,  3) #
-    , ( '365', 25,  1) #
-    , ( '304', 25,  2) #
-    , ( '432', 25, -1) #
-    , ('3048', 24,  9) #
-    , ( '179', 25,  0) #
-    , ('6737', 21,  0) #
     , ( '290', 25, -2) #
+    , ( '304', 25,  2) #
+    , ( '365', 25,  1) #
+    , ( '432', 25, -1) #
+    , ( '918', 25,  5) #
+    , ('1466', 25,  3) #
+    , ('2256', 25,  3) #
+    , ('3048', 24,  9) #
+    , ('6737', 21,  0) #
     ]
+dt_jan = date.Date ('2026-01-01')
 for u, vac, corr in user_v:
+    first = True
     # Get dyn user on jan 2026
-    dt = date.Date ('2026-01-01')
-    dyn = user_dynamic.get_user_dynamic (db, u, date = dt)
+    dyn = user_dynamic.get_user_dynamic (db, u, date = dt_jan)
     if not dyn:
         print ('No dyn user for user%s' % u)
         continue
+    # Create new dyn user starting january if necessary
+    if first and dyn.valid_from < dt_jan:
+        f = set (('id', 'creation', 'creator', 'activity', 'actor'))
+        d = dict ((k, dyn [k]) for k in dyn.keys () if k not in f)
+        d.update (valid_from = dt_jan)
+        id = db.user_dynamic.create (**d)
+        dyn = db.user_dynamic.getnode (id)
+        first = False
     while dyn:
         d = {}
         if dyn.vacation_yearly != vac:
@@ -110,11 +195,12 @@ for u, vac, corr in user_v:
             d.update (vacation_yearly = vac)
         if dyn.vacation_day != 1:
             d.update (vacation_day = 1)
-        if dyn.vacation_month != 1:
-            d.update (vacation_month = 1)
+#        if dyn.vacation_month != 1:
+#            d.update (vacation_month = 1)
         if d:
             db.user_dynamic.set (dyn.id, **d)
         dyn = user_dynamic.next_user_dynamic (db, dyn)
+        first = False
     # Vacation correction on jan 1 2026
     vc = vacation.get_vacation_correction (db, u)
     if vc:
@@ -122,7 +208,7 @@ for u, vac, corr in user_v:
     else:
         db.vacation_correction.create \
             ( user     = u
-            , date     = dt
+            , date     = dt_jan
             , absolute = True
             , days     = corr
             )
