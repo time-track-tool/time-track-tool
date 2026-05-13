@@ -63,6 +63,7 @@ for i, name in enumerate (names):
             , vacation_day    = 1
             , vacation_month  = 1
             , weekly_hours    = 40
+            , do_auto_wp      = True
             )
     vcs = db.vacation_correction.filter (None, dict (user = dyn.user))
     if not vcs:
