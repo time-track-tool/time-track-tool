@@ -128,7 +128,7 @@ def att_records_consistent (db, dr):
         + check that there is a lunch break of at least .5 hours if user
           worked for more than 6 hours and durations_allowed is not
           specified
-        + Travel times (if time_activity has travel flag) are excempt
+        + Travel times (if work location has travel flag) are exempt
           from lunch break checks
     """
     _        = db.i18n.gettext
