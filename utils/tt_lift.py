@@ -170,6 +170,43 @@ user_v = \
     , ('3048', 24,  9) #
     , ('6737', 21,  0) #
     ]
+# A list of first-day/last-day vacation
+('2026-xx-xx', '2026-xx-xx')
+vac_by_user = \
+    {  '179': [('2026-06-16', '2026-06-19'), ('2026-08-17', '2026-08-21')
+              ,('2026-09-07', '2026-09-18'), ('2026-12-21', '2026-12-30')]
+    ,  '181': [('2026-08-04', '2026-08-28'), ('2026-12-28', '2027-01-08')]
+    ,  '192': []
+#    ,  '192': [('2026-06-23', '2026-06-25'), ('2026-07-01', '2026-07-17')
+#              ,('2026-07-30', '2026-07-30'), ('2026-08-30', '2026-08-30')
+#              ]
+    ,  '290': [('2026-07-28', '2026-08-07'), ('2026-08-31', '2026-09-11')
+              ,('2026-12-28', '2026-12-30')]
+    ,  '304': []
+#    ,  '304': [('2026-06-22', '2026-06-26'), ('2026-07-06', '2026-07-13')
+#              ,('2026-08-03', '2026-08-12'), ('2026-12-28', '2026-12-30')]
+    ,  '365': [('2026-06-18', '2026-06-19'), ('2026-07-27', '2026-08-07')
+              ,('2026-09-09', '2026-09-16'), ('2026-12-21', '2026-12-30')]
+    ,  '432': []
+#    ,  '432': [('2026-06-22', '2026-06-22'), ('2026-07-27', '2026-07-27')
+#              ,('2026-08-10', '2026-08-10'), ('2026-08-17', '2026-08-17')
+#              ,('2026-09-03', '2026-09-17'), ('2026-10-19', '2026-10-19')
+#              ,('2026-11-16', '2026-11-16'), ('2026-12-23', '2026-12-23')
+#              ,('2026-12-29', '2026-12-30')]
+    ,  '918': [('2026-06-29', '2026-07-10'), ('2026-12-21', '2026-12-30')
+              ,('2027-01-04', '2027-01-05')]
+    , '1466': [('2026-06-22', '2026-06-26'), ('2026-07-03', '2026-07-03')
+              ,('2026-07-10', '2026-07-10'), ('2026-07-17', '2026-07-17')
+              ,('2026-07-24', '2026-07-24'), ('2026-07-31', '2026-07-31')
+              ,('2026-08-07', '2026-08-07'), ('2026-08-14', '2026-08-14')
+              ,('2026-08-21', '2026-08-21'), ('2026-08-28', '2026-08-28')
+              ,('2026-12-21', '2026-12-30')]
+    , '2256': [('2026-08-24', '2026-08-31'), ('2026-12-28', '2026-12-30')]
+#    , '3048': [('2026-12-23', '2026-12-23'), ('2026-12-29', '2026-12-30')]
+    , '3048': []
+    , '6737': [('2026-08-21', '2026-08-28'), ('2026-09-02', '2026-09-04')
+              ,('2026-12-21', '2026-12-30')]
+    }
 dt_jan = date.Date ('2026-01-01')
 va = db.vac_aliq.lookup ('Romania')
 for u, vac, corr in user_v:
@@ -215,5 +252,46 @@ for u, vac, corr in user_v:
             , absolute = True
             , days     = corr
             )
+    # Find time recs <= 2026-05-31 with time_project1429 (vacation subsi)
+    d  = dict (wp = '1429')
+    d ['daily_record.user'] = u
+    d ['daily_record.date'] = '2026-01-01;2026-05-31'
+    trids = db.time_record.filter (None, d)
+    d  = dict (bookers = u, project = '6', time_start = '2026-01-01')
+    wp = db.time_wp.filter (None, d)
+    assert len (wp) <= 0
+    if len (wp) == 0:
+        continue
+    vac_wp = wp [0]
+    for trid in trids:
+        tr   = db.time_record.getnode (trid)
+        dr   = db.daily_record.getnode (tr.daily_record)
+        wday = common.week_day (dr.date)
+        wdn  = common.wday_name (wday)
+        assert tr.duration == getattr (dyn, 'hours_%s' % wdn)
+        db.time_record.set (trid, wp = vac_wp)
+    # Find time_recs >= 2026-06-01 with time_project1429 (vacation subsi)
+    # Delete those, we'll then create the respective vacation
+    d  = dict (wp = '1429')
+    d ['daily_record.user'] = u
+    d ['daily_record.date'] = '2026-06-01;'
+    trids = db.time_record.filter (None, d)
+    for trid in trids:
+        db.time_record.retire (trid)
+    # Create leave requests
+    for fd, ld in vac_by_user [u]:
+        ls = db.leave_submission.filter (None, dict (user = u, first_day = fd))
+        if ls:
+            assert len (ls) == 1
+            ls = db.leave_submission.getnode (ls [0])
+            assert ls.time_wp  == vac_wp
+            assert ls.last_day == date.Date (ld)
+        else:
+            db.leave_submission.create \
+                ( user      = u
+                , first_day = date.Date (fd)
+                , last_day  = date.Date (ld)
+                , time_wp   = vac_wp
+                )
 
 db.commit()
