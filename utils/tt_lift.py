@@ -40,7 +40,7 @@ if roles:
 else:
     roles = set (('user', 'nosy'))
 update_roles = False
-for r in ('hr-leave-approval', 'hr-vacation'):
+for r in ('hr-leave-approval', 'hr-vacation', 'hr'):
     if r not in roles:
         roles.add (r)
         update_roles = True
