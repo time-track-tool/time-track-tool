@@ -257,9 +257,9 @@ for u, vac, corr in user_v:
     d ['daily_record.user'] = u
     d ['daily_record.date'] = '2026-01-01;2026-05-31'
     trids = db.time_record.filter (None, d)
-    d  = dict (bookers = u, project = '6', time_start = '2026-01-01')
+    d  = dict (bookers = u, project = '6', time_end = '-')
     wp = db.time_wp.filter (None, d)
-    assert len (wp) <= 0
+    assert len (wp) <= 1
     if len (wp) == 0:
         continue
     vac_wp = wp [0]
@@ -277,6 +277,10 @@ for u, vac, corr in user_v:
     d ['daily_record.date'] = '2026-06-01;'
     trids = db.time_record.filter (None, d)
     for trid in trids:
+        tr = db.time_record.getnode (trid)
+        dr = db.daily_record.getnode (tr.daily_record)
+        if dr.status != '1':
+            db.daily_record.set (dr.id, status = '1')
         db.time_record.retire (trid)
     # Create leave requests
     for fd, ld in vac_by_user [u]:
@@ -287,6 +291,12 @@ for u, vac, corr in user_v:
             assert ls.time_wp  == vac_wp
             assert ls.last_day == date.Date (ld)
         else:
+            # First set daily records to open
+            d   = dict (user = u, date = '%s;%s' % (fd, ld), status = '2')
+            drs = db.daily_record.filter (None, d)
+            for drid in drs:
+                db.daily_record.set (drid, status = '1')
+            print ('Create leave for user%s %s-%s' % (u, fd, ld))
             db.leave_submission.create \
                 ( user      = u
                 , first_day = date.Date (fd)
