@@ -9,6 +9,7 @@ sys.path.insert (1, 'lib')
 
 import vacation
 import user_dynamic
+import common
 
 countries = set (('Austria', 'Germany', 'Finland', 'Czechia', 'Romania'))
 
@@ -253,9 +254,10 @@ for u, vac, corr in user_v:
             , days     = corr
             )
     # Find time recs <= 2026-05-31 with time_project1429 (vacation subsi)
-    d  = dict (wp = '1429')
+    d = {}
     d ['daily_record.user'] = u
     d ['daily_record.date'] = '2026-01-01;2026-05-31'
+    d ['wp.project']        = '1429'
     trids = db.time_record.filter (None, d)
     d  = dict (bookers = u, project = '6', time_end = '-')
     wp = db.time_wp.filter (None, d)
@@ -263,18 +265,21 @@ for u, vac, corr in user_v:
     if len (wp) == 0:
         continue
     vac_wp = wp [0]
+    dyn = user_dynamic.get_user_dynamic (db, u, date = dt_jan)
     for trid in trids:
         tr   = db.time_record.getnode (trid)
         dr   = db.daily_record.getnode (tr.daily_record)
         wday = common.week_day (dr.date)
         wdn  = common.wday_name (wday)
-        assert tr.duration == getattr (dyn, 'hours_%s' % wdn)
+        exp  = getattr (dyn, 'hours_%s' % wdn)
+        assert tr.duration in (exp, exp / 2)
         db.time_record.set (trid, wp = vac_wp)
     # Find time_recs >= 2026-06-01 with time_project1429 (vacation subsi)
     # Delete those, we'll then create the respective vacation
-    d  = dict (wp = '1429')
+    d = {}
     d ['daily_record.user'] = u
     d ['daily_record.date'] = '2026-06-01;'
+    d ['wp.project']        = '1429'
     trids = db.time_record.filter (None, d)
     for trid in trids:
         tr = db.time_record.getnode (trid)
