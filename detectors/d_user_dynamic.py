@@ -470,7 +470,7 @@ def check_avc (db, cl, nodeid, new_values):
             ( _ ('Change of "%(vyn)s" without absolute vacation correction')
             % locals ()
             )
-    if vaname and vaname != 'Austria':
+    if vaname and vaname not in ('Austria', 'Romania'):
         if prev_dyn.valid_to and prev_dyn.valid_to < valid_from:
             vc = vacation.get_vacation_correction (db, user, date = valid_from)
             if vc and vc.date < prev_dyn.valid_to:

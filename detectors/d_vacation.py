@@ -745,9 +745,9 @@ def check_correction (db, cl, nodeid, new_values):
     if dyn and dyn.vac_aliq:
         vacname = db.vac_aliq.get (dyn.vac_aliq, 'name')
 
-    # For Finland and Romania allow abs. vacation correction only on 1st
+    # For Finland allow abs. vacation correction only on 1st
     # of month unless it's the very first abs. vacation correction
-    if vacname in ('Romania', 'Finland') and is_abs and date.day != 1:
+    if vacname == 'Finland' and is_abs and date.day != 1:
         raise Reject \
             (_ ('Absolute vacation correction must be on 1st of'
                 ' month, otherwise alliquotation would start again'
