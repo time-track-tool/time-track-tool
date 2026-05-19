@@ -6008,6 +6008,20 @@ class Test_Case_Timetracker (_Test_Case_Summary, unittest.TestCase):
         # Get vacation report for 2026 for this user *as HR-vacation*
         self.db = self.tracker.open (self.username0)
         summary.init (self.tracker)
+        # Vacation correction 2021-03-25
+        # Work days 2021
+        assert vacation.work_days_year (2021) == 261
+        # Work days March 25 to end of year
+        # 59 Working days Feb-Mar24, 
+        soy = date.Date ('2021-01-01')
+        s   = date.Date ('2021-03-25')
+        e   = date.Date ('2021-12-31')
+        assert vacation.work_days (self.db, self.user37, s, e) == 261 - 59
+        assert vacation.pub_holidays_in_period (self.db, self.olo, soy, e) == 12
+        # public holidays 2025-03-25 to eoy:
+        assert vacation.pub_holidays_in_period (self.db, self.olo, s, e) == 10
+        # So we have (202 - 10) * 25 / (261 - 12) = 19.27710843373494
+        # So we carry forward to 2026 the rounded value of 0.277108 = 0 days
         fs = { 'user': [self.user37], 'date': '2026-01-01;2026-12-31' }
         class r: filterspec = fs ; columns = {}
         class c: _ = lambda x: x
@@ -6031,11 +6045,11 @@ class Test_Case_Timetracker (_Test_Case_Summary, unittest.TestCase):
         self.assertEqual (lines  [1] [1], '2026-12-31')
         self.assertEqual (lines  [1] [2], '25.0')
         self.assertEqual (lines  [1] [3], '25.0')
-        self.assertEqual (lines  [1] [4], '-0.342388')
-        self.assertEqual (lines  [1] [5], '24.657612')
+        self.assertEqual (lines  [1] [4], '0.277108')
+        self.assertEqual (lines  [1] [5], '25.277108')
         self.assertEqual (lines  [1] [6], '23.0')
         self.assertEqual (lines  [1] [7], '')
-        self.assertEqual (lines  [1] [8], '1.657612')
+        self.assertEqual (lines  [1] [8], '2.277108')
         # Get remaining vacation as user0
         dt = date.Date ('2026-04-02')
         v = vac.remaining_vacation (self.db, self.user37, None, dt)
@@ -6066,7 +6080,7 @@ class Test_Case_Timetracker (_Test_Case_Summary, unittest.TestCase):
         self.assertEqual (lines  [1] [1], '2026-12-31')
         self.assertEqual (lines  [1] [2], '25.0')
         self.assertEqual (lines  [1] [3], '25.0')
-        self.assertEqual (lines  [1] [4], '-0.342')
+        self.assertEqual (lines  [1] [4], '0.277')
         self.assertEqual (lines  [1] [5], '25.0')
         self.assertEqual (lines  [1] [6], '23.0')
         self.assertEqual (lines  [1] [7], '')
