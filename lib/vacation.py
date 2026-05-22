@@ -1004,7 +1004,7 @@ def consolidated_vacation \
                     vac_acr += a
             elif va.name == 'Romania':
                 vac += accrue_romania (dyn, d, eoy + common.day)
-                # FIXME: Need to round vac here, there is *yearly rounding*
+                vac  = round_vacation (dyn, vac)
             else:
                 assert 0, 'Invalid country setting for vac_aliq'
             d  = eoy + common.day
@@ -1042,9 +1042,8 @@ def consolidated_vacation \
                 assert 0, 'Invalid country setting for vac_aliq'
             d = ed
     # For Romania we round *immediately*.
-    # Turned off for now FIXME: Turn on
-    #if va.name == 'Romania':
-    #    return round_vacation (dyn, vac), None, None
+    if va.name == 'Romania':
+        return round_vacation (dyn, vac), None, None
     # Round to six digits: The computations above can produce errors due
     # to repeated additions
     if vac_h is not None:
