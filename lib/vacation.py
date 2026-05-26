@@ -1043,6 +1043,7 @@ def consolidated_vacation \
             d = ed
     # For Romania we round *immediately*.
     if va.name == 'Romania':
+        dyn = vac_get_user_dynamic (db, user, ctype, ed - common.day)
         return round_vacation (dyn, vac), None, None
     # Round to six digits: The computations above can produce errors due
     # to repeated additions
