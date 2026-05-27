@@ -31,6 +31,15 @@ for i, name in enumerate (names):
             , lastname  = nn
             , supervisor = sup
             )
+    # Check if user has an address, if not create a contact of type
+    # email which automagically will create an address
+    if not db.user.get (uid, 'address'):
+        db.user_contact.create \
+            ( contact      = un + '@example.com'
+            , contact_type = '1'
+            , order        = 1
+            , user         = uid
+            )
     va  = db.vac_aliq.lookup ('Romania')
     olo = '34'
     # Find out if a dyn user is existing
