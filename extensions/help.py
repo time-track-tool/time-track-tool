@@ -233,8 +233,7 @@ wp_no              = \
 
 _helptext          = \
     { ""'VIEW'                        : [view]
-    , ""'abbreviation'                :
-      [""'''Abbreviated name''']
+    , ""'abbreviation'                : [""'''Abbreviated name''']
     , ""'abo'                         :
       [""'''Subscription to which this invoice belongs''']
     , ""'abo++end'                    :
@@ -273,6 +272,10 @@ _helptext          = \
              in the system. Note: Vacation correction is also possible
              if no valid dyn. user data for this date.
           '''
+      ]
+    , ""'accrued'                     :
+      [""'''Accrued but not yes usable vacation days for Finland
+         '''
       ]
     , ""'achieved_hours'              :
       [""'''Achieved overtime hours included in monthly/yearly supplementary
@@ -598,6 +601,7 @@ _helptext          = \
              interface for this user.
           '''
       ]
+    , ""'days'                        :  [""'''Vacation days''']
     , ""'defect++superseder'          :
       [superseder]
     , ""'deadline'                    :
@@ -960,6 +964,7 @@ _helptext          = \
       [""'''If set, do not show files for each message in overview''']
     , ""'hostname'                    :
       [""'''Name of the host configured in the dynamic DNS service''']
+    , ""'hours'                       : [""'''Vacation hours (CZ)''']
     , ""'hours_mon'                   : [daily_hours]
     , ""'hours_tue'                   : [daily_hours]
     , ""'hours_wed'                   : [daily_hours]

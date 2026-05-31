@@ -1,5 +1,5 @@
 #! /usr/bin/python
-# Copyright (C) 2006-22 Dr. Ralf Schlatterbeck Open Source Consulting.
+# Copyright (C) 2006-26 Dr. Ralf Schlatterbeck Open Source Consulting.
 # 
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -48,19 +48,21 @@ def sorted_properties (db, context):
     return list (sorted (props, key = lambda x: db._db.i18n.gettext (x._name)))
 # end def sorted_properties
 
-def properties_dict (db, context):
+def properties_dict (db, context, cansearch = False):
     props = {}
-    for prop in db [context._classname].properties (cansearch = False):
+    for prop in db [context._classname].properties (cansearch = cansearch):
         props [prop._name] = prop
     return props
 # end def properties_dict
 
 def filtered_properties \
-    (db, utils, context, props, as_dict = False, check_names = True):
+    ( db, utils, context, props
+    , as_dict = False, check_names = True, cansearch = False
+    ):
     retprops = []
     if as_dict:
         retprops = {}
-    pdict = properties_dict (db, context)
+    pdict = properties_dict (db, context, cansearch = cansearch)
     for pname, attrs in props:
         if pname not in pdict:
             continue
@@ -193,6 +195,7 @@ class ExtProperty:
         filter: A dictionary of properties / values to filter on when
             displaying a menu (in a search mask) or help.
         force_link: make this property a link (e.g. in index view)
+        format: how to format the item (default '%s')
         help_filter: deprecated, a string of property/value pairs
             usually computed from filter and used in classhelp
         help_props: Properties used for classhelp

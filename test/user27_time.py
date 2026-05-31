@@ -42,25 +42,6 @@ def import_data_27 (db, user, olo, parent):
         , absolute = 1
         , days     = 0.0
         )
-    vcorr = db.vacation_correction.create \
-        ( user     = user
-        , date     = date.Date ('2022-01-01.00:00:00')
-        , absolute = 0
-        , days     = 0.0
-        )
-    vcorr = db.vacation_correction.create \
-        ( user     = user
-        , date     = date.Date ('2022-08-01.00:00:00')
-        , absolute = 1
-        , days     = 0.0
-        , contract_type = parent.ct_pt
-        )
-    vcorr = db.vacation_correction.create \
-        ( user     = user
-        , date     = date.Date ('2023-09-25.00:00:00')
-        , absolute = 1
-        , days     = 0.0
-        )
     otp = None
     db.user_dynamic.create \
         ( additional_hours   = 0.0
@@ -82,6 +63,19 @@ def import_data_27 (db, user, olo, parent):
         , overtime_period    = otp
         , user               = user
         , vac_aliq           = '2'
+        )
+    vcorr = db.vacation_correction.create \
+        ( user     = user
+        , date     = date.Date ('2022-01-01.00:00:00')
+        , absolute = 0
+        , days     = 0.0
+        )
+    vcorr = db.vacation_correction.create \
+        ( user     = user
+        , date     = date.Date ('2022-08-01.00:00:00')
+        , absolute = 1
+        , days     = 0.0
+        , contract_type = parent.ct_pt
         )
     sd = dict (months = 0.0, required_overtime = 0, weekly = 1)
     otp = db.overtime_period.filter (None, sd)
@@ -115,6 +109,12 @@ def import_data_27 (db, user, olo, parent):
         , user               = user
         , vac_aliq           = '2'
         , contract_type      = parent.ct_pt
+        )
+    vcorr = db.vacation_correction.create \
+        ( user     = user
+        , date     = date.Date ('2023-09-25.00:00:00')
+        , absolute = 1
+        , days     = 0.0
         )
     sd = dict (months = 0.0, required_overtime = 0, weekly = 1)
     otp = db.overtime_period.filter (None, sd)

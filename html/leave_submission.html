@@ -100,7 +100,7 @@
             utils.remaining_vacation 
              (db._db, mprops [0].prop.id, date = mprops [1].prop._value)
              + ( leavedays
-               * [1, -1][str (mprops [4].prop) == 'submitted']
+               * [1, -1][str (mprops [4].prop.plain ()) == 'submitted']
                * mprops [3].prop.project.is_vacation._value
                )"/>
         <td tal:condition="python:
@@ -250,7 +250,7 @@
            ; eoyv python:utils.eoy_vacation
                 (db._db, db._db.getuid (), remdate, ctid)
            ; vapr python: utils.vacation_time_sum
-                (db._db, db._db.getuid (), ctid, jandate, remdate)
+                (db._db, db._db.getuid (), ctid, jandate, remdate) [0]
            ; vsub python: utils.vacation_with_status
                 (db._db, db._db.getuid (), ctid, jandate, remdate, 'submitted')
            ; rem python:utils.remaining_vacation

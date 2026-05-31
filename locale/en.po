@@ -7252,7 +7252,7 @@ msgid "travel_full"
 msgstr "Travel full"
 
 msgid "days"
-msgstr ""
+msgstr "Days"
 
 msgid "cssclass"
 msgstr ""
@@ -7625,3 +7625,27 @@ msgstr "Comment Procurement"
 
 msgid "no_offer"
 msgstr "No offer"
+
+msgid "hours"
+msgstr "Hours"
+
+msgid "accrued"
+msgstr "Days accrued"
+
+msgid "accrued_vacation"
+msgstr "Entitlement (accrued)"
+
+msgid "hourly_entitlement"
+msgstr "entitlement (hourly)"
+
+msgid "hourly_prorated"
+msgstr "prorated (hourly)"
+
+msgid "hourly_remaining"
+msgstr "remaining (hourly)"
+
+msgid "rounded_entitlement"
+msgstr "entitlement total (rounded)"
+
+msgid "rounded_remaining"
+msgstr "remaining vacation (rounded)"

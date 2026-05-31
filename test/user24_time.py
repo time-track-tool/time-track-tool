@@ -94,13 +94,13 @@ def import_data_24 (db, user, olo, parent):
         )
     aw_by_ct_name [(None, 'Vacation')] = id
     id = db.auto_wp.create \
-        ( name              = 'Comp\Flexi-Time'
+        ( name              = 'Comp\\Flexi-Time'
         , durations_allowed = 1
         , is_valid          = 0
         , org_location      = olo
         , time_project      = parent.flexi_tp
         )
-    aw_by_ct_name [(None, 'Comp\Flexi-Time')] = id
+    aw_by_ct_name [(None, 'Comp\\Flexi-Time')] = id
     id = db.auto_wp.create \
         ( name              = 'Medical-Consultation'
         , durations_allowed = 0
@@ -178,7 +178,7 @@ def import_data_24 (db, user, olo, parent):
         )
     au_wp_5 = db.time_wp.create \
         ( name              = '%s -2023-11-30' % username
-        , auto_wp           = aw_by_ct_name [(None, 'Comp\Flexi-Time')]
+        , auto_wp           = aw_by_ct_name [(None, 'Comp\\Flexi-Time')]
         , bookers           = [user]
         , durations_allowed = 1
         , time_start        = date.Date ('2021-04-01.00:00:00')
@@ -243,7 +243,7 @@ def import_data_24 (db, user, olo, parent):
         )
     au_wp_12 = db.time_wp.create \
         ( name              = username
-        , auto_wp           = aw_by_ct_name [(None, 'Comp\Flexi-Time')]
+        , auto_wp           = aw_by_ct_name [(None, 'Comp\\Flexi-Time')]
         , bookers           = [user]
         , durations_allowed = 1
         , time_start        = date.Date ('2023-12-01.00:00:00')
@@ -314,7 +314,7 @@ def import_data_24 (db, user, olo, parent):
     db.auto_wp.set (id, is_valid = True)
     id = aw_by_ct_name [(None, 'Vacation')]
     db.auto_wp.set (id, is_valid = True)
-    id = aw_by_ct_name [(None, 'Comp\Flexi-Time')]
+    id = aw_by_ct_name [(None, 'Comp\\Flexi-Time')]
     db.auto_wp.set (id, is_valid = True)
     id = aw_by_ct_name [(None, 'Medical-Consultation')]
     db.auto_wp.set (id, is_valid = True)

@@ -128,7 +128,7 @@ def att_records_consistent (db, dr):
         + check that there is a lunch break of at least .5 hours if user
           worked for more than 6 hours and durations_allowed is not
           specified
-        + Travel times (if time_activity has travel flag) are excempt
+        + Travel times (if work location has travel flag) are exempt
           from lunch break checks
     """
     _        = db.i18n.gettext
@@ -372,7 +372,7 @@ def check_daily_record (db, cl, nodeid, new_values):
                   and user != uid
                   )
                or (   status == 'open'      and old_status == 'submitted'
-                  and (is_hr or user == uid or may_give_clearance)
+                  and (is_hr or uid in (user, '1') or may_give_clearance)
                   )
                or (   status == 'open'      and old_status == 'accepted'
                   and is_hr
@@ -408,7 +408,11 @@ def check_daily_record (db, cl, nodeid, new_values):
                     elif user == uid:
                         msg = _ ("May not self-approve")
                 elif status == 'open':
-                    if not is_hr and user != uid and not may_give_clearance:
+                    if  (   not is_hr
+                        and uid != user
+                        and uid != '1'
+                        and not may_give_clearance
+                        ):
                         msg = _ ("Permission denied")
             raise Reject \
                 ( _ ("Denied state change: %(old_status)s->%(status)s: %(msg)s")

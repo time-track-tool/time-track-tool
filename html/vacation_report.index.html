@@ -6,7 +6,6 @@
  <tal:block metal:fill-slot="content">
   <tal:block tal:define=
    "batch request/batch;
-    pdict python: utils.properties_dict (db, context);
     prp python:
      ( ('date', {})
      , ('user', {})
@@ -55,6 +54,12 @@
 	   , sortable = False
 	   )
        )
+     , ( 'accrued_vacation'
+       , dict
+	   ( searchable = False
+	   , sortable = False
+	   )
+       )
      , ( 'approved_submissions'
        , dict
 	   ( searchable = False
@@ -85,6 +90,36 @@
            , sortable = False
            )
        )
+     , ( 'hourly_entitlement'
+       , dict
+           ( searchable = False
+           , sortable = False
+           )
+       )
+     , ( 'hourly_prorated'
+       , dict
+           ( searchable = False
+           , sortable = False
+           )
+       )
+     , ( 'hourly_remaining'
+       , dict
+           ( searchable = False
+           , sortable = False
+           )
+       )
+     , ( 'rounded_entitlement'
+       , dict
+           ( searchable = False
+           , sortable = False
+           )
+       )
+     , ( 'rounded_remaining'
+       , dict
+           ( searchable = False
+           , sortable = False
+           )
+       )
      , ( 'special_leave'
        , dict
            ( searchable = False
@@ -105,7 +140,9 @@
        )
      );
      myprops python: utils.filtered_properties
-        (db, utils, context, prp, as_dict = True, check_names = False);
+        ( db, utils, context, prp
+        , as_dict = True, check_names = True, cansearch = True
+        );
      vr python: utils.Vacation_Report (db, request, utils);
      "
      tal:condition="context/is_view_ok">
@@ -116,17 +153,23 @@
          , 'user.firstname'
          , 'user.lastname'
          , 'additional_submitted'
+         , 'accrued_vacation'
          , 'approved_submissions'
          , 'flexi_time'
          , 'flexi_sub'
          , 'flexi_max'
          , 'flexi_rem'
+         , 'hourly_entitlement'
+         , 'hourly_prorated'
+         , 'hourly_remaining'
+         , 'rounded_entitlement'
+         , 'rounded_remaining'
          , 'special_leave'
          , 'special_sub'
          ]
        ; props python:
          [myprops [p] for p in sorted
-          (fpkeys, key = lambda x: db._db.i18n.gettext(x))]
+          (fpkeys, key = lambda x: db._db.i18n.gettext(x)) if p in myprops]
        ; propkeys       python:
          ( 'date', 'user', 'supervisor', 'org_location'
          , 'organisation', 'show_obsolete'

@@ -1784,24 +1784,24 @@ class Test_Case_Timetracker (_Test_Case_Summary, unittest.TestCase):
         self.assertEqual (lines  [0] [9], 'Additional submitted')
         self.assertEqual (lines  [1] [0], 'testuser13')
         self.assertEqual (lines  [1] [1], '2014-12-31')
-        self.assertEqual (lines  [1] [2], '25.00')
-        self.assertEqual (lines  [1] [3], '25.00')
-        self.assertEqual (lines  [1] [4], '7.27')
-        self.assertEqual (lines  [1] [5], '32.27')
+        self.assertEqual (lines  [1] [2], '25.0')
+        self.assertEqual (lines  [1] [3], '25.0')
+        self.assertEqual (lines  [1] [4], '7.270000')
+        self.assertEqual (lines  [1] [5], '32.270000')
         self.assertEqual (lines  [1] [6], '23.0')
-        self.assertEqual (lines  [1] [7], '7.27')
-        self.assertEqual (lines  [1] [8], '9.27')
-        self.assertEqual (lines  [1] [9], '0.00')
+        self.assertEqual (lines  [1] [7], '7.270000')
+        self.assertEqual (lines  [1] [8], '9.270000')
+        self.assertEqual (lines  [1] [9], '0.0')
         self.assertEqual (lines  [2] [0], 'testuser13')
         self.assertEqual (lines  [2] [1], '2015-12-31')
-        self.assertEqual (lines  [2] [2], '25.00')
-        self.assertEqual (lines  [2] [3], '25.00')
-        self.assertEqual (lines  [2] [4], '9.27')
-        self.assertEqual (lines  [2] [5], '34.27')
+        self.assertEqual (lines  [2] [2], '25.0')
+        self.assertEqual (lines  [2] [3], '25.0')
+        self.assertEqual (lines  [2] [4], '9.270000')
+        self.assertEqual (lines  [2] [5], '34.270000')
         self.assertEqual (lines  [2] [6], '0.0')
         self.assertEqual (lines  [2] [7], '')
-        self.assertEqual (lines  [2] [8], '34.27')
-        self.assertEqual (lines  [2] [9], '0.00')
+        self.assertEqual (lines  [2] [8], '34.270000')
+        self.assertEqual (lines  [2] [9], '0.0')
 
         eoy_vacation = vac.eoy_vacation
         self.assertEqual \
@@ -1874,49 +1874,49 @@ class Test_Case_Timetracker (_Test_Case_Summary, unittest.TestCase):
         self.assertEqual (lines  [0] [8], 'remaining vacation')
         self.assertEqual (lines  [1] [0], 'testuser15')
         self.assertEqual (lines  [1] [1], '2018-12-31')
-        self.assertEqual (lines  [1] [2], '30.00')
-        self.assertEqual (lines  [1] [3], '15.00')
-        self.assertEqual (lines  [1] [4], '0.00')
-        self.assertEqual (lines  [1] [5], '15.00')
+        self.assertEqual (lines  [1] [2], '30.0')
+        self.assertEqual (lines  [1] [3], '15.0')
+        self.assertEqual (lines  [1] [4], '0.0')
+        self.assertEqual (lines  [1] [5], '15.0')
         self.assertEqual (lines  [1] [6], '0.0')
         self.assertEqual (lines  [1] [7], '0.0')
-        self.assertEqual (lines  [1] [8], '15.00')
+        self.assertEqual (lines  [1] [8], '15.0')
         self.assertEqual (lines  [2] [0], 'testuser16')
         self.assertEqual (lines  [2] [1], '2018-12-31')
-        self.assertEqual (lines  [2] [2], '30.00')
-        self.assertEqual (lines  [2] [3], '15.00')
-        self.assertEqual (lines  [2] [4], '0.00')
-        self.assertEqual (lines  [2] [5], '15.00')
+        self.assertEqual (lines  [2] [2], '30.0')
+        self.assertEqual (lines  [2] [3], '15.0')
+        self.assertEqual (lines  [2] [4], '0.0')
+        self.assertEqual (lines  [2] [5], '15.0')
         self.assertEqual (lines  [2] [6], '0.0')
         self.assertEqual (lines  [2] [7], '0.0')
-        self.assertEqual (lines  [2] [8], '15.00')
+        self.assertEqual (lines  [2] [8], '15.0')
         self.assertEqual (lines  [3] [0], 'testuser17')
         self.assertEqual (lines  [3] [1], '2018-12-31')
-        self.assertEqual (lines  [3] [2], '30.00')
-        self.assertEqual (lines  [3] [3], '30.00')
-        self.assertEqual (lines  [3] [4], '1.00')
-        self.assertEqual (lines  [3] [5], '31.00')
+        self.assertEqual (lines  [3] [2], '30.0')
+        self.assertEqual (lines  [3] [3], '30.0')
+        self.assertEqual (lines  [3] [4], '1.0')
+        self.assertEqual (lines  [3] [5], '31.0')
         self.assertEqual (lines  [3] [6], '0.0')
         self.assertEqual (lines  [3] [7], '1.0')
-        self.assertEqual (lines  [3] [8], '31.00')
+        self.assertEqual (lines  [3] [8], '31.0')
         self.assertEqual (lines  [4] [0], 'testuser18')
         self.assertEqual (lines  [4] [1], '2018-12-31')
-        self.assertEqual (lines  [4] [2], '30.00')
-        self.assertEqual (lines  [4] [3], '12.50')
-        self.assertEqual (lines  [4] [4], '0.00')
-        self.assertEqual (lines  [4] [5], '12.50')
+        self.assertEqual (lines  [4] [2], '30.0')
+        self.assertEqual (lines  [4] [3], '12.500000')
+        self.assertEqual (lines  [4] [4], '0.0')
+        self.assertEqual (lines  [4] [5], '12.500000')
         self.assertEqual (lines  [4] [6], '0.0')
         self.assertEqual (lines  [4] [7], '0.0')
-        self.assertEqual (lines  [4] [8], '12.50')
+        self.assertEqual (lines  [4] [8], '12.500000')
         self.assertEqual (lines  [5] [0], 'testuser19')
         self.assertEqual (lines  [5] [1], '2018-12-31')
-        self.assertEqual (lines  [5] [2], '30.00')
-        self.assertEqual (lines  [5] [3], '17.50')
-        self.assertEqual (lines  [5] [4], '0.00')
-        self.assertEqual (lines  [5] [5], '17.50')
+        self.assertEqual (lines  [5] [2], '30.0')
+        self.assertEqual (lines  [5] [3], '17.500000')
+        self.assertEqual (lines  [5] [4], '0.0')
+        self.assertEqual (lines  [5] [5], '17.500000')
         self.assertEqual (lines  [5] [6], '0.0')
         self.assertEqual (lines  [5] [7], '0.0')
-        self.assertEqual (lines  [5] [8], '17.50')
+        self.assertEqual (lines  [5] [8], '17.500000')
         fs = { 'user': self.uid_by_name.values ()
              , 'date': '2019-01-01;2019-12-31'
              }
@@ -1938,31 +1938,31 @@ class Test_Case_Timetracker (_Test_Case_Summary, unittest.TestCase):
         self.assertEqual (lines  [0] [8], 'remaining vacation')
         self.assertEqual (lines  [1] [0], 'testuser17')
         self.assertEqual (lines  [1] [1], '2019-12-31')
-        self.assertEqual (lines  [1] [2], '30.00')
-        self.assertEqual (lines  [1] [3], '30.00')
-        self.assertEqual (lines  [1] [4], '31.00')
-        self.assertEqual (lines  [1] [5], '61.00')
+        self.assertEqual (lines  [1] [2], '30.0')
+        self.assertEqual (lines  [1] [3], '30.0')
+        self.assertEqual (lines  [1] [4], '31.0')
+        self.assertEqual (lines  [1] [5], '61.0')
         self.assertEqual (lines  [1] [6], '0.0')
         self.assertEqual (lines  [1] [7], '')
-        self.assertEqual (lines  [1] [8], '61.00')
+        self.assertEqual (lines  [1] [8], '61.0')
         self.assertEqual (lines  [2] [0], 'testuser18')
         self.assertEqual (lines  [2] [1], '2019-12-31')
-        self.assertEqual (lines  [2] [2], '30.00')
-        self.assertEqual (lines  [2] [3], '2.50')
-        self.assertEqual (lines  [2] [4], '12.50')
-        self.assertEqual (lines  [2] [5], '15.00')
+        self.assertEqual (lines  [2] [2], '30.0')
+        self.assertEqual (lines  [2] [3], '2.500000')
+        self.assertEqual (lines  [2] [4], '12.500000')
+        self.assertEqual (lines  [2] [5], '15.0')
         self.assertEqual (lines  [2] [6], '0.0')
         self.assertEqual (lines  [2] [7], '')
-        self.assertEqual (lines  [2] [8], '15.00')
+        self.assertEqual (lines  [2] [8], '15.0')
         self.assertEqual (lines  [3] [0], 'testuser19')
         self.assertEqual (lines  [3] [1], '2019-12-31')
-        self.assertEqual (lines  [3] [2], '30.00')
-        self.assertEqual (lines  [3] [3], '30.00')
-        self.assertEqual (lines  [3] [4], '17.50')
-        self.assertEqual (lines  [3] [5], '47.50')
+        self.assertEqual (lines  [3] [2], '30.0')
+        self.assertEqual (lines  [3] [3], '30.0')
+        self.assertEqual (lines  [3] [4], '17.500000')
+        self.assertEqual (lines  [3] [5], '47.500000')
         self.assertEqual (lines  [3] [6], '0.0')
         self.assertEqual (lines  [3] [7], '')
-        self.assertEqual (lines  [3] [8], '47.50')
+        self.assertEqual (lines  [3] [8], '47.500000')
 
         fs = { 'user': self.uid_by_name.values ()
              , 'date': '2019-01-01;2019-02-03'
@@ -1985,31 +1985,31 @@ class Test_Case_Timetracker (_Test_Case_Summary, unittest.TestCase):
         self.assertEqual (lines  [0] [8], 'remaining vacation')
         self.assertEqual (lines  [1] [0], 'testuser17')
         self.assertEqual (lines  [1] [1], '2019-02-03')
-        self.assertEqual (lines  [1] [2], '30.00')
-        self.assertEqual (lines  [1] [3], '2.50')
-        self.assertEqual (lines  [1] [4], '31.00')
-        self.assertEqual (lines  [1] [5], '33.50')
+        self.assertEqual (lines  [1] [2], '30.0')
+        self.assertEqual (lines  [1] [3], '2.500000')
+        self.assertEqual (lines  [1] [4], '31.0')
+        self.assertEqual (lines  [1] [5], '33.500000')
         self.assertEqual (lines  [1] [6], '0.0')
         self.assertEqual (lines  [1] [7], '')
-        self.assertEqual (lines  [1] [8], '33.50')
+        self.assertEqual (lines  [1] [8], '33.500000')
         self.assertEqual (lines  [2] [0], 'testuser18')
         self.assertEqual (lines  [2] [1], '2019-02-03')
-        self.assertEqual (lines  [2] [2], '30.00')
-        self.assertEqual (lines  [2] [3], '2.50')
-        self.assertEqual (lines  [2] [4], '12.50')
-        self.assertEqual (lines  [2] [5], '15.00')
+        self.assertEqual (lines  [2] [2], '30.0')
+        self.assertEqual (lines  [2] [3], '2.500000')
+        self.assertEqual (lines  [2] [4], '12.500000')
+        self.assertEqual (lines  [2] [5], '15.0')
         self.assertEqual (lines  [2] [6], '0.0')
         self.assertEqual (lines  [2] [7], '')
-        self.assertEqual (lines  [2] [8], '15.00')
+        self.assertEqual (lines  [2] [8], '15.0')
         self.assertEqual (lines  [3] [0], 'testuser19')
         self.assertEqual (lines  [3] [1], '2019-02-03')
-        self.assertEqual (lines  [3] [2], '30.00')
-        self.assertEqual (lines  [3] [3], '5.00')
-        self.assertEqual (lines  [3] [4], '17.50')
-        self.assertEqual (lines  [3] [5], '22.50')
+        self.assertEqual (lines  [3] [2], '30.0')
+        self.assertEqual (lines  [3] [3], '5.0')
+        self.assertEqual (lines  [3] [4], '17.500000')
+        self.assertEqual (lines  [3] [5], '22.500000')
         self.assertEqual (lines  [3] [6], '0.0')
         self.assertEqual (lines  [3] [7], '')
-        self.assertEqual (lines  [3] [8], '22.50')
+        self.assertEqual (lines  [3] [8], '22.500000')
 
         self.db.close ()
     # end def test_user15_19_vac_monthly
@@ -2288,14 +2288,14 @@ class Test_Case_Timetracker (_Test_Case_Summary, unittest.TestCase):
         self.assertEqual (lines  [0] [9], 'Additional submitted')
         self.assertEqual (lines  [1] [0], 'testuser14')
         self.assertEqual (lines  [1] [1], '2015-12-31')
-        self.assertEqual (lines  [1] [2], '25.00')
-        self.assertEqual (lines  [1] [3], '10.34')
-        self.assertEqual (lines  [1] [4], '6.03')
-        self.assertEqual (lines  [1] [5], '16.37')
+        self.assertEqual (lines  [1] [2], '25.0')
+        self.assertEqual (lines  [1] [3], '10.342466')
+        self.assertEqual (lines  [1] [4], '6.027000')
+        self.assertEqual (lines  [1] [5], '16.369466')
         self.assertEqual (lines  [1] [6], '10.0')
-        self.assertEqual (lines  [1] [7], '6.027')
-        self.assertEqual (lines  [1] [8], '6.37')
-        self.assertEqual (lines  [1] [9], '0.00')
+        self.assertEqual (lines  [1] [7], '6.027000')
+        self.assertEqual (lines  [1] [8], '6.369466')
+        self.assertEqual (lines  [1] [9], '0.0')
         self.db.close  ()
 
         self.db = self.tracker.open (self.username14)
@@ -2317,14 +2317,14 @@ class Test_Case_Timetracker (_Test_Case_Summary, unittest.TestCase):
         self.assertEqual (lines  [0] [9], 'Additional submitted')
         self.assertEqual (lines  [1] [0], 'testuser14')
         self.assertEqual (lines  [1] [1], '2015-12-31')
-        self.assertEqual (lines  [1] [2], '25.00')
-        self.assertEqual (lines  [1] [3], '11.00')
-        self.assertEqual (lines  [1] [4], '7.00')
-        self.assertEqual (lines  [1] [5], '17.00')
-        self.assertEqual (lines  [1] [6], '10.00')
+        self.assertEqual (lines  [1] [2], '25.0')
+        self.assertEqual (lines  [1] [3], '10.342')
+        self.assertEqual (lines  [1] [4], '6.027')
+        self.assertEqual (lines  [1] [5], '17.0')
+        self.assertEqual (lines  [1] [6], '10.0')
         self.assertEqual (lines  [1] [7], '6.027')
-        self.assertEqual (lines  [1] [8], '7.00')
-        self.assertEqual (lines  [1] [9], '0.00')
+        self.assertEqual (lines  [1] [8], '7.0')
+        self.assertEqual (lines  [1] [9], '0.0')
 
         self.db.close ()
     # end def test_user14_vacation
@@ -2526,25 +2526,31 @@ class Test_Case_Timetracker (_Test_Case_Summary, unittest.TestCase):
              'Responses to this address are not possible.\n'
             )
 
+        # Round to 6 digits after decimal point, see implementation
+        # of consolidated_vacation in lib/vacation.py
         for d in '2008-11-03', '2008-11-30', '2008-12-31':
             dt = date.Date (d)
             self.assertEqual \
-                ( vacation.consolidated_vacation (self.db, self.user2, None, dt)
-                , round ((28. + 31.) * 25. / 366., 10)
+                ( vacation.consolidated_vacation \
+                    (self.db, self.user2, None, dt) [0]
+                , round ((28. + 31.) * 25. / 366., 6)
                 )
             self.assertEqual \
-                ( vacation.remaining_vacation (self.db, self.user2, None, dt)
-                , round ((28. + 31.) * 25. / 366., 10)
+                ( vacation.remaining_vacation
+                    (self.db, self.user2, None, dt) [0]
+                , round ((28. + 31.) * 25. / 366., 6)
                 )
         for d in '2009-01-01', '2009-01-30', '2009-12-31':
             dt = date.Date (d)
             self.assertEqual \
-                ( vacation.consolidated_vacation (self.db, self.user2, None, dt)
-                , round ((28. + 31.) * 25. / 366. + 25., 10)
+                ( vacation.consolidated_vacation \
+                    (self.db, self.user2, None, dt) [0]
+                , round ((28. + 31.) * 25. / 366. + 25., 6)
                 )
             self.assertEqual \
-                ( vacation.remaining_vacation (self.db, self.user2, None, dt)
-                , round ((28. + 31.) * 25. / 366. + 25., 10)
+                ( vacation.remaining_vacation
+                    (self.db, self.user2, None, dt) [0]
+                , round ((28. + 31.) * 25. / 366. + 25., 6)
                 )
         s   = [('+', 'user'), ('+', 'date')]
         vcs = self.db.vacation_correction.filter (None, {}, sort = s)
@@ -2747,7 +2753,7 @@ class Test_Case_Timetracker (_Test_Case_Summary, unittest.TestCase):
         vac2 = self.db.leave_submission.getnode (v2)
         self.assertEqual \
             ( vacation.leave_days
-                (self.db, self.user2, vac2.first_day, vac2.last_day)
+                (self.db, self.user2, vac2.first_day, vac2.last_day) [0]
             , 4.5
             )
         os.unlink (maildebug)
@@ -4193,7 +4199,7 @@ class Test_Case_Timetracker (_Test_Case_Summary, unittest.TestCase):
         self.assertEqual (lines  [7] [5], '43.49') # 39.12
         self.assertEqual (lines  [7] [9], '4.50')
         self.assertEqual (lines  [7][10], '7.50')
-        self.assertEqual (lines  [7][11], '0')
+        self.assertEqual (lines  [7][11], '0.00')
         self.assertEqual (lines  [7][12], '7.70')
         self.assertEqual (lines  [7][14], '40.39') # 36.02
         # Now change the rest of April to use the first dyn params
@@ -4282,7 +4288,7 @@ class Test_Case_Timetracker (_Test_Case_Summary, unittest.TestCase):
         self.assertEqual (lines  [7] [5], '42.08')
         self.assertEqual (lines  [7] [9], '4.50')
         self.assertEqual (lines  [7][10], '7.50')
-        self.assertEqual (lines  [7][11], '0')
+        self.assertEqual (lines  [7][11], '0.00')
         self.assertEqual (lines  [7][12], '7.70')
         self.assertEqual (lines  [7][14], '39.08')
 
@@ -4890,40 +4896,40 @@ class Test_Case_Timetracker (_Test_Case_Summary, unittest.TestCase):
         self.assertEqual (lines  [0] [8], 'remaining vacation')
         self.assertEqual (lines  [1] [0], 'testuser27')
         self.assertEqual (lines  [1] [1], '2022-12-31')
-        self.assertEqual (lines  [1] [2], '30.00')
-        self.assertEqual (lines  [1] [3], '7.50')
-        self.assertEqual (lines  [1] [4], '27.50')
-        self.assertEqual (lines  [1] [5], '35.00')
+        self.assertEqual (lines  [1] [2], '30.0')
+        self.assertEqual (lines  [1] [3], '7.500000')
+        self.assertEqual (lines  [1] [4], '27.500000')
+        self.assertEqual (lines  [1] [5], '35.0')
         self.assertEqual (lines  [1] [6], '7.0')
         self.assertEqual (lines  [1] [7], '0.0')
-        self.assertEqual (lines  [1] [8], '28.00')
+        self.assertEqual (lines  [1] [8], '28.0')
         self.assertEqual (lines  [2] [0], 'testuser27')
         self.assertEqual (lines  [2] [1], '2023-12-31')
-        self.assertEqual (lines  [2] [2], '30.00')
-        self.assertEqual (lines  [2] [3], '7.50')
-        self.assertEqual (lines  [2] [4], '0.00')
-        self.assertEqual (lines  [2] [5], '7.50')
+        self.assertEqual (lines  [2] [2], '30.0')
+        self.assertEqual (lines  [2] [3], '7.500000')
+        self.assertEqual (lines  [2] [4], '0.0')
+        self.assertEqual (lines  [2] [5], '7.500000')
         self.assertEqual (lines  [2] [6], '0.0')
         self.assertEqual (lines  [2] [7], '0.0')
-        self.assertEqual (lines  [2] [8], '7.50')
+        self.assertEqual (lines  [2] [8], '7.500000')
         self.assertEqual (lines  [3] [0], 'testuser27 / part time')
         self.assertEqual (lines  [3] [1], '2022-12-31')
-        self.assertEqual (lines  [3] [2], '24.00')
-        self.assertEqual (lines  [3] [3], '10.00')
-        self.assertEqual (lines  [3] [4], '0.00')
-        self.assertEqual (lines  [3] [5], '10.00')
+        self.assertEqual (lines  [3] [2], '24.0')
+        self.assertEqual (lines  [3] [3], '10.0')
+        self.assertEqual (lines  [3] [4], '0.0')
+        self.assertEqual (lines  [3] [5], '10.0')
         self.assertEqual (lines  [3] [6], '8.0')
         self.assertEqual (lines  [3] [7], '0.0')
-        self.assertEqual (lines  [3] [8], '2.00')
+        self.assertEqual (lines  [3] [8], '2.0')
         self.assertEqual (lines  [4] [0], 'testuser27 / part time')
         self.assertEqual (lines  [4] [1], '2023-12-31')
-        self.assertEqual (lines  [4] [2], '24.00')
-        self.assertEqual (lines  [4] [3], '16.00')
-        self.assertEqual (lines  [4] [4], '2.00')
-        self.assertEqual (lines  [4] [5], '18.00')
+        self.assertEqual (lines  [4] [2], '24.0')
+        self.assertEqual (lines  [4] [3], '16.0')
+        self.assertEqual (lines  [4] [4], '2.0')
+        self.assertEqual (lines  [4] [5], '18.0')
         self.assertEqual (lines  [4] [6], '2.0')
         self.assertEqual (lines  [4] [7], '')
-        self.assertEqual (lines  [4] [8], '16.00')
+        self.assertEqual (lines  [4] [8], '16.0')
         # Now check also what the leave submission form would display
         dt = date.Date ('2023-12-31')
         cts = vac.ct_for_year (self.db, self.user27, dt)
@@ -5110,74 +5116,74 @@ class Test_Case_Timetracker (_Test_Case_Summary, unittest.TestCase):
         self.assertEqual (lines  [0] [9], 'Additional submitted')
         self.assertEqual (lines  [1] [0], 'testuser30')
         self.assertEqual (lines  [1] [1], '2019-12-31')
-        self.assertEqual (lines  [1] [2], '25.00')
-        self.assertEqual (lines  [1] [3], '25.00')
-        self.assertEqual (lines  [1] [4], '0.00')
-        self.assertEqual (lines  [1] [5], '25.00')
+        self.assertEqual (lines  [1] [2], '25.0')
+        self.assertEqual (lines  [1] [3], '25.0')
+        self.assertEqual (lines  [1] [4], '0.0')
+        self.assertEqual (lines  [1] [5], '25.0')
         self.assertEqual (lines  [1] [6], '13.0')
         self.assertEqual (lines  [1] [7], '0.0')
-        self.assertEqual (lines  [1] [8], '12.00')
-        self.assertEqual (lines  [1] [9], '0.00')
+        self.assertEqual (lines  [1] [8], '12.0')
+        self.assertEqual (lines  [1] [9], '0.0')
         self.assertEqual (lines  [2] [0], 'testuser30')
         self.assertEqual (lines  [2] [1], '2020-12-31')
-        self.assertEqual (lines  [2] [2], '25.00')
-        self.assertEqual (lines  [2] [3], '25.00')
-        self.assertEqual (lines  [2] [4], '12.00')
-        self.assertEqual (lines  [2] [5], '37.00')
+        self.assertEqual (lines  [2] [2], '25.0')
+        self.assertEqual (lines  [2] [3], '25.0')
+        self.assertEqual (lines  [2] [4], '12.0')
+        self.assertEqual (lines  [2] [5], '37.0')
         self.assertEqual (lines  [2] [6], '30.0')
         self.assertEqual (lines  [2] [7], '')
-        self.assertEqual (lines  [2] [8], '7.00')
-        self.assertEqual (lines  [2] [9], '0.00')
+        self.assertEqual (lines  [2] [8], '7.0')
+        self.assertEqual (lines  [2] [9], '0.0')
         self.assertEqual (lines  [3] [0], 'testuser30')
         self.assertEqual (lines  [3] [1], '2021-12-31')
-        self.assertEqual (lines  [3] [2], '25.00')
-        self.assertEqual (lines  [3] [3], '25.00')
-        self.assertEqual (lines  [3] [4], '7.00')
-        self.assertEqual (lines  [3] [5], '32.00')
+        self.assertEqual (lines  [3] [2], '25.0')
+        self.assertEqual (lines  [3] [3], '25.0')
+        self.assertEqual (lines  [3] [4], '7.0')
+        self.assertEqual (lines  [3] [5], '32.0')
         self.assertEqual (lines  [3] [6], '27.0')
         self.assertEqual (lines  [3] [7], '')
-        self.assertEqual (lines  [3] [8], '5.00')
-        self.assertEqual (lines  [3] [9], '0.00')
+        self.assertEqual (lines  [3] [8], '5.0')
+        self.assertEqual (lines  [3] [9], '0.0')
         self.assertEqual (lines  [4] [0], 'testuser30')
         self.assertEqual (lines  [4] [1], '2022-12-31')
-        self.assertEqual (lines  [4] [2], '25.00')
-        self.assertEqual (lines  [4] [3], '25.00')
-        self.assertEqual (lines  [4] [4], '5.00')
-        self.assertEqual (lines  [4] [5], '30.00')
+        self.assertEqual (lines  [4] [2], '25.0')
+        self.assertEqual (lines  [4] [3], '25.0')
+        self.assertEqual (lines  [4] [4], '5.0')
+        self.assertEqual (lines  [4] [5], '30.0')
         self.assertEqual (lines  [4] [6], '29.0')
         self.assertEqual (lines  [4] [7], '')
-        self.assertEqual (lines  [4] [8], '1.00')
-        self.assertEqual (lines  [4] [9], '0.00')
+        self.assertEqual (lines  [4] [8], '1.0')
+        self.assertEqual (lines  [4] [9], '0.0')
         self.assertEqual (lines  [5] [0], 'testuser30')
         self.assertEqual (lines  [5] [1], '2023-12-31')
-        self.assertEqual (lines  [5] [2], '25.00')
-        self.assertEqual (lines  [5] [3], '25.00')
-        self.assertEqual (lines  [5] [4], '1.00')
-        self.assertEqual (lines  [5] [5], '26.00')
+        self.assertEqual (lines  [5] [2], '25.0')
+        self.assertEqual (lines  [5] [3], '25.0')
+        self.assertEqual (lines  [5] [4], '1.0')
+        self.assertEqual (lines  [5] [5], '26.0')
         self.assertEqual (lines  [5] [6], '26.0')
         self.assertEqual (lines  [5] [7], '')
-        self.assertEqual (lines  [5] [8], '0.00')
-        self.assertEqual (lines  [5] [9], '0.00')
+        self.assertEqual (lines  [5] [8], '0.0')
+        self.assertEqual (lines  [5] [9], '0.0')
         self.assertEqual (lines  [6] [0], 'testuser30')
         self.assertEqual (lines  [6] [1], '2024-12-31')
-        self.assertEqual (lines  [6] [2], '25.00')
-        self.assertEqual (lines  [6] [3], '25.00')
-        self.assertEqual (lines  [6] [4], '0.00')
-        self.assertEqual (lines  [6] [5], '25.00')
+        self.assertEqual (lines  [6] [2], '25.0')
+        self.assertEqual (lines  [6] [3], '25.0')
+        self.assertEqual (lines  [6] [4], '0.0')
+        self.assertEqual (lines  [6] [5], '25.0')
         self.assertEqual (lines  [6] [6], '23.0')
         self.assertEqual (lines  [6] [7], '')
-        self.assertEqual (lines  [6] [8], '2.00')
-        self.assertEqual (lines  [6] [9], '0.00')
+        self.assertEqual (lines  [6] [8], '2.0')
+        self.assertEqual (lines  [6] [9], '0.0')
         self.assertEqual (lines  [7] [0], 'testuser30')
         self.assertEqual (lines  [7] [1], '2025-12-31')
-        self.assertEqual (lines  [7] [2], '25.00')
-        self.assertEqual (lines  [7] [3], '25.00')
-        self.assertEqual (lines  [7] [4], '2.00')
-        self.assertEqual (lines  [7] [5], '27.00')
+        self.assertEqual (lines  [7] [2], '25.0')
+        self.assertEqual (lines  [7] [3], '25.0')
+        self.assertEqual (lines  [7] [4], '2.0')
+        self.assertEqual (lines  [7] [5], '27.0')
         self.assertEqual (lines  [7] [6], '9.0')
         self.assertEqual (lines  [7] [7], '')
-        self.assertEqual (lines  [7] [8], '18.00')
-        self.assertEqual (lines  [7] [9], '0.00')
+        self.assertEqual (lines  [7] [8], '18.0')
+        self.assertEqual (lines  [7] [9], '0.0')
         self.db.close ()
 
         # Second query with user30
@@ -5210,74 +5216,74 @@ class Test_Case_Timetracker (_Test_Case_Summary, unittest.TestCase):
         self.assertEqual (lines  [0] [9], 'Additional submitted')
         self.assertEqual (lines  [1] [0], 'testuser30')
         self.assertEqual (lines  [1] [1], '2019-12-31')
-        self.assertEqual (lines  [1] [2], '25.00')
-        self.assertEqual (lines  [1] [3], '25.00')
-        self.assertEqual (lines  [1] [4], '0.00')
-        self.assertEqual (lines  [1] [5], '25.00')
-        self.assertEqual (lines  [1] [6], '13.00')
+        self.assertEqual (lines  [1] [2], '25.0')
+        self.assertEqual (lines  [1] [3], '25.0')
+        self.assertEqual (lines  [1] [4], '0.0')
+        self.assertEqual (lines  [1] [5], '25.0')
+        self.assertEqual (lines  [1] [6], '13.0')
         self.assertEqual (lines  [1] [7], '0.0')
-        self.assertEqual (lines  [1] [8], '12.00')
-        self.assertEqual (lines  [1] [9], '0.00')
+        self.assertEqual (lines  [1] [8], '12.0')
+        self.assertEqual (lines  [1] [9], '0.0')
         self.assertEqual (lines  [2] [0], 'testuser30')
         self.assertEqual (lines  [2] [1], '2020-12-31')
-        self.assertEqual (lines  [2] [2], '25.00')
-        self.assertEqual (lines  [2] [3], '25.00')
-        self.assertEqual (lines  [2] [4], '12.00')
-        self.assertEqual (lines  [2] [5], '37.00')
-        self.assertEqual (lines  [2] [6], '30.00')
+        self.assertEqual (lines  [2] [2], '25.0')
+        self.assertEqual (lines  [2] [3], '25.0')
+        self.assertEqual (lines  [2] [4], '12.0')
+        self.assertEqual (lines  [2] [5], '37.0')
+        self.assertEqual (lines  [2] [6], '30.0')
         self.assertEqual (lines  [2] [7], '')
-        self.assertEqual (lines  [2] [8], '7.00')
-        self.assertEqual (lines  [2] [9], '0.00')
+        self.assertEqual (lines  [2] [8], '7.0')
+        self.assertEqual (lines  [2] [9], '0.0')
         self.assertEqual (lines  [3] [0], 'testuser30')
         self.assertEqual (lines  [3] [1], '2021-12-31')
-        self.assertEqual (lines  [3] [2], '25.00')
-        self.assertEqual (lines  [3] [3], '25.00')
-        self.assertEqual (lines  [3] [4], '7.00')
-        self.assertEqual (lines  [3] [5], '32.00')
-        self.assertEqual (lines  [3] [6], '27.00')
+        self.assertEqual (lines  [3] [2], '25.0')
+        self.assertEqual (lines  [3] [3], '25.0')
+        self.assertEqual (lines  [3] [4], '7.0')
+        self.assertEqual (lines  [3] [5], '32.0')
+        self.assertEqual (lines  [3] [6], '27.0')
         self.assertEqual (lines  [3] [7], '')
-        self.assertEqual (lines  [3] [8], '5.00')
-        self.assertEqual (lines  [3] [9], '0.00')
+        self.assertEqual (lines  [3] [8], '5.0')
+        self.assertEqual (lines  [3] [9], '0.0')
         self.assertEqual (lines  [4] [0], 'testuser30')
         self.assertEqual (lines  [4] [1], '2022-12-31')
-        self.assertEqual (lines  [4] [2], '25.00')
-        self.assertEqual (lines  [4] [3], '25.00')
-        self.assertEqual (lines  [4] [4], '5.00')
-        self.assertEqual (lines  [4] [5], '30.00')
-        self.assertEqual (lines  [4] [6], '29.00')
+        self.assertEqual (lines  [4] [2], '25.0')
+        self.assertEqual (lines  [4] [3], '25.0')
+        self.assertEqual (lines  [4] [4], '5.0')
+        self.assertEqual (lines  [4] [5], '30.0')
+        self.assertEqual (lines  [4] [6], '29.0')
         self.assertEqual (lines  [4] [7], '')
-        self.assertEqual (lines  [4] [8], '1.00')
-        self.assertEqual (lines  [4] [9], '0.00')
+        self.assertEqual (lines  [4] [8], '1.0')
+        self.assertEqual (lines  [4] [9], '0.0')
         self.assertEqual (lines  [5] [0], 'testuser30')
         self.assertEqual (lines  [5] [1], '2023-12-31')
-        self.assertEqual (lines  [5] [2], '25.00')
-        self.assertEqual (lines  [5] [3], '25.00')
-        self.assertEqual (lines  [5] [4], '1.00')
-        self.assertEqual (lines  [5] [5], '26.00')
-        self.assertEqual (lines  [5] [6], '26.00')
+        self.assertEqual (lines  [5] [2], '25.0')
+        self.assertEqual (lines  [5] [3], '25.0')
+        self.assertEqual (lines  [5] [4], '1.0')
+        self.assertEqual (lines  [5] [5], '26.0')
+        self.assertEqual (lines  [5] [6], '26.0')
         self.assertEqual (lines  [5] [7], '')
-        self.assertEqual (lines  [5] [8], '0.00')
-        self.assertEqual (lines  [5] [9], '0.00')
+        self.assertEqual (lines  [5] [8], '0.0')
+        self.assertEqual (lines  [5] [9], '0.0')
         self.assertEqual (lines  [6] [0], 'testuser30')
         self.assertEqual (lines  [6] [1], '2024-12-31')
-        self.assertEqual (lines  [6] [2], '25.00')
-        self.assertEqual (lines  [6] [3], '25.00')
-        self.assertEqual (lines  [6] [4], '0.00')
-        self.assertEqual (lines  [6] [5], '25.00')
-        self.assertEqual (lines  [6] [6], '23.00')
+        self.assertEqual (lines  [6] [2], '25.0')
+        self.assertEqual (lines  [6] [3], '25.0')
+        self.assertEqual (lines  [6] [4], '0.0')
+        self.assertEqual (lines  [6] [5], '25.0')
+        self.assertEqual (lines  [6] [6], '23.0')
         self.assertEqual (lines  [6] [7], '')
-        self.assertEqual (lines  [6] [8], '2.00')
-        self.assertEqual (lines  [6] [9], '0.00')
+        self.assertEqual (lines  [6] [8], '2.0')
+        self.assertEqual (lines  [6] [9], '0.0')
         self.assertEqual (lines  [7] [0], 'testuser30')
         self.assertEqual (lines  [7] [1], '2025-12-31')
-        self.assertEqual (lines  [7] [2], '25.00')
-        self.assertEqual (lines  [7] [3], '25.00')
-        self.assertEqual (lines  [7] [4], '2.00')
-        self.assertEqual (lines  [7] [5], '27.00')
-        self.assertEqual (lines  [7] [6], '9.00')
+        self.assertEqual (lines  [7] [2], '25.0')
+        self.assertEqual (lines  [7] [3], '25.0')
+        self.assertEqual (lines  [7] [4], '2.0')
+        self.assertEqual (lines  [7] [5], '27.0')
+        self.assertEqual (lines  [7] [6], '9.0')
         self.assertEqual (lines  [7] [7], '')
-        self.assertEqual (lines  [7] [8], '18.00')
-        self.assertEqual (lines  [7] [9], '0.00')
+        self.assertEqual (lines  [7] [8], '18.0')
+        self.assertEqual (lines  [7] [9], '0.0')
         self.db.close ()
     # end def test_user30_vacation
 
@@ -5336,34 +5342,34 @@ class Test_Case_Timetracker (_Test_Case_Summary, unittest.TestCase):
         self.assertEqual (lines  [0] [9], 'Additional submitted')
         self.assertEqual (lines  [1] [0], 'testuser31')
         self.assertEqual (lines  [1] [1], '2023-12-31')
-        self.assertEqual (lines  [1] [2], '25.00')
-        self.assertEqual (lines  [1] [3], '25.00')
-        self.assertEqual (lines  [1] [4], '11.94')
-        self.assertEqual (lines  [1] [5], '36.94')
+        self.assertEqual (lines  [1] [2], '25.0')
+        self.assertEqual (lines  [1] [3], '25.0')
+        self.assertEqual (lines  [1] [4], '11.943082')
+        self.assertEqual (lines  [1] [5], '36.943082')
         self.assertEqual (lines  [1] [6], '0.0')
         self.assertEqual (lines  [1] [7], '')
-        self.assertEqual (lines  [1] [8], '36.94')
-        self.assertEqual (lines  [1] [9], '0.00')
+        self.assertEqual (lines  [1] [8], '36.943082')
+        self.assertEqual (lines  [1] [9], '0.0')
         self.assertEqual (lines  [2] [0], 'testuser31')
         self.assertEqual (lines  [2] [1], '2024-12-31')
-        self.assertEqual (lines  [2] [2], '0.00')
-        self.assertEqual (lines  [2] [3], '10.45')
-        self.assertEqual (lines  [2] [4], '0.00')
-        self.assertEqual (lines  [2] [5], '10.45')
+        self.assertEqual (lines  [2] [2], '0.0')
+        self.assertEqual (lines  [2] [3], '10.450820')
+        self.assertEqual (lines  [2] [4], '0.0')
+        self.assertEqual (lines  [2] [5], '10.450820')
         self.assertEqual (lines  [2] [6], '0.0')
         self.assertEqual (lines  [2] [7], '0.0')
-        self.assertEqual (lines  [2] [8], '10.45')
-        self.assertEqual (lines  [2] [9], '0.00')
+        self.assertEqual (lines  [2] [8], '10.450820')
+        self.assertEqual (lines  [2] [9], '0.0')
         self.assertEqual (lines  [3] [0], 'testuser31')
         self.assertEqual (lines  [3] [1], '2025-12-31')
-        self.assertEqual (lines  [3] [2], '25.00')
-        self.assertEqual (lines  [3] [3], '7.67')
-        self.assertEqual (lines  [3] [4], '10.45')
-        self.assertEqual (lines  [3] [5], '18.12')
+        self.assertEqual (lines  [3] [2], '25.0')
+        self.assertEqual (lines  [3] [3], '7.671233')
+        self.assertEqual (lines  [3] [4], '10.450820')
+        self.assertEqual (lines  [3] [5], '18.122053')
         self.assertEqual (lines  [3] [6], '0.0')
-        self.assertEqual (lines  [3] [7], '-7.22 + 3.77')
-        self.assertEqual (lines  [3] [8], '14.67')
-        self.assertEqual (lines  [3] [9], '0.00')
+        self.assertEqual (lines  [3] [7], '-7.220000 + 3.770000')
+        self.assertEqual (lines  [3] [8], '14.672053')
+        self.assertEqual (lines  [3] [9], '0.0')
         self.db.close ()
     # end def test_user31_vacation
 
@@ -5429,34 +5435,34 @@ class Test_Case_Timetracker (_Test_Case_Summary, unittest.TestCase):
         self.assertEqual (lines  [0] [9], 'Additional submitted')
         self.assertEqual (lines  [1] [0], 'testuser32')
         self.assertEqual (lines  [1] [1], '2023-12-31')
-        self.assertEqual (lines  [1] [2], '25.00')
-        self.assertEqual (lines  [1] [3], '24.45')
-        self.assertEqual (lines  [1] [4], '8.21')
-        self.assertEqual (lines  [1] [5], '32.66')
+        self.assertEqual (lines  [1] [2], '25.0')
+        self.assertEqual (lines  [1] [3], '24.452055')
+        self.assertEqual (lines  [1] [4], '8.205979')
+        self.assertEqual (lines  [1] [5], '32.658034')
         self.assertEqual (lines  [1] [6], '16.0')
         self.assertEqual (lines  [1] [7], '')
-        self.assertEqual (lines  [1] [8], '16.66')
-        self.assertEqual (lines  [1] [9], '0.00')
+        self.assertEqual (lines  [1] [8], '16.658034')
+        self.assertEqual (lines  [1] [9], '0.0')
         self.assertEqual (lines  [2] [0], 'testuser32')
         self.assertEqual (lines  [2] [1], '2024-12-31')
-        self.assertEqual (lines  [2] [2], '25.00')
-        self.assertEqual (lines  [2] [3], '11.95')
-        self.assertEqual (lines  [2] [4], '16.66')
-        self.assertEqual (lines  [2] [5], '28.61')
+        self.assertEqual (lines  [2] [2], '25.0')
+        self.assertEqual (lines  [2] [3], '11.953552')
+        self.assertEqual (lines  [2] [4], '16.658034')
+        self.assertEqual (lines  [2] [5], '28.611586')
         self.assertEqual (lines  [2] [6], '27.0')
         self.assertEqual (lines  [2] [7], '')
-        self.assertEqual (lines  [2] [8], '1.61')
-        self.assertEqual (lines  [2] [9], '0.00')
+        self.assertEqual (lines  [2] [8], '1.611586')
+        self.assertEqual (lines  [2] [9], '0.0')
         self.assertEqual (lines  [3] [0], 'testuser32')
         self.assertEqual (lines  [3] [1], '2025-12-31')
-        self.assertEqual (lines  [3] [2], '25.00')
-        self.assertEqual (lines  [3] [3], '25.00')
-        self.assertEqual (lines  [3] [4], '1.61')
-        self.assertEqual (lines  [3] [5], '26.61')
+        self.assertEqual (lines  [3] [2], '25.0')
+        self.assertEqual (lines  [3] [3], '25.0')
+        self.assertEqual (lines  [3] [4], '1.611586')
+        self.assertEqual (lines  [3] [5], '26.611586')
         self.assertEqual (lines  [3] [6], '2.0')
         self.assertEqual (lines  [3] [7], '')
-        self.assertEqual (lines  [3] [8], '24.61')
-        self.assertEqual (lines  [3] [9], '0.00')
+        self.assertEqual (lines  [3] [8], '24.611586')
+        self.assertEqual (lines  [3] [9], '0.0')
         self.db.close ()
     # end def test_user32_vacation
 
@@ -5596,7 +5602,7 @@ class Test_Case_Timetracker (_Test_Case_Summary, unittest.TestCase):
         self.db = self.tracker.open (self.username34)
         dts = date.Date ('2024-12-23')
         dte = date.Date ('2025-01-06')
-        r = vacation.leave_days (self.db, self.user34, dts, dte)
+        r = vacation.leave_days (self.db, self.user34, dts, dte) [0]
         assert r == 0.0
         d = dts
         while (d <= dte):
@@ -5608,7 +5614,7 @@ class Test_Case_Timetracker (_Test_Case_Summary, unittest.TestCase):
             vacation.try_create_public_holiday (self.db, dr, d, self.user34)
             d = d + common.day
         # Now mis-placed public holidays should have been deleted
-        r = vacation.leave_days (self.db, self.user34, dts, dte)
+        r = vacation.leave_days (self.db, self.user34, dts, dte) [0]
         assert r == 5.0
         self.db.close ()
     # end def test_user34_vacation
@@ -5626,7 +5632,7 @@ class Test_Case_Timetracker (_Test_Case_Summary, unittest.TestCase):
         self.db = self.tracker.open (self.username34)
         dts = date.Date ('2024-12-23')
         dte = date.Date ('2025-01-06')
-        r = vacation.leave_days (self.db, self.user34, dts, dte)
+        r = vacation.leave_days (self.db, self.user34, dts, dte) [0]
         assert r == 0.0
         d = dts
         while (d <= dte):
@@ -5639,7 +5645,7 @@ class Test_Case_Timetracker (_Test_Case_Summary, unittest.TestCase):
             d = d + common.day
         # User is not part of the leave process.
         # So no public holidays should have been deleted
-        r = vacation.leave_days (self.db, self.user34, dts, dte)
+        r = vacation.leave_days (self.db, self.user34, dts, dte) [0]
         assert r == 0.0
         self.db.close ()
     # end def test_user34_no_vac_corr
@@ -5748,13 +5754,13 @@ class Test_Case_Timetracker (_Test_Case_Summary, unittest.TestCase):
         self.assertEqual (lines  [0] [8], 'remaining vacation')
         self.assertEqual (lines  [1] [0], 'testuser35')
         self.assertEqual (lines  [1] [1], '2026-12-31')
-        self.assertEqual (lines  [1] [2], '30.00')
-        self.assertEqual (lines  [1] [3], '30.00')
-        self.assertEqual (lines  [1] [4], '-0.43')
-        self.assertEqual (lines  [1] [5], '29.57')
+        self.assertEqual (lines  [1] [2], '30.0')
+        self.assertEqual (lines  [1] [3], '30.0')
+        self.assertEqual (lines  [1] [4], '-0.430384')
+        self.assertEqual (lines  [1] [5], '29.569616')
         self.assertEqual (lines  [1] [6], '16.0')
         self.assertEqual (lines  [1] [7], '')
-        self.assertEqual (lines  [1] [8], '13.57')
+        self.assertEqual (lines  [1] [8], '13.569616')
         self.db.close ()
         # Get vacation report for 2026 for this user *as this user*
         self.db = self.tracker.open (self.username35)
@@ -5778,13 +5784,13 @@ class Test_Case_Timetracker (_Test_Case_Summary, unittest.TestCase):
         self.assertEqual (lines  [0] [8], 'remaining vacation')
         self.assertEqual (lines  [1] [0], 'testuser35')
         self.assertEqual (lines  [1] [1], '2026-12-31')
-        self.assertEqual (lines  [1] [2], '30.00')
-        self.assertEqual (lines  [1] [3], '30.00')
-        self.assertEqual (lines  [1] [4], '0.00')
-        self.assertEqual (lines  [1] [5], '30.00')
-        self.assertEqual (lines  [1] [6], '16.00')
+        self.assertEqual (lines  [1] [2], '30.0')
+        self.assertEqual (lines  [1] [3], '30.0')
+        self.assertEqual (lines  [1] [4], '-0.430')
+        self.assertEqual (lines  [1] [5], '30.0')
+        self.assertEqual (lines  [1] [6], '16.0')
         self.assertEqual (lines  [1] [7], '')
-        self.assertEqual (lines  [1] [8], '14.00')
+        self.assertEqual (lines  [1] [8], '14.0')
         self.db.close ()
     # end def test_user35_vacation
 
@@ -5839,7 +5845,7 @@ class Test_Case_Timetracker (_Test_Case_Summary, unittest.TestCase):
             eoy  = eoy_vacation \
                 (self.db, self.user36, dt, ctid)
             vapr = vacation_time_sum \
-                (self.db, self.user36, ctid, jandt, dt)
+                (self.db, self.user36, ctid, jandt, dt) [0]
             vsub = vacation_with_status \
                 (self.db, self.user36, ctid, jandt, dt, 'submitted')
             rem  = remaining_vacation \
@@ -5912,13 +5918,13 @@ class Test_Case_Timetracker (_Test_Case_Summary, unittest.TestCase):
         self.assertEqual (lines  [0] [8], 'remaining vacation')
         self.assertEqual (lines  [1] [0], 'testuser37')
         self.assertEqual (lines  [1] [1], '2026-12-31')
-        self.assertEqual (lines  [1] [2], '25.00')
-        self.assertEqual (lines  [1] [3], '25.00')
-        self.assertEqual (lines  [1] [4], '-2.22')
-        self.assertEqual (lines  [1] [5], '22.78')
+        self.assertEqual (lines  [1] [2], '25.0')
+        self.assertEqual (lines  [1] [3], '25.0')
+        self.assertEqual (lines  [1] [4], '-2.219178')
+        self.assertEqual (lines  [1] [5], '22.780822')
         self.assertEqual (lines  [1] [6], '23.0')
         self.assertEqual (lines  [1] [7], '')
-        self.assertEqual (lines  [1] [8], '-0.22')
+        self.assertEqual (lines  [1] [8], '-0.219178')
         # Get remaining vacation as user0
         dt = date.Date ('2026-04-02')
         v = vac.remaining_vacation (self.db, self.user37, None, dt)
@@ -5947,19 +5953,144 @@ class Test_Case_Timetracker (_Test_Case_Summary, unittest.TestCase):
         self.assertEqual (lines  [0] [8], 'remaining vacation')
         self.assertEqual (lines  [1] [0], 'testuser37')
         self.assertEqual (lines  [1] [1], '2026-12-31')
-        self.assertEqual (lines  [1] [2], '25.00')
-        self.assertEqual (lines  [1] [3], '25.00')
-        self.assertEqual (lines  [1] [4], '-2.00')
-        self.assertEqual (lines  [1] [5], '23.00')
-        self.assertEqual (lines  [1] [6], '23.00')
+        self.assertEqual (lines  [1] [2], '25.0')
+        self.assertEqual (lines  [1] [3], '25.0')
+        self.assertEqual (lines  [1] [4], '-2.219')
+        self.assertEqual (lines  [1] [5], '23.0')
+        self.assertEqual (lines  [1] [6], '23.0')
         self.assertEqual (lines  [1] [7], '')
-        self.assertEqual (lines  [1] [8], '0.00')
+        self.assertEqual (lines  [1] [8], '0.0')
         # Get remaining vacation as this user
         dt = date.Date ('2026-04-02')
         v = vac.remaining_vacation (self.db, self.user37, None, dt)
         assert v == 0.0
         self.db.close ()
     # end def test_user37_vacation
+
+    def setup_user37_rom (self):
+        self.username37 = 'testuser37'
+        self.user37 = self.db.user.create \
+            ( username     = self.username37
+            , firstname    = 'Nummer37'
+            , lastname     = 'User37'
+            )
+        # Allow user to create their own dyn user rec
+        self.db.o_permission.create \
+            (user = self.user37, org_location = [self.olo, self.olo2])
+        p = self.db.overtime_period.create \
+            ( name              = 'monthly average required'
+            , months            = 1
+            , weekly            = False
+            , required_overtime = True
+            , order             = 3
+            )
+        # allow user37 to book on wp 44
+        self.db.time_wp.set (self.vacation_wp, bookers = [self.user37])
+        # allow user37 to book on wp 1 (public holiday)
+        self.db.time_wp.set (self.holiday_wp, bookers = [self.user37])
+        # Need to import data *before* creating public holidays
+        vaid = self.db.vac_aliq.lookup ('Romania')
+        user37_time.import_data_37 \
+            (self.db, self.user37, self.olo, vac_aliq = vaid)
+        self.create_public_holidays (date.Date ('2018-04-01'))
+        self.db.commit ()
+    # end def setup_user37_rom
+
+    def test_user37_rom_vacation (self):
+        self.log.debug ('test_user37')
+        self.setup_db ()
+        self.setup_user37_rom ()
+        # Allow report
+        rl = self.db.user.get (self.user0, 'roles')
+        self.db.user.set (self.user0, roles = ','.join ((rl, 'hr-vacation')))
+        self.db.commit ()
+        self.db.close  ()
+        # Get vacation report for 2026 for this user *as HR-vacation*
+        self.db = self.tracker.open (self.username0)
+        summary.init (self.tracker)
+        # Vacation correction 2021-03-25
+        # Work days 2021
+        assert vacation.work_days_year (2021) == 261
+        # Work days March 25 to end of year
+        # 59 Working days Feb-Mar24, 
+        soy = date.Date ('2021-01-01')
+        s   = date.Date ('2021-03-25')
+        e   = date.Date ('2021-12-31')
+        assert vacation.work_days (self.db, self.user37, s, e) == 261 - 59
+        assert vacation.pub_holidays_in_period (self.db, self.olo, soy, e) == 12
+        # public holidays 2025-03-25 to eoy:
+        assert vacation.pub_holidays_in_period (self.db, self.olo, s, e) == 10
+        # So we have (202 - 10) * 25 / (261 - 12) = 19.27710843373494
+        # So we carry forward to 2026 the rounded value of 0.277108 = 0 days
+        fs = { 'user': [self.user37], 'date': '2026-01-01;2026-12-31' }
+        class r: filterspec = fs ; columns = {}
+        class c: _ = lambda x: x
+        sr = summary.Vacation_Report \
+            (self.db, r, templating.TemplatingUtils (c))
+        lines = tuple (csv.reader (StringIO (sr.as_csv ()), delimiter = ','))
+        for l in lines:
+            print (l)
+        self.assertEqual (len (lines), 2)
+        self.assertEqual (len (lines [0]), 9)
+        self.assertEqual (lines  [0] [0], 'User')
+        self.assertEqual (lines  [0] [1], 'Time Period')
+        self.assertEqual (lines  [0] [2], 'yearly entitlement')
+        self.assertEqual (lines  [0] [3], 'yearly prorated')
+        self.assertEqual (lines  [0] [4], 'carry forward from previous year')
+        self.assertEqual (lines  [0] [5], 'entitlement total')
+        self.assertEqual (lines  [0] [6], 'approved days')
+        self.assertEqual (lines  [0] [7], 'vacation corrections')
+        self.assertEqual (lines  [0] [8], 'remaining vacation')
+        self.assertEqual (lines  [1] [0], 'testuser37')
+        self.assertEqual (lines  [1] [1], '2026-12-31')
+        self.assertEqual (lines  [1] [2], '25.0')
+        self.assertEqual (lines  [1] [3], '25.0')
+        self.assertEqual (lines  [1] [4], '0.0')
+        self.assertEqual (lines  [1] [5], '25.0')
+        self.assertEqual (lines  [1] [6], '23.0')
+        self.assertEqual (lines  [1] [7], '')
+        self.assertEqual (lines  [1] [8], '2.0')
+        # Get remaining vacation as user0
+        dt = date.Date ('2026-04-02')
+        v = vac.remaining_vacation (self.db, self.user37, None, dt)
+        #assert v == 0.0
+        self.db.close ()
+
+        # Get vacation report for 2026 for this user *as this user*
+        self.db = self.tracker.open (self.username37)
+        summary.init (self.tracker)
+        fs = { 'user': [self.user37], 'date': '2026-01-01;2026-12-31' }
+        class r: filterspec = fs ; columns = {}
+        class c: _ = lambda x: x
+        sr = summary.Vacation_Report \
+            (self.db, r, templating.TemplatingUtils (c))
+        lines = tuple (csv.reader (StringIO (sr.as_csv ()), delimiter = ','))
+        self.assertEqual (len (lines), 2)
+        self.assertEqual (len (lines [0]), 9)
+        self.assertEqual (lines  [0] [0], 'User')
+        self.assertEqual (lines  [0] [1], 'Time Period')
+        self.assertEqual (lines  [0] [2], 'yearly entitlement')
+        self.assertEqual (lines  [0] [3], 'yearly prorated')
+        self.assertEqual (lines  [0] [4], 'carry forward from previous year')
+        self.assertEqual (lines  [0] [5], 'entitlement total')
+        self.assertEqual (lines  [0] [6], 'approved days')
+        self.assertEqual (lines  [0] [7], 'vacation corrections')
+        self.assertEqual (lines  [0] [8], 'remaining vacation')
+        self.assertEqual (lines  [1] [0], 'testuser37')
+        self.assertEqual (lines  [1] [1], '2026-12-31')
+        self.assertEqual (lines  [1] [2], '25.0')
+        self.assertEqual (lines  [1] [3], '25.0')
+        self.assertEqual (lines  [1] [4], '0.0')
+        self.assertEqual (lines  [1] [5], '25.0')
+        self.assertEqual (lines  [1] [6], '23.0')
+        self.assertEqual (lines  [1] [7], '')
+        self.assertEqual (lines  [1] [8], '2.0')
+        # Get remaining vacation as this user
+        dt = date.Date ('2026-04-02')
+        v = vac.remaining_vacation (self.db, self.user37, None, dt)
+        assert v == 2.0
+        self.db.close ()
+    # end def test_user37_rom_vacation
 
 
     def test_duplicate_public_holiday (self):
@@ -6065,6 +6196,29 @@ class Test_Case_Timetracker (_Test_Case_Summary, unittest.TestCase):
                 , user = self.user11
                 )
     # end def test_duplicate_freeze_record
+
+    def test_public_holidays (self):
+        """ Count expected public holidays in some years
+        """
+        self.setup_db ()
+        self.create_public_holidays (2024)
+        jan_2024 = date.Date ('2024-01-01')
+        dec_2024 = date.Date ('2024-12-31')
+        jan_2025 = date.Date ('2025-01-01')
+        dec_2025 = date.Date ('2025-12-31')
+        jan_2026 = date.Date ('2026-01-01')
+        dec_2026 = date.Date ('2026-12-31')
+
+        ph = vacation.pub_holidays_in_period \
+            (self.db, self.olo, jan_2024, dec_2024)
+        assert ph == 13
+        ph = vacation.pub_holidays_in_period \
+            (self.db, self.olo, jan_2025, dec_2025)
+        assert ph == 14
+        ph = vacation.pub_holidays_in_period \
+            (self.db, self.olo, jan_2026, dec_2026)
+        assert ph == 13
+    # end def test_public_holidays
 
 # end class Test_Case_Timetracker
 
@@ -6634,7 +6788,7 @@ class Test_Case_Fulltracker (_Test_Case_Summary, unittest.TestCase):
         self.assertEqual (lines [29] [4], '2012-01-01;2012-05-31')
         self.assertEqual (lines  [1] [5], '0.00') # balance_start
 
-        self.assertEqual (lines  [1] [9], '0')
+        self.assertEqual (lines  [1] [9], '0.00')
         self.assertEqual (lines  [1][11], '0.00')
         self.assertEqual (lines  [1][14], '0.00')
         self.assertEqual (lines  [2] [9], '40.00')
@@ -6762,25 +6916,25 @@ class Test_Case_Fulltracker (_Test_Case_Summary, unittest.TestCase):
             ,   "39.25",  "43.50",  "35.00",  "44.00",  "44.25",  "42.00"
             ,   "39.75",  "39.00",  "38.50",  "41.50",  "41.00",  "43.75"
             ,   "39.00",  "38.50",  "39.25",  "38.50",  "38.50",  "38.50"
-            ,   "42.00",  "38.50",  "47.75",  "43.25",  "29.50",   "0"
-            ,    "0",      "0",      "0",      "0.00", "176.25", "177.00"
+            ,   "42.00",  "38.50",  "47.75",  "43.25",  "29.50",   "0.00"
+            ,   "0.00",    "0.00",   "0.00",   "0.00", "176.25", "177.00"
             ,  "188.00", "173.00", "182.75", "169.75", "173.50", "143.00"
             ,    "0.00", "1383.25"
             )):
-            self.assertEqual (lines [n + 1][9], v)
+            assert lines [n + 1][9] == v, n+1
         # Supp. hours average
         for n, v in enumerate \
-            ((   "0",      "0",      "0",     "0",     "0",    "0"
-            ,    "0",      "0",      "0",     "0",     "0",    "39.14"
-            ,   "40.09",  "40.09",  "40.17", "39.83", "40.17", "40.17"
-            ,   "39.75",  "40.02",  "39.72", "40.02", "39.41",  "0"
-            ,    "0",      "0",      "0",     "0",     "0",     "0"
-            ,    "0",      "0",      "0",     "0",     "0",     "0"
-            ,    "0",      "0",      "0",     "0",     "0",     "0"
-            ,  "173.07", "168.42", "183.34",  "0",     "0",     "0"
-            ,    "0",   "1518.07"
+            ((   "0.00",    "0.00",   "0.00",  "0.00",  "0.00",  "0.00"
+            ,    "0.00",    "0.00",   "0.00",  "0.00",  "0.00", "39.14"
+            ,   "40.09",   "40.09",  "40.17", "39.83", "40.17", "40.17"
+            ,   "39.75",   "40.02",  "39.72", "40.02", "39.41",  "0.00"
+            ,    "0.00",    "0.00",   "0.00",  "0.00",  "0.00",  "0.00"
+            ,    "0.00",    "0.00",   "0.00",  "0.00",  "0.00",  "0.00"
+            ,    "0.00",    "0.00",   "0.00",  "0.00",  "0.00",  "0.00"
+            ,  "173.07",  "168.42", "183.34",  "0.00",  "0.00",  "0.00"
+            ,    "0.00", "1518.07"
             )):
-            self.assertEqual (lines [n + 1][11], v)
+            assert lines [n + 1][11] == v, str (n+1)
         # Supplementary hours
         for n, v in enumerate \
             ((   "0.00",  "38.50",  "38.50",  "38.50",  "38.50",  "38.50"
@@ -6793,7 +6947,7 @@ class Test_Case_Fulltracker (_Test_Case_Summary, unittest.TestCase):
             ,   "77.00",   "0.00",   "0.00", "172.20", "180.40", "188.60"
             , "164.00", "1113.30"
             )):
-            self.assertEqual (lines [n + 1][12], v)
+            assert lines [n + 1][12] == v, str (n+1)
         for n, v in enumerate \
             ((    "0.00",    "0.00",    "3.00",    "5.50",  "5.50",  "7.50"
             ,    "12.50",   "16.00",   "22.00",   "22.00", "28.00", "34.51"
@@ -6805,7 +6959,7 @@ class Test_Case_Fulltracker (_Test_Case_Summary, unittest.TestCase):
             ,    "37.08",   "41.67",   "41.08",   "44.88", "45.88",  "7.38"
             ,  "-146.62", "-146.62"
             )):
-            self.assertEqual (lines [n + 1][14], v)
+            assert lines [n + 1][14] == v, str (n+1)
         off = 1
         for n in range (11):
             self.assertEqual (lines [n + off][15], "week")
@@ -7065,7 +7219,7 @@ class Test_Case_Fulltracker (_Test_Case_Summary, unittest.TestCase):
         self.assertEqual (lines  [5] [4], '2013-01-01;2013-01-16')
         self.assertEqual (lines  [5][13], '45.0')
         self.assertEqual (lines  [4][10], '0.00')
-        self.assertEqual (lines  [4][11], '0')
+        self.assertEqual (lines  [4][11], '0.00')
         self.assertEqual (lines  [1] [5], '0.00')
         self.assertEqual (lines  [5][14], '45.00')
     # end def test_user9
@@ -7111,8 +7265,8 @@ class Test_Case_Fulltracker (_Test_Case_Summary, unittest.TestCase):
         self.assertEqual (lines [13][13], '-76.38')
         self.assertEqual (lines  [1][10], '0.00')
         self.assertEqual (lines [13][10], '0.00')
-        self.assertEqual (lines  [1][11], '0')
-        self.assertEqual (lines [13][11], '0')
+        self.assertEqual (lines  [1][11], '0.00')
+        self.assertEqual (lines [13][11], '0.00')
         self.assertEqual (lines  [1][12], '0.00')
         self.assertEqual (lines [13][12], '0.00')
         self.assertEqual (lines  [1] [5], '76.38')

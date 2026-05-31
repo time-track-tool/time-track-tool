@@ -211,18 +211,16 @@ def act_or_latest_user_dynamic (db, user, check_o_perm = True):
     return None
 # end def act_or_latest_user_dynamic
 
-wdays = ['mon', 'tue', 'wed', 'thu', 'fri', 'sat', 'sun']
-
 def day_work_hours (dynuser, date):
     """ Compute hours for a holiday etc from the date """
-    wday  = gmtime (date.timestamp ())[6]
+    wday  = common.week_day (date)
     return _day_work_hours (dynuser, wday)
 # end def day_work_hours
 
 def _day_work_hours (dynuser, wday):
     if not dynuser:
         return 0
-    hours = dynuser ['hours_' + wdays [wday]]
+    hours = dynuser ['hours_' + common.wday_name (wday)]
     if hours is not None:
         return hours
     if wday in (5, 6) or not dynuser.weekly_hours:
@@ -265,7 +263,7 @@ def work_days (dynuser):
         overtime and additional time computation: We need to know the
         ratio for a given day...
     """
-    s = sum (bool (dynuser ['hours_' + f]) for f in wdays)
+    s = sum (bool (dynuser ['hours_' + f]) for f in common.wdays)
     return s or 5
 # end def work_days
 
@@ -461,7 +459,7 @@ def required_overtime_in_period (db, user, date, period):
         dyn   = get_user_dynamic (db, user, date)
         is_wd = is_work_day (dyn, date)
         if not dyn:
-            wday  = gmtime (date.timestamp ())[6]
+            wday  = common.week_day (date)
             is_wd = wday < 5
         wd += 1.0 * is_wd
         if dyn and period.id == dyn.overtime_period:
@@ -543,7 +541,7 @@ class Duration (object):
 
 def durations (db, user, date):
     pdate = date.pretty (ymd)
-    wday  = gmtime (date.timestamp ())[6]
+    wday  = common.week_day (date)
     dyn   = get_user_dynamic (db, user, date)
     if dyn:
         if dyn.overtime_period:

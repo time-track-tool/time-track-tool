@@ -35,6 +35,13 @@ import freeze
 import common
 import user_dynamic
 
+def round_vacation (dyn, value):
+    va_name = dyn.cl.db.vac_aliq.get (dyn.vac_aliq, 'name')
+    if va_name == 'Romania':
+        return float (round (value))
+    return float (ceil (value))
+# end def round_vacation
+
 def public_holiday_wp (db, user, date):
     """ Get first public holiday wp for this user on date.
         Should typically be only one, we use the first in the list
@@ -251,8 +258,10 @@ def leave_submissions_on_date (db, user, date, filter = None):
 # end def leave_submissions_on_date
 
 def leave_days (db, user, first_day, last_day):
+    """ Return leave days, both as days and as work hours
+    """
     d = first_day
-    s = 0.0
+    s = s_h = 0.0
     while d <= last_day:
         dyn = user_dynamic.get_user_dynamic (db, user, d)
         if not dyn:
@@ -262,9 +271,86 @@ def leave_days (db, user, first_day, last_day):
         ld = leave_duration (db, user, d)
         if ld != 0:
             s += ceil (ld / wh * 2) / 2.
+            s_h += ld
         d += common.day
-    return s
+    return s, s_h
 # end def leave_days
+
+def work_days_year (year):
+    """ Work days over whole year minus public holidays for that work location
+        We might want to do some caching.
+    >>> work_days_year (2024)
+    262.0
+    >>> work_days_year (2025)
+    261.0
+    >>> work_days_year (2026)
+    261.0
+    """
+    wdsum = 0
+    # Forward from 1st jan to first Sunday
+    d = Date ('%s-01-01' % year)
+    while common.week_day (d) != 6:
+        if common.week_day (d) <= 4:
+            wdsum += 1
+        d += common.day
+    start = d + common.day # Monday starts the first full week
+    # Backward from 31th dec to last Saturday
+    d = Date ('%s-12-31' % year)
+    while common.week_day (d) != 5:
+        if common.week_day (d) <= 4:
+            wdsum += 1
+        d -= common.day
+    end = d + common.day + common.day # Monday after last friday in year
+    # Count full weeks, 5 days the week
+    wdsum += (end - start).day / 7 * 5
+    return wdsum
+# end def work_days_year
+
+def work_days (db, user, first_day, last_day):
+    """ Work days for this user accoring to dynamic user record, public
+        holidays are *not* subtracted. The last_day *is included*.
+    """
+    wdsum = 0
+    d = first_day
+    while d <= last_day:
+        dyn  = user_dynamic.get_user_dynamic (db, user, d)
+        if not dyn:
+            dyn = user_dynamic.find_user_dynamic (db, user, d, '+')
+            if not dyn:
+                break
+            d = dyn.valid_from
+            continue
+        wday = common.week_day (d)
+        wdn  = common.wday_name (wday)
+        if getattr (dyn, 'hours_' + wdn):
+            wdsum += 1
+        d += common.day
+    return wdsum
+# end def work_days
+
+def pub_holidays_in_period (db, org_location, start, end):
+    """ Get public holidays in given range, end *is* included
+    """
+    olo = db.org_location.getnode (org_location)
+    dt  = common.pretty_range (start, end)
+    ph_olo = db.public_holiday.filter \
+        (None, dict (date = dt, org_location = olo.id))
+    ph_loc = db.public_holiday.filter \
+        (None, dict (date = dt, locations = olo.location))
+    ph = [db.public_holiday.getnode (x) for x in ph_olo + ph_loc]
+    last = None
+    hsum = 0
+    for d in sorted (ph, key = lambda x: x.date):
+        # Don't count Sat+Sun
+        if common.week_day (d.date) >= 5:
+            continue
+        # Dupe
+        if d.date == last:
+            assert 0, 'Duplicate pub holiday'
+        last = d.date
+        hsum += 1
+    return hsum
+# end def pub_holidays_in_period
 
 def leave_duration (db, user, date, ignore_public_holiday = False):
     """ Duration of leave on a single day to be booked. """
@@ -307,6 +393,8 @@ def leave_submission_days (db, user, ctype, start, end, type, * stati):
     """ Sum leave submissions of the given type
         with the given status in the given time range for the given user
         and ctype (contract_type).
+        Note that for type vacation we return days and work hours, for
+        the other types work hours is None.
     """
     assert start <= end
     dt   = common.pretty_range (start, end)
@@ -317,6 +405,7 @@ def leave_submission_days (db, user, ctype, start, end, type, * stati):
     elif type == 'flexi':
         lwp  = flexi_wps (db)
     else:
+        assert type == 'special'
         lwp  = special_wps (db)
     d    = dict (user = user, status = list (stati), time_wp = lwp)
     d1   = dict (d, first_day = dt)
@@ -327,7 +416,7 @@ def leave_submission_days (db, user, ctype, start, end, type, * stati):
     vs3  = db.leave_submission.filter (None, d3)
     vss  = list (set (vs1 + vs2 + vs3))
     vss  = [db.leave_submission.getnode (i) for i in vss]
-    days = 0.0
+    days = days_h = 0.0
     for vs in vss:
         first_day = vs.first_day
         last_day  = vs.last_day
@@ -342,8 +431,12 @@ def leave_submission_days (db, user, ctype, start, end, type, * stati):
         if last_day > end:
             assert vs.first_day <= end
             last_day  = end
-        days += leave_days (db, user, first_day, last_day)
-    return days
+        d, d_h = leave_days (db, user, first_day, last_day)
+        days   += d
+        days_h += d_h
+    if type != 'vacation':
+        days_h = None
+    return days, days_h
 # end def leave_submission_days
 
 def vacation_submission_days (db, user, ctype, start, end, * stati):
@@ -359,7 +452,7 @@ def flexitime_submission_days (db, user, ctype, start, end, * stati):
         range for the given user and ctype (contract_type).
     """
     return leave_submission_days \
-        (db, user, ctype, start, end, 'flexi', * stati)
+        (db, user, ctype, start, end, 'flexi', * stati) [0]
 # end def flexitime_submission_days
 
 def special_submission_days (db, user, ctype, start, end, * stati):
@@ -367,7 +460,7 @@ def special_submission_days (db, user, ctype, start, end, * stati):
         time range for the given user and ctype (contract_type).
     """
     return leave_submission_days \
-        (db, user, ctype, start, end, 'special', * stati)
+        (db, user, ctype, start, end, 'special', * stati) [0]
 # end def special_submission_days
 
 def next_yearly_vacation_date (db, user, ctype, date):
@@ -537,7 +630,7 @@ def vacation_time_sum (db, user, ctype, start, end):
     vwp = vacation_wps (db)
     trs = db.time_record.filter \
         (None, dict (daily_record = dr, wp = vwp), sort = dtt)
-    vac = 0.0
+    vac = vac_h = 0.0
     if ctype == -1:
         # Maybe this should be something from start to end?
         ctype = _get_ctype (db, user, Date ('.'))
@@ -566,8 +659,10 @@ def vacation_time_sum (db, user, ctype, start, end):
         by_dr [dr.id][1].append (tr.duration)
     for k in by_dr:
         wh, durs = by_dr [k]
-        vac += ceil (sum (durs) / wh * 2) / 2.
-    return vac
+        s = sum (durs)
+        vac   += ceil (s / wh * 2) / 2.
+        vac_h += s
+    return vac, vac_h
 # end def vacation_time_sum
 
 def _get_ctype (db, user, date):
@@ -580,8 +675,7 @@ def _get_ctype (db, user, date):
     return dyn.contract_type
 # end def _get_ctype
 
-def remaining_vacation \
-    (db, user, ctype = -1, date = None, cons = None, to_eoy = True):
+def remaining_vacation (db, user, ctype = -1, date = None, to_eoy = True):
     """ Compute remaining vacation on the given date
     """
     if date is None:
@@ -591,26 +685,33 @@ def remaining_vacation \
         ctype = _get_ctype (db, user, date)
     if ctype == -1:
         return
-    vac   = None
+    vac = vac_h = v = None
     try:
-        vac = db.rem_vac_cache.get ((user, ctype, pdate, to_eoy))
+        v = db.rem_vac_cache.get ((user, ctype, pdate, to_eoy))
     except AttributeError:
         def vac_clear_cache (db):
             db.rem_vac_cache = {}
         db.registerClearCacheCallback (vac_clear_cache, db)
         db.rem_vac_cache = {}
-    if vac is not None:
-        return vac
+    if v is not None:
+        return v # tuple (vac, vac_h)
     vc = get_vacation_correction (db, user, ctype, date)
     if not vc:
-        return
+        return None, None
     ed  = next_yearly_vacation_date (db, user, ctype, date) - common.day
     if not to_eoy:
         ed = min (ed, date)
+    cons, _, cons_h = consolidated_vacation \
+        (db, user, ctype, date, vc, to_eoy)
+    vsum, vsum_h = vacation_time_sum (db, user, ctype, vc.date, ed)
     if cons is None:
-        cons = consolidated_vacation (db, user, ctype, date, vc, to_eoy)
-    vac = cons
-    vac -= vacation_time_sum (db, user, ctype, vc.date, ed)
+        assert cons_h is not None
+        vac_h = cons_h
+        vac_h -= vsum_h
+    else:
+        assert cons_h is None
+        vac = cons
+        vac -= vsum
     # All vacation_correction records up to date but starting with one
     # day later (otherwise we'll find the absolute correction)
     # Also one day *earlier* than ed for the same reason.
@@ -626,9 +727,12 @@ def remaining_vacation \
         if vc.contract_type != ctype:
             continue
         assert not vc.absolute
-        vac += vc.days
-    db.rem_vac_cache [(user, ctype, pdate, to_eoy)] = vac
-    return vac
+        if cons is None:
+            vac_h += vc.hours
+        else:
+            vac += vc.days
+    db.rem_vac_cache [(user, ctype, pdate, to_eoy)] = (vac, vac_h)
+    return vac, vac_h
 # end def remaining_vacation
 
 def month_diff (d1, d2):
@@ -646,6 +750,100 @@ def month_diff (d1, d2):
     md = d2.month - d1.month
     return md + 12 * yd
 # end def month_diff
+
+def first_month_finland (dyn, sd, d):
+    """ If sd the start date isn't a first, we need to compute the
+        vacation for the first month
+    """
+    if sd.day == 0:
+        return sd, 0
+    # If both dates are in same month, do nothing
+    if sd.month == d.month:
+        return sd, 0
+    # First check if sd.day > 1 in that case the first month only counts
+    # if person worked at least 14 days
+    acr = 0
+    next = end_of_month (sd) + common.day
+    assert next <= d
+    if (next - sd).day >= 14:
+        acr += dyn.vacation_yearly / 12
+    sd = next
+    return sd, acr
+# end def first_month_finland
+
+def first_week_cz (dyn, sd, d):
+    wday = common.week_day (sd)
+    if wday == 0:
+        return sd, 0
+    if common.weekno_year_from_day (dyn) == common.weekno_year_from_day (d):
+        return sd, 0
+    acc_h = 0
+    days = 7 - wday
+    assert days < 7
+    assert sd + common.day * days <= d
+    # FIXME
+    # For now first non-full week alliquot
+    yd = float (common.ydays (sd))
+    acc_h = days * dyn.vacation_yearly / yd * dyn.weekly_hours
+    return sd, acc_h
+# end def first_week_cz
+
+def accrue_cz (dyn, sd, d):
+    sd, acc_h = first_week_cz (dyn, sd, d)
+    assert common.week_day (sd) == 0
+    if common.weekno_year_from_day (dyn) == common.weekno_year_from_day (d):
+        return sd, 0
+    wday = common.week_day (d)
+    ed   = d - common.day * wday
+    assert ed >= sd
+    days = (ed - sd).day
+    assert day % 7 == 0
+    yd = float (common.ydays (sd))
+    acc_h += dyn.vacation_yearly / yd * days * dyn.weekly_hours
+    return ed, acc_h
+# end def accrue_cz
+
+def accrue (dyn, sd, d):
+    """ Accrual for time from sd to d (first of month)
+    """
+    # If both dates are in same month, do nothing
+    if sd.month == d.month and sd.year == d.year:
+        return sd, 0
+    assert sd.day == 1
+    acr  = 0
+    next = Date ('%s-%02d-01' % (d.year, d.month))
+    months = next.month - sd.month
+    years  = next.year  - sd.year
+    if years:
+        assert years == 1
+        months += (12 * years)
+    acr += dyn.vacation_yearly / 12 * months
+    return next, acr
+# end def accrue
+
+def accrue_finland (dyn, sd, d):
+    acr = 0
+    sd, a = first_month_finland (dyn, sd, d)
+    acr += a
+    sd, a = accrue (dyn, sd, d)
+    acr += a
+    return sd, acr
+# end def accrue_finland
+
+def accrue_romania (dyn, frm, to):
+    """ 'to' is *not* included """
+    assert frm.year == (to - common.day).year
+    db  = dyn.cl.db
+    y   = work_days_year (frm.year)
+    to  = to - common.day # Do *not* include end date
+    olo = dyn.org_location
+    jan = Date ('%s-01-01' % frm.year)
+    dec = Date ('%s-12-31' % frm.year)
+    y  -= pub_holidays_in_period (db, olo, jan, dec)
+    wd  = work_days (db, dyn.user, frm, to)
+    wd -= pub_holidays_in_period (db, olo, frm, to)
+    return dyn.vacation_yearly * wd / y
+# end def accrue_romania
 
 def consolidated_vacation \
     (db, user, ctype = -1, date = None, vc = None, to_eoy = True):
@@ -673,12 +871,21 @@ def consolidated_vacation \
     msg = "vac_aliq None for user_dynamic%s" % dyn.id
     assert dyn.vac_aliq, msg
     va = db.vac_aliq.getnode (dyn.vac_aliq)
-    assert va.name in ('Daily', 'Monthly')
+    vac_h = vac_acr = None
+    assert va.name in ('Austria', 'Germany', 'Czechia', 'Finland', 'Romania')
+    if va.name == 'Finland':
+        vac_acr = float (vc.accrued)
+    if va.name == 'Czechia':
+        vac_h = float (vc.hours)
+
     # Need to skip first period without a dyn user record
     # sd is the current start date for german aliquotation
-    # We subtract 1 day to easily compare the day of the ending-date
-    # with the day of the start date
+    # It is also used for other monthly alliquotations that start on the
+    # 1st of the month: If the user started on a day different from a
+    # 1st it is used for alliquotation, then it is set to the next 1st
+    # that is not already summed up.
     sd = d
+    # German alliquotation:
     # This is used for corrections if the start day lies beyond 28 -- in
     # that case there are months that simply don't have that date. So we
     # must correct for this in months with less days.
@@ -699,12 +906,25 @@ def consolidated_vacation \
               % dyn.id
               )
         assert dyn.vac_aliq == va.id, msg
+        # Special case Finland: 1st of April
+        # is the day accrued vacation becomes vacation
+        if va.name == 'Finland':
+            assert dyn.vacation_day == 1
+            assert dyn.vacation_month == 4
+            rollover = Date ('%s-04-01' % d.year)
+
+        # dyn end date before eoy and before end
         if dyn.valid_to and dyn.valid_to <= ed and dyn.valid_to <= eoy:
-            if va.name == 'Daily':
+            # Daily alliquotation in Austria:
+            if va.name == 'Austria':
                 yd = float (common.ydays (dyn.valid_to))
                 vac += interval_days \
                     (dyn.valid_to - d) * dyn.vacation_yearly / yd
-            else:
+            # Monthly alliquotation in Germany, special case here, the
+            # start date matters. In other countries we simply count
+            # whole months and leave it to manual corrections to handle
+            # the rest.
+            elif va.name == 'Germany':
                 md  = month_diff (sd, dyn.valid_to)
                 dy  = sd_day or sd.day
                 if dyn.valid_to.day < dy:
@@ -729,13 +949,33 @@ def consolidated_vacation \
                     sd_day = 0
                 d = dyn.valid_to
                 vac += dyn.vacation_yearly * md / 12.0
+            elif va.name == 'Czechia':
+                sd, a = accrue_cz (dyn, sd, dyn.valid_to)
+                vac_h += a
+            elif va.name == 'Finland':
+                if d < rollover and dyn.valid_to >= rollover:
+                    sd, a = accrue_finland (dyn, sd, rollover)
+                    vac_acr += a
+                    vac += vac_acr
+                    vac_acr = 0.0
+                    d = rollover
+                    if dyn.valid_to == d:
+                        dyn = vac_next_user_dynamic (db, dyn)
+                    continue
+                else:
+                    sd, a = accrue_finland (dyn, sd, dyn.valid_to)
+                    vac_acr += a
+            elif va.name == 'Romania':
+                vac += accrue_romania (dyn, d, dyn.valid_to)
+            else:
+                assert 0, 'Invalid country setting for vac_aliq'
             dyn = vac_next_user_dynamic (db, dyn)
         elif eoy < ed:
-            if va.name == 'Daily':
+            if va.name == 'Austria':
                 yd = float (common.ydays (eoy))
                 iv = eoy + common.day - d
                 vac += interval_days (iv) * dyn.vacation_yearly / yd
-            else:
+            elif va.name == 'Germany':
                 md  = month_diff (sd, eoy)
                 dy  = sd_day or sd.day
                 assert eoy.day >= dy
@@ -746,24 +986,72 @@ def consolidated_vacation \
                     sd = Date (eoy.pretty ("%%Y-%%m-%s" % sd.day))
                 sd_day = 0
                 vac += dyn.vacation_yearly * md / 12.0
+            elif va.name == 'Czechia':
+                sd, a = accrue_cz (dyn, sd, eoy + common.day)
+                vac_h += a
+            elif va.name == 'Finland':
+                if d < rollover and dyn.valid_to >= rollover:
+                    sd, a = accrue_finland (dyn, sd, rollover)
+                    vac_acr += a
+                    vac += vac_acr
+                    vac_acr = 0.0
+                    d = rollover
+                    if dyn.valid_to == d:
+                        dyn = vac_next_user_dynamic (db, dyn)
+                    continue
+                else:
+                    sd, a = accrue_finland (dyn, sd, eoy + common.day)
+                    vac_acr += a
+            elif va.name == 'Romania':
+                vac += accrue_romania (dyn, d, eoy + common.day)
+                vac  = round_vacation (dyn, vac)
+            else:
+                assert 0, 'Invalid country setting for vac_aliq'
             d  = eoy + common.day
             if dyn.valid_to == d:
                 dyn = vac_next_user_dynamic (db, dyn)
         else:
-            if va.name == 'Daily':
+            # This happens, when ed is not year-end
+            if va.name == 'Austria':
                 yd = float (common.ydays (ed - common.day))
                 vac += interval_days (ed - d) * dyn.vacation_yearly / yd
-            else:
+            elif va.name == 'Germany':
                 md = month_diff (sd, ed)
                 dy  = sd_day or sd.day
                 if ed.day < dy:
                     md -= 1
                 sd = ed
                 vac += dyn.vacation_yearly * md / 12.0
+            elif va.name == 'Czechia':
+                sd, a = accrue_cz (dyn, sd, ed)
+                vac_h += a
+            elif va.name == 'Finland':
+                if d < rollover and dyn.valid_to >= rollover:
+                    sd, a = accrue_finland (dyn, sd, rollover)
+                    vac_acr += a
+                    vac += vac_acr
+                    vac_acr = 0.0
+                    d = rollover
+                    continue
+                else:
+                    sd, a = accrue_finland (dyn, sd, ed)
+                    vac_acr += a
+            elif va.name == 'Romania':
+                vac += accrue_romania (dyn, d, ed)
+            else:
+                assert 0, 'Invalid country setting for vac_aliq'
             d = ed
-    # Round to ten digits: The computations above can produce errors due
+    # For Romania we round *immediately*.
+    if va.name == 'Romania':
+        dyn = vac_get_user_dynamic (db, user, ctype, ed - common.day)
+        return round_vacation (dyn, vac), None, None
+    # Round to six digits: The computations above can produce errors due
     # to repeated additions
-    return round (vac, 10)
+    if vac_h is not None:
+        return None, None, round (vac_h, 6)
+    elif vac_acr is not None:
+        return round (vac, 6), round (vac_acr, 6), None
+    return round (vac, 6), None, None
 # end def consolidated_vacation
 
 def valid_wps \
@@ -899,40 +1187,49 @@ def need_hr_approval \
         return True
     if stname != 'submitted':
         return False
+    dyn = user_dynamic.get_user_dynamic (db, user, first_day)
+    if not dyn:
+        return False
     if not tp.is_vacation:
         # Flexitime
         if tp.no_overtime and tp.max_hours == 0:
-            dyn = user_dynamic.get_user_dynamic (db, user, first_day)
             if not dyn or not dyn.all_in:
                 return False
             fd = first_day
             if first_day.year != last_day.year:
+                # FIXME: Do we really want to check previous years?
                 while fd.year != last_day.year:
                     eoy = common.end_of_year (fd)
                     rem = flexi_remain (db, user, fd, ctype)
-                    dur = leave_days (db, user, fd, eoy)
+                    dur, _ = leave_days (db, user, fd, eoy)
                     if rem - dur < 0:
                         return True
                     fd = eoy + common.day
-            rem = flexi_remain (db, user, fd, ctype)
-            dur = leave_days (db, user, fd, last_day)
+            rem    = flexi_remain (db, user, fd, ctype)
+            dur, _ = leave_days (db, user, fd, last_day)
             return rem - dur < 0
         else:
             return False
     day = common.day
     ed  = next_yearly_vacation_date (db, user, ctype, last_day) - day
-    vac = remaining_vacation (db, user, ctype, ed)
-    assert vac is not None
-    dur = leave_days (db, user, first_day, last_day)
+    vac, vac_h = remaining_vacation (db, user, ctype, ed)
+    # One must be None, one not None
+    assert vac is not None or vac_h is not None
+    assert vac is None or vac_h is None
+    dur, dur_h = leave_days (db, user, first_day, last_day)
     # don't count duration if this is already booked, so we would count
     # this vacation twice.
     if booked:
-        dur = 0
-    return ceil (vac) - dur < 0
+        dur = dur_h = 0
+    if vac is None:
+        return round_vacation (dyn, vac_h) - dur_h < 0
+    else:
+        return round_vacation (dyn, vac) - dur < 0
 # end def need_hr_approval
 
-def vacation_params (db, user, date, vc, hv = False):
-    """ Compute parameters needed for initializing vacation report,
+def ly_vacation_params (db, user, date, vc, hv = False):
+    """ Last years vacation parameters
+        Compute parameters needed for initializing vacation report,
         returns the last total vacation (initial carry-over for start of
         vacation or consolidated vacation from last year) and the
         current carry (initial carry-over for start of vacation or last
@@ -940,11 +1237,11 @@ def vacation_params (db, user, date, vc, hv = False):
         summary report and for vacation display in the leave mask.
     """
     day   = common.day
-    carry = None
-    ltot  = None
+    carry = carry_h = ltot = ltot_acr = ltot_h = None
     ctype = vc.contract_type
     yday  = next_yearly_vacation_date (db, user, ctype, date) - day
     if yday:
+        # We compute everything for *last* year still relevant *this* year
         pd = prev_yearly_vacation_date (db, user, ctype, yday)
         if not pd or vc.date == pd:
             pd    = vc.date
@@ -952,15 +1249,19 @@ def vacation_params (db, user, date, vc, hv = False):
         else:
             # If the vacation correction is mid this year ltot=carry=0
             if vc.date > pd:
-                carry = 0.0
-                ltot  = 0.0
+                carry = carry_h = 0.0
+                ltot  = ltot_acr = ltot_h = 0.0
             else:
-                carry = remaining_vacation    (db, user, ctype, pd - day)
-                ltot  = consolidated_vacation (db, user, ctype, pd - day)
-    carry = carry or 0.0
-    ltot  = ltot  or 0.0
-    return yday, pd, carry, ltot
-# end def vacation_params
+                carry, carry_h = remaining_vacation (db, user, ctype, pd - day)
+                ltot, ltot_acr, ltot_h = consolidated_vacation \
+                    (db, user, ctype, pd - day)
+    carry    = carry    or 0.0
+    carry_h  = carry_h  or 0.0
+    ltot     = ltot     or 0.0
+    ltot_h   = ltot_h   or 0.0
+    ltot_acr = ltot_acr or 0.0
+    return yday, pd, carry, carry_h, ltot, ltot_acr, ltot_h
+# end def ly_vacation_params
 
 def get_current_ctype (db, user, dt = None):
     if dt is None:

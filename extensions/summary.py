@@ -1,5 +1,5 @@
 #! /usr/bin/python
-# Copyright (C) 2006-24 Dr. Ralf Schlatterbeck Open Source Consulting.
+# Copyright (C) 2006-26 Dr. Ralf Schlatterbeck Open Source Consulting.
 # Reichergasse 131, A-3411 Weidling.
 # Web: http://www.runtux.com Email: office@runtux.com
 # All rights reserved
@@ -590,18 +590,32 @@ class DR_Container (Comparable_Container):
 
 class _Report (autosuper):
 
+    float_fmt      = '%.2f'
+    float_fmt_long = float_fmt
+    truncate_zeros = False
+
+    def format_float (self, f, float_fmt = None):
+        if float_fmt is None:
+            float_fmt = self.float_fmt
+        s = float_fmt % f
+        if self.truncate_zeros:
+            l = int (float_fmt.rsplit ('.', 1) [-1][:-1])
+            if s.endswith ('.' + '0' * l):
+                s = '%.1f' % f
+        return s
+    # end def format_float
+
     def html_item (self, item, **kw):
         if not item and not isinstance (item, dict) and not item == 0:
             return "   <td/>"
+        fmt = '  <td %sstyle="text-align:right;">%s</td>'
         if isinstance (item, PM_Value):
             if item.missing and not item:
                 return ('  <td class="missing"/>')
-            return \
-                ('  <td %sstyle="text-align:right;">%2.02f</td>'
-                % (['class="missing" ', ''][not item.missing], item)
-                )
+            v = self.format_float (item)
+            return (fmt % (['class="missing" ', ''][not item.missing], v))
         if isinstance (item, type (0.0)) or isinstance (item, type (0)):
-            return ('  <td style="text-align:right;">%2.02f</td>' % item)
+            return (fmt % ('', self.format_float (item)))
         if isinstance (item, str):
             return ('  <td>%s</td>' % item)
         if isinstance (item, list):
@@ -628,14 +642,17 @@ class _Report (autosuper):
     # end def html_line
 
     def csv_item (self, item, **kw):
+        fmt = self.float_fmt
+        if getattr (self, 'hv', False):
+            fmt = self.float_fmt_long
         if not item and not isinstance (item, dict) and not item == 0:
             return ''
         if isinstance (item, PM_Value):
             if item.missing and not item:
                 return "-"
-            return '%2.02f' % item
-        if isinstance (item, type (0.0)):
-            return '%2.02f' % item
+            return self.format_float (item, fmt)
+        if isinstance (item, (type (0.0), type (0))):
+            return self.format_float (item, fmt)
         if isinstance (item, list):
             return '/'.join (str (i) for i in item)
         return str (item)
@@ -691,24 +708,39 @@ class _Report (autosuper):
             supi = self.db.user.get (supi, 'supervisor')
     # end def supi_clearance
 
-    def format_vac_corr (self, vc, container):
+    def format_vac_corr (self, dyn, vc, container):
+        fmt = self.float_fmt
+        if getattr (self, 'hv', False):
+            fmt = self.float_fmt_long
+        vaname = None
+        if dyn.vac_aliq is not None:
+            vaname = self.db.vac_aliq.get (dyn.vac_aliq, 'name')
+        attr = 'days'
+        if vaname == 'Czechia':
+            attr = 'hours'
+        if attr == 'hours':
+            fmt = fmt + ' hours'
         try:
             vcs = HTML_List ()
             for x in vc:
                 item  = self.htmldb.vacation_correction.getItem (x)
-                days  = item.days
+                val   = item [attr]
                 ep    = self.utils.ExtProperty
                 vcs.append \
                     ( ep
-                        ( self.utils, days
+                        ( self.utils, val
                         , item         = item
                         , is_labelprop = True
+                        , format       = fmt
                         )
                     )
             container ['vacation corrections'] = vcs
         except AttributeError:
             container ['vacation corrections'] = ' + '.join \
-                (str (self.db.vacation_correction.get (i, 'days')) for i in vc)
+                (self.format_float
+                    (self.db.vacation_correction.get (i, attr), fmt)
+                 for i in vc
+                )
     # end def format_vac_corr
 
 # end class _Report
@@ -1750,25 +1782,35 @@ class Staff_Report (_Report):
 
 class Vacation_Report (_Report):
     ''"Vacation Report" # for translation in web-interface
+    float_fmt      = '%.3f'
+    float_fmt_long = '%.6f'
+    truncate_zeros = True
+    #         name                       sort-key
     fields = \
-        ( (""'user.employee_number', 1)
-        , (""'user.firstname',       1.1)
-        , (""'user.lastname',        1.2)
-        , (""'yearly entitlement',   1.3)
-        , (""'yearly prorated',      2)
-        , (""'carry forward',        3)
-        , (""'entitlement total',    4)
-        , (""'approved days',        5)
-        , (""'approved_submissions', 6)
-        , (""'vacation corrections', 7)
-        , (""'remaining vacation',   8)
-        , (""'additional_submitted', 9)
-        , (""'flexi_time',          10)
-        , (""'flexi_sub',           11)
-        , (""'flexi_max',           12)
-        , (""'flexi_rem',           13)
-        , (""'special_leave',       14)
-        , (""'special_sub',         15)
+        ( (""'user.employee_number',           1)
+        , (""'user.firstname',                 1.1)
+        , (""'user.lastname',                  1.2)
+        , (""'yearly entitlement',             1.3)
+        , (""'accrued_vacation',               1.4)
+        , (""'yearly prorated',                2)
+        , (""'hourly_prorated',                2.5)
+        , (""'carry forward',                  3)
+        , (""'entitlement total',              4)
+        , (""'rounded_entitlement',            4.5)
+        , (""'hourly_entitlement',             4.6)
+        , (""'approved days',                  5)
+        , (""'approved_submissions',           6)
+        , (""'vacation corrections',           7)
+        , (""'remaining vacation',             8)
+        , (""'rounded_remaining',              8.5)
+        , (""'hourly_remaining',               8.6)
+        , (""'additional_submitted',           9)
+        , (""'flexi_time',                    10)
+        , (""'flexi_sub',                     11)
+        , (""'flexi_max',                     12)
+        , (""'flexi_rem',                     13)
+        , (""'special_leave',                 14)
+        , (""'special_sub',                   15)
         )
     header_classes = \
         { 'remaining vacation' : 'emphasized'
@@ -1804,12 +1846,18 @@ class Vacation_Report (_Report):
         if 'show_obsolete' in filterspec:
             self.show_obsolete = filterspec ['show_obsolete'] == 'yes'
         opt = \
-            ( 'approved_submissions'
-            , 'additional_submitted'
+            ( 'additional_submitted'
+            , 'accrued_vacation'
+            , 'approved_submissions'
             , 'flexi_time'
             , 'flexi_sub'
             , 'flexi_max'
             , 'flexi_rem'
+            , 'hourly_entitlement'
+            , 'hourly_prorated'
+            , 'hourly_remaining'
+            , 'rounded_entitlement'
+            , 'rounded_remaining'
             , 'special_leave'
             , 'special_sub'
             , 'user.employee_number'
@@ -1904,8 +1952,9 @@ class Vacation_Report (_Report):
                 continue
             for ctype in self.user_ctypes [u]:
                 vc = user_vc [(u, ctype)]
-                yday, pd, carry, ltot = vacation.vacation_params \
+                lst = vacation.ly_vacation_params \
                     (db, u, min_user_date [(u, ctype)], vc, hv)
+                yday, pd, carry, carry_h, ltot, ltot_acr, ltot_h = lst
                 ld    = None
                 d     = yday
                 if hv:
@@ -1926,11 +1975,9 @@ class Vacation_Report (_Report):
                     vci = db.vacation_correction.filter (None, vcd, sort = srt)
                     if vci [0] != vc.id:
                         vc = db.vacation_correction.getnode (vci [0])
-                        yday, pd, carry, ltot = vacation.vacation_params \
+                        lst = vacation.ly_vacation_params \
                             (db, u, min_user_date [(u, ctype)], vc, hv)
-                    rcarry = carry
-                    if not hv:
-                        rcarry = float (ceil (carry))
+                        yday, pd, carry, carry_h, ltot, ltot_acr, ltot_h = lst
                     if (u, ctype) in max_user_date:
                         if max_user_date [(u, ctype)] <= ld:
                             break
@@ -1963,6 +2010,8 @@ class Vacation_Report (_Report):
                         ent [dyn.vacation_yearly] = 1
                         dyn = vacation.vac_next_user_dynamic (db, dyn)
                     container ['is_obsolete'] = self.is_obsolete (dyn, d)
+                    if not dyn:
+                        dyn = lastdyn
                     v = list (sorted (ent))
                     # Use '..' as separator to prevent excel from computing
                     # difference if exported to excel
@@ -1973,24 +2022,50 @@ class Vacation_Report (_Report):
                         container ['yearly entitlement'] = v [0]
                     else:
                         container ['yearly entitlement'] = 0.0
-                    container ['carry forward'] = rcarry
-                    cons = vacation.consolidated_vacation \
+                    container ['carry forward'] = carry
+                    cons, cons_acr, cons_h = vacation.consolidated_vacation \
                         (db, u, ctype, d, to_eoy = not hv)
-                    et = float (cons - ltot + carry)
-                    yp = float (cons - ltot)
-                    # new carry and remaining vacation
-                    carry = rv = vacation.remaining_vacation \
-                        (db, u, ctype, d, cons, to_eoy = not hv)
+                    rem, rem_h = vacation.remaining_vacation \
+                        (db, u, ctype, d, to_eoy = not hv)
+                    if cons_h is None:
+                        assert cons is not None
+                        et = float (cons - ltot + carry)
+                        yp = float (cons - ltot)
+                        rv = rem
+                        et_h = yp_h = rv_h = None
+                    else:
+                        assert cons is None
+                        et_h = float (cons_h - ltot_h + carry_h)
+                        yp_h = float (cons_h - ltot_h)
+                        rv_h = rem_h
+                        et = et_h * dyn.weekly_hours / 5
+                        yp = yp_h * dyn.weekly_hours / 5
+                        rv = rv_h * dyn.weekly_hours / 5
+                    if hv and 'rounded_entitlement' in self.fields:
+                        container ['rounded_entitlement'] = \
+                            vacation.round_vacation (dyn, et)
+                    if hv and 'rounded_remaining' in self.fields:
+                        container ['rounded_remaining'] = \
+                            vacation.round_vacation (dyn, rv)
+                    if 'hourly_entitlement' in self.fields:
+                        container ['hourly_entitlement'] = et_h
+                    if 'hourly_remaining' in self.fields:
+                        container ['hourly_remaining'] = rv_h
+                    if 'hourly_prorated' in self.fields:
+                        container ['hourly_prorated'] = yp_h
+                    if 'accrued_vacation' in self.fields:
+                        container ['accrued_vacation'] = cons_acr
+
                     if not hv:
                         # ceil in Py3 will return an int if possible ugh
-                        et = float (ceil (et))
-                        yp = float (ceil (yp))
-                        rc = float (ceil (cons))
-                        rv = float (ceil (carry))
+                        et = vacation.round_vacation (dyn, et)
+                        rv = vacation.round_vacation (dyn, rv)
                     container ['entitlement total']  = et
                     container ['yearly prorated']    = yp
                     container ['remaining vacation'] = rv
-                    val = vacation.vacation_time_sum (db, u, ctype, fd, d)
+                    # remaining vacation becomes new carry
+                    carry, carry_h = rem, rem_h
+                    val = vacation.vacation_time_sum (db, u, ctype, fd, d) [0]
                     r   = ('HR-vacation', 'HR-leave-approval')
                     if common.user_has_role (self.db, self.uid, *r):
                         dt   = common.pretty_range (ld, d)
@@ -2006,7 +2081,7 @@ class Vacation_Report (_Report):
                     if 'additional_submitted' in self.fields:
                         container ['additional_submitted'] = \
                             vacation.vacation_submission_days \
-                                (db, u, ctype, fd, d, st_subm)
+                                (db, u, ctype, fd, d, st_subm) [0]
                     if 'flexi_time' in self.fields:
                         container ['flexi_time'] = \
                             vacation.flexitime_submission_days \
@@ -2034,7 +2109,7 @@ class Vacation_Report (_Report):
                     if 'approved_submissions' in self.fields:
                         container ['approved_submissions'] = \
                             vacation.vacation_submission_days \
-                                (db, u, ctype, fd, d, st_accp, st_cnrq)
+                                (db, u, ctype, fd, d, st_accp, st_cnrq) [0]
 
                     vd = common.pretty_range (fd, d)
                     vcids = db.vacation_correction.filter \
@@ -2045,7 +2120,7 @@ class Vacation_Report (_Report):
                             , contract_type = ctype
                             )
                         )
-                    self.format_vac_corr (vcids, container)
+                    self.format_vac_corr (dyn, vcids, container)
                     if (u, ctype) not in self.values:
                         self.values [(u, ctype)] = []
                     self.values [(u, ctype)].append (container)
@@ -2059,6 +2134,24 @@ class Vacation_Report (_Report):
                     else:
                         d = nd - day
     # end def __init__
+
+    def html_item (self, item, **kw):
+        if not self.hv:
+            return super ().html_item (item, **kw)
+        if not isinstance (item, (PM_Value, float, int)):
+            return super ().html_item (item, **kw)
+        fmt = '  <td %sstyle="text-align:right;" title="%s">%s</td>'
+        if isinstance (item, PM_Value):
+            if item.missing and not item:
+                return ('  <td class="missing"/>')
+            sv = self.format_float (item)
+            lv = self.format_float (item, self.float_fmt_long)
+            return (fmt % (['class="missing" ', ''][not item.missing], lv, sv))
+        if isinstance (item, type (0.0)) or isinstance (item, type (0)):
+            sv = self.format_float (item)
+            lv = self.format_float (item, self.float_fmt_long)
+            return (fmt % ('', lv, sv))
+    # end def html_item
 
     def is_obsolete (self, dyn, date):
         """ Check if user becomes obsolete during this reporting period.
@@ -2207,10 +2300,13 @@ class Gap_Report (_Report):
             contr = ccls (start, i18n = db.i18n)
             contr ['balance_start'] = bal
             contr ['carry_on_date'] = ''
-            self.format_vac_corr (vc, contr)
+            self.format_vac_corr (ndyn, vc, contr)
             if ndyn.vac_aliq is not None and odyn.vac_aliq is not None:
-                carry = vacation.remaining_vacation \
+                carry, carry_h = vacation.remaining_vacation \
                     (db, user.id, date = start, to_eoy = False)
+                if carry_h is not None:
+                    assert carry is None
+                    carry = carry_h * ndyn.weekly_hours / 5
                 contr ['carry_on_date'] = carry
             line  = []
             line.append (item_formatter (self.linked_user (user.id)))

@@ -511,6 +511,11 @@ def init \
         , date                  = Date      (offset = 0)
         , absolute              = Boolean   ()
         , days                  = Number    ()
+        # For countries calculating in hours, CZ
+        , hours                 = Number    ()
+        # For countries where accrued vacation cannot be taken immediately
+        # e.g. Finland
+        , accrued               = Number    ()
         , contract_type         = Link      ('contract_type')
         , comment               = String    ()
         )
@@ -526,11 +531,17 @@ def init \
         , time_project          = Link      ("time_project")
         , date                  = Date      (offset = 0)
         , additional_submitted  = String    ()
+        , accrued_vacation      = String    ()
         , approved_submissions  = String    ()
         , flexi_time            = String    ()
         , flexi_sub             = String    ()
         , flexi_max             = String    ()
         , flexi_rem             = String    ()
+        , hourly_entitlement    = String    ()
+        , hourly_prorated       = String    ()
+        , hourly_remaining      = String    ()
+        , rounded_entitlement   = String    ()
+        , rounded_remaining     = String    ()
         , special_leave         = String    ()
         , special_sub           = String    ()
         , show_obsolete         = Boolean   ()
@@ -840,10 +851,6 @@ def security (db, ** kw):
           , ["User"]
           , []
           )
-        , ( "vacation_report"
-          , ["User"]
-          , []
-          )
         , ( "work_location"
           , ["User"]
           , []
@@ -893,6 +900,14 @@ def security (db, ** kw):
         , ( "user",         "View", ["Functional-Role"]
           , ( "planning_role", "scale_seniority", "business_responsible"
             )
+          )
+        , ( "vacation_report", "View", ["User"]
+          , tuple ( set (db.vacation_report.properties)
+                  - set (("rounded_entitlement", "rounded_remaining"))
+                  )
+          )
+        , ( "vacation_report", "View", ["HR-vacation", "Vacation-report"]
+          , ( "rounded_entitlement", "rounded_remaining")
           )
         ]
 
