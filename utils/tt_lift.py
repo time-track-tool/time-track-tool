@@ -33,6 +33,8 @@ for id in db.vac_aliq.getnodeids (retired = False):
 for c in sorted (countries):
     db.vac_aliq.create (name = c)
 
+db.commit ()
+
 # Permission for a user
 user  = db.user.getnode ('304')
 roles = user.roles
@@ -47,6 +49,7 @@ for r in ('hr-leave-approval', 'hr-vacation', 'hr'):
         update_roles = True
 if update_roles:
     db.user.set (user.id, roles = ','.join (sorted (roles)))
+db.commit ()
 
 
 # Unfreeze existing users until jan
@@ -60,12 +63,14 @@ for id in dynids:
 srt = [('+', 'user'), ('-', 'date')]
 freeze = db.daily_record_freeze.filter \
     (None, dict (user = list (users)), sort = srt)
+db.commit ()
 
 cutoff = date.Date ('2026-01-01')
 for f in freeze:
     frz = db.daily_record_freeze.getnode (f)
     if frz.date > cutoff and frz.frozen:
         db.daily_record_freeze.set (f, frozen = False)
+db.commit ()
 
 # Enable do_leave_process in relevant org_location(s)
 va = { '34': db.vac_aliq.lookup ('Romania') }
@@ -154,6 +159,7 @@ if not a_fl:
         , all_in            = True
         , contract_type     = '3'
         )
+db.commit ()
 
 # Vacation and vac correction per user:
 # User vac/year vac_corr '26
@@ -210,6 +216,17 @@ dt_jan = date.Date ('2026-01-01')
 va = db.vac_aliq.lookup ('Romania')
 for u, vac, corr in user_v:
     first = True
+    # Vacation correction on jan 1 2026
+    vc = vacation.get_vacation_correction (db, u)
+    if vc:
+        assert vc.days == corr
+    else:
+        db.vacation_correction.create \
+            ( user     = u
+            , date     = dt_jan
+            , absolute = True
+            , days     = corr
+            )
     # Get dyn user on jan 2026
     dyn = user_dynamic.get_user_dynamic (db, u, date = dt_jan)
     if not dyn:
@@ -240,17 +257,6 @@ for u, vac, corr in user_v:
             db.user_dynamic.set (dyn.id, **d)
         dyn = user_dynamic.next_user_dynamic (db, dyn)
         first = False
-    # Vacation correction on jan 1 2026
-    vc = vacation.get_vacation_correction (db, u)
-    if vc:
-        assert vc.days == corr
-    else:
-        db.vacation_correction.create \
-            ( user     = u
-            , date     = dt_jan
-            , absolute = True
-            , days     = corr
-            )
     # Find time recs <= 2026-05-31 with time_project1429 (vacation subsi)
     d = {}
     d ['daily_record.user'] = u
