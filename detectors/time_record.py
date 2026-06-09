@@ -386,8 +386,8 @@ def check_daily_record (db, cl, nodeid, new_values):
                ):
             msg = "Invalid Transition"
             if old_status == 'open':
-                if 'status' == 'submitted':
-                    if not is_hr and user != uid:
+                if status == 'submitted':
+                    if not (is_hr or user != uid):
                         msg = _ ("Permission denied")
                     elif not time_records_consistent (db, dr):
                         msg = _ ("Inkonsistent time records")

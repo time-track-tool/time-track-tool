@@ -38,6 +38,7 @@ from . import user17_time, user18_time, user20_time, user21_time, user22_time
 from . import user23_time, user24_time, user25_time, user26_time, user27_time
 from . import user28_time, user29_time, user30_time, user31_time, user32_time
 from . import user33_time, user34_time, user35_time, user36_time, user37_time
+from . import user38_time
 
 from operator     import mul
 from email.parser import Parser
@@ -6091,6 +6092,53 @@ class Test_Case_Timetracker (_Test_Case_Summary, unittest.TestCase):
         assert v == 2.0
         self.db.close ()
     # end def test_user37_rom_vacation
+
+    def setup_user38 (self):
+        self.username38 = 'testuser38'
+        self.user38 = self.db.user.create \
+            ( username     = self.username38
+            , firstname    = 'Nummer38'
+            , lastname     = 'User38'
+            )
+        # Allow user to create their own dyn user rec
+        self.db.o_permission.create \
+            (user = self.user38, org_location = [self.olo, self.olo2])
+        p = self.db.overtime_period.create \
+            ( name              = 'monthly average required'
+            , months            = 1
+            , weekly            = False
+            , required_overtime = True
+            , order             = 3
+            )
+        # allow user38 to book on wp 44
+        self.db.time_wp.set (self.vacation_wp, bookers = [self.user38])
+        # allow user38 to book on wp 1 (public holiday)
+        self.db.time_wp.set (self.holiday_wp, bookers = [self.user38])
+        # allow user38 to book on wp 4 (Work Package 0)
+        self.db.time_wp.set (self.wps [0], bookers = [self.user38])
+        user38_time.import_data_38 (self.db, self.user38, self.olo)
+        self.db.commit ()
+    # end def setup_user37
+
+    def test_user38_vacation (self):
+        """ Test that the user cannot submit vacation where in parallel
+            we have a submitted leave. Verify the error message.
+        """
+        self.log.debug ('test_user38')
+        self.setup_db ()
+        self.setup_user38 ()
+        dr = self.db.daily_record.filter \
+            (None, dict (user = self.user38, date = '2026-05-22'))
+        assert len (dr) == 1
+        dr = self.db.daily_record.getnode (dr [0])
+        assert dr.status == '1'
+        # Trying to submit should fail
+        with pytest.raises (Reject) as reject:
+            self.db.daily_record.set (dr.id, status = '2')
+        msg = 'Denied state change: open->submitted: Leave submission exists'
+        assert reject.value.args [0] == msg
+        self.db.close ()
+    # end def test_user38_vacation
 
 
     def test_duplicate_public_holiday (self):
