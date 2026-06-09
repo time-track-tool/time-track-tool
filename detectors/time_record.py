@@ -395,7 +395,7 @@ def check_daily_record (db, cl, nodeid, new_values):
                         msg = _ ("Inkonsistent attendance records")
                     elif vs_has_valid or vs_has_open:
                         msg = _ ("Leave submission exists")
-                elif 'status' == 'leave':
+                elif status == 'leave':
                     msg = _ ("No accepted leave submission")
             elif old_status == 'leave':
                 msg = _ ("Leave submission not cancelled")
