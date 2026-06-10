@@ -1347,9 +1347,9 @@ def copy_url (context, attributes = None):
                         if not val:
                             continue
                     else:
-                        val = escape (context [a].plain ())
+                        val = context [a].plain ()
                 else:
-                    val = escape (str (context [a][linkprop]))
+                    val = str (context [a][linkprop])
             else:
                 try:
                     if  (   a in do_not_add_retired
@@ -1374,7 +1374,7 @@ def copy_url (context, attributes = None):
                 if vt and vt < now:
                     continue
         else:
-            val = escape (context [a].plain ())
+            val = context [a].plain ()
         url.append ('%s=%s' % (a, urlquote (val)))
     if cls == 'purchase_request' and atr == default_attributes [cls]:
         if context.delivery_deadline:
@@ -1387,7 +1387,7 @@ def copy_url (context, attributes = None):
                 if dd > Date ('.'):
                     url.append \
                         ( 'delivery_deadline=%s'
-                        % escape (context.delivery_deadline.plain ())
+                        % urlquote (context.delivery_deadline.plain ())
                         )
             except ValueError:
                 pass
@@ -1418,11 +1418,11 @@ def copy_url (context, attributes = None):
                             elif a in do_not_add_invalid and not ofr [a].valid:
                                 continue
                             else:
-                                val = escape (str (ofr [a][linkprop]))
+                                val = str (ofr [a][linkprop])
                     except (ValueError, TypeError):
                         continue
                 else:
-                    val = escape (ofr [a].plain ())
+                    val = ofr [a].plain ()
                 if val is not None:
                     url.append \
                         ( 'pr_offer_item-%s@%s=%s'
