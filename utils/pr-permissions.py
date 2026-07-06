@@ -54,7 +54,8 @@ with open (args.csv_file, 'r') as f:
             id = prid [0]
             prm = db.o_permission.getnode (id)
             #assert prm.org_group is None, username
-            if prm.organisation != orgs:
+            if '20' not in prm.organisation:
+                orgs.append ('20')
                 if args.do_update:
                     db.o_permission.set (id, organisation = orgs)
                 print ('%supdate: %s' % (doit, username))
