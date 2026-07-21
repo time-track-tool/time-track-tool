@@ -248,6 +248,8 @@ class PR_Sync (Requester):
             check = getattr (self, 'check_' + classname, None)
             if check:
                 valid = check (item)
+            if not valid:
+                self.verbose ("Not Valid: %s%s" % (classname, id))
             fixer = getattr (self, 'fix_' + classname, None)
             if fixer:
                 fixer (item, id)
