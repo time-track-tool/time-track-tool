@@ -109,6 +109,7 @@ class Product_Sync (object):
             self.products [key] = pr.id
         d_s = self.args.delimiter
         sap_dr = DictReader (self.fixer_sap (), delimiter = d_s)
+        sap_dr = sorted(sap_dr, key=lambda x: (self.get_material(x), not self.get_family(x)))
         self.debug ("SAP")
         self.sap_recs = []
         self.sap_ids  = {}
