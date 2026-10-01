@@ -203,7 +203,8 @@ def daily_record_allowed_by_olo (db, userid, itemid):
     """ User may access item because org_location in dynamic user is
         allowed
     """
-    dr = db.daily_record.getnode (itemid)
+    dr  = db.daily_record.getnode (itemid)
+    uid = db.getuid ()
     if dr.user == uid:
         return True
     return user_allowed_by_olo (db, userid, dr.user, dr.date)
