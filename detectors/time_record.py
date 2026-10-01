@@ -1,5 +1,5 @@
 #! /usr/bin/python
-# Copyright (C) 2006-23 Dr. Ralf Schlatterbeck Open Source Consulting.
+# Copyright (C) 2006-26 Dr. Ralf Schlatterbeck Open Source Consulting.
 # Reichergasse 131, A-3411 Weidling.
 # Web: http://www.runtux.com Email: office@runtux.com
 # All rights reserved
@@ -452,7 +452,9 @@ def new_daily_record (db, cl, nodeid, new_values):
     date = new_values ['date']
     date.hour = date.minute = date.second = 0
     new_values ['date'] = date
-    o_permission.check_valid_user (db, cl, nodeid, new_values, date = date)
+    # User may always create *their own* daily recs
+    if uid != new_values ['user']:
+        o_permission.check_valid_user (db, cl, nodeid, new_values, date = date)
     user  = new_values ['user']
     ttby  = db.user.get (user, 'timetracking_by')
     uname = db.user.get (user, 'username')
