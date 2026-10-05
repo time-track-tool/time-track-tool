@@ -1559,8 +1559,11 @@ class Staff_Report (_Report):
                 sdyn = user_dynamic.first_user_dynamic (db, u, date = start)
             # We already established above that for the end date we have
             # a dynamic user record but we might not have permission
+            # Permission is granted either when uid == u (user is the
+            # opening database user) or dynamic_user_allowed_by_olo
             while (   sdyn
                   and not dynamic_user_allowed_by_olo (db, self.uid, sdyn.id)
+                  and self.uid != u
                   ):
                 sdyn = user_dynamic.next_user_dynamic (db, sdyn)
             if not sdyn:
@@ -1579,8 +1582,10 @@ class Staff_Report (_Report):
                     # dynamic user records in the range
                     # We do not display the range in that case.
                     while (   sdyn
-                          and dynamic_user_allowed_by_olo
-                              (db, self.uid, sdyn.id)
+                          and (dynamic_user_allowed_by_olo
+                                  (db, self.uid, sdyn.id)
+                               or u == self.uid
+                              )
                           ):
                         sdyn = user_dynamic.next_user_dynamic (db, sdyn)
                         if not sdyn or sdyn.valid_to is None:
@@ -1589,6 +1594,7 @@ class Staff_Report (_Report):
                             break
                     if  (  not sdyn
                         or dynamic_user_allowed_by_olo (db, self.uid, sdyn.id)
+                        or u == self.uid
                         ):
                         container = ccls (ustart, end, i18n = db.i18n)
                         values [u].append   (container)
@@ -1603,8 +1609,11 @@ class Staff_Report (_Report):
                         cdyn = user_dynamic.get_user_dynamic (db, u, eop)
                         # Permission check on individual period
                         if  (  not cdyn
-                            or not dynamic_user_allowed_by_olo
-                               (db, self.uid, cdyn.id)
+                            or not 
+                              (  dynamic_user_allowed_by_olo
+                                     (db, self.uid, cdyn.id)
+                              or u == self.uid
+                              )
                             ):
                             date = eop + day
                             continue

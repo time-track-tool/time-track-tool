@@ -476,6 +476,12 @@ class _Test_Base_Summary:
             , mail_domain = 'example.com'
             , valid_from  = date.Date ('2004-01-01')
             )
+        self.org2 = self.db.organisation.create \
+            ( name        = 'The 2nd Org'
+            , description = 'A 2nd Test Organisation'
+            , mail_domain = 'example.com'
+            , valid_from  = date.Date ('2004-01-01')
+            )
         self.loc = self.db.location.create \
             ( name    = 'Vienna'
             , country = 'Austria'
@@ -493,7 +499,7 @@ class _Test_Base_Summary:
         self.olo2 = self.db.org_location.create \
             ( name                = 'Another Org, Vienna'
             , location            = self.loc
-            , organisation        = self.org
+            , organisation        = self.org2
             , vacation_legal_year = False
             , vacation_yearly     = 25.0
             , do_leave_process    = True
@@ -4120,8 +4126,8 @@ class Test_Case_Timetracker (_Test_Case_Summary, unittest.TestCase):
             , firstname    = 'Nummer20'
             , lastname     = 'User20'
             )
-        # Allow user to create their own dyn user rec
-        self.db.o_permission.create \
+        # Allow user20 to create dyn user rec
+        self.o_perm = self.db.o_permission.create \
             (user = self.user20, org_location = [self.olo, self.olo2])
         p = self.db.overtime_period.create \
             ( name              = 'monthly average required'
@@ -4140,6 +4146,8 @@ class Test_Case_Timetracker (_Test_Case_Summary, unittest.TestCase):
         self.db.close ()
         self.db = self.tracker.open (self.username20)
         user20_time.import_data_20 (self.db, self.user20, self.olo)
+        # Retire the permission
+        self.db.o_permission.retire (self.o_perm)
         self.db.commit ()
         self.db.close ()
         self.db = self.tracker.open (self.username0)
@@ -4295,6 +4303,187 @@ class Test_Case_Timetracker (_Test_Case_Summary, unittest.TestCase):
 
         self.db.close ()
     # end def test_user20
+
+    def test_user20_change_olo (self):
+        """ Test that the user can get staff report even if their olo changed
+        """
+        self.log.debug ('test_user20_change_olo')
+        self.setup_db ()
+        self.setup_user20 ()
+        self.db.close ()
+        self.db = self.tracker.open (self.username20)
+        user20_time.import_data_20 (self.db, self.user20, self.olo)
+        # Retire the permission
+        self.db.o_permission.retire (self.o_perm)
+        self.db.commit ()
+        self.db.close ()
+        self.db = self.tracker.open (self.username0)
+        self.db.overtime_correction.create \
+            ( date  = date.Date ('2022-02-02')
+            , user  = self.user20
+            , value = 30.17
+            )
+        # Change org_location for the *latest* user_dyn record
+        # User should still see everything as in test_user20.
+        dynids = self.db.user_dynamic.filter \
+            (None, dict (user = self.user20, valid_from = '2022-03-20;'))
+        assert len (dynids) == 1
+        self.db.user_dynamic.set (dynids [0], valid_to = None)
+        self.db.user_dynamic.set (dynids [0], org_location = self.olo2)
+
+        self.db.commit ()
+        self.db.close ()
+        self.db = self.tracker.open (self.username20)
+        summary.init (self.tracker)
+        fs = { 'user'         : [self.user20]
+             , 'date'         : '2022-03-01;2022-04-03'
+             , 'summary_type' : ['2', '3']
+             }
+        class r: filterspec = fs
+        class c: _ = lambda x: x
+        sr = summary.Staff_Report \
+            (self.db, r, templating.TemplatingUtils (c))
+        lines = tuple (csv.reader (StringIO (sr.as_csv ()), delimiter = ','))
+        self.assertEqual (len (lines), 8)
+        self.assertEqual (lines  [0] [1], 'SF System ID')
+        self.assertEqual (lines  [0] [2], 'First name')
+        self.assertEqual (lines  [0] [3], 'Last name')
+        self.assertEqual (lines  [0] [4], 'Time Period')
+        self.assertEqual (lines  [0] [5], 'Balance Start')
+        self.assertEqual (lines  [0] [9], 'Actual all')
+        self.assertEqual (lines  [0][10], 'required')
+        self.assertEqual (lines  [0][11], 'Supp. hours average')
+        self.assertEqual (lines  [0][12], 'Supplementary hours')
+        self.assertEqual (lines  [0][14], 'Balance End')
+        self.assertEqual (lines  [0][15], 'Overtime period')
+        self.assertEqual (lines  [0][17], 'Supp. hours / period')
+        self.assertEqual (lines  [1] [4], 'WW 9/2022')
+        self.assertEqual (lines  [2] [4], 'WW 10/2022')
+        self.assertEqual (lines  [3] [4], 'WW 11/2022')
+        self.assertEqual (lines  [4] [4], 'WW 12/2022')
+        self.assertEqual (lines  [5] [4], 'WW 13/2022')
+        self.assertEqual (lines  [6] [4], 'March 2022')
+        self.assertEqual (lines  [7] [4], 'April 2022')
+        self.assertEqual (lines  [1] [5], '36.08')
+        self.assertEqual (lines  [4] [5], '39.95')
+        self.assertEqual (lines  [4] [9], '42.25')
+        self.assertEqual (lines  [4][10], '38.50')
+        self.assertEqual (lines  [4][11], '41.76')
+        self.assertEqual (lines  [4][14], '40.44')
+        self.assertEqual (lines  [5] [5], '40.44')
+        self.assertEqual (lines  [5] [9], '39.75')
+        self.assertEqual (lines  [5][10], '38.50')
+        self.assertEqual (lines  [5][11], '39.80')
+        self.assertEqual (lines  [5][12], '23.10')
+        self.assertEqual (lines  [5][14], '40.39') # 36.02
+        self.assertEqual (lines  [6] [5], '36.08')
+        self.assertEqual (lines  [6] [9], '198.25')
+        self.assertEqual (lines  [6][10], '177.25')
+        self.assertEqual (lines  [6][11], '190.95')
+        self.assertEqual (lines  [6][12], '15.40')
+        self.assertEqual (lines  [6][14], '43.49') # 39.12
+        self.assertEqual (lines  [7] [5], '43.49') # 39.12
+        self.assertEqual (lines  [7] [9], '4.50')
+        self.assertEqual (lines  [7][10], '7.50')
+        self.assertEqual (lines  [7][11], '0.00')
+        self.assertEqual (lines  [7][12], '7.70')
+        self.assertEqual (lines  [7][14], '40.39') # 36.02
+        # Now change the rest of April to use the first dyn params
+        self.db.commit ()
+        self.db.close ()
+        self.db = self.tracker.open (self.username0)
+        dynid = self.db.user_dynamic.create \
+            ( additional_hours   = 38.5
+            , all_in             = 0
+            , booking_allowed    = 1
+            , daily_worktime     = 9.0
+            , do_auto_wp         = 1
+            , durations_allowed  = 0
+            , exemption          = 0
+            , hours_mon          = 7.75
+            , hours_tue          = 7.75
+            , hours_wed          = 7.75
+            , hours_thu          = 7.75
+            , hours_fri          = 7.5
+            , hours_sat          = 0.0
+            , hours_sun          = 0.0
+            , org_location       = self.olo2
+            , overtime_period    = '1'
+            , supp_weekly_hours  = 38.5
+            , travel_full        = 0
+            , user               = self.user20
+            , vac_aliq           = '1'
+            , vacation_day       = 1.0
+            , vacation_month     = 1.0
+            , vacation_yearly    = 25.0
+            , valid_from         = date.Date ("2022-04-01")
+            , weekend_allowed    = 0
+            , weekly_hours       = 38.5
+            )
+        assert dynid == '7'
+        dyn = self.db.user_dynamic.getnode ('6')
+        assert dyn.valid_to.pretty ('%Y-%m-%d') == '2022-04-01'
+        self.db.user_dynamic.set \
+            ( '6'
+            , additional_hours  = None
+            , supp_weekly_hours = None
+            , supp_per_period   = 15.0
+            , overtime_period   = '5'
+            )
+        self.db.commit ()
+        self.db.close ()
+        self.db = self.tracker.open (self.username20)
+        class c: _ = lambda x: x
+        sr = summary.Staff_Report \
+            (self.db, r, templating.TemplatingUtils (c))
+        lines = tuple (csv.reader (StringIO (sr.as_csv ()), delimiter = ','))
+        self.assertEqual (len (lines), 8)
+        self.assertEqual (lines  [0] [1], 'SF System ID')
+        self.assertEqual (lines  [0] [2], 'First name')
+        self.assertEqual (lines  [0] [3], 'Last name')
+        self.assertEqual (lines  [0] [4], 'Time Period')
+        self.assertEqual (lines  [0] [5], 'Balance Start')
+        self.assertEqual (lines  [0] [9], 'Actual all')
+        self.assertEqual (lines  [0][10], 'required')
+        self.assertEqual (lines  [0][11], 'Supp. hours average')
+        self.assertEqual (lines  [0][12], 'Supplementary hours')
+        self.assertEqual (lines  [0][14], 'Balance End')
+        self.assertEqual (lines  [0][15], 'Overtime period')
+        self.assertEqual (lines  [0][17], 'Supp. hours / period')
+        self.assertEqual (lines  [1] [4], 'WW 9/2022')
+        self.assertEqual (lines  [2] [4], 'WW 10/2022')
+        self.assertEqual (lines  [3] [4], 'WW 11/2022')
+        self.assertEqual (lines  [4] [4], 'WW 12/2022')
+        self.assertEqual (lines  [5] [4], 'WW 13/2022')
+        self.assertEqual (lines  [6] [4], 'March 2022')
+        self.assertEqual (lines  [7] [4], 'April 2022')
+        self.assertEqual (lines  [1] [5], '36.08')
+        self.assertEqual (lines  [4] [5], '39.95')
+        self.assertEqual (lines  [4] [9], '42.25')
+        self.assertEqual (lines  [4][10], '38.50')
+        self.assertEqual (lines  [4][11], '41.76')
+        self.assertEqual (lines  [4][14], '40.44')
+        self.assertEqual (lines  [5] [5], '40.44')
+        self.assertEqual (lines  [5] [9], '39.75')
+        self.assertEqual (lines  [5][10], '38.50')
+        self.assertEqual (lines  [5][11], '41.11')
+        self.assertEqual (lines  [5][12], '7.70')
+        self.assertEqual (lines  [5][14], '39.08')
+        self.assertEqual (lines  [6] [5], '36.08')
+        self.assertEqual (lines  [6] [9], '198.25')
+        self.assertEqual (lines  [6][10], '177.25')
+        self.assertEqual (lines  [6][11], '192.25')
+        self.assertEqual (lines  [6][12], '0.00')
+        self.assertEqual (lines  [6][14], '42.08')
+        self.assertEqual (lines  [7] [5], '42.08')
+        self.assertEqual (lines  [7] [9], '4.50')
+        self.assertEqual (lines  [7][10], '7.50')
+        self.assertEqual (lines  [7][11], '0.00')
+        self.assertEqual (lines  [7][12], '7.70')
+        self.assertEqual (lines  [7][14], '39.08')
+
+        self.db.close ()
+    # end def test_user20_change_olo
 
     def setup_user21 (self):
         self.username21 = 'testuser21'
