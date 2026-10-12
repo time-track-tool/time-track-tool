@@ -663,6 +663,19 @@ def check_correction (db, cl, nodeid, new_values):
     _ = db.i18n.gettext
     common.require_attributes \
         (_, cl, nodeid, new_values, 'user', 'date')
+    # Defaults on creation
+    if 'hours' not in new_values:
+        if nodeid:
+            if cl.get (nodeid, 'hours') is None:
+                new_values ['hours'] = 0.0
+        else:
+            new_values ['hours'] = 0.0
+    if 'accrued' not in new_values:
+        if nodeid:
+            if cl.get (nodeid, 'accrued') is None:
+                new_values ['accrued'] = 0.0
+        else:
+            new_values ['accrued'] = 0.0
     if nodeid:
         common.require_attributes \
             (_, cl, nodeid, new_values, 'absolute', 'days', 'hours', 'accrued')
