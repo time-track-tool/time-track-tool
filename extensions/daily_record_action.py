@@ -419,6 +419,9 @@ class Daily_Record_Edit_Action (EditItemAction, Daily_Record_Common):
                         assert 'end'   not in aval or aval ['end']   is None
                         # Setting both to same value will retire the ar
                         aval ['start'] = aval ['end'] = '4'
+                        # Special case: TR is retired but AR not
+                        if self.db.time_record.is_retired (id):
+                            del props [(cl, id)]
                     # We may not modify the daily_record and it already is set
                     del aval ['daily_record']
         # Check if start is given but no end, create end from start + duration

@@ -839,11 +839,14 @@ def retire_and_duration (db, cl, nodeid, old_values):
         after the retire.
     """
     tr = cl.getnode (nodeid)
-    if tr.attendance_record:
-        assert len (tr.attendance_record) == 1
-        if db.attendance_record.is_retired (tr.attendance_record [0]):
-            cl.retire (nodeid)
-            return
+    # When doing this it results in a race condition: Depending on the
+    # sequence of attendance/time record retirement the *setting* of
+    # attributes will not work with "Requested item is retired"
+    #if tr.attendance_record:
+    #    assert len (tr.attendance_record) == 1
+    #    if db.attendance_record.is_retired (tr.attendance_record [0]):
+    #        cl.retire (nodeid)
+    #        return
     dur = tr.duration
     if dur is None:
         cl.retire (nodeid)
@@ -1059,21 +1062,24 @@ def update_arec (db, cl, nodeid, old_values):
     """
     # check if our corresponding TR is retired, if so, retire self
     ar = cl.getnode (nodeid)
-    if ar.time_record:
-        if db.time_record.is_retired (ar.time_record):
-            cl.retire (nodeid)
-            return
+    # When doing this it results in a race condition: Depending on the
+    # sequence of attendance/time record retirement the *setting* of
+    # attributes will not work with "Requested item is retired"
+    #if ar.time_record:
+    #    if db.time_record.is_retired (ar.time_record):
+    #        cl.retire (nodeid)
+    #        return
     if not ar.time_record or not ar.start:
         return
     tr = db.time_record.getnode  (ar.time_record)
     dr = db.daily_record.getnode (ar.daily_record)
     dstart, dend, sp, ep, dur = check_timestamps \
         (db.i18n.gettext, ar.start, ar.end, dr.date)
-    if dur != tr.duration:
-        db.time_record.set (tr.id, duration = dur)
-    # Or if both our times are the same and this is not 'create'
+    # if both our times are the same and this is not 'create'
     if not dur and old_values:
         cl.retire (nodeid)
+    elif dur != tr.duration and not db.time_record.is_retired (ar.time_record):
+        db.time_record.set (tr.id, duration = dur)
 # end def update_arec
 
 def update_trec (db, cl, nodeid, old_values):
