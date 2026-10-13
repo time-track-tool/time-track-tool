@@ -1070,6 +1070,8 @@ def update_arec (db, cl, nodeid, old_values):
     #        cl.retire (nodeid)
     #        return
     if not ar.time_record or not ar.start:
+        if ar.start == ar.end and ar.start is not None:
+            cl.retire (nodeid)
         return
     tr = db.time_record.getnode  (ar.time_record)
     dr = db.daily_record.getnode (ar.daily_record)
