@@ -334,15 +334,20 @@ class _Test_Case (_Test_Base):
         s.append (secdesc [1])
         roles = sorted (list (self.db.security.role.items ()))
         for rolename, role in roles:
-            s.append ('Role "%(name)s":' % role.__dict__)
+            s.append ('Role "%s":' % role.name)
             perms = []
             for permission in role.permission_list ():
-                d = permission.__dict__
+                d = dict \
+                    ( description = permission.description
+                    , name        = permission.name
+                    , klass       = permission.klass
+                    , properties  = permission.properties
+                    )
                 if permission.klass:
                     if permission.properties:
                         p = { 'properties'
-                            : type (d ['properties'])
-                                   (sorted (d ['properties']))
+                            : type (permission.properties)
+                                   (sorted (permission.properties))
                             }
                         perms.append \
                             ( ' %(description)s (%(name)s for "%(klass)s"' %d
