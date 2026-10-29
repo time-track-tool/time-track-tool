@@ -867,7 +867,7 @@ def consolidated_vacation \
     while dyn and dyn.valid_to and dyn.valid_to <= d:
         dyn = vac_next_user_dynamic (db, dyn)
     if dyn is None:
-        return None, None, None
+        return 0.0, None, None
     vac = float (vc.days)
     msg = "vac_aliq None for user_dynamic%s" % dyn.id
     assert dyn.vac_aliq, msg
