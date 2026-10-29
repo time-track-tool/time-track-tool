@@ -854,10 +854,10 @@ def consolidated_vacation \
     if ctype == -1:
         ctype = _get_ctype (db, user, date)
     if ctype == -1:
-        return
+        return None, None, None
     vc  = vc or get_vacation_correction (db, user, ctype, date)
     if not vc:
-        return None
+        return None, None, None
     ed  = next_yearly_vacation_date (db, user, ctype, date)
     if not to_eoy:
         ed = min (ed, date + common.day)
@@ -866,7 +866,7 @@ def consolidated_vacation \
     while dyn and dyn.valid_to and dyn.valid_to <= d:
         dyn = vac_next_user_dynamic (db, dyn)
     if dyn is None:
-        return None
+        return None, None, None
     vac = float (vc.days)
     msg = "vac_aliq None for user_dynamic%s" % dyn.id
     assert dyn.vac_aliq, msg
