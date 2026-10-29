@@ -705,9 +705,10 @@ def remaining_vacation (db, user, ctype = -1, date = None, to_eoy = True):
         (db, user, ctype, date, vc, to_eoy)
     vsum, vsum_h = vacation_time_sum (db, user, ctype, vc.date, ed)
     if cons is None:
-        assert cons_h is not None
-        vac_h = cons_h
-        vac_h -= vsum_h
+        # This *can* be None, too, e.g. if we don't have a dyn user
+        if cons_h is not None:
+            vac_h = cons_h
+            vac_h -= vsum_h
     else:
         assert cons_h is None
         vac = cons
