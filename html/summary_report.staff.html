@@ -18,7 +18,7 @@
       , ( 'user'
 	, dict
 	    ( searchname   = 'user.employee_number'
-	    , searchable   = False
+	    , searchable   = True
 	    , sortable     = True
 	    , is_labelprop = False
 	    )
@@ -71,7 +71,7 @@
         " fpkeys python: []
         ; props python: [myprops [p] for p in sorted (fpkeys)]
         ; propkeys       python:
-          ( 'date', 'user', 'org_location'
+          ( 'date', 'user', 'user.employee_number', 'org_location'
           , 'supervisor', 'all_in', 'summary_type'
           )
         ; sprops         python: [myprops [p] for p in propkeys]

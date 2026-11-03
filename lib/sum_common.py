@@ -126,10 +126,21 @@ def get_users (db, filterspec, start, end):
     """
     users = list (filterspec.get ('user', []))
     sv    = dict ((i, 1) for i in filterspec.get ('supervisor', []))
+    empno = filterspec.get ('user.employee_number', '').split (',')
     svu   = []
+    emps  = []
+    if empno:
+        emps = []
+        empno = [x.strip () for x in empno]
+        for e in empno:
+            emp = db.user.filter \
+                (None, {}, exact_match_spec = {'employee_number': e})
+            assert len (emp) <= 1
+            if len (emp):
+                emps.append (emp [0])
     if sv:
         svu = list (db.user.find (supervisor = sv))
-    users = dict ((u, 1) for u in users + svu)
+    users = dict ((u, 1) for u in users + svu + emps)
     found = bool (users)
     olo   = None
     if 'organisation' in filterspec:

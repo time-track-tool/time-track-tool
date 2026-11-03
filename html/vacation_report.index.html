@@ -12,7 +12,7 @@
      , ( 'user'
        , dict
 	   ( searchname   = 'user.employee_number'
-	   , searchable   = False
+	   , searchable   = True
 	   , sortable     = True
 	   , is_labelprop = False
 	   )
@@ -171,7 +171,7 @@
          [myprops [p] for p in sorted
           (fpkeys, key = lambda x: db._db.i18n.gettext(x)) if p in myprops]
        ; propkeys       python:
-         ( 'date', 'user', 'supervisor', 'org_location'
+         ( 'date', 'user', 'user.employee_number', 'supervisor', 'org_location'
          , 'organisation', 'show_obsolete'
          )
        ; sprops         python: [myprops [p] for p in propkeys]
