@@ -1275,6 +1275,8 @@ _helptext          = \
       ]
     , ""'manager'                     :
       [""'''Responsible person of the %(Classname)s''']
+    , ""'material_no'                 :
+      [""'''SAP Material Number''']
     , ""'maturity_index'              :
       [ ""'''Maturity index for this %(Classname)s.
              Computed as follows: For a container the sum of all

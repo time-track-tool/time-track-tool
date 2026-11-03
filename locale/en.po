@@ -7663,3 +7663,6 @@ msgstr ""
 " the issue you encountered, including the steps performed,"
 " and the expected versus actual behavior.</p>\n"
 "</body></html>"
+
+msgid "material_no"
+msgstr "Material Number"

@@ -1059,6 +1059,9 @@ properties = \
         , ( 'is_public'
           , ['admin', 'artefact', 'cc-permission', 'controlling', 'doc_admin', 'dom-user-edit-facility', 'dom-user-edit-gtt', 'dom-user-edit-hr', 'dom-user-edit-office', 'facility', 'functional-role', 'hr', 'hr-leave-approval', 'hr-vacation', 'it', 'o-permission', 'office', 'organisation', 'pgp', 'procurement', 'project', 'project_view', 'summary-report', 'summary_view', 'time-report', 'user', 'user_view', 'vacation-report', 'view-roles']
           )
+        , ( 'material_no'
+          , ['admin', 'artefact', 'cc-permission', 'controlling', 'doc_admin', 'dom-user-edit-facility', 'dom-user-edit-gtt', 'dom-user-edit-hr', 'dom-user-edit-office', 'facility', 'functional-role', 'hr', 'hr-leave-approval', 'hr-vacation', 'it', 'o-permission', 'office', 'organisation', 'pgp', 'procurement', 'project', 'project_view', 'summary-report', 'summary_view', 'time-report', 'user', 'user_view', 'vacation-report', 'view-roles']
+          )
         , ( 'name'
           , ['admin', 'artefact', 'cc-permission', 'controlling', 'doc_admin', 'dom-user-edit-facility', 'dom-user-edit-gtt', 'dom-user-edit-hr', 'dom-user-edit-office', 'facility', 'functional-role', 'hr', 'hr-leave-approval', 'hr-vacation', 'it', 'o-permission', 'office', 'organisation', 'pgp', 'procurement', 'project', 'project_view', 'summary-report', 'summary_view', 'time-report', 'user', 'user_view', 'vacation-report', 'view-roles']
           )

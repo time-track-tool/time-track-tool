@@ -826,6 +826,7 @@ properties = \
         , 'has_expiration_date'
         , 'is_extern'
         , 'is_public'
+        , 'material_no'
         , 'name'
         , 'planned_effort'
         , 'project'

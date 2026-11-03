@@ -371,6 +371,7 @@ def init \
         , is_extern             = Boolean   ()
         , auto_wp               = Link      ("auto_wp")
         , allowed_olo           = Multilink ("org_location")
+        , material_no           = String    ()
         )
 
     time_wp_summary_no = Class \
