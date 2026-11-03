@@ -176,6 +176,11 @@
      </tr>
      <tr>
       <th tal:content="structure python:utils.fieldname
+          (db, classname, 'travel_fraction')"/>
+      <td tal:content="structure python:context.travel_fraction.field ()"/>
+     </tr>
+     <tr>
+      <th tal:content="structure python:utils.fieldname
           (db, classname, 'daily_hours')"/>
       <td colspan=3>
        <span tal:repeat="i python:

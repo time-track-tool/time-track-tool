@@ -7666,3 +7666,6 @@ msgstr ""
 
 msgid "material_no"
 msgstr "Material Number"
+
+msgid "travel_fraction"
+msgstr "Travel Fraction"

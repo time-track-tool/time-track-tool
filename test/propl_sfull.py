@@ -945,6 +945,7 @@ properties = \
         , 'supp_per_period'
         , 'supp_weekly_hours'
         , 'time_activity_perm'
+        , 'travel_fraction'
         , 'travel_full'
         , 'user'
         , 'vac_aliq'

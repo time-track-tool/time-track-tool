@@ -2267,15 +2267,25 @@ _helptext          = \
       [""'''Allowed transitions to other states for for simple kind''']
     , ""'travel'                      :
       [ travel
-      , ""''' In addition in reports the times booked will be halved (if
-             exceeding the expected work hours and the person is not
-             marked "travel_full" in the dynamic user data)
+      , ""''' In addition in reports the times booked will be multiplied
+             with the dynamic user data
+          '''
+      , ""'travel_fraction'
+      , ""''' (if exceeding the expected work hours and the person is not
+             marked "travel_full" in the dynamic user data, the default
+          '''
+      , ""'travel_fraction'
+      , ""''' is 50%% if unspecified)
           '''
       ]
+    , ""'travel_fraction'             :
+      [""'''Multiplier for overtime hours during travel, default 50%%''']
     , ""'tr_duration'                 :
       [ ""'''Work duration in minutes including special travel computation:
-             travel times will be halved if exceeding the maximum work
-             hours.
+             travel overtime will be multiplied by the dynamic user data
+          '''
+      , ""'travel_fraction'
+      , ""'''- 50%% by default.
           '''
       ]
     , ""'tt_lines'                    :

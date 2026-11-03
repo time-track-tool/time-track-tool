@@ -463,6 +463,7 @@ def init \
         , time_activity_perm    = Multilink ( "time_activity_perm"
                                             , do_journal = "no"
                                             )
+        , travel_fraction       = Number    ()
         )
 
     leave_status = Class \
