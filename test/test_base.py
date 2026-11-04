@@ -39,6 +39,7 @@ from . import user23_time, user24_time, user25_time, user26_time, user27_time
 from . import user28_time, user29_time, user30_time, user31_time, user32_time
 from . import user33_time, user34_time, user35_time, user36_time, user37_time
 from . import user38_time
+from . import user44_time
 
 from operator     import mul
 from email.parser import Parser
@@ -6312,7 +6313,7 @@ class Test_Case_Timetracker (_Test_Case_Summary, unittest.TestCase):
         self.db.time_wp.set (self.wps [0], bookers = [self.user38])
         user38_time.import_data_38 (self.db, self.user38, self.olo)
         self.db.commit ()
-    # end def setup_user37
+    # end def setup_user38
 
     def test_user38_vacation (self):
         """ Test that the user cannot submit vacation where in parallel
@@ -6333,6 +6334,85 @@ class Test_Case_Timetracker (_Test_Case_Summary, unittest.TestCase):
         assert reject.value.args [0] == msg
         self.db.close ()
     # end def test_user38_vacation
+
+    def setup_user44 (self):
+        self.username44 = 'testuser44'
+        self.user44 = self.db.user.create \
+            ( username     = self.username44
+            , firstname    = 'Nummer44'
+            , lastname     = 'User44'
+            )
+        # Allow user to create their own dyn user rec
+        self.db.o_permission.create \
+            (user = self.user44, org_location = [self.olo, self.olo2])
+        p = self.db.overtime_period.create \
+            ( name              = 'monthly average required'
+            , months            = 1
+            , weekly            = False
+            , required_overtime = True
+            , order             = 3
+            )
+        # allow user44 to book on wp 4 (Work Package 0)
+        self.db.time_wp.set (self.wps [0], bookers = [self.user44])
+        user44_time.import_data_44 (self.db, self.user44, self.olo)
+        self.db.commit ()
+    # end def setup_user44
+
+    def test_user44_travel_passive (self):
+        """ Test that the user cannot submit vacation where in parallel
+            we have a submitted leave. Verify the error message.
+        """
+        self.log.debug ('test_user44')
+        self.setup_db ()
+        self.setup_user44 ()
+        self.db.close ()
+        self.db = self.tracker.open (self.username44)
+        trd = \
+            { '1': (2.25, 4.5)
+            , '2': (5.0,  5.0)
+            , '3': (2.0,  2.0)
+            , '4': (2.75, 5.5)
+            , '5': (2.5,  2.5)
+            , '6': (1.75, 3.5)
+            , '7': (3.5,  3.5)
+            , '8': (2.0,  4.0)
+            }
+        drs = self.db.daily_record.filter (None, dict (user = self.user44))
+        assert len (drs) == 2
+        dr1 = self.db.daily_record.getnode (drs [0])
+        assert dr1.tr_duration_ok == 12
+        for trid in dr1.time_record:
+            tr = self.db.time_record.getnode (trid)
+            assert tr.tr_duration == trd [trid][0]
+            assert tr.duration    == trd [trid][1]
+        dr2 = self.db.daily_record.getnode (drs [1])
+        assert dr2.tr_duration_ok == 9.75
+        for trid in dr2.time_record:
+            tr = self.db.time_record.getnode (trid)
+            assert tr.tr_duration == trd [trid][0]
+            assert tr.duration    == trd [trid][1]
+
+        # Now set travel_fraction in dyn user record and try again
+        dyn = user_dynamic.get_user_dynamic \
+            (self.db, self.user44, date.Date ('2018-02-28'))
+        self.db.user_dynamic.set (dyn.id, travel_fraction = 0.65)
+        self.db.commit ()
+        drs = self.db.daily_record.filter (None, dict (user = self.user44))
+        assert len (drs) == 2
+        dr1 = self.db.daily_record.getnode (drs [0])
+        assert dr1.tr_duration_ok == 13.5
+        for trid in dr1.time_record:
+            tr = self.db.time_record.getnode (trid)
+            if trd [trid][0] != trd [trid][1]:
+                assert tr.tr_duration == trd [trid][1] * 0.65
+        dr2 = self.db.daily_record.getnode (drs [1])
+        assert dr2.tr_duration_ok == 10.875
+        for trid in dr2.time_record:
+            tr = self.db.time_record.getnode (trid)
+            if trd [trid][0] != trd [trid][1]:
+                assert tr.tr_duration == trd [trid][1] * 0.65
+        self.db.close ()
+    # end def test_user44_travel_passive
 
 
     def test_duplicate_public_holiday (self):

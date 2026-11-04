@@ -275,32 +275,38 @@ def round_daily_work_hours (hours):
     return int (hours * 4. + .5) / 4.
 # end def round_daily_work_hours
 
-def travel_worktime (full_hours, half_hours, daily_hours):
-    """Compute the time taking halved travel into account. Return a
+def travel_worktime (full_hours, frac_hours, daily_hours, fraction):
+    """Compute the time taking fractioned travel into account. Return a
        tuple consisting of the travel work-time and the ratio by which
        the work-time was reduced.
 
-       >>> travel_worktime ( 8,  4, 8)
+       >>> travel_worktime ( 8,  4, 8, 0.5)
        (8, 1.0)
-       >>> print ("%d %.6f" % travel_worktime (12,  6, 8))
+       >>> print ("%d %.6f" % travel_worktime (12,  6, 8, 0.5))
        8 0.666667
-       >>> travel_worktime (12,  9, 8)
+       >>> travel_worktime (12,  9, 8, 0.5)
        (9, 0.5)
-       >>> travel_worktime (16,  8, 8)
+       >>> travel_worktime (16,  8, 8, 0.5)
        (8, 0.5)
-       >>> travel_worktime (18,  9, 8)
+       >>> travel_worktime (18,  9, 8, 0.5)
        (9, 0.5)
-       >>> travel_worktime (18, 11, 8)
+       >>> travel_worktime (18, 11, 8, 0.5)
        (11, 0.5)
-       >>> travel_worktime (18, 11, 0)
+       >>> travel_worktime (18, 11, 0, 0.5)
        (11, 0.5)
-       >>> travel_worktime ( 2,  1, 0)
+       >>> travel_worktime ( 2,  1, 0, 0.5)
        (1, 0.5)
+       >>> travel_worktime (17, 12, 7.75, 0.5)
+       (12, 0.5)
+       >>> travel_worktime (13.5, 9.75, 7.75, 0.5)
+       (9.75, 0.5)
+       >>> travel_worktime (17, 13.5, 7.75, 0.65)
+       (13.5, 0.65)
     """
     ret     = min (full_hours, daily_hours)
-    travel  = (full_hours - half_hours) * 2.
-    if half_hours > daily_hours:
-        ret = half_hours
+    travel  = (full_hours - frac_hours) / (1 - fraction)
+    if frac_hours > daily_hours:
+        ret = frac_hours
     if travel:
         ratio = (travel - (full_hours - ret)) / travel
     else:
@@ -315,12 +321,15 @@ def update_tr_duration (db, dr):
     """
     if dr.tr_duration_ok is not None:
         return dr.tr_duration_ok
-    hours   = 0.0
-    hhours  = 0.0
-    dyn     = get_user_dynamic (db, dr.user, dr.date)
-    tr_full = True
-    wh      = 0
+    hours    = 0.0
+    fhours   = 0.0
+    dyn      = get_user_dynamic (db, dr.user, dr.date)
+    tr_full  = True
+    wh       = 0
+    fraction = 0.5
     if dyn:
+        if dyn.travel_fraction is not None:
+            fraction = dyn.travel_fraction
         tr_full = dyn.travel_full
         wh      = round_daily_work_hours (day_work_hours (dyn, dr.date))
         if dyn.overtime_period:
@@ -338,11 +347,11 @@ def update_tr_duration (db, dr):
         act    = tr.time_activity
         travel = not tr_full and act and db.time_activity.get (act, 'travel')
         if travel:
-            hhours  += tr.duration / 2.
+            fhours  += tr.duration * fraction
             trvl_tr [tr.id] = tr
         else:
-            hhours  += tr.duration
-    sum, ratio = travel_worktime (hours, hhours, wh)
+            fhours  += tr.duration
+    sum, ratio = travel_worktime (hours, fhours, wh, fraction)
     for tr in trs:
         if tr.id in trvl_tr:
             tr_duration = ratio * tr.duration

@@ -359,20 +359,31 @@ def check_user_dynamic (db, cl, nodeid, new_values):
         ):
         check_overtime_parameters (db, cl, nodeid, new_values)
         check_vacation (db, cl, nodeid, 'vacation_yearly', new_values)
-        if not freeze.frozen (db, user, old_from):
-            user_dynamic.invalidate_tr_duration (db, user, val_from, val_to)
-        else:
-            old_to = cl.get (nodeid, 'valid_to')
-            use_to = val_to
-            if old_to:
-                if val_to:
-                    use_to = min (old_to, val_to)
-                else:
-                    use_to = old_to
-            user_dynamic.invalidate_tr_duration (db, user, use_to, None)
     if not exemption:
         check_weekly_hours (db, cl, nodeid, new_values)
+    check_travel_frac (db, _, new_values)
 # end def check_user_dynamic
+
+def invalidate_dr_if_changed (db, cl, nodeid, old_values):
+    dyn = cl.getnode (nodeid)
+    val_from = old_from = dyn.valid_from
+    val_to   = old_to   = dyn.valid_to
+    user     = dyn.user
+    if 'valid_from' in old_values:
+        old_from = old_values ['valid_from']
+    if 'valid_to' in old_values:
+        old_to = old_values ['valid_to']
+    if not freeze.frozen (db, user, old_from):
+        user_dynamic.invalidate_tr_duration (db, user, val_from, val_to)
+    else:
+        use_to = val_to
+        if old_to:
+            if val_to:
+                use_to = min (old_to, val_to)
+            else:
+                use_to = old_to
+        user_dynamic.invalidate_tr_duration (db, user, use_to, None)
+# end def invalidate_dr_if_changed
 
 def set_otp_if_all_in (db, cl, nodeid, new_values):
     if 'all_in' in new_values and new_values ['all_in']:
@@ -526,9 +537,17 @@ def new_user_dynamic (db, cl, nodeid, new_values):
             new_values ['vacation_yearly'] = prev_dyn.vacation_yearly
         elif orgl.vacation_yearly:
             new_values ['vacation_yearly'] = orgl.vacation_yearly
+    check_travel_frac (db, _, new_values)
     check_vacation (db, cl, nodeid, 'vacation_yearly', new_values)
     check_weekly_hours (db, cl, nodeid, new_values)
 # end def new_user_dynamic
+
+def check_travel_frac (db, _, new_values):
+    if 'travel_fraction' in new_values:
+        if not 0 < new_values ['travel_fraction'] <= 1:
+            raise Reject \
+                (_ ('%s must be between 0 and 1') % _('travel_fraction'))
+# end def travel_fraction
 
 def check_weekly_hours (db, cl, nodeid, new_values):
     _ = db.i18n.gettext
@@ -1059,13 +1078,14 @@ def init (db):
     db.user_dynamic.audit    ("set",    max_flexi)
     db.user_dynamic.audit    ("create", check_avc, priority = 150)
     db.user_dynamic.audit    ("set",    check_avc, priority = 150)
+    db.user_dynamic.audit    ("set",    find_existing_leave)
+    db.user_dynamic.audit    ("set",    find_time_records, priority = 120)
     db.user_dynamic.react    ("create", close_existing)
     db.user_dynamic.react    ("create", user_dyn_react)
     db.user_dynamic.react    ("set",    user_dyn_react)
     db.user_dynamic.react    ("set",    try_fix_vacation)
+    db.user_dynamic.react    ("set",    invalidate_dr_if_changed)
     db.user_dynamic.react    ("create", try_fix_vacation)
-    db.user_dynamic.audit    ("set",    find_existing_leave)
-    db.user_dynamic.audit    ("set",    find_time_records, priority = 120)
     db.user_dynamic.react    ("set",    retire_if_empty_range, priority = 200)
     db.overtime_period.audit ("create", overtime_check)
     db.overtime_period.audit ("set",    overtime_check)
