@@ -2270,21 +2270,21 @@ _helptext          = \
       , ""''' In addition in reports the times booked will be multiplied
              with the dynamic user data
           '''
-      , ""'travel_fraction'
+      , ""'travel_percent'
       , ""''' (if exceeding the expected work hours and the person is not
              marked "travel_full" in the dynamic user data, the default
           '''
-      , ""'travel_fraction'
+      , ""'travel_percent'
       , ""''' is 50%% if unspecified)
           '''
       ]
-    , ""'travel_fraction'             :
+    , ""'travel_percent'              :
       [""'''Multiplier for overtime hours during travel, default 50%%''']
     , ""'tr_duration'                 :
       [ ""'''Work duration in minutes including special travel computation:
              travel overtime will be multiplied by the dynamic user data
           '''
-      , ""'travel_fraction'
+      , ""'travel_percent'
       , ""'''- 50%% by default.
           '''
       ]

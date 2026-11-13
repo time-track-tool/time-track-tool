@@ -6392,10 +6392,10 @@ class Test_Case_Timetracker (_Test_Case_Summary, unittest.TestCase):
             assert tr.tr_duration == trd [trid][0]
             assert tr.duration    == trd [trid][1]
 
-        # Now set travel_fraction in dyn user record and try again
+        # Now set travel_percent in dyn user record and try again
         dyn = user_dynamic.get_user_dynamic \
             (self.db, self.user44, date.Date ('2018-02-28'))
-        self.db.user_dynamic.set (dyn.id, travel_fraction = 0.65)
+        self.db.user_dynamic.set (dyn.id, travel_percent = 65.)
         self.db.commit ()
         drs = self.db.daily_record.filter (None, dict (user = self.user44))
         assert len (drs) == 2

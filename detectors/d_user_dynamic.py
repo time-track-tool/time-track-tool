@@ -361,7 +361,7 @@ def check_user_dynamic (db, cl, nodeid, new_values):
         check_vacation (db, cl, nodeid, 'vacation_yearly', new_values)
     if not exemption:
         check_weekly_hours (db, cl, nodeid, new_values)
-    check_travel_frac (db, _, new_values)
+    check_travel_percent (db, _, new_values)
 # end def check_user_dynamic
 
 def invalidate_dr_if_changed (db, cl, nodeid, old_values):
@@ -537,17 +537,17 @@ def new_user_dynamic (db, cl, nodeid, new_values):
             new_values ['vacation_yearly'] = prev_dyn.vacation_yearly
         elif orgl.vacation_yearly:
             new_values ['vacation_yearly'] = orgl.vacation_yearly
-    check_travel_frac (db, _, new_values)
+    check_travel_percent (db, _, new_values)
     check_vacation (db, cl, nodeid, 'vacation_yearly', new_values)
     check_weekly_hours (db, cl, nodeid, new_values)
 # end def new_user_dynamic
 
-def check_travel_frac (db, _, new_values):
-    if 'travel_fraction' in new_values:
-        if not 0 < new_values ['travel_fraction'] <= 1:
+def check_travel_percent (db, _, new_values):
+    if 'travel_percent' in new_values:
+        if not 0 < new_values ['travel_percent'] <= 100:
             raise Reject \
-                (_ ('%s must be between 0 and 1') % _('travel_fraction'))
-# end def travel_fraction
+                (_ ('%s must be between 0%% and 100%%') % _('travel_percent'))
+# end def check_travel_percent
 
 def check_weekly_hours (db, cl, nodeid, new_values):
     _ = db.i18n.gettext

@@ -328,8 +328,8 @@ def update_tr_duration (db, dr):
     wh       = 0
     fraction = 0.5
     if dyn:
-        if dyn.travel_fraction is not None:
-            fraction = dyn.travel_fraction
+        if dyn.travel_percent is not None:
+            fraction = dyn.travel_percent / 100.
         tr_full = dyn.travel_full
         wh      = round_daily_work_hours (day_work_hours (dyn, dr.date))
         if dyn.overtime_period:
