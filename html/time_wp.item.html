@@ -34,6 +34,16 @@
    <tal:block metal:fill-slot="formatted_class_content">
     <tr>
      <th tal:content="structure python:utils.fieldname
+         (db, classname, 'deputies')"/>
+     <td>
+      <span tal:content="structure python:context.deputies.field (size=60)"
+            colspan="3"/>
+      <span tal:replace="structure python:utils.user_classhelp
+            (db, property = 'deputies', inputtype = 'checkbox')"/>
+     </td>
+    </tr>
+    <tr>
+     <th tal:content="structure python:utils.fieldname
          (db, classname, 'description')"/>
      <td tal:content="structure python:context.description.field (size=60)"
       colspan="3"/>

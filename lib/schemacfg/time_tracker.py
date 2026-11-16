@@ -355,6 +355,7 @@ def init \
         , wp_no                 = String    ()
         , description           = String    ()
         , responsible           = Link      ("user")
+        , deputies              = Multilink ("user")
         , project               = Link      ( "time_project"
                                             , rev_multilink='wps'
                                             )
@@ -1090,16 +1091,19 @@ def security (db, ** kw):
     # end def is_project_owner_of_wp
 
     def ok_work_package (db, userid, itemid):
-        """User is allowed to view/edit workpackage if he is owner or project
-           responsible/deputy.
+        """User is allowed to view/edit workpackage if he is owner, one
+           of the deputies, or project responsible/deputy.
 
-           Check if user is responsible for wp or if user is responsible
-           for project or is the deputy for project
+           Check if user is responsible for wp or is one of the deputies
+           for the wp or if user is responsible for project or is the
+           deputy for project
         """
         if int (itemid) < 0:
             return False
-        ownerid = db.time_wp.get (itemid, 'responsible')
-        if ownerid == userid:
+        wp = db.time_wp.getnode (itemid)
+        if wp.responsible == userid:
+            return True
+        if userid in wp.deputies:
             return True
         prid    = db.time_wp.get (itemid, 'project')
         project = db.time_project.getnode (prid)
@@ -1703,7 +1707,7 @@ def security (db, ** kw):
         , properties  = \
             ( 'description'
             , 'time_start', 'time_end', 'bookers', 'planned_effort'
-            , 'time_wp_summary_no', 'epic_key', 'allowed_olo'
+            , 'time_wp_summary_no', 'epic_key', 'allowed_olo', 'material_no'
             )
         )
     db.security.addPermissionToRole ('User', p)

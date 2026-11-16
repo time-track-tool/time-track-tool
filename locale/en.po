@@ -2095,6 +2095,9 @@ msgstr "Depends (id)"
 msgid "deputy"
 msgstr "Deputy"
 
+msgid "deputies"
+msgstr "Deputies"
+
 msgid "description"
 msgstr "Description"
 

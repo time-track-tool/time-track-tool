@@ -60,6 +60,7 @@ def time_wp_viewable (db, userid, itemid):
     allow = o_permission.time_project_allowed_by_org
     return \
         (  userid == wp.responsible
+        or userid in wp.deputies
         or time_project_viewable (db, userid, wp.project)
         or (   allow (db, userid, wp.project)
            and common.user_has_role (db, userid, 'Summary_View')

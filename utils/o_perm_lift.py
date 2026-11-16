@@ -125,8 +125,6 @@ for uid, olo in user_olo:
 
 for uid in by_uid:
     oids = db.o_permission.filter (None, dict (user = uid))
-    if len (oids) > 1:
-        import pdb; pdb.set_trace ()
     assert len (oids) <= 1
     old_olo = set ()
     if oids:
