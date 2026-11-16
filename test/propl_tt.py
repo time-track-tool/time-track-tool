@@ -449,6 +449,7 @@ properties = \
         , 'auto_wp'
         , 'bookers'
         , 'cost_center'
+        , 'deputies'
         , 'description'
         , 'durations_allowed'
         , 'epic_key'

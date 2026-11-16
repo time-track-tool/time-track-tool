@@ -587,7 +587,7 @@ Role "user":
  User is allowed to view their own messages (View for "msg" only)
  User is allowed to view their own overtime information (View for "overtime_correction" only)
  User is allowed to view work package names if he/she has role HR or HR-Org-Location (View for "time_wp": ('name', 'project') only)
- User is allowed to view/edit workpackage if he is owner or project responsible/deputy (Edit for "time_wp": ('allowed_olo', 'bookers', 'description', 'epic_key', 'planned_effort', 'time_end', 'time_start', 'time_wp_summary_no') only)
+ User is allowed to view/edit workpackage if he is owner, one of the deputies, or project responsible/deputy (Edit for "time_wp": ('allowed_olo', 'bookers', 'description', 'epic_key', 'material_no', 'planned_effort', 'time_end', 'time_start', 'time_wp_summary_no') only)
  User may access sap cost center because organisation is allowed (View for "sap_cc" only)
  User may access the rest interface (Rest Access)
  User may access the web interface (Web Access)
